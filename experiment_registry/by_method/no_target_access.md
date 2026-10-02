@@ -6,6 +6,6 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS 加性坐标实际使用：8冻结模型×5内部消融完整源V诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/report.md)|
+|CVS 加性坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/report.md)|
 |CVS 坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/report.md)|
 |RFF物理可辨识性：合成诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-rff-identifiability-synthetic-m1-r01/report.md)|

@@ -1,0 +1,119 @@
+{
+  "read_at": 1790909750.5006723,
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 1426401,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_usage_source_20261002_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_additive_usage.audit",
+      "--config",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_usage_source_20261002_r01/experiments/cvs_additive_usage/configs/source.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/source.log",
+    "commit": "c4c8e5c14ace0d8e9987db2a2dbe03e81766d22a",
+    "gpu": 0,
+    "cpu_only": false
+  },
+  "process": {
+    "pid": 1426401,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_usage_source_20261002_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_additive_usage.audit",
+      "--config",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_usage_source_20261002_r01/experiments/cvs_additive_usage/configs/source.json",
+      ""
+    ]
+  },
+  "resolved": {
+    "method": "cvs_additive_usage_source",
+    "run_id": "20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_matrix": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_identity_20261002_r01/experiments/cvs_additive_identity/configs/launch_spec.json",
+    "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-additive-identity-manysig-m8-r01",
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/source",
+    "modes": [
+      "trained",
+      "frequency_reference",
+      "quality_reference",
+      "coordinate_reference",
+      "zero_delta"
+    ],
+    "variants": [
+      "additive_equivariant",
+      "additive_gauge"
+    ],
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "split_seed": 392005,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "numerical_policy": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "source_selection_frozen": true,
+    "used_for_selection": false,
+    "optimizer_steps": 0,
+    "augmentation": false,
+    "device": "cuda:0",
+    "pid": 1426401,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_usage_source_20261002_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_usage_source_20261002_r01/experiments/cvs_additive_usage/audit.py",
+      "--config",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_usage_source_20261002_r01/experiments/cvs_additive_usage/configs/source.json"
+    ],
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "c4c8e5c14ace0d8e9987db2a2dbe03e81766d22a",
+    "source_commit": "d6c29b2bfbc5921a5ff654735253df21b1b1f709",
+    "source_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "source_role": "V",
+    "L_s_use": "not_iterated",
+    "U_s_use": "unused",
+    "target_access": false,
+    "source_selection_unchanged": true,
+    "model_updated": false,
+    "hardware": "NVIDIA GeForce RTX 3090",
+    "backend_flags": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "checkpoint_provenance": "VERIFIED_ALL8_ACTUAL_SCRATCH_E200_FULL_CONTRACT_PAYLOAD_STRICT_STATE",
+    "claim": "Frozen internal-coordinate ablations;not hardware interventions or TX/RX causal identification"
+  },
+  "completion": null,
+  "statistics": null,
+  "log_bytes": 5840,
+  "log_text": "RESOLVED_CONFIG {\"method\": \"cvs_additive_usage_source\", \"run_id\": \"20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01\", \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"source_matrix\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_identity_20261002_r01/experiments/cvs_additive_identity/configs/launch_spec.json\", \"source_root\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-additive-identity-manysig-m8-r01\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/source\", \"modes\": [\"trained\", \"frequency_reference\", \"quality_reference\", \"coordinate_reference\", \"zero_delta\"], \"variants\": [\"additive_equivariant\", \"additive_gauge\"], \"model_seeds\": [2026092701, 2026092702, 2026092703, 2026092704], \"split_seed\": 392005, \"source_receivers\": [1, 3, 4, 6, 8], \"source_days\": [1, 2, 3], \"numerical_policy\": {\"cudnn_allow_tf32\": false, \"cuda_matmul_allow_tf32\": false, \"cudnn_benchmark\": false, \"cudnn_deterministic\": false, \"matmul_precision\": \"highest\"}, \"source_selection_frozen\": true, \"used_for_selection\": false, \"optimizer_steps\": 0, \"augmentation\": false, \"device\": \"cuda:0\", \"pid\": 1426401, \"cwd\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_usage_source_20261002_r01\", \"argv\": [\"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_usage_source_20261002_r01/experiments/cvs_additive_usage/audit.py\", \"--config\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_usage_source_20261002_r01/experiments/cvs_additive_usage/configs/source.json\"], \"python\": \"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"commit\": \"c4c8e5c14ace0d8e9987db2a2dbe03e81766d22a\", \"source_commit\": \"d6c29b2bfbc5921a5ff654735253df21b1b1f709\", \"source_counts\": {\"L_s\": 6300, \"U_s\": 56700, \"V\": 27000}, \"source_role\": \"V\", \"L_s_use\": \"not_iterated\", \"U_s_use\": \"unused\", \"target_access\": false, \"source_selection_unchanged\": true, \"model_updated\": false, \"hardware\": \"NVIDIA GeForce RTX 3090\", \"backend_flags\": {\"cudnn_allow_tf32\": false, \"cuda_matmul_allow_tf32\": false, \"cudnn_benchmark\": false, \"cudnn_deterministic\": false, \"matmul_precision\": \"highest\"}, \"checkpoint_provenance\": \"VERIFIED_ALL8_ACTUAL_SCRATCH_E200_FULL_CONTRACT_PAYLOAD_STRICT_STATE\", \"claim\": \"Frozen internal-coordinate ablations;not hardware interventions or TX/RX causal identification\"}\nROW {\"row_id\": \"additive_equivariant-s2026092701--trained\", \"variant\": \"additive_equivariant\", \"model_seed\": 2026092701, \"mode\": \"trained\", \"count\": 27000, \"accuracy\": 0.9754444444444444, \"macro_f1\": 0.975435898510607, \"ce\": 0.13944893715824933, \"prediction_changed_count\": 0, \"logit_response_max\": 0.0}\nROW {\"row_id\": \"additive_equivariant-s2026092701--frequency_reference\", \"variant\": \"additive_equivariant\", \"model_seed\": 2026092701, \"mode\": \"frequency_reference\", \"count\": 27000, \"accuracy\": 0.9748148148148148, \"macro_f1\": 0.974799620519763, \"ce\": 0.14042237589329712, \"prediction_changed_count\": 61, \"logit_response_max\": 4.117628574371338}\nROW {\"row_id\": \"additive_equivariant-s2026092701--quality_reference\", \"variant\": \"additive_equivariant\", \"model_seed\": 2026092701, \"mode\": \"quality_reference\", \"count\": 27000, \"accuracy\": 0.9751111111111112, \"macro_f1\": 0.9750962613079822, \"ce\": 0.14076410743586543, \"prediction_changed_count\": 32, \"logit_response_max\": 2.07850980758667}\nROW {\"row_id\": \"additive_equivariant-s2026092701--coordinate_reference\", \"variant\": \"additive_equivariant\", \"model_seed\": 2026092701, \"mode\": \"coordinate_reference\", \"count\": 27000, \"accuracy\": 0.9744814814814815, \"macro_f1\": 0.9744586036382961, \"ce\": 0.14215387409771454, \"prediction_changed_count\": 75, \"logit_response_max\": 5.821129322052002}\nROW {\"row_id\": \"additive_equivariant-s2026092701--zero_delta\", \"variant\": \"additive_equivariant\", \"model_seed\": 2026092701, \"mode\": \"zero_delta\", \"count\": 27000, \"accuracy\": 0.9747777777777777, \"macro_f1\": 0.9747601420482975, \"ce\": 0.13525801923399236, \"prediction_changed_count\": 74, \"logit_response_max\": 6.225682735443115}\nROW {\"row_id\": \"additive_gauge-s2026092701--trained\", \"variant\": \"additive_gauge\", \"model_seed\": 2026092701, \"mode\": \"trained\", \"count\": 27000, \"accuracy\": 0.912962962962963, \"macro_f1\": 0.9137758413101599, \"ce\": 0.31727474944696427, \"prediction_changed_count\": 0, \"logit_response_max\": 0.0}\nROW {\"row_id\": \"additive_gauge-s2026092701--frequency_reference\", \"variant\": \"additive_gauge\", \"model_seed\": 2026092701, \"mode\": \"frequency_reference\", \"count\": 27000, \"accuracy\": 0.9111111111111111, \"macro_f1\": 0.9118778543933269, \"ce\": 0.32694139849388737, \"prediction_changed_count\": 217, \"logit_response_max\": 5.805545330047607}\nROW {\"row_id\": \"additive_gauge-s2026092701--quality_reference\", \"variant\": \"additive_gauge\", \"model_seed\": 2026092701, \"mode\": \"quality_reference\", \"count\": 27000, \"accuracy\": 0.9121111111111111, \"macro_f1\": 0.9127714862173691, \"ce\": 0.33277554346655314, \"prediction_changed_count\": 247, \"logit_response_max\": 4.154027938842773}\nROW {\"row_id\": \"additive_gauge-s2026092701--coordinate_reference\", \"variant\": \"additive_gauge\", \"model_seed\": 2026092701, \"mode\": \"coordinate_reference\", \"count\": 27000, \"accuracy\": 0.9105185185185185, \"macro_f1\": 0.9111661849092997, \"ce\": 0.3465937458027986, \"prediction_changed_count\": 400, \"logit_response_max\": 9.29823112487793}\nROW {\"row_id\": \"additive_gauge-s2026092701--zero_delta\", \"variant\": \"additive_gauge\", \"model_seed\": 2026092701, \"mode\": \"zero_delta\", \"count\": 27000, \"accuracy\": 0.9154074074074074, \"macro_f1\": 0.9156596452978935, \"ce\": 0.3141243206383229, \"prediction_changed_count\": 458, \"logit_response_max\": 8.84161376953125}\n"
+}

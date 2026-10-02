@@ -7,7 +7,7 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |CVS：DAOT＋FastTrust-RC4原始residual_noeq五种子实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/report.md)|
-|CVS 加性坐标实际使用：8冻结模型×5内部消融完整源V诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/report.md)|
+|CVS 加性坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/report.md)|
 |CVS 相对频偏坐标：完整源域身份信息诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-cfo-information-source-manysig-m1-r01/report.md)|
 |CVS 坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/report.md)|
 |冻结 CVS 源权重的公共合成相位数值归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/report.md)|

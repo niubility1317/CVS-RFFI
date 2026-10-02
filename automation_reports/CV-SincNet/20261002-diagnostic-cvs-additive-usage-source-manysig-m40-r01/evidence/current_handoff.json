@@ -1,0 +1,15 @@
+{
+  "status": "ANALYZED_VERIFIED",
+  "run_id": "20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01",
+  "pid": 1426401,
+  "release_commit": "c4c8e5c14ace0d8e9987db2a2dbe03e81766d22a",
+  "source_commit": "d6c29b2bfbc5921a5ff654735253df21b1b1f709",
+  "goal_achieved": false,
+  "target_access": false,
+  "process_absent": true,
+  "next_steps": [
+    "Preserve all40 source-only negative results;no new target evaluation for this diagnostic",
+    "Use frozen additive source-only mode effects to interpret actual information usage;no target feedback",
+    "New formal candidates must train from scratch;freeze source-only performance selection before selected-only independent clean testing"
+  ]
+}
