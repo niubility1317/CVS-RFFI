@@ -215,7 +215,23 @@
           "cudnn_deterministic": false,
           "matmul_precision": "highest"
         }
-      }
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9858148148148148,
+        "source_val_ce": 0.08609534792919024,
+        "source_val_rx_accuracy": {
+          "1": 0.997037037037037,
+          "3": 0.96,
+          "4": 0.9901851851851852,
+          "6": 0.9968518518518519,
+          "8": 0.985
+        },
+        "source_val_worst_rx": 0.96
+      },
+      "test_status": "PENDING_REGISTERED_CLEAN"
     },
     {
       "row_id": "neural_residual_deep-s2026092701",
@@ -280,7 +296,23 @@
           "cudnn_deterministic": false,
           "matmul_precision": "highest"
         }
-      }
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9848148148148148,
+        "source_val_ce": 0.09089885826972845,
+        "source_val_rx_accuracy": {
+          "1": 0.9964814814814815,
+          "3": 0.9592592592592593,
+          "4": 0.9905555555555555,
+          "6": 0.9961111111111111,
+          "8": 0.9816666666666667
+        },
+        "source_val_worst_rx": 0.9592592592592593
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "neural_residual_shallow-s2026092702",
@@ -345,7 +377,23 @@
           "cudnn_deterministic": false,
           "matmul_precision": "highest"
         }
-      }
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9843703703703703,
+        "source_val_ce": 0.08767900993883516,
+        "source_val_rx_accuracy": {
+          "1": 0.9964814814814815,
+          "3": 0.9592592592592593,
+          "4": 0.9905555555555555,
+          "6": 0.9957407407407407,
+          "8": 0.9798148148148148
+        },
+        "source_val_worst_rx": 0.9592592592592593
+      },
+      "test_status": "PENDING_REGISTERED_CLEAN"
     },
     {
       "row_id": "neural_residual_deep-s2026092702",
@@ -410,7 +458,23 @@
           "cudnn_deterministic": false,
           "matmul_precision": "highest"
         }
-      }
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.984037037037037,
+        "source_val_ce": 0.09247297553053054,
+        "source_val_rx_accuracy": {
+          "1": 0.9964814814814815,
+          "3": 0.9585185185185185,
+          "4": 0.9887037037037038,
+          "6": 0.997037037037037,
+          "8": 0.9794444444444445
+        },
+        "source_val_worst_rx": 0.9585185185185185
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "neural_residual_shallow-s2026092703",
@@ -475,7 +539,23 @@
           "cudnn_deterministic": false,
           "matmul_precision": "highest"
         }
-      }
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9842592592592593,
+        "source_val_ce": 0.08176415570927781,
+        "source_val_rx_accuracy": {
+          "1": 0.9968518518518519,
+          "3": 0.957962962962963,
+          "4": 0.9883333333333333,
+          "6": 0.9964814814814815,
+          "8": 0.9816666666666667
+        },
+        "source_val_worst_rx": 0.957962962962963
+      },
+      "test_status": "PENDING_REGISTERED_CLEAN"
     },
     {
       "row_id": "neural_residual_deep-s2026092703",
@@ -540,7 +620,23 @@
           "cudnn_deterministic": false,
           "matmul_precision": "highest"
         }
-      }
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9842962962962963,
+        "source_val_ce": 0.08489789552379473,
+        "source_val_rx_accuracy": {
+          "1": 0.9968518518518519,
+          "3": 0.9574074074074074,
+          "4": 0.9888888888888889,
+          "6": 0.9964814814814815,
+          "8": 0.9818518518518519
+        },
+        "source_val_worst_rx": 0.9574074074074074
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "neural_residual_shallow-s2026092704",
@@ -605,7 +701,23 @@
           "cudnn_deterministic": false,
           "matmul_precision": "highest"
         }
-      }
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9832592592592593,
+        "source_val_ce": 0.0901518088856765,
+        "source_val_rx_accuracy": {
+          "1": 0.997037037037037,
+          "3": 0.9548148148148148,
+          "4": 0.9912962962962963,
+          "6": 0.9944444444444445,
+          "8": 0.9787037037037037
+        },
+        "source_val_worst_rx": 0.9548148148148148
+      },
+      "test_status": "PENDING_REGISTERED_CLEAN"
     },
     {
       "row_id": "neural_residual_deep-s2026092704",
@@ -670,7 +782,23 @@
           "cudnn_deterministic": false,
           "matmul_precision": "highest"
         }
-      }
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9827407407407407,
+        "source_val_ce": 0.0906072389044942,
+        "source_val_rx_accuracy": {
+          "1": 0.9964814814814815,
+          "3": 0.9542592592592593,
+          "4": 0.9905555555555555,
+          "6": 0.995,
+          "8": 0.9774074074074074
+        },
+        "source_val_worst_rx": 0.9542592592592593
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     }
   ],
   "notes": [
@@ -751,5 +879,55 @@
     ],
     "target_feedback": false,
     "selection": "source_only"
+  },
+  "results": {
+    "source_training_status": "VERIFIED_COMPLETE",
+    "source_epochs": 1600,
+    "source_steps": 80000,
+    "source_selection": {
+      "status": "SOURCE_SELECTION_FROZEN",
+      "selected_variant": "neural_residual_shallow",
+      "source_summaries": {
+        "adaptive_volterra_lag4": {
+          "score": 0.9708055555555555,
+          "source_accuracy": 0.9840185185185185,
+          "worst_rx_accuracy": 0.9575925925925926,
+          "parameters": 202555,
+          "conv_linear_macs": 7199008
+        },
+        "neural_residual_shallow": {
+          "score": 0.9712175925925925,
+          "source_accuracy": 0.9844259259259259,
+          "worst_rx_accuracy": 0.9580092592592593,
+          "parameters": 220987,
+          "conv_linear_macs": 9460000
+        },
+        "neural_residual_deep": {
+          "score": 0.9706666666666667,
+          "source_accuracy": 0.9839722222222222,
+          "worst_rx_accuracy": 0.9573611111111111,
+          "parameters": 239419,
+          "conv_linear_macs": 11720992
+        }
+      },
+      "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+      "selection_policy": "performance_first_neural_residual_with_current_source_winner_20261002",
+      "candidate_universe": [
+        "adaptive_volterra_lag4",
+        "neural_residual_shallow",
+        "neural_residual_deep"
+      ],
+      "new_candidate_selected": true,
+      "exact_cost_tie_order": [
+        "adaptive_volterra_lag4",
+        "neural_residual_shallow",
+        "neural_residual_deep"
+      ],
+      "target_access": false,
+      "target_score_used": false,
+      "test_view": "clean"
+    },
+    "goal_achieved": false,
+    "test_status": "PENDING_REGISTERED_CLEAN"
   }
 }

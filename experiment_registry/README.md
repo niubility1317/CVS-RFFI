@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T16:05:59+00:00
+更新：2026-10-02T16:34:14+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|72|
+|managed_run|73|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,15 +20,15 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|55|
-|[ce_only](by_method/ce_only.md)|43|
-|[clean_only](by_method/clean_only.md)|42|
-|[performance_priority](by_method/performance_priority.md)|36|
+|[cvs](by_method/cvs.md)|56|
+|[ce_only](by_method/ce_only.md)|44|
+|[clean_only](by_method/clean_only.md)|43|
+|[performance_priority](by_method/performance_priority.md)|37|
 |[no_augmentation](by_method/no_augmentation.md)|32|
 |[source_selection](by_method/source_selection.md)|27|
 |[rff_physics](by_method/rff_physics.md)|20|
-|[source_selected](by_method/source_selected.md)|14|
-|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|13|
+|[source_selected](by_method/source_selected.md)|15|
+|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|14|
 |[daot](by_method/daot.md)|11|
 |[rc4](by_method/rc4.md)|10|
 |[source_only](by_method/source_only.md)|9|
@@ -183,7 +183,8 @@
 |CVS 波形层分数频偏校正身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/report.md)|
 |完整 IQ 相位规范化 CVS：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-gauge-identity-manysig-m8-r01/report.md)|
 |CVS可学习包内矩残差：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/report.md)|
-|CVS可学习复卷积残差：浅深结构纯CE实验|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/report.md)|
+|可学习复卷积残差CVS：源域选中四seed clean与32冻结控制|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01/report.md)|
+|CVS可学习复卷积残差：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|
 |CVS整体物理观测身份网络：源训练预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01/report.md)|
 |CVS 包内正交包络输入：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/report.md)|

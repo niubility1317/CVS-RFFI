@@ -28,7 +28,7 @@ def validate_config(c):
         domain_backbone=False, extra_losses=[], selection='fixed_last_epoch', split_seed=392005)
     if any(c.get(k)!=v for k,v in required.items()): raise ValueError('Clean matched training contract mismatch')
     if c['variant'] not in VARIANTS: raise ValueError('Unknown variant')
-    if c.get('neural')!=neural_contract(c['variant']):raise ValueError('Causal volterra-envelope input contract mismatch')
+    if c.get('neural')!=neural_contract(c['variant']):raise ValueError('Learned neural residual architecture contract mismatch')
     if c.get('numerical_policy')!=dict(cudnn_allow_tf32=False,cuda_matmul_allow_tf32=False,cudnn_benchmark=False,cudnn_deterministic=False,matmul_precision='highest'):
         raise ValueError('Unregistered numerical policy')
     return c

@@ -1,4 +1,4 @@
-"""Two fixed mixed-delay feature operators x four scratch CE source seeds."""
+"""Two learned residual depths x four scratch CE source seeds."""
 import copy,json,subprocess
 from pathlib import Path
 from experiments.cvs_neural_residual_identity.model import build,VARIANTS,neural_contract
@@ -44,7 +44,7 @@ def main():
         'SameE200x50steps,L6300,V27000,U56700unused,split392005,4modelseeds,b128/nodrop,AdamW2e-4,wd1e-4,cosine1e-6,fullFP32/TF32False. No addedoptimizerstrategy; source label use onlyCE.',
         '12 source ranking records=8new+4immutable adaptive metadata controls. Highest four-seed mean0.5V+0.5worstRX; exact performance ties then costs; fixedE200. Never pick bestepoch or use target feedback.',
         'Selectednewcandidate only:4newclean predictions+32existing frozencontrols=36rows/288ALL+RXrecords;168000samephysicalquery/6TX/7RX; fixedpredictions thenindependenttruthlast. Ifcontrolretained,reuse completedclean and no newquery. NoLEO/support/SFT/newclasses.',
-        'Fullstep,epoch,compactJSONL/CSV and text record measuredCE/weight/LR/gradients/neuralnorms/outputchanges/sourcevalidation/time/memory. ResourceMAC counter excludes functionalcomplex convolution; actualwalltime andCUDApeak measured and limitsreported.',
+        'Fullstep,epoch,compactJSONL/CSV and text record measuredCE/weight/LR/gradients/neuralnorms/outputchanges/sourcevalidation/time/memory. ResourceMAC includes actual aten.convolution and matrix multiplies; excludes FFT, normalization, gating, pooling and elementwise arithmetic. Actualwalltime/CUDApeak measured.',
         'SourceVsharesfiveRXwithsourceL. This study doesnotclaim unseenRXgeneralization until frozenindependentclean evaluation. Negativeoutcomespreserved.']
     spec['test_completion_plan']=dict(run_id=CONFIRM_RUN,condition='new_candidate_selected; otherwise reuse current adaptive verified test, zero new query',
         views=['clean'],query_count=168000,registered_classes=6,new_prediction_rows=4,reused_rows=32,total_rows=36,
