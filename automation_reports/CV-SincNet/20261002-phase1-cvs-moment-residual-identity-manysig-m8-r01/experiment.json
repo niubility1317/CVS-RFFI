@@ -203,7 +203,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_instant-s2026092701.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "moment_residual_instant",
+        "model_seed": 2026092701,
+        "pid": 1808319,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_residual_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_instant-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_instant-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_instant-s2026092701/source",
+        "started": 1790949072.3677483,
+        "exit_code": 0,
+        "finished": 1790950560.470812
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9857037037037037,
+        "source_val_ce": 0.08082533254772473,
+        "source_val_rx_accuracy": {
+          "1": 0.997037037037037,
+          "3": 0.9605555555555556,
+          "4": 0.9901851851851852,
+          "6": 0.997037037037037,
+          "8": 0.9837037037037037
+        },
+        "source_val_worst_rx": 0.9605555555555556
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "moment_residual_memory4-s2026092701",
@@ -256,7 +293,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_memory4-s2026092701.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "moment_residual_memory4",
+        "model_seed": 2026092701,
+        "pid": 1808406,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_residual_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_memory4-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_memory4-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_memory4-s2026092701/source",
+        "started": 1790949077.6111066,
+        "exit_code": 0,
+        "finished": 1790950540.4493833
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9848148148148148,
+        "source_val_ce": 0.08364313403726717,
+        "source_val_rx_accuracy": {
+          "1": 0.9964814814814815,
+          "3": 0.9577777777777777,
+          "4": 0.9896296296296296,
+          "6": 0.9966666666666667,
+          "8": 0.9835185185185186
+        },
+        "source_val_worst_rx": 0.9577777777777777
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "moment_residual_instant-s2026092702",
@@ -309,7 +383,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_instant-s2026092702.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "moment_residual_instant",
+        "model_seed": 2026092702,
+        "pid": 1808495,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_residual_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_instant-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_instant-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_instant-s2026092702/source",
+        "started": 1790949082.8521154,
+        "exit_code": 0,
+        "finished": 1790950570.4824157
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9845925925925926,
+        "source_val_ce": 0.0813341525141341,
+        "source_val_rx_accuracy": {
+          "1": 0.9961111111111111,
+          "3": 0.9611111111111111,
+          "4": 0.9896296296296296,
+          "6": 0.9962962962962963,
+          "8": 0.9798148148148148
+        },
+        "source_val_worst_rx": 0.9611111111111111
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "moment_residual_memory4-s2026092702",
@@ -362,7 +473,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_memory4-s2026092702.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "moment_residual_memory4",
+        "model_seed": 2026092702,
+        "pid": 1808582,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_residual_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_memory4-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_memory4-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_memory4-s2026092702/source",
+        "started": 1790949088.0809085,
+        "exit_code": 0,
+        "finished": 1790950580.4949827
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9849629629629629,
+        "source_val_ce": 0.07890237304883932,
+        "source_val_rx_accuracy": {
+          "1": 0.9964814814814815,
+          "3": 0.9614814814814815,
+          "4": 0.99,
+          "6": 0.9961111111111111,
+          "8": 0.9807407407407407
+        },
+        "source_val_worst_rx": 0.9614814814814815
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "moment_residual_instant-s2026092703",
@@ -415,7 +563,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_instant-s2026092703.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "moment_residual_instant",
+        "model_seed": 2026092703,
+        "pid": 1808671,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_residual_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_instant-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_instant-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_instant-s2026092703/source",
+        "started": 1790949093.2975752,
+        "exit_code": 0,
+        "finished": 1790950585.5012126
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9828888888888889,
+        "source_val_ce": 0.08504013566058806,
+        "source_val_rx_accuracy": {
+          "1": 0.9972222222222222,
+          "3": 0.9538888888888889,
+          "4": 0.9877777777777778,
+          "6": 0.9961111111111111,
+          "8": 0.9794444444444445
+        },
+        "source_val_worst_rx": 0.9538888888888889
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "moment_residual_memory4-s2026092703",
@@ -468,7 +653,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_memory4-s2026092703.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "moment_residual_memory4",
+        "model_seed": 2026092703,
+        "pid": 1808760,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_residual_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_memory4-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_memory4-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_memory4-s2026092703/source",
+        "started": 1790949098.5391445,
+        "exit_code": 0,
+        "finished": 1790950575.4888606
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9831111111111112,
+        "source_val_ce": 0.08228457764393413,
+        "source_val_rx_accuracy": {
+          "1": 0.9968518518518519,
+          "3": 0.9551851851851851,
+          "4": 0.9877777777777778,
+          "6": 0.9961111111111111,
+          "8": 0.9796296296296296
+        },
+        "source_val_worst_rx": 0.9551851851851851
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "moment_residual_instant-s2026092704",
@@ -521,7 +743,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_instant-s2026092704.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "moment_residual_instant",
+        "model_seed": 2026092704,
+        "pid": 1809264,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_residual_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_instant-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_instant-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_instant-s2026092704/source",
+        "started": 1790949103.7692292,
+        "exit_code": 0,
+        "finished": 1790950580.4956744
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9822222222222222,
+        "source_val_ce": 0.08932098113322677,
+        "source_val_rx_accuracy": {
+          "1": 0.9964814814814815,
+          "3": 0.9512962962962963,
+          "4": 0.9912962962962963,
+          "6": 0.995,
+          "8": 0.977037037037037
+        },
+        "source_val_worst_rx": 0.9512962962962963
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "moment_residual_memory4-s2026092704",
@@ -574,7 +833,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_memory4-s2026092704.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "moment_residual_memory4",
+        "model_seed": 2026092704,
+        "pid": 1809356,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_residual_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01/experiments/cvs_moment_residual_identity/configs/moment_residual_memory4-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_memory4-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/moment_residual_memory4-s2026092704/source",
+        "started": 1790949108.997933,
+        "exit_code": 0,
+        "finished": 1790950590.506387
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9818148148148148,
+        "source_val_ce": 0.09240356615897825,
+        "source_val_rx_accuracy": {
+          "1": 0.9968518518518519,
+          "3": 0.9503703703703704,
+          "4": 0.9907407407407407,
+          "6": 0.9953703703703703,
+          "8": 0.9757407407407407
+        },
+        "source_val_worst_rx": 0.9503703703703704
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     }
   ],
   "notes": [
@@ -654,5 +950,76 @@
     ],
     "target_feedback": false,
     "selection": "source_only"
+  },
+  "results": {
+    "source_selection": {
+      "status": "SOURCE_SELECTION_FROZEN",
+      "selected_variant": "adaptive_volterra_lag4",
+      "source_summaries": {
+        "adaptive_volterra_lag4": {
+          "score": 0.9708055555555555,
+          "source_accuracy": 0.9840185185185185,
+          "worst_rx_accuracy": 0.9575925925925926,
+          "parameters": 202555,
+          "conv_linear_macs": 7199008
+        },
+        "moment_residual_instant": {
+          "score": 0.9702824074074075,
+          "source_accuracy": 0.9838518518518519,
+          "worst_rx_accuracy": 0.9567129629629629,
+          "parameters": 202557,
+          "conv_linear_macs": 7199008
+        },
+        "moment_residual_memory4": {
+          "score": 0.9699398148148148,
+          "source_accuracy": 0.9836759259259259,
+          "worst_rx_accuracy": 0.9562037037037037,
+          "parameters": 202557,
+          "conv_linear_macs": 7199008
+        }
+      },
+      "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+      "selection_policy": "performance_first_moment_with_current_source_winner_20261002",
+      "candidate_universe": [
+        "adaptive_volterra_lag4",
+        "moment_residual_instant",
+        "moment_residual_memory4"
+      ],
+      "new_candidate_selected": false,
+      "exact_cost_tie_order": [
+        "adaptive_volterra_lag4",
+        "moment_residual_instant",
+        "moment_residual_memory4"
+      ],
+      "target_access": false,
+      "target_score_used": false,
+      "test_view": "clean"
+    },
+    "source_training_status": "VERIFIED_COMPLETE",
+    "source_steps": 80000,
+    "source_epochs": 1600,
+    "source_analysis": "evidence/source_analysis_validation.json",
+    "clean_confirmation_run": null,
+    "clean_status": "EXISTING_CONTROL_RETAINED_NO_NEW_QUERY",
+    "goal_achieved": false,
+    "existing_clean_reuse": {
+      "status": "VERIFIED",
+      "selected_control": "adaptive_volterra_lag4",
+      "existing_clean_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+      "clean_release_commit": "facc03c7d2fdc9888fe5c8bd3dec20326207203e",
+      "new_predictions": 0,
+      "existing_control_predictions": 4,
+      "query_count_per_control": 168000,
+      "source_control_run": "20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01",
+      "old_matrix_rows": 32,
+      "old_scoring_records": 256,
+      "scorer_complete": true,
+      "prior_CM_mean_sd_pairs_verified": true,
+      "unselected_new_candidates_test": "N/A_NOT_SOURCE_SELECTED",
+      "target_scores_exported": false,
+      "target_feedback": false,
+      "scope": "Only immutable completed control metadata reused after fixed source ranking;no newquery/retrain/reselection"
+    },
+    "analysis_readback": "evidence/final_analysis_readback.json"
   }
 }

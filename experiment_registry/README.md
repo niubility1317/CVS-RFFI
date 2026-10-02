@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T13:56:07+00:00
+更新：2026-10-02T14:19:55+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -176,7 +176,7 @@
 |CVS 全路径复相位等变记忆网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-identity-manysig-m4-r01/report.md)|
 |CVS 波形层分数频偏校正身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/report.md)|
 |完整 IQ 相位规范化 CVS：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-gauge-identity-manysig-m8-r01/report.md)|
-|CVS可学习包内矩残差：源实验预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/report.md)|
+|CVS可学习包内矩残差：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|
 |CVS整体物理观测身份网络：源训练预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01/report.md)|
 |CVS 包内正交包络输入：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/report.md)|

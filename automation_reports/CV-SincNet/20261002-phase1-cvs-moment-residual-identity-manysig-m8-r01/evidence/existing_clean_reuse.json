@@ -1,0 +1,18 @@
+{
+  "status": "VERIFIED",
+  "selected_control": "adaptive_volterra_lag4",
+  "existing_clean_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+  "clean_release_commit": "facc03c7d2fdc9888fe5c8bd3dec20326207203e",
+  "new_predictions": 0,
+  "existing_control_predictions": 4,
+  "query_count_per_control": 168000,
+  "source_control_run": "20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01",
+  "old_matrix_rows": 32,
+  "old_scoring_records": 256,
+  "scorer_complete": true,
+  "prior_CM_mean_sd_pairs_verified": true,
+  "unselected_new_candidates_test": "N/A_NOT_SOURCE_SELECTED",
+  "target_scores_exported": false,
+  "target_feedback": false,
+  "scope": "Only immutable completed control metadata reused after fixed source ranking;no newquery/retrain/reselection"
+}

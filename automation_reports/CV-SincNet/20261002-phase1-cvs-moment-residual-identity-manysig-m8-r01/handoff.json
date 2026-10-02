@@ -1,22 +1,19 @@
 {
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "run_id": "20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01",
   "release": "cvs_moment_residual_identity_20261002_r01",
   "launch_owner": "codex/root/cvs-moment-residual-identity-20261002",
   "goal_achieved": false,
   "target_feedback": false,
-  "previous_goal_turn": "PROGRESS: scratch8 source candidates committed/pushed/independentlylaunched;actual process/CE/FP32/fourgates/input evidence;full analysis and conditional36row clean implemented",
+  "previous_goal_turn": "PROGRESS:8new source models naturally completed;full80000step/1600epoch audit and fixed12source ranking;all source tables and fourgate state independentlyreconciled;retained control clean metadata verified",
   "goal_scope": "CE only/noaugmentation/identity only/scratch/unchanged split/fullFP32/clean only;performance first; mathematical communication physical RFF evidence",
   "next": [
-    "Read back same8 healthy processes without restart/hotpatch",
-    "Full E200 collect then analyze source2400curves/1600input/fourgates/720cells and fixed12ranking",
-    "Only if newselected prepare reviewed frozen4clean+32controls=36truthlast rows;else retainedcontroltest/N/A unselected",
-    "Report full results and resources; Git mirror/push/OID"
+    "Deliver complete negative source/physics/resource report via Git/OID",
+    "Continue structure research using source/public evidence only;no target feedback;keep original objective active"
   ],
   "missing": [
-    "FullE200 source training and fixed-source selection",
-    "Conditionalselected-only clean prediction and truth-last scoring",
-    "Verified network performance improvement/full RFF goal proof"
+    "Verified network-design performance improvement under CE/noaugmentation/clean-only",
+    "Requested mathematical/communication/physical/RFF mechanism evidence sufficient for final claim"
   ],
   "release_commit": "a31fd318996be20f030aeccd7ed6ed614ce7048d",
   "dispatcher_pid": 1808300,
@@ -25,66 +22,89 @@
   "rows": [
     {
       "row_id": "moment_residual_instant-s2026092701",
-      "pid": 1808319,
+      "pid": null,
+      "historical_pid": 1808319,
       "gpu": 0,
-      "verified_epoch": 30
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "moment_residual_memory4-s2026092701",
-      "pid": 1808406,
+      "pid": null,
+      "historical_pid": 1808406,
       "gpu": 1,
-      "verified_epoch": 30
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "moment_residual_instant-s2026092702",
-      "pid": 1808495,
+      "pid": null,
+      "historical_pid": 1808495,
       "gpu": 2,
-      "verified_epoch": 29
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "moment_residual_memory4-s2026092702",
-      "pid": 1808582,
+      "pid": null,
+      "historical_pid": 1808582,
       "gpu": 3,
-      "verified_epoch": 27
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "moment_residual_instant-s2026092703",
-      "pid": 1808671,
+      "pid": null,
+      "historical_pid": 1808671,
       "gpu": 4,
-      "verified_epoch": 27
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "moment_residual_memory4-s2026092703",
-      "pid": 1808760,
+      "pid": null,
+      "historical_pid": 1808760,
       "gpu": 5,
-      "verified_epoch": 27
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "moment_residual_instant-s2026092704",
-      "pid": 1809264,
+      "pid": null,
+      "historical_pid": 1809264,
       "gpu": 6,
-      "verified_epoch": 26
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "moment_residual_memory4-s2026092704",
-      "pid": 1809356,
+      "pid": null,
+      "historical_pid": 1809356,
       "gpu": 7,
-      "verified_epoch": 25
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     }
   ],
   "report_commit": "85ed39c533279702b2895930e7440705b6f3d31a",
   "source_launch_verified": true,
   "last_live_readback": 1790949563.7415483,
   "last_epochs": {
-    "moment_residual_instant-s2026092701": 66,
-    "moment_residual_memory4-s2026092701": 65,
-    "moment_residual_instant-s2026092702": 64,
-    "moment_residual_memory4-s2026092702": 63,
-    "moment_residual_instant-s2026092703": 62,
-    "moment_residual_memory4-s2026092703": 62,
-    "moment_residual_instant-s2026092704": 62,
-    "moment_residual_memory4-s2026092704": 61
+    "moment_residual_instant-s2026092701": 200,
+    "moment_residual_memory4-s2026092701": 200,
+    "moment_residual_instant-s2026092702": 200,
+    "moment_residual_memory4-s2026092702": 200,
+    "moment_residual_instant-s2026092703": 200,
+    "moment_residual_memory4-s2026092703": 200,
+    "moment_residual_instant-s2026092704": 200,
+    "moment_residual_memory4-s2026092704": 200
   },
-  "live_source_workers": 8,
-  "source_training_complete": false
+  "live_source_workers": 0,
+  "source_training_complete": true,
+  "selected_variant": "adaptive_volterra_lag4",
+  "last_evidence": "evidence/final_source_readback.json",
+  "clean_confirmation_run": null,
+  "final_readback_at": 1790950614.1216443,
+  "existing_clean_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+  "source_control_retained": true,
+  "new_clean_query": false
 }
