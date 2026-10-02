@@ -1,2 +1,3 @@
 {"at": "2026-10-02T17:59:16+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"timestamp": "2026-10-02T17:59:17.066594+00:00", "status": "LOCAL_VERIFIED", "event": "LOCAL_VERIFICATION", "evidence": ["evidence/local_validation.json"]}
+{"at": "2026-10-02T18:02:56+00:00", "status": "RUNNING", "note": "16 rows alive; actual config/log/proc parent/GPU verified; fixed E200 continues", "evidence": ["evidence/launch_readback.json", "evidence/launch_processes.json"], "row_id": null}

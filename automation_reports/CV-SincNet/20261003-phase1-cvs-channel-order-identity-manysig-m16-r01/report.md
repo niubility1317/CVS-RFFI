@@ -9,3 +9,7 @@
 当前输入为equalized=1、center256、unitRMS，结果不直接证明原始多径鲁棒性或TX/RX分离。历史确认benchmark已有暴露，不称首次盲测。没有LEO、额外增强、support、SFT或新类。
 
 本地模型/协议验证及一次独立P0/P1审查已通过，见[本地证据](evidence/local_validation.json)与[公开输入烟测](evidence/public_cpu_smoke.json)。训练、冻结、测试和评分尚未完成；低性能不触发技术停止，所有负结果保留。
+
+## 远端启动VERIFIED
+
+16个任务均已完成至少1轮，分布于8张RTX3090，每卡2个。进程父子关系、CWD/argv、实际配置、日志增长、单一CE与无增强均已独立读回。执行提交`8d9600a432f9dcb80e2bfcc9dc90cbb1847e1908`。训练/测试结果尚未完成，源checkpoint按固定E200选择。
