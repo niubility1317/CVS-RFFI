@@ -1,13 +1,10 @@
 {
   "status": "VERIFIED",
-  "read_at": 1790944732.6876428,
+  "read_at": 1790944921.385083,
   "dispatcher_pid": 1765080,
   "workers": 8,
-  "min_epoch": 30,
-  "max_epoch": 37,
-  "rawIQ_error": 0.0,
-  "reconstruction_error": 1.9073486328125e-06,
-  "orthogonal_gram_max": 5.875537523873251e-07,
-  "scope": "Latest last28 source packets per row/four delay blocks; not fullV, all epochs or target evidence",
+  "min_epoch": 57,
+  "max_epoch": 63,
+  "scope": "Independent same8 actual live process/cwd/argv/GPU/current epoch evidence; not completion or target score",
   "goal_achieved": false
 }

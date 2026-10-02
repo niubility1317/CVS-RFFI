@@ -20,57 +20,58 @@
   ],
   "release_commit": "541889b1ec5982773d20f17315d0e0d6300ecee1",
   "dispatcher_pid": 1765080,
-  "live_readback_at": 1790944732.6876428,
+  "live_readback_at": 1790944921.385083,
   "launch_evidence": "evidence/launch_readback.json",
   "rows": [
     {
       "row_id": "orthopoly_instant-s2026092701",
       "pid": 1765096,
       "gpu": 0,
-      "verified_epoch": 37
+      "verified_epoch": 63
     },
     {
       "row_id": "orthopoly_memory4-s2026092701",
       "pid": 1765183,
       "gpu": 1,
-      "verified_epoch": 36
+      "verified_epoch": 62
     },
     {
       "row_id": "orthopoly_instant-s2026092702",
       "pid": 1765274,
       "gpu": 2,
-      "verified_epoch": 34
+      "verified_epoch": 61
     },
     {
       "row_id": "orthopoly_memory4-s2026092702",
       "pid": 1765361,
       "gpu": 3,
-      "verified_epoch": 34
+      "verified_epoch": 60
     },
     {
       "row_id": "orthopoly_instant-s2026092703",
       "pid": 1765450,
       "gpu": 4,
-      "verified_epoch": 33
+      "verified_epoch": 60
     },
     {
       "row_id": "orthopoly_memory4-s2026092703",
       "pid": 1765537,
       "gpu": 5,
-      "verified_epoch": 33
+      "verified_epoch": 60
     },
     {
       "row_id": "orthopoly_instant-s2026092704",
       "pid": 1765628,
       "gpu": 6,
-      "verified_epoch": 32
+      "verified_epoch": 59
     },
     {
       "row_id": "orthopoly_memory4-s2026092704",
       "pid": 1765716,
       "gpu": 7,
-      "verified_epoch": 30
+      "verified_epoch": 57
     }
   ],
-  "progress_evidence": "evidence/progress_readback.json"
+  "progress_evidence": "evidence/progress_readback.json",
+  "source_analysis_code_commit": "63b6c6f851f2147892b849f44415e19db03c0b4a"
 }
