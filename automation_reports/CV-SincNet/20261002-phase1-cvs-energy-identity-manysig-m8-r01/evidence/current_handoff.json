@@ -1,5 +1,5 @@
 {
-  "status": "SOURCE_TRAINING",
+  "status": "TRAINING_COMPLETE_AWAITING_FROZEN_CLEAN_TEST",
   "run_id": "20261002-phase1-cvs-energy-identity-manysig-m8-r01",
   "release_commit": "4a9170b768bbb39e4c256d377fbe60ff294a2f0d",
   "dispatcher_pid": 1480567,
@@ -9,59 +9,65 @@
       "row_id": "energy_equivariant-s2026092701",
       "pid": 1480586,
       "gpu": 0,
-      "epoch": 7
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "energy_half-s2026092701",
       "pid": 1480675,
       "gpu": 1,
-      "epoch": 5
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "energy_equivariant-s2026092702",
       "pid": 1480761,
       "gpu": 2,
-      "epoch": 5
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "energy_half-s2026092702",
       "pid": 1480851,
       "gpu": 3,
-      "epoch": 4
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "energy_equivariant-s2026092703",
       "pid": 1481399,
       "gpu": 4,
-      "epoch": 3
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "energy_half-s2026092703",
       "pid": 1481490,
       "gpu": 5,
-      "epoch": 2
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "energy_equivariant-s2026092704",
       "pid": 1481577,
       "gpu": 6,
-      "epoch": 2
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "energy_half-s2026092704",
       "pid": 1481666,
       "gpu": 7,
-      "epoch": 1
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
     }
   ],
   "goal_achieved": false,
   "target_access": false,
   "next_steps": [
-    "Inspect same immutable release/live PIDs;no resubmit or restart",
-    "At E200 audit all80000 steps/1600 epochs/full logs and recompute12source-record performance selection",
-    "After full source collection/analysis, source-only pair energy_half with oldfractional_half; no ranking or target feedback",
-    "After E200 independent source12 ranking: if newwinner freeze actual selection, generate/register selected-only clean configs; if residual wins retain verified history/no newquery",
-    "Default onlyselected4new plus20old fixed predictions and independenttruthlast24row report; ifbaselinewins preserve existing clean/no unselected query"
+    "Only frozen winner4new+20old clean if newselected; never test unselected models",
+    "If baseline wins, retain verified historical clean and use target-free next_source_handoff",
+    "Preserve immutable source release and completed training artifacts"
   ],
   "conditional_clean_support_ready": true,
   "source_comparison_module": "experiments.cvs_energy_identity.compare_prior_source",
@@ -69,5 +75,8 @@
     "baseline_retained": "E:/type10-7/.codex_tmp/finish_energy_baseline_retained.py",
     "new_selected": "E:/type10-7/.codex_tmp/prepare_energy_confirmation.py",
     "freeze_commit": "E:/type10-7/.codex_tmp/commit_energy_freeze.py"
-  }
+  },
+  "source_selection_recomputed": true,
+  "selected_variant": "energy_equivariant",
+  "clean_run_id": "20261002-phase1-cvs-energy-clean-manysig-m24-r01"
 }

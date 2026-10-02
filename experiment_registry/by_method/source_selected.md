@@ -13,6 +13,7 @@
 |CVS 结构优化：轻量残差融合的 clean 确认报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)|
 |CVS性能优先继续优化：simplex_fixed clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-simplex-clean-manysig-m24-r01/report.md)|
 |CVS性能优先继续优化：phase_dsq clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-clean-manysig-m24-r01/report.md)|
+|CVS 相对滤波能量保留：选中候选 clean 确认|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-energy-clean-manysig-m24-r01/report.md)|
 |CVS 全路径复相位等变记忆网络：独立 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-clean-manysig-m24-r01/report.md)|
 |CVS 整网复相位约束：完整 FP32 独立 clean 报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01/report.md)|
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|

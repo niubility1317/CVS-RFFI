@@ -1,0 +1,226 @@
+{
+  "status": "VERIFIED",
+  "source_only": true,
+  "used_for_selection": false,
+  "target_access": false,
+  "checkpoint_loaded": false,
+  "prior_run": "20261002-phase1-cvs-fractional-identity-manysig-m8-r01",
+  "prior_actual_records": [
+    {
+      "variant": "fractional_half",
+      "seed": 2026092701,
+      "accuracy": 0.9772962962962963,
+      "worst_rx": 0.9394444444444444,
+      "parameters": 202553,
+      "macs": 7199008,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/fractional_half-s2026092701/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance",
+      "actual_commit": "8f33975232e0416704eee74468324a8977cdd966"
+    },
+    {
+      "variant": "fractional_half",
+      "seed": 2026092702,
+      "accuracy": 0.9756666666666667,
+      "worst_rx": 0.9368518518518518,
+      "parameters": 202553,
+      "macs": 7199008,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/fractional_half-s2026092702/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance",
+      "actual_commit": "8f33975232e0416704eee74468324a8977cdd966"
+    },
+    {
+      "variant": "fractional_half",
+      "seed": 2026092703,
+      "accuracy": 0.9722592592592593,
+      "worst_rx": 0.9238888888888889,
+      "parameters": 202553,
+      "macs": 7199008,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/fractional_half-s2026092703/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance",
+      "actual_commit": "8f33975232e0416704eee74468324a8977cdd966"
+    },
+    {
+      "variant": "fractional_half",
+      "seed": 2026092704,
+      "accuracy": 0.972925925925926,
+      "worst_rx": 0.9281481481481482,
+      "parameters": 202553,
+      "macs": 7199008,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/fractional_half-s2026092704/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance",
+      "actual_commit": "8f33975232e0416704eee74468324a8977cdd966"
+    }
+  ],
+  "new_run": "20261002-phase1-cvs-energy-identity-manysig-m8-r01",
+  "rows": [
+    {
+      "variant": "energy_half",
+      "prior_variant": "fractional_half",
+      "model_seed": 2026092701,
+      "parameters": 202553,
+      "prior_parameters": 202553,
+      "alignment_strength": 0.5,
+      "prior_alignment_strength": 0.5,
+      "V": 0.9773333333333334,
+      "prior_V": 0.9772962962962963,
+      "V_delta_pp": 0.003703703703705763,
+      "worst_RX": 0.9374074074074074,
+      "prior_worst_RX": 0.9394444444444444,
+      "worst_RX_delta_pp": -0.20370370370370594
+    },
+    {
+      "variant": "energy_half",
+      "prior_variant": "fractional_half",
+      "model_seed": 2026092702,
+      "parameters": 202553,
+      "prior_parameters": 202553,
+      "alignment_strength": 0.5,
+      "prior_alignment_strength": 0.5,
+      "V": 0.9784814814814815,
+      "prior_V": 0.9756666666666667,
+      "V_delta_pp": 0.28148148148148255,
+      "worst_RX": 0.9437037037037037,
+      "prior_worst_RX": 0.9368518518518518,
+      "worst_RX_delta_pp": 0.6851851851851887
+    },
+    {
+      "variant": "energy_half",
+      "prior_variant": "fractional_half",
+      "model_seed": 2026092703,
+      "parameters": 202553,
+      "prior_parameters": 202553,
+      "alignment_strength": 0.5,
+      "prior_alignment_strength": 0.5,
+      "V": 0.9736296296296296,
+      "prior_V": 0.9722592592592593,
+      "V_delta_pp": 0.13703703703703551,
+      "worst_RX": 0.9301851851851852,
+      "prior_worst_RX": 0.9238888888888889,
+      "worst_RX_delta_pp": 0.6296296296296355
+    },
+    {
+      "variant": "energy_half",
+      "prior_variant": "fractional_half",
+      "model_seed": 2026092704,
+      "parameters": 202553,
+      "prior_parameters": 202553,
+      "alignment_strength": 0.5,
+      "prior_alignment_strength": 0.5,
+      "V": 0.9725925925925926,
+      "prior_V": 0.972925925925926,
+      "V_delta_pp": -0.033333333333340764,
+      "worst_RX": 0.9259259259259259,
+      "prior_worst_RX": 0.9281481481481482,
+      "worst_RX_delta_pp": -0.22222222222222365
+    }
+  ],
+  "summary": [
+    {
+      "variant": "energy_half",
+      "prior_variant": "fractional_half",
+      "V_delta_pp_mean": 0.09722222222222077,
+      "V_delta_pp_seed_sd": 0.14297687516265115,
+      "worst_RX_delta_pp_mean": 0.22222222222222365,
+      "worst_RX_delta_pp_seed_sd": 0.503076952118749,
+      "alignment_strength_mean": 0.5
+    }
+  ],
+  "source_and_public_geometry": [
+    {
+      "model_seed": 2026092701,
+      "shared_source_between_TX_squared_distance": 0.9711574189587876,
+      "shared_source_within_TX_cross_RX_squared_distance": 0.14469569189906284,
+      "shared_source_TX_to_RX_geometry_ratio": 6.711723108081545,
+      "shared_public_isolated_TX_embedding_distance_mean": 0.07428540987893939,
+      "shared_public_same_TX_cross_RX_embedding_distance_mean": 0.26925772429503925,
+      "per_channel_source_between_TX_squared_distance": 1.0004156771055321,
+      "per_channel_source_within_TX_cross_RX_squared_distance": 0.11290135118382454,
+      "per_channel_source_TX_to_RX_geometry_ratio": 8.860971694454463,
+      "per_channel_public_isolated_TX_embedding_distance_mean": 0.10574334813281894,
+      "per_channel_public_same_TX_cross_RX_embedding_distance_mean": 0.2694986853181308
+    },
+    {
+      "model_seed": 2026092702,
+      "shared_source_between_TX_squared_distance": 0.980041786115803,
+      "shared_source_within_TX_cross_RX_squared_distance": 0.17975233231150584,
+      "shared_source_TX_to_RX_geometry_ratio": 5.452178414116027,
+      "shared_public_isolated_TX_embedding_distance_mean": 0.07315426506102085,
+      "shared_public_same_TX_cross_RX_embedding_distance_mean": 0.23248680808238759,
+      "per_channel_source_between_TX_squared_distance": 1.1398469396139261,
+      "per_channel_source_within_TX_cross_RX_squared_distance": 0.13191943121988084,
+      "per_channel_source_TX_to_RX_geometry_ratio": 8.640477972604737,
+      "per_channel_public_isolated_TX_embedding_distance_mean": 0.07494390243664384,
+      "per_channel_public_same_TX_cross_RX_embedding_distance_mean": 0.24432349276939477
+    },
+    {
+      "model_seed": 2026092703,
+      "shared_source_between_TX_squared_distance": 0.8961349595107445,
+      "shared_source_within_TX_cross_RX_squared_distance": 0.13912640580315302,
+      "shared_source_TX_to_RX_geometry_ratio": 6.441156546361635,
+      "shared_public_isolated_TX_embedding_distance_mean": 0.06564308563247323,
+      "shared_public_same_TX_cross_RX_embedding_distance_mean": 0.2426368577157632,
+      "per_channel_source_between_TX_squared_distance": 0.9677005323178169,
+      "per_channel_source_within_TX_cross_RX_squared_distance": 0.11091855535469922,
+      "per_channel_source_TX_to_RX_geometry_ratio": 8.724424233828781,
+      "per_channel_public_isolated_TX_embedding_distance_mean": 0.051630104426294565,
+      "per_channel_public_same_TX_cross_RX_embedding_distance_mean": 0.1863522573058117
+    },
+    {
+      "model_seed": 2026092704,
+      "shared_source_between_TX_squared_distance": 0.9729210649998346,
+      "shared_source_within_TX_cross_RX_squared_distance": 0.1375607986173975,
+      "shared_source_TX_to_RX_geometry_ratio": 7.072662232107657,
+      "shared_public_isolated_TX_embedding_distance_mean": 0.07334361365064979,
+      "shared_public_same_TX_cross_RX_embedding_distance_mean": 0.19301991702503074,
+      "per_channel_source_between_TX_squared_distance": 1.139794835086597,
+      "per_channel_source_within_TX_cross_RX_squared_distance": 0.11591760721468661,
+      "per_channel_source_TX_to_RX_geometry_ratio": 9.83280161205904,
+      "per_channel_public_isolated_TX_embedding_distance_mean": 0.05767733999527991,
+      "per_channel_public_same_TX_cross_RX_embedding_distance_mean": 0.19126622845775046
+    }
+  ],
+  "frozen_selection_unchanged": {
+    "status": "SOURCE_SELECTION_FROZEN",
+    "selected_variant": "energy_equivariant",
+    "source_summaries": {
+      "residual_fusion": {
+        "score": 0.9628240740740741,
+        "source_accuracy": 0.9806944444444444,
+        "worst_rx_accuracy": 0.9449537037037037,
+        "parameters": 164225,
+        "conv_linear_macs": 9708836
+      },
+      "energy_equivariant": {
+        "score": 0.9672777777777778,
+        "source_accuracy": 0.9822407407407407,
+        "worst_rx_accuracy": 0.9523148148148148,
+        "parameters": 202553,
+        "conv_linear_macs": 7199008
+      },
+      "energy_half": {
+        "score": 0.9549074074074074,
+        "source_accuracy": 0.9755092592592592,
+        "worst_rx_accuracy": 0.9343055555555555,
+        "parameters": 202553,
+        "conv_linear_macs": 7199008
+      }
+    },
+    "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+    "selection_policy": "performance_first_energy_with_source_control_20261002",
+    "candidate_universe": [
+      "residual_fusion",
+      "energy_equivariant",
+      "energy_half"
+    ],
+    "new_candidate_selected": true,
+    "exact_cost_tie_order": [
+      "residual_fusion",
+      "energy_equivariant",
+      "energy_half"
+    ],
+    "target_access": false,
+    "target_score_used": false,
+    "test_view": "clean"
+  },
+  "interpretation": "Same core, fixedalpha0.5, physical source roles, model/loader seed, E200x50, CE/noaugmentation, fullFP32 and 202553 parameters; only per-channel versus shared denominator changes. Separate historical training with nondeterministic kernels and different GPU assignments; not TX/RX causal separation or blind RX test. Geometry is descriptive only; source labels are actual TX identities, public TX settings are not identity labels; TX/RX distance ratio is not causal identification."
+}
