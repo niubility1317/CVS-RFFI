@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T09:30:00+00:00
+更新：2026-10-02T09:52:33+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|63|
+|managed_run|64|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,16 +20,16 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|46|
-|[ce_only](by_method/ce_only.md)|35|
-|[clean_only](by_method/clean_only.md)|34|
-|[performance_priority](by_method/performance_priority.md)|28|
+|[cvs](by_method/cvs.md)|47|
+|[ce_only](by_method/ce_only.md)|36|
+|[clean_only](by_method/clean_only.md)|35|
+|[performance_priority](by_method/performance_priority.md)|29|
 |[no_augmentation](by_method/no_augmentation.md)|26|
 |[source_selection](by_method/source_selection.md)|21|
 |[rff_physics](by_method/rff_physics.md)|14|
-|[source_selected](by_method/source_selected.md)|12|
+|[source_selected](by_method/source_selected.md)|13|
+|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|12|
 |[daot](by_method/daot.md)|11|
-|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|11|
 |[rc4](by_method/rc4.md)|10|
 |[practical](by_method/practical.md)|8|
 |[residual_noeq](by_method/residual_noeq.md)|8|
@@ -159,7 +159,8 @@
 |RFF源域前导码与可观测量诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|
 |CVS 加性坐标注入身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-additive-identity-manysig-m8-r01/report.md)|
 |CVS 同步坐标保留身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/report.md)|
-|CVS 因果包络耦合：源域实验预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/report.md)|
+|CVS 因果包络耦合：源选候选clean确认预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/report.md)|
+|CVS 因果包络耦合：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/report.md)|
 |CVS 跨复数通道相干读出：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/report.md)|
 |CVS 相对能量保留身份网络：独立 clean 测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-energy-clean-manysig-m24-r01/report.md)|
 |CVS 相对滤波能量保留身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-energy-identity-manysig-m8-r01/report.md)|

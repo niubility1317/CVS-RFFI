@@ -1,0 +1,18 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "run_id": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+  "release": "cvs_coupled_clean_eval_20261002_r01",
+  "source_run": "20261002-phase1-cvs-coupled-identity-manysig-m8-r01",
+  "selected_variant": "coupled_lag4",
+  "launch_owner": "codex/root/cvs-coupled-clean-20261002",
+  "new_predictions": 4,
+  "reused_predictions": 24,
+  "target_feedback": false,
+  "goal_achieved": false,
+  "next": [
+    "Commit/push and independent OID; publish actual selected clean once",
+    "Verify four new predictions and24 reused controls, all28 truth-last score",
+    "Full224CM/192unchangedcontrol/meanSD/pairs/TX/resources report andGit"
+  ],
+  "preflight": "evidence/preflight.json"
+}

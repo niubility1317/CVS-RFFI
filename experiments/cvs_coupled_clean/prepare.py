@@ -41,7 +41,8 @@ def main(selection):
         spec['rows'].append(template)
     spec['checkpoint']['sources'] += [SOURCE+'/'+variant+'-s'+str(seed)+'/source/last.pt' for seed in SEEDS]
     spec['checkpoint'].update(selection_rule='FixedE200;two fixed-parameter coupled-envelope identities plus immutable energy source control;performance first: max four-seed sourceV/worstRX score;costs only if performance exactly tied;read-only24 oldpredictions;no test feedback',provenance_verdict='New4actualscratch/fullphysicalcontract/payload checked beforequery;old24 originalprovenance/complete/selection verified')
-    spec['code'].update(checkout=str(ROOT),cwd=remote.rstrip('/'))
+    spec['code'].update(checkout=str(ROOT),cwd=remote.rstrip('/'),architecture_base_commit='a3c6fdcaa1e70d7195250191f04d05b292622486')
+    spec['permissions']['query_use']='per-packet inference only;all registered classes;all28 prediction files fixed before separate truth-last scorer'
     spec['execution'].update(launch_owner=runtime['launch_owner'],remote_run_root=runtime['runtime_root'],remote_log_root=runtime['log_root'],local_artifact_root='automation_reports/CV-SincNet/'+RUN,
         launch_command='python -m experiments.cvs_coupled_clean.publish --output local_artifacts/'+RELEASE)
     spec['metrics_plan'].update(primary='clean4seedpairedvsenergy,native,previousresidualand3commonbaselines;allRX/TX/F1/CM/resources',prediction_ref='New4:'+runtime['runtime_root']+';old24 readonlyoriginalroots',later_test='No target feedback/reselection/retrain/unselectedcandidatequery')

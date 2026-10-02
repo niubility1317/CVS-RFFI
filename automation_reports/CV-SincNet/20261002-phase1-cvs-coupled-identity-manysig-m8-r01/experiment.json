@@ -200,7 +200,24 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092701.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092701/source",
         "started": 1790933156.514549
-      }
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9842962962962963,
+        "source_val_ce": 0.09277914028996909,
+        "source_val_rx_accuracy": {
+          "1": 0.997037037037037,
+          "3": 0.9572222222222222,
+          "4": 0.9905555555555555,
+          "6": 0.9964814814814815,
+          "8": 0.9801851851851852
+        },
+        "source_val_worst_rx": 0.9572222222222222
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "coupled_lag4-s2026092701",
@@ -260,7 +277,24 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092701.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092701/source",
         "started": 1790933161.760266
-      }
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9856296296296296,
+        "source_val_ce": 0.0811729359003339,
+        "source_val_rx_accuracy": {
+          "1": 0.997037037037037,
+          "3": 0.9592592592592593,
+          "4": 0.9903703703703703,
+          "6": 0.997037037037037,
+          "8": 0.9844444444444445
+        },
+        "source_val_worst_rx": 0.9592592592592593
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "AWAITING_FROZEN_CLEAN_TEST"
     },
     {
       "row_id": "coupled_lag1-s2026092702",
@@ -320,7 +354,24 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092702.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092702/source",
         "started": 1790933167.001964
-      }
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9832962962962963,
+        "source_val_ce": 0.08547260221674191,
+        "source_val_rx_accuracy": {
+          "1": 0.9959259259259259,
+          "3": 0.9564814814814815,
+          "4": 0.9909259259259259,
+          "6": 0.9957407407407407,
+          "8": 0.9774074074074074
+        },
+        "source_val_worst_rx": 0.9564814814814815
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "coupled_lag4-s2026092702",
@@ -380,7 +431,24 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092702.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092702/source",
         "started": 1790933172.245595
-      }
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9846666666666667,
+        "source_val_ce": 0.08016556631304478,
+        "source_val_rx_accuracy": {
+          "1": 0.9961111111111111,
+          "3": 0.96,
+          "4": 0.9901851851851852,
+          "6": 0.9962962962962963,
+          "8": 0.9807407407407407
+        },
+        "source_val_worst_rx": 0.96
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "AWAITING_FROZEN_CLEAN_TEST"
     },
     {
       "row_id": "coupled_lag1-s2026092703",
@@ -440,7 +508,24 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092703.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092703/source",
         "started": 1790933177.4846973
-      }
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9828518518518519,
+        "source_val_ce": 0.08385526833500377,
+        "source_val_rx_accuracy": {
+          "1": 0.9968518518518519,
+          "3": 0.9527777777777777,
+          "4": 0.9887037037037038,
+          "6": 0.9962962962962963,
+          "8": 0.9796296296296296
+        },
+        "source_val_worst_rx": 0.9527777777777777
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "coupled_lag4-s2026092703",
@@ -500,7 +585,24 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092703.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092703/source",
         "started": 1790933182.7192996
-      }
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9834444444444445,
+        "source_val_ce": 0.08205823101569601,
+        "source_val_rx_accuracy": {
+          "1": 0.9968518518518519,
+          "3": 0.9562962962962963,
+          "4": 0.9879629629629629,
+          "6": 0.9959259259259259,
+          "8": 0.9801851851851852
+        },
+        "source_val_worst_rx": 0.9562962962962963
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "AWAITING_FROZEN_CLEAN_TEST"
     },
     {
       "row_id": "coupled_lag1-s2026092704",
@@ -560,7 +662,24 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092704.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092704/source",
         "started": 1790933187.94685
-      }
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9826666666666667,
+        "source_val_ce": 0.09758532987446361,
+        "source_val_rx_accuracy": {
+          "1": 0.9972222222222222,
+          "3": 0.9522222222222222,
+          "4": 0.992037037037037,
+          "6": 0.9948148148148148,
+          "8": 0.977037037037037
+        },
+        "source_val_worst_rx": 0.9522222222222222
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "coupled_lag4-s2026092704",
@@ -620,7 +739,24 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092704.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092704/source",
         "started": 1790933193.1746845
-      }
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9818888888888889,
+        "source_val_ce": 0.09431961320271902,
+        "source_val_rx_accuracy": {
+          "1": 0.9968518518518519,
+          "3": 0.9511111111111111,
+          "4": 0.9905555555555555,
+          "6": 0.9955555555555555,
+          "8": 0.9753703703703703
+        },
+        "source_val_worst_rx": 0.9511111111111111
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "AWAITING_FROZEN_CLEAN_TEST"
     }
   ],
   "notes": [
@@ -700,5 +836,57 @@
     ],
     "target_feedback": false,
     "selection": "source_only"
+  },
+  "results": {
+    "source_selection": {
+      "status": "SOURCE_SELECTION_FROZEN",
+      "selected_variant": "coupled_lag4",
+      "source_summaries": {
+        "energy_equivariant": {
+          "score": 0.9672777777777778,
+          "source_accuracy": 0.9822407407407407,
+          "worst_rx_accuracy": 0.9523148148148148,
+          "parameters": 202553,
+          "conv_linear_macs": 7199008
+        },
+        "coupled_lag1": {
+          "score": 0.9689768518518519,
+          "source_accuracy": 0.9832777777777778,
+          "worst_rx_accuracy": 0.9546759259259259,
+          "parameters": 202553,
+          "conv_linear_macs": 7199008
+        },
+        "coupled_lag4": {
+          "score": 0.970287037037037,
+          "source_accuracy": 0.9839074074074075,
+          "worst_rx_accuracy": 0.9566666666666667,
+          "parameters": 202553,
+          "conv_linear_macs": 7199008
+        }
+      },
+      "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+      "selection_policy": "performance_first_coupled_with_current_source_winner_20261002",
+      "candidate_universe": [
+        "energy_equivariant",
+        "coupled_lag1",
+        "coupled_lag4"
+      ],
+      "new_candidate_selected": true,
+      "exact_cost_tie_order": [
+        "energy_equivariant",
+        "coupled_lag1",
+        "coupled_lag4"
+      ],
+      "target_access": false,
+      "target_score_used": false,
+      "test_view": "clean"
+    },
+    "source_training_status": "VERIFIED_COMPLETE",
+    "source_steps": 80000,
+    "source_epochs": 1600,
+    "source_analysis": "evidence/source_analysis_validation.json",
+    "clean_confirmation_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+    "clean_status": "REGISTERED_NOT_PUBLISHED",
+    "goal_achieved": false
   }
 }
