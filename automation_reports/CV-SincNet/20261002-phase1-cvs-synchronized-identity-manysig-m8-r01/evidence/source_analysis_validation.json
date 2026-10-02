@@ -1,0 +1,19 @@
+{
+  "status": "VERIFIED",
+  "new_rows": 8,
+  "new_epochs": 1600,
+  "new_steps": 80000,
+  "control_rows": 4,
+  "curve_records": 2400,
+  "source_selection_recomputed": true,
+  "selected_variant": "residual_fusion",
+  "new_candidate_selected": false,
+  "actual_fullFP32_training_validation_physics_profile": true,
+  "all720_source_cells_complete": true,
+  "target_access": false,
+  "target_scores_used": false,
+  "goal_achieved": false,
+  "whole_phase_max_logit_error": 4.315376281738281e-05,
+  "whole_affine_max_logit_error": 3.409385681152344e-05,
+  "scope": "Valid correlation/no principal branch crossing;relative CFO modulo1.25MHz;not uniqueTX or arbitraryRX/LTI invariance"
+}

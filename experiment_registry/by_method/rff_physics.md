@@ -12,4 +12,4 @@
 |CVS 整网复相位约束：完整 FP32 源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/report.md)|
 |CVS 全路径复相位等变记忆网络：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-identity-manysig-m4-r01/report.md)|
 |CVS 已知激励相对响应：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-reference-identity-manysig-m4-r01/report.md)|
-|CVS 全路径逐包频偏同步：两种身份核心×四seed纯CE源研发|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/report.md)|
+|CVS 全路径逐包同步身份网络：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/report.md)|

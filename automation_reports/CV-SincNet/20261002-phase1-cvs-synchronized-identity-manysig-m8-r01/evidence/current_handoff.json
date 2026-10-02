@@ -1,0 +1,75 @@
+{
+  "status": "ANALYZED_BASELINE_RETAINED",
+  "run_id": "20261002-phase1-cvs-synchronized-identity-manysig-m8-r01",
+  "release_commit": "fe7a3bc9a8d069635fdcbf72e2d7e91ed9b43118",
+  "dispatcher_pid": 1336377,
+  "launch_owner": "codex/root/cvs-synchronized-identity-20261002",
+  "workers": [
+    {
+      "row_id": "synchronized_equivariant-s2026092701",
+      "pid": 1336394,
+      "gpu": 0,
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
+    },
+    {
+      "row_id": "synchronized_gauge-s2026092701",
+      "pid": 1336485,
+      "gpu": 1,
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
+    },
+    {
+      "row_id": "synchronized_equivariant-s2026092702",
+      "pid": 1336977,
+      "gpu": 2,
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
+    },
+    {
+      "row_id": "synchronized_gauge-s2026092702",
+      "pid": 1337066,
+      "gpu": 3,
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
+    },
+    {
+      "row_id": "synchronized_equivariant-s2026092703",
+      "pid": 1337152,
+      "gpu": 4,
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
+    },
+    {
+      "row_id": "synchronized_gauge-s2026092703",
+      "pid": 1337244,
+      "gpu": 5,
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
+    },
+    {
+      "row_id": "synchronized_equivariant-s2026092704",
+      "pid": 1337328,
+      "gpu": 6,
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
+    },
+    {
+      "row_id": "synchronized_gauge-s2026092704",
+      "pid": 1337417,
+      "gpu": 7,
+      "epoch": 200,
+      "status": "SOURCE_TRAINED"
+    }
+  ],
+  "goal_achieved": false,
+  "target_access": false,
+  "next_steps": [
+    "Only frozen winner4new+20old clean if newselected;never test unselected models",
+    "Ifbaselinewins default existing verified clean retained;read next_source_handoff without target scores",
+    "Keep immutable source release fe7a3bc and completed training artifacts"
+  ],
+  "source_selection_recomputed": true,
+  "selected_variant": "residual_fusion",
+  "clean_run_id": null
+}

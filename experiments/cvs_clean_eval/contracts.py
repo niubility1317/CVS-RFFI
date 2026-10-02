@@ -14,6 +14,7 @@ from experiments.cvs_observable_identity.model import VARIANTS as TENTH, observa
 from experiments.cvs_gauge_identity.model import VARIANTS as ELEVENTH, gauge_contract
 from experiments.cvs_reference_identity.model import VARIANTS as TWELFTH, response_contract
 from experiments.cvs_equivariant_identity.model import VARIANTS as THIRTEENTH, equivariant_contract
+from experiments.cvs_synchronized_identity.model import VARIANTS as FOURTEENTH, synchronized_contract
 from experiments.cvs_residual_identity.dispatch import combine_research_selection
 
 SEEDS={2026092701,2026092702,2026092703,2026092704}
@@ -27,6 +28,17 @@ def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
 
 def frozen_selection(path):
     selection=read(path)
+    if selection.get('scope')=='synchronized_source':
+        from experiments.cvs_synchronized_identity.dispatch import validate_spec,read_source_record,select_source_candidate,PROJECT
+        matrix=validate_spec(read(selection['source_matrix_ref']))
+        original=read(PROJECT+'/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json')
+        records=[read_source_record(r,original,'cvs_residual_identity') for r in matrix['source_controls']]
+        records += [read_source_record(r,original,'cvs_synchronized_identity') for r in matrix['rows']]
+        actual=select_source_candidate(records)
+        if any(selection.get(k)!=v for k,v in actual.items()):raise ValueError('Synchronized selection differs from actual twelve source-only records')
+        if not actual['new_candidate_selected'] or actual['selected_variant'] not in FOURTEENTH:
+            raise ValueError('Existing baseline retained; unselected synchronized model cannot receive new query')
+        return selection
     if selection.get('scope')=='equivariant_source':
         from experiments.cvs_equivariant_identity.dispatch import validate_spec,read_source_record,select_source_candidate,PROJECT
         matrix=validate_spec(read(selection['source_matrix_ref']))
@@ -60,7 +72,7 @@ def frozen_selection(path):
         if not actual['new_candidate_selected'] or actual['selected_variant'] not in ELEVENTH:
             raise ValueError('Existing baseline retained; unselected gauges cannot receive new query')
         return selection
-    if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source'):
+    if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source','synchronized_source'):
         if selection['scope']=='balanced_source':
             from experiments.cvs_balanced_identity.freeze import select_performance_candidate
             family=THIRD
@@ -120,7 +132,7 @@ def frozen_selection(path):
 
 
 def evaluation_variants(selection):
-    if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source'):return [*BASELINES,'residual_fusion',selection['selected_variant']]
+    if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source','synchronized_source'):return [*BASELINES,'residual_fusion',selection['selected_variant']]
     return list(BASELINES) if selection.get('scope')=='baseline_only' else [*BASELINES,selection['selected_variant']]
 
 
@@ -133,7 +145,7 @@ def validate_reused_row(row):
     if out.parts[-3:]!=(old_run,row['row_id'],'prediction'):raise ValueError('Reused output outside original run')
     cfg=read(row['config']);original=frozen_selection(cfg['selection_file'])
     if baseline and original.get('scope')!='baseline_only':raise ValueError('Reused baseline selection changed')
-    if residual and (original.get('scope') in ('baseline_only','balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source') or original.get('selected_variant')!='residual_fusion'):
+    if residual and (original.get('scope') in ('baseline_only','balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source','synchronized_source') or original.get('selected_variant')!='residual_fusion'):
         raise ValueError('Previous residual source selection changed')
     validate_predict_config(cfg,original)
     marker=read(out.parents[1]/'scoring_clean_complete.json');models=5 if residual else 4
@@ -143,6 +155,7 @@ def validate_reused_row(row):
 
 
 def source_method(variant):
+    if variant in FOURTEENTH:return 'cvs_synchronized_identity'
     if variant in THIRTEENTH:return 'cvs_equivariant_identity'
     if variant in TWELFTH:return 'cvs_reference_identity'
     if variant in ELEVENTH:return 'cvs_gauge_identity'
@@ -166,7 +179,7 @@ def validate_predict_config(c,selection):
         raise ValueError('Unregistered clean evaluation contract')
     if c['variant'] not in evaluation_variants(selection):
         raise ValueError('Nonselected CVS cannot receive target predictions')
-    expected_parent=c['equivariant_source_root'] if c['variant'] in THIRTEENTH else c['reference_source_root'] if c['variant'] in TWELFTH else c['gauge_source_root'] if c['variant'] in ELEVENTH else c['observable_source_root'] if c['variant'] in TENTH else c['rf_operator_source_root'] if c['variant'] in NINTH else c['simplex_source_root'] if c['variant'] in EIGHTH else c['coherence_source_root'] if c['variant'] in SEVENTH else c['stability_source_root'] if c['variant'] in SIXTH else c['attentive_source_root'] if c['variant'] in FIFTH else c['interaction_source_root'] if c['variant'] in FOURTH else c['balanced_source_root'] if c['variant'] in THIRD else (c['baseline_source_root'] if c['variant'] in FIRST else c['residual_source_root'])
+    expected_parent=c['synchronized_source_root'] if c['variant'] in FOURTEENTH else c['equivariant_source_root'] if c['variant'] in THIRTEENTH else c['reference_source_root'] if c['variant'] in TWELFTH else c['gauge_source_root'] if c['variant'] in ELEVENTH else c['observable_source_root'] if c['variant'] in TENTH else c['rf_operator_source_root'] if c['variant'] in NINTH else c['simplex_source_root'] if c['variant'] in EIGHTH else c['coherence_source_root'] if c['variant'] in SEVENTH else c['stability_source_root'] if c['variant'] in SIXTH else c['attentive_source_root'] if c['variant'] in FIFTH else c['interaction_source_root'] if c['variant'] in FOURTH else c['balanced_source_root'] if c['variant'] in THIRD else (c['baseline_source_root'] if c['variant'] in FIRST else c['residual_source_root'])
     expected=Path(expected_parent)/(c['variant']+'-s'+str(c['model_seed']))/'source'
     if Path(c['source_output'])!=expected:raise ValueError('Source row/seed path mismatch')
     return c
@@ -189,6 +202,15 @@ def checkpoint_contract(c,done,initial,contract,expected,resolved,payload):
         resolved['augmentation'] or resolved['domain_backbone'] or resolved['extra_losses'] or resolved['target_access'] or
         resolved['epochs']!=200 or resolved['steps_per_epoch']!=50 or resolved['selection']!='fixed_last_epoch' or
         resolved['source_counts']!={'L_s':6300,'U_s':56700,'V':27000}):raise ValueError('Source resolved training contract mismatch')
+    if c['variant'] in FOURTEENTH:
+        from experiments.cvs_synchronized_identity.source import validate_config
+        validate_config(resolved)
+        if resolved.get('backend_flags')!=resolved['numerical_policy'] or done.get('backend_flags')!=resolved['numerical_policy']:
+            raise ValueError('Frozen synchronized full-FP32 source provenance mismatch')
+        if any(contract.get(k)!=v for k,v in expected.items()):raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
+        if initial.get('physical_roles')!='EXACT_MATCH' or initial.get('selection')!='fixed_last_epoch':raise ValueError('Synchronized scratch provenance differs')
+        if resolved.get('synchronized_active') is not True or resolved.get('synchronized_actual')!=synchronized_contract(c['variant']) or resolved.get('synchronized')!=synchronized_contract(c['variant']) or resolved.get('classifier_scale')!=30.:
+            raise ValueError('Wholeidentity synchronization differs from registered source variant')
     if c['variant'] in THIRTEENTH:
         from experiments.cvs_equivariant_identity.source import validate_config
         validate_config(resolved)
@@ -229,7 +251,9 @@ def checkpoint_contract(c,done,initial,contract,expected,resolved,payload):
 
 
 def build_model(variant):
-    if variant in THIRTEENTH:
+    if variant in FOURTEENTH:
+        from experiments.cvs_synchronized_identity.model import build
+    elif variant in THIRTEENTH:
         from experiments.cvs_equivariant_identity.model import build
     elif variant in TWELFTH:
         from experiments.cvs_reference_identity.model import build

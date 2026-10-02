@@ -1,0 +1,50 @@
+{
+  "status": "SOURCE_ONLY_HANDOFF",
+  "run_id": "20261002-phase1-cvs-synchronized-identity-manysig-m8-r01",
+  "source_commit": "fe7a3bc9a8d069635fdcbf72e2d7e91ed9b43118",
+  "source_summaries": {
+    "residual_fusion": {
+      "score": 0.9628240740740741,
+      "source_accuracy": 0.9806944444444444,
+      "worst_rx_accuracy": 0.9449537037037037,
+      "parameters": 164225,
+      "conv_linear_macs": 9708836
+    },
+    "synchronized_equivariant": {
+      "score": 0.9506574074074075,
+      "source_accuracy": 0.9733055555555556,
+      "worst_rx_accuracy": 0.9280092592592593,
+      "parameters": 202553,
+      "conv_linear_macs": 7199008
+    },
+    "synchronized_gauge": {
+      "score": 0.84575,
+      "source_accuracy": 0.9161759259259259,
+      "worst_rx_accuracy": 0.7753240740740741,
+      "parameters": 164225,
+      "conv_linear_macs": 9709796
+    }
+  },
+  "source_analysis": {
+    "status": "VERIFIED",
+    "new_rows": 8,
+    "new_epochs": 1600,
+    "new_steps": 80000,
+    "control_rows": 4,
+    "curve_records": 2400,
+    "source_selection_recomputed": true,
+    "selected_variant": "residual_fusion",
+    "new_candidate_selected": false,
+    "actual_fullFP32_training_validation_physics_profile": true,
+    "all720_source_cells_complete": true,
+    "target_access": false,
+    "target_scores_used": false,
+    "goal_achieved": false,
+    "whole_phase_max_logit_error": 4.315376281738281e-05,
+    "whole_affine_max_logit_error": 3.409385681152344e-05,
+    "scope": "Valid correlation/no principal branch crossing;relative CFO modulo1.25MHz;not uniqueTX or arbitraryRX/LTI invariance"
+  },
+  "target_scores_included": false,
+  "goal_achieved": false,
+  "next_action": "Source-only diagnose identity information removed by relative-CFO quotient and receiver/channel ambiguity; mathematical invariance passed but no sourceperformance benefit. Do not use historical target results to choose models or reruns."
+}
