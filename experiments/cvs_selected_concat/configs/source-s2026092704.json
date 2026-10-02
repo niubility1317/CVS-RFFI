@@ -1,0 +1,52 @@
+{
+  "method": "cvs_selected_concat",
+  "variant": "residual_fusion",
+  "model_seed": 2026092704,
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-selected-concat-manysig-m4-r01/residual_fusion-s2026092704/source",
+  "device": "cuda:0",
+  "epochs": 200,
+  "batch_size": 128,
+  "lr": 0.0002,
+  "lr_min": 1e-06,
+  "weight_decay": 0.0001,
+  "augmentation_seed": 2027,
+  "receiver_seed": 2027,
+  "split_seed": 392005,
+  "drop_last": false,
+  "sat_ce_start": 80,
+  "lambda_sat_cls": 0.68,
+  "concat_sat_ce_only": true,
+  "lambda_sat_cons": 0.0,
+  "domain_backbone": false,
+  "mixstyle": false,
+  "extra_losses": [],
+  "selection": "fixed_last_epoch",
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "augmentation_recipe": {
+    "scenes": [
+      "practical_mid",
+      "practical_low_urban"
+    ],
+    "satellite_ce_start": 80,
+    "probability_E80_E90": 0.6,
+    "probability_E91_E200": 0.8,
+    "processing_route": "residual",
+    "mode": "post_sync",
+    "equalization_enabled": false,
+    "fs_hz": 25000000,
+    "augmentation_seed": 2027,
+    "receiver_seed": 2027,
+    "clean_weight": 1.0,
+    "satellite_weight": 0.68,
+    "concat_sat_ce_only": true,
+    "consistency_weight": 0.0
+  }
+}

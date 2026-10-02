@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "focused_tests": 9,
+  "test_command": "ssr-gpu pytest tests/test_cvs_selected_concat.py -q -ra -o addopts= -p no:cacheprovider",
+  "independent_source_review": "PASS",
+  "independent_prediction_review": "PASS after one focused P1 repair review",
+  "formal_training_started": false,
+  "target_access": false
+}
