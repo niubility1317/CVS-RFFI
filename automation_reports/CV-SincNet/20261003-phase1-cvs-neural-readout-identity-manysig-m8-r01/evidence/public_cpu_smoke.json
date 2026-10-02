@@ -1,0 +1,3212 @@
+{
+  "status": "VERIFIED",
+  "data_access": false,
+  "target_access": false,
+  "public_synthetic_input": true,
+  "checkpoint_loading": false,
+  "optimizer": "AdamW(lr=0.0002, weight_decay=0.0001)",
+  "loss": "single cross_entropy",
+  "steps_per_row": 3,
+  "records": [
+    {
+      "variant": "readout_attention",
+      "model_seed": 2026092701,
+      "status": "VERIFIED",
+      "parameters": 306147,
+      "new_trainable_parameters": 85160,
+      "contract": {
+        "mode": "readout_attention",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 85160,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "neural_readout_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "learned_readout_active": true,
+        "readout_paths": [
+          "time",
+          "behavior"
+        ],
+        "attention_heads": 4,
+        "attention_hidden": 16,
+        "attention_kernel": 3,
+        "attention_normalization": "softmax over 64 temporal positions within each packet only",
+        "attention_values": "log1p(complex power)",
+        "output_dimension": 320,
+        "readout_channel_mixing": false,
+        "readout_channel_mixer_initialization": "none",
+        "readout_skip": "complete original InvariantReadout with 320 outputs",
+        "readout_rule": "InvariantReadout(z)+Linear(concat_heads(sum_time(attention*logpower)))",
+        "readout_exit_initialization": "zero",
+        "readout_scope": "full packet offline aggregation; no cross-packet fit or state"
+      },
+      "initial_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_score_project_initialization": true,
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 5.208761692047119,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 10.108621597290039
+            },
+            "behavior.readout": {
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 3.7849972248077393
+            }
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 4.337582111358643,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "scores.0.weight": 0.006194524001330137,
+              "scores.0.bias": 0.00020601229334715754,
+              "scores.2.weight": 0.0011240729363635182,
+              "scores.2.bias": 4.736921965786678e-10,
+              "project.weight": 7.600833892822266
+            },
+            "behavior.readout": {
+              "scores.0.weight": 0.003905113087967038,
+              "scores.0.bias": 0.00022713968064635992,
+              "scores.2.weight": 0.0015010465867817402,
+              "scores.2.bias": 1.1795506793532695e-09,
+              "project.weight": 3.236804485321045
+            }
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 1.7946782112121582,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "scores.0.weight": 0.027965698391199112,
+              "scores.0.bias": 0.0010055911261588335,
+              "scores.2.weight": 0.005327080376446247,
+              "scores.2.bias": 1.5358659899433746e-09,
+              "project.weight": 6.56376314163208
+            },
+            "behavior.readout": {
+              "scores.0.weight": 0.0023971935734152794,
+              "scores.0.bias": 0.00014905266289133579,
+              "scores.2.weight": 0.0010928523261100054,
+              "scores.2.bias": 4.966176359033625e-10,
+              "project.weight": 2.5697734355926514
+            }
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.335454940795898,
+        "behavior_weight_norm": 13.407916069030762,
+        "radial_gate_a_abs_mean": 0.0004234003135934472,
+        "time_gradient_norm": 9.367803573608398,
+        "behavior_gradient_norm": 5.055421352386475,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0011785648530349135
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006163432844914496
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0007869161199778318
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006908639334142208
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006266192649491131
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0005383487441577017
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0005436648498289287,
+            0.0005338588962331414
+          ],
+          "coefficients": [
+            0.0005436647916212678,
+            0.0005338588380254805
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.271662712097168,
+              "degree3_relative_input_change_mean": 0.00024069572100415826,
+              "degree5_relative_input_change_mean": 0.00022445783542934805
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.015838924795389175,
+              "projection_norm": 0.02747068926692009
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.013140199705958366,
+              "projection_norm": 0.02949543297290802
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "learned_readout": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.03281230479478836,
+              "projection_norm": 0.08827977627515793,
+              "attention_entropy_mean": 4.158581733703613,
+              "attention_effective_tokens_mean": 63.98072052001953,
+              "attention_sum_max_abs_error": 1.1920928955078125e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": false
+            },
+            {
+              "block": "behavior.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.03796641528606415,
+              "projection_norm": 0.09381865710020065,
+              "attention_entropy_mean": 4.1576924324035645,
+              "attention_effective_tokens_mean": 63.92389678955078,
+              "attention_sum_max_abs_error": 1.7881393432617188e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": false
+            }
+          ],
+          "scope": "last source batch; actual readout hooks; no additional loss or updates"
+        }
+      },
+      "packet_independence_max_abs_error": 2.1457672119140625e-06,
+      "common_phase_max_abs_error": 5.245208740234375e-06,
+      "inference_state_unchanged": true,
+      "checkpoint_source": null
+    },
+    {
+      "variant": "readout_attention",
+      "model_seed": 2026092702,
+      "status": "VERIFIED",
+      "parameters": 306147,
+      "new_trainable_parameters": 85160,
+      "contract": {
+        "mode": "readout_attention",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 85160,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "neural_readout_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "learned_readout_active": true,
+        "readout_paths": [
+          "time",
+          "behavior"
+        ],
+        "attention_heads": 4,
+        "attention_hidden": 16,
+        "attention_kernel": 3,
+        "attention_normalization": "softmax over 64 temporal positions within each packet only",
+        "attention_values": "log1p(complex power)",
+        "output_dimension": 320,
+        "readout_channel_mixing": false,
+        "readout_channel_mixer_initialization": "none",
+        "readout_skip": "complete original InvariantReadout with 320 outputs",
+        "readout_rule": "InvariantReadout(z)+Linear(concat_heads(sum_time(attention*logpower)))",
+        "readout_exit_initialization": "zero",
+        "readout_scope": "full packet offline aggregation; no cross-packet fit or state"
+      },
+      "initial_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_score_project_initialization": true,
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 2.545590400695801,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 9.27051067352295
+            },
+            "behavior.readout": {
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 3.5001018047332764
+            }
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 2.137958526611328,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "scores.0.weight": 0.004916996229439974,
+              "scores.0.bias": 0.0001796347351046279,
+              "scores.2.weight": 0.0013393305707722902,
+              "scores.2.bias": 9.336068584886448e-10,
+              "project.weight": 6.373744010925293
+            },
+            "behavior.readout": {
+              "scores.0.weight": 0.0039785574190318584,
+              "scores.0.bias": 0.00022130203433334827,
+              "scores.2.weight": 0.001933965482749045,
+              "scores.2.bias": 7.936830637156334e-10,
+              "project.weight": 2.3813092708587646
+            }
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 3.083343982696533,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "scores.0.weight": 0.0024184067733585835,
+              "scores.0.bias": 0.00011632013047346845,
+              "scores.2.weight": 0.000666366599034518,
+              "scores.2.bias": 2.5409270243414994e-09,
+              "project.weight": 5.86927604675293
+            },
+            "behavior.readout": {
+              "scores.0.weight": 0.007943528704345226,
+              "scores.0.bias": 0.0004140422970522195,
+              "scores.2.weight": 0.003916870802640915,
+              "scores.2.bias": 2.608090188260803e-09,
+              "project.weight": 2.7000677585601807
+            }
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.381402015686035,
+        "behavior_weight_norm": 13.168265342712402,
+        "radial_gate_a_abs_mean": 0.000368423672625795,
+        "time_gradient_norm": 11.051281929016113,
+        "behavior_gradient_norm": 4.280553817749023,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0017389296554028988
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0007290199282579124
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0011102976277470589
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006820696871727705
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0004379791207611561
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.1175870895385742e-08,
+              "relative_energy_fraction_variance_mean": 0.0004949796129949391
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            -0.0004295573744457215,
+            -0.0005182386375963688
+          ],
+          "coefficients": [
+            -0.00042955734534189105,
+            -0.0005182385793887079
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.281291007995605,
+              "degree3_relative_input_change_mean": 0.00019017459999304265,
+              "degree5_relative_input_change_mean": 0.0002178898866986856
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.01441039890050888,
+              "projection_norm": 0.025170927867293358
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.011421412229537964,
+              "projection_norm": 0.028339089825749397
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "learned_readout": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.029519207775592804,
+              "projection_norm": 0.0854731872677803,
+              "attention_entropy_mean": 4.158184051513672,
+              "attention_effective_tokens_mean": 63.955299377441406,
+              "attention_sum_max_abs_error": 1.7881393432617188e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": false
+            },
+            {
+              "block": "behavior.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.03808988630771637,
+              "projection_norm": 0.09103810042142868,
+              "attention_entropy_mean": 4.153597831726074,
+              "attention_effective_tokens_mean": 63.66356658935547,
+              "attention_sum_max_abs_error": 1.1920928955078125e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": false
+            }
+          ],
+          "scope": "last source batch; actual readout hooks; no additional loss or updates"
+        }
+      },
+      "packet_independence_max_abs_error": 1.9818544387817383e-06,
+      "common_phase_max_abs_error": 4.172325134277344e-06,
+      "inference_state_unchanged": true,
+      "checkpoint_source": null
+    },
+    {
+      "variant": "readout_attention",
+      "model_seed": 2026092703,
+      "status": "VERIFIED",
+      "parameters": 306147,
+      "new_trainable_parameters": 85160,
+      "contract": {
+        "mode": "readout_attention",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 85160,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "neural_readout_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "learned_readout_active": true,
+        "readout_paths": [
+          "time",
+          "behavior"
+        ],
+        "attention_heads": 4,
+        "attention_hidden": 16,
+        "attention_kernel": 3,
+        "attention_normalization": "softmax over 64 temporal positions within each packet only",
+        "attention_values": "log1p(complex power)",
+        "output_dimension": 320,
+        "readout_channel_mixing": false,
+        "readout_channel_mixer_initialization": "none",
+        "readout_skip": "complete original InvariantReadout with 320 outputs",
+        "readout_rule": "InvariantReadout(z)+Linear(concat_heads(sum_time(attention*logpower)))",
+        "readout_exit_initialization": "zero",
+        "readout_scope": "full packet offline aggregation; no cross-packet fit or state"
+      },
+      "initial_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_score_project_initialization": true,
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 3.8938300609588623,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 10.095799446105957
+            },
+            "behavior.readout": {
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 2.9265003204345703
+            }
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 1.8729705810546875,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "scores.0.weight": 0.001120584667660296,
+              "scores.0.bias": 5.896476795896888e-05,
+              "scores.2.weight": 0.0007954895263537765,
+              "scores.2.bias": 6.954470332942719e-10,
+              "project.weight": 7.111301898956299
+            },
+            "behavior.readout": {
+              "scores.0.weight": 0.004604555666446686,
+              "scores.0.bias": 0.000240446999669075,
+              "scores.2.weight": 0.001936279353685677,
+              "scores.2.bias": 2.085981609667442e-09,
+              "project.weight": 2.7023799419403076
+            }
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 1.4557890892028809,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "scores.0.weight": 0.003708571195602417,
+              "scores.0.bias": 0.00017761942581273615,
+              "scores.2.weight": 0.002636977005749941,
+              "scores.2.bias": 2.3134345550346325e-09,
+              "project.weight": 5.542708873748779
+            },
+            "behavior.readout": {
+              "scores.0.weight": 0.0038018992636352777,
+              "scores.0.bias": 0.00021018879488110542,
+              "scores.2.weight": 0.0014649437507614493,
+              "scores.2.bias": 1.1728024107426904e-09,
+              "project.weight": 2.3965704441070557
+            }
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.300000190734863,
+        "behavior_weight_norm": 13.382821083068848,
+        "radial_gate_a_abs_mean": 0.0004236485983710736,
+        "time_gradient_norm": 10.243049621582031,
+        "behavior_gradient_norm": 3.2641761302948,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0018352108309045434
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0008300459594465792
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0009687405545264482
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0009746240102685988
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006079729064367712
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006948746158741415
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0005740168271586299,
+            0.0005966604803688824
+          ],
+          "coefficients": [
+            0.000574016768950969,
+            0.0005966604221612215
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.271087646484375,
+              "degree3_relative_input_change_mean": 0.0002541333669796586,
+              "degree5_relative_input_change_mean": 0.0002508609904907644
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.015931326895952225,
+              "projection_norm": 0.027156103402376175
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.012606081552803516,
+              "projection_norm": 0.030766833573579788
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "learned_readout": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.03123447112739086,
+              "projection_norm": 0.08883300423622131,
+              "attention_entropy_mean": 4.156768798828125,
+              "attention_effective_tokens_mean": 63.86531066894531,
+              "attention_sum_max_abs_error": 2.384185791015625e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": false
+            },
+            {
+              "block": "behavior.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.04058625549077988,
+              "projection_norm": 0.09760458767414093,
+              "attention_entropy_mean": 4.156651496887207,
+              "attention_effective_tokens_mean": 63.85749816894531,
+              "attention_sum_max_abs_error": 1.1920928955078125e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": false
+            }
+          ],
+          "scope": "last source batch; actual readout hooks; no additional loss or updates"
+        }
+      },
+      "packet_independence_max_abs_error": 2.9206275939941406e-06,
+      "common_phase_max_abs_error": 4.5299530029296875e-06,
+      "inference_state_unchanged": true,
+      "checkpoint_source": null
+    },
+    {
+      "variant": "readout_attention",
+      "model_seed": 2026092704,
+      "status": "VERIFIED",
+      "parameters": 306147,
+      "new_trainable_parameters": 85160,
+      "contract": {
+        "mode": "readout_attention",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 85160,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "neural_readout_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "learned_readout_active": true,
+        "readout_paths": [
+          "time",
+          "behavior"
+        ],
+        "attention_heads": 4,
+        "attention_hidden": 16,
+        "attention_kernel": 3,
+        "attention_normalization": "softmax over 64 temporal positions within each packet only",
+        "attention_values": "log1p(complex power)",
+        "output_dimension": 320,
+        "readout_channel_mixing": false,
+        "readout_channel_mixer_initialization": "none",
+        "readout_skip": "complete original InvariantReadout with 320 outputs",
+        "readout_rule": "InvariantReadout(z)+Linear(concat_heads(sum_time(attention*logpower)))",
+        "readout_exit_initialization": "zero",
+        "readout_scope": "full packet offline aggregation; no cross-packet fit or state"
+      },
+      "initial_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_score_project_initialization": true,
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 3.1035003662109375,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 11.72662353515625
+            },
+            "behavior.readout": {
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 2.880997896194458
+            }
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 2.431777000427246,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "scores.0.weight": 0.009368469007313251,
+              "scores.0.bias": 0.00033997828722931445,
+              "scores.2.weight": 0.005765502341091633,
+              "scores.2.bias": 1.6969776694963912e-09,
+              "project.weight": 4.593036651611328
+            },
+            "behavior.readout": {
+              "scores.0.weight": 0.005321136210113764,
+              "scores.0.bias": 0.0003945060889236629,
+              "scores.2.weight": 0.0016969601856544614,
+              "scores.2.bias": 2.5624056210205026e-09,
+              "project.weight": 2.107405662536621
+            }
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 2.4112706184387207,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "scores.0.weight": 0.00805373303592205,
+              "scores.0.bias": 0.0003395936219021678,
+              "scores.2.weight": 0.005298272706568241,
+              "scores.2.bias": 4.4608716720517805e-09,
+              "project.weight": 6.424191474914551
+            },
+            "behavior.readout": {
+              "scores.0.weight": 0.006654639262706041,
+              "scores.0.bias": 0.0005399813526310027,
+              "scores.2.weight": 0.001871225656941533,
+              "scores.2.bias": 3.576319462794686e-09,
+              "project.weight": 2.946640968322754
+            }
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.338464736938477,
+        "behavior_weight_norm": 13.360589981079102,
+        "radial_gate_a_abs_mean": 0.00042573752580210567,
+        "time_gradient_norm": 8.885611534118652,
+        "behavior_gradient_norm": 3.956543445587158,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.002456733724102378
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.001063075615093112
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0010142208775505424
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.001163984532468021
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0005707289674319327
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0007494341698475182
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0005513421492651105,
+            -0.0005809055874124169
+          ],
+          "coefficients": [
+            0.0005513420910574496,
+            -0.000580905529204756
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.281865119934082,
+              "degree3_relative_input_change_mean": 0.00024409405887126923,
+              "degree5_relative_input_change_mean": 0.00024423908325843513
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.01782386377453804,
+              "projection_norm": 0.027345571666955948
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.012358754873275757,
+              "projection_norm": 0.031292788684368134
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "learned_readout": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.03352923318743706,
+              "projection_norm": 0.08761043846607208,
+              "attention_entropy_mean": 4.154001235961914,
+              "attention_effective_tokens_mean": 63.69277572631836,
+              "attention_sum_max_abs_error": 1.7881393432617188e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": false
+            },
+            {
+              "block": "behavior.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.04180940240621567,
+              "projection_norm": 0.1025465801358223,
+              "attention_entropy_mean": 4.15796422958374,
+              "attention_effective_tokens_mean": 63.941261291503906,
+              "attention_sum_max_abs_error": 1.1920928955078125e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": false
+            }
+          ],
+          "scope": "last source batch; actual readout hooks; no additional loss or updates"
+        }
+      },
+      "packet_independence_max_abs_error": 3.1888484954833984e-06,
+      "common_phase_max_abs_error": 3.5762786865234375e-06,
+      "inference_state_unchanged": true,
+      "checkpoint_source": null
+    },
+    {
+      "variant": "readout_complex_attention",
+      "model_seed": 2026092701,
+      "status": "VERIFIED",
+      "parameters": 310243,
+      "new_trainable_parameters": 89256,
+      "contract": {
+        "mode": "readout_complex_attention",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 89256,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "neural_readout_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "learned_readout_active": true,
+        "readout_paths": [
+          "time",
+          "behavior"
+        ],
+        "attention_heads": 4,
+        "attention_hidden": 16,
+        "attention_kernel": 3,
+        "attention_normalization": "softmax over 64 temporal positions within each packet only",
+        "attention_values": "log1p(complex power)",
+        "output_dimension": 320,
+        "readout_channel_mixing": true,
+        "readout_channel_mixer_initialization": "complex identity",
+        "readout_skip": "complete original InvariantReadout with 320 outputs",
+        "readout_rule": "InvariantReadout(z)+Linear(concat_heads(sum_time(attention*logpower)))",
+        "readout_exit_initialization": "zero",
+        "readout_scope": "full packet offline aggregation; no cross-packet fit or state"
+      },
+      "initial_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_score_project_initialization": true,
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 5.208761692047119,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "mixer.weight_real": 0.0,
+              "mixer.weight_imag": 0.0,
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 10.108621597290039
+            },
+            "behavior.readout": {
+              "mixer.weight_real": 0.0,
+              "mixer.weight_imag": 0.0,
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 3.7849972248077393
+            }
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 4.337582111358643,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "mixer.weight_real": 0.06563825160264969,
+              "mixer.weight_imag": 0.06529413908720016,
+              "scores.0.weight": 0.006194524001330137,
+              "scores.0.bias": 0.00020601229334715754,
+              "scores.2.weight": 0.0011240729363635182,
+              "scores.2.bias": 4.736921965786678e-10,
+              "project.weight": 7.600833892822266
+            },
+            "behavior.readout": {
+              "mixer.weight_real": 0.04632480442523956,
+              "mixer.weight_imag": 0.04655236750841141,
+              "scores.0.weight": 0.003905113087967038,
+              "scores.0.bias": 0.00022713968064635992,
+              "scores.2.weight": 0.0015010465867817402,
+              "scores.2.bias": 1.1795506793532695e-09,
+              "project.weight": 3.236804485321045
+            }
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 1.7941710948944092,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "mixer.weight_real": 0.08398842811584473,
+              "mixer.weight_imag": 0.08369755744934082,
+              "scores.0.weight": 0.028153331950306892,
+              "scores.0.bias": 0.0010117684723809361,
+              "scores.2.weight": 0.005376207642257214,
+              "scores.2.bias": 2.4162425393825515e-09,
+              "project.weight": 6.5904669761657715
+            },
+            "behavior.readout": {
+              "mixer.weight_real": 0.03425279259681702,
+              "mixer.weight_imag": 0.03364081308245659,
+              "scores.0.weight": 0.0024213814176619053,
+              "scores.0.bias": 0.00015000680286902934,
+              "scores.2.weight": 0.0011022111866623163,
+              "scores.2.bias": 1.1890504136857771e-09,
+              "project.weight": 2.575809955596924
+            }
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.335454940795898,
+        "behavior_weight_norm": 13.407916069030762,
+        "radial_gate_a_abs_mean": 0.0004233982472214848,
+        "time_gradient_norm": 9.366729736328125,
+        "behavior_gradient_norm": 5.0554680824279785,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0011785555398091674
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006163432844914496
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0007869068649597466
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006908623618073761
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0006266210111789405
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 7.450580596923828e-09,
+              "relative_energy_fraction_variance_mean": 0.0005383430398069322
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0005436663632281125,
+            0.0005338467308320105
+          ],
+          "coefficients": [
+            0.0005436663050204515,
+            0.0005338466726243496
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.271662712097168,
+              "degree3_relative_input_change_mean": 0.00024069618666544557,
+              "degree5_relative_input_change_mean": 0.00022445189824793488
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.015838518738746643,
+              "projection_norm": 0.027470173314213753
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.013139886781573296,
+              "projection_norm": 0.029494959861040115
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "learned_readout": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.033075883984565735,
+              "projection_norm": 0.08826775848865509,
+              "attention_entropy_mean": 4.158577919006348,
+              "attention_effective_tokens_mean": 63.98047637939453,
+              "attention_sum_max_abs_error": 1.1920928955078125e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": true
+            },
+            {
+              "block": "behavior.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.03817666694521904,
+              "projection_norm": 0.09381523728370667,
+              "attention_entropy_mean": 4.157685279846191,
+              "attention_effective_tokens_mean": 63.923439025878906,
+              "attention_sum_max_abs_error": 1.1920928955078125e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": true
+            }
+          ],
+          "scope": "last source batch; actual readout hooks; no additional loss or updates"
+        }
+      },
+      "packet_independence_max_abs_error": 2.1457672119140625e-06,
+      "common_phase_max_abs_error": 3.814697265625e-06,
+      "inference_state_unchanged": true,
+      "checkpoint_source": null
+    },
+    {
+      "variant": "readout_complex_attention",
+      "model_seed": 2026092702,
+      "status": "VERIFIED",
+      "parameters": 310243,
+      "new_trainable_parameters": 89256,
+      "contract": {
+        "mode": "readout_complex_attention",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 89256,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "neural_readout_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "learned_readout_active": true,
+        "readout_paths": [
+          "time",
+          "behavior"
+        ],
+        "attention_heads": 4,
+        "attention_hidden": 16,
+        "attention_kernel": 3,
+        "attention_normalization": "softmax over 64 temporal positions within each packet only",
+        "attention_values": "log1p(complex power)",
+        "output_dimension": 320,
+        "readout_channel_mixing": true,
+        "readout_channel_mixer_initialization": "complex identity",
+        "readout_skip": "complete original InvariantReadout with 320 outputs",
+        "readout_rule": "InvariantReadout(z)+Linear(concat_heads(sum_time(attention*logpower)))",
+        "readout_exit_initialization": "zero",
+        "readout_scope": "full packet offline aggregation; no cross-packet fit or state"
+      },
+      "initial_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_score_project_initialization": true,
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 2.545590400695801,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "mixer.weight_real": 0.0,
+              "mixer.weight_imag": 0.0,
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 9.27051067352295
+            },
+            "behavior.readout": {
+              "mixer.weight_real": 0.0,
+              "mixer.weight_imag": 0.0,
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 3.5001018047332764
+            }
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 2.137958526611328,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "mixer.weight_real": 0.028056686744093895,
+              "mixer.weight_imag": 0.028062671422958374,
+              "scores.0.weight": 0.004916996229439974,
+              "scores.0.bias": 0.0001796347351046279,
+              "scores.2.weight": 0.0013393305707722902,
+              "scores.2.bias": 9.336068584886448e-10,
+              "project.weight": 6.373744010925293
+            },
+            "behavior.readout": {
+              "mixer.weight_real": 0.021115699782967567,
+              "mixer.weight_imag": 0.02018457092344761,
+              "scores.0.weight": 0.0039785574190318584,
+              "scores.0.bias": 0.00022130203433334827,
+              "scores.2.weight": 0.001933965482749045,
+              "scores.2.bias": 7.936830637156334e-10,
+              "project.weight": 2.3813092708587646
+            }
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 3.0828890800476074,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "mixer.weight_real": 0.08879760652780533,
+              "mixer.weight_imag": 0.08482348918914795,
+              "scores.0.weight": 0.0024274075403809547,
+              "scores.0.bias": 0.00011670420644804835,
+              "scores.2.weight": 0.0006679481011815369,
+              "scores.2.bias": 4.71701167015226e-09,
+              "project.weight": 5.875052452087402
+            },
+            "behavior.readout": {
+              "mixer.weight_real": 0.05384181812405586,
+              "mixer.weight_imag": 0.05236366018652916,
+              "scores.0.weight": 0.008031124249100685,
+              "scores.0.bias": 0.0004171344335190952,
+              "scores.2.weight": 0.003957435488700867,
+              "scores.2.bias": 4.733676117751884e-09,
+              "project.weight": 2.712174654006958
+            }
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.381401062011719,
+        "behavior_weight_norm": 13.168264389038086,
+        "radial_gate_a_abs_mean": 0.00036842329427599907,
+        "time_gradient_norm": 11.050924301147461,
+        "behavior_gradient_norm": 4.280284404754639,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0017389286076650023
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0007290193461813033
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.001110293553210795
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0006820693961344659
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0004379797319415957
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0004949751310050488
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            -0.0004295571707189083,
+            -0.0005182483000680804
+          ],
+          "coefficients": [
+            -0.00042955714161507785,
+            -0.0005182482418604195
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.281291961669922,
+              "degree3_relative_input_change_mean": 0.00019017451268155128,
+              "degree5_relative_input_change_mean": 0.00021789567836094648
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.01441040076315403,
+              "projection_norm": 0.02517096884548664
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.011421296745538712,
+              "projection_norm": 0.028338897973299026
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "learned_readout": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.029711399227380753,
+              "projection_norm": 0.08547421544790268,
+              "attention_entropy_mean": 4.158180236816406,
+              "attention_effective_tokens_mean": 63.955081939697266,
+              "attention_sum_max_abs_error": 1.1920928955078125e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": true
+            },
+            {
+              "block": "behavior.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.03832198306918144,
+              "projection_norm": 0.09103299677371979,
+              "attention_entropy_mean": 4.153553009033203,
+              "attention_effective_tokens_mean": 63.660728454589844,
+              "attention_sum_max_abs_error": 1.1920928955078125e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": true
+            }
+          ],
+          "scope": "last source batch; actual readout hooks; no additional loss or updates"
+        }
+      },
+      "packet_independence_max_abs_error": 2.384185791015625e-06,
+      "common_phase_max_abs_error": 2.86102294921875e-06,
+      "inference_state_unchanged": true,
+      "checkpoint_source": null
+    },
+    {
+      "variant": "readout_complex_attention",
+      "model_seed": 2026092703,
+      "status": "VERIFIED",
+      "parameters": 310243,
+      "new_trainable_parameters": 89256,
+      "contract": {
+        "mode": "readout_complex_attention",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 89256,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "neural_readout_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "learned_readout_active": true,
+        "readout_paths": [
+          "time",
+          "behavior"
+        ],
+        "attention_heads": 4,
+        "attention_hidden": 16,
+        "attention_kernel": 3,
+        "attention_normalization": "softmax over 64 temporal positions within each packet only",
+        "attention_values": "log1p(complex power)",
+        "output_dimension": 320,
+        "readout_channel_mixing": true,
+        "readout_channel_mixer_initialization": "complex identity",
+        "readout_skip": "complete original InvariantReadout with 320 outputs",
+        "readout_rule": "InvariantReadout(z)+Linear(concat_heads(sum_time(attention*logpower)))",
+        "readout_exit_initialization": "zero",
+        "readout_scope": "full packet offline aggregation; no cross-packet fit or state"
+      },
+      "initial_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_score_project_initialization": true,
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 3.8938300609588623,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "mixer.weight_real": 0.0,
+              "mixer.weight_imag": 0.0,
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 10.095799446105957
+            },
+            "behavior.readout": {
+              "mixer.weight_real": 0.0,
+              "mixer.weight_imag": 0.0,
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 2.9265003204345703
+            }
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 1.8729705810546875,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "mixer.weight_real": 0.04975498095154762,
+              "mixer.weight_imag": 0.04941482096910477,
+              "scores.0.weight": 0.001120584667660296,
+              "scores.0.bias": 5.896476795896888e-05,
+              "scores.2.weight": 0.0007954895263537765,
+              "scores.2.bias": 6.954470332942719e-10,
+              "project.weight": 7.111301898956299
+            },
+            "behavior.readout": {
+              "mixer.weight_real": 0.044647712260484695,
+              "mixer.weight_imag": 0.04324981942772865,
+              "scores.0.weight": 0.004604555666446686,
+              "scores.0.bias": 0.000240446999669075,
+              "scores.2.weight": 0.001936279353685677,
+              "scores.2.bias": 2.085981609667442e-09,
+              "project.weight": 2.7023799419403076
+            }
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 1.4552944898605347,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "mixer.weight_real": 0.0695720762014389,
+              "mixer.weight_imag": 0.06851281970739365,
+              "scores.0.weight": 0.003747469512745738,
+              "scores.0.bias": 0.00017938493692781776,
+              "scores.2.weight": 0.0026704235933721066,
+              "scores.2.bias": 1.3427333689364218e-09,
+              "project.weight": 5.562707901000977
+            },
+            "behavior.readout": {
+              "mixer.weight_real": 0.0277590099722147,
+              "mixer.weight_imag": 0.02657398208975792,
+              "scores.0.weight": 0.0038227259647101164,
+              "scores.0.bias": 0.0002111605426762253,
+              "scores.2.weight": 0.0014717205194756389,
+              "scores.2.bias": 1.8210281060859757e-09,
+              "project.weight": 2.40193772315979
+            }
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.300000190734863,
+        "behavior_weight_norm": 13.382821083068848,
+        "radial_gate_a_abs_mean": 0.0004236440290696919,
+        "time_gradient_norm": 10.241719245910645,
+        "behavior_gradient_norm": 3.2632086277008057,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0018352087354287505
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0008300457266159356
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0009687387500889599
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 4.470348358154297e-08,
+              "relative_energy_fraction_variance_mean": 0.000974627211689949
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006079741870053113
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 4.470348358154297e-08,
+              "relative_energy_fraction_variance_mean": 0.0006948753725737333
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0005740153137594461,
+            0.0005966605967842042
+          ],
+          "coefficients": [
+            0.0005740152555517852,
+            0.0005966605385765433
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.271087646484375,
+              "degree3_relative_input_change_mean": 0.00025413313414901495,
+              "degree5_relative_input_change_mean": 0.0002508610486984253
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.015931256115436554,
+              "projection_norm": 0.027156062424182892
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.012605950236320496,
+              "projection_norm": 0.03076660819351673
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "learned_readout": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.03154485672712326,
+              "projection_norm": 0.0888276919722557,
+              "attention_entropy_mean": 4.15674352645874,
+              "attention_effective_tokens_mean": 63.86367416381836,
+              "attention_sum_max_abs_error": 1.7881393432617188e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": true
+            },
+            {
+              "block": "behavior.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.04084144905209541,
+              "projection_norm": 0.09760069102048874,
+              "attention_entropy_mean": 4.1566314697265625,
+              "attention_effective_tokens_mean": 63.85624313354492,
+              "attention_sum_max_abs_error": 1.1920928955078125e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": true
+            }
+          ],
+          "scope": "last source batch; actual readout hooks; no additional loss or updates"
+        }
+      },
+      "packet_independence_max_abs_error": 2.5033950805664062e-06,
+      "common_phase_max_abs_error": 3.814697265625e-06,
+      "inference_state_unchanged": true,
+      "checkpoint_source": null
+    },
+    {
+      "variant": "readout_complex_attention",
+      "model_seed": 2026092704,
+      "status": "VERIFIED",
+      "parameters": 310243,
+      "new_trainable_parameters": 89256,
+      "contract": {
+        "mode": "readout_complex_attention",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 89256,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "neural_readout_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "learned_readout_active": true,
+        "readout_paths": [
+          "time",
+          "behavior"
+        ],
+        "attention_heads": 4,
+        "attention_hidden": 16,
+        "attention_kernel": 3,
+        "attention_normalization": "softmax over 64 temporal positions within each packet only",
+        "attention_values": "log1p(complex power)",
+        "output_dimension": 320,
+        "readout_channel_mixing": true,
+        "readout_channel_mixer_initialization": "complex identity",
+        "readout_skip": "complete original InvariantReadout with 320 outputs",
+        "readout_rule": "InvariantReadout(z)+Linear(concat_heads(sum_time(attention*logpower)))",
+        "readout_exit_initialization": "zero",
+        "readout_scope": "full packet offline aggregation; no cross-packet fit or state"
+      },
+      "initial_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_score_project_initialization": true,
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 3.1035003662109375,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "mixer.weight_real": 0.0,
+              "mixer.weight_imag": 0.0,
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 11.72662353515625
+            },
+            "behavior.readout": {
+              "mixer.weight_real": 0.0,
+              "mixer.weight_imag": 0.0,
+              "scores.0.weight": 0.0,
+              "scores.0.bias": 0.0,
+              "scores.2.weight": 0.0,
+              "scores.2.bias": 0.0,
+              "project.weight": 2.880997896194458
+            }
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 2.431777000427246,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "mixer.weight_real": 0.026876969262957573,
+              "mixer.weight_imag": 0.026521110907197,
+              "scores.0.weight": 0.009368469007313251,
+              "scores.0.bias": 0.00033997828722931445,
+              "scores.2.weight": 0.005765502341091633,
+              "scores.2.bias": 1.6969776694963912e-09,
+              "project.weight": 4.593036651611328
+            },
+            "behavior.readout": {
+              "mixer.weight_real": 0.0259234718978405,
+              "mixer.weight_imag": 0.020919062197208405,
+              "scores.0.weight": 0.005321136210113764,
+              "scores.0.bias": 0.0003945060889236629,
+              "scores.2.weight": 0.0016969601856544614,
+              "scores.2.bias": 2.5624056210205026e-09,
+              "project.weight": 2.107405662536621
+            }
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 2.410313129425049,
+          "all_parameter_gradients_finite": true,
+          "readout_gradient_norms": {
+            "time.readout": {
+              "mixer.weight_real": 0.0840844064950943,
+              "mixer.weight_imag": 0.08252664655447006,
+              "scores.0.weight": 0.008134887553751469,
+              "scores.0.bias": 0.00034190696896985173,
+              "scores.2.weight": 0.005353568121790886,
+              "scores.2.bias": 3.015446781162723e-09,
+              "project.weight": 6.452184200286865
+            },
+            "behavior.readout": {
+              "mixer.weight_real": 0.07748431712388992,
+              "mixer.weight_imag": 0.07069297879934311,
+              "scores.0.weight": 0.006718314252793789,
+              "scores.0.bias": 0.0005441972170956433,
+              "scores.2.weight": 0.0018821535632014275,
+              "scores.2.bias": 7.518367262093761e-09,
+              "project.weight": 2.9579577445983887
+            }
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.338464736938477,
+        "behavior_weight_norm": 13.360589981079102,
+        "radial_gate_a_abs_mean": 0.0004257362161297351,
+        "time_gradient_norm": 8.884445190429688,
+        "behavior_gradient_norm": 3.9557809829711914,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 4.470348358154297e-08,
+              "relative_energy_fraction_variance_mean": 0.0024567313957959414
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0010630759643390775
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.001014210283756256
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0011639847652986646
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0005707297823391855
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0007494287565350533
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0005513434298336506,
+            -0.0005808928399346769
+          ],
+          "coefficients": [
+            0.0005513433716259897,
+            -0.000580892781727016
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.281865119934082,
+              "degree3_relative_input_change_mean": 0.00024409442266914994,
+              "degree5_relative_input_change_mean": 0.0002442343975417316
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.017824091017246246,
+              "projection_norm": 0.027345778420567513
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.012358579784631729,
+              "projection_norm": 0.03129236772656441
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "learned_readout": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.03385086730122566,
+              "projection_norm": 0.08760426193475723,
+              "attention_entropy_mean": 4.1539154052734375,
+              "attention_effective_tokens_mean": 63.68743896484375,
+              "attention_sum_max_abs_error": 1.1920928955078125e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": true
+            },
+            {
+              "block": "behavior.readout",
+              "packets": 4,
+              "input_shape": [
+                4,
+                2,
+                32,
+                64
+              ],
+              "output_dimension": 320,
+              "relative_output_change_mean": 0.04199738800525665,
+              "projection_norm": 0.10254058986902237,
+              "attention_entropy_mean": 4.157960891723633,
+              "attention_effective_tokens_mean": 63.94104766845703,
+              "attention_sum_max_abs_error": 1.1920928955078125e-07,
+              "attention_heads": 4,
+              "attention_tokens": 64,
+              "channel_mixing": true
+            }
+          ],
+          "scope": "last source batch; actual readout hooks; no additional loss or updates"
+        }
+      },
+      "packet_independence_max_abs_error": 2.384185791015625e-06,
+      "common_phase_max_abs_error": 3.0994415283203125e-06,
+      "inference_state_unchanged": true,
+      "checkpoint_source": null
+    }
+  ]
+}

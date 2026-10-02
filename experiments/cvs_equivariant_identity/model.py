@@ -112,8 +112,10 @@ class EquivariantCVS(nn.Module):
     def features(self,x):
         if x.ndim!=3 or x.shape[1:]!=(2,256):raise ValueError('Expected IQ[B,2,256]')
         b=self.id_backbone;sinc=b._sinc_on_iq(x).reshape(len(x),2,24,256)
-        time=b.t_proj(self.readout(self.time(sinc)))
-        physical=b.pa_proj(self.readout(self.behavior(behavior_basis(x))))
+        time_readout=getattr(self,'time_readout',None) or self.readout
+        behavior_readout=getattr(self,'behavior_readout',None) or self.readout
+        time=b.t_proj(time_readout(self.time(sinc)))
+        physical=b.pa_proj(behavior_readout(self.behavior(behavior_basis(x))))
         spectral,rho,dac_stats,pa_stats=b._mirror_compressed_features(x,sinc_iq=None)
         f=b.f_pool(b.f3(b.f2(b.f1(b.freq_gate(spectral))))).squeeze(-1)
         frequency=b.f_proj(f)

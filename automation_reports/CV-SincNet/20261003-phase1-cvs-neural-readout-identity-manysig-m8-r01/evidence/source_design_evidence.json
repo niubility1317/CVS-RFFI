@@ -1,0 +1,18 @@
+{
+  "status": "VERIFIED_SOURCE_DERIVATION",
+  "inputs": [
+    "20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/evidence/source_final.csv",
+    "20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/evidence/source_curves.csv",
+    "20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/evidence/neural_outputs.csv",
+    "experiments/cvs_equivariant_identity/model.py#InvariantReadout"
+  ],
+  "hypothesis": "Fixed channelwise readout may discard useful learned position/channel information;preserve fullskip and test learned residualreadout",
+  "source_base": "neural_residual_shallow",
+  "design_target_feedback": false,
+  "prior_target_exposure": "Historicalbenchmark known;sourceauditors encountered appendices with oldtarget scores but did not use them;no target-unexposed design claim",
+  "candidate_variants": [
+    "readout_attention",
+    "readout_complex_attention"
+  ],
+  "training": "OriginalsingleCE/E200/AdamW/cosine/data unchanged"
+}

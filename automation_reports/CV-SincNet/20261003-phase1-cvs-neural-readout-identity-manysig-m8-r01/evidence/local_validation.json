@@ -1,0 +1,25 @@
+{
+  "status": "VERIFIED",
+  "recorded_at": "2026-10-02T17:31:09.324265+00:00",
+  "scope": "local implementation and synthetic protocol validation, not trained performance",
+  "model": {
+    "focused_with_legacy_tests_passed": 15,
+    "public_smoke": "public_cpu_smoke.json"
+  },
+  "source": {
+    "primary_tests_passed": 58,
+    "independent_reviewer_combined_tests_passed": 69,
+    "additional_baseline_delegation_test_passed": 1,
+    "actual_configs": 8,
+    "p0p1_findings": 0
+  },
+  "conditional_clean": {
+    "focused_new_and_legacy_tests_passed": 198,
+    "formal_configs_generated": false,
+    "real_checkpoint_test": "N/A until source training"
+  },
+  "test_counts_are_separate_overlapping_invocations": true,
+  "remote_release": false,
+  "remote_launch": false,
+  "claim": "No channel-robustness or accuracy claim from these tests"
+}

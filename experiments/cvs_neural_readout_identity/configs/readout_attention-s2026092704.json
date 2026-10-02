@@ -1,0 +1,194 @@
+{
+  "method": "cvs_neural_readout_identity",
+  "variant": "readout_attention",
+  "model_seed": 2026092704,
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092704/source",
+  "epochs": 200,
+  "batch_size": 128,
+  "lr": 0.0002,
+  "lr_min": 1e-06,
+  "weight_decay": 0.0001,
+  "drop_last": false,
+  "augmentation": false,
+  "domain_backbone": false,
+  "extra_losses": [],
+  "selection": "fixed_last_epoch",
+  "split_seed": 392005,
+  "device": "cuda:0",
+  "readout": {
+    "mode": "readout_attention",
+    "input": "received_equalized1_unit_rms_IQ",
+    "sample_rate_hz": 25000000,
+    "whole_identity_global_phase_invariant_real_arithmetic": true,
+    "global_phase_equivariant_until_readout": true,
+    "removes_linear_phase": false,
+    "arbitrary_channel_rx_invariant": false,
+    "hardware_parameter_estimation": false,
+    "time_complex_channels": [
+      24,
+      24,
+      32,
+      32
+    ],
+    "time_kernels": [
+      5,
+      5,
+      3
+    ],
+    "time_strides": [
+      2,
+      2,
+      1
+    ],
+    "behavior_orders": [
+      1,
+      3,
+      5
+    ],
+    "behavior_delays": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "radial_clip": 4.0,
+    "order_scale_base": 2.0,
+    "behavior_complex_channels": [
+      12,
+      24,
+      32,
+      32
+    ],
+    "behavior_kernels": [
+      7,
+      5,
+      3
+    ],
+    "behavior_dilations": [
+      1,
+      2,
+      4
+    ],
+    "behavior_causal_filters": true,
+    "per_packet_complex_rms_normalization": true,
+    "complex_bias": false,
+    "radial_gate": "2sigmoid(a*log1p(power)+b)",
+    "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+    "readout_channels_per_complex_channel": 10,
+    "embedding_dimension": 160,
+    "classifier_scale": 30.0,
+    "original_real_frequency_path_retained": true,
+    "raw_unconstrained_identity_bypass": false,
+    "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+    "normalization_scope": "one complex power mean across all channels and time per packet per block",
+    "per_channel_sample_dependent_rms_normalization": false,
+    "relative_filter_channel_energy_preserved_by_normalization_only": true,
+    "learned_channel_scales_retained": true,
+    "new_trainable_parameters": 85160,
+    "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+    "learned_channel_scales_may_change_energy_ratios": true,
+    "identity_core": "neural_readout_identity",
+    "estimator_window": [
+      80,
+      160
+    ],
+    "estimator_period_samples": 20,
+    "relative_frequency_alias_hz": 1250000,
+    "alignment_strength": 0.0,
+    "alignment_parameters": 0,
+    "alignment_packet_specific": false,
+    "alignment_class_specific": false,
+    "alignment_rx_specific": false,
+    "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+    "whole_affine_phase_invariant": false,
+    "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+    "prototype_only": false,
+    "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+    "envelope_lag": 4,
+    "actual_envelope_lag": 4,
+    "envelope_average_weights": [
+      0.5,
+      0.5
+    ],
+    "behavior_terms": 12,
+    "original_position_power_readout_retained": true,
+    "no_frequency_correction": true,
+    "full_GMP": false,
+    "hardware_parameter_recovery": false,
+    "phase_lag": 4,
+    "actual_phase_lag": 4,
+    "adaptive_lift_active": true,
+    "mixture_parameter_shape": [
+      2
+    ],
+    "actual_mixture_parameter_shape": [
+      2
+    ],
+    "mixture_initial_raw": [
+      0.0,
+      0.0
+    ],
+    "mixture_rule": "base+tanh(raw)*(proposal-base)",
+    "mixture_scope": "two global identity model parameters trained only by source CE",
+    "mixture_parameter_count": 2,
+    "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+    "cubic_divisor": 4,
+    "cubic_delays": [
+      4,
+      4,
+      8
+    ],
+    "cubic_conjugate_last": true,
+    "lift_affine_phase_covariant": true,
+    "complete_volterra": false,
+    "neural_residual_active": true,
+    "neural_depth_per_path": 1,
+    "neural_paths": [
+      "time.2",
+      "behavior.2"
+    ],
+    "neural_channels": [
+      32,
+      64,
+      32
+    ],
+    "neural_kernel": 5,
+    "neural_time_padding": "symmetric",
+    "neural_behavior_padding": "causal_left",
+    "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+    "neural_exit_initialization": "zero",
+    "neural_hidden_initialization": "random complex fan-in",
+    "neural_shared_gain": "one RMS over complex channels and time per packet",
+    "neural_loss": "unchanged single cross_entropy",
+    "new_training_strategy": false,
+    "feature_curvature_active": false,
+    "base_variant": "neural_residual_shallow",
+    "base_trainable_parameters": 220987,
+    "learned_readout_active": true,
+    "readout_paths": [
+      "time",
+      "behavior"
+    ],
+    "attention_heads": 4,
+    "attention_hidden": 16,
+    "attention_kernel": 3,
+    "attention_normalization": "softmax over 64 temporal positions within each packet only",
+    "attention_values": "log1p(complex power)",
+    "output_dimension": 320,
+    "readout_channel_mixing": false,
+    "readout_channel_mixer_initialization": "none",
+    "readout_skip": "complete original InvariantReadout with 320 outputs",
+    "readout_rule": "InvariantReadout(z)+Linear(concat_heads(sum_time(attention*logpower)))",
+    "readout_exit_initialization": "zero",
+    "readout_scope": "full packet offline aggregation; no cross-packet fit or state"
+  },
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  }
+}
