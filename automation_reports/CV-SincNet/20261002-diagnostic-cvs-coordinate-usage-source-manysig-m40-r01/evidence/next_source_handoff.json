@@ -1,0 +1,172 @@
+{
+  "run_id": "20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01",
+  "status": "SOURCE_ONLY_HANDOFF",
+  "mode_summary": [
+    {
+      "variant": "coordinate_equivariant",
+      "mode": "trained",
+      "accuracy_mean": 0.9730277777777778,
+      "accuracy_seed_sd": 0.002411179381180567,
+      "delta_pp_mean": 0.0,
+      "delta_pp_seed_sd": 0.0,
+      "delta_pp_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "changed_mean": 0
+    },
+    {
+      "variant": "coordinate_equivariant",
+      "mode": "frequency_reference",
+      "accuracy_mean": 0.9730185185185185,
+      "accuracy_seed_sd": 0.0024317854031377026,
+      "delta_pp_mean": -0.0009259259259236652,
+      "delta_pp_seed_sd": 0.005555555555556794,
+      "delta_pp_by_seed": [
+        -0.0037037037036946607,
+        0.003703703703705763,
+        -0.007407407407411526,
+        0.003703703703705763
+      ],
+      "changed_mean": 2.75
+    },
+    {
+      "variant": "coordinate_equivariant",
+      "mode": "quality_reference",
+      "accuracy_mean": 0.9730277777777778,
+      "accuracy_seed_sd": 0.002453103816722711,
+      "delta_pp_mean": 0.0,
+      "delta_pp_seed_sd": 0.0042766686606662725,
+      "delta_pp_by_seed": [
+        0.003703703703705763,
+        0.003703703703705763,
+        -0.003703703703705763,
+        -0.003703703703705763
+      ],
+      "changed_mean": 2
+    },
+    {
+      "variant": "coordinate_equivariant",
+      "mode": "coordinate_reference",
+      "accuracy_mean": 0.9730277777777778,
+      "accuracy_seed_sd": 0.0024560843331380183,
+      "delta_pp_mean": 0.0,
+      "delta_pp_seed_sd": 0.005237828008792153,
+      "delta_pp_by_seed": [
+        0.003703703703705763,
+        0.003703703703705763,
+        -0.007407407407411526,
+        0.0
+      ],
+      "changed_mean": 3.75
+    },
+    {
+      "variant": "coordinate_equivariant",
+      "mode": "unit_gain",
+      "accuracy_mean": 0.9732222222222222,
+      "accuracy_seed_sd": 0.0024360123929489464,
+      "delta_pp_mean": 0.01944444444444693,
+      "delta_pp_seed_sd": 0.007635380788181059,
+      "delta_pp_by_seed": [
+        0.011111111111117289,
+        0.029629629629635,
+        0.018518518518517713,
+        0.018518518518517713
+      ],
+      "changed_mean": 17.25
+    },
+    {
+      "variant": "coordinate_gauge",
+      "mode": "trained",
+      "accuracy_mean": 0.9165,
+      "accuracy_seed_sd": 0.004031710156441176,
+      "delta_pp_mean": 0.0,
+      "delta_pp_seed_sd": 0.0,
+      "delta_pp_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "changed_mean": 0
+    },
+    {
+      "variant": "coordinate_gauge",
+      "mode": "frequency_reference",
+      "accuracy_mean": 0.9162777777777777,
+      "accuracy_seed_sd": 0.004234711871720239,
+      "delta_pp_mean": -0.0222222222222207,
+      "delta_pp_seed_sd": 0.02361867465395918,
+      "delta_pp_by_seed": [
+        -0.037037037037035425,
+        -0.04074074074074119,
+        -0.022222222222212373,
+        0.011111111111106187
+      ],
+      "changed_mean": 41.25
+    },
+    {
+      "variant": "coordinate_gauge",
+      "mode": "quality_reference",
+      "accuracy_mean": 0.9163981481481481,
+      "accuracy_seed_sd": 0.004048446331059977,
+      "delta_pp_mean": -0.010185185185182521,
+      "delta_pp_seed_sd": 0.0076353807881801615,
+      "delta_pp_by_seed": [
+        -0.011111111111106187,
+        -0.011111111111106187,
+        -0.018518518518517713,
+        0.0
+      ],
+      "changed_mean": 14.5
+    },
+    {
+      "variant": "coordinate_gauge",
+      "mode": "coordinate_reference",
+      "accuracy_mean": 0.9162777777777777,
+      "accuracy_seed_sd": 0.0042033909711267515,
+      "delta_pp_mean": -0.0222222222222207,
+      "delta_pp_seed_sd": 0.018394647439199725,
+      "delta_pp_by_seed": [
+        -0.0296296296296239,
+        -0.04444444444444695,
+        -0.011111111111106187,
+        -0.003703703703705763
+      ],
+      "changed_mean": 46.5
+    },
+    {
+      "variant": "coordinate_gauge",
+      "mode": "unit_gain",
+      "accuracy_mean": 0.9160462962962963,
+      "accuracy_seed_sd": 0.004358885831053292,
+      "delta_pp_mean": -0.04537037037036784,
+      "delta_pp_seed_sd": 0.03358955027262388,
+      "delta_pp_by_seed": [
+        -0.07037037037036509,
+        -0.07777777777777661,
+        -0.011111111111106187,
+        -0.022222222222223476
+      ],
+      "changed_mean": 89
+    }
+  ],
+  "validation": {
+    "status": "VERIFIED",
+    "rows": 40,
+    "cells": 3600,
+    "all_confusions_metrics_cells_recomputed": true,
+    "all_full_text_rows_reconciled": true,
+    "all8_trained_rows_equal_original_E200": true,
+    "source_selection_unchanged": true,
+    "model_updated": false,
+    "target_access": false,
+    "used_for_selection": false,
+    "goal_achieved": false
+  },
+  "target_scores_included": false,
+  "next_action": "Use source-only mode effects and original source geometry to design next physics-grounded CE architecture;no target scores, same split, scratch, performancefirst selection/defaultselectedclean",
+  "goal_achieved": false
+}

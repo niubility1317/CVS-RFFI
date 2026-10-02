@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "用户授权继续提升基础身份网络性能并研发真正RFF physics aware；本轮仅合法源域诊断，不扩大目标访问。",
   "code": {
-    "commit": "375986cd7fea362f9c9e3a34b9e66cba32ea364a",
+    "commit": "d250a874b292e3292fc19df167a46d290690d33c",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
@@ -92,7 +92,19 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01",
     "launch_command": "python -m experiments.cvs_coordinate_usage.publish --output local_artifacts/cvs_coordinate_usage_source_20261002_r01",
-    "stop_rule": "On technical/provenance/nonfinite/coverage/statechange failure preserve outputs;no retry or score-based stopping"
+    "stop_rule": "On technical/provenance/nonfinite/coverage/statechange failure preserve outputs;no retry or score-based stopping",
+    "actual_pid": 1397628,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_coordinate_usage.audit",
+      "--config",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+      ""
+    ],
+    "gpu": 0
   },
   "expected_artifacts": [
     "resolved_config.json",
@@ -128,7 +140,7 @@
       "row_id": "coordinate_equivariant-s2026092701--trained",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -157,13 +169,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092701--frequency_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -192,13 +215,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092701--quality_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -227,13 +261,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092701--coordinate_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -262,13 +307,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092701--unit_gain",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -297,13 +353,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092702--trained",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -332,13 +399,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092702--frequency_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -367,13 +445,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092702--quality_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -402,13 +491,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092702--coordinate_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -437,13 +537,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092702--unit_gain",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -472,13 +583,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092703--trained",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -507,13 +629,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092703--frequency_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -542,13 +675,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092703--quality_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -577,13 +721,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092703--coordinate_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -612,13 +767,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092703--unit_gain",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -647,13 +813,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092704--trained",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -682,13 +859,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092704--frequency_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -717,13 +905,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092704--quality_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -752,13 +951,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092704--coordinate_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -787,13 +997,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_equivariant-s2026092704--unit_gain",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -822,13 +1043,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092701--trained",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -857,13 +1089,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092701--frequency_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -892,13 +1135,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092701--quality_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -927,13 +1181,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092701--coordinate_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -962,13 +1227,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092701--unit_gain",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -997,13 +1273,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092702--trained",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1032,13 +1319,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092702--frequency_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1067,13 +1365,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092702--quality_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1102,13 +1411,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092702--coordinate_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1137,13 +1457,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092702--unit_gain",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1172,13 +1503,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092703--trained",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1207,13 +1549,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092703--frequency_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1242,13 +1595,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092703--quality_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1277,13 +1641,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092703--coordinate_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1312,13 +1687,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092703--unit_gain",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1347,13 +1733,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092704--trained",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1382,13 +1779,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092704--frequency_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1417,13 +1825,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092704--quality_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1452,13 +1871,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092704--coordinate_reference",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1487,13 +1917,24 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     },
     {
       "row_id": "coordinate_gauge-s2026092704--unit_gain",
       "method": "cvs_coordinate_usage_source",
       "purpose": "Frozeninternalmodelcounterfactual_sourceV_only",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coordinate_usage/configs/source.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/source/resolved_config.json",
       "data_overrides": {},
@@ -1522,6 +1963,17 @@
       "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
       "expected_artifacts": [
         "result.json"
+      ],
+      "actual_pid": 1397628,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_coordinate_usage.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01/experiments/cvs_coordinate_usage/configs/source.json",
+        ""
       ]
     }
   ],
@@ -1532,5 +1984,39 @@
     "Each row exclusive immutable result path;sharedresolved/log belongto unique matrixowner;all negative effects retained"
   ],
   "status": "PLANNED",
-  "registered_at": "2026-10-02T02:05:30+00:00"
+  "registered_at": "2026-10-02T02:05:30+00:00",
+  "outcome": {
+    "status": "ANALYZED",
+    "completion": {
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "run_id": "20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01",
+      "row_count": 40,
+      "source_V_count_per_row": 27000,
+      "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
+      "source_selection_unchanged": true,
+      "used_for_selection": false,
+      "model_updated": false,
+      "optimizer_steps": 0,
+      "training_augmentation": false,
+      "target_access": false,
+      "formal_CVS_training": false,
+      "elapsed_seconds": 58.83893790197908,
+      "peak_cuda_allocated_bytes": 90482176
+    },
+    "independent_analysis": {
+      "status": "VERIFIED",
+      "rows": 40,
+      "cells": 3600,
+      "all_confusions_metrics_cells_recomputed": true,
+      "all_full_text_rows_reconciled": true,
+      "all8_trained_rows_equal_original_E200": true,
+      "source_selection_unchanged": true,
+      "model_updated": false,
+      "target_access": false,
+      "used_for_selection": false,
+      "goal_achieved": false
+    },
+    "performance_improvement_claim": false,
+    "interpretation": "Weak coordinate-input usage in the current multiplicative conditioner;not evidence that coordinate lacks information or that additive injection improves performance."
+  }
 }
