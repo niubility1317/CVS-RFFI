@@ -1,0 +1,42 @@
+{
+  "method": "cvs_cfo_information_source",
+  "run_id": "20261002-diagnostic-cvs-cfo-information-source-manysig-m1-r01",
+  "source_receivers": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_days": [
+    1,
+    2,
+    3
+  ],
+  "windows": [
+    [
+      0,
+      80
+    ],
+    [
+      80,
+      160
+    ],
+    [
+      160,
+      240
+    ]
+  ],
+  "split_seed": 392005,
+  "feature_sets": [
+    "cfo80",
+    "coherence80",
+    "cfo_coherence80",
+    "three_window"
+  ],
+  "ridge": 0.001,
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-cfo-information-source-manysig-m1-r01/source",
+  "augmentation": false
+}

@@ -1,4 +1,4 @@
-# relative_cfo实验与历史证据
+# information_diagnostic实验与历史证据
 
 [返回总索引](../README.md)
 
@@ -7,4 +7,3 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |CVS 相对频偏坐标的源域身份信息诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-cfo-information-source-manysig-m1-r01/report.md)|
-|CVS 全路径逐包同步身份网络：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/report.md)|
