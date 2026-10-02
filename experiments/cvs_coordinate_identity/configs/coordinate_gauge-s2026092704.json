@@ -1,0 +1,62 @@
+{
+  "method": "cvs_coordinate_identity",
+  "variant": "coordinate_gauge",
+  "model_seed": 2026092704,
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_gauge-s2026092704/source",
+  "epochs": 200,
+  "batch_size": 128,
+  "lr": 0.0002,
+  "lr_min": 1e-06,
+  "weight_decay": 0.0001,
+  "drop_last": false,
+  "augmentation": false,
+  "domain_backbone": false,
+  "extra_losses": [],
+  "selection": "fixed_last_epoch",
+  "split_seed": 392005,
+  "device": "cuda:0",
+  "coordinate": {
+    "mode": "coordinate_gauge",
+    "input": "received_equalized1_unit_rms_IQ",
+    "sample_rate_hz": 25000000,
+    "estimator_window": [
+      80,
+      160
+    ],
+    "period_samples": 20,
+    "relative_frequency_alias_hz": 1250000,
+    "all_waveform_identity_paths_after_alignment": true,
+    "relative_coordinate_retained": true,
+    "retained_coordinates": [
+      "cos(20omega)-1",
+      "sin(20omega)",
+      "clamp(coherence,0,1)-1"
+    ],
+    "gain": "1+0.25*tanh(Linear3to160(coordinates))",
+    "initial_gain": 1.0,
+    "gain_interval": [
+      0.75,
+      1.25
+    ],
+    "conditioner_parameters": 640,
+    "conditioner_identity_class_specific": false,
+    "quality_input_gradient": "detached; measured perpacket quality controls learned gain without undefined magnitude gradient at zero correlation",
+    "constant_phase_invariant_real_arithmetic": true,
+    "whole_affine_phase_invariant": false,
+    "identity_core": "gauge_coherent",
+    "embedding_dimension": 160,
+    "classifier_scale": 30.0,
+    "arbitrary_channel_rx_invariant": false,
+    "hardware_parameter_estimation": false,
+    "interpretation": "Aligned received identity features modulated by retained relative-frequency/quality coordinate;not TX hardware recovery"
+  },
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  }
+}

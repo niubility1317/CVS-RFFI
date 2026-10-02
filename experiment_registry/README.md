@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T01:13:43+00:00
+更新：2026-10-02T01:23:48+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|52|
+|managed_run|53|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,17 +20,17 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|35|
-|[clean_only](by_method/clean_only.md)|27|
-|[ce_only](by_method/ce_only.md)|27|
-|[no_augmentation](by_method/no_augmentation.md)|20|
-|[performance_priority](by_method/performance_priority.md)|20|
-|[source_selection](by_method/source_selection.md)|15|
+|[cvs](by_method/cvs.md)|36|
+|[clean_only](by_method/clean_only.md)|28|
+|[ce_only](by_method/ce_only.md)|28|
+|[no_augmentation](by_method/no_augmentation.md)|21|
+|[performance_priority](by_method/performance_priority.md)|21|
+|[source_selection](by_method/source_selection.md)|16|
 |[daot](by_method/daot.md)|11|
 |[source_selected](by_method/source_selected.md)|11|
 |[rc4](by_method/rc4.md)|10|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|10|
-|[rff_physics](by_method/rff_physics.md)|8|
+|[rff_physics](by_method/rff_physics.md)|9|
 |[practical](by_method/practical.md)|7|
 |[residual](by_method/residual.md)|7|
 |[residual_noeq](by_method/residual_noeq.md)|7|
@@ -45,6 +45,7 @@
 |[truth_last](by_method/truth_last.md)|5|
 |[final200](by_method/final200.md)|4|
 |[d92](by_method/d92.md)|3|
+|[relative_cfo](by_method/relative_cfo.md)|3|
 |[response](by_method/response.md)|3|
 |[core90](by_method/core90.md)|3|
 |[sixscene](by_method/sixscene.md)|2|
@@ -59,9 +60,9 @@
 |[cvcnn_matched](by_method/cvcnn_matched.md)|2|
 |[ablation](by_method/ablation.md)|2|
 |[scratch](by_method/scratch.md)|2|
-|[relative_cfo](by_method/relative_cfo.md)|2|
 |[frozen](by_method/frozen.md)|2|
 |[preamble](by_method/preamble.md)|2|
+|[packet_synchronization](by_method/packet_synchronization.md)|2|
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
@@ -99,7 +100,6 @@
 |[whole_identity_observables](by_method/whole_identity_observables.md)|1|
 |[known_excitation](by_method/known_excitation.md)|1|
 |[rf_behavior_operator](by_method/rf_behavior_operator.md)|1|
-|[packet_synchronization](by_method/packet_synchronization.md)|1|
 
 ## 最近记录入口
 
@@ -143,6 +143,7 @@
 |RFF物理可辨识性：合成诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-identifiability-synthetic-m1-r01/report.md)|
 |RFF 源域已知激励诊断：预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/report.md)|
 |RFF源域前导码与可观测量诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|
+|CVS 同步坐标保留：两种身份核心×四seed纯CE源研发|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/report.md)|
 |CVS 全路径复相位等变记忆网络：独立 clean 测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-clean-manysig-m24-r01/report.md)|
 |CVS 整网复相位约束：完整 FP32 独立 clean 报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01/report.md)|
 |CVS 整网复相位约束：完整 FP32 源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/report.md)|

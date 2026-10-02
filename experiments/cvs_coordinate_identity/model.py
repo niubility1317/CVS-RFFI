@@ -64,7 +64,9 @@ class CoordinateCVS(nn.Module):
     @torch.no_grad()
     def diagnostics(self,x):
         _,omega,valid,descriptor=self.coordinates(x);gain=1+GAIN_BOUND*torch.tanh(self.conditioner(descriptor))
-        return dict(relative_cfo_hz_mean=float((omega*25000000/(2*math.pi)).mean()),fallback_fraction=float((~valid).float().mean()),
+        hz=omega*25000000/(2*math.pi)
+        return dict(relative_cfo_hz_mean=float(hz.mean()),relative_cfo_hz_min=float(hz.min()),relative_cfo_hz_max=float(hz.max()),
+                    coherence_mean=float((descriptor[:,2]+1).mean()),fallback_fraction=float((~valid).float().mean()),
                     gain_min=float(gain.min()),gain_max=float(gain.max()),gain_mean=float(gain.mean()),conditioner_active=True,
                     whole_affine_invariance_claim=False,hardware_parameter_recovery=False)
 
