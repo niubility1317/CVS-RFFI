@@ -128,8 +128,8 @@
   "comparison_group_id": "d92-fixed-support-diagnostic-4rows-160parents",
   "name": "D92 group-balanced support-metric GGN1 + LocalRidge joint support diagnostic",
   "description": "One algebraic current-train group/class weighting change in C gate; B unchanged; fixed 4 rows/160 parents/1800 paths; no parameter grid or query feedback",
-  "status": "LOCAL_VERIFIED",
-  "status_detail": "86 distinct affected synthetic cases passed after one localized trial repair; isolated imports and existing input metadata verified; not launched",
+  "status": "RUNNING",
+  "status_detail": "Independently verified immutable runtime; two support-only rows running, two pending; no scores read",
   "created_at": "2026-10-02T01:29:26.396251+00:00",
   "spec_path": "configs/d92_group_balanced_support_metric_joint_support_20261002.json",
   "permissions": {
@@ -152,7 +152,8 @@
     "commit": "a60dbf7de4162da8c4f461a94ef45b1b130af933",
     "preparation_parent_commit": "a60dbf7de4162da8c4f461a94ef45b1b130af933",
     "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
-    "commit_note": "Preparation parent; actual immutable pushed runtime OID recorded after unique launch"
+    "commit_note": "Preparation parent; actual immutable pushed runtime OID recorded after unique launch",
+    "actual_runtime_commit": "b9bb1ab04bf16bf3940026b23cf1a96a81a26e05"
   },
   "execution": {
     "host": "N607",
@@ -167,12 +168,119 @@
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01",
-    "actual_runtime_commit": null,
-    "publication_status": "SOURCE_VERIFIED_NOT_LAUNCHED",
+    "actual_runtime_commit": "b9bb1ab04bf16bf3940026b23cf1a96a81a26e05",
+    "publication_status": "VERIFIED",
     "implementation_validation": "VERIFIED_FROZEN_SOURCE_SYNTHETIC_AND_INPUT_METADATA_NOT_PERFORMANCE",
     "launch_command": "F:/App/miniconda3/python.exe -X utf8 E:/type10-7/.codex_tmp/run_ssr_command_native_activation_20261001.py E:/type10-7/code/snapshots/d92_support_upgrade_20260928_wt/tools/publish_d92_group_balanced_support_metric_joint_probe.py --spec configs/d92_group_balanced_support_metric_joint_support_20261002.json",
     "implementation_validation_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/implementation_validation_20261002.json",
-    "metadata_preflight_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/preflight_20261002.json"
+    "metadata_preflight_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/preflight_20261002.json",
+    "publication_ref": "evidence/publication/publication.json",
+    "supervisor_pid": 1391208,
+    "supervisor_start_ticks": 15384056,
+    "actual_supervisor_command": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_balanced_support_metric_joint_support_20261002_r01/tools/run_d92_group_balanced_support_metric_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_balanced_support_metric_joint_support_20261002_r01/configs/d92_group_balanced_support_metric_joint_support_20261002.json",
+      "--commit",
+      "b9bb1ab04bf16bf3940026b23cf1a96a81a26e05"
+    ],
+    "latest_runtime_observed_utc": "2026-10-02T01:56:46Z",
+    "latest_runtime_readback_ref": "evidence/support_runtime_1790906267136715700.json",
+    "current_row_statuses": {
+      "rx3-cvs-daot-rc4-s2026092701": "TRAINING_ON_SUPPORT",
+      "rx3-cvs-daot-rc4-s2026092702": "TRAINING_ON_SUPPORT",
+      "rx1-cvs-daot-rc4-s2026092701": "PENDING",
+      "rx1-cvs-daot-rc4-s2026092702": "PENDING"
+    },
+    "row_pids": {
+      "rx3-cvs-daot-rc4-s2026092701": 1391273,
+      "rx3-cvs-daot-rc4-s2026092702": 1391274,
+      "rx1-cvs-daot-rc4-s2026092701": null,
+      "rx1-cvs-daot-rc4-s2026092702": null
+    },
+    "actual_commands_by_row": {
+      "rx3-cvs-daot-rc4-s2026092701": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_balanced_support_metric_joint_support_20261002_r01/tools/evaluate_d92_group_balanced_support_metric_joint_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/resolved_config.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--expected-model-seed",
+        "2026092701",
+        "--run-id",
+        "20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092701",
+        "--release-commit",
+        "b9bb1ab04bf16bf3940026b23cf1a96a81a26e05",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+        "--ground-summary",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092701/ground",
+        "--ground-summary-already-deployed",
+        "false"
+      ],
+      "rx3-cvs-daot-rc4-s2026092702": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_balanced_support_metric_joint_support_20261002_r01/tools/evaluate_d92_group_balanced_support_metric_joint_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/resolved_config.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--expected-model-seed",
+        "2026092702",
+        "--run-id",
+        "20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092702",
+        "--release-commit",
+        "b9bb1ab04bf16bf3940026b23cf1a96a81a26e05",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+        "--ground-summary",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092702/ground",
+        "--ground-summary-already-deployed",
+        "false"
+      ]
+    },
+    "actual_remote_environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "automatic_retry": false,
+    "source_delivery": {
+      "status": "VERIFIED",
+      "local_HEAD": "b9bb1ab04bf16bf3940026b23cf1a96a81a26e05",
+      "remote_oid": "b9bb1ab04bf16bf3940026b23cf1a96a81a26e05",
+      "branch": "codex/d92-support-upgrade-20260928"
+    },
+    "support_metrics_read": false,
+    "query_access": false
   },
   "probe": {
     "cohorts": {
@@ -4518,7 +4626,7 @@
         "--row-id",
         "rx3-cvs-daot-rc4-s2026092701",
         "--release-commit",
-        "__PUSHED_RUNTIME_OID_RESOLVED_AT_LAUNCH__",
+        "b9bb1ab04bf16bf3940026b23cf1a96a81a26e05",
         "--ground-packet",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
         "--ground-summary",
@@ -4526,11 +4634,44 @@
         "--ground-summary-already-deployed",
         "false"
       ],
-      "command_scope": "Prelaunch explicit template; runtime OID resolved by publisher and actual executed argv saved in row_startup.json; never directly execute this template",
+      "command_scope": "Actual executed argv independently read from immutable row startup",
       "budget_ref": "configs/d92_group_balanced_support_metric_joint_support_20261002.json#probe.budget.per_row.rx3-cvs-daot-rc4-s2026092701",
       "expected_artifacts": [
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe/probe_complete.json",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe/state_manifest.json"
+      ],
+      "runtime_status": "TRAINING_ON_SUPPORT",
+      "actual_pid": 1391273,
+      "actual_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_balanced_support_metric_joint_support_20261002_r01/tools/evaluate_d92_group_balanced_support_metric_joint_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/resolved_config.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--expected-model-seed",
+        "2026092701",
+        "--run-id",
+        "20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092701",
+        "--release-commit",
+        "b9bb1ab04bf16bf3940026b23cf1a96a81a26e05",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+        "--ground-summary",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092701/ground",
+        "--ground-summary-already-deployed",
+        "false"
       ]
     },
     {
@@ -4581,7 +4722,7 @@
         "--row-id",
         "rx3-cvs-daot-rc4-s2026092702",
         "--release-commit",
-        "__PUSHED_RUNTIME_OID_RESOLVED_AT_LAUNCH__",
+        "b9bb1ab04bf16bf3940026b23cf1a96a81a26e05",
         "--ground-packet",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
         "--ground-summary",
@@ -4589,11 +4730,44 @@
         "--ground-summary-already-deployed",
         "false"
       ],
-      "command_scope": "Prelaunch explicit template; runtime OID resolved by publisher and actual executed argv saved in row_startup.json; never directly execute this template",
+      "command_scope": "Actual executed argv independently read from immutable row startup",
       "budget_ref": "configs/d92_group_balanced_support_metric_joint_support_20261002.json#probe.budget.per_row.rx3-cvs-daot-rc4-s2026092702",
       "expected_artifacts": [
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/probe/probe_complete.json",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/probe/state_manifest.json"
+      ],
+      "runtime_status": "TRAINING_ON_SUPPORT",
+      "actual_pid": 1391274,
+      "actual_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_balanced_support_metric_joint_support_20261002_r01/tools/evaluate_d92_group_balanced_support_metric_joint_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/resolved_config.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--expected-model-seed",
+        "2026092702",
+        "--run-id",
+        "20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092702",
+        "--release-commit",
+        "b9bb1ab04bf16bf3940026b23cf1a96a81a26e05",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+        "--ground-summary",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092702/ground",
+        "--ground-summary-already-deployed",
+        "false"
       ]
     },
     {
@@ -4657,7 +4831,10 @@
       "expected_artifacts": [
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx1-cvs-daot-rc4-s2026092701/probe/probe_complete.json",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx1-cvs-daot-rc4-s2026092701/probe/state_manifest.json"
-      ]
+      ],
+      "runtime_status": "PENDING",
+      "actual_pid": null,
+      "actual_command": null
     },
     {
       "row_id": "rx1-cvs-daot-rc4-s2026092702",
@@ -4720,7 +4897,10 @@
       "expected_artifacts": [
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx1-cvs-daot-rc4-s2026092702/probe/probe_complete.json",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/rx1-cvs-daot-rc4-s2026092702/probe/state_manifest.json"
-      ]
+      ],
+      "runtime_status": "PENDING",
+      "actual_pid": null,
+      "actual_command": null
     }
   ],
   "optimization_basis": {

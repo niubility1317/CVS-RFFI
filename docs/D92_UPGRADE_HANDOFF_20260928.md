@@ -1,3 +1,11 @@
+## 2026-10-02 01:57 UTC 当前运行交接
+
+- Goal ACTIVE。新数学候选 `20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01` 已从推送并独立远端OID核对的 `b9bb1ab04bf16bf3940026b23cf1a96a81a26e05` 唯一发布；普通N607 user/root launch owner，supervisor1391208/start15384056，rx3 PID1391273/1391274正常 support 训练，rx1两行pending。完整4/160/1800，CPU2/BLAS2/CUDA空；当前无完整产物/诊断结果，不停止/重启/热改/自动retry。配置 `configs/d92_group_balanced_support_metric_joint_support_20261002.json` frozen原样；最新证据 `automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/support_runtime_1790906267136715700.json`。下次正常metadata约02:17UTC。
+- 新算法C gate当前train组/类均衡，B/实际B继承/其余GGN常数不变，依据support/math、不回流query评分。86个不同合成case通过，唯一zero-K非法trial拒绝与原预算回归修复，P0/P1初审+该点一次readback收口；没有性能或省星载算力结论。
+- support完整终态后，仅一次独立新 analyzer（已在 `b9bb1ab04bf16bf3940026b23cf1a96a81a26e05` 推送，但未发布分析包）：tools/analyze_d92_group_balanced_support_metric_joint_probe.py，CLI --spec --output --expected-runtime-commit [--run-root]；覆盖全部4/160/1800再读完整archive与held support，不访问query、不拟合、不晋级。新weighted gate标量方程读回/JSONL/CSV不是fullkernel/JVP/完整head误差证明。报告全A/B/C与K×新增及实际head拟合参数、adapter坐标、成本，K1 held=N/A。
+- 两旧完整query 01:57:52UTC仍VERIFIED健康：SupportMetric c7c supervisor1327506/rx3 1327618/1327622；ProtoFrame72663 supervisor1204372/rx3 1204902/1204908；各rx1等待/global none。下次metadata约02:18UTC。仅完整终态后按下文固定独立scorer，无子集评分或重预测。
+- 本地资料镜像 helper 的宽泛derived-index复制已中断且独立确认无遗留该进程；保留历史/衍生文件。只用既有 d92_upgrade_runs_20260928.jsonl 发布本轮 metadata，未提交全库派生details。Git状态中的全局catalog/README/coverage派生变化与details保留且不stage，不影响runtime whitelist。
+
 ## 2026-10-02 组均衡门控联合微调源码已验证
 
 - 新方法 D92-GroupBalancedSupportMetric-GGN1-LocalRidge，仅 C gate 使用当前训练 support 的 `N/(2*C_group*n_class)`；B、实际 B→C、物理 U/Gram/Fisher GGN、全部原常数和六资源边界保持不变。依据仅 support 数学诊断，不读取 query 结果调参。
