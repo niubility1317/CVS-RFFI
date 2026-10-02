@@ -1,0 +1,34 @@
+{
+  "status": "VERIFIED",
+  "candidate": "neural_residual_shallow",
+  "accuracy_mean": 0.6985669642857143,
+  "accuracy_seed_sd": 0.011880610795062559,
+  "paired_vs_adaptive": {
+    "candidate": "neural_residual_shallow",
+    "baseline": "adaptive_volterra_lag4",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      2.344047619047629,
+      0.17321428571428488,
+      0.2315476190476229,
+      0.6148809523809473
+    ],
+    "accuracy_delta_pp_mean": 0.840922619047621,
+    "accuracy_delta_pp_seed_sd": 1.0210536893690183,
+    "positive_seeds": 4
+  },
+  "all288_confusions_recomputed": true,
+  "old256_metrics_exactly_unchanged": true,
+  "all_mean_sd_and_pairs_recomputed": true,
+  "all_RX_sums_match": true,
+  "target_feedback": false,
+  "scientific_verdict": "PERFORMANCE_IMPROVEMENT",
+  "scope": "Fixed historically exposed clean benchmark; source-selected pureCE neural architecture; four model seeds; no arbitraryRX or uniqueTX hardware separation claim"
+}

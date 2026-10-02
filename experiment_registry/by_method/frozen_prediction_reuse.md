@@ -17,6 +17,6 @@
 |CVS 相对能量保留身份网络：独立 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-energy-clean-manysig-m24-r01/report.md)|
 |CVS 全路径复相位等变记忆网络：独立 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-clean-manysig-m24-r01/report.md)|
 |CVS 整网复相位约束：完整 FP32 独立 clean 报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01/report.md)|
-|可学习复卷积残差CVS：源域选中四seed clean与32冻结控制|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01/report.md)|
+|CVS可学习复卷积残差：独立clean结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01/report.md)|
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|
 |CVS性能优先继续优化：rf_gmp clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-clean-manysig-m24-r01/report.md)|

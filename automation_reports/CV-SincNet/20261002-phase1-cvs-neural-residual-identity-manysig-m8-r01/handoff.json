@@ -1,7 +1,7 @@
 {
   "goal": "Improve CVS recognition through neural architecture alone; no new training strategy or extra loss",
   "run_id": "20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01",
-  "status": "SOURCE_ANALYZED_PENDING_CLEAN",
+  "status": "ANALYZED",
   "release_commit": "f929f4d1116640474d324844e2f0824f97ca7dd0",
   "launch_owner": "codex/root/cvs-neural-residual-identity-20261002",
   "dispatcher_pid": 1886983,
@@ -66,10 +66,20 @@
   ],
   "evidence": "evidence/final_source_readback.json",
   "next": [
-    "Complete preregistered selected4clean and independent36row scoring"
+    "This8source/36clean iteration is complete; no new target-driven selection or rerun"
   ],
   "performance_goal_achieved": false,
-  "no_new_query_yet": true,
+  "no_new_query_yet": false,
   "source_complete": true,
-  "selected_variant": "neural_residual_shallow"
+  "selected_variant": "neural_residual_shallow",
+  "clean_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+  "clean_complete": true,
+  "current_control_improvement_verified": true,
+  "completion_scope": {
+    "iteration_complete": true,
+    "current_control_improvement_verified": true,
+    "broad_performance_goal_achieved": false,
+    "reason": "All4 improve versus adaptive control, but below originalCVS and historical residualfusion in all4 seeds; no general RX robustness established",
+    "no_target_driven_reselection": true
+  }
 }

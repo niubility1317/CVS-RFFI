@@ -231,7 +231,9 @@
         },
         "source_val_worst_rx": 0.96
       },
-      "test_status": "PENDING_REGISTERED_CLEAN"
+      "test_status": "VERIFIED_SCORED_COMPLETE",
+      "test_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+      "status": "ANALYZED"
     },
     {
       "row_id": "neural_residual_deep-s2026092701",
@@ -312,7 +314,8 @@
         },
         "source_val_worst_rx": 0.9592592592592593
       },
-      "test_status": "N/A_NOT_SOURCE_SELECTED"
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "status": "ANALYZED"
     },
     {
       "row_id": "neural_residual_shallow-s2026092702",
@@ -393,7 +396,9 @@
         },
         "source_val_worst_rx": 0.9592592592592593
       },
-      "test_status": "PENDING_REGISTERED_CLEAN"
+      "test_status": "VERIFIED_SCORED_COMPLETE",
+      "test_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+      "status": "ANALYZED"
     },
     {
       "row_id": "neural_residual_deep-s2026092702",
@@ -474,7 +479,8 @@
         },
         "source_val_worst_rx": 0.9585185185185185
       },
-      "test_status": "N/A_NOT_SOURCE_SELECTED"
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "status": "ANALYZED"
     },
     {
       "row_id": "neural_residual_shallow-s2026092703",
@@ -555,7 +561,9 @@
         },
         "source_val_worst_rx": 0.957962962962963
       },
-      "test_status": "PENDING_REGISTERED_CLEAN"
+      "test_status": "VERIFIED_SCORED_COMPLETE",
+      "test_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+      "status": "ANALYZED"
     },
     {
       "row_id": "neural_residual_deep-s2026092703",
@@ -636,7 +644,8 @@
         },
         "source_val_worst_rx": 0.9574074074074074
       },
-      "test_status": "N/A_NOT_SOURCE_SELECTED"
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "status": "ANALYZED"
     },
     {
       "row_id": "neural_residual_shallow-s2026092704",
@@ -717,7 +726,9 @@
         },
         "source_val_worst_rx": 0.9548148148148148
       },
-      "test_status": "PENDING_REGISTERED_CLEAN"
+      "test_status": "VERIFIED_SCORED_COMPLETE",
+      "test_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+      "status": "ANALYZED"
     },
     {
       "row_id": "neural_residual_deep-s2026092704",
@@ -798,7 +809,8 @@
         },
         "source_val_worst_rx": 0.9542592592592593
       },
-      "test_status": "N/A_NOT_SOURCE_SELECTED"
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "status": "ANALYZED"
     }
   ],
   "notes": [
@@ -816,7 +828,7 @@
     "Reporting clarification after inspecting existing profiler: aten.convolution is counted, including functionalcomplex/depthwise kernels. FFT/normalization/pooling/gates/elementwise ops remain excluded. Training code/config/output are unchanged in immutable release f929f4d11."
   ],
   "registered_at": "2026-10-02T15:59:31+00:00",
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "source_controls": [
     {
       "variant": "adaptive_volterra_lag4",
@@ -928,6 +940,16 @@
       "test_view": "clean"
     },
     "goal_achieved": false,
-    "test_status": "PENDING_REGISTERED_CLEAN"
+    "test_status": "VERIFIED_SCORED_COMPLETE",
+    "test_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+    "current_control_improvement_verified": true,
+    "completion_scope": {
+      "iteration_complete": true,
+      "current_control_improvement_verified": true,
+      "broad_performance_goal_achieved": false,
+      "reason": "All4 improve versus adaptive control, but below originalCVS and historical residualfusion in all4 seeds; no general RX robustness established",
+      "no_target_driven_reselection": true
+    },
+    "test_evidence": "../20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01/evidence/analysis_validation.json"
   }
 }

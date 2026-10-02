@@ -36,3 +36,7 @@
 源run：`20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01`。
 
 条件clean run：`20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01`。
+
+## 执行结果（2026-10-03）
+
+以上预登记矩阵已完成。8模型自然完成E200；固定源规则选中浅层结构，深层结构未访问query。浅层clean准确率69.8567%±1.1881%（模型seed标准差），较adaptive控制+0.8409个百分点，4/4 seed提高。仍低于原始CVS76.2272%与历史残差融合78.4543%，不宣称全面达到性能目标。见[全部测试与资源](../automation_reports/CV-SincNet/20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01/report.md)。

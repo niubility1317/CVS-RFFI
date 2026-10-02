@@ -43,7 +43,7 @@
 
 下一轮改变的是可学习卷积容量和残差深度，保持有效基线、原数据和训练方案。用可学习通道混合与时间卷积表达更丰富的特征关系，比较浅、深两种结构，不继续扫描曲率延迟。该方向是待检验假设，不是已证明的性能改善。具体结构、预算、源选择和条件clean测试见[结构预登记](CVS_NEURAL_RESIDUAL_20261002.md)。
 
-研究仍未完成“性能实际提高”的目标。需要新模型完成固定源训练、合法冻结，再由独立测试检验；不能凭结构参数、源分数或本次诊断宣告达成。
+本节为新实验启动前的源域判断。2026-10-03收尾更新：8个新模型完成固定训练，浅层结构经源规则冻结后完成clean测试，相对adaptive控制平均提高0.8409个百分点；但仍低于原始CVS及历史残差融合控制。局部提升已得到该固定基准的证据，整体性能目标尚未达成。
 
 ## 可追溯证据
 
@@ -52,3 +52,7 @@
 - [72条件冻结归因](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/report.md)
 - [全部源混淆矩阵](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/evidence/source_confusions.csv)
 - [逐接收机贡献](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/evidence/receiver_attribution.csv)
+
+## 本轮完成状态
+
+源训练8行、80000步、1600轮完整审计通过；只对源规则选中的浅层4模型新增clean预测，与32份不可变历史预测组成36行，288条评分已独立复算。单一CE和原训练流程保持不变，无额外策略或损失。完整正负结果、逐RX/TX与资源见[独立clean报告](../automation_reports/CV-SincNet/20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01/report.md)。这些测试结果仅用于本轮评价，不回流结构设计、选模或重跑。

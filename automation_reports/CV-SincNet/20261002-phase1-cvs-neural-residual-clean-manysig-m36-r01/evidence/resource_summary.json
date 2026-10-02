@@ -1,0 +1,73 @@
+{
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "parameters": 220987,
+      "trainable_parameters": 220987,
+      "resident_state_bytes": 884580,
+      "conv_linear_MACs": 9460000,
+      "mac_scope": "Conv1d/Conv2d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+      "hardware": "NVIDIA GeForce RTX 3090",
+      "torch_version": "2.1.0+cu121",
+      "inference_batch1_ms": 10.099981199891772,
+      "training_batch128_ms": 51.40492059872486,
+      "training_peak_bytes": 283227136,
+      "full_clean_prediction_seconds": 14.794992626993917,
+      "prediction_peak_bytes": 67277312,
+      "CPU_peak_bytes": null,
+      "onboard_transmission_bytes": null
+    },
+    {
+      "model_seed": 2026092702,
+      "parameters": 220987,
+      "trainable_parameters": 220987,
+      "resident_state_bytes": 884580,
+      "conv_linear_MACs": 9460000,
+      "mac_scope": "Conv1d/Conv2d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+      "hardware": "NVIDIA GeForce RTX 3090",
+      "torch_version": "2.1.0+cu121",
+      "inference_batch1_ms": 10.490017650590744,
+      "training_batch128_ms": 53.64062509906944,
+      "training_peak_bytes": 283227136,
+      "full_clean_prediction_seconds": 15.25598712300416,
+      "prediction_peak_bytes": 67277312,
+      "CPU_peak_bytes": null,
+      "onboard_transmission_bytes": null
+    },
+    {
+      "model_seed": 2026092703,
+      "parameters": 220987,
+      "trainable_parameters": 220987,
+      "resident_state_bytes": 884580,
+      "conv_linear_MACs": 9460000,
+      "mac_scope": "Conv1d/Conv2d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+      "hardware": "NVIDIA GeForce RTX 3090",
+      "torch_version": "2.1.0+cu121",
+      "inference_batch1_ms": 9.424497748841532,
+      "training_batch128_ms": 50.000848100171424,
+      "training_peak_bytes": 283227136,
+      "full_clean_prediction_seconds": 14.910915884014685,
+      "prediction_peak_bytes": 67277312,
+      "CPU_peak_bytes": null,
+      "onboard_transmission_bytes": null
+    },
+    {
+      "model_seed": 2026092704,
+      "parameters": 220987,
+      "trainable_parameters": 220987,
+      "resident_state_bytes": 884580,
+      "conv_linear_MACs": 9460000,
+      "mac_scope": "Conv1d/Conv2d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+      "hardware": "NVIDIA GeForce RTX 3090",
+      "torch_version": "2.1.0+cu121",
+      "inference_batch1_ms": 9.573754599841777,
+      "training_batch128_ms": 50.88382200046908,
+      "training_peak_bytes": 283227136,
+      "full_clean_prediction_seconds": 14.647920540010091,
+      "prediction_peak_bytes": 67277312,
+      "CPU_peak_bytes": null,
+      "onboard_transmission_bytes": null
+    }
+  ],
+  "scope": "Measured same-run hardware; not an exclusive benchmark; onboard/CPU peak N/A"
+}
