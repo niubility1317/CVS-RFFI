@@ -1,0 +1,16 @@
+{
+  "status": "SUBMITTED",
+  "pid": 1852325,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.cvs_phase_curvature_identity.dispatch",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/launch_spec.json"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/dispatcher.stdout.log",
+  "commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+  "sha256": "68b8d68a8b4e7e77ae103e71a1a48342b1d33253c76ea156ef4b4e0f72ace558"
+}

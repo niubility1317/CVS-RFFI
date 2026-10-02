@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T14:59:25+00:00
+更新：2026-10-02T15:24:57+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|70|
+|managed_run|71|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,7 +20,7 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|53|
+|[cvs](by_method/cvs.md)|54|
 |[ce_only](by_method/ce_only.md)|42|
 |[clean_only](by_method/clean_only.md)|41|
 |[performance_priority](by_method/performance_priority.md)|35|
@@ -31,9 +31,9 @@
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|13|
 |[daot](by_method/daot.md)|11|
 |[rc4](by_method/rc4.md)|10|
+|[source_only](by_method/source_only.md)|9|
 |[practical](by_method/practical.md)|8|
 |[residual_noeq](by_method/residual_noeq.md)|8|
-|[source_only](by_method/source_only.md)|8|
 |[concat](by_method/concat.md)|7|
 |[residual](by_method/residual.md)|7|
 |[phase1](by_method/phase1.md)|6|
@@ -44,13 +44,14 @@
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
 |[relative_cfo](by_method/relative_cfo.md)|5|
+|[diagnostic](by_method/diagnostic.md)|4|
 |[final200](by_method/final200.md)|4|
 |[sixscene](by_method/sixscene.md)|3|
 |[d92](by_method/d92.md)|3|
-|[diagnostic](by_method/diagnostic.md)|3|
 |[identity_only](by_method/identity_only.md)|3|
 |[scratch](by_method/scratch.md)|3|
 |[no_target_access](by_method/no_target_access.md)|3|
+|[frozen_weights](by_method/frozen_weights.md)|3|
 |[packet_synchronization](by_method/packet_synchronization.md)|3|
 |[fixed_parameter_budget](by_method/fixed_parameter_budget.md)|3|
 |[response](by_method/response.md)|3|
@@ -66,7 +67,7 @@
 |[ablation](by_method/ablation.md)|2|
 |[residual_fusion](by_method/residual_fusion.md)|2|
 |[coordinate_usage](by_method/coordinate_usage.md)|2|
-|[frozen_weights](by_method/frozen_weights.md)|2|
+|[phase_curvature](by_method/phase_curvature.md)|2|
 |[frozen](by_method/frozen.md)|2|
 |[preamble](by_method/preamble.md)|2|
 |[complex_volterra_memory](by_method/complex_volterra_memory.md)|2|
@@ -96,6 +97,7 @@
 |[simplex_classifier](by_method/simplex_classifier.md)|1|
 |[physical_stability](by_method/physical_stability.md)|1|
 |[information_diagnostic](by_method/information_diagnostic.md)|1|
+|[paired_ablation](by_method/paired_ablation.md)|1|
 |[public_synthetic](by_method/public_synthetic.md)|1|
 |[numerical_attribution](by_method/numerical_attribution.md)|1|
 |[received_sensitivity](by_method/received_sensitivity.md)|1|
@@ -112,7 +114,6 @@
 |[packet_moment_residual](by_method/packet_moment_residual.md)|1|
 |[whole_identity_observables](by_method/whole_identity_observables.md)|1|
 |[packet_orthogonal_envelope](by_method/packet_orthogonal_envelope.md)|1|
-|[phase_curvature](by_method/phase_curvature.md)|1|
 |[six_extra_parameters](by_method/six_extra_parameters.md)|1|
 |[known_excitation](by_method/known_excitation.md)|1|
 |[frozen_evaluation](by_method/frozen_evaluation.md)|1|
@@ -158,6 +159,7 @@
 |CVS 加性坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/report.md)|
 |CVS 相对频偏坐标：完整源域身份信息诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-cfo-information-source-manysig-m1-r01/report.md)|
 |CVS 坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/report.md)|
+|CVS曲率机制归因：冻结E200权重的完整源V消融|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/report.md)|
 |冻结 CVS 源权重的公共合成相位数值归因|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/report.md)|
 |CVS 完整源 V 接收变换与身份路径诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/report.md)|
 |RFF物理可辨识性：合成诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-identifiability-synthetic-m1-r01/report.md)|
@@ -182,7 +184,7 @@
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|
 |CVS整体物理观测身份网络：源训练预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01/report.md)|
 |CVS 包内正交包络输入：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/report.md)|
-|CVS 六层相位曲率残差：混合延迟14/24×四seed纯CE|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/report.md)|
+|CVS六层相位曲率残差：源实验预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/report.md)|
 |CVS 已知激励相对响应：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-reference-identity-manysig-m4-r01/report.md)|
 |residual_fusion 完整六环境测试结果|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：rf_gmp clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-clean-manysig-m24-r01/report.md)|

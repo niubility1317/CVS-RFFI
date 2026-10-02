@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "用户持续优化CVS基础网络：数学/通信/物理/RFF结构分析；性能优先，CE唯一、无增强、原划分、仅clean测试。",
   "code": {
-    "commit": "83d8ea6bd2afd7a332e79795d7eec6a120f9b3e1",
+    "commit": "d5a34a105348195c29601c97df248cc4e68fec24",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
@@ -99,7 +99,17 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_phase_curvature_identity.publish --output local_artifacts/cvs_phase_curvature_identity_20261002_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "actual_pid": 1852325,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase_curvature_identity.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/launch_spec.json"
+    ]
   },
   "expected_artifacts": [
     "last.pt",
@@ -146,7 +156,7 @@
       "row_id": "phase_curvature_lag14-s2026092701",
       "method": "phase_curvature_lag14",
       "purpose": "source_only_CVS_feature_phase_curvature_candidate",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag14-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -182,13 +192,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1852342,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase_curvature_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag14-s2026092701.json",
+        ""
       ]
     },
     {
       "row_id": "phase_curvature_lag24-s2026092701",
       "method": "phase_curvature_lag24",
       "purpose": "source_only_CVS_feature_phase_curvature_candidate",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag24-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -224,13 +245,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1852431,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase_curvature_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag24-s2026092701.json",
+        ""
       ]
     },
     {
       "row_id": "phase_curvature_lag14-s2026092702",
       "method": "phase_curvature_lag14",
       "purpose": "source_only_CVS_feature_phase_curvature_candidate",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag14-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -266,13 +298,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1852520,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase_curvature_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag14-s2026092702.json",
+        ""
       ]
     },
     {
       "row_id": "phase_curvature_lag24-s2026092702",
       "method": "phase_curvature_lag24",
       "purpose": "source_only_CVS_feature_phase_curvature_candidate",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag24-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -308,13 +351,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1852611,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase_curvature_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag24-s2026092702.json",
+        ""
       ]
     },
     {
       "row_id": "phase_curvature_lag14-s2026092703",
       "method": "phase_curvature_lag14",
       "purpose": "source_only_CVS_feature_phase_curvature_candidate",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag14-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -350,13 +404,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1852698,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase_curvature_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag14-s2026092703.json",
+        ""
       ]
     },
     {
       "row_id": "phase_curvature_lag24-s2026092703",
       "method": "phase_curvature_lag24",
       "purpose": "source_only_CVS_feature_phase_curvature_candidate",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag24-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -392,13 +457,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1852787,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase_curvature_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag24-s2026092703.json",
+        ""
       ]
     },
     {
       "row_id": "phase_curvature_lag14-s2026092704",
       "method": "phase_curvature_lag14",
       "purpose": "source_only_CVS_feature_phase_curvature_candidate",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag14-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -434,13 +510,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1852874,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase_curvature_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag14-s2026092704.json",
+        ""
       ]
     },
     {
       "row_id": "phase_curvature_lag24-s2026092704",
       "method": "phase_curvature_lag24",
       "purpose": "source_only_CVS_feature_phase_curvature_candidate",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag24-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -476,6 +563,17 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1852963,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase_curvature_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag24-s2026092704.json",
+        ""
       ]
     }
   ],

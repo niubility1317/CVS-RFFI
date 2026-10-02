@@ -1,0 +1,176 @@
+{
+  "run_id": "20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01",
+  "launch_owner": "codex/root/cvs-curvature-attribution-20261002",
+  "runtime_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01",
+  "log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01",
+  "rows": [
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092701/source",
+      "variant": "phase_curvature_lag14",
+      "model_seed": 2026092701,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092701",
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/cvs-curvature-attribution-20261002"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092701/source",
+      "variant": "phase_curvature_lag24",
+      "model_seed": 2026092701,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092701",
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/cvs-curvature-attribution-20261002"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092702/source",
+      "variant": "phase_curvature_lag14",
+      "model_seed": 2026092702,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092702",
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/cvs-curvature-attribution-20261002"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092702/source",
+      "variant": "phase_curvature_lag24",
+      "model_seed": 2026092702,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092702",
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/cvs-curvature-attribution-20261002"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092703/source",
+      "variant": "phase_curvature_lag14",
+      "model_seed": 2026092703,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092703",
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/cvs-curvature-attribution-20261002"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092703/source",
+      "variant": "phase_curvature_lag24",
+      "model_seed": 2026092703,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092703",
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/cvs-curvature-attribution-20261002"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092704/source",
+      "variant": "phase_curvature_lag14",
+      "model_seed": 2026092704,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092704",
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/cvs-curvature-attribution-20261002"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+      "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092704/source",
+      "variant": "phase_curvature_lag24",
+      "model_seed": 2026092704,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092704",
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/cvs-curvature-attribution-20261002"
+    }
+  ]
+}

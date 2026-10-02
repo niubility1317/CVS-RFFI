@@ -8,3 +8,4 @@
 |---|---|---|
 |CVS 加性坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/report.md)|
 |CVS 坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/report.md)|
+|CVS曲率机制归因：冻结E200权重的完整源V消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/report.md)|

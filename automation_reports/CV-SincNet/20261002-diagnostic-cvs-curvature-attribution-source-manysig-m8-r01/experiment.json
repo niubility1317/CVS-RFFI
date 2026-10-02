@@ -1,0 +1,524 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01",
+  "group_id": "cvs-frozen-source-curvature-mechanism",
+  "display_name": "CVS曲率机制归因：冻结E200权重的完整源V消融",
+  "description": "8个现有源模型逐项关闭6个曲率门与原2个输入门，9种固定干预共72条件；测量同27000物理V样本的准确率、CE、RX分层、预测翻转和有益/有害变化。",
+  "kind": "cvs",
+  "stage": "Phase1-source-only-diagnostic",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "diagnostic",
+    "source_only",
+    "frozen_weights",
+    "phase_curvature",
+    "paired_ablation"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [
+    "20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-02用户明确优化效果不佳，需要深入分析；继续原CE/无增强/仅身份骨干，源V诊断不访问目标。",
+  "code": {
+    "commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+    "architecture_base_commit": "d5a34a105348195c29601c97df248cc4e68fec24"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center256; unit packet RMS; fs=25000000Hz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "each row/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "ManySig.tx_list: all6; actual physical class strings exported at runtime",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only_CVS_diagnostic",
+    "query_use": "No target query/truth paths or access; V only",
+    "external_method_exception": null,
+    "claim_scope": "Frozen-weight source causal intervention, not retraining effect or unseen-RX/uniqueTX proof"
+  },
+  "checkpoint": {
+    "initialization": "strict_frozen_own_E200",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092704/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092704/source/last.pt"
+    ],
+    "provenance_verdict": "PENDING_E200_SOURCE_COMPLETION; before load require full physical roles, scratch ancestry, strict state and payload equality",
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "selection_rule": "All 8 preregistered source models; diagnostics cannot alter already frozen source selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/cvs-curvature-attribution-20261002",
+    "gpu_policy": "Free capacity only; at most two total training jobs/GPU and >=12GB free; preserve healthy tasks",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01",
+    "launch_command": "python -m experiments.cvs_phase_curvature_attribution.publish --output local_artifacts/cvs_curvature_attribution_source_20261002_r01",
+    "stop_rule": "Own row exits on provenance/nonfinite/V pairing/reproduction/state restoration failure; preserve partial; no relaunch or intervention in source training"
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "source_loader/source_contract.json",
+    "9 condition source_predictions.json",
+    "completion.json",
+    "paired mechanism report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_V_accuracy",
+      "source_V_CE",
+      "source_RX_accuracy",
+      "prediction_changes",
+      "all_on_correct_intervention_wrong",
+      "all_on_wrong_intervention_correct",
+      "seconds",
+      "peak_cuda_allocated_bytes"
+    ],
+    "dimensions": [
+      "variant",
+      "model_seed",
+      "condition",
+      "source_receiver"
+    ],
+    "prediction_ref": "Each diagnostic row has 9 condition_source_predictions.json files",
+    "scorer_ref": "Source labels only, explicitly source-only diagnostic; no target truth",
+    "primary": "Exact all-on E200 source metric reproduction, 72 full-source conditions, signed paired ablation effects; all parameters restored after every condition"
+  },
+  "rows": [
+    {
+      "row_id": "phase_curvature_lag14-s2026092701",
+      "method": "frozen_source_curvature_attribution",
+      "purpose": "Full V paired all-on/all-six-off/each-six-off/input-two-off; zero optimizer updates",
+      "config_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;deterministicpublicdiagnostics;noaug/support/evalRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "none_frozen_inference",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092701.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "9 condition_source_predictions.json"
+      ],
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "training": {
+        "epochs": 0,
+        "optimizer_steps": 0
+      }
+    },
+    {
+      "row_id": "phase_curvature_lag24-s2026092701",
+      "method": "frozen_source_curvature_attribution",
+      "purpose": "Full V paired all-on/all-six-off/each-six-off/input-two-off; zero optimizer updates",
+      "config_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;deterministicpublicdiagnostics;noaug/support/evalRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "none_frozen_inference",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092701.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "9 condition_source_predictions.json"
+      ],
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "training": {
+        "epochs": 0,
+        "optimizer_steps": 0
+      }
+    },
+    {
+      "row_id": "phase_curvature_lag14-s2026092702",
+      "method": "frozen_source_curvature_attribution",
+      "purpose": "Full V paired all-on/all-six-off/each-six-off/input-two-off; zero optimizer updates",
+      "config_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;deterministicpublicdiagnostics;noaug/support/evalRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "none_frozen_inference",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092702.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "9 condition_source_predictions.json"
+      ],
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "training": {
+        "epochs": 0,
+        "optimizer_steps": 0
+      }
+    },
+    {
+      "row_id": "phase_curvature_lag24-s2026092702",
+      "method": "frozen_source_curvature_attribution",
+      "purpose": "Full V paired all-on/all-six-off/each-six-off/input-two-off; zero optimizer updates",
+      "config_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;deterministicpublicdiagnostics;noaug/support/evalRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "none_frozen_inference",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092702.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "9 condition_source_predictions.json"
+      ],
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "training": {
+        "epochs": 0,
+        "optimizer_steps": 0
+      }
+    },
+    {
+      "row_id": "phase_curvature_lag14-s2026092703",
+      "method": "frozen_source_curvature_attribution",
+      "purpose": "Full V paired all-on/all-six-off/each-six-off/input-two-off; zero optimizer updates",
+      "config_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;deterministicpublicdiagnostics;noaug/support/evalRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "none_frozen_inference",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092703.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "9 condition_source_predictions.json"
+      ],
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "training": {
+        "epochs": 0,
+        "optimizer_steps": 0
+      }
+    },
+    {
+      "row_id": "phase_curvature_lag24-s2026092703",
+      "method": "frozen_source_curvature_attribution",
+      "purpose": "Full V paired all-on/all-six-off/each-six-off/input-two-off; zero optimizer updates",
+      "config_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;deterministicpublicdiagnostics;noaug/support/evalRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "none_frozen_inference",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092703.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "9 condition_source_predictions.json"
+      ],
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "training": {
+        "epochs": 0,
+        "optimizer_steps": 0
+      }
+    },
+    {
+      "row_id": "phase_curvature_lag14-s2026092704",
+      "method": "frozen_source_curvature_attribution",
+      "purpose": "Full V paired all-on/all-six-off/each-six-off/input-two-off; zero optimizer updates",
+      "config_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;deterministicpublicdiagnostics;noaug/support/evalRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "none_frozen_inference",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092704.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "9 condition_source_predictions.json"
+      ],
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "training": {
+        "epochs": 0,
+        "optimizer_steps": 0
+      }
+    },
+    {
+      "row_id": "phase_curvature_lag24-s2026092704",
+      "method": "frozen_source_curvature_attribution",
+      "purpose": "Full V paired all-on/all-six-off/each-six-off/input-two-off; zero optimizer updates",
+      "config_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;deterministicpublicdiagnostics;noaug/support/evalRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "none_frozen_inference",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "experiments/cvs_phase_curvature_attribution/launch_spec.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092704.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "9 condition_source_predictions.json"
+      ],
+      "conditions": [
+        "all_on",
+        "curvature_all_off",
+        "curvature_off_0",
+        "curvature_off_1",
+        "curvature_off_2",
+        "curvature_off_3",
+        "curvature_off_4",
+        "curvature_off_5",
+        "input_mix_off"
+      ],
+      "training": {
+        "epochs": 0,
+        "optimizer_steps": 0
+      }
+    }
+  ],
+  "notes": [
+    "Standalone source-only diagnosis, no training and no target test required.",
+    "The existing source selection and conditional clean test remain unchanged.",
+    "All-on/zero coefficient intervention measures conditional contribution with other weights fixed. It cannot identify a scratch architecture causal effect.",
+    "All eight source models are included regardless of final source ranking; no source/target feedback changes this matrix."
+  ],
+  "status": "PLANNED",
+  "registered_at": "2026-10-02T15:24:57+00:00"
+}

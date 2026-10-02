@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "blockers": [],
+  "reviewer": "/root/curvature_clean_review",
+  "recorded_at": "2026-10-02T15:32:44.710413+00:00",
+  "tests": 19,
+  "synthetic_loader_samples": 27000,
+  "registered_models": 8,
+  "conditions": 72,
+  "frozen_source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+  "remote_action": false,
+  "formal_data_access": false,
+  "scope": "Checkpoint/input provenance, source loader interface, paired fullV metrics, state restoration, exclusive outputs, immutable release dependency coverage and no source selection mutation"
+}

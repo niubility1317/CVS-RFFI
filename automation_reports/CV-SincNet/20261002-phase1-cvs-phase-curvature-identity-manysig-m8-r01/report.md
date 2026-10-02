@@ -1,3 +1,5 @@
+当前接续状态：RUNNING。2026-10-02新对话核实原发布已成功，补齐启动登记；8个原进程健康继续。以下保留发布前历史记录。
+
 # CVS六层相位曲率残差：源实验预登记
 
 状态 LOCAL_VERIFIED，尚未发布。两种固定延迟(1,4)/(2,4)各四seed，共8行。六个复数FIR输出后、原共享归一化前加入延迟平衡三阶差分，每块一个零初始化全局tanh系数；保留原输入两个相位记忆系数、通道、深度、频域、读出和分类头。202561参数，比当前控制增加6，初始函数与own-scratch控制一致。CE唯一，无增强，仅身份骨干，原物理划分，scratch E200×50，完整FP32。控制仅读取四份adaptive源元数据，不加载控制权重。
@@ -11,3 +13,7 @@
 [本地检查](evidence/local_validation.json) · [公共执行](evidence/local_cpu_smoke.json) · [公共汇总](evidence/public_probe_summary.json)。正式源训练、源冻结和条件clean测试尚未完成。
 
 发布前一次实际源P0/P1审查 PASS，无阻断项。独立3项定点检查、10模块及collector注入/publisher远端脚本编译通过。源preflight VERIFIED：完整四份adaptive控制角色/来源/预算/FP32一致，用户/主机正确，八张GPU空闲，磁盘5.5T可用，新release/run/log无碰撞。尚未正式启动。[独立审查](evidence/independent_review.json) · [源preflight](evidence/preflight.json)。
+
+正式发布与运行 VERIFIED：release `d5a34a105348195c29601c97df248cc4e68fec24`，dispatcher PID 1852325；独立读回8个worker真实PID/CWD/argv/GPU、实际202561参数/完整FP32/alpha0/CE唯一/全参数梯度与六个FIR曲率输出测量，进度E22至E27。远端8公共模型24次CE smoke PASS。完整E200源冻结及条件clean尚未完成，不称识别性能提升。[启动读回](evidence/launch_readback.json)。
+
+接续研发：条件clean集成已完成，77项新旧协议合成检查通过，独立46项检查及P0/P1审查PASS。实际目标预测仍待固定E200源选择。已完整分析5组40模型8000轮源证据，进一步预登记8模型×9冻结源V消融，区分曲率执行与实际识别贡献；不改变当前源排名。
