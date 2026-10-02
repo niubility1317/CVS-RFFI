@@ -17,3 +17,11 @@
 每 GPU 最多两个训练任务，只使用空闲容量；一个 launch owner。不热改、停止或重启健康任务；技术失败保留产物，不自动重发。
 
 42 项针对性验证及一次独立 P0/P1 审查 PASS。[验证](evidence/local_validation.json) · [实时源控制与输出不存在核实](evidence/source_control_preflight.json)。
+
+## 实际启动核实
+
+VERIFIED：immutable release `ecb268f7b4bcab111f041e177ecc3f967f1cb21a`，dispatcher PID 1372744，8 个 worker 分别在 GPU0..7；CWD/argv/run-root/实际 resolved/config、每轮50步/6300样本和日志增长已独立读回。各实际 backend flags 与固定完整 FP32 一致，源数据角色相同、无 target/增强/域骨干。远端一次 CPU 8 模型运行/梯度/物理 smoke 完成，真实初始 checkpoint roundtrip 在各源 worker 内完成。当前仅训练进度，无最终源或新测试结论；不热改、停机或重启健康任务。
+
+## 条件测试路径准备
+
+本地已准备新候选冻结后的独立 clean 路径：source12记录重算、actual完整FP32/物理角色/scratch/E200/payload/strict模型加载核实后才读取query；仅选中4个新模型加20个旧冻结预测，共24行，同seed配对原残差及常见基准。coordinate17项（含两种真实模型 checkpoint 合成预测回读）与 synchronized15项回归检查通过，独立P0/P1审查PASS。没有生成真实clean配置、访问target或修改正在运行的源release。[验证](evidence/conditional_clean_validation.json)。

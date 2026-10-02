@@ -1,0 +1,66 @@
+{
+  "status": "SOURCE_TRAINING",
+  "run_id": "20261002-phase1-cvs-coordinate-identity-manysig-m8-r01",
+  "release_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
+  "dispatcher_pid": 1372744,
+  "launch_owner": "codex/root/cvs-coordinate-identity-20261002",
+  "workers": [
+    {
+      "row_id": "coordinate_equivariant-s2026092701",
+      "pid": 1372763,
+      "gpu": 0,
+      "epoch": 6
+    },
+    {
+      "row_id": "coordinate_gauge-s2026092701",
+      "pid": 1372850,
+      "gpu": 1,
+      "epoch": 6
+    },
+    {
+      "row_id": "coordinate_equivariant-s2026092702",
+      "pid": 1372939,
+      "gpu": 2,
+      "epoch": 5
+    },
+    {
+      "row_id": "coordinate_gauge-s2026092702",
+      "pid": 1373434,
+      "gpu": 3,
+      "epoch": 5
+    },
+    {
+      "row_id": "coordinate_equivariant-s2026092703",
+      "pid": 1373523,
+      "gpu": 4,
+      "epoch": 3
+    },
+    {
+      "row_id": "coordinate_gauge-s2026092703",
+      "pid": 1373667,
+      "gpu": 5,
+      "epoch": 3
+    },
+    {
+      "row_id": "coordinate_equivariant-s2026092704",
+      "pid": 1373756,
+      "gpu": 6,
+      "epoch": 2
+    },
+    {
+      "row_id": "coordinate_gauge-s2026092704",
+      "pid": 1373844,
+      "gpu": 7,
+      "epoch": 1
+    }
+  ],
+  "goal_achieved": false,
+  "target_access": false,
+  "next_steps": [
+    "Inspect same immutable release/live PIDs;no resubmit or restart",
+    "At E200 audit all80000 steps/1600 epochs/full logs and recompute12source-record performance selection",
+    "After E200 independent source12 ranking: if newwinner freeze actual selection, generate/register selected-only clean configs; if residual wins retain verified history/no newquery",
+    "Default onlyselected4new plus20old fixed predictions and independenttruthlast24row report; ifbaselinewins preserve existing clean/no unselected query"
+  ],
+  "conditional_clean_support_ready": true
+}
