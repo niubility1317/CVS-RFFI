@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "focused_tests": 6,
+  "command": "conda run --no-capture-output -n ssr-gpu python -X utf8 -m pytest tests/test_cvs_source_sensitivity.py -q -ra -o addopts= -p no:cacheprovider",
+  "scope": "Analytic transforms/zero-boundary/RMS/nonmutation/weightedgroups/hook cleanup/2 actual source architectures",
+  "independent_P0_P1_review": "PASS after single immutable SOURCE dependency P1 fixed and one point review",
+  "original_P1": "SOURCE release lacks generic clean contracts dependency; removed target evaluator imports",
+  "target_access": false
+}

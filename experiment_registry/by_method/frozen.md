@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |冻结 CVS 源权重的公共合成相位数值归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/report.md)|
+|CVS 完整源 V 接收变换与身份路径诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/report.md)|

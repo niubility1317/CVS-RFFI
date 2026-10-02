@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-01T23:49:56+00:00
+更新：2026-10-02T00:02:31+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|49|
+|managed_run|50|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,7 +20,7 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|32|
+|[cvs](by_method/cvs.md)|33|
 |[clean_only](by_method/clean_only.md)|26|
 |[ce_only](by_method/ce_only.md)|26|
 |[performance_priority](by_method/performance_priority.md)|19|
@@ -41,8 +41,8 @@
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
+|[source_only](by_method/source_only.md)|5|
 |[truth_last](by_method/truth_last.md)|5|
-|[source_only](by_method/source_only.md)|4|
 |[final200](by_method/final200.md)|4|
 |[d92](by_method/d92.md)|3|
 |[response](by_method/response.md)|3|
@@ -59,6 +59,7 @@
 |[cvcnn_matched](by_method/cvcnn_matched.md)|2|
 |[ablation](by_method/ablation.md)|2|
 |[scratch](by_method/scratch.md)|2|
+|[frozen](by_method/frozen.md)|2|
 |[preamble](by_method/preamble.md)|2|
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
@@ -86,8 +87,8 @@
 |[simplex_classifier](by_method/simplex_classifier.md)|1|
 |[physical_stability](by_method/physical_stability.md)|1|
 |[public_synthetic](by_method/public_synthetic.md)|1|
-|[frozen](by_method/frozen.md)|1|
 |[numerical_attribution](by_method/numerical_attribution.md)|1|
+|[received_sensitivity](by_method/received_sensitivity.md)|1|
 |[synthetic_only](by_method/synthetic_only.md)|1|
 |[no_target_access](by_method/no_target_access.md)|1|
 |[full_fp32](by_method/full_fp32.md)|1|
@@ -134,6 +135,7 @@
 |CVS性能优先继续优化：phase_dsq clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-clean-manysig-m24-r01/report.md)|
 |CVS 性能优先研发：物理补充表征|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-identity-manysig-m8-r01/report.md)|
 |冻结 CVS 源权重的公共合成相位数值归因|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/report.md)|
+|CVS 完整源 V 接收变换与身份路径诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/report.md)|
 |RFF物理可辨识性：合成诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-identifiability-synthetic-m1-r01/report.md)|
 |RFF 源域已知激励诊断：预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/report.md)|
 |RFF源域前导码与可观测量诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|

@@ -1,0 +1,3589 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01",
+  "group_id": "cvs-frozen-received-source-sensitivity",
+  "display_name": "完整源V接收变换诊断：2网络×4seed×7变换",
+  "description": "依据新query前已有冻结源公共CFO/信道/RX敏感性，检查完整V及全部身份路径；不使用clean成绩制定范围、不拟合、不更新模型、不重新选模。",
+  "kind": "diagnostic",
+  "stage": "Frozen-source-V-received-intervention",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "source_only",
+    "frozen",
+    "received_sensitivity"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [
+    "20261001-phase1-cvs-residual-identity-manysig-m8-r01",
+    "20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权持续优化基础网络，性能第一，真正 RFF physics aware；普通 CE、无增强、clean-only，每次发布默认完成测试。",
+  "code": {
+    "commit": "5eb07b152832f4314bd4ded6aefff49e6a7b4c6a",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01",
+    "architecture_base_commit": "583be084d91dc1fd8540bbf1da33b61b91b38975",
+    "note": "Preregistration parent HEAD; actual diagnostic commit fixed by committed package and independent launch readback. Model source implementation be0aec8 immutable.",
+    "model_code_commit": "be0aec8f2e2a3b50ce41d8ec1778c28c96e7eb6e"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "Existing exact source contract and ManySig equalized1",
+    "representation": "center256/unitRMS/25MHz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids/V",
+    "label_map_ref": "each row/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "roles": {
+      "L_s": "6300 unused in this diagnostic",
+      "U_s": "56700 unused",
+      "V": "27000 all packets/90 cells; labels permitted for source diagnostic"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing source contract reused; no schema/ID/role changes",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "formal_data_access": true
+  },
+  "permissions": {
+    "regime": "frozen_source_V_only",
+    "query_use": "No target/query/truth/scores/clean predictions or reports are read",
+    "external_method_exception": null,
+    "claim_scope": "Sensitivity of received identity representations, not unique TX hardware recovery; not upstream TX/RX causal attribution"
+  },
+  "checkpoint": {
+    "initialization": "frozen_source_inference_no_training",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+    ],
+    "provenance_verdict": "Before strict load: original complete source roles/representation/scratch/resolved/done/payload contract checks; no inheritance; all8 fixed E200 source models",
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "selection_rule": "No new selection; source/clean selections remain immutable; all2x4 frozen weights diagnosed equally"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/cvs-source-received-sensitivity-20261002",
+    "gpu_policy": "One inference worker only;existingchoose_gpu preflight:>=12000MiB free and<2 existing GPU jobs;no other process changes",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01",
+    "launch_command": "python -m experiments.cvs_source_sensitivity.publish --output local_artifacts/cvs_received_sensitivity_source_20261002_r01",
+    "stop_rule": "Own worker provenance/nonfinite/incomplete/state mutation/identity accuracy mismatch: preserve evidence, no automatic resubmit. No other processes modified."
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "data_contract/source_contract.json",
+    "56/result.json",
+    "completion.json",
+    "stdout.log",
+    "submit.json",
+    "independent full-cell recomputation/report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_accuracy",
+      "paired_source_accuracy_delta",
+      "prediction_agreement",
+      "unit_embedding_distance",
+      "logit_max_abs_error",
+      "five_stage_unit_distance"
+    ],
+    "dimensions": [
+      "variant",
+      "model_seed",
+      "received_transform",
+      "TX",
+      "RX",
+      "day",
+      "stage"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null,
+    "primary": "All56rows complete sourceV/90cells; independently weighted by counts; no rank/selection/target feedback.",
+    "later_test": "N/A: no new training/candidate; original models already completed frozen clean tests and are not rerun."
+  },
+  "rows": [
+    {
+      "row_id": "residual_fusion-s2026092701-identity",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "identity",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092701-identity",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092701-constant_phase",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "constant_phase",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092701-constant_phase",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092701-cfo_plus",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_plus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092701-cfo_plus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092701-cfo_minus",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_minus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092701-cfo_minus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092701-received_lti",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_lti",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092701-received_lti",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092701-received_image",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_image",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092701-received_image",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092701-received_cubic",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_cubic",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092701-received_cubic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092702-identity",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "identity",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092702-identity",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092702-constant_phase",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "constant_phase",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092702-constant_phase",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092702-cfo_plus",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_plus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092702-cfo_plus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092702-cfo_minus",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_minus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092702-cfo_minus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092702-received_lti",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_lti",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092702-received_lti",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092702-received_image",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_image",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092702-received_image",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092702-received_cubic",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_cubic",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092702-received_cubic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092703-identity",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "identity",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092703-identity",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092703-constant_phase",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "constant_phase",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092703-constant_phase",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092703-cfo_plus",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_plus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092703-cfo_plus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092703-cfo_minus",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_minus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092703-cfo_minus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092703-received_lti",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_lti",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092703-received_lti",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092703-received_image",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_image",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092703-received_image",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092703-received_cubic",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_cubic",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092703-received_cubic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092704-identity",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "identity",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092704-identity",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092704-constant_phase",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "constant_phase",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092704-constant_phase",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092704-cfo_plus",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_plus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092704-cfo_plus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092704-cfo_minus",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_minus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092704-cfo_minus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092704-received_lti",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_lti",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092704-received_lti",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092704-received_image",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_image",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092704-received_image",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+    },
+    {
+      "row_id": "residual_fusion-s2026092704-received_cubic",
+      "method": "residual_fusion",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_cubic",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/residual_fusion-s2026092704-received_cubic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092701-identity",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "identity",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092701-identity",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092701-constant_phase",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "constant_phase",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092701-constant_phase",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092701-cfo_plus",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_plus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092701-cfo_plus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092701-cfo_minus",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_minus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092701-cfo_minus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092701-received_lti",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_lti",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092701-received_lti",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092701-received_image",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_image",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092701-received_image",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092701-received_cubic",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_cubic",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092701-received_cubic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092702-identity",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "identity",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092702-identity",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092702-constant_phase",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "constant_phase",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092702-constant_phase",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092702-cfo_plus",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_plus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092702-cfo_plus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092702-cfo_minus",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_minus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092702-cfo_minus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092702-received_lti",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_lti",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092702-received_lti",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092702-received_image",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_image",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092702-received_image",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092702-received_cubic",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_cubic",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092702-received_cubic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092703-identity",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "identity",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092703-identity",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092703-constant_phase",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "constant_phase",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092703-constant_phase",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092703-cfo_plus",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_plus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092703-cfo_plus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092703-cfo_minus",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_minus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092703-cfo_minus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092703-received_lti",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_lti",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092703-received_lti",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092703-received_image",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_image",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092703-received_image",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092703-received_cubic",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_cubic",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092703-received_cubic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092704-identity",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "identity",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092704-identity",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092704-constant_phase",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "constant_phase",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092704-constant_phase",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092704-cfo_plus",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_plus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092704-cfo_plus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092704-cfo_minus",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "cfo_minus",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092704-cfo_minus",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092704-received_lti",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_lti",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092704-received_lti",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092704-received_image",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_image",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092704-received_image",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+    },
+    {
+      "row_id": "equivariant_memory-s2026092704-received_cubic",
+      "method": "equivariant_memory",
+      "purpose": "frozen_full_source_V_received_sensitivity",
+      "gpu": null,
+      "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
+      "data_overrides": {
+        "received_transform": "received_cubic",
+        "parameters": {
+          "sample_rate_hz": 25000000,
+          "phase_radians": 0.37,
+          "cfo_hz": 80000.0,
+          "lti_delay_samples": 1,
+          "lti_tap": [
+            0.15,
+            0.08
+          ],
+          "image_coefficient": [
+            0.02,
+            0.02
+          ],
+          "cubic_coefficient": [
+            -0.03,
+            0.0
+          ],
+          "lti_left_boundary": "zero history; first sample does not wrap",
+          "rms_after_transform": true
+        },
+        "stage_hooks": [
+          "id_backbone.t_proj",
+          "id_backbone.f_proj",
+          "id_backbone.pa_proj",
+          "id_backbone.cls_head.base_norm",
+          "id_backbone.cls_head.pa_norm"
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source model seed; no new RNG or fitting; fixed V/transform order.",
+      "k": null,
+      "scenario": "source_received_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 optimizer steps;full27000V packets;paired7received views",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/equivariant_memory-s2026092704-received_cubic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+    }
+  ],
+  "notes": [
+    "All2variants×4seeds×7 received transforms fixed before launch; only sourceV27000/90cells read; no target reports/scores/IQ/truth.",
+    "No FP64 mode; each frozen model retains its registered numerical policy, recorded at actual inference. No fitting or candidate selection."
+  ],
+  "registered_at": "2026-10-02T00:00:34.692091+00:00",
+  "status": "PLANNED",
+  "diagnostic_parameters": {
+    "sample_rate_hz": 25000000,
+    "phase_radians": 0.37,
+    "cfo_hz": 80000.0,
+    "lti_delay_samples": 1,
+    "lti_tap": [
+      0.15,
+      0.08
+    ],
+    "image_coefficient": [
+      0.02,
+      0.02
+    ],
+    "cubic_coefficient": [
+      -0.03,
+      0.0
+    ],
+    "lti_left_boundary": "zero history; first sample does not wrap",
+    "rms_after_transform": true
+  },
+  "test_completion_plan": {
+    "scope": "source-only frozen diagnostic",
+    "training": false,
+    "new_candidate": false,
+    "target_access": false,
+    "clean": "N/A: original complete clean predictions remain fixed; no repeated test or score"
+  }
+}
