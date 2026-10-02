@@ -1,12 +1,17 @@
 {
   "status": "VERIFIED",
-  "report_commit": "85ed39c533279702b2895930e7440705b6f3d31a",
-  "remote_report_oid": "85ed39c533279702b2895930e7440705b6f3d31a",
+  "report_commit": "2515716e646943758bd6505fcc27bf7f310484ea",
+  "remote_report_oid": "2515716e646943758bd6505fcc27bf7f310484ea",
   "branch": "codex/daot-practical-three-20260918",
   "runtime_commit": "a31fd318996be20f030aeccd7ed6ed614ce7048d",
-  "source_run": "20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01",
-  "source_launch": "VERIFIED_RUNNING",
+  "source_status": "VERIFIED_COMPLETE_BASELINE_RETAINED",
+  "selected_control": "adaptive_volterra_lag4",
+  "existing_clean_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+  "new_candidates_clean_status": "N/A_NOT_SOURCE_SELECTED",
+  "new_clean_predictions": 0,
+  "live_source_workers": 0,
+  "source_epochs": 1600,
+  "source_steps": 80000,
   "goal_achieved": false,
-  "clean_status": "CONDITIONAL_NOT_YET_PREPARED",
-  "scope": "Committed source code/configs/registration/tests and actual8 process/source telemetry evidence;fullE200 and test performance still pending;this metadata follows the report commit"
+  "scope": "Full source terminal/log/physics/resource/ranking evidence committed and pushed;completed control clean metadata reused;this delivery metadata follows report_commit"
 }
