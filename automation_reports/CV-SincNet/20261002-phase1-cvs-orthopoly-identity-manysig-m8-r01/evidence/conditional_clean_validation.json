@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "tests": 87,
+  "seconds": 13.61,
+  "command": "conda run --no-capture-output -n ssr-gpu python -X utf8 -m pytest tests/test_cvs_orthopoly_clean_contract.py tests/test_cvs_adaptive_volterra_clean_contract.py tests/test_cvs_coupled_clean_contract.py -q -ra -o addopts= -p no:cacheprovider",
+  "scope": "Synthetic own-scratch checkpoint and source-metadata fixtures; conditional 4 new plus32 frozen-control clean rows; source-only selection and truth-last negative cases; two previous families compatibility",
+  "formal_clean_config_created": false,
+  "formal_checkpoint_read": false,
+  "target_query_access": false,
+  "target_truth_access": false,
+  "new_clean_launch": false,
+  "reason": "Current source control retained; two unselected orthopoly candidates remain N/A; conditional code preserved but no formal runtime exercised"
+}

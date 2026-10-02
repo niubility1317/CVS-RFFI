@@ -203,7 +203,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_instant-s2026092701.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "orthopoly_instant",
+        "model_seed": 2026092701,
+        "pid": 1765096,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_orthopoly_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_instant-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_instant-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_instant-s2026092701/source",
+        "started": 1790944468.9309132,
+        "exit_code": 0,
+        "finished": 1790945881.9291382
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9751111111111112,
+        "source_val_ce": 0.12107381346864457,
+        "source_val_rx_accuracy": {
+          "1": 0.9953703703703703,
+          "3": 0.9322222222222222,
+          "4": 0.9877777777777778,
+          "6": 0.9953703703703703,
+          "8": 0.9648148148148148
+        },
+        "source_val_worst_rx": 0.9322222222222222
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "orthopoly_memory4-s2026092701",
@@ -256,7 +293,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_memory4-s2026092701.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "orthopoly_memory4",
+        "model_seed": 2026092701,
+        "pid": 1765183,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_orthopoly_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_memory4-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_memory4-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_memory4-s2026092701/source",
+        "started": 1790944474.1764135,
+        "exit_code": 0,
+        "finished": 1790945891.9406142
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.976037037037037,
+        "source_val_ce": 0.11966495134394736,
+        "source_val_rx_accuracy": {
+          "1": 0.9957407407407407,
+          "3": 0.9364814814814815,
+          "4": 0.9864814814814815,
+          "6": 0.9957407407407407,
+          "8": 0.9657407407407408
+        },
+        "source_val_worst_rx": 0.9364814814814815
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "orthopoly_instant-s2026092702",
@@ -309,7 +383,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_instant-s2026092702.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "orthopoly_instant",
+        "model_seed": 2026092702,
+        "pid": 1765274,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_orthopoly_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_instant-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_instant-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_instant-s2026092702/source",
+        "started": 1790944479.4186175,
+        "exit_code": 0,
+        "finished": 1790945901.9520407
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9718148148148148,
+        "source_val_ce": 0.14217415892456173,
+        "source_val_rx_accuracy": {
+          "1": 0.995,
+          "3": 0.9264814814814815,
+          "4": 0.9866666666666667,
+          "6": 0.9929629629629629,
+          "8": 0.957962962962963
+        },
+        "source_val_worst_rx": 0.9264814814814815
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "orthopoly_memory4-s2026092702",
@@ -362,7 +473,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_memory4-s2026092702.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "orthopoly_memory4",
+        "model_seed": 2026092702,
+        "pid": 1765361,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_orthopoly_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_memory4-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_memory4-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_memory4-s2026092702/source",
+        "started": 1790944484.659374,
+        "exit_code": 0,
+        "finished": 1790945906.9584107
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9767037037037037,
+        "source_val_ce": 0.11346028699983975,
+        "source_val_rx_accuracy": {
+          "1": 0.9959259259259259,
+          "3": 0.9381481481481482,
+          "4": 0.9875925925925926,
+          "6": 0.9962962962962963,
+          "8": 0.9655555555555555
+        },
+        "source_val_worst_rx": 0.9381481481481482
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "orthopoly_instant-s2026092703",
@@ -415,7 +563,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_instant-s2026092703.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "orthopoly_instant",
+        "model_seed": 2026092703,
+        "pid": 1765450,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_orthopoly_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_instant-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_instant-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_instant-s2026092703/source",
+        "started": 1790944489.8938618,
+        "exit_code": 0,
+        "finished": 1790945911.9657733
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9736666666666667,
+        "source_val_ce": 0.12650183551001581,
+        "source_val_rx_accuracy": {
+          "1": 0.995,
+          "3": 0.927037037037037,
+          "4": 0.9859259259259259,
+          "6": 0.9935185185185185,
+          "8": 0.9668518518518519
+        },
+        "source_val_worst_rx": 0.927037037037037
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "orthopoly_memory4-s2026092703",
@@ -468,7 +653,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_memory4-s2026092703.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "orthopoly_memory4",
+        "model_seed": 2026092703,
+        "pid": 1765537,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_orthopoly_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_memory4-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_memory4-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_memory4-s2026092703/source",
+        "started": 1790944495.1026297,
+        "exit_code": 0,
+        "finished": 1790945916.9721627
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9727777777777777,
+        "source_val_ce": 0.13129361315905935,
+        "source_val_rx_accuracy": {
+          "1": 0.9959259259259259,
+          "3": 0.9225925925925926,
+          "4": 0.9844444444444445,
+          "6": 0.9962962962962963,
+          "8": 0.9646296296296296
+        },
+        "source_val_worst_rx": 0.9225925925925926
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "orthopoly_instant-s2026092704",
@@ -521,7 +743,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_instant-s2026092704.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "orthopoly_instant",
+        "model_seed": 2026092704,
+        "pid": 1765628,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_orthopoly_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_instant-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_instant-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_instant-s2026092704/source",
+        "started": 1790944500.312182,
+        "exit_code": 0,
+        "finished": 1790945906.959633
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9713333333333334,
+        "source_val_ce": 0.132399976948257,
+        "source_val_rx_accuracy": {
+          "1": 0.9948148148148148,
+          "3": 0.9185185185185185,
+          "4": 0.9901851851851852,
+          "6": 0.9946296296296296,
+          "8": 0.9585185185185185
+        },
+        "source_val_worst_rx": 0.9185185185185185
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "orthopoly_memory4-s2026092704",
@@ -574,7 +833,44 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_memory4-s2026092704.json",
         ""
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "SOURCE_TRAINED",
+        "variant": "orthopoly_memory4",
+        "model_seed": 2026092704,
+        "pid": 1765716,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_orthopoly_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_orthopoly_identity_20261002_r01/experiments/cvs_orthopoly_identity/configs/orthopoly_memory4-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_memory4-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/orthopoly_memory4-s2026092704/source",
+        "started": 1790944505.5390677,
+        "exit_code": 0,
+        "finished": 1790945931.988602
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9711481481481481,
+        "source_val_ce": 0.14557548738418027,
+        "source_val_rx_accuracy": {
+          "1": 0.9953703703703703,
+          "3": 0.9181481481481482,
+          "4": 0.9879629629629629,
+          "6": 0.9964814814814815,
+          "8": 0.9577777777777777
+        },
+        "source_val_worst_rx": 0.9181481481481482
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     }
   ],
   "notes": [
@@ -654,5 +950,57 @@
     ],
     "target_feedback": false,
     "selection": "source_only"
+  },
+  "results": {
+    "source_selection": {
+      "status": "SOURCE_SELECTION_FROZEN",
+      "selected_variant": "adaptive_volterra_lag4",
+      "source_summaries": {
+        "adaptive_volterra_lag4": {
+          "score": 0.9708055555555555,
+          "source_accuracy": 0.9840185185185185,
+          "worst_rx_accuracy": 0.9575925925925926,
+          "parameters": 202555,
+          "conv_linear_macs": 7199008
+        },
+        "orthopoly_instant": {
+          "score": 0.9495231481481481,
+          "source_accuracy": 0.9729814814814814,
+          "worst_rx_accuracy": 0.9260648148148147,
+          "parameters": 202553,
+          "conv_linear_macs": 7199008
+        },
+        "orthopoly_memory4": {
+          "score": 0.9515046296296297,
+          "source_accuracy": 0.9741666666666666,
+          "worst_rx_accuracy": 0.9288425925925926,
+          "parameters": 202553,
+          "conv_linear_macs": 7199008
+        }
+      },
+      "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+      "selection_policy": "performance_first_orthopoly_with_current_source_winner_20261002",
+      "candidate_universe": [
+        "adaptive_volterra_lag4",
+        "orthopoly_instant",
+        "orthopoly_memory4"
+      ],
+      "new_candidate_selected": false,
+      "exact_cost_tie_order": [
+        "adaptive_volterra_lag4",
+        "orthopoly_instant",
+        "orthopoly_memory4"
+      ],
+      "target_access": false,
+      "target_score_used": false,
+      "test_view": "clean"
+    },
+    "source_training_status": "VERIFIED_COMPLETE",
+    "source_steps": 80000,
+    "source_epochs": 1600,
+    "source_analysis": "evidence/source_analysis_validation.json",
+    "clean_confirmation_run": null,
+    "clean_status": "EXISTING_CONTROL_RETAINED_NO_NEW_QUERY",
+    "goal_achieved": false
   }
 }

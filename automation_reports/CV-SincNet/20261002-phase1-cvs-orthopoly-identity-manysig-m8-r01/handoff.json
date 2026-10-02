@@ -1,22 +1,18 @@
 {
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "run_id": "20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01",
   "release": "cvs_orthopoly_identity_20261002_r01",
   "goal_scope": "CE only/noaugmentation/identity only/scratch/unchanged split/clean only; mathematical communication physics RFF structure; performance first",
-  "previous_goal_turn": "PROGRESS: sixscene score matrices independently recomputed and detailed user report completed; no optimization performance proof",
+  "previous_goal_turn": "PROGRESS: fullE200 source/log/physics/resource analysis and independent terminal readback; fixed source-only ranking",
   "launch_owner": "codex/root/cvs-orthopoly-identity-20261002",
   "goal_achieved": false,
   "target_feedback": false,
   "next": [
-    "Read back same8 healthy processes without restart/hotpatch",
-    "Full E200 collect then analyze source2400curves/6400input/720cells and fixed12ranking",
-    "Only if newselected prepare reviewed frozen4clean+32controls=36truthlast rows;else retainedcontroltest/N/A unselected",
-    "Report full results and resources; Git mirror/push/OID"
+    "Reuse prior completed adaptive_volterra_lag4 clean metadata; no unselected query",
+    "Deliver complete negative source report; keep goal active; further source/public-only research"
   ],
   "missing": [
-    "Full E200 fixed source selection",
-    "Conditional clean completion",
-    "Performance improvement and full RFF objective proof"
+    "Actual performance and RFF goal proof"
   ],
   "release_commit": "541889b1ec5982773d20f17315d0e0d6300ecee1",
   "dispatcher_pid": 1765080,
@@ -73,5 +69,19 @@
     }
   ],
   "progress_evidence": "evidence/progress_readback.json",
-  "source_analysis_code_commit": "63b6c6f851f2147892b849f44415e19db03c0b4a"
+  "source_analysis_code_commit": "63b6c6f851f2147892b849f44415e19db03c0b4a",
+  "selected_variant": "adaptive_volterra_lag4",
+  "live_source_workers": 0,
+  "last_epochs": {
+    "orthopoly_instant-s2026092701": 200,
+    "orthopoly_memory4-s2026092701": 200,
+    "orthopoly_instant-s2026092702": 200,
+    "orthopoly_memory4-s2026092702": 200,
+    "orthopoly_instant-s2026092703": 200,
+    "orthopoly_memory4-s2026092703": 200,
+    "orthopoly_instant-s2026092704": 200,
+    "orthopoly_memory4-s2026092704": 200
+  },
+  "last_evidence": "evidence/final_source_readback.json",
+  "clean_confirmation_run": null
 }

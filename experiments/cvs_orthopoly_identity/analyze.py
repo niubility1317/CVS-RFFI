@@ -98,7 +98,7 @@ def analyze(root):
         rr=[a for a in tables['source_resources'] if a['variant']==v];a=rr[0]
         text+=f"|{v}|{a['parameters']}|{a['resident_state_bytes']}|{a['conv_linear_macs']}|{statistics.mean(r['inference_batch1_ms'] for r in rr):.4f}|{statistics.mean(r['training_batch128_ms'] for r in rr):.4f}|{max(r['source_peak_bytes'] for r in rr)}|\n"
     text+='\nRTX3090/Torch2.1/完整FP32；统计口径见逐seed资源。MAC不包含包内矩/除法/逐元素运算，不等于总计算相同；实际延时及显存包含全执行，但并发非独占基准。无SFT/星载/新类，未测量CPU峰值与新增传输项为N/A。相对原residual_fusion不是等参数单因子比较。\n\n'
-    for name in tables:text+=f"[{name}](evidence/{name}.csv) · "
+    text+=' · '.join(f"[{name}](evidence/{name}.csv)" for name in tables)
     text+='\n\n[前瞻结构推导](../../../docs/CVS_PACKET_ORTHOGONAL_ENVELOPE_20261002.md) · [全部日志审计](evidence/source_completion_validation.json) · [源冻结](evidence/source_selection.json) · [完整分析核对](evidence/source_analysis_validation.json)。只测clean；目标结果不反馈结构、lag、尺度、超参数、候选、seed或选择性重跑，保留全部负结果。\n'
     (report/'report.md').write_text(text,encoding='utf-8');print(json.dumps(validation))
 
