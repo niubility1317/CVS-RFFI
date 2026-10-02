@@ -1,17 +1,13 @@
 {
   "status": "VERIFIED",
-  "report_commit": "63b6c6f851f2147892b849f44415e19db03c0b4a",
-  "remote_branch_oid_at_report_verification": "63b6c6f851f2147892b849f44415e19db03c0b4a",
+  "report_commit": "d4e5c77ce0080b7d1d976e946d9eb8a3cfa64261",
+  "remote_report_oid": "d4e5c77ce0080b7d1d976e946d9eb8a3cfa64261",
   "branch": "codex/daot-practical-three-20260918",
   "runtime_commit": "541889b1ec5982773d20f17315d0e0d6300ecee1",
-  "experiment_status": "RUNNING",
-  "launch_verified": true,
-  "dispatcher_pid": 1765080,
-  "workers": 8,
+  "source_status": "VERIFIED_COMPLETE_BASELINE_RETAINED",
+  "clean_status": "N/A_UNSELECTED_NEW_CANDIDATES",
+  "selected_control": "adaptive_volterra_lag4",
+  "existing_clean_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
   "goal_achieved": false,
-  "missing": [
-    "E200 source collection/fixed sourcefreeze",
-    "Conditional clean completion if newselected",
-    "Performance improvement/full RFF physics goal proof"
-  ]
+  "scope": "Source terminal full evidence and conditional runtime delivered at report_commit; later public conditioning supplement and delivery metadata require their own Git readback"
 }

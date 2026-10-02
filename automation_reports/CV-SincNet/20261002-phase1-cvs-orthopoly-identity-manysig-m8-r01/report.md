@@ -89,3 +89,9 @@ RTX3090/Torch2.1/完整FP32；统计口径见逐seed资源。MAC不包含包内�
 实际源终态 VERIFIED：dispatcher 与8个worker均自然退出，8行各200轮/10000步。源运行commit `541889b1ec5982773d20f17315d0e0d6300ecee1`。[终态证据](evidence/final_source_readback.json)。固定源规则选中 `adaptive_volterra_lag4`；保留已有源控制，两个未选新候选的clean均为N/A，不追加query；既有控制clean已完成证据见前一轮报告。目标仍未证明完成。
 
 条件 clean 执行支持已实现，实际兼容及权限负测 87 项 PASS（13.61秒）。测试使用合成 scratch checkpoint 与元数据 fixture；没有创建正式 clean 配置、加载正式候选权重或读取 query/truth。因为源控制保留，本轮没有启动该路径；新候选测试 N/A。[验证](evidence/conditional_clean_validation.json)。
+
+## 源冻结后的公共坐标诊断
+
+11项检查 PASS（2.73秒）。既有30组公共合成IQ显示逐包逆坐标恢复误差至1.1102e-16，实际scratch卷积恢复误差至4.4409e-16；统一实数逆矩阵的相对残差分别约0.0040和0.0019。包内系数关系随IQ统计量变化，但这不证明完整CNN表达能力受限或本轮退步的原因。完整逆变换只恢复原lift函数，不能单独作为性能改进。未读取正式源IQ、训练checkpoint、target query/truth，未更新源选模。
+
+[原理与实现边界](../../../docs/CVS_ORTHOGONAL_COORDINATE_LIMIT_20261002.md) · [公共测量](evidence/public_conditioning_transport.json)。

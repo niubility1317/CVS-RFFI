@@ -1,0 +1,286 @@
+{
+  "status": "PUBLIC_COORDINATE_DIAGNOSTIC_COMPLETE",
+  "synthetic_only": true,
+  "formal_data_access": false,
+  "source_checkpoint_access": false,
+  "target_query_access": false,
+  "target_truth_access": false,
+  "classifier_labels_used": false,
+  "model_updated": false,
+  "source_selection_changed": false,
+  "records": [
+    {
+      "variant": "orthopoly_instant",
+      "envelope_lag": 0,
+      "packets": 30,
+      "raw_order1_max_error": 0.0,
+      "restored_coordinates_max_error": 1.1102230246251565e-16,
+      "restored_coordinates_relative_error": 2.5114775481600115e-17,
+      "scratch_convolution_max_error": 4.440892098500626e-16,
+      "scratch_convolution_relative_error": 1.1739727466201323e-16,
+      "shared_order_inverse": {
+        "per_delay_relative_residual": [
+          0.004009311238781191,
+          0.0039950715509400065,
+          0.004037034561977593,
+          0.004060046861006171
+        ],
+        "fitted_maps": [
+          [
+            [
+              0.9999999999999966,
+              0.28348429528359165,
+              0.08704635685561057
+            ],
+            [
+              1.3073538027772373e-16,
+              0.2499999999999981,
+              0.1317934970682361
+            ],
+            [
+              -4.908617270108052e-16,
+              -1.8388068845354155e-16,
+              0.0625
+            ]
+          ],
+          [
+            [
+              0.9999999999999966,
+              0.2837778383491053,
+              0.08719774683077411
+            ],
+            [
+              -1.4557578790152066e-17,
+              0.24999999999999933,
+              0.13181368250287137
+            ],
+            [
+              7.188993273473624e-18,
+              3.122502256758253e-17,
+              0.06249999999999989
+            ]
+          ],
+          [
+            [
+              0.999999999999996,
+              0.2833436734280652,
+              0.08695549510707212
+            ],
+            [
+              9.765871819467916e-18,
+              0.2500000000000003,
+              0.13177057690407334
+            ],
+            [
+              3.536764273546994e-17,
+              -2.0816681711721685e-17,
+              0.06249999999999997
+            ]
+          ],
+          [
+            [
+              1.0000000000000013,
+              0.2836257481023879,
+              0.08710481139297449
+            ],
+            [
+              1.0767374579716785e-17,
+              0.24999999999999908,
+              0.13178126428503595
+            ],
+            [
+              1.892844725591815e-17,
+              -1.951563910473908e-17,
+              0.06249999999999995
+            ]
+          ]
+        ],
+        "scope": "One real order-mixing matrix per delay across public synthetic packets; not all convolutions or a trained classifier"
+      },
+      "moment_ranges": [
+        {
+          "delay": 0,
+          "mu_min": 0.2805463909992597,
+          "mu_max": 0.2915962896893301,
+          "variance_min": 0.006126970039545011,
+          "variance_max": 0.008074608911592196,
+          "projection_min": -0.04415590917085796,
+          "projection_max": -0.02686307447666693,
+          "inverse_matrix_range_max": 0.011049898690070392
+        },
+        {
+          "delay": 1,
+          "mu_min": 0.2808416790579211,
+          "mu_max": 0.2918647477152525,
+          "variance_min": 0.006110185611486655,
+          "variance_max": 0.008079245412871203,
+          "projection_min": -0.04464190183605602,
+          "projection_max": -0.02752065605459525,
+          "inverse_matrix_range_max": 0.01102306865733138
+        },
+        {
+          "delay": 2,
+          "mu_min": 0.2803471474352052,
+          "mu_max": 0.2915477861981242,
+          "variance_min": 0.006102873483184606,
+          "variance_max": 0.008105402603429688,
+          "projection_min": -0.0439358567488705,
+          "projection_max": -0.026761550939368908,
+          "inverse_matrix_range_max": 0.01120063876291899
+        },
+        {
+          "delay": 3,
+          "mu_min": 0.28060547486388193,
+          "mu_max": 0.29186914580376255,
+          "variance_min": 0.006100514370869741,
+          "variance_max": 0.008063631337317955,
+          "projection_min": -0.04457423089122371,
+          "projection_max": -0.026682125077775835,
+          "inverse_matrix_range_max": 0.011263670939880621
+        }
+      ]
+    },
+    {
+      "variant": "orthopoly_memory4",
+      "envelope_lag": 4,
+      "packets": 30,
+      "raw_order1_max_error": 0.0,
+      "restored_coordinates_max_error": 5.551115123125783e-17,
+      "restored_coordinates_relative_error": 2.318365173220682e-17,
+      "scratch_convolution_max_error": 4.440892098500626e-16,
+      "scratch_convolution_relative_error": 1.1033097451952074e-16,
+      "shared_order_inverse": {
+        "per_delay_relative_residual": [
+          0.0018480158824120388,
+          0.0018585844501620263,
+          0.0018737573750620949,
+          0.0018790743950290291
+        ],
+        "fitted_maps": [
+          [
+            [
+              0.9999999999999966,
+              0.2622911894961098,
+              0.07300102180242544
+            ],
+            [
+              2.1526067167012496e-16,
+              0.24999999999999936,
+              0.13560704794396097
+            ],
+            [
+              -4.388291866432624e-15,
+              5.451368523257116e-16,
+              0.062499999999999806
+            ]
+          ],
+          [
+            [
+              0.9999999999999966,
+              0.26245710289200797,
+              0.07308915414404023
+            ],
+            [
+              -1.2943886846081276e-17,
+              0.25000000000000044,
+              0.1356146710200852
+            ],
+            [
+              -1.9799129864789375e-17,
+              -1.8127860323957634e-16,
+              0.06249999999999992
+            ]
+          ],
+          [
+            [
+              0.999999999999996,
+              0.26270244297836326,
+              0.07323079998394667
+            ],
+            [
+              3.0508044059629615e-18,
+              0.24999999999999956,
+              0.13559504495869565
+            ],
+            [
+              3.1254893032254433e-17,
+              1.214306433183765e-17,
+              0.06250000000000006
+            ]
+          ],
+          [
+            [
+              1.0000000000000013,
+              0.26284383762229946,
+              0.07330962393285886
+            ],
+            [
+              1.1533696833264036e-17,
+              0.2500000000000016,
+              0.1355924570757614
+            ],
+            [
+              5.575911846084147e-18,
+              -1.3986208025063007e-17,
+              0.06250000000000004
+            ]
+          ]
+        ],
+        "scope": "One real order-mixing matrix per delay across public synthetic packets; not all convolutions or a trained classifier"
+      },
+      "moment_ranges": [
+        {
+          "delay": 0,
+          "mu_min": 0.2610166164236089,
+          "mu_max": 0.2671602910679104,
+          "variance_min": 0.0038430131702862614,
+          "variance_max": 0.005576456839468713,
+          "projection_min": 0.015904151781035183,
+          "projection_max": 0.026448774703655496,
+          "inverse_matrix_range_max": 0.006143674644301489
+        },
+        {
+          "delay": 1,
+          "mu_min": 0.2612312157813914,
+          "mu_max": 0.2673589813343724,
+          "variance_min": 0.003842833748113528,
+          "variance_max": 0.0055734103251401,
+          "projection_min": 0.015602256972364554,
+          "projection_max": 0.026116895782383378,
+          "inverse_matrix_range_max": 0.0061277655529810016
+        },
+        {
+          "delay": 2,
+          "mu_min": 0.26147711581044525,
+          "mu_max": 0.26764641394630445,
+          "variance_min": 0.0038469977895128843,
+          "variance_max": 0.005587196979239986,
+          "projection_min": 0.014979664340307421,
+          "projection_max": 0.025513189233049374,
+          "inverse_matrix_range_max": 0.0061692981358592025
+        },
+        {
+          "delay": 3,
+          "mu_min": 0.26160982827970386,
+          "mu_max": 0.26780174640682325,
+          "variance_min": 0.0038410717493887626,
+          "variance_max": 0.005593900740539041,
+          "projection_min": 0.014644009141589226,
+          "projection_max": 0.02536656653199434,
+          "inverse_matrix_range_max": 0.006191918127119389
+        }
+      ]
+    }
+  ],
+  "conclusions": {
+    "raw_IQ_information_preserved": true,
+    "inverse_is_packet_dependent": true,
+    "exact_inverse_restores_original_input_function": true,
+    "exact_inverse_alone_is_a_new_performance_improvement": false,
+    "cause_of_source_regression_proven": false,
+    "full_classifier_expressivity_bound": false,
+    "hardware_coefficients_recovered": false
+  },
+  "interpretation": "A hard packet basis substitution changes the coefficient chart seen by fixed shared filters. Its exact inverse restores the original lift and cannot alone improve the function. This checks a design limitation, not identity performance or TX/RX separation.",
+  "numerical_policy": "CPU float64; disposable scratch convolution; algebra diagnostic, not formal FP32 performance"
+}

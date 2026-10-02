@@ -1001,6 +1001,14 @@
     "source_analysis": "evidence/source_analysis_validation.json",
     "clean_confirmation_run": null,
     "clean_status": "EXISTING_CONTROL_RETAINED_NO_NEW_QUERY",
-    "goal_achieved": false
+    "goal_achieved": false,
+    "post_freeze_public_diagnostic": "evidence/public_conditioning_transport.json",
+    "public_diagnostic_tests": {
+      "status": "PASS",
+      "tests": 11,
+      "seconds": 2.73,
+      "formal_data_access": false,
+      "model_updated": false
+    }
   }
 }
