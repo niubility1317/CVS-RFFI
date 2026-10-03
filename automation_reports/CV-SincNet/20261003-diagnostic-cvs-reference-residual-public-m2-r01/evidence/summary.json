@@ -1,0 +1,248 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "iq_mirror",
+      "rx": "identity",
+      "multipath_drift_mean": 0.13982182599678872,
+      "retention_mean": 0.8680606474992572,
+      "signature_rms_mean": 0.0387742167275479
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "iq_mirror",
+      "rx": "iq_mirror",
+      "multipath_drift_mean": 0.14755605793507723,
+      "retention_mean": 0.871165826690153,
+      "signature_rms_mean": 0.03856822438868091
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "iq_mirror",
+      "rx": "pa3",
+      "multipath_drift_mean": 0.33946366034763176,
+      "retention_mean": 0.9087520895278323,
+      "signature_rms_mean": 0.04141475909730969
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "linear_d1",
+      "rx": "identity",
+      "multipath_drift_mean": 2.537759853346516,
+      "retention_mean": 0.01984323576422126,
+      "signature_rms_mean": 0.0011001830366601116
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "linear_d1",
+      "rx": "iq_mirror",
+      "multipath_drift_mean": 5.039211480044062,
+      "retention_mean": 0.044466672958089835,
+      "signature_rms_mean": 0.002429531007763038
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "linear_d1",
+      "rx": "pa3",
+      "multipath_drift_mean": 9.150774351608598,
+      "retention_mean": 0.09057110765004604,
+      "signature_rms_mean": 0.0049881251734807935
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "memory3",
+      "rx": "identity",
+      "multipath_drift_mean": 0.9931007435515026,
+      "retention_mean": 0.8126363060523157,
+      "signature_rms_mean": 0.02476286002348594
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "memory3",
+      "rx": "iq_mirror",
+      "multipath_drift_mean": 1.2010521893171278,
+      "retention_mean": 0.7437912747428393,
+      "signature_rms_mean": 0.02254936462300893
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "memory3",
+      "rx": "pa3",
+      "multipath_drift_mean": 0.9647605394423914,
+      "retention_mean": 0.7723254601034625,
+      "signature_rms_mean": 0.023658294332050047
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "pa3",
+      "rx": "identity",
+      "multipath_drift_mean": 0.7133790598193089,
+      "retention_mean": 2.194854939438537,
+      "signature_rms_mean": 0.024192251282198433
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "pa3",
+      "rx": "iq_mirror",
+      "multipath_drift_mean": 1.269129174121971,
+      "retention_mean": 1.9657623383254763,
+      "signature_rms_mean": 0.02140002105776683
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "pa3",
+      "rx": "pa3",
+      "multipath_drift_mean": 0.6579944964511661,
+      "retention_mean": 2.0872494974394087,
+      "signature_rms_mean": 0.025119252678373827
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "pa5",
+      "rx": "identity",
+      "multipath_drift_mean": 0.6954174380697654,
+      "retention_mean": 2.3206930980645932,
+      "signature_rms_mean": 0.009959373423237555
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "pa5",
+      "rx": "iq_mirror",
+      "multipath_drift_mean": 1.2743039371343474,
+      "retention_mean": 2.055738673964586,
+      "signature_rms_mean": 0.008741172875630497
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "tx": "pa5",
+      "rx": "pa3",
+      "multipath_drift_mean": 0.5907857109419897,
+      "retention_mean": 2.3317483621158903,
+      "signature_rms_mean": 0.010599736456501996
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "iq_mirror",
+      "rx": "identity",
+      "multipath_drift_mean": 0.20275174838626855,
+      "retention_mean": 0.8505206252087039,
+      "signature_rms_mean": 0.03799107057929321
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "iq_mirror",
+      "rx": "iq_mirror",
+      "multipath_drift_mean": 0.20267472363821878,
+      "retention_mean": 0.8530038848601662,
+      "signature_rms_mean": 0.03776476199865003
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "iq_mirror",
+      "rx": "pa3",
+      "multipath_drift_mean": 0.20919862845210294,
+      "retention_mean": 0.8528174226392318,
+      "signature_rms_mean": 0.038872459195287506
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "linear_d1",
+      "rx": "identity",
+      "multipath_drift_mean": 2.5809061718489996,
+      "retention_mean": 0.01983490241172592,
+      "signature_rms_mean": 0.0010994486418837842
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "linear_d1",
+      "rx": "iq_mirror",
+      "multipath_drift_mean": 4.853262441593196,
+      "retention_mean": 0.04171025695514802,
+      "signature_rms_mean": 0.0022806780957442593
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "linear_d1",
+      "rx": "pa3",
+      "multipath_drift_mean": 3.3601778154070807,
+      "retention_mean": 0.027411800935568317,
+      "signature_rms_mean": 0.0015151930070526059
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "memory3",
+      "rx": "identity",
+      "multipath_drift_mean": 0.29278509259228297,
+      "retention_mean": 0.2503062130520227,
+      "signature_rms_mean": 0.0076336379306057795
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "memory3",
+      "rx": "iq_mirror",
+      "multipath_drift_mean": 0.3227806790725856,
+      "retention_mean": 0.2497271699365008,
+      "signature_rms_mean": 0.007573573029426146
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "memory3",
+      "rx": "pa3",
+      "multipath_drift_mean": 0.29284564125215723,
+      "retention_mean": 0.24991723584939954,
+      "signature_rms_mean": 0.007670841486441501
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "pa3",
+      "rx": "identity",
+      "multipath_drift_mean": 0.2734862171190568,
+      "retention_mean": 0.6689532022313464,
+      "signature_rms_mean": 0.007365174466070208
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "pa3",
+      "rx": "iq_mirror",
+      "multipath_drift_mean": 0.2919812271793249,
+      "retention_mean": 0.6706456823792006,
+      "signature_rms_mean": 0.00731591797653946
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "pa3",
+      "rx": "pa3",
+      "multipath_drift_mean": 0.24343101271257542,
+      "retention_mean": 0.656145978003749,
+      "signature_rms_mean": 0.007879769704177236
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "pa5",
+      "rx": "identity",
+      "multipath_drift_mean": 0.27250488780348486,
+      "retention_mean": 0.6927762850030188,
+      "signature_rms_mean": 0.0029702696882307473
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "pa5",
+      "rx": "iq_mirror",
+      "multipath_drift_mean": 0.29019350475954014,
+      "retention_mean": 0.6954823119863545,
+      "signature_rms_mean": 0.0029642738007453137
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "tx": "pa5",
+      "rx": "pa3",
+      "multipath_drift_mean": 0.25111324632913307,
+      "retention_mean": 0.6891159374394022,
+      "signature_rms_mean": 0.0031320879100554685
+    }
+  ],
+  "scope": "Untrained public operator probe, not identification test",
+  "training": false,
+  "target_access": false
+}

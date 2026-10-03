@@ -1,0 +1,1205 @@
+{
+  "rows": [
+    {
+      "tx": "linear_d1",
+      "channel": "identity",
+      "rx": "identity",
+      "TX_signature_rms": 0.0005510346340038854,
+      "raw_TX_difference_rms": 0.05455906321819205,
+      "TX_retention_ratio": 0.010099781805273914,
+      "relative_signature_drift": 0.0,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "identity",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.0018669281373157017,
+      "raw_TX_difference_rms": 0.054388962709519886,
+      "TX_retention_ratio": 0.03432549628288695,
+      "relative_signature_drift": 3.5355967306746767,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "identity",
+      "rx": "pa3",
+      "TX_signature_rms": 0.0010129926933937525,
+      "raw_TX_difference_rms": 0.055035491379966724,
+      "TX_retention_ratio": 0.018406171508491127,
+      "relative_signature_drift": 1.6670630574395686,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay1",
+      "rx": "identity",
+      "TX_signature_rms": 0.000432519987273066,
+      "raw_TX_difference_rms": 0.05144686940620464,
+      "TX_retention_ratio": 0.008407119660830185,
+      "relative_signature_drift": 0.3294764672660329,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay1",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.0018258767270587727,
+      "raw_TX_difference_rms": 0.05127683386601259,
+      "TX_retention_ratio": 0.03560821894405231,
+      "relative_signature_drift": 3.609671677186868,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay1",
+      "rx": "pa3",
+      "TX_signature_rms": 0.0010873733943863053,
+      "raw_TX_difference_rms": 0.0518239657484135,
+      "TX_retention_ratio": 0.020982056828014815,
+      "relative_signature_drift": 1.9615407949862487,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay4",
+      "rx": "identity",
+      "TX_signature_rms": 0.002681159103834246,
+      "raw_TX_difference_rms": 0.05608885635212227,
+      "TX_retention_ratio": 0.04780199273456567,
+      "relative_signature_drift": 5.257874172375476,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay4",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.003041129416517578,
+      "raw_TX_difference_rms": 0.055958425218878075,
+      "TX_retention_ratio": 0.054346229448423176,
+      "relative_signature_drift": 5.979949772493494,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay4",
+      "rx": "pa3",
+      "TX_signature_rms": 0.0027096201093595043,
+      "raw_TX_difference_rms": 0.056283452808224485,
+      "TX_retention_ratio": 0.04814239308650869,
+      "relative_signature_drift": 5.314213192440716,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay16",
+      "rx": "identity",
+      "TX_signature_rms": 0.0007330808424239391,
+      "raw_TX_difference_rms": 0.05625791196567118,
+      "TX_retention_ratio": 0.013030715446233911,
+      "relative_signature_drift": 2.155367875905491,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay16",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.0023887781020849844,
+      "raw_TX_difference_rms": 0.05612587663556031,
+      "TX_retention_ratio": 0.04256108314522965,
+      "relative_signature_drift": 4.9701658750992275,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay16",
+      "rx": "pa3",
+      "TX_signature_rms": 0.0012507858310708616,
+      "raw_TX_difference_rms": 0.05655420955260815,
+      "TX_retention_ratio": 0.022116582319258643,
+      "relative_signature_drift": 2.8047794587942767,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "identity",
+      "rx": "identity",
+      "TX_signature_rms": 0.03827990228061345,
+      "raw_TX_difference_rms": 0.04461906497060636,
+      "TX_retention_ratio": 0.8579270387183381,
+      "relative_signature_drift": 0.0,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "identity",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.03807571728387362,
+      "raw_TX_difference_rms": 0.04427638926514677,
+      "TX_retention_ratio": 0.8599553377277275,
+      "relative_signature_drift": 0.006475869050843614,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "identity",
+      "rx": "pa3",
+      "TX_signature_rms": 0.039196013467394694,
+      "raw_TX_difference_rms": 0.04553430725645982,
+      "TX_retention_ratio": 0.8608017960311468,
+      "relative_signature_drift": 0.036909056369350185,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay1",
+      "rx": "identity",
+      "TX_signature_rms": 0.03916744205157035,
+      "raw_TX_difference_rms": 0.044720104235974376,
+      "TX_retention_ratio": 0.8758352137306228,
+      "relative_signature_drift": 0.1965116853042575,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay1",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.0389660213990366,
+      "raw_TX_difference_rms": 0.04430723811262103,
+      "TX_retention_ratio": 0.8794504703721767,
+      "relative_signature_drift": 0.19559455548296345,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay1",
+      "rx": "pa3",
+      "TX_signature_rms": 0.040604255207653185,
+      "raw_TX_difference_rms": 0.04614127664655366,
+      "TX_retention_ratio": 0.8799985210354156,
+      "relative_signature_drift": 0.22206357691526762,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay4",
+      "rx": "identity",
+      "TX_signature_rms": 0.0372584708466578,
+      "raw_TX_difference_rms": 0.044668520134443605,
+      "TX_retention_ratio": 0.8341102578396824,
+      "relative_signature_drift": 0.20587173907491801,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay4",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.03700865601627484,
+      "raw_TX_difference_rms": 0.04426787875121955,
+      "TX_retention_ratio": 0.83601602471759,
+      "relative_signature_drift": 0.2062147892308234,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay4",
+      "rx": "pa3",
+      "TX_signature_rms": 0.03784478053893421,
+      "raw_TX_difference_rms": 0.04531612721689269,
+      "TX_retention_ratio": 0.8351283055986004,
+      "relative_signature_drift": 0.20276605354769553,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay16",
+      "rx": "identity",
+      "TX_signature_rms": 0.03725846713833125,
+      "raw_TX_difference_rms": 0.044663175412149494,
+      "TX_retention_ratio": 0.8342099905461721,
+      "relative_signature_drift": 0.20587182077963018,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay16",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.03700865329541504,
+      "raw_TX_difference_rms": 0.044237307790417006,
+      "TX_retention_ratio": 0.836593706623171,
+      "relative_signature_drift": 0.20621482620086945,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay16",
+      "rx": "pa3",
+      "TX_signature_rms": 0.03784478756716792,
+      "raw_TX_difference_rms": 0.045304593562819406,
+      "TX_retention_ratio": 0.8353410678917644,
+      "relative_signature_drift": 0.20276625489334563,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa3",
+      "channel": "identity",
+      "rx": "identity",
+      "TX_signature_rms": 0.008098085419911557,
+      "raw_TX_difference_rms": 0.011628588887106304,
+      "TX_retention_ratio": 0.696394506550202,
+      "relative_signature_drift": 0.0,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa3",
+      "channel": "identity",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.008029446429158822,
+      "raw_TX_difference_rms": 0.011521605479083917,
+      "TX_retention_ratio": 0.6969034344853512,
+      "relative_signature_drift": 0.07887658565985602,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa3",
+      "channel": "identity",
+      "rx": "pa3",
+      "TX_signature_rms": 0.008664183076733323,
+      "raw_TX_difference_rms": 0.012608055955619896,
+      "TX_retention_ratio": 0.687194211957107,
+      "relative_signature_drift": 0.07545723548410896,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay1",
+      "rx": "identity",
+      "TX_signature_rms": 0.006202849979082625,
+      "raw_TX_difference_rms": 0.010390607275275127,
+      "TX_retention_ratio": 0.5969670313536495,
+      "relative_signature_drift": 0.30938538605814225,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay1",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.006103082039719595,
+      "raw_TX_difference_rms": 0.010252469068596832,
+      "TX_retention_ratio": 0.5952792443347378,
+      "relative_signature_drift": 0.3175381661900524,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay1",
+      "rx": "pa3",
+      "TX_signature_rms": 0.006732663878929189,
+      "raw_TX_difference_rms": 0.011508994984757681,
+      "TX_retention_ratio": 0.5849914686595845,
+      "relative_signature_drift": 0.23617762652248894,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay4",
+      "rx": "identity",
+      "TX_signature_rms": 0.007579878655285519,
+      "raw_TX_difference_rms": 0.010959836686141615,
+      "TX_retention_ratio": 0.6916050733557051,
+      "relative_signature_drift": 0.2555367937721559,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay4",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.007565571550159912,
+      "raw_TX_difference_rms": 0.010878685886242008,
+      "TX_retention_ratio": 0.6954490302664125,
+      "relative_signature_drift": 0.279202415132094,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay4",
+      "rx": "pa3",
+      "TX_signature_rms": 0.008061117425584545,
+      "raw_TX_difference_rms": 0.011921729478244929,
+      "TX_retention_ratio": 0.6761701345676963,
+      "relative_signature_drift": 0.2470576846925741,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay16",
+      "rx": "identity",
+      "TX_signature_rms": 0.007579883810001132,
+      "raw_TX_difference_rms": 0.010971883229018826,
+      "TX_retention_ratio": 0.6908461976658288,
+      "relative_signature_drift": 0.2555364715268723,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay16",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.0075655718871195125,
+      "raw_TX_difference_rms": 0.010886482161627804,
+      "TX_retention_ratio": 0.6949510204303011,
+      "relative_signature_drift": 0.2792031002158283,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay16",
+      "rx": "pa3",
+      "TX_signature_rms": 0.008061114435461885,
+      "raw_TX_difference_rms": 0.011920703196514998,
+      "TX_retention_ratio": 0.6762280968306081,
+      "relative_signature_drift": 0.24705772692266326,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa5",
+      "channel": "identity",
+      "rx": "identity",
+      "TX_signature_rms": 0.003262868252197329,
+      "raw_TX_difference_rms": 0.004544547577122862,
+      "TX_retention_ratio": 0.7179742750681114,
+      "relative_signature_drift": 0.0,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa5",
+      "channel": "identity",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.003248573588997043,
+      "raw_TX_difference_rms": 0.004515989849972028,
+      "TX_retention_ratio": 0.7193491785676099,
+      "relative_signature_drift": 0.07510054656159064,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa5",
+      "channel": "identity",
+      "rx": "pa3",
+      "TX_signature_rms": 0.003437116311669366,
+      "raw_TX_difference_rms": 0.0048048141515501025,
+      "TX_retention_ratio": 0.7153484408050419,
+      "relative_signature_drift": 0.055035535324628175,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay1",
+      "rx": "identity",
+      "TX_signature_rms": 0.0024687488015177595,
+      "raw_TX_difference_rms": 0.004010948379911554,
+      "TX_retention_ratio": 0.615502511546209,
+      "relative_signature_drift": 0.3113129021190328,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay1",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.002443084956114092,
+      "raw_TX_difference_rms": 0.003970658222600992,
+      "TX_retention_ratio": 0.61528462515561,
+      "relative_signature_drift": 0.31751965359641915,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay1",
+      "rx": "pa3",
+      "TX_signature_rms": 0.002642228677875923,
+      "raw_TX_difference_rms": 0.0042982675846500165,
+      "TX_retention_ratio": 0.6147194482055646,
+      "relative_signature_drift": 0.258027233902415,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay4",
+      "rx": "identity",
+      "TX_signature_rms": 0.0030747231599665193,
+      "raw_TX_difference_rms": 0.004275468720991018,
+      "TX_retention_ratio": 0.7191546379162433,
+      "relative_signature_drift": 0.2531006070768947,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay4",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.0030827202140750166,
+      "raw_TX_difference_rms": 0.004258787017017777,
+      "TX_retention_ratio": 0.7238493500042875,
+      "relative_signature_drift": 0.27652967605257334,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay4",
+      "rx": "pa3",
+      "TX_signature_rms": 0.0032245055290168675,
+      "raw_TX_difference_rms": 0.004520637398285254,
+      "TX_retention_ratio": 0.7132855933634428,
+      "relative_signature_drift": 0.24765598878799192,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay16",
+      "rx": "identity",
+      "TX_signature_rms": 0.003074738539241381,
+      "raw_TX_difference_rms": 0.004279542136319815,
+      "TX_retention_ratio": 0.7184737154815112,
+      "relative_signature_drift": 0.2531011542145272,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay16",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.003082716443795103,
+      "raw_TX_difference_rms": 0.004261155694160888,
+      "TX_retention_ratio": 0.7234460942179105,
+      "relative_signature_drift": 0.27653118462962795,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay16",
+      "rx": "pa3",
+      "TX_signature_rms": 0.0032245011216597164,
+      "raw_TX_difference_rms": 0.004521742666096487,
+      "TX_retention_ratio": 0.7131102673835599,
+      "relative_signature_drift": 0.24765651629699226,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "memory3",
+      "channel": "identity",
+      "rx": "identity",
+      "TX_signature_rms": 0.008384076758224437,
+      "raw_TX_difference_rms": 0.030928470408994206,
+      "TX_retention_ratio": 0.27107957966735696,
+      "relative_signature_drift": 0.0,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "memory3",
+      "channel": "identity",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.008312641161188945,
+      "raw_TX_difference_rms": 0.030749783524202393,
+      "TX_retention_ratio": 0.2703316969580053,
+      "relative_signature_drift": 0.13067658590908834,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "memory3",
+      "channel": "identity",
+      "rx": "pa3",
+      "TX_signature_rms": 0.008369845695368692,
+      "raw_TX_difference_rms": 0.031175121297669976,
+      "TX_retention_ratio": 0.2684783682299338,
+      "relative_signature_drift": 0.05181093530589317,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay1",
+      "rx": "identity",
+      "TX_signature_rms": 0.00645050662375276,
+      "raw_TX_difference_rms": 0.02909960849124065,
+      "TX_retention_ratio": 0.22166987661344117,
+      "relative_signature_drift": 0.3097204800738877,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay1",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.0063221785266038165,
+      "raw_TX_difference_rms": 0.028911074592719598,
+      "TX_retention_ratio": 0.21867670488442761,
+      "relative_signature_drift": 0.3337697914060435,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay1",
+      "rx": "pa3",
+      "TX_signature_rms": 0.0065660183954758715,
+      "raw_TX_difference_rms": 0.029394567639709466,
+      "TX_retention_ratio": 0.22337523300073175,
+      "relative_signature_drift": 0.30384016505166894,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay4",
+      "rx": "identity",
+      "TX_signature_rms": 0.007870143207364556,
+      "raw_TX_difference_rms": 0.03084761003388948,
+      "TX_retention_ratio": 0.25512975555378004,
+      "relative_signature_drift": 0.31608177537855237,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay4",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.007843751111026418,
+      "raw_TX_difference_rms": 0.030681029747904195,
+      "TX_retention_ratio": 0.2556547539465236,
+      "relative_signature_drift": 0.3422954740394032,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay4",
+      "rx": "pa3",
+      "TX_signature_rms": 0.007884020736543209,
+      "raw_TX_difference_rms": 0.03094335311743737,
+      "TX_retention_ratio": 0.254788829983017,
+      "relative_signature_drift": 0.31370189734084347,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay16",
+      "rx": "identity",
+      "TX_signature_rms": 0.007829825133081364,
+      "raw_TX_difference_rms": 0.030905703060600115,
+      "TX_retention_ratio": 0.2533456403735126,
+      "relative_signature_drift": 0.2525530223244088,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay16",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.0078157213188854,
+      "raw_TX_difference_rms": 0.030740841361698145,
+      "TX_retention_ratio": 0.25424552395704675,
+      "relative_signature_drift": 0.29227677177231015,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay16",
+      "rx": "pa3",
+      "TX_signature_rms": 0.007863481118378231,
+      "raw_TX_difference_rms": 0.03107769636670547,
+      "TX_retention_ratio": 0.2530265121839156,
+      "relative_signature_drift": 0.26099486136395933,
+      "variant": "reference_residual_scalar"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "identity",
+      "rx": "identity",
+      "TX_signature_rms": 0.0005546463568088522,
+      "raw_TX_difference_rms": 0.05455906321819205,
+      "TX_retention_ratio": 0.010165980207371158,
+      "relative_signature_drift": 0.0,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "identity",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.0020987028694127653,
+      "raw_TX_difference_rms": 0.054388962709519886,
+      "TX_retention_ratio": 0.038586925818414664,
+      "relative_signature_drift": 3.939337559757373,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "identity",
+      "rx": "pa3",
+      "TX_signature_rms": 0.004906098357987876,
+      "raw_TX_difference_rms": 0.055035491379966724,
+      "TX_retention_ratio": 0.08914426372821897,
+      "relative_signature_drift": 8.815605512566236,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay1",
+      "rx": "identity",
+      "TX_signature_rms": 0.0004205651419809429,
+      "raw_TX_difference_rms": 0.05144686940620464,
+      "TX_retention_ratio": 0.008174747012501826,
+      "relative_signature_drift": 0.35187826227282415,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay1",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.0019983092568913157,
+      "raw_TX_difference_rms": 0.05127683386601259,
+      "TX_retention_ratio": 0.03897099540336165,
+      "relative_signature_drift": 3.8994812865672777,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay1",
+      "rx": "pa3",
+      "TX_signature_rms": 0.004061853563758965,
+      "raw_TX_difference_rms": 0.0518239657484135,
+      "TX_retention_ratio": 0.07837789920358057,
+      "relative_signature_drift": 7.331001177105448,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay4",
+      "rx": "identity",
+      "TX_signature_rms": 0.0026623083554976443,
+      "raw_TX_difference_rms": 0.05608885635212227,
+      "TX_retention_ratio": 0.04746590550507648,
+      "relative_signature_drift": 5.188817361575675,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay4",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.0029426898364651242,
+      "raw_TX_difference_rms": 0.055958425218878075,
+      "TX_retention_ratio": 0.05258707379550026,
+      "relative_signature_drift": 5.8488947696057725,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay4",
+      "rx": "pa3",
+      "TX_signature_rms": 0.006252312530707968,
+      "raw_TX_difference_rms": 0.056283452808224485,
+      "TX_retention_ratio": 0.1110861579869944,
+      "relative_signature_drift": 11.451729685752822,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay16",
+      "rx": "identity",
+      "TX_signature_rms": 0.0007632122923530068,
+      "raw_TX_difference_rms": 0.05625791196567118,
+      "TX_retention_ratio": 0.013566310331935573,
+      "relative_signature_drift": 2.0725839361910485,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay16",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.002678422068282946,
+      "raw_TX_difference_rms": 0.05612587663556031,
+      "TX_retention_ratio": 0.04772169681508275,
+      "relative_signature_drift": 5.369258383959137,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "linear_d1",
+      "channel": "delay16",
+      "rx": "pa3",
+      "TX_signature_rms": 0.004732236241468367,
+      "raw_TX_difference_rms": 0.05655420955260815,
+      "TX_retention_ratio": 0.08367610968139023,
+      "relative_signature_drift": 8.669592191967526,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "identity",
+      "rx": "identity",
+      "TX_signature_rms": 0.038335041452110995,
+      "raw_TX_difference_rms": 0.04461906497060636,
+      "TX_retention_ratio": 0.8591628147601237,
+      "relative_signature_drift": 0.0,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "identity",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.03814664567534526,
+      "raw_TX_difference_rms": 0.04427638926514677,
+      "TX_retention_ratio": 0.8615572838811703,
+      "relative_signature_drift": 0.023525988491173825,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "identity",
+      "rx": "pa3",
+      "TX_signature_rms": 0.041068177098811116,
+      "raw_TX_difference_rms": 0.04553430725645982,
+      "TX_retention_ratio": 0.901917248186199,
+      "relative_signature_drift": 0.31840625161167035,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay1",
+      "rx": "identity",
+      "TX_signature_rms": 0.03824640674845405,
+      "raw_TX_difference_rms": 0.044720104235974376,
+      "TX_retention_ratio": 0.8552396601456788,
+      "relative_signature_drift": 0.1332561347767207,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay1",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.038122617508089526,
+      "raw_TX_difference_rms": 0.04430723811262103,
+      "TX_retention_ratio": 0.8604151179811454,
+      "relative_signature_drift": 0.13603028011996263,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay1",
+      "rx": "pa3",
+      "TX_signature_rms": 0.0418432753245976,
+      "raw_TX_difference_rms": 0.04614127664655366,
+      "TX_retention_ratio": 0.9068512699620529,
+      "relative_signature_drift": 0.3859491143576147,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay4",
+      "rx": "identity",
+      "TX_signature_rms": 0.03925771123122467,
+      "raw_TX_difference_rms": 0.044668520134443605,
+      "TX_retention_ratio": 0.8788675137001754,
+      "relative_signature_drift": 0.1431046418048084,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay4",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.039001819142666386,
+      "raw_TX_difference_rms": 0.04426787875121955,
+      "TX_retention_ratio": 0.8810410673132133,
+      "relative_signature_drift": 0.15331902500064185,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay4",
+      "rx": "pa3",
+      "TX_signature_rms": 0.04137378879749552,
+      "raw_TX_difference_rms": 0.04531612721689269,
+      "TX_retention_ratio": 0.9130036333306178,
+      "relative_signature_drift": 0.3162209131839029,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay16",
+      "rx": "identity",
+      "TX_signature_rms": 0.03925770747840186,
+      "raw_TX_difference_rms": 0.044663175412149494,
+      "TX_retention_ratio": 0.8789726013910509,
+      "relative_signature_drift": 0.143104701408837,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay16",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.03900181522862248,
+      "raw_TX_difference_rms": 0.044237307790417006,
+      "TX_retention_ratio": 0.881649837585083,
+      "relative_signature_drift": 0.15331886868462727,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "iq_mirror",
+      "channel": "delay16",
+      "rx": "pa3",
+      "TX_signature_rms": 0.04137379516833451,
+      "raw_TX_difference_rms": 0.045304593562819406,
+      "TX_retention_ratio": 0.9132362066324589,
+      "relative_signature_drift": 0.31622095350137763,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa3",
+      "channel": "identity",
+      "rx": "identity",
+      "TX_signature_rms": 0.03003327904830132,
+      "raw_TX_difference_rms": 0.011628588887106304,
+      "TX_retention_ratio": 2.58271053692525,
+      "relative_signature_drift": 0.0,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa3",
+      "channel": "identity",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.020820986195075573,
+      "raw_TX_difference_rms": 0.011521605479083917,
+      "TX_retention_ratio": 1.8071254247399426,
+      "relative_signature_drift": 1.0764091558880313,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa3",
+      "channel": "identity",
+      "rx": "pa3",
+      "TX_signature_rms": 0.03211899155194161,
+      "raw_TX_difference_rms": 0.012608055955619896,
+      "TX_retention_ratio": 2.5474975416511327,
+      "relative_signature_drift": 0.07770835775431016,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay1",
+      "rx": "identity",
+      "TX_signature_rms": 0.021973362078404043,
+      "raw_TX_difference_rms": 0.010390607275275127,
+      "TX_retention_ratio": 2.1147331908781264,
+      "relative_signature_drift": 0.7748424284240107,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay1",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.018304591605896408,
+      "raw_TX_difference_rms": 0.010252469068596832,
+      "TX_retention_ratio": 1.7853837435084896,
+      "relative_signature_drift": 0.9842519944410763,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay1",
+      "rx": "pa3",
+      "TX_signature_rms": 0.022417162531715516,
+      "raw_TX_difference_rms": 0.011508994984757681,
+      "TX_retention_ratio": 1.9477949691875291,
+      "relative_signature_drift": 0.5597666284757362,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay4",
+      "rx": "identity",
+      "TX_signature_rms": 0.022381170724484124,
+      "raw_TX_difference_rms": 0.010959836686141615,
+      "TX_retention_ratio": 2.0421080500938893,
+      "relative_signature_drift": 0.6826472621709284,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay4",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.023237250891115068,
+      "raw_TX_difference_rms": 0.010878685886242008,
+      "TX_retention_ratio": 2.1360347319617543,
+      "relative_signature_drift": 1.4115675410900872,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay4",
+      "rx": "pa3",
+      "TX_signature_rms": 0.022970430853843943,
+      "raw_TX_difference_rms": 0.011921729478244929,
+      "TX_retention_ratio": 1.926770012334281,
+      "relative_signature_drift": 0.7071088255695297,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay16",
+      "rx": "identity",
+      "TX_signature_rms": 0.022381193277604256,
+      "raw_TX_difference_rms": 0.010971883229018826,
+      "TX_retention_ratio": 2.0398679798568837,
+      "relative_signature_drift": 0.6826474888629875,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay16",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.023237255538980275,
+      "raw_TX_difference_rms": 0.010886482161627804,
+      "TX_retention_ratio": 2.134505453091719,
+      "relative_signature_drift": 1.4115679868347497,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa3",
+      "channel": "delay16",
+      "rx": "pa3",
+      "TX_signature_rms": 0.022970425775994244,
+      "raw_TX_difference_rms": 0.011920703196514998,
+      "TX_retention_ratio": 1.926935466584691,
+      "relative_signature_drift": 0.7071080353082324,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa5",
+      "channel": "identity",
+      "rx": "identity",
+      "TX_signature_rms": 0.012396697259815799,
+      "raw_TX_difference_rms": 0.004544547577122862,
+      "TX_retention_ratio": 2.7278176868959325,
+      "relative_signature_drift": 0.0,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa5",
+      "channel": "identity",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.008561083955287194,
+      "raw_TX_difference_rms": 0.004515989849972028,
+      "TX_retention_ratio": 1.8957270143864962,
+      "relative_signature_drift": 1.0847410699176059,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa5",
+      "channel": "identity",
+      "rx": "pa3",
+      "TX_signature_rms": 0.012998545841163554,
+      "raw_TX_difference_rms": 0.0048048141515501025,
+      "TX_retention_ratio": 2.705317090562189,
+      "relative_signature_drift": 0.09192336779153294,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay1",
+      "rx": "identity",
+      "TX_signature_rms": 0.00899905947577682,
+      "raw_TX_difference_rms": 0.004010948379911554,
+      "TX_retention_ratio": 2.243623857351976,
+      "relative_signature_drift": 0.6780593484273043,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay1",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.0075511776878860945,
+      "raw_TX_difference_rms": 0.003970658222600992,
+      "TX_retention_ratio": 1.901744563383668,
+      "relative_signature_drift": 0.9777510614208133,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay1",
+      "rx": "pa3",
+      "TX_signature_rms": 0.010362946786320121,
+      "raw_TX_difference_rms": 0.0042982675846500165,
+      "TX_retention_ratio": 2.4109589694527864,
+      "relative_signature_drift": 0.33587818531225183,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay4",
+      "rx": "identity",
+      "TX_signature_rms": 0.00922083566913129,
+      "raw_TX_difference_rms": 0.004275468720991018,
+      "TX_retention_ratio": 2.156684160466499,
+      "relative_signature_drift": 0.7040951802485622,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay4",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.00942621708080309,
+      "raw_TX_difference_rms": 0.004258787017017777,
+      "TX_retention_ratio": 2.2133572407205784,
+      "relative_signature_drift": 1.4225802740000313,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay4",
+      "rx": "pa3",
+      "TX_signature_rms": 0.00951873506779953,
+      "raw_TX_difference_rms": 0.004520637398285254,
+      "TX_retention_ratio": 2.10561790941475,
+      "relative_signature_drift": 0.7182408256119359,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay16",
+      "rx": "identity",
+      "TX_signature_rms": 0.009220901288226313,
+      "raw_TX_difference_rms": 0.004279542136319815,
+      "TX_retention_ratio": 2.154646687543965,
+      "relative_signature_drift": 0.7040977855334297,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay16",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.009426212778545608,
+      "raw_TX_difference_rms": 0.004261155694160888,
+      "TX_retention_ratio": 2.2121258773676025,
+      "relative_signature_drift": 1.4225804759821974,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "pa5",
+      "channel": "delay16",
+      "rx": "pa3",
+      "TX_signature_rms": 0.00951871813072478,
+      "raw_TX_difference_rms": 0.004521742666096487,
+      "TX_retention_ratio": 2.1050994790338358,
+      "relative_signature_drift": 0.7182381219017813,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "memory3",
+      "channel": "identity",
+      "rx": "identity",
+      "TX_signature_rms": 0.028584681246039724,
+      "raw_TX_difference_rms": 0.030928470408994206,
+      "TX_retention_ratio": 0.924219040516375,
+      "relative_signature_drift": 0.0,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "memory3",
+      "channel": "identity",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.022244099609251736,
+      "raw_TX_difference_rms": 0.030749783524202393,
+      "TX_retention_ratio": 0.7233904457162749,
+      "relative_signature_drift": 1.1409014474329535,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "memory3",
+      "channel": "identity",
+      "rx": "pa3",
+      "TX_signature_rms": 0.024562533798730617,
+      "raw_TX_difference_rms": 0.031175121297669976,
+      "TX_retention_ratio": 0.787888956844778,
+      "relative_signature_drift": 0.38896356435420115,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay1",
+      "rx": "identity",
+      "TX_signature_rms": 0.022295755849250955,
+      "raw_TX_difference_rms": 0.02909960849124065,
+      "TX_retention_ratio": 0.7661874851671031,
+      "relative_signature_drift": 1.3125347178234037,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay1",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.019277841710021684,
+      "raw_TX_difference_rms": 0.028911074592719598,
+      "TX_retention_ratio": 0.6667978268395545,
+      "relative_signature_drift": 0.9322109196311222,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay1",
+      "rx": "pa3",
+      "TX_signature_rms": 0.02348909725317044,
+      "raw_TX_difference_rms": 0.029394567639709466,
+      "TX_retention_ratio": 0.799096538553564,
+      "relative_signature_drift": 1.2128650920349178,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay4",
+      "rx": "identity",
+      "TX_signature_rms": 0.024521935762362636,
+      "raw_TX_difference_rms": 0.03084761003388948,
+      "TX_retention_ratio": 0.7949379460976913,
+      "relative_signature_drift": 1.2675268226568064,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay4",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.0246241886281482,
+      "raw_TX_difference_rms": 0.030681029747904195,
+      "TX_retention_ratio": 0.8025867720372151,
+      "relative_signature_drift": 1.4073031259532682,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay4",
+      "rx": "pa3",
+      "TX_signature_rms": 0.024641899168246207,
+      "raw_TX_difference_rms": 0.03094335311743737,
+      "TX_retention_ratio": 0.7963551679329758,
+      "relative_signature_drift": 1.3094159200360216,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay16",
+      "rx": "identity",
+      "TX_signature_rms": 0.02364906723629045,
+      "raw_TX_difference_rms": 0.030905703060600115,
+      "TX_retention_ratio": 0.7652007524280938,
+      "relative_signature_drift": 0.39924069017429764,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay16",
+      "rx": "iq_mirror",
+      "TX_signature_rms": 0.024051328544614118,
+      "raw_TX_difference_rms": 0.030740841361698145,
+      "TX_retention_ratio": 0.7823900543783134,
+      "relative_signature_drift": 1.2636425223669931,
+      "variant": "reference_residual_inverse"
+    },
+    {
+      "tx": "memory3",
+      "channel": "delay16",
+      "rx": "pa3",
+      "TX_signature_rms": 0.02193964710805292,
+      "raw_TX_difference_rms": 0.03107769636670547,
+      "TX_retention_ratio": 0.7059611770825319,
+      "relative_signature_drift": 0.37200060625623477,
+      "variant": "reference_residual_inverse"
+    }
+  ],
+  "claim": "Untrained analytic branch initialization only; neither trained network identity accuracy nor TX/RX disentanglement"
+}

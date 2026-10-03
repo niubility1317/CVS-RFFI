@@ -1,0 +1,61 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "variant": "reference_residual_scalar",
+      "parameters": 189562,
+      "gradient_used_parameters": 189562,
+      "loss": 4.009493350982666,
+      "finite": true,
+      "checkpoint_reload": true,
+      "physics": {
+        "ridge": [
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513
+        ],
+        "fit_error_mean": 0.04531769767093157,
+        "inverse_abs_max": 4.140215858986284,
+        "reference_quality_mean": 0.04035276471034832,
+        "residual_feature_rms": 1.1172926425933838,
+        "projection_weight_norm": 0.0,
+        "scope": "Current source batch only; apparent response and residual, not recovered TX hardware"
+      }
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "parameters": 189562,
+      "gradient_used_parameters": 189562,
+      "loss": 4.009493350982666,
+      "finite": true,
+      "checkpoint_reload": true,
+      "physics": {
+        "ridge": [
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513,
+          0.0010000000474974513
+        ],
+        "fit_error_mean": 0.04531769767093157,
+        "inverse_abs_max": 6.774556126506011,
+        "reference_quality_mean": 0.04035276471034832,
+        "residual_feature_rms": 0.9727268218994141,
+        "projection_weight_norm": 0.0,
+        "scope": "Current source batch only; apparent response and residual, not recovered TX hardware"
+      }
+    }
+  ],
+  "source_access": false,
+  "target_access": false
+}

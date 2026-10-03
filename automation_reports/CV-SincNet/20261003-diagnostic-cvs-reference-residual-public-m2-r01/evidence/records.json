@@ -1,0 +1,362 @@
+[
+  {
+    "tx": "ideal",
+    "channel": "identity",
+    "rx": "identity"
+  },
+  {
+    "tx": "ideal",
+    "channel": "identity",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "ideal",
+    "channel": "identity",
+    "rx": "pa3"
+  },
+  {
+    "tx": "ideal",
+    "channel": "delay1",
+    "rx": "identity"
+  },
+  {
+    "tx": "ideal",
+    "channel": "delay1",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "ideal",
+    "channel": "delay1",
+    "rx": "pa3"
+  },
+  {
+    "tx": "ideal",
+    "channel": "delay4",
+    "rx": "identity"
+  },
+  {
+    "tx": "ideal",
+    "channel": "delay4",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "ideal",
+    "channel": "delay4",
+    "rx": "pa3"
+  },
+  {
+    "tx": "ideal",
+    "channel": "delay16",
+    "rx": "identity"
+  },
+  {
+    "tx": "ideal",
+    "channel": "delay16",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "ideal",
+    "channel": "delay16",
+    "rx": "pa3"
+  },
+  {
+    "tx": "linear_d1",
+    "channel": "identity",
+    "rx": "identity"
+  },
+  {
+    "tx": "linear_d1",
+    "channel": "identity",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "linear_d1",
+    "channel": "identity",
+    "rx": "pa3"
+  },
+  {
+    "tx": "linear_d1",
+    "channel": "delay1",
+    "rx": "identity"
+  },
+  {
+    "tx": "linear_d1",
+    "channel": "delay1",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "linear_d1",
+    "channel": "delay1",
+    "rx": "pa3"
+  },
+  {
+    "tx": "linear_d1",
+    "channel": "delay4",
+    "rx": "identity"
+  },
+  {
+    "tx": "linear_d1",
+    "channel": "delay4",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "linear_d1",
+    "channel": "delay4",
+    "rx": "pa3"
+  },
+  {
+    "tx": "linear_d1",
+    "channel": "delay16",
+    "rx": "identity"
+  },
+  {
+    "tx": "linear_d1",
+    "channel": "delay16",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "linear_d1",
+    "channel": "delay16",
+    "rx": "pa3"
+  },
+  {
+    "tx": "iq_mirror",
+    "channel": "identity",
+    "rx": "identity"
+  },
+  {
+    "tx": "iq_mirror",
+    "channel": "identity",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "iq_mirror",
+    "channel": "identity",
+    "rx": "pa3"
+  },
+  {
+    "tx": "iq_mirror",
+    "channel": "delay1",
+    "rx": "identity"
+  },
+  {
+    "tx": "iq_mirror",
+    "channel": "delay1",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "iq_mirror",
+    "channel": "delay1",
+    "rx": "pa3"
+  },
+  {
+    "tx": "iq_mirror",
+    "channel": "delay4",
+    "rx": "identity"
+  },
+  {
+    "tx": "iq_mirror",
+    "channel": "delay4",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "iq_mirror",
+    "channel": "delay4",
+    "rx": "pa3"
+  },
+  {
+    "tx": "iq_mirror",
+    "channel": "delay16",
+    "rx": "identity"
+  },
+  {
+    "tx": "iq_mirror",
+    "channel": "delay16",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "iq_mirror",
+    "channel": "delay16",
+    "rx": "pa3"
+  },
+  {
+    "tx": "pa3",
+    "channel": "identity",
+    "rx": "identity"
+  },
+  {
+    "tx": "pa3",
+    "channel": "identity",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "pa3",
+    "channel": "identity",
+    "rx": "pa3"
+  },
+  {
+    "tx": "pa3",
+    "channel": "delay1",
+    "rx": "identity"
+  },
+  {
+    "tx": "pa3",
+    "channel": "delay1",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "pa3",
+    "channel": "delay1",
+    "rx": "pa3"
+  },
+  {
+    "tx": "pa3",
+    "channel": "delay4",
+    "rx": "identity"
+  },
+  {
+    "tx": "pa3",
+    "channel": "delay4",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "pa3",
+    "channel": "delay4",
+    "rx": "pa3"
+  },
+  {
+    "tx": "pa3",
+    "channel": "delay16",
+    "rx": "identity"
+  },
+  {
+    "tx": "pa3",
+    "channel": "delay16",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "pa3",
+    "channel": "delay16",
+    "rx": "pa3"
+  },
+  {
+    "tx": "pa5",
+    "channel": "identity",
+    "rx": "identity"
+  },
+  {
+    "tx": "pa5",
+    "channel": "identity",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "pa5",
+    "channel": "identity",
+    "rx": "pa3"
+  },
+  {
+    "tx": "pa5",
+    "channel": "delay1",
+    "rx": "identity"
+  },
+  {
+    "tx": "pa5",
+    "channel": "delay1",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "pa5",
+    "channel": "delay1",
+    "rx": "pa3"
+  },
+  {
+    "tx": "pa5",
+    "channel": "delay4",
+    "rx": "identity"
+  },
+  {
+    "tx": "pa5",
+    "channel": "delay4",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "pa5",
+    "channel": "delay4",
+    "rx": "pa3"
+  },
+  {
+    "tx": "pa5",
+    "channel": "delay16",
+    "rx": "identity"
+  },
+  {
+    "tx": "pa5",
+    "channel": "delay16",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "pa5",
+    "channel": "delay16",
+    "rx": "pa3"
+  },
+  {
+    "tx": "memory3",
+    "channel": "identity",
+    "rx": "identity"
+  },
+  {
+    "tx": "memory3",
+    "channel": "identity",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "memory3",
+    "channel": "identity",
+    "rx": "pa3"
+  },
+  {
+    "tx": "memory3",
+    "channel": "delay1",
+    "rx": "identity"
+  },
+  {
+    "tx": "memory3",
+    "channel": "delay1",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "memory3",
+    "channel": "delay1",
+    "rx": "pa3"
+  },
+  {
+    "tx": "memory3",
+    "channel": "delay4",
+    "rx": "identity"
+  },
+  {
+    "tx": "memory3",
+    "channel": "delay4",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "memory3",
+    "channel": "delay4",
+    "rx": "pa3"
+  },
+  {
+    "tx": "memory3",
+    "channel": "delay16",
+    "rx": "identity"
+  },
+  {
+    "tx": "memory3",
+    "channel": "delay16",
+    "rx": "iq_mirror"
+  },
+  {
+    "tx": "memory3",
+    "channel": "delay16",
+    "rx": "pa3"
+  }
+]

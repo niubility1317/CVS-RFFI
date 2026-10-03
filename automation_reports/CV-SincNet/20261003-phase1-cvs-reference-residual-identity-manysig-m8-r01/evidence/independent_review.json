@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "reviewer": "/root/frontfilter_model",
+  "scope": "New source training/release P0/P1 only",
+  "source_tests": 11,
+  "source_test_chunk": "f65a02",
+  "checks": [
+    "Both scratch save/load/CE gradient coverage189562",
+    "Full resource profile, original state unchanged",
+    "Release import closure and three remote scripts compile",
+    "Actual8 configs paths",
+    "Synthetic27000/90cell/160D aggregate"
+  ],
+  "chunks": [
+    "06bf3f",
+    "129393"
+  ],
+  "real_data_access": false,
+  "remote_access": false
+}

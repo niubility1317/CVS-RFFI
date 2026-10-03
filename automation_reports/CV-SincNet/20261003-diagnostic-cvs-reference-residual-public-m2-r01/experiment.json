@@ -26,7 +26,8 @@
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
     "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
-    "commit_role": "preparation base; actual execution version saved in launch.json"
+    "commit_role": "preparation base; actual execution version saved in launch.json",
+    "execution_commit": "6e96e8865c15a3c0ad3463da24d0b3987a0d98a5"
   },
   "data": {
     "dataset": "Public analytic20MHz L-STF at25Msps,72 deterministic TX/channel/RX tuples",
@@ -272,6 +273,15 @@
     "Reference equalization is prior art, not novelty claim; hypothesis concerns constrained residual branch and raw fingerprint retention, still requires evidence.",
     "Public fit cannot prove real channel inverse or TX/RX disentanglement; synthetic identity differences are not classification accuracy."
   ],
-  "status": "LOCAL_VERIFIED",
-  "registered_at": "2026-10-03T13:27:57+00:00"
+  "status": "ANALYZED",
+  "registered_at": "2026-10-03T13:27:57+00:00",
+  "outcome": {
+    "status": "VERIFIED",
+    "public_inputs": 72,
+    "operator_rows": 144,
+    "signature_pairs": 120,
+    "training": false,
+    "target_access": false,
+    "universal_channel_compensation_supported": false
+  }
 }
