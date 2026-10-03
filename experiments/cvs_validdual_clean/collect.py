@@ -14,6 +14,7 @@ for name in ['pipeline_state.json','clean_scored_results.json','clean_summary.js
     files.append((run/name,'test/'+name))
 files.append((source/'frozen_source_matrix.json','source/frozen_source_matrix.json'))
 for rid in ids:
+    files.append((source.parent.parent/'logs'/source.name/(rid+'.log'),'source/'+rid+'/stdout.log'))
     for name in ['clean_predictions.npz','clean_complete.json','provenance.json','resolved_config.json']:
         files.append((run/rid/name,'test/'+rid+'/'+name))
     for name in ['completion.json','resolved_config.json','initialization.json','source_contract.json','resource_profile.json','source_final_diagnostics.json','source_physical_diagnostics.json','epoch_compact.jsonl','epoch_metrics.csv','epoch_metrics.jsonl','step_metrics.jsonl']:
