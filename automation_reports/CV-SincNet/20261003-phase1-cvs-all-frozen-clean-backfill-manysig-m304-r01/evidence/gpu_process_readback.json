@@ -1,0 +1,50 @@
+{
+  "status": "VERIFIED",
+  "proof": [
+    {
+      "row_id": "g13-crossphase_half-s2026092701",
+      "pid": 2474901,
+      "gpu": 4,
+      "uuid": "GPU-95d925a1-7218-ca7b-adef-164241f4f491"
+    },
+    {
+      "row_id": "g13-crossphase_raw-s2026092702",
+      "pid": 2474977,
+      "gpu": 5,
+      "uuid": "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331"
+    },
+    {
+      "row_id": "g13-crossphase_half-s2026092702",
+      "pid": 2475053,
+      "gpu": 6,
+      "uuid": "GPU-5463e082-259e-537b-603a-01575d45801c"
+    },
+    {
+      "row_id": "g13-crossphase_raw-s2026092703",
+      "pid": 2475129,
+      "gpu": 7,
+      "uuid": "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9"
+    },
+    {
+      "row_id": "g13-crossphase_half-s2026092703",
+      "pid": 2475209,
+      "gpu": 0,
+      "uuid": "GPU-56adac86-77cd-36c9-8770-dbf002650461"
+    },
+    {
+      "row_id": "g13-crossphase_raw-s2026092704",
+      "pid": 2475285,
+      "gpu": 1,
+      "uuid": "GPU-a2d039ff-1792-4222-2b47-140429e10f94"
+    },
+    {
+      "row_id": "g13-crossphase_half-s2026092704",
+      "pid": 2475363,
+      "gpu": 2,
+      "uuid": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562"
+    }
+  ],
+  "gpu_map": "0, GPU-56adac86-77cd-36c9-8770-dbf002650461\n1, GPU-a2d039ff-1792-4222-2b47-140429e10f94\n2, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562\n3, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97\n4, GPU-95d925a1-7218-ca7b-adef-164241f4f491\n5, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331\n6, GPU-5463e082-259e-537b-603a-01575d45801c\n7, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9\n",
+  "apps": "2475209, GPU-56adac86-77cd-36c9-8770-dbf002650461, 400 MiB\n2475285, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 398 MiB\n2475363, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 400 MiB\n2474901, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 400 MiB\n2474977, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 398 MiB\n2475053, GPU-5463e082-259e-537b-603a-01575d45801c, 400 MiB\n2475129, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 398 MiB\n",
+  "read_at": 1791025578.7389677
+}

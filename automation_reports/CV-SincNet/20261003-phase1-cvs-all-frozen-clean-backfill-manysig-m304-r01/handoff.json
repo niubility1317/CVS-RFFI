@@ -1,12 +1,20 @@
 {
   "run_id": "20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01",
-  "status": "LOCAL_VERIFIED",
-  "models": 304,
-  "new": 216,
-  "reused": 88,
+  "status": "RUNNING",
+  "verification": "VERIFIED",
   "release": "cvs_all_frozen_clean_backfill_20261003_r01",
+  "commit": "7f05b091051c0a3ffdb19110f4ae4307eeae2710",
+  "pid": 2468307,
+  "model_rows": 304,
+  "new_predictions": 216,
+  "reused_predictions": 88,
   "next": [
-    "Commit/push/readback then one immutable launch",
-    "Wait for all predictions and independent test scores; preserve failures"
-  ]
+    "Inspect the same run;do not relaunch",
+    "Wait for all304 predictions and independent scoring",
+    "Run collect once then report all76 groups and commit/push"
+  ],
+  "commands": {
+    "inspect": "python -m experiments.cvs_all_frozen_clean_backfill.publish --inspect --output local_artifacts/cvs_all_frozen_clean_backfill_20261003_r01/continuation_01",
+    "collect": "python -m experiments.cvs_all_frozen_clean_backfill.collect --output local_artifacts/cvs_all_frozen_clean_backfill_20261003_r01/terminal"
+  }
 }

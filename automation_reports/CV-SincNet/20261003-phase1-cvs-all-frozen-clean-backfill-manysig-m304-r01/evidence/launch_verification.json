@@ -1,0 +1,34 @@
+{
+  "status": "VERIFIED",
+  "commit": "7f05b091051c0a3ffdb19110f4ae4307eeae2710",
+  "dispatcher_pid": 2468307,
+  "live_workers": [
+    {
+      "row_id": "g07-simplex_learned-s2026092702",
+      "pid": 2471566,
+      "gpu": 2
+    },
+    {
+      "row_id": "g07-simplex_learned-s2026092703",
+      "pid": 2471644,
+      "gpu": 3
+    },
+    {
+      "row_id": "g07-simplex_learned-s2026092704",
+      "pid": 2471720,
+      "gpu": 4
+    },
+    {
+      "row_id": "g08-phase_delta-s2026092701",
+      "pid": 2471796,
+      "gpu": 7
+    },
+    {
+      "row_id": "g08-phase_delta-s2026092702",
+      "pid": 2471874,
+      "gpu": 5
+    }
+  ],
+  "evidence": "initial_readback.json",
+  "target_truth_read": false
+}
