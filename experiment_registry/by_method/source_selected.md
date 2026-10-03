@@ -22,3 +22,4 @@
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|
 |CVS性能优先继续优化：rf_gmp clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-clean-manysig-m24-r01/report.md)|
 |CVS 信道与非线性运算次序：独立 clean 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/report.md)|
+|CVS约束响应融合：冻结候选clean独立测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md)|

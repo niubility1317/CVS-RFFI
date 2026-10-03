@@ -1,2 +1,3 @@
 {"at": "2026-10-03T02:46:14+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-03T02:54:11+00:00", "status": "RUNNING", "note": "8rows on8GPUs; actual source configs,CE,gradients,processes and growing logs independently verified", "evidence": ["evidence/launch_readback.json", "evidence/launch_processes.json"], "row_id": null}
+{"at": "2026-10-03T03:23:04+00:00", "status": "TRAINING_COMPLETE", "note": "VERIFIED all8 E200,80000steps; frozen response_anchor_mean; test closure pending", "evidence": ["evidence/source_completion_validation.json", "evidence/source_selection.json"], "row_id": null}

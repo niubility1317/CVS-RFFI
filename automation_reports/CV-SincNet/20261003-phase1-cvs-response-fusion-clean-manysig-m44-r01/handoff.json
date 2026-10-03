@@ -1,0 +1,14 @@
+{
+  "run_id": "20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01",
+  "status": "PLANNED",
+  "source_run": "20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01",
+  "selected_variant": "response_anchor_mean",
+  "live_workers": 0,
+  "goal": "Complete frozen44row predictions and independent truth-last scoring",
+  "performance_goal_achieved": false,
+  "next": [
+    "Commit/push actual selected clean configs",
+    "Publish exactly once and verify checkpoint smoke/processes",
+    "Collect352scores/88summaries/80pairs and verify old320 unchanged"
+  ]
+}

@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T02:54:12+00:00
+更新：2026-10-03T03:23:05+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|81|
+|managed_run|82|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,23 +21,23 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|226|
+|[cvs](by_method/cvs.md)|227|
 |[adv3b02](by_method/adv3b02.md)|146|
 |[phase2](by_method/phase2.md)|118|
 |[phase1](by_method/phase1.md)|112|
 |[stage2](by_method/stage2.md)|67|
 |[qknn](by_method/qknn.md)|56|
-|[ce_only](by_method/ce_only.md)|49|
-|[clean_only](by_method/clean_only.md)|48|
-|[performance_priority](by_method/performance_priority.md)|42|
+|[ce_only](by_method/ce_only.md)|50|
+|[clean_only](by_method/clean_only.md)|49|
+|[performance_priority](by_method/performance_priority.md)|43|
 |[no_augmentation](by_method/no_augmentation.md)|36|
 |[source_selection](by_method/source_selection.md)|31|
 |[fasttrust](by_method/fasttrust.md)|26|
 |[source](by_method/source.md)|23|
 |[rff_physics](by_method/rff_physics.md)|20|
-|[source_selected](by_method/source_selected.md)|16|
+|[source_selected](by_method/source_selected.md)|17|
+|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|16|
 |[d92](by_method/d92.md)|15|
-|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|15|
 |[response](by_method/response.md)|13|
 |[source_only](by_method/source_only.md)|12|
 |[daot](by_method/daot.md)|11|
@@ -231,7 +231,8 @@
 |CVS信道补偿与顺序差值：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md)|
 |CVS显式补偿响应：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/report.md)|
 |CVS纯网络读出优化：源实验预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)|
-|CVS约束响应融合：源训练|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)|
+|CVS约束响应融合：冻结候选clean独立测试|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md)|
+|CVS约束响应融合：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|
@@ -273,4 +274,3 @@
 |因果包络耦合：同参数射频记忆原型|legacy_evidence_group|[打开](../docs/CVS_COUPLED_ENVELOPE_HYPOTHESIS_20261002.md)|
 |cvs_crossphase_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_crossphase_identity_20261002_r01)|
 |跨复数滤波通道相干读出：零新增参数原型|legacy_evidence_group|[打开](../docs/CVS_CROSSPHASE_IDENTITY_HYPOTHESIS_20261002.md)|
-|cvs_residual_sixscene_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_residual_sixscene_20261002_r01)|
