@@ -21,7 +21,7 @@
   "replaces_run_id": "20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
   "authorization": "用户要求持续深入优化纯神经网络；本次仅验证机制并保存负结果，保持原训练策略，不新增query。",
   "code": {
-    "commit": "49ed55d4803f9392236fa49cfe02d066cc0102cc",
+    "commit": "5a61a495e6ee9a80da19155e9e6323cbe3f18e4d",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
@@ -124,7 +124,12 @@
     "remote_log_root": null,
     "local_artifact_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
     "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
-    "stop_rule": "Fail on metadata/state/nonfinite/collision; preserve partial outputs, no automatic retry"
+    "stop_rule": "Fail on metadata/state/nonfinite/collision; preserve partial outputs, no automatic retry",
+    "completed_verified_at": "2026-10-03T10:16:11.591660+00:00",
+    "pid": 44356,
+    "live_workers": 0,
+    "actual_python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+    "torch_version": "2.10.0+cu128"
   },
   "expected_artifacts": [
     "launch.json",
@@ -191,7 +196,7 @@
         "public_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ARTIFACTS_COMPLETE"
     },
     {
       "row_id": "mirror_subspace-s2026092701",
@@ -225,7 +230,7 @@
         "public_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ARTIFACTS_COMPLETE"
     },
     {
       "row_id": "mirror_energy-s2026092702",
@@ -259,7 +264,7 @@
         "public_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ARTIFACTS_COMPLETE"
     },
     {
       "row_id": "mirror_subspace-s2026092702",
@@ -293,7 +298,7 @@
         "public_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ARTIFACTS_COMPLETE"
     },
     {
       "row_id": "mirror_energy-s2026092703",
@@ -327,7 +332,7 @@
         "public_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ARTIFACTS_COMPLETE"
     },
     {
       "row_id": "mirror_subspace-s2026092703",
@@ -361,7 +366,7 @@
         "public_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ARTIFACTS_COMPLETE"
     },
     {
       "row_id": "mirror_energy-s2026092704",
@@ -395,7 +400,7 @@
         "public_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ARTIFACTS_COMPLETE"
     },
     {
       "row_id": "mirror_subspace-s2026092704",
@@ -429,7 +434,7 @@
         "public_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ARTIFACTS_COMPLETE"
     }
   ],
   "notes": [
@@ -439,7 +444,7 @@
     "Near-zero relative denominators interpreted alongside absolute norms and all signal groups; no signals/pairs excluded.",
     "r02 fixes only original contract versus six known source training extensions; same eight checkpoints/public matrix, r01 preserved"
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "source_controls": [
     {
       "variant": "neural_residual_shallow",
@@ -518,5 +523,20 @@
     "status": "NOT_APPLICABLE_PUBLIC_DIAGNOSTIC",
     "reason": "No new trained/classifying candidate or target access; original source run already closed through retained-control test verification"
   },
-  "registered_at": "2026-10-03T10:10:41+00:00"
+  "registered_at": "2026-10-03T10:10:41+00:00",
+  "outcome": {
+    "status": "VERIFIED",
+    "diagnostic_complete": true,
+    "models": 8,
+    "packet_records": 1440,
+    "frequency_pair_records": 44640,
+    "live_workers": 0,
+    "model_state_unchanged": true,
+    "optimizer_steps": 0,
+    "source_IQ_access": false,
+    "target_access": false,
+    "performance_goal_achieved": false,
+    "paper_claim_established": false,
+    "conclusion": "Large relative changes combine near-zero reference norms with nonzero finite-packet FIR changes; no output-bound violation; not explained solely by FP32 rounding"
+  }
 }

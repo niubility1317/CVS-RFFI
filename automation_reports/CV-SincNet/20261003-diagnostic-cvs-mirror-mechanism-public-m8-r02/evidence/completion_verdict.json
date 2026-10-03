@@ -1,0 +1,15 @@
+{
+  "status": "VERIFIED",
+  "diagnostic_complete": true,
+  "models": 8,
+  "packet_records": 1440,
+  "frequency_pair_records": 44640,
+  "live_workers": 0,
+  "model_state_unchanged": true,
+  "optimizer_steps": 0,
+  "source_IQ_access": false,
+  "target_access": false,
+  "performance_goal_achieved": false,
+  "paper_claim_established": false,
+  "conclusion": "Large relative changes combine near-zero reference norms with nonzero finite-packet FIR changes; no output-bound violation; not explained solely by FP32 rounding"
+}

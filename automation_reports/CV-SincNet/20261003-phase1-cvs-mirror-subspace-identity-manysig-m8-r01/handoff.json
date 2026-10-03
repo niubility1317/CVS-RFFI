@@ -18,8 +18,9 @@
     "evidence/completion_verdict.json"
   ],
   "next": [
-    "Preserve completed negative result and retained-control test verification",
-    "Source/public-only diagnostic: decompose FIR absolute error and near-zero denominator, rank coverage and identity retention before another design",
-    "No new candidate query, additional loss, augmentation, budget extension or replacement seed; paper/performance goal remains active"
-  ]
+    "Public FIR absolute/relative diagnostic completed and verified; read its report before further work",
+    "Source V frozen branch on/off counterfactual and continuous-history public FIR attribution before architecture choice",
+    "No target-driven design, extra loss, augmentation or training budget change; performance and paper goal remain active"
+  ],
+  "followup_diagnostic_run": "20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02"
 }

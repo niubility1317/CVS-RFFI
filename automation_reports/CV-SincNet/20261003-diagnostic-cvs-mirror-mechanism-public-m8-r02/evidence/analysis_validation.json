@@ -1,0 +1,28 @@
+{
+  "status": "VERIFIED",
+  "models": 8,
+  "public_signals_per_model": 30,
+  "arithmetic_modes": [
+    "fp32",
+    "fp64"
+  ],
+  "delays": [
+    2,
+    8,
+    16
+  ],
+  "packet_records": 1440,
+  "frequency_pair_records": 44640,
+  "summary_records": 60,
+  "target_access": false,
+  "source_IQ_access": false,
+  "optimizer_steps": 0,
+  "all_tensors_recounted": true,
+  "artifact_root": "local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
+  "new_model_selection": false,
+  "limitations": [
+    "Synthetic diagnostic only; not device accuracy or source identity information",
+    "CPU Torch2.10 vs original GPU Torch2.1 results are explicitly separate",
+    "FP64 is posthoc arithmetic for diagnostics; original training and checkpoint stay FP32"
+  ]
+}

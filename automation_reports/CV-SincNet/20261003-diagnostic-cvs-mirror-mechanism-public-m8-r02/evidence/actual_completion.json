@@ -1,0 +1,544 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
+  "rows": [
+    {
+      "row_id": "mirror_energy-s2026092701",
+      "variant": "mirror_energy",
+      "model_seed": 2026092701,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092701/source/last.pt",
+      "source_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+      "status": "VERIFIED",
+      "public_packets": 30,
+      "source_IQ_access": false,
+      "target_access": false,
+      "optimizer_steps": 0,
+      "model_state_unchanged": true,
+      "runtime_seconds": 0.256089448928833,
+      "original_gpu_fir": [
+        {
+          "name": "delay2",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              2,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.04052164778113365,
+          "mean_unit_embedding_distance": 0.11875992268323898
+        },
+        {
+          "name": "delay8",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              8,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.07513558864593506,
+          "mean_unit_embedding_distance": 0.1331508904695511
+        },
+        {
+          "name": "delay16",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              16,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.16050808131694794,
+          "mean_unit_embedding_distance": 0.15501345694065094
+        }
+      ]
+    },
+    {
+      "row_id": "mirror_energy-s2026092702",
+      "variant": "mirror_energy",
+      "model_seed": 2026092702,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092702/source/last.pt",
+      "source_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+      "status": "VERIFIED",
+      "public_packets": 30,
+      "source_IQ_access": false,
+      "target_access": false,
+      "optimizer_steps": 0,
+      "model_state_unchanged": true,
+      "runtime_seconds": 0.23202872276306152,
+      "original_gpu_fir": [
+        {
+          "name": "delay2",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              2,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.0453622005879879,
+          "mean_unit_embedding_distance": 0.12237151712179184
+        },
+        {
+          "name": "delay8",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              8,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.07806523889303207,
+          "mean_unit_embedding_distance": 0.13474085927009583
+        },
+        {
+          "name": "delay16",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              16,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.18219934403896332,
+          "mean_unit_embedding_distance": 0.1600371152162552
+        }
+      ]
+    },
+    {
+      "row_id": "mirror_energy-s2026092703",
+      "variant": "mirror_energy",
+      "model_seed": 2026092703,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092703/source/last.pt",
+      "source_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+      "status": "VERIFIED",
+      "public_packets": 30,
+      "source_IQ_access": false,
+      "target_access": false,
+      "optimizer_steps": 0,
+      "model_state_unchanged": true,
+      "runtime_seconds": 0.21302294731140137,
+      "original_gpu_fir": [
+        {
+          "name": "delay2",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              2,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.04421601817011833,
+          "mean_unit_embedding_distance": 0.15464645624160767
+        },
+        {
+          "name": "delay8",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              8,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.07745569199323654,
+          "mean_unit_embedding_distance": 0.18193551898002625
+        },
+        {
+          "name": "delay16",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              16,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.1529371440410614,
+          "mean_unit_embedding_distance": 0.18579843640327454
+        }
+      ]
+    },
+    {
+      "row_id": "mirror_energy-s2026092704",
+      "variant": "mirror_energy",
+      "model_seed": 2026092704,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092704/source/last.pt",
+      "source_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+      "status": "VERIFIED",
+      "public_packets": 30,
+      "source_IQ_access": false,
+      "target_access": false,
+      "optimizer_steps": 0,
+      "model_state_unchanged": true,
+      "runtime_seconds": 0.19507598876953125,
+      "original_gpu_fir": [
+        {
+          "name": "delay2",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              2,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.04868464544415474,
+          "mean_unit_embedding_distance": 0.11315066367387772
+        },
+        {
+          "name": "delay8",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              8,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.08453889936208725,
+          "mean_unit_embedding_distance": 0.13767848908901215
+        },
+        {
+          "name": "delay16",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              16,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.16909874975681305,
+          "mean_unit_embedding_distance": 0.15089797973632812
+        }
+      ]
+    },
+    {
+      "row_id": "mirror_subspace-s2026092701",
+      "variant": "mirror_subspace",
+      "model_seed": 2026092701,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092701/source/last.pt",
+      "source_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+      "status": "VERIFIED",
+      "public_packets": 30,
+      "source_IQ_access": false,
+      "target_access": false,
+      "optimizer_steps": 0,
+      "model_state_unchanged": true,
+      "runtime_seconds": 0.211822509765625,
+      "original_gpu_fir": [
+        {
+          "name": "delay2",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              2,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.043169427663087845,
+          "mean_unit_embedding_distance": 0.13264741003513336
+        },
+        {
+          "name": "delay8",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              8,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 62.40506362915039,
+          "mean_unit_embedding_distance": 0.1423090398311615
+        },
+        {
+          "name": "delay16",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              16,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 3865.131103515625,
+          "mean_unit_embedding_distance": 0.19043421745300293
+        }
+      ]
+    },
+    {
+      "row_id": "mirror_subspace-s2026092702",
+      "variant": "mirror_subspace",
+      "model_seed": 2026092702,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092702/source/last.pt",
+      "source_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+      "status": "VERIFIED",
+      "public_packets": 30,
+      "source_IQ_access": false,
+      "target_access": false,
+      "optimizer_steps": 0,
+      "model_state_unchanged": true,
+      "runtime_seconds": 0.19554758071899414,
+      "original_gpu_fir": [
+        {
+          "name": "delay2",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              2,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.045071057975292206,
+          "mean_unit_embedding_distance": 0.12557117640972137
+        },
+        {
+          "name": "delay8",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              8,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 124.0121841430664,
+          "mean_unit_embedding_distance": 0.16213691234588623
+        },
+        {
+          "name": "delay16",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              16,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 7560.3671875,
+          "mean_unit_embedding_distance": 0.1841154843568802
+        }
+      ]
+    },
+    {
+      "row_id": "mirror_subspace-s2026092703",
+      "variant": "mirror_subspace",
+      "model_seed": 2026092703,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092703/source/last.pt",
+      "source_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+      "status": "VERIFIED",
+      "public_packets": 30,
+      "source_IQ_access": false,
+      "target_access": false,
+      "optimizer_steps": 0,
+      "model_state_unchanged": true,
+      "runtime_seconds": 0.22002506256103516,
+      "original_gpu_fir": [
+        {
+          "name": "delay2",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              2,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.04268750548362732,
+          "mean_unit_embedding_distance": 0.136947363615036
+        },
+        {
+          "name": "delay8",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              8,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 24.507963180541992,
+          "mean_unit_embedding_distance": 0.15225693583488464
+        },
+        {
+          "name": "delay16",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              16,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 1486.745361328125,
+          "mean_unit_embedding_distance": 0.167096808552742
+        }
+      ]
+    },
+    {
+      "row_id": "mirror_subspace-s2026092704",
+      "variant": "mirror_subspace",
+      "model_seed": 2026092704,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092704/source/last.pt",
+      "source_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+      "status": "VERIFIED",
+      "public_packets": 30,
+      "source_IQ_access": false,
+      "target_access": false,
+      "optimizer_steps": 0,
+      "model_state_unchanged": true,
+      "runtime_seconds": 0.22439837455749512,
+      "original_gpu_fir": [
+        {
+          "name": "delay2",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              2,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 0.056393638253211975,
+          "mean_unit_embedding_distance": 0.11297930777072906
+        },
+        {
+          "name": "delay8",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              8,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 27.192358016967773,
+          "mean_unit_embedding_distance": 0.14105121791362762
+        },
+        {
+          "name": "delay16",
+          "taps": [
+            [
+              0,
+              1.0,
+              0.0
+            ],
+            [
+              16,
+              0.23,
+              0.09
+            ]
+          ],
+          "relation_relative_distance": 1658.384765625,
+          "mean_unit_embedding_distance": 0.14893531799316406
+        }
+      ]
+    }
+  ],
+  "training": false,
+  "target_access": false
+}
