@@ -1,0 +1,88 @@
+{
+  "status": "VERIFIED",
+  "torch_version": "2.10.0+cu128",
+  "formal_data_access": false,
+  "target_access": false,
+  "original_CE_only": true,
+  "actual_configs": 12,
+  "rows": [
+    {
+      "variant": "response_mean",
+      "parameters": 237147,
+      "losses": [
+        3.0639445781707764,
+        3.2550668716430664,
+        4.102123737335205
+      ],
+      "diagnostics": {
+        "active": true,
+        "variant": "response_mean",
+        "packets": 8,
+        "compensation_input_relative": 0.0005470558535307646,
+        "response_feature_relative": 0.000540082692168653,
+        "response_token_norm": 0.027715738862752914,
+        "response_pooled_norm": 0.0003909437800757587,
+        "response_projection_relative": 2.793678140733391e-05,
+        "response_order_relative": null,
+        "attention_entropy": 5.505331993103027,
+        "compensation_exit_gradient_norm": 0.018598273396492004,
+        "value_gradient_norm": 0.0001659307163208723,
+        "projection_gradient_norm": 0.00021210825070738792,
+        "attention_gradient_norm": null,
+        "scope": "given source batch only, no fitting or persistent state"
+      }
+    },
+    {
+      "variant": "response_attention",
+      "parameters": 237359,
+      "losses": [
+        3.0639445781707764,
+        3.255072593688965,
+        4.102137088775635
+      ],
+      "diagnostics": {
+        "active": true,
+        "variant": "response_attention",
+        "packets": 8,
+        "compensation_input_relative": 0.0005255271680653095,
+        "response_feature_relative": 0.0005464765126816928,
+        "response_token_norm": 0.02720508724451065,
+        "response_pooled_norm": 0.0002731595013756305,
+        "response_projection_relative": 2.022626722464338e-05,
+        "response_order_relative": null,
+        "attention_entropy": 5.5005035400390625,
+        "compensation_exit_gradient_norm": 0.011300266720354557,
+        "value_gradient_norm": 0.00017032376490533352,
+        "projection_gradient_norm": 0.0001828616950660944,
+        "attention_gradient_norm": 2.9040804747637594e-06,
+        "scope": "given source batch only, no fitting or persistent state"
+      }
+    },
+    {
+      "variant": "response_order_attention",
+      "parameters": 238383,
+      "losses": [
+        3.0639445781707764,
+        3.2550735473632812,
+        4.102146148681641
+      ],
+      "diagnostics": {
+        "active": true,
+        "variant": "response_order_attention",
+        "packets": 8,
+        "compensation_input_relative": 0.0004679002158809453,
+        "response_feature_relative": 0.0005153458914719522,
+        "response_token_norm": 0.024900756776332855,
+        "response_pooled_norm": 0.00014465137792285532,
+        "response_projection_relative": 9.555849828757346e-06,
+        "response_order_relative": 5.604103353107348e-05,
+        "attention_entropy": 5.502903938293457,
+        "compensation_exit_gradient_norm": 0.006230788771063089,
+        "value_gradient_norm": 0.00011612017988227308,
+        "projection_gradient_norm": 8.549752965336666e-05,
+        "attention_gradient_norm": 2.78335369330307e-06,
+        "scope": "given source batch only, no fitting or persistent state"
+      }
+    }
+  ]
+}

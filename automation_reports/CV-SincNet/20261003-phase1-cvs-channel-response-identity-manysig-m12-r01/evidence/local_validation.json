@@ -1,0 +1,13 @@
+{
+  "status": "VERIFIED",
+  "source_and_model_tests": 94,
+  "clean_and_shared_regression_tests": 237,
+  "commands": [
+    "python -m pytest tests/test_cvs_channel_response_identity.py tests/test_cvs_channel_response_source_protocol.py",
+    "python -m pytest tests/test_cvs_channel_response_clean_contract.py tests/test_cvs_channel_response_clean_analysis.py tests/test_cvs_channel_order_clean_contract.py tests/test_cvs_clean_eval.py"
+  ],
+  "fixture_repair": "New synthetic capsule retained channel schema; initial3 fixture failures fixed,3 loader tests passed; new prepared command exact interpreter3 tests passed",
+  "independent_review": "PASS",
+  "formal_data_access": false,
+  "interpreter": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe"
+}

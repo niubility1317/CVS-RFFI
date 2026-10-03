@@ -1,0 +1,14 @@
+{
+  "run_id": "20261003-phase1-cvs-channel-response-identity-manysig-m12-r01",
+  "status": "LOCAL_VERIFIED",
+  "launch_owner": "codex/root/cvs-channel-response-identity-20261003",
+  "live_workers": 0,
+  "performance_goal_achieved": false,
+  "source_matrix": "12new+4shallow+4dual",
+  "clean_matrix": "Conditional4new+40frozen",
+  "next": [
+    "Finish scoped P0/P1 review and Git delivery",
+    "Publish immutable source release once",
+    "Complete E200, source-only freeze, then conditional clean test and independent analysis"
+  ]
+}
