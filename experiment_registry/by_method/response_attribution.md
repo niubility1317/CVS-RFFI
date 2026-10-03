@@ -1,4 +1,4 @@
-# no_training实验与历史证据
+# response_attribution实验与历史证据
 
 [返回总索引](../README.md)
 
@@ -6,5 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS补偿与顺序差：完整源V冻结归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/report.md)|
 |CVS显式补偿响应：完整源V冻结归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)|

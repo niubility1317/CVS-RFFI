@@ -1,0 +1,14 @@
+{
+  "status": "VERIFIED",
+  "tests": 8,
+  "command": "python -X utf8 -m pytest tests/test_cvs_response_attribution.py -q",
+  "scope": [
+    "full forward equality",
+    "identity null",
+    "no model state mutation or persistent hooks",
+    "registered12rows48conditions",
+    "source input rejection",
+    "embedded remote scripts compilation"
+  ],
+  "target_access": false
+}
