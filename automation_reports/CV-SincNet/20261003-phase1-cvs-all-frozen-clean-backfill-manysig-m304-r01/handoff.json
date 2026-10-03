@@ -1,0 +1,12 @@
+{
+  "run_id": "20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01",
+  "status": "LOCAL_VERIFIED",
+  "models": 304,
+  "new": 216,
+  "reused": 88,
+  "release": "cvs_all_frozen_clean_backfill_20261003_r01",
+  "next": [
+    "Commit/push/readback then one immutable launch",
+    "Wait for all predictions and independent test scores; preserve failures"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "reviewer": "/root/frontfilter_model",
+  "P0_P1": [],
+  "checks": [
+    "17 tests independently passed",
+    "304 rows match actual source metadata/commits/method/seed",
+    "216 new+88 reuse;76 four-seed groups",
+    "Synthetic complete304x168000 prediction preflight passed; last missing row blocks truth with zero reads",
+    "1665 package files/87 local dependencies covered;four embedded scripts compile",
+    "184 explicit precision policies match historical sources;two equivariant groups separate"
+  ],
+  "real_query_access": false,
+  "remote_access": false
+}

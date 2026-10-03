@@ -1,0 +1,11 @@
+{
+  "status": "VERIFIED",
+  "diagnostic_commit": "9b2a02d02d10e90afc8d7864066e520e43a667ee",
+  "dispatcher_pid": 2454086,
+  "verified_live_row": "mirror_energy-s2026092703",
+  "worker_pid": 2454255,
+  "gpu": 2,
+  "source": "initial_readback.json",
+  "scope": "One independently observed live worker with matching PID/cwd/argv/resolved config and GPU UUID; all12 independently terminal in final_readback.json",
+  "race_note": "Seed02 exited during initial readback; transient process UNKNOWN resolved by final completion and full artifact recount. No restart."
+}

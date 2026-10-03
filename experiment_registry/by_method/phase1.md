@@ -12,6 +12,7 @@
 |DAOT＋FastTrust-RC4 practical四组实验r03|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/report.md)|
 |practical四组最新保存权重测试|managed_run|[打开](../../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r01/report.md)|
 |practical四组最新保存权重测试r02|managed_run|[打开](../../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r02/report.md)|
+|全部既有冻结架构的clean补测|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)|
 |Phase1架构研究：信道鲁棒性与射频指纹保留|legacy_evidence_group|[打开](../../docs/CVS_PHASE1_CHANNEL_ROBUST_ARCHITECTURE_20261003.md)|
 |CVS Phase1目标测试结果（2026-09-28）|legacy_evidence_group|[打开](../../docs/CVS_PHASE1_TARGET_RESULTS_20260928.md)|
 |phase1_dgleo_p0factorial8_matrix_20260714|legacy_evidence_group|[打开](../../local_artifacts/phase1_dgleo_p0factorial8_matrix_20260714.json)|

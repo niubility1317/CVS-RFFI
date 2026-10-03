@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "用户授权继续优化纯神经网络架构并深入分析；原单CE训练不变，本诊断仅补充冻结源机制证据。",
   "code": {
-    "commit": "1b7fcacedb552711e85fc41ea2148b26ccda365d",
+    "commit": "9b2a02d02d10e90afc8d7864066e520e43a667ee",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
@@ -156,7 +156,7 @@
       "row_id": "mirror_energy-s2026092701",
       "method": "mirror_energy",
       "purpose": "complete_frozen_source_V_relation_intervention",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_relation_attribution/launch_spec.json#mirror_energy-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -184,13 +184,14 @@
         "source_geometry.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "COMPLETE",
+      "pid": 2454099
     },
     {
       "row_id": "mirror_energy-s2026092702",
       "method": "mirror_energy",
       "purpose": "complete_frozen_source_V_relation_intervention",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_relation_attribution/launch_spec.json#mirror_energy-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -218,13 +219,14 @@
         "source_geometry.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "COMPLETE",
+      "pid": 2454175
     },
     {
       "row_id": "mirror_energy-s2026092703",
       "method": "mirror_energy",
       "purpose": "complete_frozen_source_V_relation_intervention",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_relation_attribution/launch_spec.json#mirror_energy-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -252,13 +254,14 @@
         "source_geometry.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "COMPLETE",
+      "pid": 2454255
     },
     {
       "row_id": "mirror_energy-s2026092704",
       "method": "mirror_energy",
       "purpose": "complete_frozen_source_V_relation_intervention",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_relation_attribution/launch_spec.json#mirror_energy-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -286,13 +289,14 @@
         "source_geometry.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "COMPLETE",
+      "pid": 2454331
     },
     {
       "row_id": "mirror_subspace-s2026092701",
       "method": "mirror_subspace",
       "purpose": "complete_frozen_source_V_relation_intervention",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_relation_attribution/launch_spec.json#mirror_subspace-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_subspace-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -320,13 +324,14 @@
         "source_geometry.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "COMPLETE",
+      "pid": 2454468
     },
     {
       "row_id": "mirror_subspace-s2026092702",
       "method": "mirror_subspace",
       "purpose": "complete_frozen_source_V_relation_intervention",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_relation_attribution/launch_spec.json#mirror_subspace-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_subspace-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -354,13 +359,14 @@
         "source_geometry.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "COMPLETE",
+      "pid": 2454544
     },
     {
       "row_id": "mirror_subspace-s2026092703",
       "method": "mirror_subspace",
       "purpose": "complete_frozen_source_V_relation_intervention",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_relation_attribution/launch_spec.json#mirror_subspace-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_subspace-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -388,13 +394,14 @@
         "source_geometry.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "COMPLETE",
+      "pid": 2455027
     },
     {
       "row_id": "mirror_subspace-s2026092704",
       "method": "mirror_subspace",
       "purpose": "complete_frozen_source_V_relation_intervention",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_relation_attribution/launch_spec.json#mirror_subspace-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_subspace-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -422,13 +429,14 @@
         "source_geometry.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "COMPLETE",
+      "pid": 2455104
     },
     {
       "row_id": "relation_frequency_energy-s2026092701",
       "method": "relation_frequency_energy",
       "purpose": "complete_frozen_source_V_relation_intervention",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_relation_attribution/launch_spec.json#relation_frequency_energy-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/relation_frequency_energy-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -456,13 +464,14 @@
         "source_geometry.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "COMPLETE",
+      "pid": 2455184
     },
     {
       "row_id": "relation_frequency_energy-s2026092702",
       "method": "relation_frequency_energy",
       "purpose": "complete_frozen_source_V_relation_intervention",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_relation_attribution/launch_spec.json#relation_frequency_energy-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/relation_frequency_energy-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -490,13 +499,14 @@
         "source_geometry.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "COMPLETE",
+      "pid": 2455262
     },
     {
       "row_id": "relation_frequency_energy-s2026092703",
       "method": "relation_frequency_energy",
       "purpose": "complete_frozen_source_V_relation_intervention",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_relation_attribution/launch_spec.json#relation_frequency_energy-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/relation_frequency_energy-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -524,13 +534,14 @@
         "source_geometry.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "COMPLETE",
+      "pid": 2455342
     },
     {
       "row_id": "relation_frequency_energy-s2026092704",
       "method": "relation_frequency_energy",
       "purpose": "complete_frozen_source_V_relation_intervention",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_relation_attribution/launch_spec.json#relation_frequency_energy-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/relation_frequency_energy-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -558,7 +569,8 @@
         "source_geometry.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "COMPLETE",
+      "pid": 2455418
     }
   ],
   "notes": [
@@ -567,10 +579,26 @@
     "Original current source winner is a registered descriptive control; no target score informed this matrix.",
     "Original source contracts/provenance validated once and referenced; no dataset/capsule rebuild."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "status": "NOT_APPLICABLE_SOURCE_DIAGNOSTIC",
     "reason": "No new model or test selection; original source runs completed their existing clean closure; no new query"
   },
-  "registered_at": "2026-10-03T10:32:49+00:00"
+  "registered_at": "2026-10-03T10:32:49+00:00",
+  "outcome": {
+    "status": "VERIFIED",
+    "models": 12,
+    "decisions": 648000,
+    "source_cells": 1080,
+    "target_access": false,
+    "optimizer_updates": 0,
+    "source_selection_changed": false,
+    "performance_goal_achieved": false,
+    "paper_claim_established": false,
+    "report": "report.md",
+    "evidence": [
+      "evidence/source_attribution.json",
+      "evidence/final_readback.json"
+    ]
+  }
 }

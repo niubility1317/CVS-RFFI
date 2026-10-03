@@ -1,0 +1,19 @@
+{
+  "method": "cvs_all_frozen_clean_backfill",
+  "variant": "response_span_mean",
+  "model_seed": 2026092704,
+  "source_run": "20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01",
+  "source_release_commit": "0772695891677ccf70e595224a32979b0285c5f8",
+  "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_span_mean-s2026092704/source",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/g34-response_span_mean-s2026092704/prediction",
+  "p1_capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+  "device": "cuda:0",
+  "views": [
+    "clean"
+  ],
+  "row_id": "g34-response_span_mean-s2026092704",
+  "model_id": "g34-response_span_mean",
+  "authorization": "USER_REQUEST_ALL_PREVIOUS_UNTESTED_20261003",
+  "frozen_epoch": 200
+}

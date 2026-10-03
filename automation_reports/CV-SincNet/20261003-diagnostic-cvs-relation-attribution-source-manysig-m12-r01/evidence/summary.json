@@ -1,0 +1,326 @@
+[
+  {
+    "variant": "relation_frequency_energy",
+    "accuracy_on": {
+      "mean": 0.9857314814814815,
+      "SD": 0.0011112654213834743,
+      "valid_seeds": 4
+    },
+    "accuracy_off": {
+      "mean": 0.8308148148148148,
+      "SD": 0.03515792316167898,
+      "valid_seeds": 4
+    },
+    "CE_on": {
+      "mean": 0.07544138040799148,
+      "SD": 0.00469666823437309,
+      "valid_seeds": 4
+    },
+    "CE_off": {
+      "mean": 0.9380404406640056,
+      "SD": 0.25132263896700574,
+      "valid_seeds": 4
+    },
+    "margin_on": {
+      "mean": 13.682733416811352,
+      "SD": 0.3825331215460791,
+      "valid_seeds": 4
+    },
+    "margin_off": {
+      "mean": 7.65167911599645,
+      "SD": 1.1190175477621156,
+      "valid_seeds": 4
+    },
+    "helped": {
+      "mean": 4227.75,
+      "SD": 956.828223873021,
+      "valid_seeds": 4
+    },
+    "hurt": {
+      "mean": 45,
+      "SD": 9.83192080250175,
+      "valid_seeds": 4
+    },
+    "prediction_changes": {
+      "mean": 4335.75,
+      "SD": 951.6159501955958,
+      "valid_seeds": 4
+    },
+    "base_frequency_TX": {
+      "mean": 0.12787455454884053,
+      "SD": 0.029705459440428485,
+      "valid_seeds": 4
+    },
+    "base_frequency_RX_day_within_TX": {
+      "mean": 0.3581602031739207,
+      "SD": 0.039476495723893966,
+      "valid_seeds": 4
+    },
+    "base_frequency_within_cell": {
+      "mean": 0.5139652422772387,
+      "SD": 0.014935677875324136,
+      "valid_seeds": 4
+    },
+    "relation_TX": {
+      "mean": 0.5603744933669437,
+      "SD": 0.1154317254645015,
+      "valid_seeds": 4
+    },
+    "relation_RX_day_within_TX": {
+      "mean": 0.22951503220121564,
+      "SD": 0.04867019077128374,
+      "valid_seeds": 4
+    },
+    "relation_within_cell": {
+      "mean": 0.21011047443184105,
+      "SD": 0.0683663979682409,
+      "valid_seeds": 4
+    },
+    "embedding_on_TX": {
+      "mean": 0.6420484069239791,
+      "SD": 0.014982355847981778,
+      "valid_seeds": 4
+    },
+    "embedding_on_RX_day_within_TX": {
+      "mean": 0.18074889410087722,
+      "SD": 0.005286896832352816,
+      "valid_seeds": 4
+    },
+    "embedding_on_within_cell": {
+      "mean": 0.17720269897514312,
+      "SD": 0.013717431424314483,
+      "valid_seeds": 4
+    },
+    "embedding_off_TX": {
+      "mean": 0.5002967531716614,
+      "SD": 0.03713744843020348,
+      "valid_seeds": 4
+    },
+    "embedding_off_RX_day_within_TX": {
+      "mean": 0.26442669266101293,
+      "SD": 0.02893868930068668,
+      "valid_seeds": 4
+    },
+    "embedding_off_within_cell": {
+      "mean": 0.23527655416732549,
+      "SD": 0.015482455295101283,
+      "valid_seeds": 4
+    }
+  },
+  {
+    "variant": "mirror_energy",
+    "accuracy_on": {
+      "mean": 0.9841851851851852,
+      "SD": 0.0009452308514839703,
+      "valid_seeds": 4
+    },
+    "accuracy_off": {
+      "mean": 0.9184166666666667,
+      "SD": 0.0577298026130297,
+      "valid_seeds": 4
+    },
+    "CE_on": {
+      "mean": 0.08318917578049881,
+      "SD": 0.0023317029762389024,
+      "valid_seeds": 4
+    },
+    "CE_off": {
+      "mean": 0.34961031884163446,
+      "SD": 0.2509082859102696,
+      "valid_seeds": 4
+    },
+    "margin_on": {
+      "mean": 13.190581147993385,
+      "SD": 0.1692597605050189,
+      "valid_seeds": 4
+    },
+    "margin_off": {
+      "mean": 10.14488025561576,
+      "SD": 1.2848088495848318,
+      "valid_seeds": 4
+    },
+    "helped": {
+      "mean": 1832.25,
+      "SD": 1567.0076313364484,
+      "valid_seeds": 4
+    },
+    "hurt": {
+      "mean": 56.5,
+      "SD": 9.291573243177568,
+      "valid_seeds": 4
+    },
+    "prediction_changes": {
+      "mean": 1942.5,
+      "SD": 1573.7294346021915,
+      "valid_seeds": 4
+    },
+    "base_frequency_TX": {
+      "mean": 0.12711831647344835,
+      "SD": 0.030465990077786463,
+      "valid_seeds": 4
+    },
+    "base_frequency_RX_day_within_TX": {
+      "mean": 0.3514037010772739,
+      "SD": 0.04077939568727031,
+      "valid_seeds": 4
+    },
+    "base_frequency_within_cell": {
+      "mean": 0.521477982449278,
+      "SD": 0.02203516204816375,
+      "valid_seeds": 4
+    },
+    "relation_TX": {
+      "mean": 0.3903404090281538,
+      "SD": 0.05809094384869448,
+      "valid_seeds": 4
+    },
+    "relation_RX_day_within_TX": {
+      "mean": 0.30814108039715343,
+      "SD": 0.03219351414122042,
+      "valid_seeds": 4
+    },
+    "relation_within_cell": {
+      "mean": 0.30151851057469375,
+      "SD": 0.03517523883220628,
+      "valid_seeds": 4
+    },
+    "embedding_on_TX": {
+      "mean": 0.6213035218116673,
+      "SD": 0.009045618091724246,
+      "valid_seeds": 4
+    },
+    "embedding_on_RX_day_within_TX": {
+      "mean": 0.18886399845705887,
+      "SD": 0.0036874146046814685,
+      "valid_seeds": 4
+    },
+    "embedding_on_within_cell": {
+      "mean": 0.1898324797312743,
+      "SD": 0.006322456647511475,
+      "valid_seeds": 4
+    },
+    "embedding_off_TX": {
+      "mean": 0.5381965215862361,
+      "SD": 0.030456341610408593,
+      "valid_seeds": 4
+    },
+    "embedding_off_RX_day_within_TX": {
+      "mean": 0.24222257347324896,
+      "SD": 0.018073867883605932,
+      "valid_seeds": 4
+    },
+    "embedding_off_within_cell": {
+      "mean": 0.2195809049405144,
+      "SD": 0.012844303976534145,
+      "valid_seeds": 4
+    }
+  },
+  {
+    "variant": "mirror_subspace",
+    "accuracy_on": {
+      "mean": 0.9846574074074075,
+      "SD": 0.0013358600886685314,
+      "valid_seeds": 4
+    },
+    "accuracy_off": {
+      "mean": 0.9391574074074074,
+      "SD": 0.008381963729218426,
+      "valid_seeds": 4
+    },
+    "CE_on": {
+      "mean": 0.081723990851805,
+      "SD": 0.003744680250209976,
+      "valid_seeds": 4
+    },
+    "CE_off": {
+      "mean": 0.22566749916776613,
+      "SD": 0.04902319667632143,
+      "valid_seeds": 4
+    },
+    "margin_on": {
+      "mean": 13.442165876323152,
+      "SD": 0.2912642331645668,
+      "valid_seeds": 4
+    },
+    "margin_off": {
+      "mean": 10.239599422788302,
+      "SD": 0.43034269865494723,
+      "valid_seeds": 4
+    },
+    "helped": {
+      "mean": 1275.25,
+      "SD": 216.54772376237685,
+      "valid_seeds": 4
+    },
+    "hurt": {
+      "mean": 46.75,
+      "SD": 8.845903006477066,
+      "valid_seeds": 4
+    },
+    "prediction_changes": {
+      "mean": 1361.5,
+      "SD": 226.86486432823102,
+      "valid_seeds": 4
+    },
+    "base_frequency_TX": {
+      "mean": 0.12966316540322442,
+      "SD": 0.0361476908248408,
+      "valid_seeds": 4
+    },
+    "base_frequency_RX_day_within_TX": {
+      "mean": 0.34412887485783894,
+      "SD": 0.040542715401833,
+      "valid_seeds": 4
+    },
+    "base_frequency_within_cell": {
+      "mean": 0.5262079597389367,
+      "SD": 0.02400457134565971,
+      "valid_seeds": 4
+    },
+    "relation_TX": {
+      "mean": 0.4051427105861996,
+      "SD": 0.05298044730100397,
+      "valid_seeds": 4
+    },
+    "relation_RX_day_within_TX": {
+      "mean": 0.27738704179873874,
+      "SD": 0.0590413641239604,
+      "valid_seeds": 4
+    },
+    "relation_within_cell": {
+      "mean": 0.31747024761506193,
+      "SD": 0.032407036320418206,
+      "valid_seeds": 4
+    },
+    "embedding_on_TX": {
+      "mean": 0.6028174659010068,
+      "SD": 0.01465643879547679,
+      "valid_seeds": 4
+    },
+    "embedding_on_RX_day_within_TX": {
+      "mean": 0.2038912451676636,
+      "SD": 0.01526312762512361,
+      "valid_seeds": 4
+    },
+    "embedding_on_within_cell": {
+      "mean": 0.19329128893132988,
+      "SD": 0.008550574407206009,
+      "valid_seeds": 4
+    },
+    "embedding_off_TX": {
+      "mean": 0.5356872042254516,
+      "SD": 0.02853090850181211,
+      "valid_seeds": 4
+    },
+    "embedding_off_RX_day_within_TX": {
+      "mean": 0.24889963141484236,
+      "SD": 0.0076447424824360385,
+      "valid_seeds": 4
+    },
+    "embedding_off_within_cell": {
+      "mean": 0.21541316435970592,
+      "SD": 0.022788915484741077,
+      "valid_seeds": 4
+    }
+  }
+]

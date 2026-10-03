@@ -1,0 +1,434 @@
+{
+  "read_at": 1791023739.198987,
+  "identity": {
+    "user": "szu2070436088",
+    "host": "dell-DSS8440"
+  },
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 2454086,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/launch_spec.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/dispatcher.log",
+    "commit": "9b2a02d02d10e90afc8d7864066e520e43a667ee",
+    "sha256": "13c82f5444017930d93f3667446dbe9ce2a61af316903a5568b9505766c77c2e",
+    "preflight_gpu": "0, 24124\n1, 24124\n2, 24124\n3, 24124\n4, 24124\n5, 24124\n6, 24124\n7, 24124\n",
+    "preflight_apps": "",
+    "disk_free_bytes": 5699721617408
+  },
+  "pipeline": {
+    "status": "RUNNING",
+    "pid": 2454086,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+    "launch_owner": "codex/root/relation-source-attribution-20261003",
+    "rows": {
+      "mirror_energy-s2026092701": {
+        "status": "COMPLETE",
+        "pid": 2454099,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092701",
+        "exit_code": 0
+      },
+      "mirror_energy-s2026092702": {
+        "status": "RUNNING",
+        "pid": 2454175,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092702"
+      },
+      "mirror_energy-s2026092703": {
+        "status": "RUNNING",
+        "pid": 2454255,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092703.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092703"
+      },
+      "mirror_energy-s2026092704": {
+        "status": "RUNNING",
+        "pid": 2454331,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092704.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092704"
+      }
+    }
+  },
+  "dispatcher_process": {
+    "pid": 2454086,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/launch_spec.json",
+      ""
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "mirror_energy-s2026092701",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 2454099,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092701",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_mirror_subspace_identity_20261003_r01",
+        "source_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092701/source",
+        "variant": "mirror_energy",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092701",
+        "conditions": [
+          "all_on",
+          "auxiliary_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/relation-source-attribution-20261003",
+        "pid": 2454099,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "mirror_energy",
+          "seed": 2026092701,
+          "accuracy": 0.985,
+          "worst_rx": 0.96,
+          "parameters": 247731,
+          "macs": 9677888,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092701/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "diagnostic_commit": "9b2a02d02d10e90afc8d7864066e520e43a667ee"
+      },
+      "completion": {
+        "status": "SOURCE_GEOMETRY_COMPLETE",
+        "variant": "mirror_energy",
+        "model_seed": 2026092701,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.985,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.96,
+              "4": 0.9890740740740741,
+              "6": 0.9959259259259259,
+              "8": 0.9831481481481481
+            },
+            "worst_rx": 0.96
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.8789259259259259,
+            "rx_accuracy": {
+              "1": 0.96,
+              "3": 0.8729629629629629,
+              "4": 0.8887037037037037,
+              "6": 0.8446296296296296,
+              "8": 0.8283333333333334
+            },
+            "worst_rx": 0.8283333333333334
+          }
+        ],
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off"
+        ],
+        "seconds": 8.109298462048173,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 69565952,
+        "claim": "Complete frozen sourceV representation/logit geometry; descriptive source factors, not causal disentanglement or target generalization"
+      },
+      "log_bytes": 3290,
+      "conditions_done": 2,
+      "errors": []
+    },
+    {
+      "row_id": "mirror_energy-s2026092702",
+      "state": {
+        "status": "RUNNING",
+        "pid": 2454175,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092702"
+      },
+      "process": {
+        "pid": 2454175,
+        "status": "UNKNOWN"
+      },
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_mirror_subspace_identity_20261003_r01",
+        "source_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092702/source",
+        "variant": "mirror_energy",
+        "model_seed": 2026092702,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092702",
+        "conditions": [
+          "all_on",
+          "auxiliary_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/relation-source-attribution-20261003",
+        "pid": 2454175,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "mirror_energy",
+          "seed": 2026092702,
+          "accuracy": 0.984,
+          "worst_rx": 0.957037037037037,
+          "parameters": 247731,
+          "macs": 9677888,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092702/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "diagnostic_commit": "9b2a02d02d10e90afc8d7864066e520e43a667ee"
+      },
+      "completion": {
+        "status": "SOURCE_GEOMETRY_COMPLETE",
+        "variant": "mirror_energy",
+        "model_seed": 2026092702,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.984,
+            "rx_accuracy": {
+              "1": 0.9964814814814815,
+              "3": 0.957037037037037,
+              "4": 0.9896296296296296,
+              "6": 0.9957407407407407,
+              "8": 0.9811111111111112
+            },
+            "worst_rx": 0.957037037037037
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.860037037037037,
+            "rx_accuracy": {
+              "1": 0.9518518518518518,
+              "3": 0.8498148148148148,
+              "4": 0.8166666666666667,
+              "6": 0.8338888888888889,
+              "8": 0.8479629629629629
+            },
+            "worst_rx": 0.8166666666666667
+          }
+        ],
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off"
+        ],
+        "seconds": 8.051051426038612,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 69565952,
+        "claim": "Complete frozen sourceV representation/logit geometry; descriptive source factors, not causal disentanglement or target generalization"
+      },
+      "log_bytes": 3381,
+      "conditions_done": 2,
+      "errors": []
+    },
+    {
+      "row_id": "mirror_energy-s2026092703",
+      "state": {
+        "status": "RUNNING",
+        "pid": 2454255,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092703.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092703"
+      },
+      "process": {
+        "pid": 2454255,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092703.json",
+          ""
+        ]
+      },
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_mirror_subspace_identity_20261003_r01",
+        "source_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092703/source",
+        "variant": "mirror_energy",
+        "model_seed": 2026092703,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092703",
+        "conditions": [
+          "all_on",
+          "auxiliary_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/relation-source-attribution-20261003",
+        "pid": 2454255,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "mirror_energy",
+          "seed": 2026092703,
+          "accuracy": 0.9848148148148148,
+          "worst_rx": 0.9583333333333334,
+          "parameters": 247731,
+          "macs": 9677888,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092703/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "diagnostic_commit": "9b2a02d02d10e90afc8d7864066e520e43a667ee"
+      },
+      "completion": null,
+      "log_bytes": 1838,
+      "conditions_done": 0,
+      "errors": []
+    },
+    {
+      "row_id": "mirror_energy-s2026092704",
+      "state": {
+        "status": "RUNNING",
+        "pid": 2454331,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092704.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092704"
+      },
+      "process": {
+        "pid": 2454331,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/mirror_energy-s2026092704.json",
+          ""
+        ]
+      },
+      "resolved": null,
+      "completion": null,
+      "log_bytes": 0,
+      "conditions_done": 0,
+      "errors": []
+    }
+  ],
+  "gpu_map": "0, GPU-56adac86-77cd-36c9-8770-dbf002650461\n1, GPU-a2d039ff-1792-4222-2b47-140429e10f94\n2, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562\n3, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97\n4, GPU-95d925a1-7218-ca7b-adef-164241f4f491\n5, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331\n6, GPU-5463e082-259e-537b-603a-01575d45801c\n7, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9\n",
+  "gpu_apps": "2454331, GPU-56adac86-77cd-36c9-8770-dbf002650461\n2454255, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562\n"
+}
