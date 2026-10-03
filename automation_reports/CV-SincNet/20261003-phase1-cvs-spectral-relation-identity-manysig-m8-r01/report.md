@@ -3,7 +3,7 @@
 - run_id：`20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01`
 - group_id：`cvs-clean-spectral-relation-identity-ce`；类别：`cvs`；阶段：`Phase1-CVS-source-research`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -44,4 +44,10 @@
 
 ## 发布准备
 
-状态LOCAL_VERIFIED；91项聚焦测试、修正后8模型24步公开CE验证及独立P0/P1审查通过。尚无正式训练结果。[本地验证](evidence/local_validation.json) · [独立审查](evidence/source_p0_p1_review.json)。原公开反例保留，不把理论性质等同泛化收益。
+状态RUNNING；发布前91项聚焦测试、修正后8模型24步公开CE验证及独立P0/P1审查通过。尚无正式训练结果。[本地验证](evidence/local_validation.json) · [独立审查](evidence/source_p0_p1_review.json)。原公开反例保留，不把理论性质等同泛化收益。
+
+## 启动读回
+
+实际发布commit为`d0847cd5ac9251541dbd93d31d0d7a3d933baa47`，dispatcher PID2372927。全部8个worker的PID/CWD/argv、父进程、CUDA可见设备及nvidia-smi物理GPU映射一致，两次日志读回增长。实际配置匹配两个候选各247731参数、26744谱关系参数、原单CE、FP32及固定源数据角色。当前不按早期分数选模，尚未接触目标。
+
+[启动核验](evidence/launch_validation.json) · [完整实际配置与进程](evidence/launch_readback.json) · [SCP前路径与资源](evidence/pretransfer_readback.json)。

@@ -1,0 +1,16 @@
+{
+  "status": "SUBMITTED",
+  "pid": 2372927,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_spectral_relation_identity_20261003_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.cvs_spectral_relation_identity.dispatch",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_spectral_relation_identity_20261003_r01/experiments/cvs_spectral_relation_identity/configs/launch_spec.json"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_spectral_relation_identity_20261003_r01/dispatcher.stdout.log",
+  "commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
+  "sha256": "e50d4dcacd6c919883856bade686be45de9b08b04c697d6ad8e72805a30fd9e7"
+}

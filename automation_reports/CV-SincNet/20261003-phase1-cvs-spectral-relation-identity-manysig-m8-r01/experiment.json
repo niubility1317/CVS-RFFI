@@ -24,12 +24,13 @@
   "replaces_run_id": null,
   "authorization": "2026-10-03用户授权源域架构优化实验；保持原单CE、原数据与训练策略。",
   "code": {
-    "commit": "3737b3119c3ee0b8fa395a1143f7adc57eb7b2ec",
+    "commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_spectral_relation_identity_20261003_r01",
     "architecture_base_commit": "f929f4d1116640474d324844e2f0824f97ca7dd0",
-    "commit_scope": "Preparation base revision only; actual implementation/release revision recorded after commit and launch"
+    "commit_scope": "Actual source release revision matched to independent remote submit and worker resolved configs",
+    "commit_role": "actual independently verified source release"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -99,7 +100,10 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_spectral_relation_identity.publish --output local_artifacts/cvs_spectral_relation_identity_20261003_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 2372927,
+    "live_workers": 8,
+    "launch_verified_at": "2026-10-03T08:03:09.212185+00:00"
   },
   "expected_artifacts": [
     "last.pt",
@@ -147,7 +151,7 @@
       "row_id": "relation_packet_energy-s2026092701",
       "method": "relation_packet_energy",
       "purpose": "source_only_spectral_relation_candidate",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_spectral_relation_identity/configs/relation_packet_energy-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_packet_energy-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -184,13 +188,15 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json",
         "source_spectral_relation_scalars.npz"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2372946
     },
     {
       "row_id": "relation_frequency_energy-s2026092701",
       "method": "relation_frequency_energy",
       "purpose": "source_only_spectral_relation_candidate",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_spectral_relation_identity/configs/relation_frequency_energy-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -227,13 +233,15 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json",
         "source_spectral_relation_scalars.npz"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2373023
     },
     {
       "row_id": "relation_packet_energy-s2026092702",
       "method": "relation_packet_energy",
       "purpose": "source_only_spectral_relation_candidate",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_spectral_relation_identity/configs/relation_packet_energy-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_packet_energy-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -270,13 +278,15 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json",
         "source_spectral_relation_scalars.npz"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2373104
     },
     {
       "row_id": "relation_frequency_energy-s2026092702",
       "method": "relation_frequency_energy",
       "purpose": "source_only_spectral_relation_candidate",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_spectral_relation_identity/configs/relation_frequency_energy-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -313,13 +323,15 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json",
         "source_spectral_relation_scalars.npz"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2373181
     },
     {
       "row_id": "relation_packet_energy-s2026092703",
       "method": "relation_packet_energy",
       "purpose": "source_only_spectral_relation_candidate",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_spectral_relation_identity/configs/relation_packet_energy-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_packet_energy-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -356,13 +368,15 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json",
         "source_spectral_relation_scalars.npz"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2373726
     },
     {
       "row_id": "relation_frequency_energy-s2026092703",
       "method": "relation_frequency_energy",
       "purpose": "source_only_spectral_relation_candidate",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_spectral_relation_identity/configs/relation_frequency_energy-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -399,13 +413,15 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json",
         "source_spectral_relation_scalars.npz"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2373805
     },
     {
       "row_id": "relation_packet_energy-s2026092704",
       "method": "relation_packet_energy",
       "purpose": "source_only_spectral_relation_candidate",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_spectral_relation_identity/configs/relation_packet_energy-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_packet_energy-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -442,13 +458,15 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json",
         "source_spectral_relation_scalars.npz"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2373886
     },
     {
       "row_id": "relation_frequency_energy-s2026092704",
       "method": "relation_frequency_energy",
       "purpose": "source_only_spectral_relation_candidate",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_spectral_relation_identity/configs/relation_frequency_energy-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -485,7 +503,9 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json",
         "source_spectral_relation_scalars.npz"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2373963
     }
   ],
   "notes": [
@@ -503,7 +523,7 @@
     "Before any formal source training, public finite-FIR diagnostics motivated one relative denominator floor: max(own/packet energy,mean_frequency_energy/64,1e-6). Both models retain26744new parameters; no threshold scan or source/target feedback. Original public artifact preserved; ideal gain property only where own energy is active before/after."
   ],
   "registered_at": "2026-10-03T07:49:16+00:00",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "source_controls": [
     {
       "variant": "neural_residual_shallow",
