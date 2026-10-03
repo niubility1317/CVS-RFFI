@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "reviewer": "/root/frontfilter_model",
+  "open_P0_P1": [],
+  "tests": 12,
+  "scope": "Full public matrix and NumPy forward; gradients/state; actual complex128 solve FP32 output; matching189562parameters/25337new; output preservation; no target or remote access",
+  "max_array_error_bound": 3.7e-09
+}

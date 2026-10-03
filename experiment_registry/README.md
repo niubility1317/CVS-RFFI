@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T13:04:47+00:00
+更新：2026-10-03T13:30:26+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|97|
+|managed_run|98|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,13 +21,13 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|242|
+|[cvs](by_method/cvs.md)|243|
 |[adv3b02](by_method/adv3b02.md)|146|
 |[phase2](by_method/phase2.md)|118|
 |[phase1](by_method/phase1.md)|113|
 |[stage2](by_method/stage2.md)|67|
 |[clean_only](by_method/clean_only.md)|57|
-|[ce_only](by_method/ce_only.md)|56|
+|[ce_only](by_method/ce_only.md)|57|
 |[qknn](by_method/qknn.md)|56|
 |[performance_priority](by_method/performance_priority.md)|48|
 |[no_augmentation](by_method/no_augmentation.md)|40|
@@ -66,6 +66,7 @@
 |[repair](by_method/repair.md)|4|
 |[shot](by_method/shot.md)|4|
 |[sixscene](by_method/sixscene.md)|3|
+|[architecture](by_method/architecture.md)|3|
 |[identity_only](by_method/identity_only.md)|3|
 |[scratch](by_method/scratch.md)|3|
 |[no_target_access](by_method/no_target_access.md)|3|
@@ -81,7 +82,6 @@
 |[final_eval](by_method/final_eval.md)|2|
 |[source_scratch](by_method/source_scratch.md)|2|
 |[native_methods](by_method/native_methods.md)|2|
-|[architecture](by_method/architecture.md)|2|
 |[cvs_identity_ce](by_method/cvs_identity_ce.md)|2|
 |[cvcnn_matched](by_method/cvcnn_matched.md)|2|
 |[ablation](by_method/ablation.md)|2|
@@ -95,6 +95,7 @@
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
 |[benchmark_informed](by_method/benchmark_informed.md)|2|
+|[public_signals](by_method/public_signals.md)|2|
 |[dual_path](by_method/dual_path.md)|2|
 |[fixed_comparison](by_method/fixed_comparison.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
@@ -148,11 +149,11 @@
 |[frontfilter_attribution](by_method/frontfilter_attribution.md)|1|
 |[history_boundary](by_method/history_boundary.md)|1|
 |[readout_attribution](by_method/readout_attribution.md)|1|
+|[reference_residual](by_method/reference_residual.md)|1|
 |[relation_attribution](by_method/relation_attribution.md)|1|
 |[response_attribution](by_method/response_attribution.md)|1|
 |[response_geometry](by_method/response_geometry.md)|1|
 |[mechanism](by_method/mechanism.md)|1|
-|[public_signals](by_method/public_signals.md)|1|
 |[backfill](by_method/backfill.md)|1|
 |[all_frozen](by_method/all_frozen.md)|1|
 |[channel_order](by_method/channel_order.md)|1|
@@ -247,6 +248,7 @@
 |CVS镜像关系：冻结公开信号机制分解|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/report.md)|
 |CVS镜像关系：冻结公开信号机制分解|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02/report.md)|
 |CVS读出：完整源V分支归因与TX/RX/日期关联|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/report.md)|
+|参考约束残差架构：公开可行性验证|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-reference-residual-public-m2-r01/report.md)|
 |谱关系与镜像子空间的完整源域归因|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/report.md)|
 |CVS显式补偿响应：完整源V冻结归因|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)|
 |CVS补偿响应：完整源V判别几何|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|
@@ -290,4 +292,3 @@
 |cvs_neural_residual_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_neural_residual_identity_20261002_r01)|
 |cvs_curvature_attribution_source_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_curvature_attribution_source_20261002_r01)|
 |cvs_phase_curvature_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_phase_curvature_identity_20261002_r01)|
-|CVS分层相位曲率残差|legacy_evidence_group|[打开](../docs/CVS_FEATURE_PHASE_CURVATURE_20261002.md)|

@@ -1,0 +1,7 @@
+{
+  "status": "VERIFIED",
+  "tests": 12,
+  "chunk": "0e939c",
+  "scope": "Own scratch exact initial equality,3CE updates finite/all used gradients and nonzero ridge gradient,save/load,zero/small/phase/gain,bounds,public continuous cascade,independent NumPy solve,full proof+missing/tampered/duplicate rejection",
+  "fixed_numerical_issue": "FP32 inverse roundoff amplified to5.54e-5 in random fixture; explicit FP64 physical layer passes tight1e-9 internal/1e-7 feature NumPy comparison"
+}

@@ -6,4 +6,5 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|参考约束残差架构：公开可行性验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-reference-residual-public-m2-r01/report.md)|
 |双路径冻结机制诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01/report.md)|

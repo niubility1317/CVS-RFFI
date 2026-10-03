@@ -68,6 +68,7 @@
 |CVS镜像关系：冻结公开信号机制分解|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/report.md)|
 |CVS镜像关系：冻结公开信号机制分解|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02/report.md)|
 |CVS读出：完整源V分支归因与TX/RX/日期关联|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/report.md)|
+|参考约束残差架构：公开可行性验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-reference-residual-public-m2-r01/report.md)|
 |谱关系与镜像子空间的完整源域归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/report.md)|
 |CVS显式补偿响应：完整源V冻结归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)|
 |CVS补偿响应：完整源V判别几何|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|

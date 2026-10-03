@@ -1,0 +1,277 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261003-diagnostic-cvs-reference-residual-public-m2-r01",
+  "group_id": "cvs-reference-constrained-residual-physical-design",
+  "display_name": "CVS参考约束残差架构：补偿作用与指纹保留公开验证",
+  "description": "9维可学习正则响应求解层与原始CVS旁路；参数匹配的标量/逐频补偿，公开TX→H→RX连续激励矩阵同时检查信道抑制和TX差异保留。",
+  "kind": "diagnostic",
+  "stage": "Phase1-architecture-public-feasibility",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "reference_residual",
+    "public_signals",
+    "architecture",
+    "ce_only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01",
+    "20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求纯架构创新、原单CE、落地和实验；本次先完成物理可行性探针，真实训练及测试尚未启动。",
+  "code": {
+    "commit": "5aa7ddd89a57c0f3957fc2534ac4bbca8201af9c",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+    "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "commit_role": "preparation base; actual execution version saved in launch.json"
+  },
+  "data": {
+    "dataset": "Public analytic20MHz L-STF at25Msps,72 deterministic TX/channel/RX tuples",
+    "version": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+    "representation": "256 IQ with analytic continuous prehistory; unit packet RMS; layer consumes80:160",
+    "contract_ref": "experiments/cvs_reference_residual_identity/physics.py",
+    "physical_ids_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-reference-residual-public-m2-r01\\records.json",
+    "label_map_ref": "Synthetic TX/operator names, not real transmitter labels",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "ideal,linear_d1,iq_mirror,pa3,pa5,memory3; six mathematical operators",
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "public_synthetic_only",
+    "query_use": "forbidden",
+    "external_method_exception": null,
+    "claim_scope": "Untrained operator initialization and mathematical feasibility only; no new identity accuracy or real-channel generalization claim"
+  },
+  "checkpoint": {
+    "initialization": "deterministic analytic layer default9ridge; no learned checkpoint",
+    "sources": [],
+    "contract_check_ref": "experiments/cvs_reference_residual_identity/model.py",
+    "provenance_verdict": "N/A no checkpoint loaded; fullnetwork CE unit tests use own random scratch fixtures",
+    "selection_rule": "Both fixed same-parameter architecture arms retained, no target selection"
+  },
+  "execution": {
+    "host": "local Windows CPU",
+    "launch_owner": "codex/root/reference-residual-public-20261003",
+    "gpu_policy": "no GPU",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-reference-residual-public-m2-r01",
+    "launch_command": "python -X utf8 -m experiments.cvs_reference_residual_identity.physics; then python -X utf8 -m experiments.cvs_reference_residual_identity.recount",
+    "stop_rule": "Fail on wrong/missing matrix, nonfinite outputs, existing output, or NumPy mismatch; preserve artifacts, no blind rerun"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "records.json",
+    "inputs.npz",
+    "reference_residual_scalar.npz",
+    "reference_residual_inverse.npz",
+    "metrics.json",
+    "complete.json",
+    "independent_recount.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "TX_signature_RMS",
+      "TX_retention_ratio",
+      "relative_signature_drift",
+      "reference_fit_error",
+      "bounded_inverse_gain"
+    ],
+    "dimensions": [
+      "2operators",
+      "6syntheticTX",
+      "4channels",
+      "3RXoperators",
+      "144forward rows",
+      "120TX signature differences"
+    ],
+    "prediction_ref": "N/A operator outputs only",
+    "scorer_ref": "independent NumPy full forward, cascade and signature recount"
+  },
+  "rows": [
+    {
+      "row_id": "reference_residual_scalar",
+      "method": "reference_residual_scalar",
+      "purpose": "fixed_public_control",
+      "config_ref": "experiments/cvs_reference_residual_identity/configs/experiment_spec.json#rows/reference_residual_scalar",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-reference-residual-public-m2-r01\\launch.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "All formal public waveforms and ridge initialization deterministic; no training/model seed, data split, augmentation or support. Scratch model unit test RNG is only a software fixture.",
+      "k": null,
+      "scenario": "Public continuous-period TX→H→RX; no LEO or real test",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "72public inputs per arm; nine ridge values fixed at0.001; no optimizer",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-reference-residual-public-m2-r01\\reference_residual_scalar.npz",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-reference-residual-public-m2-r01\\stdout.log",
+      "command": "python -X utf8 -m experiments.cvs_reference_residual_identity.physics",
+      "expected_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-reference-residual-public-m2-r01\\reference_residual_scalar.npz"
+      ],
+      "architecture": {
+        "mode": "reference_residual_scalar",
+        "base_variant": "residual_fusion",
+        "raw_path_retained": true,
+        "source_checkpoint_inheritance": false,
+        "window": [
+          80,
+          160
+        ],
+        "period": 20,
+        "cycles": 4,
+        "response_lags": [
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "response_rank": 9,
+        "response_mean": "four CFO-corrected cycles; fixed public fractional-delay L-STF bank",
+        "learned_ridge_parameters": 9,
+        "ridge_min": 0.0001,
+        "ridge_span": 0.1,
+        "ridge_initial": 0.001,
+        "inverse_ridge": 0.01,
+        "response_solve": "(A^HA+diag(lambda)) h=A^H mean_fft; complex differentiable9x9",
+        "response_scope": "apparent periodic response; lag-4 aliases delay16 on20period; not physical CIR",
+        "residual": "cycle_fft-reference_fft*(D@h)",
+        "residual_canonicalizer": "common conjugate scalar response",
+        "residual_shape": [
+          2,
+          80
+        ],
+        "soft_radius": 2.0,
+        "physical_operator_precision": "float64/complex128; residual features cast to backbone input dtype",
+        "trainable_parameter_precision": "float32",
+        "new_training_strategy": false,
+        "new_losses": [],
+        "initial_function": "own scratch residual_fusion; zero exit projection; original RNG and dropout preserved",
+        "whole_model_channel_invariant": false,
+        "hardware_parameter_recovery": false,
+        "reference_equalization_itself_novel": false,
+        "total_parameters": 189562,
+        "new_parameters": 25337
+      }
+    },
+    {
+      "row_id": "reference_residual_inverse",
+      "method": "reference_residual_inverse",
+      "purpose": "fixed_public_control",
+      "config_ref": "experiments/cvs_reference_residual_identity/configs/experiment_spec.json#rows/reference_residual_inverse",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-reference-residual-public-m2-r01\\launch.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "All formal public waveforms and ridge initialization deterministic; no training/model seed, data split, augmentation or support. Scratch model unit test RNG is only a software fixture.",
+      "k": null,
+      "scenario": "Public continuous-period TX→H→RX; no LEO or real test",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "72public inputs per arm; nine ridge values fixed at0.001; no optimizer",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-reference-residual-public-m2-r01\\reference_residual_inverse.npz",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-reference-residual-public-m2-r01\\stdout.log",
+      "command": "python -X utf8 -m experiments.cvs_reference_residual_identity.physics",
+      "expected_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-reference-residual-public-m2-r01\\reference_residual_inverse.npz"
+      ],
+      "architecture": {
+        "mode": "reference_residual_inverse",
+        "base_variant": "residual_fusion",
+        "raw_path_retained": true,
+        "source_checkpoint_inheritance": false,
+        "window": [
+          80,
+          160
+        ],
+        "period": 20,
+        "cycles": 4,
+        "response_lags": [
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "response_rank": 9,
+        "response_mean": "four CFO-corrected cycles; fixed public fractional-delay L-STF bank",
+        "learned_ridge_parameters": 9,
+        "ridge_min": 0.0001,
+        "ridge_span": 0.1,
+        "ridge_initial": 0.001,
+        "inverse_ridge": 0.01,
+        "response_solve": "(A^HA+diag(lambda)) h=A^H mean_fft; complex differentiable9x9",
+        "response_scope": "apparent periodic response; lag-4 aliases delay16 on20period; not physical CIR",
+        "residual": "cycle_fft-reference_fft*(D@h)",
+        "residual_canonicalizer": "per-bin conjugate response",
+        "residual_shape": [
+          2,
+          80
+        ],
+        "soft_radius": 2.0,
+        "physical_operator_precision": "float64/complex128; residual features cast to backbone input dtype",
+        "trainable_parameter_precision": "float32",
+        "new_training_strategy": false,
+        "new_losses": [],
+        "initial_function": "own scratch residual_fusion; zero exit projection; original RNG and dropout preserved",
+        "whole_model_channel_invariant": false,
+        "hardware_parameter_recovery": false,
+        "reference_equalization_itself_novel": false,
+        "total_parameters": 189562,
+        "new_parameters": 25337
+      }
+    }
+  ],
+  "notes": [
+    "Design derives from source/public diagnostic and original CVS implementation, not test ranking. All312 historical frozen models remain tested; this prototype creates no trained candidate yet.",
+    "Keep original raw CVS/PA identity path. New reference residual solve is a differentiable network layer; nine regularization scalars would learn via original CE only.",
+    "Same parameter count, source recipe and scratch anchor for intended scalar/inverse control. Only canonicalizer differs.",
+    "FP32 forward mismatch in inverse extrapolation detected by NumPy fixture; physical frontend now explicitly FP64/complex128, output/learned parameters and raw backbone FP32. Report additional cost before training.",
+    "Reference equalization is prior art, not novelty claim; hypothesis concerns constrained residual branch and raw fingerprint retention, still requires evidence.",
+    "Public fit cannot prove real channel inverse or TX/RX disentanglement; synthetic identity differences are not classification accuracy."
+  ],
+  "status": "LOCAL_VERIFIED",
+  "registered_at": "2026-10-03T13:27:57+00:00"
+}
