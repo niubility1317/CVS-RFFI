@@ -1,0 +1,35 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_ACTIVATED",
+  "verified_at": "2026-10-03T05:37:25.824934+00:00",
+  "source_release_commit": "e136f7868e5ff2569d2a61578ea909a4b1d3daa0",
+  "new_tests": 147,
+  "existing_readout_compatibility_tests": 102,
+  "total_distinct_relevant_tests": 249,
+  "independent_review": "PASS",
+  "reviewer": "/root/source_architecture_audit",
+  "independent_bounded_synthetic_regressions": 14,
+  "checked_release_files": 1356,
+  "checked_local_import_dependencies": 100,
+  "compiled_remote_templates": 4,
+  "formal_configs_generated": false,
+  "real_target_access": false,
+  "remote_clean_actions": false,
+  "source_files_unchanged_since_release": true,
+  "matrix": {
+    "source_selection_records": 16,
+    "new_prediction_rows": 4,
+    "reused_rows": 44,
+    "total_rows": 48,
+    "expected_scores": 384,
+    "expected_summary_rows": 96,
+    "expected_paired_rows": 88,
+    "retained_control_scores": 352
+  },
+  "gate": "Source-selected new winner only. Existing winner retained forbids new query.",
+  "tested_scope": "Synthetic fixtures and actual model-loader compatibility; not a real clean performance result",
+  "validation_commands": [
+    "python -m pytest tests/test_cvs_crosspath_relation_clean_contract.py -q",
+    "python -m pytest tests/test_cvs_crosspath_relation_clean_analysis.py -q",
+    "python -m pytest tests/test_cvs_neural_readout_clean_contract.py tests/test_cvs_neural_readout_clean_analysis.py -q"
+  ]
+}

@@ -603,6 +603,11 @@
       "8-8"
     ],
     "target_feedback": false,
-    "selection": "source_only"
+    "selection": "source_only",
+    "implementation_status": "LOCAL_VERIFIED_AWAITING_SOURCE_FREEZE",
+    "implementation_ref": "experiments/cvs_crosspath_relation_clean",
+    "validation_ref": "evidence/conditional_clean_local_validation.json",
+    "formal_configs_generated": false,
+    "target_access": false
   }
 }

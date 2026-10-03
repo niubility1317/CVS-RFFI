@@ -5,12 +5,21 @@
   "launch_owner": "codex/root/cvs-crosspath-relation-identity-20261003",
   "performance_goal_achieved": false,
   "next": [
-    "Monitor this exact dispatcher and 8 rows; never restart from a timeout",
-    "Finish conditional clean implementation without target access",
-    "Collect all E200 source artifacts and freeze source selection; perform the registered test closure"
+    "Read the latest state of dispatcher2289161 and its existing eight rows; no duplicate launch",
+    "After all E200 artifacts exist, run committed source collector and analyzer; independently recheck frozen source selection",
+    "If new winner, prepare registered crosspath clean T48, verify and publish once, then independently score/analyze",
+    "If old control retained, reuse independently rechecked frozen control evidence with zero new query",
+    "Update original run report and registry; paper/performance goal still open"
   ],
   "code_commit": "e136f7868e5ff2569d2a61578ea909a4b1d3daa0",
   "dispatcher_pid": 2289161,
   "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crosspath_relation_identity_20261003_r01",
-  "latest_evidence": "evidence/launch_readback.json"
+  "latest_evidence": "evidence/launch_readback.json",
+  "latest_progress": "evidence/source_progress.json",
+  "last_verified_epoch_range": [
+    90,
+    95
+  ],
+  "latest_readback": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_crosspath_relation_identity_20261003_r01\\progress_03\\readback.json",
+  "conditional_clean_implementation": "LOCAL_VERIFIED_NOT_ACTIVATED"
 }

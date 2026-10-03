@@ -24,6 +24,7 @@ CANDIDATES.update({'orthopoly_instant','orthopoly_memory4'})
 CANDIDATES.update({'moment_residual_instant','moment_residual_memory4'})
 CANDIDATES.update({'phase_curvature_lag14','phase_curvature_lag24','neural_residual_shallow','neural_residual_deep'})
 CANDIDATES.update({'readout_attention','readout_complex_attention'})
+CANDIDATES.update({'crosspath_gram','crosspath_coherence'})
 CANDIDATES.update({'response_span_mean','response_anchor_mean'})
 CANDIDATES.update({'response_mean','response_attention','response_order_attention'})
 CANDIDATES.update({'channel_capacity','channel_compensated','channel_dual','channel_order'})
@@ -64,6 +65,12 @@ def validate_matrix(spec):
         if selection['selected_variant'] not in {'channel_capacity','channel_compensated','channel_dual','channel_order'} or selection.get('new_candidate_selected') is not True:
             raise ValueError('Only selected new channel order candidate can be scored')
         variants=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow',selection['selected_variant'])
+    if selection.get('scope')=='crosspath_relation_source':
+        if (selection['selected_variant'] not in {'crosspath_gram','crosspath_coherence'} or
+                selection.get('new_candidate_selected') is not True or
+                selection.get('source_release_commit')!='e136f7868e5ff2569d2a61578ea909a4b1d3daa0'):
+            raise ValueError('Only selected new cross-path candidate from the frozen source release can be scored')
+        variants=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual','response_anchor_mean',selection['selected_variant'])
     if selection.get('scope')=='neural_readout_source':
         if selection['selected_variant'] not in {'readout_attention','readout_complex_attention'} or selection.get('new_candidate_selected') is not True:
             raise ValueError('Only selected new neural readout candidate can be scored')
@@ -104,7 +111,7 @@ def validate_matrix(spec):
         raise ValueError('Incomplete registered clean matrix;truth remains closed')
     if len({r['row_id'] for r in rows})!=count or len({r['output_root'] for r in rows})!=count:
         raise ValueError('Duplicate clean rows/outputs')
-    if selection.get('scope') in ('neural_readout_source','channel_order_source','channel_response_source','response_fusion_source'):
+    if selection.get('scope') in ('crosspath_relation_source','neural_readout_source','channel_order_source','channel_response_source','response_fusion_source'):
         candidate=selection['selected_variant']
         if any(bool(r.get('reuse_from_run'))==(r['variant']==candidate) for r in rows):
             raise ValueError('Source-selected confirmation requires four new selected rows and all registered frozen control rows')
@@ -198,7 +205,7 @@ def score(spec):
     candidate='native' if selection.get('scope')=='baseline_only' else selection['selected_variant']
     if selection.get('scope') in ('channel_response_source','response_fusion_source'):
         pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual')
-    elif selection.get('scope')=='neural_readout_source':
+    elif selection.get('scope') in ('crosspath_relation_source','neural_readout_source'):
         pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual','response_anchor_mean')
     elif selection.get('scope')=='channel_order_source':
         pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow')

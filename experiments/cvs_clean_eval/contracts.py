@@ -27,6 +27,7 @@ from experiments.cvs_moment_residual_identity.model import VARIANTS as TWENTYFOU
 from experiments.cvs_phase_curvature_identity.model import VARIANTS as CURVATURE_VARIANTS, curvature_contract
 from experiments.cvs_neural_residual_identity.model import VARIANTS as NEURAL_VARIANTS, neural_contract
 from experiments.cvs_neural_readout_identity.model import VARIANTS as READOUT_VARIANTS, readout_contract
+from experiments.cvs_crosspath_relation_identity.model import VARIANTS as CROSSPATH_VARIANTS, readout_contract as crosspath_contract
 from experiments.cvs_channel_response_identity.model import VARIANTS as RESPONSE_VARIANTS, response_contract as channel_response_contract
 from experiments.cvs_response_fusion_identity.model import VARIANTS as FUSION_VARIANTS, fusion_contract
 from experiments.cvs_channel_order_identity.model import VARIANTS as CHANNEL_VARIANTS, channel_contract
@@ -43,6 +44,7 @@ REUSED_ADAPTIVE_RUN='20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01
 REUSED_CHANNEL_RUN='20261003-phase1-cvs-channel-order-clean-manysig-m40-r01'
 REUSED_NEURAL_RUN='20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01'
 REUSED_FUSION_RUN='20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01'
+CROSSPATH_SOURCE_COMMIT='e136f7868e5ff2569d2a61578ea909a4b1d3daa0'
 
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
@@ -50,6 +52,22 @@ def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
 
 def frozen_selection(path):
     selection=read(path)
+    if selection.get('scope')=='crosspath_relation_source':
+        from experiments.cvs_crosspath_relation_identity.dispatch import validate_spec,read_source_record,select_source_candidate,PROJECT
+        if selection.get('source_release_commit')!=CROSSPATH_SOURCE_COMMIT:
+            raise ValueError('Cross-path source release commit differs')
+        matrix=validate_spec(read(selection['source_matrix_ref']))
+        original=read(PROJECT+'/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json')
+        records=[read_source_record(r,original,source_method(r['variant'])) for r in matrix['source_controls']]
+        for row in matrix['rows']:
+            if read(Path(row['source_output'])/'resolved_config.json').get('commit')!=CROSSPATH_SOURCE_COMMIT:
+                raise ValueError('Actual cross-path source commit differs')
+            records.append(read_source_record(row,original,'cvs_crosspath_relation_identity'))
+        actual=select_source_candidate(records)
+        if any(selection.get(k)!=v for k,v in actual.items()):raise ValueError('Cross-path selection differs from actual sixteen source-only records')
+        if not actual['new_candidate_selected'] or actual['selected_variant'] not in CROSSPATH_VARIANTS:
+            raise ValueError('Existing source baseline retained; unselected cross-path model cannot receive new query')
+        return selection
     if selection.get('scope')=='response_fusion_source':
         from experiments.cvs_response_fusion_identity.dispatch import validate_spec,read_source_record,select_source_candidate,PROJECT
         matrix=validate_spec(read(selection['source_matrix_ref']))
@@ -330,6 +348,7 @@ def frozen_selection(path):
 
 
 def evaluation_variants(selection):
+    if selection.get('scope')=='crosspath_relation_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual','response_anchor_mean',selection['selected_variant']]
     if selection.get('scope')=='response_fusion_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual',selection['selected_variant']]
     if selection.get('scope')=='channel_response_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual',selection['selected_variant']]
     if selection.get('scope')=='channel_order_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow',selection['selected_variant']]
@@ -423,6 +442,7 @@ def validate_reused_row(row):
 
 
 def source_method(variant):
+    if variant in CROSSPATH_VARIANTS:return 'cvs_crosspath_relation_identity'
     if variant in FUSION_VARIANTS:return 'cvs_response_fusion_identity'
     if variant in RESPONSE_VARIANTS:return 'cvs_channel_response_identity'
     if variant in CHANNEL_VARIANTS:return 'cvs_channel_order_identity'
@@ -461,11 +481,18 @@ def validate_predict_config(c,selection):
         raise ValueError('Frozen predictor rejects truth and inheritance overrides')
     if c.get('views')!=['clean'] or c.get('method')!='cvs_clean_eval' or c.get('model_seed') not in SEEDS:
         raise ValueError('Unregistered clean evaluation contract')
+    if selection.get('scope')=='crosspath_relation_source' and (selection.get('new_candidate_selected') is not True or
+            selection.get('selected_variant') not in CROSSPATH_VARIANTS):
+        raise ValueError('Retained source controls do not authorize new cross-path confirmation queries')
     if c['variant'] not in evaluation_variants(selection):
         raise ValueError('Nonselected CVS cannot receive target predictions')
-    if selection.get('scope') in ('neural_readout_source','channel_order_source','channel_response_source','response_fusion_source') and c['variant']!=selection['selected_variant']:
+    if selection.get('scope') in ('crosspath_relation_source','neural_readout_source','channel_order_source','channel_response_source','response_fusion_source') and c['variant']!=selection['selected_variant']:
         raise ValueError('Source-selected confirmation reuses all historical controls without new prediction')
-    expected_parent=c['fusion_source_root'] if c['variant'] in FUSION_VARIANTS else c['response_source_root'] if c['variant'] in RESPONSE_VARIANTS else c['channel_source_root'] if c['variant'] in CHANNEL_VARIANTS else c['readout_source_root'] if c['variant'] in READOUT_VARIANTS else c['neural_source_root'] if c['variant'] in NEURAL_VARIANTS else c['curvature_source_root'] if c['variant'] in CURVATURE_VARIANTS else c['moment_source_root'] if c['variant'] in TWENTYFOURTH else c['orthopoly_source_root'] if c['variant'] in TWENTYTHIRD else c['adaptive_source_root'] if c['variant'] in TWENTYSECOND else c['volterra_source_root'] if c['variant'] in TWENTYFIRST else c['coupled_source_root'] if c['variant'] in TWENTIETH else c['crossphase_source_root'] if c['variant'] in NINETEENTH else c['energy_source_root'] if c['variant'] in EIGHTEENTH else c['fractional_source_root'] if c['variant'] in SEVENTEENTH else c['additive_source_root'] if c['variant'] in SIXTEENTH else c['coordinate_source_root'] if c['variant'] in FIFTEENTH else c['synchronized_source_root'] if c['variant'] in FOURTEENTH else c['equivariant_source_root'] if c['variant'] in THIRTEENTH else c['reference_source_root'] if c['variant'] in TWELFTH else c['gauge_source_root'] if c['variant'] in ELEVENTH else c['observable_source_root'] if c['variant'] in TENTH else c['rf_operator_source_root'] if c['variant'] in NINTH else c['simplex_source_root'] if c['variant'] in EIGHTH else c['coherence_source_root'] if c['variant'] in SEVENTH else c['stability_source_root'] if c['variant'] in SIXTH else c['attentive_source_root'] if c['variant'] in FIFTH else c['interaction_source_root'] if c['variant'] in FOURTH else c['balanced_source_root'] if c['variant'] in THIRD else (c['baseline_source_root'] if c['variant'] in FIRST else c['residual_source_root'])
+    if c['variant'] in CROSSPATH_VARIANTS and (selection.get('scope')!='crosspath_relation_source' or
+            selection.get('new_candidate_selected') is not True or selection.get('source_release_commit')!=CROSSPATH_SOURCE_COMMIT or
+            c.get('source_release_commit')!=CROSSPATH_SOURCE_COMMIT):
+        raise ValueError('Cross-path prediction requires its registered source winner and release commit')
+    expected_parent=c['crosspath_source_root'] if c['variant'] in CROSSPATH_VARIANTS else c['fusion_source_root'] if c['variant'] in FUSION_VARIANTS else c['response_source_root'] if c['variant'] in RESPONSE_VARIANTS else c['channel_source_root'] if c['variant'] in CHANNEL_VARIANTS else c['readout_source_root'] if c['variant'] in READOUT_VARIANTS else c['neural_source_root'] if c['variant'] in NEURAL_VARIANTS else c['curvature_source_root'] if c['variant'] in CURVATURE_VARIANTS else c['moment_source_root'] if c['variant'] in TWENTYFOURTH else c['orthopoly_source_root'] if c['variant'] in TWENTYTHIRD else c['adaptive_source_root'] if c['variant'] in TWENTYSECOND else c['volterra_source_root'] if c['variant'] in TWENTYFIRST else c['coupled_source_root'] if c['variant'] in TWENTIETH else c['crossphase_source_root'] if c['variant'] in NINETEENTH else c['energy_source_root'] if c['variant'] in EIGHTEENTH else c['fractional_source_root'] if c['variant'] in SEVENTEENTH else c['additive_source_root'] if c['variant'] in SIXTEENTH else c['coordinate_source_root'] if c['variant'] in FIFTEENTH else c['synchronized_source_root'] if c['variant'] in FOURTEENTH else c['equivariant_source_root'] if c['variant'] in THIRTEENTH else c['reference_source_root'] if c['variant'] in TWELFTH else c['gauge_source_root'] if c['variant'] in ELEVENTH else c['observable_source_root'] if c['variant'] in TENTH else c['rf_operator_source_root'] if c['variant'] in NINTH else c['simplex_source_root'] if c['variant'] in EIGHTH else c['coherence_source_root'] if c['variant'] in SEVENTH else c['stability_source_root'] if c['variant'] in SIXTH else c['attentive_source_root'] if c['variant'] in FIFTH else c['interaction_source_root'] if c['variant'] in FOURTH else c['balanced_source_root'] if c['variant'] in THIRD else (c['baseline_source_root'] if c['variant'] in FIRST else c['residual_source_root'])
     expected=Path(expected_parent)/(c['variant']+'-s'+str(c['model_seed']))/'source'
     if Path(c['source_output'])!=expected:raise ValueError('Source row/seed path mismatch')
     return c
@@ -488,6 +515,22 @@ def checkpoint_contract(c,done,initial,contract,expected,resolved,payload):
         resolved['augmentation'] or resolved['domain_backbone'] or resolved['extra_losses'] or resolved['target_access'] or
         resolved['epochs']!=200 or resolved['steps_per_epoch']!=50 or resolved['selection']!='fixed_last_epoch' or
         resolved['source_counts']!={'L_s':6300,'U_s':56700,'V':27000}):raise ValueError('Source resolved training contract mismatch')
+    if c['variant'] in CROSSPATH_VARIANTS:
+        from experiments.cvs_crosspath_relation_identity.source import validate_config
+        validate_config(resolved)
+        if resolved.get('commit')!=CROSSPATH_SOURCE_COMMIT or c.get('source_release_commit')!=CROSSPATH_SOURCE_COMMIT:
+            raise ValueError('Frozen cross-path source release commit mismatch')
+        if resolved.get('output_root')!=c.get('source_output') or done.get('checkpoint')!=str(Path(c['source_output'])/'last.pt'):
+            raise ValueError('Frozen cross-path source/checkpoint path mismatch')
+        if resolved.get('backend_flags')!=resolved['numerical_policy'] or done.get('backend_flags')!=resolved['numerical_policy'] or resolved.get('precision')!='float32':
+            raise ValueError('Frozen cross-path full-FP32 source provenance mismatch')
+        if any(contract.get(k)!=v for k,v in expected.items()):raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
+        if initial.get('physical_roles')!='EXACT_MATCH' or initial.get('selection')!='fixed_last_epoch':raise ValueError('Cross-path scratch provenance differs')
+        architecture=crosspath_contract(c['variant'])
+        parameters=architecture['base_trainable_parameters']+architecture['new_trainable_parameters']
+        if resolved.get('total_parameters')!=parameters or resolved.get('trainable_parameters')!=parameters:raise ValueError('Cross-path parameter budget differs')
+        if resolved.get('learned_readout_active') is not True or resolved.get('readout_actual')!=architecture or resolved.get('readout')!=architecture or resolved.get('classifier_scale')!=30.:
+            raise ValueError('Cross-path relation operators differ from registered source variant')
     if c['variant'] in FUSION_VARIANTS:
         from experiments.cvs_response_fusion_identity.source import validate_config
         validate_config(resolved)
@@ -704,7 +747,9 @@ def checkpoint_contract(c,done,initial,contract,expected,resolved,payload):
 
 
 def build_model(variant):
-    if variant in FUSION_VARIANTS:
+    if variant in CROSSPATH_VARIANTS:
+        from experiments.cvs_crosspath_relation_identity.model import build
+    elif variant in FUSION_VARIANTS:
         from experiments.cvs_response_fusion_identity.model import build
     elif variant in RESPONSE_VARIANTS:
         from experiments.cvs_channel_response_identity.model import build

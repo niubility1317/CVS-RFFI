@@ -31,3 +31,11 @@
 实际发布commit为`e136f7868e5ff2569d2a61578ea909a4b1d3daa0`，dispatcher PID2289161。全部8个worker的PID/CWD/argv、父进程、CUDA可见设备和nvidia-smi物理GPU映射一致，GPU0至7各一份训练；两次日志读回均增长。全部实际配置匹配233275参数、12288关系参数、原单CE、FP32和原源数据角色。启动验证时各row处于E4至E9，源分数尚未冻结，不能据早期结果选模。
 
 [启动独立核验](evidence/launch_validation.json) · [完整实际配置与进程](evidence/launch_readback.json) · [SCP前路径与资源](evidence/pretransfer_readback.json)。条件clean入口正在准备，当前零目标访问。
+
+## 条件测试实现就绪
+
+[条件clean入口](../../../experiments/cvs_crosspath_relation_clean/prepare.py)已实现并通过147项新测试、102项既有readout兼容测试。独立P0/P1审查PASS，另执行14项有界合成回归，核对了发布范围内100个本地导入依赖及四段模板。上述均为本地合成/模型加载验证，不是实际目标成绩。新scope严格核对源release commit、完整16源记录、来源/物理角色/FP32/参数与checkpoint payload；全部48行预测固定后才连接truth。
+
+正式clean configs仍不存在，未启动测试或读取真实目标数据；训练release保持原版本。最新已核实8组训练处于E90至E95/200，见[进度证据](evidence/source_progress.json)。完成E200及合法源冻结后直接按预登记条件收尾，不再索要已有范围的测试许可。
+
+[条件测试本地验证](evidence/conditional_clean_local_validation.json)。
