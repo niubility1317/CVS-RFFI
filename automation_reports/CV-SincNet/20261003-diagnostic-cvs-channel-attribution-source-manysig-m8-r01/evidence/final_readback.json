@@ -1,0 +1,2212 @@
+{
+  "read_at": 1790988862.6607256,
+  "identity": {
+    "user": "szu2070436088",
+    "host": "dell-DSS8440"
+  },
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 2148029,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/launch_spec.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/dispatcher.log",
+    "commit": "26bbdd6ad9c122019b069b3c69d77172dcc66bbe",
+    "sha256": "12198ba8801d01db3ee85e319721bda84cc00ab06d7273f2b61ed2ae5cf93e9d",
+    "preflight_gpu": "0, 24124\n1, 24124\n2, 24124\n3, 24124\n4, 24124\n5, 24124\n6, 24124\n7, 24124\n",
+    "preflight_apps": "",
+    "disk_free_bytes": 5763890245632
+  },
+  "pipeline": {
+    "status": "COMPLETE",
+    "pid": 2148029,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+    "launch_owner": "codex/root/channel-source-attribution-20261003",
+    "rows": {
+      "channel_dual-s2026092701": {
+        "status": "COMPLETE",
+        "pid": 2148044,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092701",
+        "exit_code": 0
+      },
+      "channel_dual-s2026092702": {
+        "status": "COMPLETE",
+        "pid": 2148124,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092702",
+        "exit_code": 0
+      },
+      "channel_dual-s2026092703": {
+        "status": "COMPLETE",
+        "pid": 2148200,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092703.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092703",
+        "exit_code": 0
+      },
+      "channel_dual-s2026092704": {
+        "status": "COMPLETE",
+        "pid": 2148280,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092704.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092704",
+        "exit_code": 0
+      },
+      "channel_order-s2026092701": {
+        "status": "COMPLETE",
+        "pid": 2148358,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092701",
+        "exit_code": 0
+      },
+      "channel_order-s2026092702": {
+        "status": "COMPLETE",
+        "pid": 2148847,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092702",
+        "exit_code": 0
+      },
+      "channel_order-s2026092703": {
+        "status": "COMPLETE",
+        "pid": 2148976,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092703.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092703",
+        "exit_code": 0
+      },
+      "channel_order-s2026092704": {
+        "status": "COMPLETE",
+        "pid": 2149056,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092704.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092704",
+        "exit_code": 0
+      }
+    }
+  },
+  "dispatcher_process": null,
+  "rows": [
+    {
+      "row_id": "channel_dual-s2026092701",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 2148044,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092701",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_order_identity_20261003_r01",
+        "source_commit": "8d9600a432f9dcb80e2bfcc9dc90cbb1847e1908",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_dual-s2026092701/source",
+        "variant": "channel_dual",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092701",
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/channel-source-attribution-20261003",
+        "pid": 2148044,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "channel_dual",
+          "seed": 2026092701,
+          "accuracy": 0.9857407407407407,
+          "worst_rx": 0.960925925925926,
+          "parameters": 247387,
+          "macs": 9961072,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_dual-s2026092701/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "channel_dual",
+        "model_seed": 2026092701,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.9857407407407407,
+            "ce": 0.09790240274982645,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.960925925925926,
+              "4": 0.9898148148148148,
+              "6": 0.9962962962962963,
+              "8": 0.9844444444444445
+            },
+            "worst_rx": 0.960925925925926,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.9848888888888889,
+            "ce": 0.0745703321485694,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9605555555555556,
+              "4": 0.9892592592592593,
+              "6": 0.9964814814814815,
+              "8": 0.9812962962962963
+            },
+            "worst_rx": 0.9605555555555556,
+            "prediction_changes": 120,
+            "helped_by_all_on": 58,
+            "hurt_by_all_on": 35
+          },
+          {
+            "condition": "u_off",
+            "count": 27000,
+            "accuracy": 0.9855555555555555,
+            "ce": 0.08422224822084375,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.9612962962962963,
+              "4": 0.9896296296296296,
+              "6": 0.9964814814814815,
+              "8": 0.9831481481481481
+            },
+            "worst_rx": 0.9612962962962963,
+            "prediction_changes": 55,
+            "helped_by_all_on": 23,
+            "hurt_by_all_on": 18
+          },
+          {
+            "condition": "v_off",
+            "count": 27000,
+            "accuracy": 0.9855555555555555,
+            "ce": 0.0839712426064488,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.9611111111111111,
+              "4": 0.9898148148148148,
+              "6": 0.9964814814814815,
+              "8": 0.9831481481481481
+            },
+            "worst_rx": 0.9611111111111111,
+            "prediction_changes": 54,
+            "helped_by_all_on": 22,
+            "hurt_by_all_on": 17
+          },
+          {
+            "condition": "g_identity",
+            "count": 27000,
+            "accuracy": 0.9857037037037037,
+            "ce": 0.0978724792129915,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.960925925925926,
+              "4": 0.9898148148148148,
+              "6": 0.9962962962962963,
+              "8": 0.9842592592592593
+            },
+            "worst_rx": 0.960925925925926,
+            "prediction_changes": 1,
+            "helped_by_all_on": 1,
+            "hurt_by_all_on": 0
+          }
+        ],
+        "scalar_summary": {
+          "u_projection_relative": {
+            "mean": 0.28435874100195035,
+            "p10": 0.26615439653396605,
+            "median": 0.28505706787109375,
+            "p90": 0.3003829836845398,
+            "maximum": 0.3464580178260803
+          },
+          "v_projection_relative": {
+            "mean": 0.2843636864788002,
+            "p10": 0.26621492505073546,
+            "median": 0.2850167006254196,
+            "p90": 0.3003049671649933,
+            "maximum": 0.34802523255348206
+          },
+          "auxiliary_relative": {
+            "mean": 0.5687008635578332,
+            "p10": 0.5323547959327698,
+            "median": 0.5700624287128448,
+            "p90": 0.6006600022315979,
+            "maximum": 0.6944536566734314
+          },
+          "uv_readout_cosine": {
+            "mean": 0.9999935320328783,
+            "p10": 0.99998539686203,
+            "median": 0.9999972581863403,
+            "p90": 0.9999985098838806,
+            "maximum": 0.9999998807907104
+          },
+          "uv_readout_relative_difference": {
+            "mean": 0.003320699563892386,
+            "p10": 0.0018487858818843962,
+            "median": 0.002467000624164939,
+            "p90": 0.0058792033698409855,
+            "maximum": 0.028481237590312958
+          },
+          "uv_projection_cosine": {
+            "mean": 0.9998481399703909,
+            "p10": 0.9998306035995483,
+            "median": 0.9998506307601929,
+            "p90": 0.9998685121536255,
+            "maximum": 0.9998865127563477
+          },
+          "g_input_relative": {
+            "mean": 0.004172491150908172,
+            "p10": 0.0024862085934728383,
+            "median": 0.003488991060294211,
+            "p90": 0.0065417201723903425,
+            "maximum": 0.02721085399389267
+          },
+          "g_identity_logit_distance": {
+            "mean": 0.026267484533436667,
+            "p10": 0.014973304886370897,
+            "median": 0.022394560277462006,
+            "p90": 0.04212574958801272,
+            "maximum": 0.13296668231487274
+          }
+        },
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity"
+        ],
+        "seconds": 5.917714914976386,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 68445696,
+        "claim": "Whole source V within frozen checkpoint; ablated inputs need not be on training distribution; not retraining causal effect or target generalization."
+      },
+      "log_bytes": 7321,
+      "conditions_done": 5,
+      "errors": []
+    },
+    {
+      "row_id": "channel_dual-s2026092702",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 2148124,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092702",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_order_identity_20261003_r01",
+        "source_commit": "8d9600a432f9dcb80e2bfcc9dc90cbb1847e1908",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_dual-s2026092702/source",
+        "variant": "channel_dual",
+        "model_seed": 2026092702,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092702",
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/channel-source-attribution-20261003",
+        "pid": 2148124,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "channel_dual",
+          "seed": 2026092702,
+          "accuracy": 0.9843703703703703,
+          "worst_rx": 0.9592592592592593,
+          "parameters": 247387,
+          "macs": 9961072,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_dual-s2026092702/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "channel_dual",
+        "model_seed": 2026092702,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.9843703703703703,
+            "ce": 0.09808523589603511,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9592592592592593,
+              "4": 0.9905555555555555,
+              "6": 0.9957407407407407,
+              "8": 0.9796296296296296
+            },
+            "worst_rx": 0.9592592592592593,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.9827407407407407,
+            "ce": 0.07513109533225738,
+            "rx_accuracy": {
+              "1": 0.9964814814814815,
+              "3": 0.9614814814814815,
+              "4": 0.9890740740740741,
+              "6": 0.9955555555555555,
+              "8": 0.9711111111111111
+            },
+            "worst_rx": 0.9614814814814815,
+            "prediction_changes": 179,
+            "helped_by_all_on": 91,
+            "hurt_by_all_on": 47
+          },
+          {
+            "condition": "u_off",
+            "count": 27000,
+            "accuracy": 0.9836296296296296,
+            "ce": 0.08353839387902634,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.96,
+              "4": 0.9898148148148148,
+              "6": 0.9957407407407407,
+              "8": 0.975925925925926
+            },
+            "worst_rx": 0.96,
+            "prediction_changes": 86,
+            "helped_by_all_on": 42,
+            "hurt_by_all_on": 22
+          },
+          {
+            "condition": "v_off",
+            "count": 27000,
+            "accuracy": 0.9835555555555555,
+            "ce": 0.08326330516642742,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9598148148148148,
+              "4": 0.9896296296296296,
+              "6": 0.9957407407407407,
+              "8": 0.975925925925926
+            },
+            "worst_rx": 0.9598148148148148,
+            "prediction_changes": 82,
+            "helped_by_all_on": 41,
+            "hurt_by_all_on": 19
+          },
+          {
+            "condition": "g_identity",
+            "count": 27000,
+            "accuracy": 0.9844074074074074,
+            "ce": 0.09809355096264752,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9594444444444444,
+              "4": 0.9905555555555555,
+              "6": 0.9957407407407407,
+              "8": 0.9796296296296296
+            },
+            "worst_rx": 0.9594444444444444,
+            "prediction_changes": 2,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 1
+          }
+        ],
+        "scalar_summary": {
+          "u_projection_relative": {
+            "mean": 0.2888467227010815,
+            "p10": 0.25989205539226534,
+            "median": 0.2933630347251892,
+            "p90": 0.3104148626327515,
+            "maximum": 0.33520999550819397
+          },
+          "v_projection_relative": {
+            "mean": 0.2886430855680395,
+            "p10": 0.2601806432008743,
+            "median": 0.29299356043338776,
+            "p90": 0.3099464297294617,
+            "maximum": 0.33483943343162537
+          },
+          "auxiliary_relative": {
+            "mean": 0.577474833563522,
+            "p10": 0.5200267970561981,
+            "median": 0.5863340198993683,
+            "p90": 0.62032710313797,
+            "maximum": 0.6700282692909241
+          },
+          "uv_readout_cosine": {
+            "mean": 0.9999688940644265,
+            "p10": 0.9999047517776489,
+            "median": 0.9999952912330627,
+            "p90": 0.999998927116394,
+            "maximum": 1.0
+          },
+          "uv_readout_relative_difference": {
+            "mean": 0.006565603538588793,
+            "p10": 0.0019503785879351199,
+            "median": 0.0037359605776146054,
+            "p90": 0.014164733979851008,
+            "maximum": 0.05471933260560036
+          },
+          "uv_projection_cosine": {
+            "mean": 0.9998956377793241,
+            "p10": 0.9998701810836792,
+            "median": 0.999905526638031,
+            "p90": 0.9999332427978516,
+            "maximum": 0.9999573230743408
+          },
+          "g_input_relative": {
+            "mean": 0.007649477391980191,
+            "p10": 0.0019769831327721477,
+            "median": 0.003953066421672702,
+            "p90": 0.017862397804856302,
+            "maximum": 0.051503024995326996
+          },
+          "g_identity_logit_distance": {
+            "mean": 0.036125234321225434,
+            "p10": 0.0153430943377316,
+            "median": 0.0243767024949193,
+            "p90": 0.07362335771322252,
+            "maximum": 0.2782058119773865
+          }
+        },
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity"
+        ],
+        "seconds": 5.790593842015369,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 68445696,
+        "claim": "Whole source V within frozen checkpoint; ablated inputs need not be on training distribution; not retraining causal effect or target generalization."
+      },
+      "log_bytes": 7251,
+      "conditions_done": 5,
+      "errors": []
+    },
+    {
+      "row_id": "channel_dual-s2026092703",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 2148200,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092703.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092703",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_order_identity_20261003_r01",
+        "source_commit": "8d9600a432f9dcb80e2bfcc9dc90cbb1847e1908",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_dual-s2026092703/source",
+        "variant": "channel_dual",
+        "model_seed": 2026092703,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092703",
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/channel-source-attribution-20261003",
+        "pid": 2148200,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "channel_dual",
+          "seed": 2026092703,
+          "accuracy": 0.984037037037037,
+          "worst_rx": 0.957037037037037,
+          "parameters": 247387,
+          "macs": 9961072,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_dual-s2026092703/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "channel_dual",
+        "model_seed": 2026092703,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.984037037037037,
+            "ce": 0.09270409777227728,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.957037037037037,
+              "4": 0.9883333333333333,
+              "6": 0.9964814814814815,
+              "8": 0.9814814814814815
+            },
+            "worst_rx": 0.957037037037037,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.9827037037037037,
+            "ce": 0.07271262994698352,
+            "rx_accuracy": {
+              "1": 0.9959259259259259,
+              "3": 0.955,
+              "4": 0.9907407407407407,
+              "6": 0.9951851851851852,
+              "8": 0.9766666666666667
+            },
+            "worst_rx": 0.955,
+            "prediction_changes": 215,
+            "helped_by_all_on": 106,
+            "hurt_by_all_on": 70
+          },
+          {
+            "condition": "u_off",
+            "count": 27000,
+            "accuracy": 0.9836666666666667,
+            "ce": 0.07893837491856943,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9572222222222222,
+              "4": 0.9892592592592593,
+              "6": 0.9961111111111111,
+              "8": 0.9790740740740741
+            },
+            "worst_rx": 0.9572222222222222,
+            "prediction_changes": 93,
+            "helped_by_all_on": 45,
+            "hurt_by_all_on": 35
+          },
+          {
+            "condition": "v_off",
+            "count": 27000,
+            "accuracy": 0.9837037037037037,
+            "ce": 0.07909120669025907,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9572222222222222,
+              "4": 0.9894444444444445,
+              "6": 0.9961111111111111,
+              "8": 0.9790740740740741
+            },
+            "worst_rx": 0.9572222222222222,
+            "prediction_changes": 92,
+            "helped_by_all_on": 45,
+            "hurt_by_all_on": 36
+          },
+          {
+            "condition": "g_identity",
+            "count": 27000,
+            "accuracy": 0.9839629629629629,
+            "ce": 0.09283287843636435,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9572222222222222,
+              "4": 0.9883333333333333,
+              "6": 0.9964814814814815,
+              "8": 0.980925925925926
+            },
+            "worst_rx": 0.9572222222222222,
+            "prediction_changes": 4,
+            "helped_by_all_on": 3,
+            "hurt_by_all_on": 1
+          }
+        ],
+        "scalar_summary": {
+          "u_projection_relative": {
+            "mean": 0.2776044979310698,
+            "p10": 0.2518142193555832,
+            "median": 0.27972255647182465,
+            "p90": 0.3013229161500931,
+            "maximum": 0.32940253615379333
+          },
+          "v_projection_relative": {
+            "mean": 0.27408287058991415,
+            "p10": 0.24851233512163162,
+            "median": 0.2761579751968384,
+            "p90": 0.29756559133529664,
+            "maximum": 0.32596710324287415
+          },
+          "auxiliary_relative": {
+            "mean": 0.5516850282792691,
+            "p10": 0.5002655625343323,
+            "median": 0.5558419823646545,
+            "p90": 0.5988864302635193,
+            "maximum": 0.6553670167922974
+          },
+          "uv_readout_cosine": {
+            "mean": 0.9999757206417896,
+            "p10": 0.9999663829803467,
+            "median": 0.99997878074646,
+            "p90": 0.9999821186065674,
+            "maximum": 0.9999959468841553
+          },
+          "uv_readout_relative_difference": {
+            "mean": 0.01615738270735299,
+            "p10": 0.015160808525979518,
+            "median": 0.01567758619785309,
+            "p90": 0.017882957868278027,
+            "maximum": 0.024878501892089844
+          },
+          "uv_projection_cosine": {
+            "mean": 0.9999828292528788,
+            "p10": 0.9999768137931824,
+            "median": 0.9999854564666748,
+            "p90": 0.999987006187439,
+            "maximum": 0.9999902248382568
+          },
+          "g_input_relative": {
+            "mean": 0.015828062226857852,
+            "p10": 0.014570034760981797,
+            "median": 0.015165636781603098,
+            "p90": 0.017916320823132992,
+            "maximum": 0.02433381788432598
+          },
+          "g_identity_logit_distance": {
+            "mean": 0.04879041827376932,
+            "p10": 0.02567728087306023,
+            "median": 0.04463289864361286,
+            "p90": 0.07660820782184602,
+            "maximum": 0.14604820311069489
+          }
+        },
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity"
+        ],
+        "seconds": 5.932647222012747,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 68445696,
+        "claim": "Whole source V within frozen checkpoint; ablated inputs need not be on training distribution; not retraining causal effect or target generalization."
+      },
+      "log_bytes": 7267,
+      "conditions_done": 5,
+      "errors": []
+    },
+    {
+      "row_id": "channel_dual-s2026092704",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 2148280,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092704.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092704",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_order_identity_20261003_r01",
+        "source_commit": "8d9600a432f9dcb80e2bfcc9dc90cbb1847e1908",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_dual-s2026092704/source",
+        "variant": "channel_dual",
+        "model_seed": 2026092704,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092704",
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/channel-source-attribution-20261003",
+        "pid": 2148280,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "channel_dual",
+          "seed": 2026092704,
+          "accuracy": 0.982925925925926,
+          "worst_rx": 0.9561111111111111,
+          "parameters": 247387,
+          "macs": 9961072,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_dual-s2026092704/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "channel_dual",
+        "model_seed": 2026092704,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.982925925925926,
+            "ce": 0.10507949920333144,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9561111111111111,
+              "4": 0.9912962962962963,
+              "6": 0.9942592592592593,
+              "8": 0.975925925925926
+            },
+            "worst_rx": 0.9561111111111111,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.980925925925926,
+            "ce": 0.08561969604900677,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9527777777777777,
+              "4": 0.9894444444444445,
+              "6": 0.9953703703703703,
+              "8": 0.9703703703703703
+            },
+            "worst_rx": 0.9527777777777777,
+            "prediction_changes": 187,
+            "helped_by_all_on": 105,
+            "hurt_by_all_on": 51
+          },
+          {
+            "condition": "u_off",
+            "count": 27000,
+            "accuracy": 0.9822962962962963,
+            "ce": 0.09332957289135353,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9544444444444444,
+              "4": 0.9916666666666667,
+              "6": 0.9946296296296296,
+              "8": 0.9738888888888889
+            },
+            "worst_rx": 0.9544444444444444,
+            "prediction_changes": 85,
+            "helped_by_all_on": 43,
+            "hurt_by_all_on": 26
+          },
+          {
+            "condition": "v_off",
+            "count": 27000,
+            "accuracy": 0.9823703703703703,
+            "ce": 0.09339256223298759,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9546296296296296,
+              "4": 0.9914814814814815,
+              "6": 0.9948148148148148,
+              "8": 0.9740740740740741
+            },
+            "worst_rx": 0.9546296296296296,
+            "prediction_changes": 85,
+            "helped_by_all_on": 42,
+            "hurt_by_all_on": 27
+          },
+          {
+            "condition": "g_identity",
+            "count": 27000,
+            "accuracy": 0.982925925925926,
+            "ce": 0.10515206788401102,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9561111111111111,
+              "4": 0.9912962962962963,
+              "6": 0.9942592592592593,
+              "8": 0.975925925925926
+            },
+            "worst_rx": 0.9561111111111111,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          }
+        ],
+        "scalar_summary": {
+          "u_projection_relative": {
+            "mean": 0.2743338655763202,
+            "p10": 0.2394203335046768,
+            "median": 0.27763769030570984,
+            "p90": 0.2982440620660782,
+            "maximum": 0.31839242577552795
+          },
+          "v_projection_relative": {
+            "mean": 0.2726367237540307,
+            "p10": 0.23801634907722474,
+            "median": 0.275982528924942,
+            "p90": 0.29667947590351107,
+            "maximum": 0.3170199692249298
+          },
+          "auxiliary_relative": {
+            "mean": 0.54696951528611,
+            "p10": 0.47751941680908205,
+            "median": 0.5536086857318878,
+            "p90": 0.5948973000049591,
+            "maximum": 0.6354112029075623
+          },
+          "uv_readout_cosine": {
+            "mean": 0.9999915914469295,
+            "p10": 0.9999822378158569,
+            "median": 0.9999953508377075,
+            "p90": 0.9999963045120239,
+            "maximum": 0.9999990463256836
+          },
+          "uv_readout_relative_difference": {
+            "mean": 0.009319531230398246,
+            "p10": 0.006054103095084429,
+            "median": 0.007872946560382843,
+            "p90": 0.014356572087854147,
+            "maximum": 0.031167279928922653
+          },
+          "uv_projection_cosine": {
+            "mean": 0.999992106254454,
+            "p10": 0.9999889731407166,
+            "median": 0.9999930262565613,
+            "p90": 0.9999938011169434,
+            "maximum": 0.9999966621398926
+          },
+          "g_input_relative": {
+            "mean": 0.00821146736224182,
+            "p10": 0.005695805558934808,
+            "median": 0.0068400246091187,
+            "p90": 0.012346964981406928,
+            "maximum": 0.031211651861667633
+          },
+          "g_identity_logit_distance": {
+            "mean": 0.024799491266823476,
+            "p10": 0.013951036520302296,
+            "median": 0.023087206296622753,
+            "p90": 0.03769754618406296,
+            "maximum": 0.10074968636035919
+          }
+        },
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity"
+        ],
+        "seconds": 5.835729940998135,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 68445696,
+        "claim": "Whole source V within frozen checkpoint; ablated inputs need not be on training distribution; not retraining causal effect or target generalization."
+      },
+      "log_bytes": 7315,
+      "conditions_done": 5,
+      "errors": []
+    },
+    {
+      "row_id": "channel_order-s2026092701",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 2148358,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092701",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_order_identity_20261003_r01",
+        "source_commit": "8d9600a432f9dcb80e2bfcc9dc90cbb1847e1908",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_order-s2026092701/source",
+        "variant": "channel_order",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092701",
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity",
+          "d_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/channel-source-attribution-20261003",
+        "pid": 2148358,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "channel_order",
+          "seed": 2026092701,
+          "accuracy": 0.9856666666666667,
+          "worst_rx": 0.960925925925926,
+          "parameters": 249947,
+          "macs": 9963712,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_order-s2026092701/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "channel_order",
+        "model_seed": 2026092701,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.9856666666666667,
+            "ce": 0.09784969066825445,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.960925925925926,
+              "4": 0.99,
+              "6": 0.9964814814814815,
+              "8": 0.9838888888888889
+            },
+            "worst_rx": 0.960925925925926,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.9843333333333333,
+            "ce": 0.07421899483358504,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9598148148148148,
+              "4": 0.9885185185185185,
+              "6": 0.9964814814814815,
+              "8": 0.9801851851851852
+            },
+            "worst_rx": 0.9598148148148148,
+            "prediction_changes": 134,
+            "helped_by_all_on": 67,
+            "hurt_by_all_on": 31
+          },
+          {
+            "condition": "u_off",
+            "count": 27000,
+            "accuracy": 0.9853333333333333,
+            "ce": 0.0838532513474746,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.960925925925926,
+              "4": 0.9888888888888889,
+              "6": 0.9964814814814815,
+              "8": 0.9835185185185186
+            },
+            "worst_rx": 0.960925925925926,
+            "prediction_changes": 60,
+            "helped_by_all_on": 25,
+            "hurt_by_all_on": 16
+          },
+          {
+            "condition": "v_off",
+            "count": 27000,
+            "accuracy": 0.9854444444444445,
+            "ce": 0.08349554361166008,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9611111111111111,
+              "4": 0.9892592592592593,
+              "6": 0.9964814814814815,
+              "8": 0.9835185185185186
+            },
+            "worst_rx": 0.9611111111111111,
+            "prediction_changes": 59,
+            "helped_by_all_on": 23,
+            "hurt_by_all_on": 17
+          },
+          {
+            "condition": "g_identity",
+            "count": 27000,
+            "accuracy": 0.9856666666666667,
+            "ce": 0.09781819016215615,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.960925925925926,
+              "4": 0.99,
+              "6": 0.9964814814814815,
+              "8": 0.9838888888888889
+            },
+            "worst_rx": 0.960925925925926,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "d_off",
+            "count": 27000,
+            "accuracy": 0.9856666666666667,
+            "ce": 0.09786614304283098,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.960925925925926,
+              "4": 0.99,
+              "6": 0.9964814814814815,
+              "8": 0.9838888888888889
+            },
+            "worst_rx": 0.960925925925926,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          }
+        ],
+        "scalar_summary": {
+          "u_projection_relative": {
+            "mean": 0.2823836097827664,
+            "p10": 0.26434939801692964,
+            "median": 0.2834502011537552,
+            "p90": 0.29767135381698606,
+            "maximum": 0.3432483673095703
+          },
+          "v_projection_relative": {
+            "mean": 0.282372250010018,
+            "p10": 0.26450546979904177,
+            "median": 0.28338299691677094,
+            "p90": 0.2975306957960129,
+            "maximum": 0.34524816274642944
+          },
+          "auxiliary_relative": {
+            "mean": 0.5647179798141674,
+            "p10": 0.5288174569606781,
+            "median": 0.5668227970600128,
+            "p90": 0.5951595723628998,
+            "maximum": 0.6884076595306396
+          },
+          "uv_readout_cosine": {
+            "mean": 0.9999828327364392,
+            "p10": 0.9999627470970154,
+            "median": 0.9999914169311523,
+            "p90": 0.9999983310699463,
+            "maximum": 1.0000001192092896
+          },
+          "uv_readout_relative_difference": {
+            "mean": 0.005265275911983163,
+            "p10": 0.0019710349617525933,
+            "median": 0.004321994725614786,
+            "p90": 0.009300575032830242,
+            "maximum": 0.04983605816960335
+          },
+          "uv_projection_cosine": {
+            "mean": 0.9996983714324457,
+            "p10": 0.9996649563312531,
+            "median": 0.9997048377990723,
+            "p90": 0.9997339844703674,
+            "maximum": 0.9997665286064148
+          },
+          "g_input_relative": {
+            "mean": 0.006088190289938615,
+            "p10": 0.0026786067755892873,
+            "median": 0.005297601455822587,
+            "p90": 0.009980855602771045,
+            "maximum": 0.047596145421266556
+          },
+          "d_feature_relative": {
+            "mean": 0.0008464984874908286,
+            "p10": 0.0003500880382489413,
+            "median": 0.0007250572962220758,
+            "p90": 0.0014300829032436013,
+            "maximum": 0.007090752478688955
+          },
+          "d_cross_readout_norm": {
+            "mean": 0.0007957752103375915,
+            "p10": 0.0003424827940762043,
+            "median": 0.0006159526237752289,
+            "p90": 0.0011942998971790075,
+            "maximum": 0.022382114082574844
+          },
+          "d_projection_relative": {
+            "mean": 0.00010401254287074625,
+            "p10": 2.8475514227466192e-05,
+            "median": 7.632342021679506e-05,
+            "p90": 0.0001414125930750743,
+            "maximum": 0.004508174490183592
+          },
+          "d_cross_temporal_coherence": {
+            "mean": 0.3687110497297512,
+            "p10": 0.27270186841487887,
+            "median": 0.3584381937980652,
+            "p90": 0.47368414998054503,
+            "maximum": 0.9773728251457214
+          },
+          "g_identity_logit_distance": {
+            "mean": 0.03852270523220715,
+            "p10": 0.015330016799271108,
+            "median": 0.03256029635667801,
+            "p90": 0.06474050581455237,
+            "maximum": 0.3172546923160553
+          },
+          "d_off_logit_distance": {
+            "mean": 0.004246334596052664,
+            "p10": 0.0010698375524953007,
+            "median": 0.0030405065044760704,
+            "p90": 0.00553689519874752,
+            "maximum": 0.1823081374168396
+          }
+        },
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity",
+          "d_off"
+        ],
+        "seconds": 6.196088269003667,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 68480000,
+        "claim": "Whole source V within frozen checkpoint; ablated inputs need not be on training distribution; not retraining causal effect or target generalization."
+      },
+      "log_bytes": 8845,
+      "conditions_done": 6,
+      "errors": []
+    },
+    {
+      "row_id": "channel_order-s2026092702",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 2148847,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092702",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_order_identity_20261003_r01",
+        "source_commit": "8d9600a432f9dcb80e2bfcc9dc90cbb1847e1908",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_order-s2026092702/source",
+        "variant": "channel_order",
+        "model_seed": 2026092702,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092702",
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity",
+          "d_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/channel-source-attribution-20261003",
+        "pid": 2148847,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "channel_order",
+          "seed": 2026092702,
+          "accuracy": 0.9841111111111112,
+          "worst_rx": 0.9581481481481482,
+          "parameters": 249947,
+          "macs": 9963712,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_order-s2026092702/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "channel_order",
+        "model_seed": 2026092702,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.9841111111111112,
+            "ce": 0.10079919764296204,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9581481481481482,
+              "4": 0.9911111111111112,
+              "6": 0.9955555555555555,
+              "8": 0.9788888888888889
+            },
+            "worst_rx": 0.9581481481481482,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.9820740740740741,
+            "ce": 0.07676115925747608,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9594444444444444,
+              "4": 0.9890740740740741,
+              "6": 0.9955555555555555,
+              "8": 0.9694444444444444
+            },
+            "worst_rx": 0.9594444444444444,
+            "prediction_changes": 177,
+            "helped_by_all_on": 97,
+            "hurt_by_all_on": 42
+          },
+          {
+            "condition": "u_off",
+            "count": 27000,
+            "accuracy": 0.9832222222222222,
+            "ce": 0.08550744381707032,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9585185185185185,
+              "4": 0.9898148148148148,
+              "6": 0.9957407407407407,
+              "8": 0.9751851851851852
+            },
+            "worst_rx": 0.9585185185185185,
+            "prediction_changes": 70,
+            "helped_by_all_on": 41,
+            "hurt_by_all_on": 17
+          },
+          {
+            "condition": "v_off",
+            "count": 27000,
+            "accuracy": 0.9834074074074074,
+            "ce": 0.08503143925497433,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9590740740740741,
+              "4": 0.9896296296296296,
+              "6": 0.9957407407407407,
+              "8": 0.9757407407407407
+            },
+            "worst_rx": 0.9590740740740741,
+            "prediction_changes": 73,
+            "helped_by_all_on": 38,
+            "hurt_by_all_on": 19
+          },
+          {
+            "condition": "g_identity",
+            "count": 27000,
+            "accuracy": 0.9841111111111112,
+            "ce": 0.10080481324821172,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9583333333333334,
+              "4": 0.9909259259259259,
+              "6": 0.9955555555555555,
+              "8": 0.9788888888888889
+            },
+            "worst_rx": 0.9583333333333334,
+            "prediction_changes": 4,
+            "helped_by_all_on": 1,
+            "hurt_by_all_on": 1
+          },
+          {
+            "condition": "d_off",
+            "count": 27000,
+            "accuracy": 0.9841481481481481,
+            "ce": 0.10081147420312395,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9583333333333334,
+              "4": 0.9911111111111112,
+              "6": 0.9955555555555555,
+              "8": 0.9788888888888889
+            },
+            "worst_rx": 0.9583333333333334,
+            "prediction_changes": 2,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 1
+          }
+        ],
+        "scalar_summary": {
+          "u_projection_relative": {
+            "mean": 0.2883719006037271,
+            "p10": 0.2611965507268906,
+            "median": 0.2924797683954239,
+            "p90": 0.30961457788944247,
+            "maximum": 0.33449169993400574
+          },
+          "v_projection_relative": {
+            "mean": 0.2883707952852602,
+            "p10": 0.26189238131046294,
+            "median": 0.29219216108322144,
+            "p90": 0.30913981795310974,
+            "maximum": 0.3336413502693176
+          },
+          "auxiliary_relative": {
+            "mean": 0.5767647577800132,
+            "p10": 0.5230872631072998,
+            "median": 0.5846930742263794,
+            "p90": 0.6187561929225922,
+            "maximum": 0.6679208874702454
+          },
+          "uv_readout_cosine": {
+            "mean": 0.9999038145895357,
+            "p10": 0.9997376203536987,
+            "median": 0.9999635219573975,
+            "p90": 0.9999855816364288,
+            "maximum": 1.0
+          },
+          "uv_readout_relative_difference": {
+            "mean": 0.012575789273613028,
+            "p10": 0.005907126655802131,
+            "median": 0.009244479704648256,
+            "p90": 0.023429836891591553,
+            "maximum": 0.09215635061264038
+          },
+          "uv_projection_cosine": {
+            "mean": 0.9998059507144822,
+            "p10": 0.9997535347938538,
+            "median": 0.99982750415802,
+            "p90": 0.9998638689517975,
+            "maximum": 0.9999048709869385
+          },
+          "g_input_relative": {
+            "mean": 0.015265132850516777,
+            "p10": 0.0069876114372164014,
+            "median": 0.010814364533871412,
+            "p90": 0.030018248036503794,
+            "maximum": 0.08835158497095108
+          },
+          "d_feature_relative": {
+            "mean": 0.0021596138198882626,
+            "p10": 0.0009993578074499964,
+            "median": 0.0015817134408280253,
+            "p90": 0.004181275796145201,
+            "maximum": 0.014545629732310772
+          },
+          "d_cross_readout_norm": {
+            "mean": 0.0031899631299642755,
+            "p10": 0.0013787133269943298,
+            "median": 0.002479028538800776,
+            "p90": 0.006233138823881746,
+            "maximum": 0.04105541482567787
+          },
+          "d_projection_relative": {
+            "mean": 0.00027299767369797537,
+            "p10": 0.00013782094611087815,
+            "median": 0.00024235399905592203,
+            "p90": 0.00046915503335185363,
+            "maximum": 0.005498144775629044
+          },
+          "d_cross_temporal_coherence": {
+            "mean": 0.38839450709356205,
+            "p10": 0.33392949402332306,
+            "median": 0.39195409417152405,
+            "p90": 0.42366402447223667,
+            "maximum": 0.9630867838859558
+          },
+          "g_identity_logit_distance": {
+            "mean": 0.07381593875010946,
+            "p10": 0.03854703940451145,
+            "median": 0.06420901045203209,
+            "p90": 0.12369649857282641,
+            "maximum": 0.4507875442504883
+          },
+          "d_off_logit_distance": {
+            "mean": 0.011185937197232744,
+            "p10": 0.005388967134058476,
+            "median": 0.010293366853147745,
+            "p90": 0.018348342366516602,
+            "maximum": 0.2064991146326065
+          }
+        },
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity",
+          "d_off"
+        ],
+        "seconds": 6.11216219997732,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 68480000,
+        "claim": "Whole source V within frozen checkpoint; ablated inputs need not be on training distribution; not retraining causal effect or target generalization."
+      },
+      "log_bytes": 8933,
+      "conditions_done": 6,
+      "errors": []
+    },
+    {
+      "row_id": "channel_order-s2026092703",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 2148976,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092703.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092703",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_order_identity_20261003_r01",
+        "source_commit": "8d9600a432f9dcb80e2bfcc9dc90cbb1847e1908",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_order-s2026092703/source",
+        "variant": "channel_order",
+        "model_seed": 2026092703,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092703",
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity",
+          "d_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/channel-source-attribution-20261003",
+        "pid": 2148976,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "channel_order",
+          "seed": 2026092703,
+          "accuracy": 0.9838888888888889,
+          "worst_rx": 0.9562962962962963,
+          "parameters": 249947,
+          "macs": 9963712,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_order-s2026092703/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "channel_order",
+        "model_seed": 2026092703,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.9838888888888889,
+            "ce": 0.09389053445154683,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9562962962962963,
+              "4": 0.9892592592592593,
+              "6": 0.9961111111111111,
+              "8": 0.980925925925926
+            },
+            "worst_rx": 0.9562962962962963,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.983037037037037,
+            "ce": 0.07202796038585992,
+            "rx_accuracy": {
+              "1": 0.9962962962962963,
+              "3": 0.9537037037037037,
+              "4": 0.99,
+              "6": 0.9957407407407407,
+              "8": 0.9794444444444445
+            },
+            "worst_rx": 0.9537037037037037,
+            "prediction_changes": 179,
+            "helped_by_all_on": 82,
+            "hurt_by_all_on": 59
+          },
+          {
+            "condition": "u_off",
+            "count": 27000,
+            "accuracy": 0.9840740740740741,
+            "ce": 0.07893042210050367,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9561111111111111,
+              "4": 0.99,
+              "6": 0.9959259259259259,
+              "8": 0.9814814814814815
+            },
+            "worst_rx": 0.9561111111111111,
+            "prediction_changes": 88,
+            "helped_by_all_on": 29,
+            "hurt_by_all_on": 34
+          },
+          {
+            "condition": "v_off",
+            "count": 27000,
+            "accuracy": 0.9840740740740741,
+            "ce": 0.07913320081887004,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9561111111111111,
+              "4": 0.99,
+              "6": 0.9959259259259259,
+              "8": 0.9814814814814815
+            },
+            "worst_rx": 0.9561111111111111,
+            "prediction_changes": 88,
+            "helped_by_all_on": 29,
+            "hurt_by_all_on": 34
+          },
+          {
+            "condition": "g_identity",
+            "count": 27000,
+            "accuracy": 0.9838888888888889,
+            "ce": 0.09402320580549191,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9562962962962963,
+              "4": 0.9892592592592593,
+              "6": 0.9961111111111111,
+              "8": 0.980925925925926
+            },
+            "worst_rx": 0.9562962962962963,
+            "prediction_changes": 1,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "d_off",
+            "count": 27000,
+            "accuracy": 0.9838888888888889,
+            "ce": 0.0938788879038385,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9562962962962963,
+              "4": 0.9892592592592593,
+              "6": 0.9961111111111111,
+              "8": 0.980925925925926
+            },
+            "worst_rx": 0.9562962962962963,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          }
+        ],
+        "scalar_summary": {
+          "u_projection_relative": {
+            "mean": 0.27738694143626424,
+            "p10": 0.24895284324884415,
+            "median": 0.2807006388902664,
+            "p90": 0.30194385945796964,
+            "maximum": 0.3281936049461365
+          },
+          "v_projection_relative": {
+            "mean": 0.2730816863576571,
+            "p10": 0.24521875977516175,
+            "median": 0.27627019584178925,
+            "p90": 0.29734034538269044,
+            "maximum": 0.32341718673706055
+          },
+          "auxiliary_relative": {
+            "mean": 0.5504295246501764,
+            "p10": 0.4941627413034439,
+            "median": 0.5568978786468506,
+            "p90": 0.599249804019928,
+            "maximum": 0.6515852808952332
+          },
+          "uv_readout_cosine": {
+            "mean": 0.9999642845612985,
+            "p10": 0.9999514818191528,
+            "median": 0.9999690055847168,
+            "p90": 0.9999732971191406,
+            "maximum": 0.9999942779541016
+          },
+          "uv_readout_relative_difference": {
+            "mean": 0.019399236826398582,
+            "p10": 0.01827860213816166,
+            "median": 0.01889492478221655,
+            "p90": 0.021309131383895875,
+            "maximum": 0.0322439931333065
+          },
+          "uv_projection_cosine": {
+            "mean": 0.9999736276754626,
+            "p10": 0.9999637603759766,
+            "median": 0.999977707862854,
+            "p90": 0.9999803304672241,
+            "maximum": 0.9999876022338867
+          },
+          "g_input_relative": {
+            "mean": 0.018850963418854883,
+            "p10": 0.0175852058455348,
+            "median": 0.01823081076145172,
+            "p90": 0.02089549843221903,
+            "maximum": 0.03110668435692787
+          },
+          "d_feature_relative": {
+            "mean": 0.0028906156758031877,
+            "p10": 0.002692414098419249,
+            "median": 0.0027691982686519623,
+            "p90": 0.0032526474446058274,
+            "maximum": 0.00522028561681509
+          },
+          "d_cross_readout_norm": {
+            "mean": 0.00678808510312983,
+            "p10": 0.0063086612150073055,
+            "median": 0.006634573917835951,
+            "p90": 0.0076001593843102455,
+            "maximum": 0.01570988819003105
+          },
+          "d_projection_relative": {
+            "mean": 0.00023205180622971967,
+            "p10": 0.00019983390375273303,
+            "median": 0.00023480650270357728,
+            "p90": 0.00025977366603910926,
+            "maximum": 0.0007727015181444585
+          },
+          "d_cross_temporal_coherence": {
+            "mean": 0.886913247299967,
+            "p10": 0.86806720495224,
+            "median": 0.8936300575733185,
+            "p90": 0.901832228899002,
+            "maximum": 0.9572798013687134
+          },
+          "g_identity_logit_distance": {
+            "mean": 0.061061245710623484,
+            "p10": 0.03009357824921608,
+            "median": 0.05729578249156475,
+            "p90": 0.0949287384748459,
+            "maximum": 0.1569254994392395
+          },
+          "d_off_logit_distance": {
+            "mean": 0.008563311363320315,
+            "p10": 0.006051202863454818,
+            "median": 0.008522252552211285,
+            "p90": 0.011236683372408154,
+            "maximum": 0.02806834504008293
+          }
+        },
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity",
+          "d_off"
+        ],
+        "seconds": 6.259023372986121,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 68480000,
+        "claim": "Whole source V within frozen checkpoint; ablated inputs need not be on training distribution; not retraining causal effect or target generalization."
+      },
+      "log_bytes": 8841,
+      "conditions_done": 6,
+      "errors": []
+    },
+    {
+      "row_id": "channel_order-s2026092704",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 2149056,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092704.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092704",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_order_identity_20261003_r01",
+        "source_commit": "8d9600a432f9dcb80e2bfcc9dc90cbb1847e1908",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_order-s2026092704/source",
+        "variant": "channel_order",
+        "model_seed": 2026092704,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092704",
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity",
+          "d_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/channel-source-attribution-20261003",
+        "pid": 2149056,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "channel_order",
+          "seed": 2026092704,
+          "accuracy": 0.982925925925926,
+          "worst_rx": 0.9557407407407408,
+          "parameters": 249947,
+          "macs": 9963712,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_order-s2026092704/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "channel_order",
+        "model_seed": 2026092704,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.982925925925926,
+            "ce": 0.10472674653485908,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.9557407407407408,
+              "4": 0.9912962962962963,
+              "6": 0.9942592592592593,
+              "8": 0.9761111111111112
+            },
+            "worst_rx": 0.9557407407407408,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.9805185185185186,
+            "ce": 0.08600549744305856,
+            "rx_accuracy": {
+              "1": 0.9974074074074074,
+              "3": 0.9505555555555556,
+              "4": 0.9896296296296296,
+              "6": 0.9955555555555555,
+              "8": 0.9694444444444444
+            },
+            "worst_rx": 0.9505555555555556,
+            "prediction_changes": 211,
+            "helped_by_all_on": 122,
+            "hurt_by_all_on": 57
+          },
+          {
+            "condition": "u_off",
+            "count": 27000,
+            "accuracy": 0.9822592592592593,
+            "ce": 0.09309778289840863,
+            "rx_accuracy": {
+              "1": 0.9975925925925926,
+              "3": 0.9538888888888889,
+              "4": 0.9912962962962963,
+              "6": 0.995,
+              "8": 0.9735185185185186
+            },
+            "worst_rx": 0.9538888888888889,
+            "prediction_changes": 100,
+            "helped_by_all_on": 49,
+            "hurt_by_all_on": 31
+          },
+          {
+            "condition": "v_off",
+            "count": 27000,
+            "accuracy": 0.9822592592592593,
+            "ce": 0.09316275925608405,
+            "rx_accuracy": {
+              "1": 0.9975925925925926,
+              "3": 0.9538888888888889,
+              "4": 0.9912962962962963,
+              "6": 0.995,
+              "8": 0.9735185185185186
+            },
+            "worst_rx": 0.9538888888888889,
+            "prediction_changes": 99,
+            "helped_by_all_on": 49,
+            "hurt_by_all_on": 31
+          },
+          {
+            "condition": "g_identity",
+            "count": 27000,
+            "accuracy": 0.982925925925926,
+            "ce": 0.10479886682105516,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.9557407407407408,
+              "4": 0.9912962962962963,
+              "6": 0.9942592592592593,
+              "8": 0.9761111111111112
+            },
+            "worst_rx": 0.9557407407407408,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "d_off",
+            "count": 27000,
+            "accuracy": 0.982925925925926,
+            "ce": 0.10472796827479565,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.9557407407407408,
+              "4": 0.9912962962962963,
+              "6": 0.9942592592592593,
+              "8": 0.9761111111111112
+            },
+            "worst_rx": 0.9557407407407408,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          }
+        ],
+        "scalar_summary": {
+          "u_projection_relative": {
+            "mean": 0.27643077414675993,
+            "p10": 0.24548844993114471,
+            "median": 0.27950888872146606,
+            "p90": 0.29861887991428376,
+            "maximum": 0.3224945068359375
+          },
+          "v_projection_relative": {
+            "mean": 0.27470019081897207,
+            "p10": 0.2435937523841858,
+            "median": 0.27765896916389465,
+            "p90": 0.2970807582139969,
+            "maximum": 0.32101014256477356
+          },
+          "auxiliary_relative": {
+            "mean": 0.5511100367749179,
+            "p10": 0.4891787528991699,
+            "median": 0.557125985622406,
+            "p90": 0.5956120193004608,
+            "maximum": 0.6434853672981262
+          },
+          "uv_readout_cosine": {
+            "mean": 0.9999922411132742,
+            "p10": 0.9999852776527405,
+            "median": 0.9999951124191284,
+            "p90": 0.9999958276748657,
+            "maximum": 0.9999987483024597
+          },
+          "uv_readout_relative_difference": {
+            "mean": 0.008849631726302,
+            "p10": 0.0060259255580604075,
+            "median": 0.0075926396530121565,
+            "p90": 0.013197182118892672,
+            "maximum": 0.02560342289507389
+          },
+          "uv_projection_cosine": {
+            "mean": 0.9999924941945959,
+            "p10": 0.9999896883964539,
+            "median": 0.999993085861206,
+            "p90": 0.9999943971633911,
+            "maximum": 0.9999974966049194
+          },
+          "g_input_relative": {
+            "mean": 0.007835678889122963,
+            "p10": 0.005706037534400821,
+            "median": 0.006630217656493187,
+            "p90": 0.011392358038574458,
+            "maximum": 0.026215367019176483
+          },
+          "d_feature_relative": {
+            "mean": 0.0013081428113865614,
+            "p10": 0.0009437714761588722,
+            "median": 0.001105944684240967,
+            "p90": 0.0019269019132480028,
+            "maximum": 0.003937071654945612
+          },
+          "d_cross_readout_norm": {
+            "mean": 0.003134103405115807,
+            "p10": 0.0022458236198872328,
+            "median": 0.0027078655548393726,
+            "p90": 0.004588978365063667,
+            "maximum": 0.010285425931215286
+          },
+          "d_projection_relative": {
+            "mean": 6.593445441906928e-05,
+            "p10": 4.7356876166304573e-05,
+            "median": 6.130442125140689e-05,
+            "p90": 9.177844840451144e-05,
+            "maximum": 0.00020180530555080622
+          },
+          "d_cross_temporal_coherence": {
+            "mean": 0.8746369606609697,
+            "p10": 0.8372113823890686,
+            "median": 0.8951625525951385,
+            "p90": 0.9161785125732422,
+            "maximum": 0.973251461982727
+          },
+          "g_identity_logit_distance": {
+            "mean": 0.02435652882368649,
+            "p10": 0.014761560782790183,
+            "median": 0.022998498752713203,
+            "p90": 0.035077956318855304,
+            "maximum": 0.08913170546293259
+          },
+          "d_off_logit_distance": {
+            "mean": 0.002160456330657999,
+            "p10": 0.0013646736973896624,
+            "median": 0.002161146840080619,
+            "p90": 0.002975137345492841,
+            "maximum": 0.006100459955632687
+          }
+        },
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "u_off",
+          "v_off",
+          "g_identity",
+          "d_off"
+        ],
+        "seconds": 6.040344970009755,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 68480000,
+        "claim": "Whole source V within frozen checkpoint; ablated inputs need not be on training distribution; not retraining causal effect or target generalization."
+      },
+      "log_bytes": 8897,
+      "conditions_done": 6,
+      "errors": []
+    }
+  ]
+}

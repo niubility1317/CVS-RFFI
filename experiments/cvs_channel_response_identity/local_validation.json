@@ -1,0 +1,16 @@
+{
+  "status": "VERIFIED_LOCAL_ONLY",
+  "formal_training_launched": false,
+  "tests": 10,
+  "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m pytest -q tests/test_cvs_channel_response_identity.py",
+  "checks": [
+    "initial logits exactly equal own scratch shallow",
+    "G identity gives exactly zero auxiliary output after nonzero learned parameters",
+    "first-step G exit CE gradient",
+    "all new parameter tensors nonzero gradients by third step",
+    "global phase and per-packet consistency",
+    "singleCE training config rejects extra losses",
+    "diagnostics preserves training flags and model state"
+  ],
+  "performance_claim": false
+}

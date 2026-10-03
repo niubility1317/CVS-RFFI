@@ -1,0 +1,41 @@
+{
+  "run_id": "20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01",
+  "status": "ANALYZED",
+  "live_workers": 0,
+  "code_commit": "26bbdd6ad9c122019b069b3c69d77172dcc66bbe",
+  "goal": "Pure single-CE Phase1 architecture with verified recognition/generalization improvement and defensible paper mechanism",
+  "performance_goal_achieved": false,
+  "evidence": [
+    "evidence/independent_recount.json"
+  ],
+  "findings": [
+    "uv readout cosine .99998243 for dual;G identity changes7/108000 model decisions",
+    "D projection/base norm .00016874912;D off changes2/108000 model decisions",
+    "D temporal coherence .62966 does not support severe temporal cancellation as sole explanation"
+  ],
+  "next": [
+    "Finish response source dispatcher/actual configs/collect/analyze and44-row conditional clean support; use original20 source selection matrix (12new+4shallow+4dual)",
+    "Preregister new run and full checkpoint provenance; scoped release review, Git delivery, immutable N607 publish",
+    "Complete all E200 training, full logs and source-only freeze; selectednewonly receives clean truth-last confirmation; retain all negative outcomes"
+  ],
+  "next_architecture": {
+    "status": "LOCAL_MODEL_AND_TRAINING_DRIVER_VERIFIED_NOT_RELEASED",
+    "variants": [
+      "response_mean",
+      "response_attention",
+      "response_order_attention"
+    ],
+    "parameters": [
+      237147,
+      237359,
+      238383
+    ],
+    "source_seed_matrix_planned": 12,
+    "source_controls_planned": 8,
+    "design": "docs/CVS_CHANNEL_RESPONSE_DESIGN_20261003.md",
+    "model": "experiments/cvs_channel_response_identity/model.py",
+    "tests": "tests/test_cvs_channel_response_identity.py",
+    "tests_passed": 10,
+    "training_launched": false
+  }
+}
