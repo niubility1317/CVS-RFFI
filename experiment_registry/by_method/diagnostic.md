@@ -12,4 +12,5 @@
 |CVS相位曲率：冻结源域归因结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/report.md)|
 |CVS补偿与顺序差：完整源V冻结归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/report.md)|
 |CVS显式补偿响应：完整源V冻结归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)|
-|CVS补偿响应：完整源V判别几何与RX/day描述|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|
+|CVS补偿响应：完整源V判别几何|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|
+|Phase2实现前本地审计记录|legacy_evidence_group|[打开](../../diagnostics/phase2_implementation_audit.md)|

@@ -1,12 +1,24 @@
 {
   "run_id": "20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01",
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "live_workers": 0,
+  "code_commit": "f7e6a2a9885f76b139a216e39197655f152e1b1e",
   "performance_goal_achieved": false,
+  "evidence": [
+    "evidence/geometry_analysis.json"
+  ],
   "next": [
-    "Independent P0/P1 review and Git delivery",
-    "Publish once; verify actual processes",
-    "Recompute complete source geometry and paired prior predictions",
-    "Use source evidence to choose next architecture change"
-  ]
+    "Build/register8scratch E200 source runs and fixed28source records",
+    "Preserve original singleCE,all source controls and conditional44row clean",
+    "Perform one scoped experiment P0/P1 review,Git/release,actual source training and conditional test"
+  ],
+  "findings": [
+    "Response opposes base direction and has only about1–1.4% energy in class-contrast weight span",
+    "Exact centered-logit decomposition confirms broad denominator amplification, alongside nonzero direct corrections",
+    "Both-wrong source samples have higher CE with response, despite small aggregate accuracy gains",
+    "Observed source TX/RX/day scatter is descriptive, not causal disentanglement"
+  ],
+  "prototype_design": "docs/CVS_RESPONSE_FUSION_DESIGN_20261003.md",
+  "prototype_module": "experiments/cvs_response_fusion_identity/model.py",
+  "prototype_tests": 8
 }

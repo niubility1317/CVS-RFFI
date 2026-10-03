@@ -1,12 +1,139 @@
 {
   "schema": "experiment_registry_coverage_v1",
-  "indexed_at": "2026-10-03T02:16:03+00:00",
+  "indexed_at": "2026-10-03T02:43:05+00:00",
   "workspace": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
-  "mode": "managed_only",
+  "mode": "local_history",
   "record_counts": {
-    "managed_run": 80
+    "managed_run": 80,
+    "legacy_evidence_group": 724
   },
-  "surfaces": [],
+  "surfaces": [
+    {
+      "path": "automation_reports/CV-SincNet",
+      "exists": true,
+      "files": 2974,
+      "locator_files": 2855,
+      "locator_bytes": 598932993
+    },
+    {
+      "path": "runs",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "logs",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "outputs",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "remote_artifacts",
+      "exists": true,
+      "files": 12,
+      "locator_files": 12,
+      "locator_bytes": 11852174
+    },
+    {
+      "path": "server_log_backups/N607",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "local_artifacts",
+      "exists": true,
+      "files": 76090,
+      "locator_files": 73539,
+      "locator_bytes": 511574641
+    },
+    {
+      "path": "analysis",
+      "exists": true,
+      "files": 183,
+      "locator_files": 182,
+      "locator_bytes": 1073854
+    },
+    {
+      "path": "docs",
+      "exists": true,
+      "files": 505,
+      "locator_files": 470,
+      "locator_bytes": 75998524
+    },
+    {
+      "path": "configs",
+      "exists": true,
+      "files": 20,
+      "locator_files": 20,
+      "locator_bytes": 322089
+    },
+    {
+      "path": "code/configs",
+      "exists": true,
+      "files": 4,
+      "locator_files": 4,
+      "locator_bytes": 11698
+    },
+    {
+      "path": "paper_reproduction",
+      "exists": true,
+      "files": 364,
+      "locator_files": 235,
+      "locator_bytes": 812098
+    },
+    {
+      "path": "baselines",
+      "exists": true,
+      "files": 54,
+      "locator_files": 2,
+      "locator_bytes": 41712
+    },
+    {
+      "path": "Fedbase",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "automation_releases",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "releases",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "release_artifacts",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "release_packages",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "release_archives",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "worklogs",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "diagnostics",
+      "exists": true,
+      "files": 1,
+      "locator_files": 1,
+      "locator_bytes": 17584
+    }
+  ],
   "remote_snapshots": [],
   "errors": [],
   "boundaries": [

@@ -1,0 +1,18 @@
+{
+  "status": "SUBMITTED",
+  "pid": 2193505,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/dispatch.py",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/launch_spec.json"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/dispatcher.log",
+  "commit": "f7e6a2a9885f76b139a216e39197655f152e1b1e",
+  "sha256": "d23c688d32c642aa702907a762164933d1252ed5e0c2cf9044194fdf9f6dd9db",
+  "preflight_gpu": "0, 24124\n1, 24124\n2, 24124\n3, 24124\n4, 24124\n5, 24124\n6, 24124\n7, 24124\n",
+  "preflight_apps": "",
+  "disk_free_bytes": 5744382078976
+}

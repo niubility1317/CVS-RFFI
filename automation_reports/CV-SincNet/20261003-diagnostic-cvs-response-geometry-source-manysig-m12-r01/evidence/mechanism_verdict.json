@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED",
+  "norm_summary": {
+    "models": 12,
+    "gain_model_mean_min": 1.3392939835584112,
+    "gain_model_mean_max": 1.4206592780426093,
+    "minimum_gain_gt_one_fraction": 0.9997407407407407,
+    "maximum_identity_error": 8.789438846523723e-06,
+    "source_only": true,
+    "model_fitting": false
+  },
+  "findings": [
+    "Response opposes base direction and has only about1–1.4% energy in class-contrast weight span",
+    "Exact centered-logit decomposition confirms broad denominator amplification, alongside nonzero direct corrections",
+    "Both-wrong source samples have higher CE with response, despite small aggregate accuracy gains",
+    "Observed source TX/RX/day scatter is descriptive, not causal disentanglement"
+  ],
+  "next_architecture": "Two matched-parameter response fusion prototypes; no extra training strategy or loss",
+  "performance_goal_achieved": false,
+  "paper_goal_achieved": false
+}

@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "用户授权继续优化纯神经网络架构并深入分析；原单CE训练不变，本诊断仅补充冻结源机制证据。",
   "code": {
-    "commit": "PENDING_LOCAL_GIT_COMMIT",
+    "commit": "f7e6a2a9885f76b139a216e39197655f152e1b1e",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01",
@@ -112,7 +112,9 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01",
     "launch_command": "python -m experiments.cvs_response_geometry.publish --output local_artifacts/cvs_response_geometry_source_20261003_r01/delivery",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 2193505,
+    "live_workers": 0
   },
   "expected_artifacts": [
     "resolved_config.json",
@@ -152,7 +154,7 @@
       "row_id": "response_mean-s2026092701",
       "method": "response_mean",
       "purpose": "frozen_full_source_V_geometry",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_mean-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -179,13 +181,16 @@
         "resolved_config.json",
         "completion.json",
         "source_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2193522,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092701.log"
     },
     {
       "row_id": "response_mean-s2026092702",
       "method": "response_mean",
       "purpose": "frozen_full_source_V_geometry",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_mean-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -212,13 +217,16 @@
         "resolved_config.json",
         "completion.json",
         "source_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2193598,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092702.log"
     },
     {
       "row_id": "response_mean-s2026092703",
       "method": "response_mean",
       "purpose": "frozen_full_source_V_geometry",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_mean-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -245,13 +253,16 @@
         "resolved_config.json",
         "completion.json",
         "source_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2193682,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092703.log"
     },
     {
       "row_id": "response_mean-s2026092704",
       "method": "response_mean",
       "purpose": "frozen_full_source_V_geometry",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_mean-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -278,13 +289,16 @@
         "resolved_config.json",
         "completion.json",
         "source_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2193760,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092704.log"
     },
     {
       "row_id": "response_attention-s2026092701",
       "method": "response_attention",
       "purpose": "frozen_full_source_V_geometry",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_attention-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -311,13 +325,16 @@
         "resolved_config.json",
         "completion.json",
         "source_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2193838,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092701.log"
     },
     {
       "row_id": "response_attention-s2026092702",
       "method": "response_attention",
       "purpose": "frozen_full_source_V_geometry",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_attention-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -344,13 +361,16 @@
         "resolved_config.json",
         "completion.json",
         "source_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2193918,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092702.log"
     },
     {
       "row_id": "response_attention-s2026092703",
       "method": "response_attention",
       "purpose": "frozen_full_source_V_geometry",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_attention-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -377,13 +397,16 @@
         "resolved_config.json",
         "completion.json",
         "source_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2193994,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092703.log"
     },
     {
       "row_id": "response_attention-s2026092704",
       "method": "response_attention",
       "purpose": "frozen_full_source_V_geometry",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_attention-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -410,13 +433,16 @@
         "resolved_config.json",
         "completion.json",
         "source_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2194074,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092704.log"
     },
     {
       "row_id": "response_order_attention-s2026092701",
       "method": "response_order_attention",
       "purpose": "frozen_full_source_V_geometry",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_order_attention-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -443,13 +469,16 @@
         "resolved_config.json",
         "completion.json",
         "source_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2194203,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092701.log"
     },
     {
       "row_id": "response_order_attention-s2026092702",
       "method": "response_order_attention",
       "purpose": "frozen_full_source_V_geometry",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_order_attention-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -476,13 +505,16 @@
         "resolved_config.json",
         "completion.json",
         "source_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2194283,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092702.log"
     },
     {
       "row_id": "response_order_attention-s2026092703",
       "method": "response_order_attention",
       "purpose": "frozen_full_source_V_geometry",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_order_attention-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -509,13 +541,16 @@
         "resolved_config.json",
         "completion.json",
         "source_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2194359,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092703.log"
     },
     {
       "row_id": "response_order_attention-s2026092704",
       "method": "response_order_attention",
       "purpose": "frozen_full_source_V_geometry",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_order_attention-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -542,7 +577,10 @@
         "resolved_config.json",
         "completion.json",
         "source_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2194843,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092704.log"
     }
   ],
   "notes": [
@@ -552,10 +590,20 @@
     "Confirm physical sourceV and exact prior paired predictions;no optimizer,source reselection,normalization fit or new classifier fit",
     "All raw features remain diagnostic artifacts and are not new-model training inputs;no target access;all prior artifacts preserved"
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "status": "NOT_APPLICABLE_SOURCE_DIAGNOSTIC",
     "reason": "No new trainable candidate or target access; main source run follows its unchanged conditional clean plan"
   },
-  "registered_at": "2026-10-03T02:16:03+00:00"
+  "registered_at": "2026-10-03T02:16:03+00:00",
+  "outcome": {
+    "status": "VERIFIED",
+    "models": 12,
+    "conditions": 24,
+    "source_packets": 27000,
+    "prediction_decisions": 648000,
+    "source_only": true,
+    "performance_goal_achieved": false,
+    "mechanism_ref": "evidence/mechanism_verdict.json"
+  }
 }
