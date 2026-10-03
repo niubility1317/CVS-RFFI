@@ -1,0 +1,55 @@
+{
+  "status": "SOURCE_SELECTION_FROZEN",
+  "selected_variant": "relation_frequency_energy",
+  "source_summaries": {
+    "neural_residual_shallow": {
+      "score": 0.9712175925925925,
+      "source_accuracy": 0.9844259259259259,
+      "worst_rx_accuracy": 0.9580092592592593,
+      "parameters": 220987,
+      "conv_linear_macs": 9460000
+    },
+    "response_anchor_mean": {
+      "score": 0.9713148148148147,
+      "source_accuracy": 0.9844351851851851,
+      "worst_rx_accuracy": 0.9581944444444445,
+      "parameters": 237147,
+      "conv_linear_macs": 11205232
+    },
+    "relation_packet_energy": {
+      "score": 0.9714907407407407,
+      "source_accuracy": 0.9847870370370371,
+      "worst_rx_accuracy": 0.9581944444444445,
+      "parameters": 247731,
+      "conv_linear_macs": 9880864
+    },
+    "relation_frequency_energy": {
+      "score": 0.9735601851851852,
+      "source_accuracy": 0.9857314814814815,
+      "worst_rx_accuracy": 0.9613888888888888,
+      "parameters": 247731,
+      "conv_linear_macs": 9880864
+    }
+  },
+  "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+  "selection_policy": "performance_first_spectral_relation_with_current_source_winner_20261003",
+  "candidate_universe": [
+    "neural_residual_shallow",
+    "response_anchor_mean",
+    "relation_packet_energy",
+    "relation_frequency_energy"
+  ],
+  "new_candidate_selected": true,
+  "exact_cost_tie_order": [
+    "neural_residual_shallow",
+    "response_anchor_mean",
+    "relation_packet_energy",
+    "relation_frequency_energy"
+  ],
+  "target_access": false,
+  "target_score_used": false,
+  "test_view": "clean",
+  "scope": "spectral_relation_source",
+  "source_release_commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
+  "source_matrix_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_spectral_relation_identity_20261003_r01/experiments/cvs_spectral_relation_identity/configs/launch_spec.json"
+}

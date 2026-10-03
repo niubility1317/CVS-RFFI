@@ -1,3 +1,5 @@
 {"at": "2026-10-03T07:49:16+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-03T07:59:27+00:00", "status": "LOCAL_VERIFIED", "note": "91 checks plus public8model24CE; independent source release P0/P1 PASS; no formal data access", "evidence": ["evidence/local_validation.json", "evidence/source_p0_p1_review.json"], "row_id": null}
 {"timestamp": "2026-10-03T08:03:09.212185+00:00", "status": "RUNNING", "evidence": "evidence/launch_validation.json", "note": "Eight live workers; configs,parent/GPU,fullCEgradients and loggrowth independently verified"}
+{"timestamp": "2026-10-03T08:32:00.718601+00:00", "status": "SOURCE_SELECTION_FROZEN_TEST_PENDING", "evidence": "evidence/source_freeze_validation.json", "note": "All eight E200 source runs and 80000 steps verified; selection independently recomputed; test pending"}
+{"at": "2026-10-03T08:35:19+00:00", "status": "TRAINING_COMPLETE", "note": "All eight E200 source models and 80000 steps verified; independently frozen frequency-energy winner; registered conditional clean pending", "evidence": ["evidence/source_freeze_validation.json"], "row_id": null}

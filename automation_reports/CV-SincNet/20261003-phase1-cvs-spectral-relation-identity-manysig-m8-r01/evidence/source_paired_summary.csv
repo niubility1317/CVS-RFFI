@@ -1,0 +1,13 @@
+left,mean_delta_pp,metric,paired_SD_pp,positive_seeds,right,zero_seeds
+response_anchor_mean,0.0009259259259264407,V,0.023497365815651573,1,neural_residual_shallow,1
+response_anchor_mean,0.018518518518517713,worst_RX,0.03381003441390578,2,neural_residual_shallow,1
+response_anchor_mean,0.009722222222222077,score,0.02344257203920715,2,neural_residual_shallow,0
+relation_packet_energy,0.036111111111114536,V,0.13709958532503208,1,neural_residual_shallow,0
+relation_packet_energy,0.018518518518517713,worst_RX,0.4104822239147236,1,neural_residual_shallow,0
+relation_packet_energy,0.027314814814816124,score,0.26904110492791317,1,neural_residual_shallow,0
+relation_frequency_energy,0.1305555555555532,V,0.0759259259259255,4,neural_residual_shallow,0
+relation_frequency_energy,0.33796296296296213,worst_RX,0.1746215451829057,4,neural_residual_shallow,0
+relation_frequency_energy,0.23425925925925906,score,0.12151403508422404,4,neural_residual_shallow,0
+relation_frequency_energy,0.09444444444443867,V,0.13925466238801265,3,relation_packet_energy,0
+relation_frequency_energy,0.3194444444444444,worst_RX,0.4784747046409607,3,relation_packet_energy,0
+relation_frequency_energy,0.20694444444444293,score,0.3067499104231062,3,relation_packet_energy,0

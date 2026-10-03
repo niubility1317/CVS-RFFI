@@ -59,3 +59,9 @@
 条件clean实现完成：仅新source winner的4个模型加入44个既有冻结预测，48份预测固定后独立连接truth；未选中新模型不测试。新contract67项、分析93项及旧兼容13项测试通过；另一次独立P0/P1审查通过34项聚焦检查，不重复计入173项。尚未创建正式clean配置或访问目标。源release与模型仍固定为d0847cd5ac9251541dbd93d31d0d7a3d933baa47。
 
 [条件clean独立审查](evidence/conditional_clean_independent_review.json) · [最近训练读回](evidence/continuation_readback.json)。完整工具验证清单见[evidence/offline_tooling_validation.json](evidence/offline_tooling_validation.json)。
+
+## 源产物终态核验
+
+8份固定E200训练、80000步日志审计及完整曲线分析完成，全部训练进程和dispatcher已终止。源码版本`d0847cd5ac9251541dbd93d31d0d7a3d933baa47`，完整16源记录选择与实际远端冻结结果一致；源赢家为`relation_frequency_energy`。当前测试收尾尚未完成，不把源验证指标当作泛化结果。
+
+[完整源分析](source_analysis.md) · [源终态](evidence/source_terminal_readback.json) · [冻结核验](evidence/source_freeze_validation.json) · [架构与科学边界](../../../docs/CVS_SPECTRAL_TEMPORAL_RELATION_20261003.md)。

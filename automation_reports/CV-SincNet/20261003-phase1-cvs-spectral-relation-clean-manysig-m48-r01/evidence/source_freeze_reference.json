@@ -1,22 +1,8 @@
 {
-  "run_id": "20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01",
-  "status": "SOURCE_SELECTION_FROZEN_TEST_PENDING",
-  "live_workers": 0,
-  "launch_owner": "codex/root/cvs-spectral-relation-identity-20261003",
-  "performance_goal_achieved": false,
-  "paper_claim_established": false,
-  "latest_evidence": "evidence/source_freeze_validation.json",
-  "next": [
-    "Prepare and execute the preregistered T48 new-winner clean confirmation",
-    "Complete independent scoring/analysis as applicable, original report/registry and Git delivery",
-    "Performance/paper goal remains unproven; no target-driven redesign or reselection"
-  ],
-  "code_commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
-  "dispatcher_pid": 2372927,
-  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_spectral_relation_identity_20261003_r01",
-  "conditional_clean_implementation": "Complete; independent P0/P1 passed; no actual clean config yet",
-  "source_collection": "Complete offline collector; independently audited all-step/NPZ synthetic fixtures",
-  "source_selection": {
+  "status": "VERIFIED",
+  "source_run": "20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01",
+  "source_code_commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
+  "selection": {
     "status": "SOURCE_SELECTION_FROZEN",
     "selected_variant": "relation_frequency_energy",
     "source_summaries": {
@@ -68,9 +54,11 @@
     "target_score_used": false,
     "test_view": "clean"
   },
-  "latest_readback": "local_artifacts\\cvs_spectral_relation_identity_20261003_r01\\continuation_10\\readback.json",
-  "last_verified_epoch_range": [
-    200,
-    200
-  ]
+  "independent_source_validation_ref": "../20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/evidence/source_freeze_validation.json",
+  "matrix": {
+    "new_predictions": 4,
+    "reused_predictions": 44,
+    "complete_predictions_before_truth": 48
+  },
+  "target_contact_for_selection": false
 }

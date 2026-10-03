@@ -1,21 +1,19 @@
 {
-  "run_id": "20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01",
-  "status": "SOURCE_SELECTION_FROZEN_TEST_PENDING",
-  "live_workers": 0,
-  "launch_owner": "codex/root/cvs-spectral-relation-identity-20261003",
-  "performance_goal_achieved": false,
-  "paper_claim_established": false,
-  "latest_evidence": "evidence/source_freeze_validation.json",
-  "next": [
-    "Prepare and execute the preregistered T48 new-winner clean confirmation",
-    "Complete independent scoring/analysis as applicable, original report/registry and Git delivery",
-    "Performance/paper goal remains unproven; no target-driven redesign or reselection"
-  ],
-  "code_commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
-  "dispatcher_pid": 2372927,
-  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_spectral_relation_identity_20261003_r01",
-  "conditional_clean_implementation": "Complete; independent P0/P1 passed; no actual clean config yet",
-  "source_collection": "Complete offline collector; independently audited all-step/NPZ synthetic fixtures",
+  "status": "VERIFIED",
+  "source_commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
+  "new_rows": 8,
+  "control_rows": 8,
+  "new_epochs": 1600,
+  "new_steps": 80000,
+  "source_scalar_packets": 216000,
+  "source_scalar_cells": 720,
+  "full_stdout_scanned": true,
+  "step_epoch_csv_stdout_reconciled": true,
+  "full_source_records_reverified": true,
+  "source_rule_recomputed": true,
+  "source_scalar_cells_recomputed": true,
+  "cross_model_metadata_matched": true,
+  "target_access": false,
   "source_selection": {
     "status": "SOURCE_SELECTION_FROZEN",
     "selected_variant": "relation_frequency_energy",
@@ -68,9 +66,5 @@
     "target_score_used": false,
     "test_view": "clean"
   },
-  "latest_readback": "local_artifacts\\cvs_spectral_relation_identity_20261003_r01\\continuation_10\\readback.json",
-  "last_verified_epoch_range": [
-    200,
-    200
-  ]
+  "scalar_metadata_limit": "Exact V ID set and matching stored TX/RX/day across rows; no independent decoding of opaque IDs"
 }

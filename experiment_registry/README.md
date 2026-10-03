@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T08:03:09+00:00
+更新：2026-10-03T08:35:42+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|87|
+|managed_run|88|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,22 +21,22 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|232|
+|[cvs](by_method/cvs.md)|233|
 |[adv3b02](by_method/adv3b02.md)|146|
 |[phase2](by_method/phase2.md)|118|
 |[phase1](by_method/phase1.md)|112|
 |[stage2](by_method/stage2.md)|67|
 |[qknn](by_method/qknn.md)|56|
-|[ce_only](by_method/ce_only.md)|53|
-|[clean_only](by_method/clean_only.md)|52|
-|[performance_priority](by_method/performance_priority.md)|46|
+|[ce_only](by_method/ce_only.md)|54|
+|[clean_only](by_method/clean_only.md)|53|
+|[performance_priority](by_method/performance_priority.md)|47|
 |[no_augmentation](by_method/no_augmentation.md)|39|
 |[source_selection](by_method/source_selection.md)|34|
 |[fasttrust](by_method/fasttrust.md)|26|
 |[source](by_method/source.md)|23|
 |[rff_physics](by_method/rff_physics.md)|20|
-|[source_selected](by_method/source_selected.md)|17|
-|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|16|
+|[source_selected](by_method/source_selected.md)|18|
+|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|17|
 |[d92](by_method/d92.md)|15|
 |[source_only](by_method/source_only.md)|14|
 |[response](by_method/response.md)|13|
@@ -242,6 +242,7 @@
 |CVS可学习注意力读出：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)|
 |CVS 约束响应融合：独立 clean 结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md)|
 |CVS约束响应融合：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)|
+|CVS 频点内时间关系：源域选中四 seed clean 与 44 个冻结控制|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01/report.md)|
 |CVS频点内可学习时间关系：整包与逐频能量归一化×四seed|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
@@ -278,4 +279,3 @@
 |cvs_adaptive_volterra_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_adaptive_volterra_identity_20261002_r01)|
 |CVS 可学习相位记忆残差：前瞻设计与确认规则|legacy_evidence_group|[打开](../docs/CVS_ADAPTIVE_VOLTERRA_PHASE_MEMORY_20261002.md)|
 |cvs_volterra_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_volterra_identity_20261002_r01)|
-|同参数复数相位记忆输入|legacy_evidence_group|[打开](../docs/CVS_VOLTERRA_PHASE_MEMORY_20261002.md)|

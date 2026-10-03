@@ -1,22 +1,12 @@
 {
-  "run_id": "20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01",
-  "status": "SOURCE_SELECTION_FROZEN_TEST_PENDING",
+  "status": "VERIFIED_SOURCE_FROZEN_TEST_PENDING",
+  "verified_at": "2026-10-03T08:32:00.718601+00:00",
+  "source_code_commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
+  "source_models": 8,
+  "source_epochs": 1600,
+  "source_steps": 80000,
   "live_workers": 0,
-  "launch_owner": "codex/root/cvs-spectral-relation-identity-20261003",
-  "performance_goal_achieved": false,
-  "paper_claim_established": false,
-  "latest_evidence": "evidence/source_freeze_validation.json",
-  "next": [
-    "Prepare and execute the preregistered T48 new-winner clean confirmation",
-    "Complete independent scoring/analysis as applicable, original report/registry and Git delivery",
-    "Performance/paper goal remains unproven; no target-driven redesign or reselection"
-  ],
-  "code_commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
-  "dispatcher_pid": 2372927,
-  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_spectral_relation_identity_20261003_r01",
-  "conditional_clean_implementation": "Complete; independent P0/P1 passed; no actual clean config yet",
-  "source_collection": "Complete offline collector; independently audited all-step/NPZ synthetic fixtures",
-  "source_selection": {
+  "selection": {
     "status": "SOURCE_SELECTION_FROZEN",
     "selected_variant": "relation_frequency_energy",
     "source_summaries": {
@@ -68,9 +58,50 @@
     "target_score_used": false,
     "test_view": "clean"
   },
-  "latest_readback": "local_artifacts\\cvs_spectral_relation_identity_20261003_r01\\continuation_10\\readback.json",
-  "last_verified_epoch_range": [
-    200,
-    200
-  ]
+  "source_summary": [
+    {
+      "variant": "neural_residual_shallow",
+      "seeds": 4,
+      "V_mean": 0.9844259259259259,
+      "V_SD": 0.001052138719358642,
+      "worst_RX_mean": 0.9580092592592593,
+      "worst_RX_SD": 0.0022899903458703176,
+      "score_mean": 0.9712175925925925,
+      "score_SD": 0.001630777864276852
+    },
+    {
+      "variant": "response_anchor_mean",
+      "seeds": 4,
+      "V_mean": 0.9844351851851851,
+      "V_SD": 0.0011198728616844903,
+      "worst_RX_mean": 0.9581944444444445,
+      "worst_RX_SD": 0.0025318050042982803,
+      "score_mean": 0.9713148148148147,
+      "score_SD": 0.0018148778018799478
+    },
+    {
+      "variant": "relation_packet_energy",
+      "seeds": 4,
+      "V_mean": 0.9847870370370371,
+      "V_SD": 0.0015948519718366667,
+      "worst_RX_mean": 0.9581944444444445,
+      "worst_RX_SD": 0.0042856802641975155,
+      "score_mean": 0.9714907407407407,
+      "score_SD": 0.0029299667362354042
+    },
+    {
+      "variant": "relation_frequency_energy",
+      "seeds": 4,
+      "V_mean": 0.9857314814814815,
+      "V_SD": 0.0011112654213834743,
+      "worst_RX_mean": 0.9613888888888888,
+      "worst_RX_SD": 0.0036835873451445938,
+      "score_mean": 0.9735601851851852,
+      "score_SD": 0.0023940930489866224
+    }
+  ],
+  "performance_goal_achieved": false,
+  "paper_claim_established": false,
+  "target_access": false,
+  "test_completion": false
 }
