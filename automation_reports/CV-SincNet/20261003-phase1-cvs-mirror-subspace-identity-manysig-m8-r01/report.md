@@ -3,7 +3,7 @@
 - run_id：`20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01`
 - group_id：`cvs-clean-mirror-subspace-identity-ce`；类别：`cvs`；阶段：`Phase1-CVS-source-research`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -36,4 +36,18 @@
 
 登记8个scratch训练和12条既有源元数据，共20条固定源记录。固定源评分选中后，若为新候选，仅其4个模型参加clean测试，与48份不可变控制合成52行、416条ALL/RX评分；旧候选获胜则核验既有冻结测试。公开性质诊断、源机制分析和测试结果均不改变选择规则。
 
-[设计](../../../docs/CVS_MIRROR_SUBSPACE_20261003.md) · [本地验证](evidence/local_validation.json) · [公开算子与CE证据](evidence/public_cpu_smoke.json)。正式训练尚未发布，不能宣称识别性能提升或论文目标完成。
+[设计](../../../docs/CVS_MIRROR_SUBSPACE_20261003.md) · [本地验证](evidence/local_validation.json) · [公开算子与CE证据](evidence/public_cpu_smoke.json)。正式源训练已发布并独立核验，尚未完成；不能宣称识别性能提升或论文目标完成。
+
+## 启动读回
+
+实际发布commit为`bb0ffae4263419a992a44de8975ec7eb83c4596f`，dispatcher PID2413989。全部8个worker的PID/CWD/argv、父进程、CUDA可见设备及nvidia-smi物理GPU映射一致，两次日志读回增长。实际配置匹配两个候选各247731参数、26744谱关系参数、原单CE、FP32及固定源数据角色。当前不按早期分数选模，尚未接触目标。
+
+[启动核验](evidence/launch_validation.json) · [完整实际配置与进程](evidence/launch_readback.json) · [SCP前路径与资源](evidence/pretransfer_readback.json)。
+
+## 冻结训练期间补齐的收尾工具
+
+完整源collector/analyzer已通过69项收集与15项分析测试，覆盖全部80000步、1600轮和每模型27000个V样本的31频对标量；大文件保留在local_artifacts。分析独立重算20源记录，不重选epoch。
+
+条件clean工具已通过74项契约和93项结果分析检查；67项旧spectral契约兼容检查通过。独立P0/P1审查102项聚焦合成测试通过，不额外计入上述独立用例。只有新源赢家的4个模型会增加query访问，48控制预测保留原路径，全部52预测固定后独立truth-last评分。正式clean配置尚未创建，当前没有本轮测试结果。
+
+[工具验证](evidence/offline_tooling_validation.json) · [条件clean独立审查](evidence/conditional_clean_independent_review.json) · [最近训练读回](evidence/continuation_readback.json)。源训练release保持`bb0ffae4263419a992a44de8975ec7eb83c4596f`，没有热修改、停止或重启。

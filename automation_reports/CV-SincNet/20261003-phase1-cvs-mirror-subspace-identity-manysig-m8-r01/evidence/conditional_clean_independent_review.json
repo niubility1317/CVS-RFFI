@@ -1,0 +1,23 @@
+{
+  "verdict": "PASS",
+  "reviewer": "/root/frontfilter_model",
+  "scope": "Single required independent conditional clean evaluation review; source model unchanged",
+  "focused_synthetic_tests": 102,
+  "additional_unique_cases": false,
+  "checked": {
+    "source_records": 20,
+    "new_prediction_rows": 4,
+    "reused_rows": 48,
+    "total_rows": 52,
+    "score_records": 416,
+    "unchanged_old_records": 384,
+    "release_files": 1441,
+    "local_dependencies": 97,
+    "missing_dependencies": 0,
+    "compiled_scripts": 5
+  },
+  "unresolved_P0_P1": [],
+  "real_data_access": false,
+  "remote_action": false,
+  "actual_clean_complete": false
+}

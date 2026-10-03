@@ -30,6 +30,7 @@ from experiments.cvs_neural_readout_identity.model import VARIANTS as READOUT_VA
 from experiments.cvs_crosspath_relation_identity.model import VARIANTS as CROSSPATH_VARIANTS, readout_contract as crosspath_contract
 from experiments.cvs_frontfilter_identity.model import VARIANTS as FRONTFILTER_VARIANTS, filter_contract
 from experiments.cvs_spectral_relation_identity.model import VARIANTS as SPECTRAL_RELATION_VARIANTS, relation_contract
+from experiments.cvs_mirror_subspace_identity.model import VARIANTS as MIRROR_RELATION_VARIANTS, relation_contract as mirror_contract
 from experiments.cvs_channel_response_identity.model import VARIANTS as RESPONSE_VARIANTS, response_contract as channel_response_contract
 from experiments.cvs_response_fusion_identity.model import VARIANTS as FUSION_VARIANTS, fusion_contract
 from experiments.cvs_channel_order_identity.model import VARIANTS as CHANNEL_VARIANTS, channel_contract
@@ -48,6 +49,8 @@ REUSED_NEURAL_RUN='20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01'
 REUSED_FUSION_RUN='20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01'
 CROSSPATH_SOURCE_COMMIT='e136f7868e5ff2569d2a61578ea909a4b1d3daa0'
 FRONTFILTER_SOURCE_COMMIT='dd5518d1493f2f79fb4213e4731e9f88cb28a349'
+MIRROR_RELATION_SOURCE_COMMIT='bb0ffae4263419a992a44de8975ec7eb83c4596f'
+REUSED_SPECTRAL_RUN='20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01'
 SPECTRAL_RELATION_SOURCE_COMMIT='d0847cd5ac9251541dbd93d31d0d7a3d933baa47'
 
 
@@ -56,6 +59,22 @@ def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
 
 def frozen_selection(path):
     selection=read(path)
+    if selection.get('scope')=='mirror_relation_source':
+        from experiments.cvs_mirror_subspace_identity.dispatch import validate_spec,read_source_record,select_source_candidate,PROJECT
+        if selection.get('source_release_commit')!=MIRROR_RELATION_SOURCE_COMMIT:
+            raise ValueError('Mirror relation source release commit differs')
+        matrix=validate_spec(read(selection['source_matrix_ref']))
+        original=read(PROJECT+'/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json')
+        records=[read_source_record(r,original,source_method(r['variant'])) for r in matrix['source_controls']]
+        for row in matrix['rows']:
+            if read(Path(row['source_output'])/'resolved_config.json').get('commit')!=MIRROR_RELATION_SOURCE_COMMIT:
+                raise ValueError('Actual mirror_relation source commit differs')
+            records.append(read_source_record(row,original,'cvs_mirror_subspace_identity'))
+        actual=select_source_candidate(records)
+        if any(selection.get(k)!=v for k,v in actual.items()):raise ValueError('Mirror relation selection differs from actual twenty source-only records')
+        if not actual['new_candidate_selected'] or actual['selected_variant'] not in MIRROR_RELATION_VARIANTS:
+            raise ValueError('Existing source baseline retained; unselected mirror_relation model cannot receive new query')
+        return selection
     if selection.get('scope')=='spectral_relation_source':
         from experiments.cvs_spectral_relation_identity.dispatch import validate_spec,read_source_record,select_source_candidate,PROJECT
         if selection.get('source_release_commit')!=SPECTRAL_RELATION_SOURCE_COMMIT:
@@ -384,6 +403,7 @@ def frozen_selection(path):
 
 
 def evaluation_variants(selection):
+    if selection.get('scope')=='mirror_relation_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual','response_anchor_mean','relation_frequency_energy',selection['selected_variant']]
     if selection.get('scope')=='spectral_relation_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual','response_anchor_mean',selection['selected_variant']]
     if selection.get('scope')=='frontfilter_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual','response_anchor_mean',selection['selected_variant']]
     if selection.get('scope')=='crosspath_relation_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual','response_anchor_mean',selection['selected_variant']]
@@ -402,6 +422,16 @@ def evaluation_variants(selection):
 
 
 def validate_reused_row(row):
+    if row.get('reuse_from_run')==REUSED_SPECTRAL_RUN:
+        if row['variant']!='relation_frequency_energy':raise ValueError('Only frozen selected response anchor can be reused')
+        out=Path(row['output_root'])
+        if out.parts[-3:]!=(REUSED_SPECTRAL_RUN,row['row_id'],'prediction'):raise ValueError('Fusion reuse outside original run')
+        cfg=read(row['config']);original=frozen_selection(cfg['selection_file'])
+        if original.get('scope')!='spectral_relation_source' or original.get('selected_variant')!='relation_frequency_energy':raise ValueError('Previous spectral source selection changed')
+        validate_predict_config(cfg,original)
+        marker=read(out.parents[1]/'scoring_clean_complete.json')
+        if marker['status']!='SCORED_COMPLETE' or marker['models']!=12 or marker['seeds']!=4 or marker['rows']!=48:raise ValueError('Original spectral matrix not complete')
+        return cfg
     if row.get('reuse_from_run')==REUSED_FUSION_RUN:
         if row['variant']!='response_anchor_mean':raise ValueError('Only frozen selected response anchor can be reused')
         out=Path(row['output_root'])
@@ -480,6 +510,7 @@ def validate_reused_row(row):
 
 
 def source_method(variant):
+    if variant in MIRROR_RELATION_VARIANTS:return 'cvs_mirror_subspace_identity'
     if variant in SPECTRAL_RELATION_VARIANTS:return 'cvs_spectral_relation_identity'
     if variant in FRONTFILTER_VARIANTS:return 'cvs_frontfilter_identity'
     if variant in CROSSPATH_VARIANTS:return 'cvs_crosspath_relation_identity'
@@ -521,6 +552,9 @@ def validate_predict_config(c,selection):
         raise ValueError('Frozen predictor rejects truth and inheritance overrides')
     if c.get('views')!=['clean'] or c.get('method')!='cvs_clean_eval' or c.get('model_seed') not in SEEDS:
         raise ValueError('Unregistered clean evaluation contract')
+    if selection.get('scope')=='mirror_relation_source' and (selection.get('new_candidate_selected') is not True or
+            selection.get('selected_variant') not in MIRROR_RELATION_VARIANTS):
+        raise ValueError('Retained source controls do not authorize new mirror_relation confirmation queries')
     if selection.get('scope')=='spectral_relation_source' and (selection.get('new_candidate_selected') is not True or
             selection.get('selected_variant') not in SPECTRAL_RELATION_VARIANTS):
         raise ValueError('Retained source controls do not authorize new spectral_relation confirmation queries')
@@ -532,8 +566,12 @@ def validate_predict_config(c,selection):
         raise ValueError('Retained source controls do not authorize new cross-path confirmation queries')
     if c['variant'] not in evaluation_variants(selection):
         raise ValueError('Nonselected CVS cannot receive target predictions')
-    if selection.get('scope') in ('spectral_relation_source','frontfilter_source','crosspath_relation_source','neural_readout_source','channel_order_source','channel_response_source','response_fusion_source') and c['variant']!=selection['selected_variant']:
+    if selection.get('scope') in ('mirror_relation_source','spectral_relation_source','frontfilter_source','crosspath_relation_source','neural_readout_source','channel_order_source','channel_response_source','response_fusion_source') and c['variant']!=selection['selected_variant']:
         raise ValueError('Source-selected confirmation reuses all historical controls without new prediction')
+    if c['variant'] in MIRROR_RELATION_VARIANTS and (selection.get('scope')!='mirror_relation_source' or
+            selection.get('new_candidate_selected') is not True or selection.get('source_release_commit')!=MIRROR_RELATION_SOURCE_COMMIT or
+            c.get('source_release_commit')!=MIRROR_RELATION_SOURCE_COMMIT):
+        raise ValueError('Mirror relation prediction requires its registered source winner and release commit')
     if c['variant'] in SPECTRAL_RELATION_VARIANTS and (selection.get('scope')!='spectral_relation_source' or
             selection.get('new_candidate_selected') is not True or selection.get('source_release_commit')!=SPECTRAL_RELATION_SOURCE_COMMIT or
             c.get('source_release_commit')!=SPECTRAL_RELATION_SOURCE_COMMIT):
@@ -546,7 +584,7 @@ def validate_predict_config(c,selection):
             selection.get('new_candidate_selected') is not True or selection.get('source_release_commit')!=CROSSPATH_SOURCE_COMMIT or
             c.get('source_release_commit')!=CROSSPATH_SOURCE_COMMIT):
         raise ValueError('Cross-path prediction requires its registered source winner and release commit')
-    expected_parent=c["spectral_relation_source_root"] if c["variant"] in SPECTRAL_RELATION_VARIANTS else c["frontfilter_source_root"] if c["variant"] in FRONTFILTER_VARIANTS else c['crosspath_source_root'] if c['variant'] in CROSSPATH_VARIANTS else c['fusion_source_root'] if c['variant'] in FUSION_VARIANTS else c['response_source_root'] if c['variant'] in RESPONSE_VARIANTS else c['channel_source_root'] if c['variant'] in CHANNEL_VARIANTS else c['readout_source_root'] if c['variant'] in READOUT_VARIANTS else c['neural_source_root'] if c['variant'] in NEURAL_VARIANTS else c['curvature_source_root'] if c['variant'] in CURVATURE_VARIANTS else c['moment_source_root'] if c['variant'] in TWENTYFOURTH else c['orthopoly_source_root'] if c['variant'] in TWENTYTHIRD else c['adaptive_source_root'] if c['variant'] in TWENTYSECOND else c['volterra_source_root'] if c['variant'] in TWENTYFIRST else c['coupled_source_root'] if c['variant'] in TWENTIETH else c['crossphase_source_root'] if c['variant'] in NINETEENTH else c['energy_source_root'] if c['variant'] in EIGHTEENTH else c['fractional_source_root'] if c['variant'] in SEVENTEENTH else c['additive_source_root'] if c['variant'] in SIXTEENTH else c['coordinate_source_root'] if c['variant'] in FIFTEENTH else c['synchronized_source_root'] if c['variant'] in FOURTEENTH else c['equivariant_source_root'] if c['variant'] in THIRTEENTH else c['reference_source_root'] if c['variant'] in TWELFTH else c['gauge_source_root'] if c['variant'] in ELEVENTH else c['observable_source_root'] if c['variant'] in TENTH else c['rf_operator_source_root'] if c['variant'] in NINTH else c['simplex_source_root'] if c['variant'] in EIGHTH else c['coherence_source_root'] if c['variant'] in SEVENTH else c['stability_source_root'] if c['variant'] in SIXTH else c['attentive_source_root'] if c['variant'] in FIFTH else c['interaction_source_root'] if c['variant'] in FOURTH else c['balanced_source_root'] if c['variant'] in THIRD else (c['baseline_source_root'] if c['variant'] in FIRST else c['residual_source_root'])
+    expected_parent=c["mirror_relation_source_root"] if c["variant"] in MIRROR_RELATION_VARIANTS else c["spectral_relation_source_root"] if c["variant"] in SPECTRAL_RELATION_VARIANTS else c["frontfilter_source_root"] if c["variant"] in FRONTFILTER_VARIANTS else c['crosspath_source_root'] if c['variant'] in CROSSPATH_VARIANTS else c['fusion_source_root'] if c['variant'] in FUSION_VARIANTS else c['response_source_root'] if c['variant'] in RESPONSE_VARIANTS else c['channel_source_root'] if c['variant'] in CHANNEL_VARIANTS else c['readout_source_root'] if c['variant'] in READOUT_VARIANTS else c['neural_source_root'] if c['variant'] in NEURAL_VARIANTS else c['curvature_source_root'] if c['variant'] in CURVATURE_VARIANTS else c['moment_source_root'] if c['variant'] in TWENTYFOURTH else c['orthopoly_source_root'] if c['variant'] in TWENTYTHIRD else c['adaptive_source_root'] if c['variant'] in TWENTYSECOND else c['volterra_source_root'] if c['variant'] in TWENTYFIRST else c['coupled_source_root'] if c['variant'] in TWENTIETH else c['crossphase_source_root'] if c['variant'] in NINETEENTH else c['energy_source_root'] if c['variant'] in EIGHTEENTH else c['fractional_source_root'] if c['variant'] in SEVENTEENTH else c['additive_source_root'] if c['variant'] in SIXTEENTH else c['coordinate_source_root'] if c['variant'] in FIFTEENTH else c['synchronized_source_root'] if c['variant'] in FOURTEENTH else c['equivariant_source_root'] if c['variant'] in THIRTEENTH else c['reference_source_root'] if c['variant'] in TWELFTH else c['gauge_source_root'] if c['variant'] in ELEVENTH else c['observable_source_root'] if c['variant'] in TENTH else c['rf_operator_source_root'] if c['variant'] in NINTH else c['simplex_source_root'] if c['variant'] in EIGHTH else c['coherence_source_root'] if c['variant'] in SEVENTH else c['stability_source_root'] if c['variant'] in SIXTH else c['attentive_source_root'] if c['variant'] in FIFTH else c['interaction_source_root'] if c['variant'] in FOURTH else c['balanced_source_root'] if c['variant'] in THIRD else (c['baseline_source_root'] if c['variant'] in FIRST else c['residual_source_root'])
     expected=Path(expected_parent)/(c['variant']+'-s'+str(c['model_seed']))/'source'
     if Path(c['source_output'])!=expected:raise ValueError('Source row/seed path mismatch')
     return c
@@ -569,6 +607,30 @@ def checkpoint_contract(c,done,initial,contract,expected,resolved,payload):
         resolved['augmentation'] or resolved['domain_backbone'] or resolved['extra_losses'] or resolved['target_access'] or
         resolved['epochs']!=200 or resolved['steps_per_epoch']!=50 or resolved['selection']!='fixed_last_epoch' or
         resolved['source_counts']!={'L_s':6300,'U_s':56700,'V':27000}):raise ValueError('Source resolved training contract mismatch')
+    if c['variant'] in MIRROR_RELATION_VARIANTS:
+        import torch
+        from experiments.cvs_mirror_subspace_identity.source import validate_config
+        validate_config(resolved)
+        if resolved.get('commit')!=MIRROR_RELATION_SOURCE_COMMIT or c.get('source_release_commit')!=MIRROR_RELATION_SOURCE_COMMIT:
+            raise ValueError('Frozen mirror_relation source release commit mismatch')
+        if resolved.get('output_root')!=c.get('source_output') or done.get('checkpoint')!=str(Path(c['source_output'])/'last.pt'):
+            raise ValueError('Frozen mirror_relation source/checkpoint path mismatch')
+        if resolved.get('backend_flags')!=resolved['numerical_policy'] or done.get('backend_flags')!=resolved['numerical_policy'] or resolved.get('precision')!='float32':
+            raise ValueError('Frozen mirror_relation full-FP32 source provenance mismatch')
+        if any(contract.get(k)!=v for k,v in expected.items()):raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
+        if initial.get('physical_roles')!='EXACT_MATCH' or initial.get('selection')!='fixed_last_epoch':raise ValueError('Mirror relation scratch provenance differs')
+        architecture=mirror_contract(c['variant'])
+        parameters=architecture['total_trainable_parameters']
+        if resolved.get('total_parameters')!=parameters or resolved.get('trainable_parameters')!=parameters:raise ValueError('Mirror relation parameter budget differs')
+        if resolved.get('mirror_relation_active') is not True or resolved.get('mirror_relation_actual')!=architecture or resolved.get('mirror_relation')!=architecture or resolved.get('classifier_scale')!=30.:
+            raise ValueError('Mirror relation operators differ from registered source variant')
+        state=payload.get('model')
+        if not isinstance(state,dict) or not state or any(not isinstance(value,torch.Tensor) or value.is_complex() or
+                (value.is_floating_point() and (value.dtype!=torch.float32 or not torch.isfinite(value).all())) for value in state.values()):
+            raise ValueError('Mirror relation checkpoint state must retain full finite FP32')
+        window=state.get('core.mirror_relation.window')
+        if window is None or not torch.equal(window,torch.hann_window(64,periodic=True)):
+            raise ValueError('Frozen spectral periodic Hann buffer differs')
     if c['variant'] in SPECTRAL_RELATION_VARIANTS:
         import torch
         from experiments.cvs_spectral_relation_identity.source import validate_config
@@ -841,7 +903,9 @@ def checkpoint_contract(c,done,initial,contract,expected,resolved,payload):
 
 
 def build_model(variant):
-    if variant in SPECTRAL_RELATION_VARIANTS:
+    if variant in MIRROR_RELATION_VARIANTS:
+        from experiments.cvs_mirror_subspace_identity.model import build
+    elif variant in SPECTRAL_RELATION_VARIANTS:
         from experiments.cvs_spectral_relation_identity.model import build
     elif variant in FRONTFILTER_VARIANTS:
         from experiments.cvs_frontfilter_identity.model import build

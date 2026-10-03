@@ -1,6 +1,6 @@
 {
   "run_id": "20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "release": "cvs_mirror_subspace_identity_20261003_r01",
   "launch_owner": "codex/root/cvs-mirror-subspace-identity-20261003",
   "performance_goal_achieved": false,
@@ -12,8 +12,20 @@
     "source preregistration"
   ],
   "next": [
-    "Finish focused independent numerical-fix readback",
-    "Git commit/push/readback, remote preflight and unique source launch",
-    "Collect complete source logs/27000V scalars; freeze 20-source-record selection; conditional clean closure"
-  ]
+    "Monitor only dispatcher2413989 and existing8workers; no resubmit/restart",
+    "At terminal collect all E200 evidence with experiments.cvs_mirror_subspace_identity.collect; run analyze; verify source freeze with .codex_tmp/record_mirror_source_freeze.py",
+    "Only if new winner: prepare/register/commit/publish clean4new+48reused; otherwise verify retained control frozen test without newquery",
+    "Complete original reports/registry/Git; overall paper/performance goal remains unproven"
+  ],
+  "live_workers": 8,
+  "code_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+  "dispatcher_pid": 2413989,
+  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_mirror_subspace_identity_20261003_r01",
+  "latest_evidence": "evidence/continuation_readback.json",
+  "last_verified_epoch_range": [
+    88,
+    92
+  ],
+  "conditional_clean_implementation": "Complete; independent P0/P1 PASS; formal configs not created",
+  "source_collection": "Complete collector/analyzer with full steps and V scalar recount"
 }

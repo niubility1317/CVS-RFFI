@@ -1,0 +1,36 @@
+{
+  "status": "VERIFIED",
+  "source_release_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+  "source_collector": {
+    "distinct_passed": 69,
+    "chunks": [
+      "881804",
+      "2bda2e"
+    ]
+  },
+  "source_analysis": {
+    "distinct_passed": 15,
+    "chunk": "2bda2e"
+  },
+  "clean_contract": {
+    "distinct_passed": 74,
+    "chunks": [
+      "6e20b0",
+      "67d5cd"
+    ]
+  },
+  "clean_analysis": {
+    "distinct_passed": 93,
+    "chunk": "a60bd2"
+  },
+  "previous_spectral_contract": {
+    "distinct_passed": 67,
+    "chunk": "64b1ac"
+  },
+  "fixed_test_fixture_issues": "New 13-method TX table has79lines, and updated mirror physical prose replaces old spectral assertions; corresponding report cases pass",
+  "independent_review": "conditional_clean_independent_review.json",
+  "actual_source_complete": false,
+  "actual_clean_complete": false,
+  "target_access": false,
+  "source_model_changed": false
+}
