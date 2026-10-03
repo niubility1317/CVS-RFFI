@@ -1,0 +1,89 @@
+{
+  "status": "ALL_E200_FROZEN",
+  "run_id": "20261003-phase1-cvs-validdual-identity-manysig-m8-r01",
+  "commit": "91ade405e1cec130805289ea2517c1b3ab659a02",
+  "records": [
+    {
+      "variant": "validdual_static",
+      "seed": 2026092701,
+      "accuracy": 0.9864444444444445,
+      "worst_rx": 0.9622222222222222,
+      "parameters": 221213,
+      "macs": 18919040,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_static-s2026092701/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "validdual_dynamic",
+      "seed": 2026092701,
+      "accuracy": 0.9862222222222222,
+      "worst_rx": 0.9635185185185186,
+      "parameters": 229725,
+      "macs": 18927488,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_dynamic-s2026092701/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "validdual_static",
+      "seed": 2026092702,
+      "accuracy": 0.9862592592592593,
+      "worst_rx": 0.9642592592592593,
+      "parameters": 221213,
+      "macs": 18919040,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_static-s2026092702/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "validdual_dynamic",
+      "seed": 2026092702,
+      "accuracy": 0.9870740740740741,
+      "worst_rx": 0.9661111111111111,
+      "parameters": 229725,
+      "macs": 18927488,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_dynamic-s2026092702/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "validdual_static",
+      "seed": 2026092703,
+      "accuracy": 0.9859629629629629,
+      "worst_rx": 0.9633333333333334,
+      "parameters": 221213,
+      "macs": 18919040,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_static-s2026092703/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "validdual_dynamic",
+      "seed": 2026092703,
+      "accuracy": 0.9852592592592593,
+      "worst_rx": 0.9611111111111111,
+      "parameters": 229725,
+      "macs": 18927488,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_dynamic-s2026092703/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "validdual_static",
+      "seed": 2026092704,
+      "accuracy": 0.9844074074074074,
+      "worst_rx": 0.9566666666666667,
+      "parameters": 221213,
+      "macs": 18919040,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_static-s2026092704/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "validdual_dynamic",
+      "seed": 2026092704,
+      "accuracy": 0.9842962962962963,
+      "worst_rx": 0.9546296296296296,
+      "parameters": 229725,
+      "macs": 18927488,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_dynamic-s2026092704/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    }
+  ],
+  "target_access": false,
+  "selection": "fixed_all_arms_no_elimination"
+}

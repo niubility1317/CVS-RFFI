@@ -1,15 +1,13 @@
 {
   "run_id": "20261003-phase1-cvs-validdual-clean-manysig-m8-r01",
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "release": "cvs_validdual_clean_20261003_r01",
   "source_run": "20261003-phase1-cvs-validdual-identity-manysig-m8-r01",
   "source_commit": "91ade405e1cec130805289ea2517c1b3ab659a02",
   "next": [
-    "Inspect existing source dispatcher and all8 original processes;no relaunch",
-    "When all8 E200 completed and frozen_source_matrix exists, publish clean exactly once",
-    "Clean command: python -m experiments.cvs_validdual_clean.publish --output local_artifacts/cvs_validdual_clean_20261003_r01",
-    "Inspect clean until scorer and independent recount complete;collect via experiments.cvs_validdual_clean.collect --output local_artifacts/cvs_validdual_clean_20261003_r01/completed",
-    "Report all8test results plus original fixed comparators;full training logs and resource cost;mirror/Git"
+    "All registered312 frozen clean checkpoints tested; no missing rows in this scope",
+    "Preserve all results; this round failed overall performance objective",
+    "Further scientific work must not use target results for architecture selection, hyperparameter tuning or selective retraining"
   ],
   "performance_goal_achieved": false,
   "paper_claim_established": false,
@@ -18,5 +16,16 @@
     98,
     117
   ],
-  "source_dispatcher_pid": 2508597
+  "source_dispatcher_pid": 2508597,
+  "execution_commit": "8a8dfa59305d2506fd90027356839a4d852fbeac",
+  "dispatcher_pid": 2526848,
+  "evidence": "evidence/launch_readback.json",
+  "test_run": "20261003-phase1-cvs-validdual-clean-manysig-m8-r01",
+  "latest_evidence": "evidence/final_readback.json",
+  "all_registered_test_rows_complete": true,
+  "completed_clean_checkpoint_scope": 312,
+  "test_summary": {
+    "validdual_static_accuracy": 0.7076889880952381,
+    "validdual_dynamic_accuracy": 0.7072068452380953
+  }
 }

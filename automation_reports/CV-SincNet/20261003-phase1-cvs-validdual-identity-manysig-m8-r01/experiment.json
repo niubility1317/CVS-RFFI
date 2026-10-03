@@ -165,7 +165,7 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "pid": 2508638
     },
     {
@@ -209,7 +209,7 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "pid": 2508719
     },
     {
@@ -253,7 +253,7 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "pid": 2508798
     },
     {
@@ -297,7 +297,7 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "pid": 2508877
     },
     {
@@ -341,7 +341,7 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "pid": 2508956
     },
     {
@@ -385,7 +385,7 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "pid": 2509091
     },
     {
@@ -429,7 +429,7 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "pid": 2509168
     },
     {
@@ -473,7 +473,7 @@
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "pid": 2509249
     }
   ],
@@ -488,7 +488,7 @@
     "No Phase2support/SFT/newclass/LEO in this run. K and adaptation metrics N/A. Original6300L/56700unusedU/27000V source roles and4modelseeds retained."
   ],
   "registered_at": "2026-10-03T11:55:56+00:00",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "condition": "Unconditional fixed static/dynamic comparison after all8 source checkpoints complete and freeze",
     "views": [
@@ -540,6 +540,15 @@
       "frontfilter_dynamic"
     ],
     "comparison_scope": "Same recorded physical IDs/seeds; historic scores for reporting only, no new target-based selection",
-    "registered_test_run": "20261003-phase1-cvs-validdual-clean-manysig-m8-r01"
+    "registered_test_run": "20261003-phase1-cvs-validdual-clean-manysig-m8-r01",
+    "status": "VERIFIED",
+    "completed_test_run": "20261003-phase1-cvs-validdual-clean-manysig-m8-r01"
+  },
+  "outcome": {
+    "status": "VERIFIED",
+    "test_run": "20261003-phase1-cvs-validdual-clean-manysig-m8-r01",
+    "performance_goal_achieved": false,
+    "paper_claim_established": false,
+    "all_registered_test_rows_complete": true
   }
 }

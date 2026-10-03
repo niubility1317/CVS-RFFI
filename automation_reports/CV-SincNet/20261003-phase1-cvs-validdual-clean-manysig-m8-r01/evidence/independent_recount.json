@@ -1,0 +1,11 @@
+{
+  "status": "VERIFIED",
+  "rows": 8,
+  "query_count": 168000,
+  "decisions": 1344000,
+  "receiver_records": 64,
+  "class_records": 48,
+  "max_metric_absolute_error": 0.0,
+  "method": "Raw fixed predictions and physical IDs; NumPy bincount and direct per-class formulas; no scorer metrics function",
+  "target_feedback_forbidden": true
+}
