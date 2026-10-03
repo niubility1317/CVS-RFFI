@@ -1,0 +1,13 @@
+{
+  "status": "VERIFIED",
+  "verified_at": "2026-10-03T07:04:30.589766+00:00",
+  "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -m pytest tests/test_cvs_frontfilter_coefficient_association.py -o addopts= -q",
+  "result": "47 passed in 1.06s",
+  "exit_code": 0,
+  "tool_chunk": "ec1365",
+  "evidence_origin": "Implementation agent tool output, no separate stdout log",
+  "initial_failure": "Synthetic fixture serialized numpy scalar repr; converted fixture to Python float. No production-data failure.",
+  "actual_source_analysis": "VERIFIED:8models/720cells; CSV matched raw terminal source moments and freeze; real CLI exit0",
+  "source_training_modified": false,
+  "target_access": false
+}

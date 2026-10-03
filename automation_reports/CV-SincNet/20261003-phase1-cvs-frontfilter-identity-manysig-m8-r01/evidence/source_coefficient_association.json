@@ -1,0 +1,632 @@
+{
+  "analysis": "source coefficient association",
+  "models": [
+    {
+      "variant": "frontfilter_static",
+      "model_seed": 2026092701,
+      "cells": 90,
+      "count": 27000,
+      "global_mean": [
+        -0.21769900619983673,
+        0.22047017514705658,
+        0.2525617182254791,
+        0.04685841128230095,
+        -0.1014723852276802,
+        0.27912765741348267,
+        0.11111121624708176,
+        0.11932489275932312
+      ],
+      "components": {
+        "TX": 0.0,
+        "RX": 0.0,
+        "day": 0.0,
+        "TX_RX": 0.0,
+        "TX_day": 0.0,
+        "RX_day": 0.0,
+        "TX_RX_day": 0.0,
+        "within_cell": 0.0
+      },
+      "fractions": {
+        "TX": null,
+        "RX": null,
+        "day": null,
+        "TX_RX": null,
+        "TX_day": null,
+        "RX_day": null,
+        "TX_RX_day": null,
+        "within_cell": null
+      },
+      "total_trace_variance": 0.0,
+      "between_cell_trace_variance": 0.0,
+      "reconstructed_total_trace_variance": 0.0,
+      "reconstruction_absolute_error": 0.0,
+      "cell_mean_reconstruction_max_abs_error": 0.0,
+      "numerically_zero_total": true,
+      "fraction_denominator_tolerance": 1e-10,
+      "raw_variances_preserved": true
+    },
+    {
+      "variant": "frontfilter_static",
+      "model_seed": 2026092702,
+      "cells": 90,
+      "count": 27000,
+      "global_mean": [
+        0.21856999397277832,
+        0.24874629080295563,
+        0.2365453541278839,
+        0.25869080424308777,
+        -0.06521417200565338,
+        -0.07542163133621216,
+        0.029579589143395424,
+        0.08905894309282303
+      ],
+      "components": {
+        "TX": 0.0,
+        "RX": 0.0,
+        "day": 0.0,
+        "TX_RX": 0.0,
+        "TX_day": 0.0,
+        "RX_day": 0.0,
+        "TX_RX_day": 0.0,
+        "within_cell": 6.661338147750939e-16
+      },
+      "fractions": {
+        "TX": null,
+        "RX": null,
+        "day": null,
+        "TX_RX": null,
+        "TX_day": null,
+        "RX_day": null,
+        "TX_RX_day": null,
+        "within_cell": null
+      },
+      "total_trace_variance": 6.661338147750939e-16,
+      "between_cell_trace_variance": 0.0,
+      "reconstructed_total_trace_variance": 6.661338147750939e-16,
+      "reconstruction_absolute_error": 0.0,
+      "cell_mean_reconstruction_max_abs_error": 0.0,
+      "numerically_zero_total": true,
+      "fraction_denominator_tolerance": 1e-10,
+      "raw_variances_preserved": true
+    },
+    {
+      "variant": "frontfilter_static",
+      "model_seed": 2026092703,
+      "cells": 90,
+      "count": 27000,
+      "global_mean": [
+        0.27993857860565186,
+        -0.08672162890434265,
+        -0.09432462602853775,
+        0.2820611298084259,
+        0.04969482868909836,
+        0.08598745614290237,
+        -0.1698755919933319,
+        -0.20612217485904694
+      ],
+      "components": {
+        "TX": 0.0,
+        "RX": 0.0,
+        "day": 0.0,
+        "TX_RX": 0.0,
+        "TX_day": 0.0,
+        "RX_day": 0.0,
+        "TX_RX_day": 0.0,
+        "within_cell": 0.0
+      },
+      "fractions": {
+        "TX": null,
+        "RX": null,
+        "day": null,
+        "TX_RX": null,
+        "TX_day": null,
+        "RX_day": null,
+        "TX_RX_day": null,
+        "within_cell": null
+      },
+      "total_trace_variance": 0.0,
+      "between_cell_trace_variance": 0.0,
+      "reconstructed_total_trace_variance": 0.0,
+      "reconstruction_absolute_error": 0.0,
+      "cell_mean_reconstruction_max_abs_error": 0.0,
+      "numerically_zero_total": true,
+      "fraction_denominator_tolerance": 1e-10,
+      "raw_variances_preserved": true
+    },
+    {
+      "variant": "frontfilter_static",
+      "model_seed": 2026092704,
+      "cells": 90,
+      "count": 27000,
+      "global_mean": [
+        -0.22105062007904053,
+        0.24489696323871613,
+        -0.1946387141942978,
+        -0.1513630896806717,
+        -0.11635322868824005,
+        -0.24981002509593964,
+        -0.050601400434970856,
+        -0.12959159910678864
+      ],
+      "components": {
+        "TX": 0.0,
+        "RX": 0.0,
+        "day": 0.0,
+        "TX_RX": 0.0,
+        "TX_day": 0.0,
+        "RX_day": 0.0,
+        "TX_RX_day": 0.0,
+        "within_cell": 7.216449660063518e-16
+      },
+      "fractions": {
+        "TX": null,
+        "RX": null,
+        "day": null,
+        "TX_RX": null,
+        "TX_day": null,
+        "RX_day": null,
+        "TX_RX_day": null,
+        "within_cell": null
+      },
+      "total_trace_variance": 7.216449660063518e-16,
+      "between_cell_trace_variance": 0.0,
+      "reconstructed_total_trace_variance": 7.216449660063518e-16,
+      "reconstruction_absolute_error": 0.0,
+      "cell_mean_reconstruction_max_abs_error": 0.0,
+      "numerically_zero_total": true,
+      "fraction_denominator_tolerance": 1e-10,
+      "raw_variances_preserved": true
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "model_seed": 2026092701,
+      "cells": 90,
+      "count": 27000,
+      "global_mean": [
+        -0.0005887193686214954,
+        0.6581149963052184,
+        0.01510013927988432,
+        -0.0012661684210754434,
+        -0.00025357128817512207,
+        0.7194331233633889,
+        0.006973366273049679,
+        0.0034747351818302983
+      ],
+      "components": {
+        "TX": 1.4711237816358149e-06,
+        "RX": 2.539772829476554e-05,
+        "day": 3.658379312537331e-07,
+        "TX_RX": 9.967150127158754e-06,
+        "TX_day": 1.1769223016295615e-06,
+        "RX_day": 9.092459953384663e-07,
+        "TX_RX_day": 3.6898678062792997e-06,
+        "within_cell": 0.00015860773359937334
+      },
+      "fractions": {
+        "TX": 0.007297761892935607,
+        "RX": 0.1259897882356143,
+        "day": 0.0018148018181890922,
+        "TX_RX": 0.049443758089660284,
+        "TX_day": 0.005838324980531456,
+        "RX_day": 0.00451047074278622,
+        "TX_RX_day": 0.018304222257009985,
+        "within_cell": 0.7868008719832731
+      },
+      "total_trace_variance": 0.0002015856098374345,
+      "between_cell_trace_variance": 4.297787623806118e-05,
+      "reconstructed_total_trace_variance": 0.0002015856098374345,
+      "reconstruction_absolute_error": 0.0,
+      "cell_mean_reconstruction_max_abs_error": 1.734723475976807e-18,
+      "numerically_zero_total": false,
+      "fraction_denominator_tolerance": 1e-10,
+      "raw_variances_preserved": true
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "model_seed": 2026092702,
+      "cells": 90,
+      "count": 27000,
+      "global_mean": [
+        0.0004255094878659235,
+        0.4024562855484309,
+        0.4548507974048456,
+        0.12067506774238966,
+        -0.00015044051014502264,
+        -0.07957491038463733,
+        0.10476125863829144,
+        0.011202052314173434
+      ],
+      "components": {
+        "TX": 9.642552885766889e-07,
+        "RX": 1.500752279605299e-05,
+        "day": 9.348493608774465e-08,
+        "TX_RX": 7.205870368780553e-06,
+        "TX_day": 5.694085192615101e-07,
+        "RX_day": 5.693108594460557e-07,
+        "TX_RX_day": 2.549673623137279e-06,
+        "within_cell": 2.207462812693289e-05
+      },
+      "fractions": {
+        "TX": 0.019664972263716666,
+        "RX": 0.3060626402859558,
+        "day": 0.0019065269301809114,
+        "TX_RX": 0.14695614596749754,
+        "TX_day": 0.011612487761959549,
+        "RX_day": 0.011610496092756443,
+        "TX_RX_day": 0.05199791141880464,
+        "within_cell": 0.4501888192791286
+      },
+      "total_trace_variance": 4.90341545182757e-05,
+      "between_cell_trace_variance": 2.6959526391342818e-05,
+      "reconstructed_total_trace_variance": 4.9034154518275716e-05,
+      "reconstruction_absolute_error": 1.3552527156068805e-20,
+      "cell_mean_reconstruction_max_abs_error": 1.734723475976807e-18,
+      "numerically_zero_total": false,
+      "fraction_denominator_tolerance": 1e-10,
+      "raw_variances_preserved": true
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "model_seed": 2026092703,
+      "cells": 90,
+      "count": 27000,
+      "global_mean": [
+        0.04039536178926075,
+        -0.018457055128860735,
+        -0.0016997598409455004,
+        0.8685251771454457,
+        0.03277389979945427,
+        0.0318064225996603,
+        -0.0010339809091132984,
+        -0.2565662545048528
+      ],
+      "components": {
+        "TX": 2.5912949147477374e-06,
+        "RX": 1.5375388232439673e-05,
+        "day": 1.7588368758666875e-07,
+        "TX_RX": 1.2032298003138587e-05,
+        "TX_day": 6.226607579951692e-07,
+        "RX_day": 8.68143917007282e-07,
+        "TX_RX_day": 5.5899621309447275e-06,
+        "within_cell": 5.916940721918395e-05
+      },
+      "fractions": {
+        "TX": 0.02687367249525565,
+        "RX": 0.15945431200995344,
+        "day": 0.0018240458044977625,
+        "TX_RX": 0.12478395803634078,
+        "TX_day": 0.006457459238150355,
+        "RX_day": 0.00900330378129627,
+        "TX_RX_day": 0.05797210140495111,
+        "within_cell": 0.6136311472295546
+      },
+      "total_trace_variance": 9.64250388630438e-05,
+      "between_cell_trace_variance": 3.725563164385985e-05,
+      "reconstructed_total_trace_variance": 9.64250388630438e-05,
+      "reconstruction_absolute_error": 0.0,
+      "cell_mean_reconstruction_max_abs_error": 1.734723475976807e-18,
+      "numerically_zero_total": false,
+      "fraction_denominator_tolerance": 1e-10,
+      "raw_variances_preserved": true
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "model_seed": 2026092704,
+      "cells": 90,
+      "count": 27000,
+      "global_mean": [
+        -0.0008814477841659667,
+        0.6885670716674239,
+        -0.0008184545045386544,
+        -2.583285835192821e-05,
+        -0.0011881499203920528,
+        -0.7173140365657983,
+        -0.0005386726650847106,
+        3.759028229877397e-05
+      ],
+      "components": {
+        "TX": 7.792647539053037e-07,
+        "RX": 1.415595903178062e-05,
+        "day": 3.357109592468487e-07,
+        "TX_RX": 8.813841121373503e-06,
+        "TX_day": 9.847581581554597e-07,
+        "RX_day": 7.733253721020583e-07,
+        "TX_RX_day": 3.8916209828748286e-06,
+        "within_cell": 0.00016923285725475054
+      },
+      "fractions": {
+        "TX": 0.003916546118428838,
+        "RX": 0.07114715008051732,
+        "day": 0.0016872666802431118,
+        "TX_RX": 0.04429792963093352,
+        "TX_day": 0.004949345806526215,
+        "RX_day": 0.0038866950791885922,
+        "TX_RX_day": 0.01955909461898594,
+        "within_cell": 0.8505559719851764
+      },
+      "total_trace_variance": 0.00019896733763418917,
+      "between_cell_trace_variance": 2.973448037943862e-05,
+      "reconstructed_total_trace_variance": 0.00019896733763418917,
+      "reconstruction_absolute_error": 0.0,
+      "cell_mean_reconstruction_max_abs_error": 3.469446951953614e-18,
+      "numerically_zero_total": false,
+      "fraction_denominator_tolerance": 1e-10,
+      "raw_variances_preserved": true
+    }
+  ],
+  "four_seed_summary": [
+    {
+      "variant": "frontfilter_static",
+      "factor": "TX",
+      "seeds": 4,
+      "trace_variance_mean": 0.0,
+      "trace_variance_seed_sd": 0.0,
+      "fraction_defined_seeds": 0,
+      "fraction_mean": null,
+      "fraction_seed_sd": null
+    },
+    {
+      "variant": "frontfilter_static",
+      "factor": "RX",
+      "seeds": 4,
+      "trace_variance_mean": 0.0,
+      "trace_variance_seed_sd": 0.0,
+      "fraction_defined_seeds": 0,
+      "fraction_mean": null,
+      "fraction_seed_sd": null
+    },
+    {
+      "variant": "frontfilter_static",
+      "factor": "day",
+      "seeds": 4,
+      "trace_variance_mean": 0.0,
+      "trace_variance_seed_sd": 0.0,
+      "fraction_defined_seeds": 0,
+      "fraction_mean": null,
+      "fraction_seed_sd": null
+    },
+    {
+      "variant": "frontfilter_static",
+      "factor": "TX_RX",
+      "seeds": 4,
+      "trace_variance_mean": 0.0,
+      "trace_variance_seed_sd": 0.0,
+      "fraction_defined_seeds": 0,
+      "fraction_mean": null,
+      "fraction_seed_sd": null
+    },
+    {
+      "variant": "frontfilter_static",
+      "factor": "TX_day",
+      "seeds": 4,
+      "trace_variance_mean": 0.0,
+      "trace_variance_seed_sd": 0.0,
+      "fraction_defined_seeds": 0,
+      "fraction_mean": null,
+      "fraction_seed_sd": null
+    },
+    {
+      "variant": "frontfilter_static",
+      "factor": "RX_day",
+      "seeds": 4,
+      "trace_variance_mean": 0.0,
+      "trace_variance_seed_sd": 0.0,
+      "fraction_defined_seeds": 0,
+      "fraction_mean": null,
+      "fraction_seed_sd": null
+    },
+    {
+      "variant": "frontfilter_static",
+      "factor": "TX_RX_day",
+      "seeds": 4,
+      "trace_variance_mean": 0.0,
+      "trace_variance_seed_sd": 0.0,
+      "fraction_defined_seeds": 0,
+      "fraction_mean": null,
+      "fraction_seed_sd": null
+    },
+    {
+      "variant": "frontfilter_static",
+      "factor": "within_cell",
+      "seeds": 4,
+      "trace_variance_mean": 3.469446951953614e-16,
+      "trace_variance_seed_sd": 4.0125770192081414e-16,
+      "fraction_defined_seeds": 0,
+      "fraction_mean": null,
+      "fraction_seed_sd": null
+    },
+    {
+      "variant": "frontfilter_static",
+      "factor": "total",
+      "seeds": 4,
+      "trace_variance_mean": 3.469446951953614e-16,
+      "trace_variance_seed_sd": 4.0125770192081414e-16,
+      "fraction_defined_seeds": 0,
+      "fraction_mean": null,
+      "fraction_seed_sd": null
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "factor": "TX",
+      "seeds": 4,
+      "trace_variance_mean": 1.4514846847163863e-06,
+      "trace_variance_seed_sd": 8.142123339879352e-07,
+      "fraction_defined_seeds": 4,
+      "fraction_mean": 0.014438238192584189,
+      "fraction_seed_sd": 0.010702821765552949
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "factor": "RX",
+      "seeds": 4,
+      "trace_variance_mean": 1.7484149588759705e-05,
+      "trace_variance_seed_sd": 5.300381591545248e-06,
+      "fraction_defined_seeds": 4,
+      "fraction_mean": 0.1656634726530102,
+      "fraction_seed_sd": 0.10042877478723233
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "factor": "day",
+      "seeds": 4,
+      "trace_variance_mean": 2.427293785437488e-07,
+      "trace_variance_seed_sd": 1.2979925539581888e-07,
+      "fraction_defined_seeds": 4,
+      "fraction_mean": 0.0018081603082777194,
+      "fraction_seed_sd": 9.053124736442378e-05
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "factor": "TX_RX",
+      "seeds": 4,
+      "trace_variance_mean": 9.504789905112849e-06,
+      "trace_variance_seed_sd": 2.0301490435267062e-06,
+      "fraction_defined_seeds": 4,
+      "fraction_mean": 0.09137044793110803,
+      "fraction_seed_sd": 0.05221718039089685
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "factor": "TX_day",
+      "seeds": 4,
+      "trace_variance_mean": 8.384374342604251e-07,
+      "trace_variance_seed_sd": 2.9150065226035847e-07,
+      "fraction_defined_seeds": 4,
+      "fraction_mean": 0.007214404446791894,
+      "fraction_seed_sd": 0.002996675282005449
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "factor": "RX_day",
+      "seeds": 4,
+      "trace_variance_mean": 7.800065359734656e-07,
+      "trace_variance_seed_sd": 1.51556746083744e-07,
+      "fraction_defined_seeds": 4,
+      "fraction_mean": 0.007252741424006881,
+      "fraction_seed_sd": 0.0036925515480181713
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "factor": "TX_RX_day",
+      "seeds": 4,
+      "trace_variance_mean": 3.9302811358090335e-06,
+      "trace_variance_seed_sd": 1.2543140603666962e-06,
+      "fraction_defined_seeds": 4,
+      "fraction_mean": 0.03695833242493792,
+      "fraction_seed_sd": 0.020964070258765614
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "factor": "within_cell",
+      "seeds": 4,
+      "trace_variance_mean": 0.00010227115655006018,
+      "trace_variance_seed_sd": 7.290844313566818e-05,
+      "fraction_defined_seeds": 4,
+      "fraction_mean": 0.6752942026192832,
+      "fraction_seed_sd": 0.18039326587821802
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "factor": "total",
+      "seeds": 4,
+      "trace_variance_mean": 0.0001365030352132358,
+      "trace_variance_seed_sd": 7.614587202233592e-05,
+      "fraction_defined_seeds": 0,
+      "fraction_mean": null,
+      "fraction_seed_sd": null
+    }
+  ],
+  "statistics_dtype": "float64",
+  "classes": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "factor_levels": {
+    "TX": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "day": [
+      1,
+      2,
+      3
+    ]
+  },
+  "coefficient_order": "real basis 0..3, imaginary basis 0..3",
+  "definition": "Population trace variance: mean squared Euclidean deviation across eight coefficients. Seven balanced orthogonal cell-mean effects plus mean within-cell population trace variance. No division of within-cell variance by 300; no fitting, hypothesis test or p-values.",
+  "numeric_scope": "Raw near-zero variances are retained; fractions are null when total <= 1e-10 to avoid amplifying cancellation noise. This is numerical reporting, not a performance gate.",
+  "source_only": true,
+  "model_selection": false,
+  "target_access": false,
+  "interpretation": "Observed source coefficient association, not causal attribution. These factors do not establish channel recovery, TX/RX disentanglement or generalization. Never use this diagnostic for model/epoch selection, ranking, hyperparameters or selective reruns. Four model seeds share the same source samples, not four independent datasets.",
+  "source_run": "20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01",
+  "source_selection": {
+    "status": "SOURCE_SELECTION_FROZEN",
+    "selected_variant": "response_anchor_mean",
+    "source_summaries": {
+      "neural_residual_shallow": {
+        "score": 0.9712175925925925,
+        "source_accuracy": 0.9844259259259259,
+        "worst_rx_accuracy": 0.9580092592592593,
+        "parameters": 220987,
+        "conv_linear_macs": 9460000
+      },
+      "response_anchor_mean": {
+        "score": 0.9713148148148147,
+        "source_accuracy": 0.9844351851851851,
+        "worst_rx_accuracy": 0.9581944444444445,
+        "parameters": 237147,
+        "conv_linear_macs": 11205232
+      },
+      "frontfilter_static": {
+        "score": 0.9694351851851852,
+        "source_accuracy": 0.9835925925925926,
+        "worst_rx_accuracy": 0.9552777777777778,
+        "parameters": 221035,
+        "conv_linear_macs": 9460080
+      },
+      "frontfilter_dynamic": {
+        "score": 0.9696111111111111,
+        "source_accuracy": 0.9835277777777778,
+        "worst_rx_accuracy": 0.9556944444444444,
+        "parameters": 221307,
+        "conv_linear_macs": 9460336
+      }
+    },
+    "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+    "selection_policy": "performance_first_frontfilter_with_current_source_winner_20261003",
+    "candidate_universe": [
+      "neural_residual_shallow",
+      "response_anchor_mean",
+      "frontfilter_static",
+      "frontfilter_dynamic"
+    ],
+    "new_candidate_selected": false,
+    "exact_cost_tie_order": [
+      "neural_residual_shallow",
+      "response_anchor_mean",
+      "frontfilter_static",
+      "frontfilter_dynamic"
+    ],
+    "target_access": false,
+    "target_score_used": false,
+    "test_view": "clean"
+  },
+  "input_ref": "source_frontfilter_cells.csv",
+  "status": "VERIFIED"
+}

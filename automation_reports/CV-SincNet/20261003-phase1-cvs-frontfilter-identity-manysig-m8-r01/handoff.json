@@ -1,26 +1,29 @@
 {
   "run_id": "20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01",
-  "status": "RUNNING",
-  "live_workers": 8,
+  "status": "ANALYZED",
+  "task_scope_complete": true,
   "performance_goal_achieved": false,
   "paper_claim_established": false,
-  "launch_owner": "codex/root/cvs-frontfilter-identity-20261003",
-  "latest_evidence": "evidence/progress_02_validation.json",
+  "live_workers": 0,
+  "source_code_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+  "analysis_code_commit": "b9a58265d91cca69770104e177ab67d526946d34",
+  "selected_variant": "response_anchor_mean",
+  "source_run": "20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01",
+  "reused_clean_run": "20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01",
+  "evidence": [
+    "evidence/source_terminal_readback.json",
+    "evidence/source_completion_validation.json",
+    "evidence/source_frontfilter_analysis.json",
+    "evidence/retained_control_test_verification.json",
+    "evidence/completion_verdict.json",
+    "evidence/source_coefficient_association.json",
+    "evidence/source_coefficient_interpretation.json"
+  ],
   "next": [
-    "Monitor exact dispatcher2325550 and eight existing workers; no duplicate launch or hot modification",
-    "After all E200: collect all80000source steps and720frontend cells; analyze and freeze16source selection",
-    "If a new winner: prepare/register/commit/push conditional clean configs before remote publish; predict four and truth-last score48rows",
-    "If a retained control: independently reconcile existing44row352score artifacts and exact selected4checkpoints; no new query",
-    "Complete report/registry/Git; performance and paper goals remain unproven until supported"
-  ],
-  "code_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
-  "dispatcher_pid": 2325550,
-  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01",
-  "latest_readback": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_frontfilter_identity_20261003_r01\\progress_02\\readback.json",
-  "last_verified_epoch_range": [
-    91,
-    97
-  ],
-  "conditional_clean_status": "VERIFIED_LOCAL_WAITING_SOURCE_FREEZE",
-  "conditional_clean_module": "experiments.cvs_frontfilter_clean"
+    "Before another architecture change, implement preregistered source-only fixed-checkpoint counterfactual: learned per-packet filter versus its fixed coefficient summary and identity; diagnostic only, no ranking/new target/training strategy",
+    "Preserve all source results; conditional clean remains inactive",
+    "Continue the architecture/paper objective using only lawful source evidence",
+    "Do not equate filter activity with physical channel recovery or cross-receiver invariance",
+    "No target-feedback redesign, replacement seeds, retrospective epoch selection or extended-budget retry"
+  ]
 }

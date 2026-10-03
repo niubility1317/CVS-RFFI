@@ -58,3 +58,23 @@ run：`20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01`。两个候选�
 实现：[model.py](../experiments/cvs_frontfilter_identity/model.py)。实际状态与产物以[实验报告](../automation_reports/CV-SincNet/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/report.md)为准。
 
 条件测试实现：[prepare](../experiments/cvs_frontfilter_clean/prepare.py)、[collect](../experiments/cvs_frontfilter_clean/collect.py)、[analyze](../experiments/cvs_frontfilter_clean/analyze.py)。入口在源结果冻结后使用，当前仅完成本地验证，实际测试状态以实验报告为准。
+
+## 近期相关工作的边界核对
+
+2026年10月3日补查以下原作者资料，用于限定创新表述，不用外部论文分数指导本次模型选择。以下不是完整系统综述，也不能支持“首次”的声明。
+
+|工作与核实范围|作者公开方法|与本轮授权范围的区别|
+|---|---|---|
+|[He等，2026，arXiv:2603.08402](https://arxiv.org/abs/2603.08402)，核实摘要|DSQ表示与分类CNN串联接收机校准网络；部署阶段使用源、目标接收机采集的校准数据|本轮只做Phase1源训练与冻结推理，不使用目标校准；不能把该论文的校准后结果直接当作同权限基准|
+|[Ma等，2025，arXiv:2512.12070](https://arxiv.org/abs/2512.12070)，核实摘要|对比预训练、Siamese分类网络、增强和对比损失|这些训练机制超出用户本轮“原训练、单CE”的约束；它说明联合处理信道与接收机已有人研究，不能把问题本身当作新颖性|
+|[CIDO–FANet，2026，作者实验室介绍](https://jiushihema.github.io/pls_lab/en/cido-fanet%EF%BC%9A%E9%9D%A2%E5%90%91-5g-%E8%AE%BE%E5%A4%87%E7%9A%84%E4%BF%A1%E9%81%93%E9%B2%81%E6%A3%92%E5%B0%84%E9%A2%91%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%AB/)，未核实完整论文与训练配置|相邻DMRS符号的CSI商结合频域网络；商消除信道形状依赖相邻时刻信道近似成比例|本轮输入是固定256点received-IQ契约，不能未经验证把它当作相邻DMRS对，也不能将该商的不变性质移植给通用FIR。作者页未足以确认其是否只用CE|
+
+由这些资料作出的研究定位判断是：值得验证的空间在“无需目标校准、保持原单CE，通过接收模型约束网络结构取得可重复的跨接收条件收益”。这是待证的贡献方向，不是当前已实现的论文结论。前置判别变换、联合考虑TX/信道/RX、使用物理信息三者各自都不能单独构成首创声明；仍需当前架构与充分匹配消融提供增量证据。
+
+## 固定实验结果
+
+8份从零训练的固定E200模型、80000步日志与720个全V前置滤波单元已核验。frontfilter_static源分数96.9435%，相对Shallow为-0.1782±0.1282个百分点，0/4个seed正提升。frontfilter_dynamic源分数96.9611%，相对Shallow为-0.1606±0.0715个百分点，0/4个seed正提升。固定源规则保留response_anchor_mean；四seed配对SD描述固定划分下模型随机性，不是置信区间。
+
+只复核所选控制已有clean证据；未激活新候选测试，不能宣称前置滤波已提高独立泛化。[完整报告](../automation_reports/CV-SincNet/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/report.md)。
+
+完整源诊断进一步显示：滤波显著改变输入，但逐包系数变化占其二阶矩约0.01631%。该量不是预测贡献；需要冻结权重的源域反事实才能判断逐包变化的实际作用。训练CE更低但准确率更差，V CE并未同步恶化；不把负结果简单归结为未训练或分支未执行。详见完整报告中的机制解释。
