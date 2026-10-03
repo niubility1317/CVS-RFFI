@@ -6,4 +6,5 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|CVS镜像关系：冻结公开信号机制分解|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/report.md)|
 |CVS镜像频对关系：能量与子空间投影×四seed|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/report.md)|

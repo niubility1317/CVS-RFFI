@@ -1,0 +1,521 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+  "group_id": "cvs-mirror-frozen-public-mechanism",
+  "display_name": "CVS镜像关系：冻结公开信号绝对误差与低秩分解",
+  "description": "分离有限FIR关系绝对变化和近零分母放大；所有公开信号/频对和FP32/FP64诊断均保留，不拟合、不使用源IQ或target。",
+  "kind": "diagnostic",
+  "stage": "Phase1-frozen-public-mechanism",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "diagnostic",
+    "mirror_relation",
+    "public_only",
+    "no_training"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [
+    "20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求持续深入优化纯神经网络；本次仅验证机制并保存负结果，保持原训练策略，不新增query。",
+  "code": {
+    "commit": "37fb84fde98e16c815dd965db99f9bcfbc992f5c",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+    "source_release_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
+    "commit_note": "Preparation baseline; actual committed diagnostic version recorded at launch"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center256; unit packet RMS; fs=25000000Hz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "each row/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "ManySig.tx_list: all6; actual physical class strings exported at runtime",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "runtime_dataset": "public_inputs: 6noise+6tones+6periodic+6DC+6zero",
+    "original_training_data_provenance_only": true,
+    "runtime_source_IQ_access": false,
+    "public_generator_seed": 2026100307,
+    "public_packets_per_model": 30,
+    "public_FIR_delays": [
+      2,
+      8,
+      16
+    ],
+    "runtime_arithmetic": [
+      "CPU FP32",
+      "CPU FP64 posthoc diagnostic"
+    ],
+    "public_inputs_ref": "experiments/cvs_spectral_relation_identity/physics.py:public_inputs"
+  },
+  "permissions": {
+    "regime": "frozen_public_diagnostic_CVS",
+    "query_use": "NONE",
+    "training": false,
+    "target_access": false,
+    "source_IQ_access": false,
+    "remote_writes": false,
+    "claim_scope": "Synthetic operator sensitivity decomposition only; no identity accuracy, channel recovery or new source selection"
+  },
+  "checkpoint": {
+    "initialization": "frozen_original_E200_for_diagnostic_only",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092704/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092704/source/last.pt"
+    ],
+    "selection_rule": "All eight original E200; no filtering or reselection",
+    "provenance_verdict": "Before load: full audited source records, scratch ancestors empty, actual payload and original physical contract equality",
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_audit_ref": "../20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/evidence/source_completion_validation.json"
+  },
+  "execution": {
+    "host": "local Windows CPU; N607 read-only SCP source",
+    "launch_owner": "codex/root/mirror-public-mechanism-20261003",
+    "gpu_policy": "No GPU process launch",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+    "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+    "stop_rule": "Fail on metadata/state/nonfinite/collision; preserve partial outputs, no automatic retry"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "original_source_contract.json",
+    "row/last.pt",
+    "row/source_contract.json",
+    "row/public_arrays.npz",
+    "row/completion.json",
+    "completion.json",
+    "public_packets.csv",
+    "public_frequency_pairs.csv",
+    "public_summary.csv",
+    "cpu_gpu_comparison.csv",
+    "analysis_validation.json"
+  ],
+  "metrics_plan": {
+    "packet": [
+      "Q norm before/after",
+      "absolute Q change",
+      "relative Q change",
+      "FP32 unit embedding distance"
+    ],
+    "frequency_pair": [
+      "singular values",
+      "singular ratio",
+      "energy/determinant floor",
+      "determinant",
+      "absolute Q change"
+    ],
+    "reduction": "all30 per row,30x31pairs,three delays,two arithmetic modes;originalGPU first18 retained separately",
+    "no_selection": true,
+    "optimizer_steps": 0
+  },
+  "rows": [
+    {
+      "row_id": "mirror_energy-s2026092701",
+      "method": "mirror_energy",
+      "purpose": "frozen_public_FIR_mechanism",
+      "gpu": null,
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_energy-s2026092701",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026100307,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split are original checkpoint provenance; data controls fixed public generator, not a source split or augmentation",
+      "k": null,
+      "scenario": "public_fixed_FIR_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_energy-s2026092701",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092701/source/last.pt",
+      "expected_artifacts": [
+        "public_arrays.npz",
+        "completion.json"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "mirror_subspace-s2026092701",
+      "method": "mirror_subspace",
+      "purpose": "frozen_public_FIR_mechanism",
+      "gpu": null,
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_subspace-s2026092701",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026100307,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split are original checkpoint provenance; data controls fixed public generator, not a source split or augmentation",
+      "k": null,
+      "scenario": "public_fixed_FIR_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_subspace-s2026092701",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092701/source/last.pt",
+      "expected_artifacts": [
+        "public_arrays.npz",
+        "completion.json"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "mirror_energy-s2026092702",
+      "method": "mirror_energy",
+      "purpose": "frozen_public_FIR_mechanism",
+      "gpu": null,
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_energy-s2026092702",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026100307,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split are original checkpoint provenance; data controls fixed public generator, not a source split or augmentation",
+      "k": null,
+      "scenario": "public_fixed_FIR_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_energy-s2026092702",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092702/source/last.pt",
+      "expected_artifacts": [
+        "public_arrays.npz",
+        "completion.json"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "mirror_subspace-s2026092702",
+      "method": "mirror_subspace",
+      "purpose": "frozen_public_FIR_mechanism",
+      "gpu": null,
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_subspace-s2026092702",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026100307,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split are original checkpoint provenance; data controls fixed public generator, not a source split or augmentation",
+      "k": null,
+      "scenario": "public_fixed_FIR_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_subspace-s2026092702",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092702/source/last.pt",
+      "expected_artifacts": [
+        "public_arrays.npz",
+        "completion.json"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "mirror_energy-s2026092703",
+      "method": "mirror_energy",
+      "purpose": "frozen_public_FIR_mechanism",
+      "gpu": null,
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_energy-s2026092703",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026100307,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split are original checkpoint provenance; data controls fixed public generator, not a source split or augmentation",
+      "k": null,
+      "scenario": "public_fixed_FIR_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_energy-s2026092703",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092703/source/last.pt",
+      "expected_artifacts": [
+        "public_arrays.npz",
+        "completion.json"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "mirror_subspace-s2026092703",
+      "method": "mirror_subspace",
+      "purpose": "frozen_public_FIR_mechanism",
+      "gpu": null,
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_subspace-s2026092703",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026100307,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split are original checkpoint provenance; data controls fixed public generator, not a source split or augmentation",
+      "k": null,
+      "scenario": "public_fixed_FIR_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_subspace-s2026092703",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092703/source/last.pt",
+      "expected_artifacts": [
+        "public_arrays.npz",
+        "completion.json"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "mirror_energy-s2026092704",
+      "method": "mirror_energy",
+      "purpose": "frozen_public_FIR_mechanism",
+      "gpu": null,
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_energy-s2026092704",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026100307,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split are original checkpoint provenance; data controls fixed public generator, not a source split or augmentation",
+      "k": null,
+      "scenario": "public_fixed_FIR_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_energy-s2026092704",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092704/source/last.pt",
+      "expected_artifacts": [
+        "public_arrays.npz",
+        "completion.json"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "mirror_subspace-s2026092704",
+      "method": "mirror_subspace",
+      "purpose": "frozen_public_FIR_mechanism",
+      "gpu": null,
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_subspace-s2026092704",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026100307,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split are original checkpoint provenance; data controls fixed public generator, not a source split or augmentation",
+      "k": null,
+      "scenario": "public_fixed_FIR_diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_subspace-s2026092704",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092704/source/last.pt",
+      "expected_artifacts": [
+        "public_arrays.npz",
+        "completion.json"
+      ],
+      "status": "PLANNED"
+    }
+  ],
+  "notes": [
+    "Original source models and selection remain immutable; no clean retest for a diagnostic without a new candidate.",
+    "CPU Torch2.10 and original GPU Torch2.1 differ; discrepancies retained rather than treating values as identical.",
+    "FP64 copies weights for arithmetic diagnosis only; not new training, precision selection or performance candidate.",
+    "Near-zero relative denominators interpreted alongside absolute norms and all signal groups; no signals/pairs excluded."
+  ],
+  "status": "LOCAL_VERIFIED",
+  "source_controls": [
+    {
+      "variant": "neural_residual_shallow",
+      "method": "cvs_neural_residual_identity",
+      "model_seed": 2026092701,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092701/source"
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "method": "cvs_neural_residual_identity",
+      "model_seed": 2026092702,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092702/source"
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "method": "cvs_neural_residual_identity",
+      "model_seed": 2026092703,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092703/source"
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "method": "cvs_neural_residual_identity",
+      "model_seed": 2026092704,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092704/source"
+    },
+    {
+      "variant": "response_anchor_mean",
+      "method": "cvs_response_fusion_identity",
+      "model_seed": 2026092701,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092701/source"
+    },
+    {
+      "variant": "response_anchor_mean",
+      "method": "cvs_response_fusion_identity",
+      "model_seed": 2026092702,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092702/source"
+    },
+    {
+      "variant": "response_anchor_mean",
+      "method": "cvs_response_fusion_identity",
+      "model_seed": 2026092703,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092703/source"
+    },
+    {
+      "variant": "response_anchor_mean",
+      "method": "cvs_response_fusion_identity",
+      "model_seed": 2026092704,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092704/source"
+    },
+    {
+      "variant": "relation_frequency_energy",
+      "method": "cvs_spectral_relation_identity",
+      "model_seed": 2026092701,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092701/source"
+    },
+    {
+      "variant": "relation_frequency_energy",
+      "method": "cvs_spectral_relation_identity",
+      "model_seed": 2026092702,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092702/source"
+    },
+    {
+      "variant": "relation_frequency_energy",
+      "method": "cvs_spectral_relation_identity",
+      "model_seed": 2026092703,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092703/source"
+    },
+    {
+      "variant": "relation_frequency_energy",
+      "method": "cvs_spectral_relation_identity",
+      "model_seed": 2026092704,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092704/source"
+    }
+  ],
+  "test_completion_plan": {
+    "status": "NOT_APPLICABLE_PUBLIC_DIAGNOSTIC",
+    "reason": "No new trained/classifying candidate or target access; original source run already closed through retained-control test verification"
+  },
+  "registered_at": "2026-10-03T10:05:22+00:00"
+}
