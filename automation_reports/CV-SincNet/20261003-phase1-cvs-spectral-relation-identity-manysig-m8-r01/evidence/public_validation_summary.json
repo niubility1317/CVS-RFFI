@@ -1,0 +1,58 @@
+{
+  "status": "VERIFIED",
+  "source": "public_cpu_smoke.json",
+  "summary": [
+    {
+      "variant": "relation_frequency_energy",
+      "total_parameters": 247731,
+      "new_parameters": 26744,
+      "public_updates": 12,
+      "max_ideal_per_frequency_gain_error": 2.086162567138672e-07,
+      "max_ideal_common_gain_error": 1.7881393432617188e-07,
+      "max_whole_ordinary_phase_error": 2.4437904357910156e-05,
+      "max_whole_dc_phase_error": 3.337860107421875e-06,
+      "public_cpu_batch30_forward_ms_mean": 23.51632000209065,
+      "finite_fir": [
+        {
+          "name": "delay2",
+          "relation_relative_distance_mean": 0.07432579062879086
+        },
+        {
+          "name": "delay8",
+          "relation_relative_distance_mean": 0.9720208197832108
+        },
+        {
+          "name": "delay16",
+          "relation_relative_distance_mean": 1.0641207098960876
+        }
+      ]
+    },
+    {
+      "variant": "relation_packet_energy",
+      "total_parameters": 247731,
+      "new_parameters": 26744,
+      "public_updates": 12,
+      "max_ideal_per_frequency_gain_error": 1.7635877132415771,
+      "max_ideal_common_gain_error": 7.152557373046875e-07,
+      "max_whole_ordinary_phase_error": 2.2530555725097656e-05,
+      "max_whole_dc_phase_error": 3.337860107421875e-06,
+      "public_cpu_batch30_forward_ms_mean": 24.74280999886105,
+      "finite_fir": [
+        {
+          "name": "delay2",
+          "relation_relative_distance_mean": 0.10666263848543167
+        },
+        {
+          "name": "delay8",
+          "relation_relative_distance_mean": 0.11037980765104294
+        },
+        {
+          "name": "delay16",
+          "relation_relative_distance_mean": 0.11342161521315575
+        }
+      ]
+    }
+  ],
+  "real_data_access": false,
+  "performance_result": false
+}

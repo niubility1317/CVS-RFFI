@@ -1,0 +1,15 @@
+{
+  "run_id": "20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01",
+  "status": "LOCAL_VERIFIED",
+  "live_workers": 0,
+  "launch_owner": "codex/root/cvs-spectral-relation-identity-20261003",
+  "performance_goal_achieved": false,
+  "paper_claim_established": false,
+  "latest_evidence": "evidence/local_validation.json",
+  "next": [
+    "Commit/push exact implementation and preregistration; verify remote OID",
+    "Publish once, independently verify 8worker PID/CWD/parent/GPU/config/loggrowth",
+    "During source training finish independent source collection and conditional clean compatibility without target access",
+    "Collect full E200 source artifacts, freeze16-record source ranking, then finish registered clean test or frozen control reuse"
+  ]
+}

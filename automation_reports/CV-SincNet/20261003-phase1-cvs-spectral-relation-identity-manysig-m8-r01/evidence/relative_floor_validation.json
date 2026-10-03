@@ -1,0 +1,74 @@
+{
+  "status": "VERIFIED",
+  "models": 8,
+  "public_ce_updates": 24,
+  "model_tests": {
+    "passed": 36,
+    "seconds": 5.1,
+    "chunk": "661869"
+  },
+  "source_protocol_tests": {
+    "passed": 55,
+    "seconds": 6.38,
+    "chunk": "55a2fd"
+  },
+  "distinct_tests": 91,
+  "public_smoke_chunk": "7572b2",
+  "relative_power_floor": 0.015625,
+  "summary": [
+    {
+      "variant": "relation_frequency_energy",
+      "ideal_gain_qualified_max_error": 2.384185791015625e-07,
+      "ideal_gain_excluded_count": 1,
+      "ideal_gain_common_max_error": 1.7881393432617188e-07,
+      "whole_phase_ordinary_max_error": 2.1576881408691406e-05,
+      "whole_phase_dc_max_error": 4.410743713378906e-06,
+      "finite_fir": [
+        {
+          "name": "delay2",
+          "relation_relative_distance_mean": 0.029773061629384756
+        },
+        {
+          "name": "delay8",
+          "relation_relative_distance_mean": 0.1004139631986618
+        },
+        {
+          "name": "delay16",
+          "relation_relative_distance_mean": 0.21269069239497185
+        }
+      ]
+    },
+    {
+      "variant": "relation_packet_energy",
+      "ideal_gain_qualified_max_error": 1.7635877132415771,
+      "ideal_gain_excluded_count": 1,
+      "ideal_gain_common_max_error": 7.152557373046875e-07,
+      "whole_phase_ordinary_max_error": 2.2530555725097656e-05,
+      "whole_phase_dc_max_error": 3.337860107421875e-06,
+      "finite_fir": [
+        {
+          "name": "delay2",
+          "relation_relative_distance_mean": 0.10666263848543167
+        },
+        {
+          "name": "delay8",
+          "relation_relative_distance_mean": 0.11037980765104294
+        },
+        {
+          "name": "delay16",
+          "relation_relative_distance_mean": 0.11342161521315575
+        }
+      ]
+    }
+  ],
+  "prior_result_retained": "public_cpu_smoke.json",
+  "prior_model_source": "pre_relative_floor_model.py",
+  "initial_v2_test_failure": {
+    "chunk": "bd73a9",
+    "reason": "Test incorrectly required all random spectral bins to be above relative floor. One or more bins touched the declared excluded domain.",
+    "fix": "No model or threshold change: report eligible/excluded counts and assert exact invariance only on qualified bins; whole-domain differences retained."
+  },
+  "real_data_access": false,
+  "target_access": false,
+  "performance_result": false
+}
