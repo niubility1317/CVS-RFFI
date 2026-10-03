@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求持续深入优化纯神经网络；本次仅验证机制并保存负结果，保持原训练策略，不新增query。",
   "code": {
-    "commit": "c58b9c73b2df45e94d3d00aa6218cee67452e29f",
+    "commit": "49fd6ef2e3c32c2e38ff1d558fe1cef6d67c5a77",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
@@ -129,7 +129,11 @@
     "gpu_policy": "CPU only;no remote actions",
     "local_artifact_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-history-public-m8-r01",
     "launch_command": "python -m experiments.cvs_mirror_history.run --output E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-history-public-m8-r01",
-    "stop_rule": "Technical failure preserves exclusive output; no blind rerun, no model selection or parameter update"
+    "stop_rule": "Technical failure preserves exclusive output; no blind rerun, no model selection or parameter update",
+    "pid": 48608,
+    "actual_python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+    "actual_torch": "2.10.0+cu128",
+    "device": "cpu"
   },
   "expected_artifacts": [
     "launch.json",
@@ -186,7 +190,9 @@
         "paired_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "completion_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-history-public-m8-r01\\mirror_energy-s2026092701\\completion.json",
+      "seconds": 0.4290647506713867
     },
     {
       "row_id": "mirror_subspace-s2026092701",
@@ -220,7 +226,9 @@
         "paired_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "completion_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-history-public-m8-r01\\mirror_subspace-s2026092701\\completion.json",
+      "seconds": 0.41048455238342285
     },
     {
       "row_id": "mirror_energy-s2026092702",
@@ -254,7 +262,9 @@
         "paired_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "completion_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-history-public-m8-r01\\mirror_energy-s2026092702\\completion.json",
+      "seconds": 0.420792818069458
     },
     {
       "row_id": "mirror_subspace-s2026092702",
@@ -288,7 +298,9 @@
         "paired_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "completion_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-history-public-m8-r01\\mirror_subspace-s2026092702\\completion.json",
+      "seconds": 0.41228795051574707
     },
     {
       "row_id": "mirror_energy-s2026092703",
@@ -322,7 +334,9 @@
         "paired_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "completion_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-history-public-m8-r01\\mirror_energy-s2026092703\\completion.json",
+      "seconds": 0.41226887702941895
     },
     {
       "row_id": "mirror_subspace-s2026092703",
@@ -356,7 +370,9 @@
         "paired_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "completion_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-history-public-m8-r01\\mirror_subspace-s2026092703\\completion.json",
+      "seconds": 0.4066791534423828
     },
     {
       "row_id": "mirror_energy-s2026092704",
@@ -390,7 +406,9 @@
         "paired_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "completion_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-history-public-m8-r01\\mirror_energy-s2026092704\\completion.json",
+      "seconds": 0.43054652214050293
     },
     {
       "row_id": "mirror_subspace-s2026092704",
@@ -424,7 +442,9 @@
         "paired_arrays.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "completion_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-history-public-m8-r01\\mirror_subspace-s2026092704\\completion.json",
+      "seconds": 0.41338562965393066
     }
   ],
   "notes": [
@@ -433,7 +453,7 @@
     "No labels/receiver/identity inference;no new augmentation/training strategy. Absolute deviations and signed cross term prevent misleading ratio-of-norms attribution.",
     "Models are all8 original E200 weights. Full-model embedding is FP32 only;FP64 changes branch arithmetic only."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "source_controls": [
     {
       "variant": "neural_residual_shallow",
@@ -512,5 +532,13 @@
     "status": "NOT_APPLICABLE_PUBLIC_DIAGNOSTIC",
     "reason": "No new trained model. All8 existing checkpoints already included in complete clean backfill; no target reuse for this mechanism analysis"
   },
-  "registered_at": "2026-10-03T11:27:41+00:00"
+  "registered_at": "2026-10-03T11:27:41+00:00",
+  "outcome": {
+    "status": "VERIFIED",
+    "public_cases": 1440,
+    "target_access": false,
+    "model_updates": 0,
+    "performance_goal_achieved": false,
+    "paper_claim_established": false
+  }
 }

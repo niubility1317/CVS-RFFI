@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T11:35:59+00:00
+更新：2026-10-03T11:38:50+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -237,7 +237,7 @@
 |CVS 复数Volterra延迟相位记忆：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|
 |CVS补偿与顺序差：完整源V冻结归因|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/report.md)|
 |CVS全主干前置滤波：固定权重源域反事实|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/report.md)|
-|镜像关系：连续前历史与零启动的配对FIR验证|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-history-public-m8-r01/report.md)|
+|连续前历史与零启动：公开FIR机制验证|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-history-public-m8-r01/report.md)|
 |CVS镜像关系：冻结公开信号机制分解|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/report.md)|
 |CVS镜像关系：冻结公开信号机制分解|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02/report.md)|
 |CVS读出：完整源V分支归因与TX/RX/日期关联|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/report.md)|
