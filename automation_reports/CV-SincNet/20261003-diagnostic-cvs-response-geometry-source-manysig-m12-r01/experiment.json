@@ -1,0 +1,561 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01",
+  "group_id": "cvs-response-frozen-source-geometry",
+  "display_name": "CVS补偿响应：完整源V判别几何与RX/day描述",
+  "description": "解释已激活响应支路为何分类收益较小；完整源V特征方向、分类间隔、CE及嵌套标签散度；零拟合或目标访问。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-V-frozen-attribution",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "source_only",
+    "diagnostic",
+    "response_geometry",
+    "no_training"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [
+    "20261003-phase1-cvs-channel-response-identity-manysig-m12-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权继续优化纯神经网络架构并深入分析；原单CE训练不变，本诊断仅补充冻结源机制证据。",
+  "code": {
+    "commit": "PENDING_LOCAL_GIT_COMMIT",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01",
+    "architecture_base_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+    "commit_scope": "Diagnostic release commit recorded after submission; model code imported from fixed original source release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center256; unit packet RMS; fs=25000000Hz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "each row source_output/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "ManySig.tx_list: all6; actual physical class strings exported at runtime",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "NONE; source V only",
+    "external_method_exception": null,
+    "claim_scope": "Within-checkpoint frozen source V mechanism; no training, target, source reselection or generalization claim",
+    "target_access": false,
+    "training": false
+  },
+  "checkpoint": {
+    "initialization": "load_verified_source_scratch_E200_frozen_only",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092704/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092704/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092704/source/last.pt"
+    ],
+    "provenance_verdict": "Before strict load, require complete source metadata and E200 payload/physical contract; no inherited training state",
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "selection_rule": "Fixed original E200 per registered seed; no checkpoint selection or inheritance for training",
+    "mode": "frozen_source_diagnostic_only"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/response-source-geometry-20261003",
+    "gpu_policy": "Available capacity only;at most two total training jobs/GPU;>=12GB free;no healthy task interference",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01",
+    "launch_command": "python -m experiments.cvs_response_geometry.publish --output local_artifacts/cvs_response_geometry_source_20261003_r01/delivery",
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "completion.json",
+    "source_geometry.npz",
+    "geometry_analysis.json",
+    "per_seed_geometry.csv",
+    "report.md"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_V_accuracy",
+      "source_V_CE",
+      "true_class_margin",
+      "base_response_cosine",
+      "parallel_energy",
+      "classifier_span_energy",
+      "nested_source_TX_RX_day_scatter",
+      "seconds",
+      "peak_cuda_allocated_bytes"
+    ],
+    "dimensions": [
+      "architecture",
+      "model_seed",
+      "source_receiver",
+      "source_day",
+      "source_tx",
+      "correctness_partition"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01",
+    "scorer_ref": "N/A: source-only release does not score target",
+    "primary": "Full sourceV representation geometry and paired classification confidence, independently recomputed from saved frozen features/head/logits",
+    "later_test": "N/A: source-only frozen diagnostic; no new trainable model. Main source experiment independently completes its pre-registered conditional clean test."
+  },
+  "rows": [
+    {
+      "row_id": "response_mean-s2026092701",
+      "method": "response_mean",
+      "purpose": "frozen_full_source_V_geometry",
+      "gpu": null,
+      "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_mean-s2026092701",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One complete27000V pass;2 classifier conditions;frozen feature capture;zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092701.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "response_mean-s2026092702",
+      "method": "response_mean",
+      "purpose": "frozen_full_source_V_geometry",
+      "gpu": null,
+      "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_mean-s2026092702",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One complete27000V pass;2 classifier conditions;frozen feature capture;zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092702.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "response_mean-s2026092703",
+      "method": "response_mean",
+      "purpose": "frozen_full_source_V_geometry",
+      "gpu": null,
+      "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_mean-s2026092703",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One complete27000V pass;2 classifier conditions;frozen feature capture;zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092703.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "response_mean-s2026092704",
+      "method": "response_mean",
+      "purpose": "frozen_full_source_V_geometry",
+      "gpu": null,
+      "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_mean-s2026092704",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One complete27000V pass;2 classifier conditions;frozen feature capture;zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092704.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "response_attention-s2026092701",
+      "method": "response_attention",
+      "purpose": "frozen_full_source_V_geometry",
+      "gpu": null,
+      "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_attention-s2026092701",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One complete27000V pass;2 classifier conditions;frozen feature capture;zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092701.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "response_attention-s2026092702",
+      "method": "response_attention",
+      "purpose": "frozen_full_source_V_geometry",
+      "gpu": null,
+      "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_attention-s2026092702",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One complete27000V pass;2 classifier conditions;frozen feature capture;zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092702.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "response_attention-s2026092703",
+      "method": "response_attention",
+      "purpose": "frozen_full_source_V_geometry",
+      "gpu": null,
+      "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_attention-s2026092703",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One complete27000V pass;2 classifier conditions;frozen feature capture;zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092703.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "response_attention-s2026092704",
+      "method": "response_attention",
+      "purpose": "frozen_full_source_V_geometry",
+      "gpu": null,
+      "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_attention-s2026092704",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One complete27000V pass;2 classifier conditions;frozen feature capture;zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092704.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "response_order_attention-s2026092701",
+      "method": "response_order_attention",
+      "purpose": "frozen_full_source_V_geometry",
+      "gpu": null,
+      "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_order_attention-s2026092701",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One complete27000V pass;2 classifier conditions;frozen feature capture;zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092701.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "response_order_attention-s2026092702",
+      "method": "response_order_attention",
+      "purpose": "frozen_full_source_V_geometry",
+      "gpu": null,
+      "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_order_attention-s2026092702",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One complete27000V pass;2 classifier conditions;frozen feature capture;zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092702.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "response_order_attention-s2026092703",
+      "method": "response_order_attention",
+      "purpose": "frozen_full_source_V_geometry",
+      "gpu": null,
+      "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_order_attention-s2026092703",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One complete27000V pass;2 classifier conditions;frozen feature capture;zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092703.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "response_order_attention-s2026092704",
+      "method": "response_order_attention",
+      "purpose": "frozen_full_source_V_geometry",
+      "gpu": null,
+      "config_ref": "experiments/cvs_response_geometry/launch_spec.json#response_order_attention-s2026092704",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One complete27000V pass;2 classifier conditions;frozen feature capture;zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_geometry_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092704.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_geometry.npz"
+      ]
+    }
+  ],
+  "notes": [
+    "12 frozen E200 models;24 conditions;648000 classification decisions on same27000 sourceV",
+    "Record raw main/response features,8 compensation coefficients,head weights and two actual logit vectors per source packet",
+    "Independent artifact calculation of angles,margins,CE and nested TX->TX/RX/day->within-cell scatter;descriptive,not mutual information or causal factors",
+    "Confirm physical sourceV and exact prior paired predictions;no optimizer,source reselection,normalization fit or new classifier fit",
+    "All raw features remain diagnostic artifacts and are not new-model training inputs;no target access;all prior artifacts preserved"
+  ],
+  "status": "PLANNED",
+  "test_completion_plan": {
+    "status": "NOT_APPLICABLE_SOURCE_DIAGNOSTIC",
+    "reason": "No new trainable candidate or target access; main source run follows its unchanged conditional clean plan"
+  },
+  "registered_at": "2026-10-03T02:16:03+00:00"
+}

@@ -1,0 +1,176 @@
+{
+  "run_id": "20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01",
+  "launch_owner": "codex/root/response-source-geometry-20261003",
+  "runtime_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01",
+  "log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01",
+  "rows": [
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+      "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092701/source",
+      "variant": "response_mean",
+      "model_seed": 2026092701,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092701",
+      "conditions": [
+        "all_on",
+        "auxiliary_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/response-source-geometry-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+      "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092702/source",
+      "variant": "response_mean",
+      "model_seed": 2026092702,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092702",
+      "conditions": [
+        "all_on",
+        "auxiliary_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/response-source-geometry-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+      "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092703/source",
+      "variant": "response_mean",
+      "model_seed": 2026092703,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092703",
+      "conditions": [
+        "all_on",
+        "auxiliary_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/response-source-geometry-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+      "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092704/source",
+      "variant": "response_mean",
+      "model_seed": 2026092704,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_mean-s2026092704",
+      "conditions": [
+        "all_on",
+        "auxiliary_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/response-source-geometry-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+      "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092701/source",
+      "variant": "response_attention",
+      "model_seed": 2026092701,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092701",
+      "conditions": [
+        "all_on",
+        "auxiliary_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/response-source-geometry-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+      "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092702/source",
+      "variant": "response_attention",
+      "model_seed": 2026092702,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092702",
+      "conditions": [
+        "all_on",
+        "auxiliary_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/response-source-geometry-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+      "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092703/source",
+      "variant": "response_attention",
+      "model_seed": 2026092703,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092703",
+      "conditions": [
+        "all_on",
+        "auxiliary_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/response-source-geometry-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+      "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092704/source",
+      "variant": "response_attention",
+      "model_seed": 2026092704,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_attention-s2026092704",
+      "conditions": [
+        "all_on",
+        "auxiliary_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/response-source-geometry-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+      "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092701/source",
+      "variant": "response_order_attention",
+      "model_seed": 2026092701,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092701",
+      "conditions": [
+        "all_on",
+        "auxiliary_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/response-source-geometry-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+      "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092702/source",
+      "variant": "response_order_attention",
+      "model_seed": 2026092702,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092702",
+      "conditions": [
+        "all_on",
+        "auxiliary_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/response-source-geometry-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+      "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092703/source",
+      "variant": "response_order_attention",
+      "model_seed": 2026092703,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092703",
+      "conditions": [
+        "all_on",
+        "auxiliary_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/response-source-geometry-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+      "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092704/source",
+      "variant": "response_order_attention",
+      "model_seed": 2026092704,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/response_order_attention-s2026092704",
+      "conditions": [
+        "all_on",
+        "auxiliary_off"
+      ],
+      "role": "V",
+      "launch_owner": "codex/root/response-source-geometry-20261003"
+    }
+  ]
+}

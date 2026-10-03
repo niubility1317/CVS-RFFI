@@ -1,0 +1,15 @@
+{
+  "status": "VERIFIED",
+  "tests": 8,
+  "command": "python -X utf8 -m pytest tests/test_cvs_response_geometry.py -q",
+  "scope": [
+    "full frozen forward and feature capture",
+    "parallel response invariance after L2",
+    "nested scatter exact reconciliation",
+    "saved logits corruption rejection",
+    "zero response without NaN",
+    "fixed12rows24conditions",
+    "embedded scripts compilation"
+  ],
+  "target_access": false
+}

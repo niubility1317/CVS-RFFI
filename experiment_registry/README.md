@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T02:03:14+00:00
+更新：2026-10-03T02:16:03+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|79|
+|managed_run|80|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,7 +20,7 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|62|
+|[cvs](by_method/cvs.md)|63|
 |[ce_only](by_method/ce_only.md)|48|
 |[clean_only](by_method/clean_only.md)|47|
 |[performance_priority](by_method/performance_priority.md)|41|
@@ -29,17 +29,17 @@
 |[rff_physics](by_method/rff_physics.md)|20|
 |[source_selected](by_method/source_selected.md)|16|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|15|
+|[source_only](by_method/source_only.md)|12|
 |[daot](by_method/daot.md)|11|
-|[source_only](by_method/source_only.md)|11|
 |[rc4](by_method/rc4.md)|10|
 |[practical](by_method/practical.md)|8|
 |[residual_noeq](by_method/residual_noeq.md)|8|
 |[concat](by_method/concat.md)|7|
 |[residual](by_method/residual.md)|7|
+|[diagnostic](by_method/diagnostic.md)|7|
 |[phase1](by_method/phase1.md)|6|
 |[fasttrust](by_method/fasttrust.md)|6|
 |[truth_last](by_method/truth_last.md)|6|
-|[diagnostic](by_method/diagnostic.md)|6|
 |[lightweight](by_method/lightweight.md)|6|
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
@@ -54,6 +54,7 @@
 |[frozen_weights](by_method/frozen_weights.md)|3|
 |[packet_synchronization](by_method/packet_synchronization.md)|3|
 |[fixed_parameter_budget](by_method/fixed_parameter_budget.md)|3|
+|[no_training](by_method/no_training.md)|3|
 |[response](by_method/response.md)|3|
 |[core90](by_method/core90.md)|3|
 |[evaluation](by_method/evaluation.md)|2|
@@ -75,7 +76,6 @@
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
 |[benchmark_informed](by_method/benchmark_informed.md)|2|
-|[no_training](by_method/no_training.md)|2|
 |[packet_compensation](by_method/packet_compensation.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[adv3b02](by_method/adv3b02.md)|1|
@@ -125,6 +125,7 @@
 |[user_fixed_architecture](by_method/user_fixed_architecture.md)|1|
 |[channel_attribution](by_method/channel_attribution.md)|1|
 |[response_attribution](by_method/response_attribution.md)|1|
+|[response_geometry](by_method/response_geometry.md)|1|
 |[channel_order](by_method/channel_order.md)|1|
 |[response_order](by_method/response_order.md)|1|
 |[neural_readout](by_method/neural_readout.md)|1|
@@ -206,6 +207,7 @@
 |CVS 复数Volterra延迟相位记忆：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|
 |CVS补偿与顺序差：完整源V冻结归因|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/report.md)|
 |CVS显式补偿响应：完整源V冻结归因|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)|
+|CVS补偿响应：完整源V判别几何与RX/day描述|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|
 |CVS 信道与非线性运算次序：独立 clean 结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/report.md)|
 |CVS信道补偿与顺序差值：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md)|
 |CVS显式补偿响应：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/report.md)|
