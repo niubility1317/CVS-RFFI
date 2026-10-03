@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "model_tests": 15,
+  "source_protocol_tests": 102,
+  "synthetic_smoke_rows": 8,
+  "formal_data_access": false,
+  "target_access": false,
+  "independent_review": "PASS",
+  "commands": [
+    "python -m pytest tests/test_cvs_crosspath_relation_identity.py -q",
+    "python -m pytest tests/test_cvs_crosspath_relation_source_protocol.py -q",
+    "python -m experiments.cvs_crosspath_relation_identity.cpu_smoke --output local_artifacts/cvs_crosspath_relation_identity_20261003_model_cpu_smoke_r01.json"
+  ],
+  "total_tests": 117,
+  "independent_reviewer": "/root/source_architecture_audit",
+  "review_scope": "Model, actual source matrix, source permissions/selection, publication closure; conditional clean implementation excluded",
+  "checked_release_files": 832,
+  "checked_local_import_dependencies": 59,
+  "compiled_remote_templates": 4
+}

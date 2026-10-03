@@ -1,0 +1,12 @@
+{
+  "run_id": "20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01",
+  "status": "LOCAL_VERIFIED",
+  "live_workers": 0,
+  "launch_owner": "codex/root/cvs-crosspath-relation-identity-20261003",
+  "performance_goal_achieved": false,
+  "next": [
+    "Commit/push and independently compare remote OID",
+    "Publish once; independently verify live PID/CWD/argv/config/GPU/logs",
+    "Collect all source artifacts and fixed source selection; complete conditional clean test"
+  ]
+}

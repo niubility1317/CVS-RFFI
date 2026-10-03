@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T04:54:09+00:00
+更新：2026-10-03T05:21:13+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|83|
+|managed_run|84|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,17 +21,17 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|228|
+|[cvs](by_method/cvs.md)|229|
 |[adv3b02](by_method/adv3b02.md)|146|
 |[phase2](by_method/phase2.md)|118|
 |[phase1](by_method/phase1.md)|112|
 |[stage2](by_method/stage2.md)|67|
 |[qknn](by_method/qknn.md)|56|
-|[ce_only](by_method/ce_only.md)|50|
-|[clean_only](by_method/clean_only.md)|49|
-|[performance_priority](by_method/performance_priority.md)|43|
-|[no_augmentation](by_method/no_augmentation.md)|36|
-|[source_selection](by_method/source_selection.md)|31|
+|[ce_only](by_method/ce_only.md)|51|
+|[clean_only](by_method/clean_only.md)|50|
+|[performance_priority](by_method/performance_priority.md)|44|
+|[no_augmentation](by_method/no_augmentation.md)|37|
+|[source_selection](by_method/source_selection.md)|32|
 |[fasttrust](by_method/fasttrust.md)|26|
 |[source](by_method/source.md)|23|
 |[rff_physics](by_method/rff_physics.md)|20|
@@ -145,6 +145,7 @@
 |[response_geometry](by_method/response_geometry.md)|1|
 |[channel_order](by_method/channel_order.md)|1|
 |[response_order](by_method/response_order.md)|1|
+|[crosspath_relation](by_method/crosspath_relation.md)|1|
 |[neural_readout](by_method/neural_readout.md)|1|
 |[context_attention](by_method/context_attention.md)|1|
 |[response_fusion](by_method/response_fusion.md)|1|
@@ -232,6 +233,7 @@
 |CVS 信道与非线性运算次序：独立 clean 结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/report.md)|
 |CVS信道补偿与顺序差值：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md)|
 |CVS显式补偿响应：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/report.md)|
+|CVS跨通路复相关：匹配源训练与条件clean测试|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/report.md)|
 |CVS可学习注意力读出：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)|
 |CVS 约束响应融合：独立 clean 结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md)|
 |CVS约束响应融合：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)|
@@ -274,4 +276,3 @@
 |cvs_coupled_clean_eval_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_coupled_clean_eval_20261002_r01)|
 |cvs_coupled_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_coupled_identity_20261002_r01)|
 |因果包络耦合：同参数射频记忆原型|legacy_evidence_group|[打开](../docs/CVS_COUPLED_ENVELOPE_HYPOTHESIS_20261002.md)|
-|cvs_crossphase_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_crossphase_identity_20261002_r01)|
