@@ -49,4 +49,4 @@ G系数出口零初始化；值编码与投影保持非零随机初始化。新�
 
 实际矩阵登记、source/clean运行链、checkpoint契约支持和一次独立P0/P1审查已完成。执行提交`83727fa93c090e6daa2b21bd8dd058cfe28b51d1`，详细运行证据见[实验报告](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/report.md)。实验发布后默认完成冻结和独立测试；本轮保持clean-only，不追加LEO、目标适应或新类。
 
-[模型](../experiments/cvs_channel_response_identity/model.py) · [原训练流程入口](../experiments/cvs_channel_response_identity/source.py) · [聚焦验证](../tests/test_cvs_channel_response_identity.py)。
+[模型](../experiments/cvs_channel_response_identity/model.py) · [原训练流程入口](../experiments/cvs_channel_response_identity/source.py) · [聚焦验证](../tests/test_cvs_channel_response_identity.py) · [相关工作、创新边界与论文证据缺口](CVS_CHANNEL_RESPONSE_NOVELTY_20261003.md)。
