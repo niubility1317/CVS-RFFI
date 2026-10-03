@@ -1,0 +1,144 @@
+{
+  "status": "VERIFIED_LIVE_WAIT",
+  "source_run": "20261003-phase1-cvs-validdual-identity-manysig-m8-r01",
+  "dispatcher_pid": 2508597,
+  "read_at": 1791029587.8351023,
+  "processes": [
+    {
+      "row_id": "validdual_static-s2026092701",
+      "gpu": 0,
+      "pid": 2508638,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_validdual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01/experiments/cvs_validdual_identity/configs/validdual_static-s2026092701.json",
+        ""
+      ],
+      "epoch": 117,
+      "log_bytes": 262530
+    },
+    {
+      "row_id": "validdual_dynamic-s2026092701",
+      "gpu": 1,
+      "pid": 2508719,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_validdual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01/experiments/cvs_validdual_identity/configs/validdual_dynamic-s2026092701.json",
+        ""
+      ],
+      "epoch": 103,
+      "log_bytes": 235052
+    },
+    {
+      "row_id": "validdual_static-s2026092702",
+      "gpu": 2,
+      "pid": 2508798,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_validdual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01/experiments/cvs_validdual_identity/configs/validdual_static-s2026092702.json",
+        ""
+      ],
+      "epoch": 116,
+      "log_bytes": 260766
+    },
+    {
+      "row_id": "validdual_dynamic-s2026092702",
+      "gpu": 3,
+      "pid": 2508877,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_validdual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01/experiments/cvs_validdual_identity/configs/validdual_dynamic-s2026092702.json",
+        ""
+      ],
+      "epoch": 101,
+      "log_bytes": 230743
+    },
+    {
+      "row_id": "validdual_static-s2026092703",
+      "gpu": 4,
+      "pid": 2508956,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_validdual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01/experiments/cvs_validdual_identity/configs/validdual_static-s2026092703.json",
+        ""
+      ],
+      "epoch": 114,
+      "log_bytes": 256302
+    },
+    {
+      "row_id": "validdual_dynamic-s2026092703",
+      "gpu": 5,
+      "pid": 2509091,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_validdual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01/experiments/cvs_validdual_identity/configs/validdual_dynamic-s2026092703.json",
+        ""
+      ],
+      "epoch": 98,
+      "log_bytes": 224168
+    },
+    {
+      "row_id": "validdual_static-s2026092704",
+      "gpu": 6,
+      "pid": 2509168,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_validdual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01/experiments/cvs_validdual_identity/configs/validdual_static-s2026092704.json",
+        ""
+      ],
+      "epoch": 113,
+      "log_bytes": 253966
+    },
+    {
+      "row_id": "validdual_dynamic-s2026092704",
+      "gpu": 7,
+      "pid": 2509249,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_validdual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01/experiments/cvs_validdual_identity/configs/validdual_dynamic-s2026092704.json",
+        ""
+      ],
+      "epoch": 100,
+      "log_bytes": 228239
+    }
+  ]
+}

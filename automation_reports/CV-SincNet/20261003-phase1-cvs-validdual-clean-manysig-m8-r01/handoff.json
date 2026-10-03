@@ -5,10 +5,18 @@
   "source_run": "20261003-phase1-cvs-validdual-identity-manysig-m8-r01",
   "source_commit": "91ade405e1cec130805289ea2517c1b3ab659a02",
   "next": [
-    "Commit/push clean release;wait existing source8rows to E200 and frozen_source_matrix",
-    "Publish once;real8checkpoint noquery smoke;automatic predict-score-recount",
-    "Collect completed test and full training logs;report all results;Git delivery"
+    "Inspect existing source dispatcher and all8 original processes;no relaunch",
+    "When all8 E200 completed and frozen_source_matrix exists, publish clean exactly once",
+    "Clean command: python -m experiments.cvs_validdual_clean.publish --output local_artifacts/cvs_validdual_clean_20261003_r01",
+    "Inspect clean until scorer and independent recount complete;collect via experiments.cvs_validdual_clean.collect --output local_artifacts/cvs_validdual_clean_20261003_r01/completed",
+    "Report all8test results plus original fixed comparators;full training logs and resource cost;mirror/Git"
   ],
   "performance_goal_achieved": false,
-  "paper_claim_established": false
+  "paper_claim_established": false,
+  "implementation_commit": "c743a4e21ee6aad6e8ca8b21b7c51cc2cde7950f",
+  "upstream_epoch_range": [
+    98,
+    117
+  ],
+  "source_dispatcher_pid": 2508597
 }

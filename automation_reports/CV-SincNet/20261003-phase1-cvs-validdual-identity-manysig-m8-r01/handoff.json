@@ -14,11 +14,21 @@
   },
   "inspect_command": "python -m experiments.cvs_validdual_identity.publish --inspect --output local_artifacts/cvs_validdual_identity_20261003_r01/continuation_01",
   "next": [
-    "Reconcile existing live source dispatcher; never relaunch healthy8row run",
-    "Implement separate fixed all8 clean predictor/scorer with strict source contract and independent review",
-    "After all8 E200 freeze perform clean test168000sameIDs per row;truth-last and independent recount",
-    "Full test report and Git delivery; no target-feedback tuning"
+    "Source8originalrows healthy;continue read-only wait forE200",
+    "Clean implementation and review complete at 20261003-phase1-cvs-validdual-clean-manysig-m8-r01",
+    "After all8freeze publish preparedclean once;see testhandoff"
   ],
   "performance_goal_achieved": false,
-  "paper_claim_established": false
+  "paper_claim_established": false,
+  "registered_test_run": "20261003-phase1-cvs-validdual-clean-manysig-m8-r01",
+  "latest_source_epochs": {
+    "validdual_static-s2026092701": 117,
+    "validdual_dynamic-s2026092701": 103,
+    "validdual_static-s2026092702": 116,
+    "validdual_dynamic-s2026092702": 101,
+    "validdual_static-s2026092703": 114,
+    "validdual_dynamic-s2026092703": 98,
+    "validdual_static-s2026092704": 113,
+    "validdual_dynamic-s2026092704": 100
+  }
 }
