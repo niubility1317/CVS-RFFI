@@ -54,3 +54,11 @@
 [可执行公共反例](../experiments/cvs_neural_readout_identity/information.py)及[数值证据](../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/evidence/readout_information_counterexample.json)表明两类合法输入在原读出上碰撞、在一个合法复混合读出下可区分；没有拟合真实数据或修改正式初始化。是否学到有用区别仍由正式训练决定。
 
 恢复执行状态：8份真实源训练已启动并独立核验，执行提交`6ca7a522bb4be34993f442129870e68cec61bbc7`。已有模型和训练配置不再修改；完成后按16条源记录冻结，只有新赢家才进入条件48行clean测试。
+
+## 本轮执行完成
+
+本轮8份E200训练与80000步日志审计完成，固定源规则保留既有Anchor。普通注意力和复数混合注意力的源分数为96.6903%和96.4481%，分别比同主干shallow低0.4315±0.4004和0.6736±0.2254个百分点，二者均为0/4个seed胜出。配对SD仅描述同一数据划分下的模型seed变化，不是置信区间。
+
+训练CE从shallow的0.000711降至0.000531和0.000366，而源V CE从0.086423升至0.094599和0.108483。结合较低源准确率，这与新增容量产生过拟合的解释一致；不能把原因直接归为信道或接收机捷径。两种读出的最后训练batch分支输出相对原skip约0.42至0.63，全部训练轮都有梯度遥测，说明新增分支确实参与优化；这些数据不能证明全源归因、head多样性、TX特异性或信道鲁棒性。
+
+[完整源报告](../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)。控制保留后复用其已完成clean证据；未激活条件48行测试。性能与论文目标仍未达成。

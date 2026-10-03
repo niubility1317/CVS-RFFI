@@ -1,0 +1,134 @@
+{
+  "status": "VERIFIED",
+  "models": 8,
+  "source_epochs": 1600,
+  "control_epochs": 1600,
+  "selection": {
+    "status": "SOURCE_SELECTION_FROZEN",
+    "selected_variant": "response_anchor_mean",
+    "source_summaries": {
+      "neural_residual_shallow": {
+        "score": 0.9712175925925925,
+        "source_accuracy": 0.9844259259259259,
+        "worst_rx_accuracy": 0.9580092592592593,
+        "parameters": 220987,
+        "conv_linear_macs": 9460000
+      },
+      "response_anchor_mean": {
+        "score": 0.9713148148148147,
+        "source_accuracy": 0.9844351851851851,
+        "worst_rx_accuracy": 0.9581944444444445,
+        "parameters": 237147,
+        "conv_linear_macs": 11205232
+      },
+      "readout_attention": {
+        "score": 0.9669027777777779,
+        "source_accuracy": 0.9820462962962964,
+        "worst_rx_accuracy": 0.9517592592592593,
+        "parameters": 306147,
+        "conv_linear_macs": 9746720
+      },
+      "readout_complex_attention": {
+        "score": 0.9644814814814815,
+        "source_accuracy": 0.9797962962962963,
+        "worst_rx_accuracy": 0.9491666666666667,
+        "parameters": 310243,
+        "conv_linear_macs": 10271008
+      }
+    },
+    "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+    "selection_policy": "performance_first_neural_readout_with_current_source_winner_20261003",
+    "candidate_universe": [
+      "neural_residual_shallow",
+      "response_anchor_mean",
+      "readout_attention",
+      "readout_complex_attention"
+    ],
+    "new_candidate_selected": false,
+    "exact_cost_tie_order": [
+      "neural_residual_shallow",
+      "response_anchor_mean",
+      "readout_attention",
+      "readout_complex_attention"
+    ],
+    "target_access": false,
+    "target_score_used": false,
+    "test_view": "clean"
+  },
+  "summary": [
+    {
+      "variant": "neural_residual_shallow",
+      "V": 0.9844259259259259,
+      "worst_RX": 0.9580092592592593,
+      "score": 0.9712175925925925,
+      "paired_score_pp": 0.0,
+      "paired_score_SD": 0.0,
+      "positive_seeds": 0,
+      "parameters": 220987,
+      "inference_ms": 9.897062799791456,
+      "training_ms": 51.4825539496087
+    },
+    {
+      "variant": "response_anchor_mean",
+      "V": 0.9844351851851851,
+      "worst_RX": 0.9581944444444445,
+      "score": 0.9713148148148147,
+      "paired_score_pp": 0.009722222222222077,
+      "paired_score_SD": 0.02344257203920715,
+      "positive_seeds": 2,
+      "parameters": 237147,
+      "inference_ms": 12.86628827547247,
+      "training_ms": 58.72958109976025
+    },
+    {
+      "variant": "readout_attention",
+      "V": 0.9820462962962964,
+      "worst_RX": 0.9517592592592593,
+      "score": 0.9669027777777779,
+      "paired_score_pp": -0.43148148148147436,
+      "paired_score_SD": 0.400431294687329,
+      "positive_seeds": 0,
+      "parameters": 306147,
+      "inference_ms": 10.65907651282032,
+      "training_ms": 54.487700500612846
+    },
+    {
+      "variant": "readout_complex_attention",
+      "V": 0.9797962962962963,
+      "worst_RX": 0.9491666666666667,
+      "score": 0.9644814814814815,
+      "paired_score_pp": -0.6736111111111109,
+      "paired_score_SD": 0.22542636025040746,
+      "positive_seeds": 0,
+      "parameters": 310243,
+      "inference_ms": 11.280445224110736,
+      "training_ms": 55.379274598817574
+    }
+  ],
+  "readout_output_records": 3200,
+  "target_results_read": false,
+  "learning_analysis_scope": {
+    "selection_epoch": 200,
+    "descriptive_windows": [
+      [
+        151,
+        175
+      ],
+      [
+        176,
+        200
+      ]
+    ],
+    "train_CE": "Unweighted mean of 50 training-batch mean CEs: 49 batches of 128 and one of 28; train mode.",
+    "V_CE": "Sample mean over all 27000 source-validation samples; eval mode.",
+    "CE_gap": "V_CE minus train_CE within each seed; different data, averaging and modes; not an error-rate gap.",
+    "aggregation": "Four model seeds, arithmetic mean and sample SD (ddof=1); shared data, not four independent datasets.",
+    "gradient": "All 200 epoch means of 50 measured step norms; time and behavior readout parameters combined. No raw-step extrema or per-branch gradients available in this artifact.",
+    "outputs": "E200 last training batch of 28 packets; not full-source or channel-causal evidence.",
+    "attention": "Entropy/effective tokens describe within-head temporal distributions across 64 positions. Head similarity/diversity and channel disentanglement were not measured.",
+    "target_results_read": false,
+    "epoch_reselection": false
+  },
+  "readout_gradient_epoch_records": 1600,
+  "readout_last_epoch_records": 16
+}

@@ -1,24 +1,25 @@
 {
   "run_id": "20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01",
-  "status": "RUNNING",
-  "launch_owner": "codex/root/cvs-neural-readout-identity-20261003",
-  "live_workers": 8,
-  "code_commit": "6ca7a522bb4be34993f442129870e68cec61bbc7",
-  "dispatcher_pid": 2241753,
+  "status": "ANALYZED",
+  "task_scope_complete": true,
   "performance_goal_achieved": false,
-  "paper_goal_achieved": false,
+  "paper_claim_established": false,
+  "live_workers": 0,
+  "source_code_commit": "6ca7a522bb4be34993f442129870e68cec61bbc7",
+  "analysis_code_commit": "783c274f9325005e58cab1c8a1c17dff71e65b2f",
+  "selected_variant": "response_anchor_mean",
+  "source_run": "20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01",
+  "reused_clean_run": "20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01",
   "evidence": [
-    "evidence/launch_readback.json",
-    "evidence/launch_processes.json"
+    "evidence/source_terminal_readback.json",
+    "evidence/source_completion_validation.json",
+    "evidence/source_learning_analysis.json",
+    "evidence/retained_control_test_verification.json",
+    "evidence/completion_verdict.json"
   ],
   "next": [
-    "Read-only monitor; no resubmit/hot modification",
-    "Audit all80000steps; independently freeze16source records",
-    "Only newwinner: prepare/register/Git/publish48row clean; controlretained:reuse its completed frozen test",
-    "Report all results and scientific limits; target scores cannot inform further architecture"
-  ],
-  "monitor_command": "python E:/type10-7/.codex_tmp/readout_monitor.py --name progress",
-  "collect_command": "python -m experiments.cvs_neural_readout_identity.collect --root . --output local_artifacts/cvs_neural_readout_identity_20261003_r01/complete",
-  "source_analyze_command": "python -m experiments.cvs_neural_readout_identity.analyze --root .",
-  "clean_prepare_command": "python -m experiments.cvs_neural_readout_clean.prepare --selection automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/evidence/source_selection.json"
+    "Preserve all eight negative source candidates; do not start their conditional clean run",
+    "Architecture/paper goal remains open; use only source evidence for subsequent design",
+    "Lower training CE with worse source validation is consistent with overfitting; channel/receiver shortcut cause remains unmeasured"
+  ]
 }

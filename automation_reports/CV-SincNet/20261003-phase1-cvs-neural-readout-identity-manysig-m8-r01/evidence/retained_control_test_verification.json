@@ -1,0 +1,44 @@
+{
+  "status": "VERIFIED",
+  "verified_at": "2026-10-03T04:24:44.028012+00:00",
+  "source_winner": "response_anchor_mean",
+  "source_freeze": "source_selection.json",
+  "completed_clean_run": "20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01",
+  "new_predictions": 0,
+  "new_scoring": 0,
+  "all352_scores_exactly_unchanged": true,
+  "all44_provenance_config_completion_records_unchanged": true,
+  "same_four_selected_source_checkpoints": true,
+  "retained_rows": [
+    {
+      "model_seed": 2026092701,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092701/source",
+      "prediction_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/response_anchor_mean-s2026092701/prediction",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092701/source/last.pt"
+    },
+    {
+      "model_seed": 2026092702,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092702/source",
+      "prediction_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/response_anchor_mean-s2026092702/prediction",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092702/source/last.pt"
+    },
+    {
+      "model_seed": 2026092703,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092703/source",
+      "prediction_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/response_anchor_mean-s2026092703/prediction",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092703/source/last.pt"
+    },
+    {
+      "model_seed": 2026092704,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092704/source",
+      "prediction_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/response_anchor_mean-s2026092704/prediction",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092704/source/last.pt"
+    }
+  ],
+  "clean_accuracy": 0.6991294642857143,
+  "clean_seed_sd": 0.012142241829064652,
+  "original_validation_ref": "../20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/evidence/analysis_validation.json",
+  "original_report_ref": "../20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md",
+  "target_feedback": false,
+  "note": "Existing benchmark evidence reused after fixed source selection; not a new independent test."
+}

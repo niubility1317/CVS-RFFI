@@ -102,7 +102,9 @@
     "launch_command": "python -m experiments.cvs_neural_readout_identity.publish --output local_artifacts/cvs_neural_readout_identity_20261003_r01",
     "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
     "dispatcher_pid": 2241753,
-    "launch_verified_at": "2026-10-03T03:53:20.582698+00:00"
+    "launch_verified_at": "2026-10-03T03:53:20.582698+00:00",
+    "completed_verified_at": "2026-10-03T04:24:44.028012+00:00",
+    "live_workers": 0
   },
   "expected_artifacts": [
     "last.pt",
@@ -187,7 +189,7 @@
         "source_physical_diagnostics.json"
       ],
       "pid": 2241765,
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092701.log"
     },
     {
@@ -232,7 +234,7 @@
         "source_physical_diagnostics.json"
       ],
       "pid": 2241844,
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092701.log"
     },
     {
@@ -277,7 +279,7 @@
         "source_physical_diagnostics.json"
       ],
       "pid": 2241925,
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092702.log"
     },
     {
@@ -322,7 +324,7 @@
         "source_physical_diagnostics.json"
       ],
       "pid": 2242002,
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092702.log"
     },
     {
@@ -367,7 +369,7 @@
         "source_physical_diagnostics.json"
       ],
       "pid": 2242083,
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092703.log"
     },
     {
@@ -412,7 +414,7 @@
         "source_physical_diagnostics.json"
       ],
       "pid": 2242160,
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092703.log"
     },
     {
@@ -457,7 +459,7 @@
         "source_physical_diagnostics.json"
       ],
       "pid": 2242241,
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092704.log"
     },
     {
@@ -502,7 +504,7 @@
         "source_physical_diagnostics.json"
       ],
       "pid": 2242378,
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092704.log"
     }
   ],
@@ -521,7 +523,7 @@
     "2026-10-03 prelaunch resumption: source-comparison matrix expanded to16 with frozen Anchor; original eight model/training configs unchanged. Prior readout release/run absent independently verified. This is a source-information control study, not evidence by itself of channel robustness or paper novelty."
   ],
   "registered_at": "2026-10-02T17:18:56+00:00",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "source_controls": [
     {
       "variant": "neural_residual_shallow",
@@ -612,7 +614,77 @@
       "8-8"
     ],
     "target_feedback": false,
-    "selection": "source_only"
+    "selection": "source_only",
+    "status": "REUSED_VERIFIED_FROZEN_CONTROL",
+    "completed_test_run": "20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01",
+    "new_predictions": 0,
+    "results_ref": "../20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md",
+    "conditional_readout_clean_run_status": "NOT_ACTIVATED_SOURCE_CONTROL_RETAINED"
   },
-  "prelaunch_revision_at": "2026-10-03T03:48:59.670247+00:00"
+  "prelaunch_revision_at": "2026-10-03T03:48:59.670247+00:00",
+  "outcome": {
+    "execution_complete": true,
+    "performance_goal_achieved": false,
+    "paper_claim_established": false,
+    "scientific_verdict": "SOURCE_READOUT_CANDIDATES_NOT_IMPROVED_EXISTING_ANCHOR_RETAINED",
+    "selected_variant": "response_anchor_mean",
+    "new_source_models": 8,
+    "new_source_steps": 80000,
+    "source_summary": [
+      {
+        "variant": "neural_residual_shallow",
+        "V": 0.9844259259259259,
+        "worst_RX": 0.9580092592592593,
+        "score": 0.9712175925925925,
+        "paired_score_pp": 0.0,
+        "paired_score_SD": 0.0,
+        "positive_seeds": 0,
+        "parameters": 220987,
+        "inference_ms": 9.897062799791456,
+        "training_ms": 51.4825539496087
+      },
+      {
+        "variant": "response_anchor_mean",
+        "V": 0.9844351851851851,
+        "worst_RX": 0.9581944444444445,
+        "score": 0.9713148148148147,
+        "paired_score_pp": 0.009722222222222077,
+        "paired_score_SD": 0.02344257203920715,
+        "positive_seeds": 2,
+        "parameters": 237147,
+        "inference_ms": 12.86628827547247,
+        "training_ms": 58.72958109976025
+      },
+      {
+        "variant": "readout_attention",
+        "V": 0.9820462962962964,
+        "worst_RX": 0.9517592592592593,
+        "score": 0.9669027777777779,
+        "paired_score_pp": -0.43148148148147436,
+        "paired_score_SD": 0.400431294687329,
+        "positive_seeds": 0,
+        "parameters": 306147,
+        "inference_ms": 10.65907651282032,
+        "training_ms": 54.487700500612846
+      },
+      {
+        "variant": "readout_complex_attention",
+        "V": 0.9797962962962963,
+        "worst_RX": 0.9491666666666667,
+        "score": 0.9644814814814815,
+        "paired_score_pp": -0.6736111111111109,
+        "paired_score_SD": 0.22542636025040746,
+        "positive_seeds": 0,
+        "parameters": 310243,
+        "inference_ms": 11.280445224110736,
+        "training_ms": 55.379274598817574
+      }
+    ],
+    "new_target_predictions": 0,
+    "test_completion": "REUSED_VERIFIED_FROZEN_CONTROL",
+    "completed_test_run": "20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01",
+    "retained_control_clean_accuracy": 0.6991294642857143,
+    "retained_control_clean_seed_sd": 0.012142241829064652,
+    "target_feedback": false
+  }
 }
