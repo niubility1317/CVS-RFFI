@@ -1,0 +1,14 @@
+{
+  "run_id": "20261003-phase1-cvs-validdual-clean-manysig-m8-r01",
+  "status": "LOCAL_VERIFIED",
+  "release": "cvs_validdual_clean_20261003_r01",
+  "source_run": "20261003-phase1-cvs-validdual-identity-manysig-m8-r01",
+  "source_commit": "91ade405e1cec130805289ea2517c1b3ab659a02",
+  "next": [
+    "Commit/push clean release;wait existing source8rows to E200 and frozen_source_matrix",
+    "Publish once;real8checkpoint noquery smoke;automatic predict-score-recount",
+    "Collect completed test and full training logs;report all results;Git delivery"
+  ],
+  "performance_goal_achieved": false,
+  "paper_claim_established": false
+}

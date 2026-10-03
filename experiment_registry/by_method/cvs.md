@@ -83,6 +83,7 @@
 |CVS约束响应融合：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)|
 |CVS 频谱时序关系：独立 clean 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01/report.md)|
 |CVS频点内可学习时间关系：整包与逐频能量归一化×四seed|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/report.md)|
+|有效历史双路径：全部8份E200权重的clean测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-validdual-clean-manysig-m8-r01/report.md)|
 |有效历史滤波与原始指纹双路径|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/report.md)|
 |补偿响应融合：阻断分类无关方向的归一化捷径|legacy_evidence_group|[打开](../../docs/CVS_RESPONSE_FUSION_DESIGN_20261003.md)|
 |cvs_response_geometry_source_20261003_r01|legacy_evidence_group|[打开](../../local_artifacts/cvs_response_geometry_source_20261003_r01)|

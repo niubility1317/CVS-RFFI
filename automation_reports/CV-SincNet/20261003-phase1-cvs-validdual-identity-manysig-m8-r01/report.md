@@ -27,3 +27,5 @@
 ## 实际发布
 
 N607发布VERIFIED，执行提交`91ade405e1cec130805289ea2517c1b3ab659a02`，dispatcher PID`2508597`。独立读回核对host/user、CWD、argv、原始数据角色、实际参数及日志。当前状态计数：{"RUNNING": 8, "QUEUED": 0, "FAILED": 0, "SOURCE_TRAINED": 0}。远端CPU权重保存/载入与反传通过。全部8行的源训练与后续测试仍未完成，不据训练早期分数宣称性能提升。
+
+测试实现已登记：[20261003-phase1-cvs-validdual-clean-manysig-m8-r01](../20261003-phase1-cvs-validdual-clean-manysig-m8-r01/report.md)。全部8份E200权重测试，独立评分和复算；等待上游完成，不热改训练。

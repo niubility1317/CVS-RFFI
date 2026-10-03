@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T11:59:01+00:00
+更新：2026-10-03T12:13:36+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|95|
+|managed_run|96|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,12 +21,12 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|240|
+|[cvs](by_method/cvs.md)|241|
 |[adv3b02](by_method/adv3b02.md)|146|
 |[phase2](by_method/phase2.md)|118|
 |[phase1](by_method/phase1.md)|113|
 |[stage2](by_method/stage2.md)|67|
-|[clean_only](by_method/clean_only.md)|56|
+|[clean_only](by_method/clean_only.md)|57|
 |[ce_only](by_method/ce_only.md)|56|
 |[qknn](by_method/qknn.md)|56|
 |[performance_priority](by_method/performance_priority.md)|48|
@@ -94,6 +94,9 @@
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
 |[benchmark_informed](by_method/benchmark_informed.md)|2|
+|[valid_history](by_method/valid_history.md)|2|
+|[dual_path](by_method/dual_path.md)|2|
+|[fixed_comparison](by_method/fixed_comparison.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[nm fdu](by_method/nm_fdu.md)|2|
 |[protonet](by_method/protonet.md)|2|
@@ -158,9 +161,7 @@
 |[context_attention](by_method/context_attention.md)|1|
 |[response_fusion](by_method/response_fusion.md)|1|
 |[spectral_relation](by_method/spectral_relation.md)|1|
-|[valid_history](by_method/valid_history.md)|1|
-|[dual_path](by_method/dual_path.md)|1|
-|[fixed_comparison](by_method/fixed_comparison.md)|1|
+|[independent_test](by_method/independent_test.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
 |[fedcvs](by_method/fedcvs.md)|1|
 
@@ -259,6 +260,7 @@
 |CVS约束响应融合：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)|
 |CVS 频谱时序关系：独立 clean 结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01/report.md)|
 |CVS频点内可学习时间关系：整包与逐频能量归一化×四seed|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/report.md)|
+|有效历史双路径：全部8份E200权重的clean测试|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-validdual-clean-manysig-m8-r01/report.md)|
 |有效历史滤波与原始指纹双路径|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
@@ -287,4 +289,3 @@
 |cvs_phase_curvature_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_phase_curvature_identity_20261002_r01)|
 |CVS分层相位曲率残差|legacy_evidence_group|[打开](../docs/CVS_FEATURE_PHASE_CURVATURE_20261002.md)|
 |cvs_moment_residual_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_moment_residual_identity_20261002_r01)|
-|CVS可学习包内矩残差|legacy_evidence_group|[打开](../docs/CVS_LEARNED_MOMENT_RESIDUAL_20261002.md)|
