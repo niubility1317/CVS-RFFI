@@ -65,6 +65,13 @@ def inspect(output):
     print(json.dumps(dict(status=data['pipeline']['status'] if data['pipeline'] else 'UNKNOWN',rows=[dict(row_id=r['row_id'],alive=bool(r['process']),conditions=r['conditions_done'],status=r['state']['status'],errors=r['errors']) for r in data['rows']])))
     return data
 
+def verify_exclusive_paths(paths):
+    script='from pathlib import Path\nimport json\npaths='+repr(paths)+'\nexisting=[p for p in paths if Path(p).exists()]\nprint(json.dumps(dict(existing=existing)))'
+    # Shared SSH returns stdout bytes. JSON accepts both bytes and text.
+    data=json.loads(ssh(script))
+    if data.get('existing')!=[]:raise FileExistsError('Reconcile existing diagnostic paths before transfer: '+repr(data))
+    return data
+
 def publish(output):
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     branch=subprocess.check_output(['git','branch','--show-current'],cwd=ROOT,text=True).strip()
@@ -81,8 +88,7 @@ def publish(output):
     cfg=dict(project=PROJECT,run=RUN,release=RELEASE,source_run=SOURCE_RUN,archive=archive.name,commit=commit,sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
     (output/'package.json').write_text(json.dumps(cfg,indent=2)+'\n',encoding='utf-8')
     paths=[PROJECT+'/releases/'+RELEASE,PROJECT+'/releases/'+archive.name,PROJECT+'/runs/'+RUN,PROJECT+'/logs/'+RUN]
-    preflight='from pathlib import Path\npaths='+repr(paths)+'\nif any(Path(p).exists() for p in paths):raise FileExistsError("Reconcile existing diagnostic paths before transfer")\nprint("EXCLUSIVE_PATHS_ABSENT")'
-    if ssh(preflight).strip()!='EXCLUSIVE_PATHS_ABSENT':raise ValueError('Diagnostic exclusive-path preflight failed')
+    verify_exclusive_paths(paths)
     subprocess.run(['scp',*CONNECTION,str(archive),'N607:'+PROJECT+'/releases/'+archive.name],check=True)
     receipt=json.loads(ssh(REMOTE.replace('CONFIG',repr(cfg))))
     (output/'submit.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8');print(json.dumps(receipt))

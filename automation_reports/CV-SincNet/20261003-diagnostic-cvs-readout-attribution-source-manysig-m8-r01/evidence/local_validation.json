@@ -14,5 +14,14 @@
     "reviewer": "/root/source_architecture_audit",
     "blocking_findings": [],
     "scope": "frozen source provenance, four hooks, paired32conditions, 864000 decisions, factor reconstruction, four-file release and embedded scripts"
+  },
+  "publish_transport_regression_tests": 4,
+  "pretransfer_recovery": {
+    "status": "VERIFIED_NOT_LAUNCHED",
+    "evidence": "pretransfer_failure_reconciliation.json",
+    "fix": "Parse JSON from SSH stdout bytes/text; present/unverified paths still rejected",
+    "old_local_package_preserved": true,
+    "diagnostic_run_and_release_unchanged_because_never_created": true,
+    "scoped_review": "PASS /root/source_architecture_audit; one bounded recheck"
   }
 }
