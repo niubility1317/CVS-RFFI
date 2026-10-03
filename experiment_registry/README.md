@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T02:43:05+00:00
+更新：2026-10-03T02:46:14+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|80|
+|managed_run|81|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,17 +21,17 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|225|
+|[cvs](by_method/cvs.md)|226|
 |[adv3b02](by_method/adv3b02.md)|146|
 |[phase2](by_method/phase2.md)|118|
 |[phase1](by_method/phase1.md)|112|
 |[stage2](by_method/stage2.md)|67|
 |[qknn](by_method/qknn.md)|56|
-|[ce_only](by_method/ce_only.md)|48|
-|[clean_only](by_method/clean_only.md)|47|
-|[performance_priority](by_method/performance_priority.md)|41|
-|[no_augmentation](by_method/no_augmentation.md)|35|
-|[source_selection](by_method/source_selection.md)|30|
+|[ce_only](by_method/ce_only.md)|49|
+|[clean_only](by_method/clean_only.md)|48|
+|[performance_priority](by_method/performance_priority.md)|42|
+|[no_augmentation](by_method/no_augmentation.md)|36|
+|[source_selection](by_method/source_selection.md)|31|
 |[fasttrust](by_method/fasttrust.md)|26|
 |[source](by_method/source.md)|23|
 |[rff_physics](by_method/rff_physics.md)|20|
@@ -71,6 +71,7 @@
 |[packet_synchronization](by_method/packet_synchronization.md)|3|
 |[fixed_parameter_budget](by_method/fixed_parameter_budget.md)|3|
 |[no_training](by_method/no_training.md)|3|
+|[packet_compensation](by_method/packet_compensation.md)|3|
 |[smoke](by_method/smoke.md)|3|
 |[evaluation](by_method/evaluation.md)|2|
 |[true256](by_method/true256.md)|2|
@@ -91,7 +92,6 @@
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
 |[benchmark_informed](by_method/benchmark_informed.md)|2|
-|[packet_compensation](by_method/packet_compensation.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[nm fdu](by_method/nm_fdu.md)|2|
 |[protonet](by_method/protonet.md)|2|
@@ -146,6 +146,7 @@
 |[response_order](by_method/response_order.md)|1|
 |[neural_readout](by_method/neural_readout.md)|1|
 |[context_attention](by_method/context_attention.md)|1|
+|[response_fusion](by_method/response_fusion.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
 |[fedcvs](by_method/fedcvs.md)|1|
 
@@ -230,6 +231,7 @@
 |CVS信道补偿与顺序差值：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md)|
 |CVS显式补偿响应：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/report.md)|
 |CVS纯网络读出优化：源实验预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)|
+|CVS约束响应融合：类别差异子空间与独立归一化×四seed|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|
@@ -272,4 +274,3 @@
 |cvs_crossphase_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_crossphase_identity_20261002_r01)|
 |跨复数滤波通道相干读出：零新增参数原型|legacy_evidence_group|[打开](../docs/CVS_CROSSPHASE_IDENTITY_HYPOTHESIS_20261002.md)|
 |cvs_residual_sixscene_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_residual_sixscene_20261002_r01)|
-|cvs_selected_concat_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_selected_concat_20261002_r01)|

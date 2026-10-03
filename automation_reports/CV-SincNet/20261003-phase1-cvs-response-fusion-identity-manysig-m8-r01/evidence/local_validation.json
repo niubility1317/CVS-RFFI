@@ -1,0 +1,12 @@
+{
+  "status": "VERIFIED",
+  "source_and_model_tests": 78,
+  "commands": [
+    "python -X utf8 -m pytest tests/test_cvs_response_fusion_identity.py tests/test_cvs_response_fusion_source_protocol.py -q",
+    "python -m experiments.cvs_response_fusion_identity.cpu_smoke --output local_artifacts/cvs_response_fusion_identity_cpu_smoke.json"
+  ],
+  "independent_review": "PASS",
+  "formal_data_access": false,
+  "interpreter": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "clean_pipeline_status": "Conditional; source registration fixes scope before any new target access"
+}

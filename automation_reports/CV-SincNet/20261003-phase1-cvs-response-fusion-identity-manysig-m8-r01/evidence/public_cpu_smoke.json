@@ -1,0 +1,88 @@
+{
+  "status": "VERIFIED",
+  "torch_version": "2.10.0+cu128",
+  "formal_data_access": false,
+  "target_access": false,
+  "original_CE_only": true,
+  "actual_configs": 8,
+  "rows": [
+    {
+      "variant": "response_span_mean",
+      "parameters": 237147,
+      "losses": [
+        3.0639445781707764,
+        3.2550668716430664,
+        4.102126598358154
+      ],
+      "diagnostics": {
+        "active": true,
+        "variant": "response_span_mean",
+        "packets": 8,
+        "compensation_input_relative": 0.0005625642370432615,
+        "response_feature_relative": 0.0005538605619221926,
+        "response_token_norm": 0.028367258608341217,
+        "response_pooled_norm": 0.00039872052730061114,
+        "response_projection_relative": 2.834876795532182e-05,
+        "response_order_relative": null,
+        "attention_entropy": 5.505331993103027,
+        "compensation_exit_gradient_norm": 0.016853682696819305,
+        "value_gradient_norm": 0.00016185856657102704,
+        "projection_gradient_norm": 0.0002121388679370284,
+        "attention_gradient_norm": null,
+        "scope": "Raw compensation-response branch before constrained fusion; actual used response is reported separately",
+        "raw_branch_variant": "response_mean"
+      },
+      "fusion": {
+        "active": true,
+        "variant": "response_span_mean",
+        "packets": 8,
+        "raw_response_relative": 2.834876795532182e-05,
+        "used_response_norm": 9.789331670617685e-05,
+        "used_response_norm_max": 0.00010743924212874845,
+        "base_feature_norm": 13.326913833618164,
+        "centered_response_logit_norm": 9.941523603629321e-05,
+        "final_joint_normalization": true,
+        "scope": "Actual frozen current-batch features; no labels or fitted state"
+      }
+    },
+    {
+      "variant": "response_anchor_mean",
+      "parameters": 237147,
+      "losses": [
+        3.0639445781707764,
+        3.2550668716430664,
+        4.102125644683838
+      ],
+      "diagnostics": {
+        "active": true,
+        "variant": "response_anchor_mean",
+        "packets": 8,
+        "compensation_input_relative": 0.000561462074983865,
+        "response_feature_relative": 0.0005526391323655844,
+        "response_token_norm": 0.0283026285469532,
+        "response_pooled_norm": 0.00039735299651511014,
+        "response_projection_relative": 2.8249765819055028e-05,
+        "response_order_relative": null,
+        "attention_entropy": 5.505331993103027,
+        "compensation_exit_gradient_norm": 0.01723390631377697,
+        "value_gradient_norm": 0.00016591078019700944,
+        "projection_gradient_norm": 0.00021783425472676754,
+        "attention_gradient_norm": null,
+        "scope": "Raw compensation-response branch before constrained fusion; actual used response is reported separately",
+        "raw_branch_variant": "response_mean"
+      },
+      "fusion": {
+        "active": true,
+        "variant": "response_anchor_mean",
+        "packets": 8,
+        "raw_response_relative": 2.8249765819055028e-05,
+        "used_response_norm": 2.8249765819055028e-05,
+        "used_response_norm_max": 3.088521771132946e-05,
+        "base_feature_norm": 13.326913833618164,
+        "centered_response_logit_norm": 7.4273884820286185e-06,
+        "final_joint_normalization": false,
+        "scope": "Actual frozen current-batch features; no labels or fitted state"
+      }
+    }
+  ]
+}

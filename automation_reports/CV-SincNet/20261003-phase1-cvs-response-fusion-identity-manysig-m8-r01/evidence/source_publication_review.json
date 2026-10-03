@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "p0": [],
+  "p1": [],
+  "reviewer": "source_architecture_audit",
+  "scope": "8-row source publication only; conditional clean runtime reviewed separately",
+  "actual_config_rows": 8,
+  "source_controls": 20,
+  "source_records": 28,
+  "dependency_files_covered": 61,
+  "published_candidates": 811,
+  "synthetic_log_corruptions_rejected": 8,
+  "target_access": false,
+  "remote_mutation": false
+}

@@ -1,0 +1,15 @@
+{
+  "run_id": "20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01",
+  "status": "PLANNED",
+  "launch_owner": "codex/root/cvs-response-fusion-identity-20261003",
+  "live_workers": 0,
+  "source_matrix": "8new+20frozen=28",
+  "clean_matrix": "conditional4new+40frozen=44",
+  "performance_goal_achieved": false,
+  "next": [
+    "Scoped source publication review and committed release",
+    "Launch once and independently reconcile actual processes/config/logs",
+    "Audit80000steps and source selection; implement conditional clean pathway while training",
+    "Complete authorized fixed clean test if new variant selected"
+  ]
+}
