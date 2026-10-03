@@ -1,0 +1,37 @@
+{
+  "status": "VERIFIED",
+  "source_training_complete": true,
+  "source_log_steps": 120000,
+  "selected_variant": "channel_dual",
+  "new_candidate_selected": false,
+  "test_closure": "REUSED_EXISTING_FROZEN_CONTROL",
+  "new_candidate_target_accuracy": null,
+  "source_diagnostic_run": "20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01",
+  "source_dependency": [
+    {
+      "variant": "response_mean",
+      "source_dependency_pp": 0.05740740740740602,
+      "positive_seeds": 4,
+      "auxiliary_relative": 0.4851624621948986,
+      "g_input_relative": 0.10495923650199203
+    },
+    {
+      "variant": "response_attention",
+      "source_dependency_pp": 0.06296296296296189,
+      "positive_seeds": 4,
+      "auxiliary_relative": 0.4940362205543314,
+      "g_input_relative": 0.11171080911304387
+    },
+    {
+      "variant": "response_order_attention",
+      "source_dependency_pp": 0.07129629629629708,
+      "positive_seeds": 4,
+      "auxiliary_relative": 0.48784365048887274,
+      "g_input_relative": 0.10717975542201075
+    }
+  ],
+  "performance_goal_achieved": false,
+  "paper_goal_achieved": false,
+  "scientific_verdict": "RESPONSE_BRANCH_USED_BUT_NO_IMPROVEMENT_OVER_FIXED_SOURCE_CONTROL",
+  "next": "Analyze why active response features yield small classification dependence; use source evidence only, no blind parameter scaling or target feedback"
+}

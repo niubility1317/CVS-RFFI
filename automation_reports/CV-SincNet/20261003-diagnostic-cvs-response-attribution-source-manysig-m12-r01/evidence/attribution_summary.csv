@@ -1,0 +1,13 @@
+condition,contribution_pp,contribution_sd,helped,hurt,positive_seeds,prediction_changes,variant
+all_on,0.0,0.0,0,0,0,0,response_mean
+auxiliary_off,0.05740740740740602,0.01971446842304945,140,78,4,315,response_mean
+g_identity,0.05740740740740602,0.01971446842304945,140,78,4,315,response_mean
+all_on,0.0,0.0,0,0,0,0,response_attention
+auxiliary_off,0.06296296296296189,0.05713795785385756,148,80,4,323,response_attention
+g_identity,0.06296296296296189,0.05713795785385756,148,80,4,323,response_attention
+uniform_attention,0.03425925925925888,0.023104897866928563,50,13,4,88,response_attention
+all_on,0.0,0.0,0,0,0,0,response_order_attention
+auxiliary_off,0.07129629629629708,0.04479032082387957,167,90,4,358,response_order_attention
+g_identity,0.07129629629629708,0.04479032082387957,167,90,4,358,response_order_attention
+uniform_attention,0.019444444444441378,0.02794190196976756,52,31,2,120,response_order_attention
+d_off,0.009259259259258856,0.009799078929868707,18,8,3,42,response_order_attention

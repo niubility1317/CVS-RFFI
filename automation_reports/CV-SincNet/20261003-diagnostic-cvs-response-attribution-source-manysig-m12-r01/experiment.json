@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "用户授权继续优化纯神经网络架构并深入分析；原单CE训练不变，本诊断仅补充冻结源机制证据。",
   "code": {
-    "commit": "PENDING_LOCAL_GIT_COMMIT",
+    "commit": "ff7cb46b9ada789c3e52969dc3cb3cfddf4eecb1",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
@@ -112,7 +112,9 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01",
     "launch_command": "python -m experiments.cvs_response_attribution.publish --output local_artifacts/cvs_response_attribution_source_20261003_r01/delivery",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 2182627,
+    "live_workers": 0
   },
   "expected_artifacts": [
     "resolved_config.json",
@@ -150,7 +152,7 @@
       "row_id": "response_mean-s2026092701",
       "method": "response_mean",
       "purpose": "frozen_full_source_V_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_response_attribution/launch_spec.json#response_mean-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -178,13 +180,16 @@
         "completion.json",
         "source_scalar_diagnostics.npz",
         "*_source_predictions.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2182642,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092701.log"
     },
     {
       "row_id": "response_mean-s2026092702",
       "method": "response_mean",
       "purpose": "frozen_full_source_V_attribution",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_response_attribution/launch_spec.json#response_mean-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -212,13 +217,16 @@
         "completion.json",
         "source_scalar_diagnostics.npz",
         "*_source_predictions.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2182765,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092702.log"
     },
     {
       "row_id": "response_mean-s2026092703",
       "method": "response_mean",
       "purpose": "frozen_full_source_V_attribution",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_response_attribution/launch_spec.json#response_mean-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -246,13 +254,16 @@
         "completion.json",
         "source_scalar_diagnostics.npz",
         "*_source_predictions.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2182901,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092703.log"
     },
     {
       "row_id": "response_mean-s2026092704",
       "method": "response_mean",
       "purpose": "frozen_full_source_V_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_response_attribution/launch_spec.json#response_mean-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -280,13 +291,16 @@
         "completion.json",
         "source_scalar_diagnostics.npz",
         "*_source_predictions.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2182979,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092704.log"
     },
     {
       "row_id": "response_attention-s2026092701",
       "method": "response_attention",
       "purpose": "frozen_full_source_V_attribution",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_response_attribution/launch_spec.json#response_attention-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -314,13 +328,16 @@
         "completion.json",
         "source_scalar_diagnostics.npz",
         "*_source_predictions.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2183057,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092701.log"
     },
     {
       "row_id": "response_attention-s2026092702",
       "method": "response_attention",
       "purpose": "frozen_full_source_V_attribution",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_response_attribution/launch_spec.json#response_attention-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -348,13 +365,16 @@
         "completion.json",
         "source_scalar_diagnostics.npz",
         "*_source_predictions.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2183189,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092702.log"
     },
     {
       "row_id": "response_attention-s2026092703",
       "method": "response_attention",
       "purpose": "frozen_full_source_V_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_response_attribution/launch_spec.json#response_attention-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -382,13 +402,16 @@
         "completion.json",
         "source_scalar_diagnostics.npz",
         "*_source_predictions.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2183312,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092703.log"
     },
     {
       "row_id": "response_attention-s2026092704",
       "method": "response_attention",
       "purpose": "frozen_full_source_V_attribution",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_response_attribution/launch_spec.json#response_attention-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -416,13 +439,16 @@
         "completion.json",
         "source_scalar_diagnostics.npz",
         "*_source_predictions.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2183394,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092704.log"
     },
     {
       "row_id": "response_order_attention-s2026092701",
       "method": "response_order_attention",
       "purpose": "frozen_full_source_V_attribution",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_response_attribution/launch_spec.json#response_order_attention-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_order_attention-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -450,13 +476,16 @@
         "completion.json",
         "source_scalar_diagnostics.npz",
         "*_source_predictions.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2183478,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_order_attention-s2026092701.log"
     },
     {
       "row_id": "response_order_attention-s2026092702",
       "method": "response_order_attention",
       "purpose": "frozen_full_source_V_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_response_attribution/launch_spec.json#response_order_attention-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_order_attention-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -484,13 +513,16 @@
         "completion.json",
         "source_scalar_diagnostics.npz",
         "*_source_predictions.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2183556,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_order_attention-s2026092702.log"
     },
     {
       "row_id": "response_order_attention-s2026092703",
       "method": "response_order_attention",
       "purpose": "frozen_full_source_V_attribution",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_response_attribution/launch_spec.json#response_order_attention-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_order_attention-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -518,13 +550,16 @@
         "completion.json",
         "source_scalar_diagnostics.npz",
         "*_source_predictions.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2183634,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_order_attention-s2026092703.log"
     },
     {
       "row_id": "response_order_attention-s2026092704",
       "method": "response_order_attention",
       "purpose": "frozen_full_source_V_attribution",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_response_attribution/launch_spec.json#response_order_attention-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_order_attention-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -552,7 +587,10 @@
         "completion.json",
         "source_scalar_diagnostics.npz",
         "*_source_predictions.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2184117,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_order_attention-s2026092704.log"
     }
   ],
   "notes": [
@@ -562,10 +600,19 @@
     "This measures within-checkpoint source dependence, not scratch-retraining causal contribution or channel/TX recovery",
     "No target data or scores, no optimizer or source reselection; all source models and outputs preserved"
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "status": "NOT_APPLICABLE_SOURCE_DIAGNOSTIC",
     "reason": "No new trainable candidate or target access; main source run follows its unchanged conditional clean plan"
   },
-  "registered_at": "2026-10-03T01:48:32+00:00"
+  "registered_at": "2026-10-03T01:48:32+00:00",
+  "outcome": {
+    "status": "VERIFIED",
+    "models": 12,
+    "conditions": 48,
+    "source_packets": 27000,
+    "prediction_decisions": 1296000,
+    "source_only": true,
+    "performance_goal_achieved": false
+  }
 }

@@ -1,6 +1,6 @@
 # 显式补偿响应：下一轮Phase1架构
 
-状态：正式12组源训练已发布并独立核实运行。识别性能及论文贡献仍待验证。本设计只使用完整源V归因证据；不使用目标结果制定结构或选模规则。
+状态：12组E200源训练、120000步核对及48条件完整源V诊断已完成。三个新候选均未超过固定源控制；按原规则保留channel_dual并核实复用其既有clean结果，未对未选候选访问目标。性能及论文目标未达成。本设计只使用完整源V归因证据；不使用目标结果制定结构或选模规则。
 
 ## 源证据与改动理由
 
@@ -41,12 +41,14 @@ G系数出口零初始化；值编码与投影保持非零随机初始化。新�
 
 共同相位不变、逐包独立与“恒等补偿时输出为零”是结构正确性结论；它们不是任意多径/接收机不变性或TX/RX可辨识性结论。当前equalized=1、center256、unitRMS数据边界保持不变。方法新颖性及论文核心贡献尚未成立，必须由相关工作区分、结构消融和独立性能证据支持。
 
-## 下一轮执行范围
+## 已执行范围与结果
 
-已登记并启动3候选×4原model/loader seed，共12个从零训练模型。保持原数据物理角色、E200×50、batch128、AdamW与cosine、FP32和单一CE。与原shallow四份和上一轮源域胜出的dual四份固定源记录组成20行选择矩阵；后者不能因目标结果而被排除，也不继承其权重。
+已完成3候选×4原model/loader seed，共12个从零训练模型。保持原数据物理角色、E200×50、batch128、AdamW与cosine、FP32和单一CE。与原shallow四份和上一轮源域胜出的dual四份固定源记录组成20行选择矩阵；后者不能因目标结果而被排除，也不继承其权重。
 
 按四seed固定E200均值`0.5V+0.5最差源RX`最大者选择，完全并列后才比较成本。仅新候选胜出时，冻结其4个模型并完成clean确认，与原40份冻结预测组成44行；完整352条ALL/RX评分、88组汇总与80组配对。旧控制胜出则复用其已完成测试，不对未选候选访问目标。
 
-实际矩阵登记、source/clean运行链、checkpoint契约支持和一次独立P0/P1审查已完成。执行提交`83727fa93c090e6daa2b21bd8dd058cfe28b51d1`，详细运行证据见[实验报告](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/report.md)。实验发布后默认完成冻结和独立测试；本轮保持clean-only，不追加LEO、目标适应或新类。
+实际矩阵登记、source/clean运行链、checkpoint契约支持和一次独立P0/P1审查已完成。执行提交`83727fa93c090e6daa2b21bd8dd058cfe28b51d1`，详细结果见[实验报告](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/report.md)。本轮固定源分数相对dual依次为−0.0060、−0.0856、−0.0417个百分点，均未晋级。已有控制的测试复用已独立核对，保持clean-only，不追加LEO、目标适应或新类。
+
+[完整源V诊断](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)确认三个新支路的源准确率贡献依次为0.0574、0.0630、0.0713个百分点，均4/4seed为正；G恒等时实际辅助输出严格为零。辅助/主干范数比约0.49，因此不能把整体未提升简单归因于支路未激活或幅度过小。该诊断是冻结权重依赖证据，不是从零重训消融或目标泛化证明。
 
 [模型](../experiments/cvs_channel_response_identity/model.py) · [原训练流程入口](../experiments/cvs_channel_response_identity/source.py) · [聚焦验证](../tests/test_cvs_channel_response_identity.py) · [相关工作、创新边界与论文证据缺口](CVS_CHANNEL_RESPONSE_NOVELTY_20261003.md)。

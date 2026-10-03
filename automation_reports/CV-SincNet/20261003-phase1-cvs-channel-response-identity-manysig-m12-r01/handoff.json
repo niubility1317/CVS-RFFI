@@ -1,24 +1,21 @@
 {
   "run_id": "20261003-phase1-cvs-channel-response-identity-manysig-m12-r01",
-  "status": "RUNNING",
-  "goal": "Complete E200,source freeze,conditional independent clean test and analysis",
-  "launch_owner": "codex/root/cvs-channel-response-identity-20261003",
-  "live_workers": 12,
+  "status": "ANALYZED",
+  "live_workers": 0,
   "code_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
-  "dispatcher_pid": 2164478,
-  "evidence": [
-    "evidence/launch_readback.json",
-    "evidence/launch_processes.json"
-  ],
+  "selected_variant": "channel_dual",
+  "new_candidate_selected": false,
   "performance_goal_achieved": false,
-  "next": [
-    "Read-only monitoring; never resubmit or hot-change",
-    "At all E200 completion collect and audit full120000 steps;source freeze",
-    "New winner:prepare/register/Git/publish conditional44row clean. Old winner:reuse existing test evidence",
-    "Full source and clean report;all negatives retained"
+  "paper_goal_achieved": false,
+  "evidence": [
+    "evidence/source_completion_validation.json",
+    "evidence/reused_control_clean_validation.json",
+    "evidence/iteration_verdict.json"
   ],
-  "monitor_command": "python E:/type10-7/.codex_tmp/channel_response_monitor.py --name progress",
-  "collect_command": "python -m experiments.cvs_channel_response_identity.collect --root . --output local_artifacts/cvs_channel_response_identity_20261003_r01/complete",
-  "source_analyze_command": "python -m experiments.cvs_channel_response_identity.analyze --root .",
-  "clean_prepare_command": "python -m experiments.cvs_channel_response_clean.prepare --selection automation_reports/CV-SincNet/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/evidence/source_selection.json"
+  "source_diagnostic": "20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01",
+  "next": [
+    "Use complete source diagnostic to investigate active but weakly discriminative response branch",
+    "Keep single CE/original training and source-only selection; preserve all negatives",
+    "Do not test unselected models or use historical target results for new design"
+  ]
 }

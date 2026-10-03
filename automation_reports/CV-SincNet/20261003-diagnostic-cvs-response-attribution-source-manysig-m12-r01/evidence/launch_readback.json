@@ -1,0 +1,1001 @@
+{
+  "read_at": 1790992692.7689269,
+  "identity": {
+    "user": "szu2070436088",
+    "host": "dell-DSS8440"
+  },
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 2182627,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/launch_spec.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/dispatcher.log",
+    "commit": "ff7cb46b9ada789c3e52969dc3cb3cfddf4eecb1",
+    "sha256": "28c16c56a8b647b5663a835f15c356238dba408209a10d484fee3557ece3df95",
+    "preflight_gpu": "0, 24124\n1, 24124\n2, 24124\n3, 24124\n4, 24124\n5, 24124\n6, 24124\n7, 24124\n",
+    "preflight_apps": "",
+    "disk_free_bytes": 5746337443840
+  },
+  "pipeline": {
+    "status": "RUNNING",
+    "pid": 2182627,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+    "launch_owner": "codex/root/response-source-attribution-20261003",
+    "rows": {
+      "response_mean-s2026092701": {
+        "status": "COMPLETE",
+        "pid": 2182642,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092701",
+        "exit_code": 0
+      },
+      "response_mean-s2026092702": {
+        "status": "COMPLETE",
+        "pid": 2182765,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092702",
+        "exit_code": 0
+      },
+      "response_mean-s2026092703": {
+        "status": "COMPLETE",
+        "pid": 2182901,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092703.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092703",
+        "exit_code": 0
+      },
+      "response_mean-s2026092704": {
+        "status": "RUNNING",
+        "pid": 2182979,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092704.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092704"
+      },
+      "response_attention-s2026092701": {
+        "status": "RUNNING",
+        "pid": 2183057,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092701"
+      }
+    }
+  },
+  "dispatcher_process": {
+    "pid": 2182627,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/launch_spec.json",
+      ""
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "response_mean-s2026092701",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 2182642,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092701",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092701/source",
+        "variant": "response_mean",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092701",
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "g_identity"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/response-source-attribution-20261003",
+        "pid": 2182642,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "response_mean",
+          "seed": 2026092701,
+          "accuracy": 0.9849629629629629,
+          "worst_rx": 0.9592592592592593,
+          "parameters": 237147,
+          "macs": 11205232,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092701/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "response_mean",
+        "model_seed": 2026092701,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.9849629629629629,
+            "ce": 0.09627342628038689,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9592592592592593,
+              "4": 0.9888888888888889,
+              "6": 0.9964814814814815,
+              "8": 0.9833333333333333
+            },
+            "worst_rx": 0.9592592592592593,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.9841851851851852,
+            "ce": 0.07609777471975475,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.9575925925925926,
+              "4": 0.9875925925925926,
+              "6": 0.9964814814814815,
+              "8": 0.982037037037037
+            },
+            "worst_rx": 0.9575925925925926,
+            "prediction_changes": 99,
+            "helped_by_all_on": 45,
+            "hurt_by_all_on": 24
+          },
+          {
+            "condition": "g_identity",
+            "count": 27000,
+            "accuracy": 0.9841851851851852,
+            "ce": 0.07609777471975475,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.9575925925925926,
+              "4": 0.9875925925925926,
+              "6": 0.9964814814814815,
+              "8": 0.982037037037037
+            },
+            "worst_rx": 0.9575925925925926,
+            "prediction_changes": 99,
+            "helped_by_all_on": 45,
+            "hurt_by_all_on": 24
+          }
+        ],
+        "scalar_summary": {
+          "auxiliary_relative": {
+            "mean": 0.5000498701212582,
+            "p10": 0.4286945551633835,
+            "median": 0.5087342858314514,
+            "p90": 0.5556985974311829,
+            "maximum": 0.6692602634429932
+          },
+          "g_input_relative": {
+            "mean": 0.09150952351479619,
+            "p10": 0.08955778330564498,
+            "median": 0.09122957661747932,
+            "p90": 0.0944706916809082,
+            "maximum": 0.12397067993879318
+          },
+          "response_feature_relative": {
+            "mean": 0.10996689251672338,
+            "p10": 0.10655328035354614,
+            "median": 0.11075128242373466,
+            "p90": 0.11231555864214897,
+            "maximum": 0.15045909583568573
+          },
+          "response_token_norm": {
+            "mean": 6.480187386018258,
+            "p10": 6.1148542881011965,
+            "median": 6.340959787368774,
+            "p90": 7.001673173904419,
+            "maximum": 10.73425579071045
+          },
+          "response_pooled_norm": {
+            "mean": 1.1210886616739961,
+            "p10": 1.0194111347198487,
+            "median": 1.1388425827026367,
+            "p90": 1.193044686317444,
+            "maximum": 1.4169869422912598
+          },
+          "attention_entropy": {
+            "mean": 5.505331516265869,
+            "p10": 5.505331516265869,
+            "median": 5.505331516265869,
+            "p90": 5.505331516265869,
+            "maximum": 5.505331516265869
+          },
+          "identity_auxiliary_max_abs": {
+            "mean": 0.0,
+            "p10": 0.0,
+            "median": 0.0,
+            "p90": 0.0,
+            "maximum": 0.0
+          },
+          "auxiliary_off_logit_distance": {
+            "mean": 6.221960588614146,
+            "p10": 3.3215813875198363,
+            "median": 6.655598402023315,
+            "p90": 8.328918170928956,
+            "maximum": 10.36093807220459
+          },
+          "g_identity_logit_distance": {
+            "mean": 6.221960588614146,
+            "p10": 3.3215813875198363,
+            "median": 6.655598402023315,
+            "p90": 8.328918170928956,
+            "maximum": 10.36093807220459
+          }
+        },
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "g_identity"
+        ],
+        "seconds": 5.7545171459787525,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 92934656,
+        "claim": "Whole source V within frozen checkpoint; ablated inputs need not be on training distribution; not retraining causal effect or target generalization."
+      },
+      "log_bytes": 5980,
+      "conditions_done": 3,
+      "errors": []
+    },
+    {
+      "row_id": "response_mean-s2026092702",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 2182765,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092702",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092702/source",
+        "variant": "response_mean",
+        "model_seed": 2026092702,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092702",
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "g_identity"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/response-source-attribution-20261003",
+        "pid": 2182765,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "response_mean",
+          "seed": 2026092702,
+          "accuracy": 0.9848888888888889,
+          "worst_rx": 0.9607407407407408,
+          "parameters": 237147,
+          "macs": 11205232,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092702/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "response_mean",
+        "model_seed": 2026092702,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.9848888888888889,
+            "ce": 0.09440995446147005,
+            "rx_accuracy": {
+              "1": 0.9964814814814815,
+              "3": 0.9607407407407408,
+              "4": 0.9907407407407407,
+              "6": 0.9959259259259259,
+              "8": 0.9805555555555555
+            },
+            "worst_rx": 0.9607407407407408,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.9845185185185186,
+            "ce": 0.07851053922080556,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9607407407407408,
+              "4": 0.9892592592592593,
+              "6": 0.9957407407407407,
+              "8": 0.9801851851851852
+            },
+            "worst_rx": 0.9607407407407408,
+            "prediction_changes": 81,
+            "helped_by_all_on": 34,
+            "hurt_by_all_on": 24
+          },
+          {
+            "condition": "g_identity",
+            "count": 27000,
+            "accuracy": 0.9845185185185186,
+            "ce": 0.07851053922080556,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9607407407407408,
+              "4": 0.9892592592592593,
+              "6": 0.9957407407407407,
+              "8": 0.9801851851851852
+            },
+            "worst_rx": 0.9607407407407408,
+            "prediction_changes": 81,
+            "helped_by_all_on": 34,
+            "hurt_by_all_on": 24
+          }
+        ],
+        "scalar_summary": {
+          "auxiliary_relative": {
+            "mean": 0.5001772138548118,
+            "p10": 0.44052840769290924,
+            "median": 0.5075963735580444,
+            "p90": 0.548738706111908,
+            "maximum": 0.621804416179657
+          },
+          "g_input_relative": {
+            "mean": 0.12344041336382981,
+            "p10": 0.11907358765602112,
+            "median": 0.12300917133688927,
+            "p90": 0.12851408123970032,
+            "maximum": 0.1600532829761505
+          },
+          "response_feature_relative": {
+            "mean": 0.13589745991566668,
+            "p10": 0.12879128009080887,
+            "median": 0.1346101611852646,
+            "p90": 0.14491974860429763,
+            "maximum": 0.1704193502664566
+          },
+          "response_token_norm": {
+            "mean": 8.143826819349218,
+            "p10": 7.743323421478271,
+            "median": 7.9983930587768555,
+            "p90": 8.758202934265137,
+            "maximum": 16.937705993652344
+          },
+          "response_pooled_norm": {
+            "mean": 1.3805979979932308,
+            "p10": 1.3149256944656371,
+            "median": 1.3905357122421265,
+            "p90": 1.4482122659683228,
+            "maximum": 1.6432397365570068
+          },
+          "attention_entropy": {
+            "mean": 5.505331516265869,
+            "p10": 5.505331516265869,
+            "median": 5.505331516265869,
+            "p90": 5.505331516265869,
+            "maximum": 5.505331516265869
+          },
+          "identity_auxiliary_max_abs": {
+            "mean": 0.0,
+            "p10": 0.0,
+            "median": 0.0,
+            "p90": 0.0,
+            "maximum": 0.0
+          },
+          "auxiliary_off_logit_distance": {
+            "mean": 6.014071295663163,
+            "p10": 3.891855549812317,
+            "median": 6.135212421417236,
+            "p90": 7.934290075302124,
+            "maximum": 9.147095680236816
+          },
+          "g_identity_logit_distance": {
+            "mean": 6.014071295663163,
+            "p10": 3.891855549812317,
+            "median": 6.135212421417236,
+            "p90": 7.934290075302124,
+            "maximum": 9.147095680236816
+          }
+        },
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "g_identity"
+        ],
+        "seconds": 5.6614371159812436,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 92934656,
+        "claim": "Whole source V within frozen checkpoint; ablated inputs need not be on training distribution; not retraining causal effect or target generalization."
+      },
+      "log_bytes": 5981,
+      "conditions_done": 3,
+      "errors": []
+    },
+    {
+      "row_id": "response_mean-s2026092703",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 2182901,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092703.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092703",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092703/source",
+        "variant": "response_mean",
+        "model_seed": 2026092703,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092703",
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "g_identity"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/response-source-attribution-20261003",
+        "pid": 2182901,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "response_mean",
+          "seed": 2026092703,
+          "accuracy": 0.9844444444444445,
+          "worst_rx": 0.9581481481481482,
+          "parameters": 237147,
+          "macs": 11205232,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092703/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "response_mean",
+        "model_seed": 2026092703,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.9844444444444445,
+            "ce": 0.09050955964154173,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9581481481481482,
+              "4": 0.9888888888888889,
+              "6": 0.9962962962962963,
+              "8": 0.9822222222222222
+            },
+            "worst_rx": 0.9581481481481482,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.984,
+            "ce": 0.07559902093794059,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9568518518518518,
+              "4": 0.9888888888888889,
+              "6": 0.9959259259259259,
+              "8": 0.9814814814814815
+            },
+            "worst_rx": 0.9568518518518518,
+            "prediction_changes": 88,
+            "helped_by_all_on": 35,
+            "hurt_by_all_on": 23
+          },
+          {
+            "condition": "g_identity",
+            "count": 27000,
+            "accuracy": 0.984,
+            "ce": 0.07559902093794059,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9568518518518518,
+              "4": 0.9888888888888889,
+              "6": 0.9959259259259259,
+              "8": 0.9814814814814815
+            },
+            "worst_rx": 0.9568518518518518,
+            "prediction_changes": 88,
+            "helped_by_all_on": 35,
+            "hurt_by_all_on": 23
+          }
+        ],
+        "scalar_summary": {
+          "auxiliary_relative": {
+            "mean": 0.4597423763551094,
+            "p10": 0.4072797268629074,
+            "median": 0.4634263813495636,
+            "p90": 0.5108788549900055,
+            "maximum": 0.7110739946365356
+          },
+          "g_input_relative": {
+            "mean": 0.09199906205868831,
+            "p10": 0.08223068341612816,
+            "median": 0.08712848275899887,
+            "p90": 0.10837832689285279,
+            "maximum": 0.1722990870475769
+          },
+          "response_feature_relative": {
+            "mean": 0.12072409218494538,
+            "p10": 0.11282039955258369,
+            "median": 0.11633538454771042,
+            "p90": 0.1346797451376915,
+            "maximum": 0.1779848039150238
+          },
+          "response_token_norm": {
+            "mean": 7.20716067484573,
+            "p10": 6.767482471466065,
+            "median": 6.960033893585205,
+            "p90": 7.907452583312988,
+            "maximum": 22.27957534790039
+          },
+          "response_pooled_norm": {
+            "mean": 1.2321206020282374,
+            "p10": 1.1587732553482055,
+            "median": 1.1886561512947083,
+            "p90": 1.3607734203338624,
+            "maximum": 1.8940666913986206
+          },
+          "attention_entropy": {
+            "mean": 5.505331516265869,
+            "p10": 5.505331516265869,
+            "median": 5.505331516265869,
+            "p90": 5.505331516265869,
+            "maximum": 5.505331516265869
+          },
+          "identity_auxiliary_max_abs": {
+            "mean": 0.0,
+            "p10": 0.0,
+            "median": 0.0,
+            "p90": 0.0,
+            "maximum": 0.0
+          },
+          "auxiliary_off_logit_distance": {
+            "mean": 4.9806048730678025,
+            "p10": 3.3201271295547485,
+            "median": 5.194809675216675,
+            "p90": 6.193711280822754,
+            "maximum": 9.108452796936035
+          },
+          "g_identity_logit_distance": {
+            "mean": 4.9806048730678025,
+            "p10": 3.3201271295547485,
+            "median": 5.194809675216675,
+            "p90": 6.193711280822754,
+            "maximum": 9.108452796936035
+          }
+        },
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "g_identity"
+        ],
+        "seconds": 6.782842395012267,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 92934656,
+        "claim": "Whole source V within frozen checkpoint; ablated inputs need not be on training distribution; not retraining causal effect or target generalization."
+      },
+      "log_bytes": 5930,
+      "conditions_done": 3,
+      "errors": []
+    },
+    {
+      "row_id": "response_mean-s2026092704",
+      "state": {
+        "status": "RUNNING",
+        "pid": 2182979,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092704.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092704"
+      },
+      "process": {
+        "pid": 2182979,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092704.json",
+          ""
+        ]
+      },
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092704/source",
+        "variant": "response_mean",
+        "model_seed": 2026092704,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_mean-s2026092704",
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "g_identity"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/response-source-attribution-20261003",
+        "pid": 2182979,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "response_mean",
+          "seed": 2026092704,
+          "accuracy": 0.9832222222222222,
+          "worst_rx": 0.9542592592592593,
+          "parameters": 237147,
+          "macs": 11205232,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092704/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "response_mean",
+        "model_seed": 2026092704,
+        "rows": [
+          {
+            "condition": "all_on",
+            "count": 27000,
+            "accuracy": 0.9832222222222222,
+            "ce": 0.10256705549335304,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9542592592592593,
+              "4": 0.9912962962962963,
+              "6": 0.9948148148148148,
+              "8": 0.9788888888888889
+            },
+            "worst_rx": 0.9542592592592593,
+            "prediction_changes": 0,
+            "helped_by_all_on": 0,
+            "hurt_by_all_on": 0
+          },
+          {
+            "condition": "auxiliary_off",
+            "count": 27000,
+            "accuracy": 0.9825185185185186,
+            "ce": 0.08211306627251691,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9522222222222222,
+              "4": 0.9912962962962963,
+              "6": 0.995,
+              "8": 0.9772222222222222
+            },
+            "worst_rx": 0.9522222222222222,
+            "prediction_changes": 47,
+            "helped_by_all_on": 26,
+            "hurt_by_all_on": 7
+          },
+          {
+            "condition": "g_identity",
+            "count": 27000,
+            "accuracy": 0.9825185185185186,
+            "ce": 0.08211306627251691,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9522222222222222,
+              "4": 0.9912962962962963,
+              "6": 0.995,
+              "8": 0.9772222222222222
+            },
+            "worst_rx": 0.9522222222222222,
+            "prediction_changes": 47,
+            "helped_by_all_on": 26,
+            "hurt_by_all_on": 7
+          }
+        ],
+        "scalar_summary": {
+          "auxiliary_relative": {
+            "mean": 0.480680388448415,
+            "p10": 0.4305598706007004,
+            "median": 0.48653391003608704,
+            "p90": 0.5221731901168823,
+            "maximum": 0.5782131552696228
+          },
+          "g_input_relative": {
+            "mean": 0.11288794707065379,
+            "p10": 0.11122000887989998,
+            "median": 0.11234071478247643,
+            "p90": 0.1157600536942482,
+            "maximum": 0.1349906623363495
+          },
+          "response_feature_relative": {
+            "mean": 0.14114536306262015,
+            "p10": 0.13650128543376921,
+            "median": 0.13948196172714233,
+            "p90": 0.14821757823228837,
+            "maximum": 0.16174249351024628
+          },
+          "response_token_norm": {
+            "mean": 9.092108977176524,
+            "p10": 8.330847358703613,
+            "median": 8.698018550872803,
+            "p90": 10.441987037658691,
+            "maximum": 19.77174949645996
+          },
+          "response_pooled_norm": {
+            "mean": 1.3320530003176796,
+            "p10": 1.2957328796386718,
+            "median": 1.3203133344650269,
+            "p90": 1.3833481669425964,
+            "maximum": 1.548073172569275
+          },
+          "attention_entropy": {
+            "mean": 5.505331516265869,
+            "p10": 5.505331516265869,
+            "median": 5.505331516265869,
+            "p90": 5.505331516265869,
+            "maximum": 5.505331516265869
+          },
+          "identity_auxiliary_max_abs": {
+            "mean": 0.0,
+            "p10": 0.0,
+            "median": 0.0,
+            "p90": 0.0,
+            "maximum": 0.0
+          },
+          "auxiliary_off_logit_distance": {
+            "mean": 5.504964433705365,
+            "p10": 3.285835027694702,
+            "median": 5.654023885726929,
+            "p90": 7.51026520729065,
+            "maximum": 8.76157283782959
+          },
+          "g_identity_logit_distance": {
+            "mean": 5.504964433705365,
+            "p10": 3.285835027694702,
+            "median": 5.654023885726929,
+            "p90": 7.51026520729065,
+            "maximum": 8.76157283782959
+          }
+        },
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "g_identity"
+        ],
+        "seconds": 5.616381708998233,
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_unchanged": true,
+        "peak_cuda_allocated_bytes": 92934656,
+        "claim": "Whole source V within frozen checkpoint; ablated inputs need not be on training distribution; not retraining causal effect or target generalization."
+      },
+      "log_bytes": 5920,
+      "conditions_done": 3,
+      "errors": []
+    },
+    {
+      "row_id": "response_attention-s2026092701",
+      "state": {
+        "status": "RUNNING",
+        "pid": 2183057,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092701"
+      },
+      "process": {
+        "pid": 2183057,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092701.json",
+          ""
+        ]
+      },
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "source_commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092701/source",
+        "variant": "response_attention",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/response_attention-s2026092701",
+        "conditions": [
+          "all_on",
+          "auxiliary_off",
+          "g_identity",
+          "uniform_attention"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/response-source-attribution-20261003",
+        "pid": 2183057,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "response_attention",
+          "seed": 2026092701,
+          "accuracy": 0.9850740740740741,
+          "worst_rx": 0.9587037037037037,
+          "parameters": 237359,
+          "macs": 11252464,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092701/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": null,
+      "log_bytes": 1693,
+      "conditions_done": 0,
+      "errors": []
+    }
+  ]
+}
