@@ -1,1 +1,3 @@
 {"at": "2026-10-03T12:54:25+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-03T13:04:14+00:00", "status": "ARTIFACTS_COMPLETE", "note": "All8 actual frozen weights,720 source cells,512 public pairs complete; no target access or model updates", "evidence": ["evidence/launch.json", "evidence/complete.json"], "row_id": null}
+{"at": "2026-10-03T13:04:14+00:00", "status": "ANALYZED", "note": "Independent Helmert/source balance and all512 public pair metrics VERIFIED; source RX association does not establish channel correction", "evidence": ["evidence/independent_recount.json", "report.md"], "row_id": null}

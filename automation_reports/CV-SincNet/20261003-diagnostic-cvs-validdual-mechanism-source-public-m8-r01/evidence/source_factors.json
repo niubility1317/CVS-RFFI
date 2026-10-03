@@ -1,0 +1,237 @@
+{
+  "rows": [
+    {
+      "between_cell_variance": 0.008174769807214051,
+      "within_cell_variance": 0.0018798456052668607,
+      "total_variance": 0.010054615412480912,
+      "numerical_floor": 1e-12,
+      "degenerate": false,
+      "components": {
+        "TX": 0.0011868406044774095,
+        "RX": 0.005604796880581412,
+        "day": 2.979565047343387e-05,
+        "TX:RX": 0.000928751916615661,
+        "TX:day": 9.886367108725698e-05,
+        "RX:day": 6.547615277272598e-05,
+        "TX:RX:day": 0.00026024493120615046
+      },
+      "fractions_of_total": {
+        "TX": 0.11803938348593328,
+        "RX": 0.5574352325424712,
+        "day": 0.00296338042292977,
+        "TX:RX": 0.09237070524475659,
+        "TX:day": 0.00983266559997276,
+        "RX:day": 0.006512049450588599,
+        "TX:RX:day": 0.02588313133121983
+      },
+      "within_fraction": 0.18696345192212785,
+      "row_id": "validdual_dynamic-s2026092701",
+      "variant": "validdual_dynamic",
+      "model_seed": 2026092701
+    },
+    {
+      "between_cell_variance": 0.010466332968863675,
+      "within_cell_variance": 0.0018185214894400148,
+      "total_variance": 0.01228485445830369,
+      "numerical_floor": 1e-12,
+      "degenerate": false,
+      "components": {
+        "TX": 0.0009644524275481463,
+        "RX": 0.008494598003983644,
+        "day": 1.3742561083901103e-05,
+        "TX:RX": 0.0007693686532871019,
+        "TX:day": 4.640741608951203e-05,
+        "RX:day": 2.5066078386382536e-05,
+        "TX:RX:day": 0.00015269782848498876
+      },
+      "fractions_of_total": {
+        "TX": 0.07850743619483785,
+        "RX": 0.6914691608936319,
+        "day": 0.0011186588437449585,
+        "TX:RX": 0.06262741295783633,
+        "TX:day": 0.0037776122010256224,
+        "RX:day": 0.002040404993926456,
+        "TX:RX:day": 0.01242976292501177
+      },
+      "within_fraction": 0.14802955098998535,
+      "row_id": "validdual_dynamic-s2026092702",
+      "variant": "validdual_dynamic",
+      "model_seed": 2026092702
+    },
+    {
+      "between_cell_variance": 0.003608679059211651,
+      "within_cell_variance": 0.0011317759732975571,
+      "total_variance": 0.004740455032509208,
+      "numerical_floor": 1e-12,
+      "degenerate": false,
+      "components": {
+        "TX": 0.000504841094958963,
+        "RX": 0.002399418668373213,
+        "day": 2.3345632591140384e-05,
+        "TX:RX": 0.000452760826072801,
+        "TX:day": 6.69875021864689e-05,
+        "RX:day": 2.9005067311874788e-05,
+        "TX:RX:day": 0.0001323202677171877
+      },
+      "fractions_of_total": {
+        "TX": 0.10649633663790742,
+        "RX": 0.5061578797643731,
+        "day": 0.00492476617350869,
+        "TX:RX": 0.09550999281036246,
+        "TX:day": 0.01413102787118122,
+        "RX:day": 0.006118625134710303,
+        "TX:RX:day": 0.027912988691962806
+      },
+      "within_fraction": 0.23874838291599357,
+      "row_id": "validdual_dynamic-s2026092703",
+      "variant": "validdual_dynamic",
+      "model_seed": 2026092703
+    },
+    {
+      "between_cell_variance": 0.0026065778803516853,
+      "within_cell_variance": 0.0010121711261097963,
+      "total_variance": 0.0036187490064614816,
+      "numerical_floor": 1e-12,
+      "degenerate": false,
+      "components": {
+        "TX": 0.0006614944590141088,
+        "RX": 0.0009799105378160277,
+        "day": 2.126411840438992e-05,
+        "TX:RX": 0.0005799661677005377,
+        "TX:day": 8.573980214209503e-05,
+        "RX:day": 4.96846318052295e-05,
+        "TX:RX:day": 0.00022851816346929632
+      },
+      "fractions_of_total": {
+        "TX": 0.18279644646063403,
+        "RX": 0.2707870968852335,
+        "day": 0.0058760965091587255,
+        "TX:RX": 0.16026703334908698,
+        "TX:day": 0.023693216077987654,
+        "RX:day": 0.013729781125055861,
+        "TX:RX:day": 0.06314838720819382
+      },
+      "within_fraction": 0.2797019423846493,
+      "row_id": "validdual_dynamic-s2026092704",
+      "variant": "validdual_dynamic",
+      "model_seed": 2026092704
+    },
+    {
+      "between_cell_variance": 0.0,
+      "within_cell_variance": 0.0,
+      "total_variance": 0.0,
+      "numerical_floor": 1e-12,
+      "degenerate": true,
+      "components": {
+        "TX": 0.0,
+        "RX": 0.0,
+        "day": 0.0,
+        "TX:RX": 0.0,
+        "TX:day": 0.0,
+        "RX:day": 0.0,
+        "TX:RX:day": 0.0
+      },
+      "fractions_of_total": {
+        "TX": null,
+        "RX": null,
+        "day": null,
+        "TX:RX": null,
+        "TX:day": null,
+        "RX:day": null,
+        "TX:RX:day": null
+      },
+      "within_fraction": null,
+      "row_id": "validdual_static-s2026092701",
+      "variant": "validdual_static",
+      "model_seed": 2026092701
+    },
+    {
+      "between_cell_variance": 0.0,
+      "within_cell_variance": 8.326672684688674e-17,
+      "total_variance": 8.326672684688674e-17,
+      "numerical_floor": 1e-12,
+      "degenerate": true,
+      "components": {
+        "TX": 0.0,
+        "RX": 0.0,
+        "day": 0.0,
+        "TX:RX": 0.0,
+        "TX:day": 0.0,
+        "RX:day": 0.0,
+        "TX:RX:day": 0.0
+      },
+      "fractions_of_total": {
+        "TX": null,
+        "RX": null,
+        "day": null,
+        "TX:RX": null,
+        "TX:day": null,
+        "RX:day": null,
+        "TX:RX:day": null
+      },
+      "within_fraction": null,
+      "row_id": "validdual_static-s2026092702",
+      "variant": "validdual_static",
+      "model_seed": 2026092702
+    },
+    {
+      "between_cell_variance": 0.0,
+      "within_cell_variance": 0.0,
+      "total_variance": 0.0,
+      "numerical_floor": 1e-12,
+      "degenerate": true,
+      "components": {
+        "TX": 0.0,
+        "RX": 0.0,
+        "day": 0.0,
+        "TX:RX": 0.0,
+        "TX:day": 0.0,
+        "RX:day": 0.0,
+        "TX:RX:day": 0.0
+      },
+      "fractions_of_total": {
+        "TX": null,
+        "RX": null,
+        "day": null,
+        "TX:RX": null,
+        "TX:day": null,
+        "RX:day": null,
+        "TX:RX:day": null
+      },
+      "within_fraction": null,
+      "row_id": "validdual_static-s2026092703",
+      "variant": "validdual_static",
+      "model_seed": 2026092703
+    },
+    {
+      "between_cell_variance": 0.0,
+      "within_cell_variance": 3.7470027081099033e-16,
+      "total_variance": 3.7470027081099033e-16,
+      "numerical_floor": 1e-12,
+      "degenerate": true,
+      "components": {
+        "TX": 0.0,
+        "RX": 0.0,
+        "day": 0.0,
+        "TX:RX": 0.0,
+        "TX:day": 0.0,
+        "RX:day": 0.0,
+        "TX:RX:day": 0.0
+      },
+      "fractions_of_total": {
+        "TX": null,
+        "RX": null,
+        "day": null,
+        "TX:RX": null,
+        "TX:day": null,
+        "RX:day": null,
+        "TX:RX:day": null
+      },
+      "within_fraction": null,
+      "row_id": "validdual_static-s2026092704",
+      "variant": "validdual_static",
+      "model_seed": 2026092704
+    }
+  ],
+  "scope": "720 source cells,8 reused frozen networks,27000 distinct V IDs per network; no new fit or target access"
+}

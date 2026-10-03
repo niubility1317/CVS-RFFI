@@ -21,11 +21,11 @@
   "replaces_run_id": null,
   "authorization": "用户要求继续纯神经架构优化并深入分析，原CE不变；本次只读既有源聚合诊断和所有8份冻结权重，公开信号无TX标签。",
   "code": {
-    "commit": "f8b66f3d9ac0a75cb28de499dedaaed0d28490cd",
+    "commit": "5e20e4e799e0053b9f509f4753e041aec354f78e",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
     "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
-    "commit_role": "preparation base; actual committed execution recorded in launch.json"
+    "commit_role": "actual local diagnostic execution"
   },
   "data": {
     "dataset": "Existing complete source V moments +16 deterministic public continuous320-sample signals",
@@ -91,7 +91,23 @@
     "remote_log_root": null,
     "local_artifact_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01",
     "launch_command": "python -X utf8 -m experiments.cvs_validdual_mechanism.fetch; then python -X utf8 -m experiments.cvs_validdual_mechanism.analyze; then python -X utf8 -m experiments.cvs_validdual_mechanism.recount",
-    "stop_rule": "Fail on wrong source contract/nonfinite artifacts/missing or duplicate cells or rows/output collision; preserve partial; no automatic restart"
+    "stop_rule": "Fail on wrong source contract/nonfinite artifacts/missing or duplicate cells or rows/output collision; preserve partial; no automatic restart",
+    "pid": 25364,
+    "elapsed_seconds": 1.9141581999720074,
+    "actual_environment": {
+      "pid": 25364,
+      "argv": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\cvs_validdual_mechanism\\analyze.py"
+      ],
+      "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+      "commit": "5e20e4e799e0053b9f509f4753e041aec354f78e",
+      "source_commit": "91ade405e1cec130805289ea2517c1b3ab659a02",
+      "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+      "torch": "2.10.0+cu128",
+      "numpy": "2.2.6",
+      "device": "cpu",
+      "target_access": false
+    }
   },
   "expected_artifacts": [
     "analysis/launch.json",
@@ -152,7 +168,8 @@
       "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
       "expected_artifacts": [
         "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_dynamic-s2026092701.npz"
-      ]
+      ],
+      "status": "ANALYZED"
     },
     {
       "row_id": "validdual_dynamic-s2026092702",
@@ -187,7 +204,8 @@
       "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
       "expected_artifacts": [
         "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_dynamic-s2026092702.npz"
-      ]
+      ],
+      "status": "ANALYZED"
     },
     {
       "row_id": "validdual_dynamic-s2026092703",
@@ -222,7 +240,8 @@
       "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
       "expected_artifacts": [
         "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_dynamic-s2026092703.npz"
-      ]
+      ],
+      "status": "ANALYZED"
     },
     {
       "row_id": "validdual_dynamic-s2026092704",
@@ -257,7 +276,8 @@
       "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
       "expected_artifacts": [
         "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_dynamic-s2026092704.npz"
-      ]
+      ],
+      "status": "ANALYZED"
     },
     {
       "row_id": "validdual_static-s2026092701",
@@ -292,7 +312,8 @@
       "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
       "expected_artifacts": [
         "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_static-s2026092701.npz"
-      ]
+      ],
+      "status": "ANALYZED"
     },
     {
       "row_id": "validdual_static-s2026092702",
@@ -327,7 +348,8 @@
       "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
       "expected_artifacts": [
         "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_static-s2026092702.npz"
-      ]
+      ],
+      "status": "ANALYZED"
     },
     {
       "row_id": "validdual_static-s2026092703",
@@ -362,7 +384,8 @@
       "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
       "expected_artifacts": [
         "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_static-s2026092703.npz"
-      ]
+      ],
+      "status": "ANALYZED"
     },
     {
       "row_id": "validdual_static-s2026092704",
@@ -397,7 +420,8 @@
       "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
       "expected_artifacts": [
         "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_static-s2026092704.npz"
-      ]
+      ],
+      "status": "ANALYZED"
     }
   ],
   "notes": [
@@ -408,6 +432,14 @@
     "Raw-path feature comparison uses same jointly trained weights, not independent architecture ablation.",
     "Numerical-floor ratios null, static coefficient variance <=1e-12 not interpreted as percentages."
   ],
-  "status": "LOCAL_VERIFIED",
-  "registered_at": "2026-10-03T12:54:25+00:00"
+  "status": "ANALYZED",
+  "registered_at": "2026-10-03T12:54:25+00:00",
+  "outcome": {
+    "status": "VERIFIED",
+    "source_cells": 720,
+    "public_pairs": 512,
+    "updated_weights": false,
+    "target_access": false,
+    "performance_goal_achieved": false
+  }
 }

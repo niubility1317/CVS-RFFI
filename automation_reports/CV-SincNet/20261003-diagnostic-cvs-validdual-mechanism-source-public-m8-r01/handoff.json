@@ -1,11 +1,22 @@
 {
   "run_id": "20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01",
-  "status": "LOCAL_VERIFIED",
-  "next": [
-    "Independent P0/P1 correctness review",
-    "Commit/push then read-only fixed8checkpoint download",
-    "Run CPU source/public analysis and independent recount",
-    "Report mechanism evidence and Git delivery"
+  "status": "ANALYZED",
+  "execution_commit": "5e20e4e799e0053b9f509f4753e041aec354f78e",
+  "evidence": [
+    "evidence/independent_recount.json",
+    "report.md"
   ],
-  "performance_goal_achieved": false
+  "source_public_only": true,
+  "findings": {
+    "RX_variance_fraction_mean": 0.5064623425214274,
+    "TX_variance_fraction_mean": 0.12145990069482815,
+    "public_broadband_waveform_correction": "near unity; no clear nuisance suppression"
+  },
+  "next": [
+    "Use source/public evidence to make any new conditional-transform architecture mathematically explicit",
+    "Preserve singleCE and training; do not use target metrics for architecture or hyperparameter selection",
+    "All312 existing registered frozen checkpoints already have clean results; no retest required for this diagnostic"
+  ],
+  "performance_goal_achieved": false,
+  "paper_claim_established": false
 }
