@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T12:42:35+00:00
+更新：2026-10-03T12:59:20+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|96|
+|managed_run|97|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,7 +21,7 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|241|
+|[cvs](by_method/cvs.md)|242|
 |[adv3b02](by_method/adv3b02.md)|146|
 |[phase2](by_method/phase2.md)|118|
 |[phase1](by_method/phase1.md)|113|
@@ -37,7 +37,7 @@
 |[rff_physics](by_method/rff_physics.md)|20|
 |[source_selected](by_method/source_selected.md)|18|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|17|
-|[source_only](by_method/source_only.md)|15|
+|[source_only](by_method/source_only.md)|16|
 |[d92](by_method/d92.md)|15|
 |[diagnostic](by_method/diagnostic.md)|14|
 |[response](by_method/response.md)|13|
@@ -73,6 +73,7 @@
 |[packet_synchronization](by_method/packet_synchronization.md)|3|
 |[fixed_parameter_budget](by_method/fixed_parameter_budget.md)|3|
 |[public_only](by_method/public_only.md)|3|
+|[valid_history](by_method/valid_history.md)|3|
 |[packet_compensation](by_method/packet_compensation.md)|3|
 |[smoke](by_method/smoke.md)|3|
 |[evaluation](by_method/evaluation.md)|2|
@@ -94,7 +95,6 @@
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
 |[benchmark_informed](by_method/benchmark_informed.md)|2|
-|[valid_history](by_method/valid_history.md)|2|
 |[dual_path](by_method/dual_path.md)|2|
 |[fixed_comparison](by_method/fixed_comparison.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
@@ -151,6 +151,8 @@
 |[relation_attribution](by_method/relation_attribution.md)|1|
 |[response_attribution](by_method/response_attribution.md)|1|
 |[response_geometry](by_method/response_geometry.md)|1|
+|[mechanism](by_method/mechanism.md)|1|
+|[public_signals](by_method/public_signals.md)|1|
 |[backfill](by_method/backfill.md)|1|
 |[all_frozen](by_method/all_frozen.md)|1|
 |[channel_order](by_method/channel_order.md)|1|
@@ -248,6 +250,7 @@
 |谱关系与镜像子空间的完整源域归因|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/report.md)|
 |CVS显式补偿响应：完整源V冻结归因|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)|
 |CVS补偿响应：完整源V判别几何|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|
+|双路径冻结机制诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01/report.md)|
 |全部既有冻结架构的clean测试结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)|
 |CVS 信道与非线性运算次序：独立 clean 结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/report.md)|
 |CVS信道补偿与顺序差值：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md)|
@@ -288,4 +291,3 @@
 |cvs_curvature_attribution_source_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_curvature_attribution_source_20261002_r01)|
 |cvs_phase_curvature_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_phase_curvature_identity_20261002_r01)|
 |CVS分层相位曲率残差|legacy_evidence_group|[打开](../docs/CVS_FEATURE_PHASE_CURVATURE_20261002.md)|
-|cvs_moment_residual_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_moment_residual_identity_20261002_r01)|

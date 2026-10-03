@@ -1,0 +1,412 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01",
+  "group_id": "cvs-validdual-frozen-mechanism-source-public",
+  "display_name": "CVS双路径冻结机制：源域因素分解与连续前历史公开信道探针",
+  "description": "完整源V系数矩分解TX/RX/day主效应与交互；固定8个E200模型对公开连续前历史信号的已知相位/两径变化敏感度。无目标访问、训练、模型选择或新增权重。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-public-diagnostic",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "valid_history",
+    "mechanism",
+    "source_only",
+    "public_signals"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261003-phase1-cvs-validdual-identity-manysig-m8-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求继续纯神经架构优化并深入分析，原CE不变；本次只读既有源聚合诊断和所有8份冻结权重，公开信号无TX标签。",
+  "code": {
+    "commit": "f8b66f3d9ac0a75cb28de499dedaaed0d28490cd",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+    "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "commit_role": "preparation base; actual committed execution recorded in launch.json"
+  },
+  "data": {
+    "dataset": "Existing complete source V moments +16 deterministic public continuous320-sample signals",
+    "version": "source commit 91ade405e1cec130805289ea2517c1b3ab659a02",
+    "representation": "source66D coefficients; public center-last256 IQ unit RMS with64sample actual prehistory",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 source TX; public signals have no transmitter labels",
+    "roles": {
+      "L_s": 0,
+      "U_s": 0,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "frozen_source_public_only",
+    "query_use": "forbidden; no target IQ/truth/metrics opened",
+    "external_method_exception": null,
+    "claim_scope": "Descriptive source factor association and within-frozen-model public response only; not causal disentanglement or new target performance"
+  },
+  "checkpoint": {
+    "initialization": "read-only all8 fixed E200 weights",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_dynamic-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_dynamic-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_dynamic-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_dynamic-s2026092704/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_static-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_static-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_static-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_static-s2026092704/source/last.pt"
+    ],
+    "contract_check_ref": "../20261003-phase1-cvs-validdual-identity-manysig-m8-r01/evidence/frozen_source_matrix.json",
+    "provenance_verdict": "Existing source validation reused; actual payload/config/roles/ancestry strictly rechecked by validate_payload before inference",
+    "selection_rule": "all static/dynamic x4seeds; no elimination"
+  },
+  "execution": {
+    "host": "local Windows CPU; N607 read-only checkpoint download",
+    "launch_owner": "codex/root/validdual-mechanism-20261003",
+    "gpu_policy": "no GPU used",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01",
+    "launch_command": "python -X utf8 -m experiments.cvs_validdual_mechanism.fetch; then python -X utf8 -m experiments.cvs_validdual_mechanism.analyze; then python -X utf8 -m experiments.cvs_validdual_mechanism.recount",
+    "stop_rule": "Fail on wrong source contract/nonfinite artifacts/missing or duplicate cells or rows/output collision; preserve partial; no automatic restart"
+  },
+  "expected_artifacts": [
+    "analysis/launch.json",
+    "analysis/source_factors.json",
+    "analysis/public_inputs.npz",
+    "analysis/public_records.json",
+    "analysis/public_metrics.json",
+    "analysis/public_metrics.csv",
+    "analysis/complete.json",
+    "analysis/independent_recount.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "balanced_source_coefficient_variance_components",
+      "public_normalized_input_and_feature_drift",
+      "coefficient_change",
+      "conditional_correction_and_feature_ratios"
+    ],
+    "dimensions": [
+      "all8 frozen rows",
+      "720 source cells",
+      "16public signals x4channel changes x8rows=512paired probes"
+    ],
+    "prediction_ref": "N/A no new identity classification; per-row raw feature arrays in NPZ",
+    "scorer_ref": "experiments/cvs_validdual_mechanism/recount.py; Helmert contrasts independent of mean-subtraction decomposition"
+  },
+  "rows": [
+    {
+      "row_id": "validdual_dynamic-s2026092701",
+      "method": "validdual_dynamic frozen evaluation",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/cvs_validdual_mechanism/configs/experiment_spec.json#rows/validdual_dynamic-s2026092701",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_validdual_clean_20261003_r01\\completed\\source\\validdual_dynamic-s2026092701\\resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 91001
+      },
+      "seed_notes": "Model/split describe original frozen model; evaluation=91001 is public generator base, actual independent seeds91001..91004 for each family; public seeds generate signals only. No random source sampling, augmentation, support, training or target evaluation; other seed roles N/A.",
+      "k": null,
+      "scenario": [
+        "public_phase0.4rad",
+        "public_two_path_delay1",
+        "public_two_path_delay4",
+        "public_two_path_delay16"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "90complete source cells x300examples,16publicwaveforms x5views including identity; no optimizer",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_dynamic-s2026092701.npz",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\stdout.log",
+      "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
+      "expected_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_dynamic-s2026092701.npz"
+      ]
+    },
+    {
+      "row_id": "validdual_dynamic-s2026092702",
+      "method": "validdual_dynamic frozen evaluation",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/cvs_validdual_mechanism/configs/experiment_spec.json#rows/validdual_dynamic-s2026092702",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_validdual_clean_20261003_r01\\completed\\source\\validdual_dynamic-s2026092702\\resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 91001
+      },
+      "seed_notes": "Model/split describe original frozen model; evaluation=91001 is public generator base, actual independent seeds91001..91004 for each family; public seeds generate signals only. No random source sampling, augmentation, support, training or target evaluation; other seed roles N/A.",
+      "k": null,
+      "scenario": [
+        "public_phase0.4rad",
+        "public_two_path_delay1",
+        "public_two_path_delay4",
+        "public_two_path_delay16"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "90complete source cells x300examples,16publicwaveforms x5views including identity; no optimizer",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_dynamic-s2026092702.npz",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\stdout.log",
+      "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
+      "expected_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_dynamic-s2026092702.npz"
+      ]
+    },
+    {
+      "row_id": "validdual_dynamic-s2026092703",
+      "method": "validdual_dynamic frozen evaluation",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/cvs_validdual_mechanism/configs/experiment_spec.json#rows/validdual_dynamic-s2026092703",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_validdual_clean_20261003_r01\\completed\\source\\validdual_dynamic-s2026092703\\resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 91001
+      },
+      "seed_notes": "Model/split describe original frozen model; evaluation=91001 is public generator base, actual independent seeds91001..91004 for each family; public seeds generate signals only. No random source sampling, augmentation, support, training or target evaluation; other seed roles N/A.",
+      "k": null,
+      "scenario": [
+        "public_phase0.4rad",
+        "public_two_path_delay1",
+        "public_two_path_delay4",
+        "public_two_path_delay16"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "90complete source cells x300examples,16publicwaveforms x5views including identity; no optimizer",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_dynamic-s2026092703.npz",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\stdout.log",
+      "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
+      "expected_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_dynamic-s2026092703.npz"
+      ]
+    },
+    {
+      "row_id": "validdual_dynamic-s2026092704",
+      "method": "validdual_dynamic frozen evaluation",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/cvs_validdual_mechanism/configs/experiment_spec.json#rows/validdual_dynamic-s2026092704",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_validdual_clean_20261003_r01\\completed\\source\\validdual_dynamic-s2026092704\\resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 91001
+      },
+      "seed_notes": "Model/split describe original frozen model; evaluation=91001 is public generator base, actual independent seeds91001..91004 for each family; public seeds generate signals only. No random source sampling, augmentation, support, training or target evaluation; other seed roles N/A.",
+      "k": null,
+      "scenario": [
+        "public_phase0.4rad",
+        "public_two_path_delay1",
+        "public_two_path_delay4",
+        "public_two_path_delay16"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "90complete source cells x300examples,16publicwaveforms x5views including identity; no optimizer",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_dynamic-s2026092704.npz",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\stdout.log",
+      "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
+      "expected_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_dynamic-s2026092704.npz"
+      ]
+    },
+    {
+      "row_id": "validdual_static-s2026092701",
+      "method": "validdual_static frozen evaluation",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/cvs_validdual_mechanism/configs/experiment_spec.json#rows/validdual_static-s2026092701",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_validdual_clean_20261003_r01\\completed\\source\\validdual_static-s2026092701\\resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 91001
+      },
+      "seed_notes": "Model/split describe original frozen model; evaluation=91001 is public generator base, actual independent seeds91001..91004 for each family; public seeds generate signals only. No random source sampling, augmentation, support, training or target evaluation; other seed roles N/A.",
+      "k": null,
+      "scenario": [
+        "public_phase0.4rad",
+        "public_two_path_delay1",
+        "public_two_path_delay4",
+        "public_two_path_delay16"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "90complete source cells x300examples,16publicwaveforms x5views including identity; no optimizer",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_static-s2026092701.npz",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\stdout.log",
+      "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
+      "expected_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_static-s2026092701.npz"
+      ]
+    },
+    {
+      "row_id": "validdual_static-s2026092702",
+      "method": "validdual_static frozen evaluation",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/cvs_validdual_mechanism/configs/experiment_spec.json#rows/validdual_static-s2026092702",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_validdual_clean_20261003_r01\\completed\\source\\validdual_static-s2026092702\\resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 91001
+      },
+      "seed_notes": "Model/split describe original frozen model; evaluation=91001 is public generator base, actual independent seeds91001..91004 for each family; public seeds generate signals only. No random source sampling, augmentation, support, training or target evaluation; other seed roles N/A.",
+      "k": null,
+      "scenario": [
+        "public_phase0.4rad",
+        "public_two_path_delay1",
+        "public_two_path_delay4",
+        "public_two_path_delay16"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "90complete source cells x300examples,16publicwaveforms x5views including identity; no optimizer",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_static-s2026092702.npz",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\stdout.log",
+      "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
+      "expected_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_static-s2026092702.npz"
+      ]
+    },
+    {
+      "row_id": "validdual_static-s2026092703",
+      "method": "validdual_static frozen evaluation",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/cvs_validdual_mechanism/configs/experiment_spec.json#rows/validdual_static-s2026092703",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_validdual_clean_20261003_r01\\completed\\source\\validdual_static-s2026092703\\resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 91001
+      },
+      "seed_notes": "Model/split describe original frozen model; evaluation=91001 is public generator base, actual independent seeds91001..91004 for each family; public seeds generate signals only. No random source sampling, augmentation, support, training or target evaluation; other seed roles N/A.",
+      "k": null,
+      "scenario": [
+        "public_phase0.4rad",
+        "public_two_path_delay1",
+        "public_two_path_delay4",
+        "public_two_path_delay16"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "90complete source cells x300examples,16publicwaveforms x5views including identity; no optimizer",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_static-s2026092703.npz",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\stdout.log",
+      "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
+      "expected_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_static-s2026092703.npz"
+      ]
+    },
+    {
+      "row_id": "validdual_static-s2026092704",
+      "method": "validdual_static frozen evaluation",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/cvs_validdual_mechanism/configs/experiment_spec.json#rows/validdual_static-s2026092704",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_validdual_clean_20261003_r01\\completed\\source\\validdual_static-s2026092704\\resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 91001
+      },
+      "seed_notes": "Model/split describe original frozen model; evaluation=91001 is public generator base, actual independent seeds91001..91004 for each family; public seeds generate signals only. No random source sampling, augmentation, support, training or target evaluation; other seed roles N/A.",
+      "k": null,
+      "scenario": [
+        "public_phase0.4rad",
+        "public_two_path_delay1",
+        "public_two_path_delay4",
+        "public_two_path_delay16"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "90complete source cells x300examples,16publicwaveforms x5views including identity; no optimizer",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_static-s2026092704.npz",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\stdout.log",
+      "command": "python -X utf8 -m experiments.cvs_validdual_mechanism.analyze",
+      "expected_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01\\analysis\\validdual_static-s2026092704.npz"
+      ]
+    }
+  ],
+  "notes": [
+    "Source moments already collected; no new sample/data revalidation. N607 only downloads immutable files.",
+    "No added loss or augmentation training. Public perturbations diagnostic only.",
+    "Original all8 models already tested in 20261003-phase1-cvs-validdual-clean-manysig-m8-r01; no new checkpoint or target retest.",
+    "ANOVA describes associations not causation; within-cell residual includes packet/channel/content variability.",
+    "Raw-path feature comparison uses same jointly trained weights, not independent architecture ablation.",
+    "Numerical-floor ratios null, static coefficient variance <=1e-12 not interpreted as percentages."
+  ],
+  "status": "LOCAL_VERIFIED"
+}

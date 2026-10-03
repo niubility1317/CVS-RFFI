@@ -6,5 +6,6 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|双路径冻结机制诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01/report.md)|
 |有效历史双路径：完整测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-validdual-clean-manysig-m8-r01/report.md)|
 |有效历史滤波与原始指纹双路径|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/report.md)|

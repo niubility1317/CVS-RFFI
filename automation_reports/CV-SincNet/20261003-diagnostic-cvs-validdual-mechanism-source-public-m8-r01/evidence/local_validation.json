@@ -1,0 +1,17 @@
+{
+  "status": "VERIFIED",
+  "tests": 20,
+  "chunk": "bc72ae",
+  "scope": "Balanced ANOVA independent contrasts and isolated factors; malformed moments; static null; continuous history/RMS",
+  "complete_recount_fixture": true,
+  "negative_cases": [
+    "missing last pair",
+    "tampered drift",
+    "existing proof",
+    "within_fraction=7",
+    "cell count=1",
+    "wrong degenerate flag",
+    "model seed label",
+    "public signal family"
+  ]
+}
