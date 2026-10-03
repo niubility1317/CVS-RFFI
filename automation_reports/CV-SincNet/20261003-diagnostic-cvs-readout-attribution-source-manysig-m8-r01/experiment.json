@@ -1,0 +1,415 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01",
+  "group_id": "cvs-readout-frozen-source-attribution",
+  "display_name": "CVS读出：完整源V分支归因与TX/RX/日期关联",
+  "description": "冻结8个E200读出模型，四条件配对推理与平衡三因素特征散度；仅源V，不更新模型或源选择。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-V-frozen-attribution",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "source_only",
+    "diagnostic",
+    "readout_attribution",
+    "no_training"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [
+    "20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权继续优化纯神经网络架构并深入分析；原单CE训练不变，本诊断仅补充冻结源机制证据。",
+  "code": {
+    "commit": "7f2666f0fa107a0dd5aac410f1722f6ebfb6a395",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01",
+    "architecture_base_commit": "6ca7a522bb4be34993f442129870e68cec61bbc7",
+    "commit_scope": "Preparation baseline; actual diagnostic release commit recorded after launch. Model imported from original immutable source release."
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center256; unit packet RMS; fs=25000000Hz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "each row source_output/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "ManySig.tx_list: all6; actual physical class strings exported at runtime",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "NONE; source V only",
+    "external_method_exception": null,
+    "claim_scope": "Within-checkpoint source intervention and balanced observed-factor association; not causal channel disentanglement, retrained ablation or target generalization",
+    "target_access": false,
+    "training": false
+  },
+  "checkpoint": {
+    "initialization": "load_verified_source_scratch_E200_frozen_only",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092704/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092704/source/last.pt"
+    ],
+    "provenance_verdict": "Before strict load, require complete source metadata and E200 payload/physical contract; no inherited training state",
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "selection_rule": "Fixed original E200 per registered seed; no checkpoint selection or inheritance for training",
+    "mode": "frozen_source_diagnostic_only"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/readout-source-attribution-20261003",
+    "gpu_policy": "Available capacity only;at most two total training jobs/GPU;>=12GB free;no healthy task interference",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01",
+    "launch_command": "python -m experiments.cvs_readout_attribution.publish --output local_artifacts/cvs_readout_attribution_source_20261003_r01/delivery",
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "completion.json",
+    "source_readout_geometry.npz",
+    "independent_recount.json",
+    "report.md"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_accuracy",
+      "source_CE",
+      "worst_source_RX",
+      "paired_help_hurt",
+      "branch_accuracy_interaction",
+      "delta_skip_norm_ratio",
+      "balanced_TX_RX_day_scatter"
+    ],
+    "primary": "All 27000 V packets for each of four conditions; independently recount logits/CE and feature factors",
+    "aggregation": "Four model seeds, same source split; full ALL/RX/TXRXday and paired conditions; no new selection",
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/*/source_readout_geometry.npz",
+    "limitations": "RX/day factors are observational and confounded with capture conditions; no physical channel labels; frozen interventions may leave training distribution"
+  },
+  "rows": [
+    {
+      "row_id": "readout_attention-s2026092701",
+      "method": "readout_attention",
+      "purpose": "frozen_full_source_V_readout_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_attention-s2026092701",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "27000 source V packets x four frozen conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092701.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_readout_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "readout_attention-s2026092702",
+      "method": "readout_attention",
+      "purpose": "frozen_full_source_V_readout_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_attention-s2026092702",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "27000 source V packets x four frozen conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092702.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_readout_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "readout_attention-s2026092703",
+      "method": "readout_attention",
+      "purpose": "frozen_full_source_V_readout_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_attention-s2026092703",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "27000 source V packets x four frozen conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092703.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_readout_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "readout_attention-s2026092704",
+      "method": "readout_attention",
+      "purpose": "frozen_full_source_V_readout_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_attention-s2026092704",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "27000 source V packets x four frozen conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092704.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_readout_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "readout_complex_attention-s2026092701",
+      "method": "readout_complex_attention",
+      "purpose": "frozen_full_source_V_readout_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_complex_attention-s2026092701",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "27000 source V packets x four frozen conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092701.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_readout_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "readout_complex_attention-s2026092702",
+      "method": "readout_complex_attention",
+      "purpose": "frozen_full_source_V_readout_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_complex_attention-s2026092702",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "27000 source V packets x four frozen conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092702.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_readout_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "readout_complex_attention-s2026092703",
+      "method": "readout_complex_attention",
+      "purpose": "frozen_full_source_V_readout_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_complex_attention-s2026092703",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "27000 source V packets x four frozen conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092703.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_readout_geometry.npz"
+      ]
+    },
+    {
+      "row_id": "readout_complex_attention-s2026092704",
+      "method": "readout_complex_attention",
+      "purpose": "frozen_full_source_V_readout_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_complex_attention-s2026092704",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "27000 source V packets x four frozen conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092704.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_readout_geometry.npz"
+      ]
+    }
+  ],
+  "notes": [
+    "8 frozen E200 models x4 conditions x27000 source V =864000 decisions; only27000 unique physical packets",
+    "Off means original readout skip returned by a temporary hook; preserve trained backbone, parameters, statistics and head",
+    "Store exact all_on/time_off/behavior_off/both_off logits and four readout tensors for independent offline recount",
+    "Equal-sized 6TXx5RXx3day cells permit orthogonal descriptive 7-effect plus within-cell scatter decomposition",
+    "Full-V feature geometry stays on ground N607; no source features enter Phase2 or target runtime",
+    "Source-only diagnostic, no new trainable candidate; retained source winner and its completed clean evidence remain unchanged"
+  ],
+  "status": "PLANNED",
+  "test_completion_plan": {
+    "status": "NOT_APPLICABLE_SOURCE_DIAGNOSTIC",
+    "reason": "No new candidate or source reselection; retained Anchor clean already verified in parent; no unselected readout query permitted"
+  },
+  "registered_at": "2026-10-03T04:38:58+00:00"
+}

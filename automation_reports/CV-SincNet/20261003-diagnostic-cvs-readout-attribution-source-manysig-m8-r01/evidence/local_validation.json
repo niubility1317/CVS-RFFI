@@ -1,0 +1,18 @@
+{
+  "status": "VERIFIED",
+  "run_tests": 13,
+  "statistics_tests": 25,
+  "code_scope": "Frozen source intervention and independent array analysis",
+  "formal_data_access": false,
+  "validation_commands": [
+    "python -m pytest tests/test_cvs_readout_attribution_run.py -q",
+    "python -m pytest tests/test_cvs_readout_attribution_statistics.py -q"
+  ],
+  "source_release_commit": "6ca7a522bb4be34993f442129870e68cec61bbc7",
+  "independent_review": {
+    "status": "PASS",
+    "reviewer": "/root/source_architecture_audit",
+    "blocking_findings": [],
+    "scope": "frozen source provenance, four hooks, paired32conditions, 864000 decisions, factor reconstruction, four-file release and embedded scripts"
+  }
+}
