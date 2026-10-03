@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS全主干前置滤波：逐包/训练源均值/恒等输入的固定权重诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/report.md)|
+|CVS全主干前置滤波：固定权重源域反事实|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/report.md)|

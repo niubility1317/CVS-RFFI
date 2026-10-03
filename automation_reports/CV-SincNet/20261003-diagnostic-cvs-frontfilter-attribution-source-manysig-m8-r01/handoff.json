@@ -1,13 +1,16 @@
 {
   "run_id": "20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01",
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "launch_owner": "codex/root/frontfilter-source-attribution-20261003",
   "live_workers": 0,
+  "code_commit": "9790e8c2a4ba7ffdc35306e1b0fe5cbba7d05dbf",
   "source_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+  "latest_evidence": "evidence/independent_recount.json",
   "target_access": false,
+  "performance_goal_achieved": false,
   "next": [
-    "Commit/push code and preregistration; record actual implementation commit",
-    "Publish once with resource/path preflight; validate actual launch PID/GPU/log growth",
-    "After exact8workers terminal collect/recount24conditions648000predictions and50400Lcoefficients; report and commit without target access"
+    "Do not relaunch this completed diagnostic",
+    "Develop the next architecture from source-only evidence; static filter dependence is not benefit over scratch control",
+    "Retain original single CE, training budget and data roles; preregister any new candidate before fresh training"
   ]
 }

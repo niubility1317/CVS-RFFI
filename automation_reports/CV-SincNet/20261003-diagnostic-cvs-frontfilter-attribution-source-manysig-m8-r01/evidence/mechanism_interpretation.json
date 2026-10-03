@@ -1,0 +1,102 @@
+{
+  "status": "ANALYZED",
+  "results": {
+    "frontfilter_static": {
+      "scalar_means": {
+        "g_identity_logit_max_abs_difference": 2.8432493744154494,
+        "mean_L_feature_relative": 0.0,
+        "g_identity_feature_distance": 2.663204305017436,
+        "kernel_l1": 0.8546101599931717,
+        "g_identity_logit_distance": 3.9293005592454637,
+        "g_input_relative": 0.13323207419869249,
+        "mean_L_input_relative": 0.13323207419869249,
+        "coefficient_l1": 0.9875238239765167,
+        "coefficient_L_mean_distance": 0.0,
+        "mean_L_all_on_input_relative": 0.0,
+        "mean_L_feature_distance": 0.0,
+        "g_identity_feature_relative": 0.2913712600654819,
+        "mean_L_logit_max_abs_difference": 0.0,
+        "mean_L_logit_distance": 0.0
+      },
+      "conditions": {
+        "all_on": {
+          "accuracy": 0.9835925925925926,
+          "worst_rx": 0.9552777777777778,
+          "contribution_pp": 0.0,
+          "contribution_sd": 0.0,
+          "prediction_changes": 0,
+          "helped": 0,
+          "hurt": 0
+        },
+        "mean_L": {
+          "accuracy": 0.9835925925925926,
+          "worst_rx": 0.9552777777777778,
+          "contribution_pp": 0.0,
+          "contribution_sd": 0.0,
+          "prediction_changes": 0,
+          "helped": 0,
+          "hurt": 0
+        },
+        "g_identity": {
+          "accuracy": 0.9729722222222222,
+          "worst_rx": 0.9456944444444444,
+          "contribution_pp": 1.0620370370370391,
+          "contribution_sd": 0.6169483655700855,
+          "prediction_changes": 1820,
+          "helped": 1415,
+          "hurt": 268
+        }
+      }
+    },
+    "frontfilter_dynamic": {
+      "scalar_means": {
+        "g_identity_logit_max_abs_difference": 3.563386057525597,
+        "mean_L_feature_relative": 0.0017435871448780948,
+        "g_identity_feature_distance": 3.183325641542949,
+        "kernel_l1": 0.9795667854271554,
+        "g_identity_logit_distance": 4.938835480850052,
+        "g_input_relative": 0.16094724214701325,
+        "mean_L_input_relative": 0.16090424112320223,
+        "coefficient_l1": 0.998271502857407,
+        "coefficient_L_mean_distance": 0.006498958658612133,
+        "mean_L_all_on_input_relative": 0.0009759499992676663,
+        "mean_L_feature_distance": 0.015583760296485573,
+        "g_identity_feature_relative": 0.3592010634356454,
+        "mean_L_logit_max_abs_difference": 0.013567161071372943,
+        "mean_L_logit_distance": 0.018915409930437617
+      },
+      "conditions": {
+        "all_on": {
+          "accuracy": 0.9835277777777778,
+          "worst_rx": 0.9556944444444444,
+          "contribution_pp": 0.0,
+          "contribution_sd": 0.0,
+          "prediction_changes": 0,
+          "helped": 0,
+          "hurt": 0
+        },
+        "mean_L": {
+          "accuracy": 0.9834814814814814,
+          "worst_rx": 0.9558796296296297,
+          "contribution_pp": 0.004629629629632204,
+          "contribution_sd": 0.0046603916267129305,
+          "prediction_changes": 23,
+          "helped": 12,
+          "hurt": 7
+        },
+        "g_identity": {
+          "accuracy": 0.9386666666666666,
+          "worst_rx": 0.894074074074074,
+          "contribution_pp": 4.486111111111113,
+          "contribution_sd": 3.9362749398864003,
+          "prediction_changes": 5641,
+          "helped": 5163,
+          "hurt": 318
+        }
+      }
+    }
+  },
+  "conclusion": "Full trained backbone depends on the filter, while replacing packet-wise coefficients with an L-only mean changes only 23 of 108000 dynamic decisions and yields a net five correct predictions difference. This is conditional mechanism evidence, not improvement against scratch baseline or channel recovery.",
+  "target_access": false,
+  "performance_goal_achieved": false
+}

@@ -1,0 +1,56 @@
+{
+  "read_at": 1791012745.386134,
+  "pipeline_status": "COMPLETE",
+  "rows": [
+    {
+      "row_id": "frontfilter_static-s2026092701",
+      "pid": 2358326,
+      "assigned_gpu": 0,
+      "exists": false
+    },
+    {
+      "row_id": "frontfilter_dynamic-s2026092701",
+      "pid": 2358406,
+      "assigned_gpu": 1,
+      "exists": false
+    },
+    {
+      "row_id": "frontfilter_static-s2026092702",
+      "pid": 2358484,
+      "assigned_gpu": 2,
+      "exists": false
+    },
+    {
+      "row_id": "frontfilter_dynamic-s2026092702",
+      "pid": 2358615,
+      "assigned_gpu": 0,
+      "exists": false
+    },
+    {
+      "row_id": "frontfilter_static-s2026092703",
+      "pid": 2358693,
+      "assigned_gpu": 3,
+      "exists": false
+    },
+    {
+      "row_id": "frontfilter_dynamic-s2026092703",
+      "pid": 2358771,
+      "assigned_gpu": 1,
+      "exists": false
+    },
+    {
+      "row_id": "frontfilter_static-s2026092704",
+      "pid": 2358849,
+      "assigned_gpu": 0,
+      "exists": false
+    },
+    {
+      "row_id": "frontfilter_dynamic-s2026092704",
+      "pid": 2358927,
+      "assigned_gpu": 2,
+      "exists": false
+    }
+  ],
+  "gpu": "0, GPU-56adac86-77cd-36c9-8770-dbf002650461, 1 MiB\n1, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 1 MiB\n2, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 1 MiB\n3, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 1 MiB\n4, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 1 MiB\n5, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 1 MiB\n6, GPU-5463e082-259e-537b-603a-01575d45801c, 1 MiB\n7, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 1 MiB\n",
+  "apps": ""
+}

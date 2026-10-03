@@ -1,45 +1,32 @@
-# CVS全主干前置滤波：逐包/训练源均值/恒等输入的固定权重诊断
+# CVS全主干前置滤波：固定权重源域反事实
 
-- run_id：`20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01`
-- group_id：`cvs-frontfilter-frozen-source-attribution`；类别：`diagnostic`；阶段：`Phase1-source-frozen-frontfilter-attribution`
-- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+状态VERIFIED。8个E200冻结模型、24个条件、648000次预测；每个条件使用相同27000条源V，不是648000个独立样本。每模型固定系数仅由6300条L_s包计算，读取V前固定；独立重新读取50400条系数、全部预测logits、物理ID和标量完成复算。全开复现原E200；模型状态未变，零优化器更新，不改变源选择、不访问目标。
 
-## 目的与对照
+贡献=全开准确率−干预后准确率。mean_L替代逐包系数，保持学习到的滤波基和同一主干；g_identity让原IQ进入同一已训练主干。mean_L只是机制诊断，不是新增校准模型或候选。
 
-定位逐包系数与全局滤波的实际分类作用；每模型先仅用L_s6300包计算固定系数，再对同V27000包三条件配对；不训练、不新增候选、不改变冻结选择。
+|结构|条件|源V/%|源V CE|全开贡献/百分点±配对SD|正贡献seed|全开帮助|全开损害|预测变化|
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+|frontfilter_static|all_on|98.35926|0.085884|+0.00000±0.00000|0/4|0|0|0|
+|frontfilter_static|mean_L|98.35926|0.085884|+0.00000±0.00000|0/4|0|0|0|
+|frontfilter_static|g_identity|97.29722|0.112396|+1.06204±0.61695|4/4|1415|268|1820|
+|frontfilter_dynamic|all_on|98.35278|0.086267|+0.00000±0.00000|0/4|0|0|0|
+|frontfilter_dynamic|mean_L|98.34815|0.086369|+0.00463±0.00466|3/4|12|7|23|
+|frontfilter_dynamic|g_identity|93.86667|0.207262|+4.48611±3.93627|4/4|5163|318|5641|
 
-## 数据、seed与模型来源
+静态mean_L作为数值对照，实际差异原样报告。四seed共享同一物理数据，SD不是置信区间；移除滤波可能偏离训练分布，不能等同从零重训的因果效应。L均值替代还包含L/V分布差异，不能把差值全部归结为逐包适应。统计依赖不能证明信道恢复、TX/RX分离或未见RX泛化。
 
-实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
-逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+[逐seed](evidence/per_seed_attribution.csv) · [完整TX/RX/day单元](evidence/source_cells.csv) · [标量](evidence/scalar_summary.csv) · [独立复算](evidence/independent_recount.json) · [完整终态](evidence/final_readback.json)。原始NPZ与日志保留N607登记路径。
 
-## 执行与存储
+## 机制结论与边界
 
-命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+动态版全开为98.35278%，以训练源均值替代逐包系数后为98.34815%，净差0.00463个百分点：108000次配对预测中仅23次类别改变，全开帮助12次、损害7次，净多对5次。静态版均值替代的输入、特征、logits与预测差异均为0。这说明当前模型的逐包系数在源V分类上的可见作用很小；不能据此声称任意输入下的动态机制无用。
 
-## 结果与覆盖
+同一冻结主干直接接收原IQ后，静态与动态版分别下降1.06204和4.48611个百分点。这证明主干已依赖共同训练的前置滤波，但不证明前置滤波提高了相对从零训练控制的性能。其各自正式源分数仍比Shallow低0.17824和0.16065个百分点；移除模块造成的分布偏移不可当作创新收益。当前证据支持“主要学到了全局变换及其与主干的共同适配”，尚不支持“学到了有效的逐包信道补偿”。
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+下一版架构应解决逐包条件量如何产生与身份识别有关的表示变化，并设置能够区分全局变换与动态机制的对照。单纯扩大滤波幅度、加深系数网络或继续增加FIR基数量，目前没有足够依据。论文目标仍未达到。
 
-## 交接
+## 执行和复现
 
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+本地运行器58项与评分器21项，共79项检查通过；独立P0/P1审查PASS。实际发布版本为`9790e8c2a4ba7ffdc35306e1b0fe5cbba7d05dbf`，源checkpoint版本为`dd5518d1493f2f79fb4213e4731e9f88cb28a349`。发布后独立读取进程、实际配置、增长日志和完整终态；8个worker及dispatcher均已退出，GPU独立读回无计算进程。短任务退出前未捕获完整live物理GPU映射，不把分配GPU字段冒充该证据。
 
-## 固定权重诊断设计
-
-源训练实际提交`dd5518d1493f2f79fb4213e4731e9f88cb28a349`，8份自己的scratch E200 checkpoint已完成并冻结。本诊断保持权重、参数、buffer和原FP32设置，真实checkpoint先做无query公开输入检查，再读取源数据。禁止新增训练、目标访问或改变已冻结的源选择。
-
-每模型先用全部6300条L_s的无标签IQ输出系数，以float64累积均值并转回实际FP32前向系数；保存系数及物理ID后才创建V loader。L与V严格不交，不用V估计替代系数，不读取L标签。固定系数仅用于反事实诊断，不作为新训练策略、方法候选或校准模型。
-
-同一27000条V分别执行：all_on原逐包滤波；mean_L固定L均值系数、学习基与主干不变；g_identity原IQ进入同一训练后主干。2结构×4seed×3条件共24行648000次预测。全开须复现原E200源准确率/最差RX。每包logits与metadata、源L系数均保存至N607原路径；collector独立复算L均值、CE、argmax、混淆矩阵、RX/TX/day单元、预测变化及帮助/损害数。
-
-本实验为source-only机制诊断，无新候选晋级，因此不新增目标测试；原源赢家和其clean完成证据保持不变。分支替代可能偏离训练分布；L均值与V分布不同也会影响差值，不能把结果当作重训练的因果效应或信道恢复证据。
-
-## 本地验证
-
-运行器58项与独立评分器21项，共79个不同检查通过；远端模板编译通过。仅使用合成metadata及公开/随机tensor，未读取真实数据。独立P0/P1审查通过。真实checkpoint无query检查在远端执行器读取源IQ之前完成。
-
-[本地验证](evidence/local_validation.json) · [独立审查](evidence/p0_p1_review.json)。
+[本地验证](evidence/local_validation.json) · [独立审查](evidence/p0_p1_review.json) · [执行核验](evidence/execution_validation.json) · [机制统计](evidence/mechanism_interpretation.json)。原始日志与NPZ保留原远端路径。本实验为预登记的源域诊断，不启动目标测试，也不修改已冻结的正式模型选择。

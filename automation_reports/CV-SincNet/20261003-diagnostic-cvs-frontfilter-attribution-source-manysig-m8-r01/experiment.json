@@ -21,12 +21,13 @@
   "replaces_run_id": null,
   "authorization": "用户持续推进纯神经网络架构优化与Phase1论文目标；源域固定权重机制诊断，无目标访问与训练策略改变。",
   "code": {
-    "commit": "f54d3b97c8c5be4775a6343f32ce42707a5e2e29",
+    "commit": "9790e8c2a4ba7ffdc35306e1b0fe5cbba7d05dbf",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
     "architecture_base_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
-    "commit_scope": "Verified implementation commit; actual release commit will be recorded from delivery and independent readback"
+    "commit_scope": "Actual released code revision independently read back from remote submit artifact",
+    "implementation_commit": "f54d3b97c8c5be4775a6343f32ce42707a5e2e29"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -108,7 +109,11 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_frontfilter_attribution.publish --output local_artifacts/cvs_frontfilter_attribution_source_20261003_r01/delivery",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 2358314,
+    "live_workers": 0,
+    "terminal_workers": 8,
+    "execution_evidence": "evidence/execution_validation.json"
   },
   "expected_artifacts": [
     "resolved_config.json",
@@ -154,7 +159,7 @@
       "row_id": "frontfilter_static-s2026092701",
       "method": "frontfilter_static",
       "purpose": "frozen_L_coefficients_then_full_V_three_condition_counterfactual",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_frontfilter_attribution/launch_spec.json#frontfilter_static-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -189,13 +194,15 @@
         "all_on",
         "mean_L",
         "g_identity"
-      ]
+      ],
+      "status": "COMPLETE",
+      "pid": 2358326
     },
     {
       "row_id": "frontfilter_dynamic-s2026092701",
       "method": "frontfilter_dynamic",
       "purpose": "frozen_L_coefficients_then_full_V_three_condition_counterfactual",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_frontfilter_attribution/launch_spec.json#frontfilter_dynamic-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -230,13 +237,15 @@
         "all_on",
         "mean_L",
         "g_identity"
-      ]
+      ],
+      "status": "COMPLETE",
+      "pid": 2358406
     },
     {
       "row_id": "frontfilter_static-s2026092702",
       "method": "frontfilter_static",
       "purpose": "frozen_L_coefficients_then_full_V_three_condition_counterfactual",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_frontfilter_attribution/launch_spec.json#frontfilter_static-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -271,13 +280,15 @@
         "all_on",
         "mean_L",
         "g_identity"
-      ]
+      ],
+      "status": "COMPLETE",
+      "pid": 2358484
     },
     {
       "row_id": "frontfilter_dynamic-s2026092702",
       "method": "frontfilter_dynamic",
       "purpose": "frozen_L_coefficients_then_full_V_three_condition_counterfactual",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_frontfilter_attribution/launch_spec.json#frontfilter_dynamic-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -312,13 +323,15 @@
         "all_on",
         "mean_L",
         "g_identity"
-      ]
+      ],
+      "status": "COMPLETE",
+      "pid": 2358615
     },
     {
       "row_id": "frontfilter_static-s2026092703",
       "method": "frontfilter_static",
       "purpose": "frozen_L_coefficients_then_full_V_three_condition_counterfactual",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_frontfilter_attribution/launch_spec.json#frontfilter_static-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -353,13 +366,15 @@
         "all_on",
         "mean_L",
         "g_identity"
-      ]
+      ],
+      "status": "COMPLETE",
+      "pid": 2358693
     },
     {
       "row_id": "frontfilter_dynamic-s2026092703",
       "method": "frontfilter_dynamic",
       "purpose": "frozen_L_coefficients_then_full_V_three_condition_counterfactual",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_frontfilter_attribution/launch_spec.json#frontfilter_dynamic-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -394,13 +409,15 @@
         "all_on",
         "mean_L",
         "g_identity"
-      ]
+      ],
+      "status": "COMPLETE",
+      "pid": 2358771
     },
     {
       "row_id": "frontfilter_static-s2026092704",
       "method": "frontfilter_static",
       "purpose": "frozen_L_coefficients_then_full_V_three_condition_counterfactual",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_frontfilter_attribution/launch_spec.json#frontfilter_static-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -435,13 +452,15 @@
         "all_on",
         "mean_L",
         "g_identity"
-      ]
+      ],
+      "status": "COMPLETE",
+      "pid": 2358849
     },
     {
       "row_id": "frontfilter_dynamic-s2026092704",
       "method": "frontfilter_dynamic",
       "purpose": "frozen_L_coefficients_then_full_V_three_condition_counterfactual",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_frontfilter_attribution/launch_spec.json#frontfilter_dynamic-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -476,7 +495,9 @@
         "all_on",
         "mean_L",
         "g_identity"
-      ]
+      ],
+      "status": "COMPLETE",
+      "pid": 2358927
     }
   ],
   "notes": [
@@ -486,10 +507,18 @@
     "Per-packet logits enable independent CE/argmax/confusion recount. Raw npz/logs remain remote; compact evidence enters Git.",
     "Existing source winner and clean evidence remain unchanged. Effects describe dependence of a frozen backbone, not retraining causal effects or channel recovery."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "status": "NOT_APPLICABLE_SOURCE_DIAGNOSTIC",
     "reason": "No new trainable candidate; fixed-weight interventions cannot be selected or evaluated on target. Original source winner clean test already complete; not rerun."
   },
-  "registered_at": "2026-10-03T07:14:19+00:00"
+  "registered_at": "2026-10-03T07:14:19+00:00",
+  "result": {
+    "status": "VERIFIED",
+    "conditions": 24,
+    "prediction_decisions": 648000,
+    "coefficient_observations": 50400,
+    "independent_recount": "evidence/independent_recount.json",
+    "performance_goal_achieved": false
+  }
 }

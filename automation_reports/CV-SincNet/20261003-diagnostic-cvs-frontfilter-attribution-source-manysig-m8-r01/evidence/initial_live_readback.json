@@ -1,0 +1,279 @@
+{
+  "read_at": 1791012679.885016,
+  "identity": {
+    "user": "szu2070436088",
+    "host": "dell-DSS8440"
+  },
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 2358314,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/launch_spec.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/dispatcher.log",
+    "commit": "9790e8c2a4ba7ffdc35306e1b0fe5cbba7d05dbf",
+    "sha256": "2202bc2ddfe2ab5ba4c7769e5a9f8324332a2f7aa62b0a15a5dff41b6876bcce",
+    "preflight_gpu": "0, 24124\n1, 24124\n2, 24124\n3, 24124\n4, 24124\n5, 24124\n6, 24124\n7, 24124\n",
+    "preflight_apps": "",
+    "disk_free_bytes": 5719607910400
+  },
+  "pipeline": {
+    "status": "RUNNING",
+    "pid": 2358314,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+    "launch_owner": "codex/root/frontfilter-source-attribution-20261003",
+    "rows": {
+      "frontfilter_static-s2026092701": {
+        "status": "RUNNING",
+        "pid": 2358326,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092701"
+      },
+      "frontfilter_dynamic-s2026092701": {
+        "status": "RUNNING",
+        "pid": 2358406,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092701"
+      },
+      "frontfilter_static-s2026092702": {
+        "status": "RUNNING",
+        "pid": 2358484,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092702"
+      }
+    }
+  },
+  "dispatcher_process": {
+    "pid": 2358314,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/launch_spec.json",
+      ""
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "frontfilter_static-s2026092701",
+      "state": {
+        "status": "RUNNING",
+        "pid": 2358326,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092701"
+      },
+      "process": {
+        "pid": 2358326,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092701.json",
+          ""
+        ]
+      },
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01",
+        "source_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_static-s2026092701/source",
+        "variant": "frontfilter_static",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092701",
+        "conditions": [
+          "all_on",
+          "mean_L",
+          "g_identity"
+        ],
+        "role": "V",
+        "coefficient_role": "L_s",
+        "launch_owner": "codex/root/frontfilter-source-attribution-20261003",
+        "pid": 2358326,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "frontfilter_static",
+          "seed": 2026092701,
+          "accuracy": 0.9846666666666667,
+          "worst_rx": 0.9581481481481482,
+          "parameters": 221035,
+          "macs": 9460080,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_static-s2026092701/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "coefficient_labels_used": false,
+        "ce_definition": "float64 stable log-sum-exp of saved FP32 logits"
+      },
+      "completion": null,
+      "log_bytes": 1967,
+      "conditions_done": 0,
+      "errors": []
+    },
+    {
+      "row_id": "frontfilter_dynamic-s2026092701",
+      "state": {
+        "status": "RUNNING",
+        "pid": 2358406,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092701"
+      },
+      "process": {
+        "pid": 2358406,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092701.json",
+          ""
+        ]
+      },
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01",
+        "source_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_dynamic-s2026092701/source",
+        "variant": "frontfilter_dynamic",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092701",
+        "conditions": [
+          "all_on",
+          "mean_L",
+          "g_identity"
+        ],
+        "role": "V",
+        "coefficient_role": "L_s",
+        "launch_owner": "codex/root/frontfilter-source-attribution-20261003",
+        "pid": 2358406,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "source_record": {
+          "variant": "frontfilter_dynamic",
+          "seed": 2026092701,
+          "accuracy": 0.9842592592592593,
+          "worst_rx": 0.9583333333333334,
+          "parameters": 221307,
+          "macs": 9460336,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_dynamic-s2026092701/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "coefficient_labels_used": false,
+        "ce_definition": "float64 stable log-sum-exp of saved FP32 logits"
+      },
+      "completion": null,
+      "log_bytes": 1789,
+      "conditions_done": 0,
+      "errors": []
+    },
+    {
+      "row_id": "frontfilter_static-s2026092702",
+      "state": {
+        "status": "RUNNING",
+        "pid": 2358484,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092702"
+      },
+      "process": {
+        "pid": 2358484,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092702.json",
+          ""
+        ]
+      },
+      "resolved": null,
+      "completion": null,
+      "log_bytes": 0,
+      "conditions_done": 0,
+      "errors": []
+    }
+  ]
+}
