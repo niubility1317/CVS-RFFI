@@ -151,7 +151,8 @@ def analyze(root):
         for i,name in enumerate(CLASSES):
             values=[lookup[method,'ALL',seed]['confusion'][i][i]/28000 for seed in SEEDS]
             tx.append(dict(method=method,transmitter=name,query_count_per_seed=28000,accuracy_mean=st.mean(values),accuracy_seed_sd=st.stdev(values)))
-    source=read(root/'automation_reports/CV-SincNet'/SOURCE_RUN/'evidence/source_research_complete.json')
+    source_manifest=read(root/'automation_reports/CV-SincNet'/SOURCE_RUN/'evidence/source_evidence_manifest.json')
+    source=read(source_manifest['complete_json']['path'])
     models,architecture=validate_source_resources(source,selection)
     new={r['resolved']['model_seed']:r for r in data['rows'] if r['resolved']['variant']==candidate}
     parameters=architecture['base_trainable_parameters']+architecture['new_trainable_parameters']

@@ -1,0 +1,13 @@
+{
+  "status": "VERIFIED",
+  "failure": "Source JSON assumed in report/evidence instead of registered local_artifacts",
+  "fix": "Read source_evidence_manifest.complete_json.path",
+  "focused_tests": 2,
+  "tests_tool_chunk": "e258ea",
+  "actual_analysis_tool_chunk": "a38ba3",
+  "real_confusions_recomputed": 384,
+  "predictions_repeated": false,
+  "scoring_repeated": false,
+  "source_model_changed": false,
+  "target_feedback": false
+}

@@ -1,64 +1,19 @@
 {
   "run_id": "20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01",
-  "status": "LOCAL_VERIFIED",
-  "source_run": "20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01",
-  "source_code_commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
-  "selection": {
-    "status": "SOURCE_SELECTION_FROZEN",
-    "selected_variant": "relation_frequency_energy",
-    "source_summaries": {
-      "neural_residual_shallow": {
-        "score": 0.9712175925925925,
-        "source_accuracy": 0.9844259259259259,
-        "worst_rx_accuracy": 0.9580092592592593,
-        "parameters": 220987,
-        "conv_linear_macs": 9460000
-      },
-      "response_anchor_mean": {
-        "score": 0.9713148148148147,
-        "source_accuracy": 0.9844351851851851,
-        "worst_rx_accuracy": 0.9581944444444445,
-        "parameters": 237147,
-        "conv_linear_macs": 11205232
-      },
-      "relation_packet_energy": {
-        "score": 0.9714907407407407,
-        "source_accuracy": 0.9847870370370371,
-        "worst_rx_accuracy": 0.9581944444444445,
-        "parameters": 247731,
-        "conv_linear_macs": 9880864
-      },
-      "relation_frequency_energy": {
-        "score": 0.9735601851851852,
-        "source_accuracy": 0.9857314814814815,
-        "worst_rx_accuracy": 0.9613888888888888,
-        "parameters": 247731,
-        "conv_linear_macs": 9880864
-      }
-    },
-    "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
-    "selection_policy": "performance_first_spectral_relation_with_current_source_winner_20261003",
-    "candidate_universe": [
-      "neural_residual_shallow",
-      "response_anchor_mean",
-      "relation_packet_energy",
-      "relation_frequency_energy"
-    ],
-    "new_candidate_selected": true,
-    "exact_cost_tie_order": [
-      "neural_residual_shallow",
-      "response_anchor_mean",
-      "relation_packet_energy",
-      "relation_frequency_energy"
-    ],
-    "target_access": false,
-    "target_score_used": false,
-    "test_view": "clean"
-  },
-  "next": [
-    "Commit and verify upstream; publish this exclusive clean release once",
-    "Verify actual process/config/checkpoint provenance; collect and independently analyze all 384 scores"
-  ],
+  "status": "ANALYZED",
+  "experiment_scope_complete": true,
   "performance_goal_achieved": false,
-  "paper_claim_established": false
+  "paper_claim_established": false,
+  "live_workers": 0,
+  "source_code_commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
+  "clean_release_commit": "64d7efc5a92664d1b5746fe2e49955a682fbaad3",
+  "source_run": "20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01",
+  "clean_run": "20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01",
+  "selected_variant": "relation_frequency_energy",
+  "latest_evidence": "evidence/completion_verdict.json",
+  "next": [
+    "Preserve this completed experiment and all negative RX/baseline comparisons",
+    "Continue architecture/paper work using only lawful source evidence; do not redesign or select using target scores",
+    "No unselected packet-energy query, retrospective epoch/seed selection or test-driven retry"
+  ]
 }

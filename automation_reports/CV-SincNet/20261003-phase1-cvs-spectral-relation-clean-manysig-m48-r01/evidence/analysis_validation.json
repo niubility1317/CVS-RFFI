@@ -1,0 +1,56 @@
+{
+  "status": "VERIFIED",
+  "candidate": "relation_frequency_energy",
+  "accuracy_mean": 0.7069255952380953,
+  "accuracy_seed_sd": 0.012835491672170771,
+  "paired_vs_response_anchor": {
+    "candidate": "relation_frequency_energy",
+    "baseline": "response_anchor_mean",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      1.0000000000000009,
+      0.6107142857142756,
+      1.4666666666666717,
+      0.04107142857142643
+    ],
+    "accuracy_delta_pp_mean": 0.7796130952380936,
+    "accuracy_delta_pp_seed_sd": 0.6040374158015489,
+    "positive_seeds": 4
+  },
+  "paired_vs_neural_shallow": {
+    "candidate": "relation_frequency_energy",
+    "baseline": "neural_residual_shallow",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      1.0249999999999981,
+      0.7226190476190442,
+      1.2476190476190419,
+      0.3482142857142878
+    ],
+    "accuracy_delta_pp_mean": 0.835863095238093,
+    "accuracy_delta_pp_seed_sd": 0.389846683032867,
+    "positive_seeds": 4
+  },
+  "all384_confusions_recomputed": true,
+  "old352_metrics_exactly_unchanged": true,
+  "all96_summaries_recomputed": true,
+  "all88_pairs_recomputed": true,
+  "all_RX_sums_match": true,
+  "target_feedback": false,
+  "scientific_verdict": "POSITIVE_MEAN_ON_FIXED_CLEAN_BENCHMARK",
+  "scope": "Four model seeds on historically exposed clean benchmark; not broad statistical or deployment proof"
+}

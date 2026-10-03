@@ -1,0 +1,66 @@
+{
+  "status": "VERIFIED",
+  "verified_at": "2026-10-03T08:45:52.615897+00:00",
+  "execution_complete": true,
+  "performance_goal_achieved": false,
+  "paper_claim_established": false,
+  "scientific_verdict": "POSITIVE_PAIRED_GAIN_VS_SHALLOW_AND_ANCHOR_BUT_BELOW_REGISTERED_CVS_BASELINES",
+  "source_run": "20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01",
+  "clean_run": "20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01",
+  "selected_variant": "relation_frequency_energy",
+  "source_models": 8,
+  "source_steps": 80000,
+  "new_predictions": 4,
+  "reused_predictions": 44,
+  "scored_records": 384,
+  "query_packets_per_row": 168000,
+  "clean_accuracy": 0.7069255952380953,
+  "clean_seed_SD": 0.012835491672170771,
+  "paired_vs_shallow": {
+    "candidate": "relation_frequency_energy",
+    "baseline": "neural_residual_shallow",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      1.0249999999999981,
+      0.7226190476190442,
+      1.2476190476190419,
+      0.3482142857142878
+    ],
+    "accuracy_delta_pp_mean": 0.835863095238093,
+    "accuracy_delta_pp_seed_sd": 0.389846683032867,
+    "positive_seeds": 4
+  },
+  "paired_vs_anchor": {
+    "candidate": "relation_frequency_energy",
+    "baseline": "response_anchor_mean",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      1.0000000000000009,
+      0.6107142857142756,
+      1.4666666666666717,
+      0.04107142857142643
+    ],
+    "accuracy_delta_pp_mean": 0.7796130952380936,
+    "accuracy_delta_pp_seed_sd": 0.6040374158015489,
+    "positive_seeds": 4
+  },
+  "native_accuracy": 0.7622723214285715,
+  "residual_fusion_accuracy": 0.7845431547619048,
+  "target_feedback": false,
+  "additional_target_tuning": false,
+  "scope": "Fixed historically exposed clean benchmark and four paired model seeds; not broad channel invariance or paper readiness"
+}

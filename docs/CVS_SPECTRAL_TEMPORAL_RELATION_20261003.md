@@ -58,4 +58,12 @@
 
 修正后的8模型公开检查显示，逐频关系在delay2/8/16下的平均相对变化分别为0.02977/0.10041/0.21269。最后一项仍高于整包控制的0.11342，不能宣称所有多径下均更稳定。公开理想增益检查的资格频点最大误差为2.38e-7，1536个“模型×频点”观察中1个触及下限而排除在该严格不变性断言之外；完整域的差异仍原样保存。公开性质检查没有替代正式识别评测。
 
-当前状态：代码与8行配置已在`d0847cd5ac9251541dbd93d31d0d7a3d933baa47`固定并发布；8个worker已独立核验PID、父进程、GPU、实际配置和日志增长。E200训练、冻结选模和条件clean测试尚待完成，没有本候选正式性能结论。[实验记录](../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/report.md)。
+当前状态：代码与8行配置已在`d0847cd5ac9251541dbd93d31d0d7a3d933baa47`固定并发布；8个worker已独立核验PID、父进程、GPU、实际配置和日志增长。E200训练、冻结选模和条件clean测试均已完成，结果见下方；整体性能和论文目标仍未完成。[实验记录](../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/report.md)。
+
+## 固定E200及独立clean结果
+
+源规则选中逐频结构：相对Shallow源分数+0.2343±0.1215个百分点、4/4为正；相对等参数整包结构+0.2069±0.3067个百分点、3/4为正。冻结后的clean准确率为70.6926%±1.2835%，相对Shallow+0.8359±0.3898个百分点、相对Anchor+0.7796±0.6040个百分点，均4/4为正。native和residual_fusion分别为76.2272%与78.4543%，仍优于新候选。7个测试RX中3个相对Anchor下降，不将均值增益写为所有接收条件下的提升。
+
+全源V约29.4%的逐频统计触及floor，公开delay16有限FIR敏感性仍大于整包控制；这些限制与正向识别差异同时保留。实验完成不等于论文创新充分或总体性能目标达成，后续设计不能使用目标评分反馈。
+
+[源分析](../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/source_analysis.md) · [独立测试](../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01/report.md)。

@@ -41,3 +41,13 @@
 [逐seed结果](evidence/source_final.csv) · [完整曲线](evidence/source_curves.csv) · [后段变化](evidence/source_learning_by_seed.csv) · [全V单元](evidence/source_relation_cells.csv) · [RX汇总](evidence/source_relation_summary.csv) · [梯度](evidence/source_gradient_by_seed.csv) · [公开物理诊断](evidence/source_public_physics.csv) · [资源](evidence/source_resources.csv)。
 
 单一TX CE、scratch、原数据和训练策略保持不变。是否提升独立clean识别需冻结后测试证明；源V已见RX不能单独证明跨未知信道/接收机泛化。Phase2适应三阶段与K×新增类指标为N/A。
+
+## 完整源遥测的解释
+
+逐频关系出口相对原频率投影输出的逐包范数比，四seed均值为0.4552±0.0837；整包控制为0.5477±0.0985。输出更大并不对应更高源分数，不能以出口范数代替身份识别贡献。逐频结构全V的平均floor触发比例为29.3981%±0.2402%，整包控制为0。严格任意逐频幅度不变性不覆盖触及下限的频点。
+
+E200逐频训练CE为0.000694、源V CE为0.075441；整包为0.000760与0.082726。固定后段窗口中，逐频V CE上升0.000488，训练CE下降0.000164；保留这一趋势，不据此重选checkpoint。源V上的改善与后段CE上升可以同时发生，不能将差异归为已证明的物理解耦。
+
+训练后的公开FIR诊断中，逐频关系在delay2/8/16下的相对变化均值为0.0300/0.1047/0.2370，整包为0.1077/0.1101/0.1140；delay16仍更敏感。整网单位表征距离也没有在所有干预下下降。合成理想增益资格域内的数值误差不超过2.3842e-7，与有限窗多径、实际源floor触发情况分别报告。
+
+[完整源机制汇总](evidence/source_mechanism_summary.json)。这些解释只使用已完整审计的源数据及固定公开诊断，不使用clean成绩。

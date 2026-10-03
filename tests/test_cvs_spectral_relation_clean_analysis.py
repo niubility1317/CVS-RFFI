@@ -194,8 +194,10 @@ def test_full_report_resources_and_frozen_relation_interpretation(tmp_path,candi
     save(e/'final_readback.json',data);save(e/'performance_selection.json',selection)
     save(tmp_path/'automation_reports/CV-SincNet'/report.OLD_RUN/'evidence/final_readback.json',previous)
     parameters=247731;source,_=source_fixture(candidate)
-    save(tmp_path/'automation_reports/CV-SincNet'/report.SOURCE_RUN/'evidence/source_research_complete.json',
-        source)
+    source_path=tmp_path/'local_artifacts/cvs_spectral_relation_identity_20261003_r01/source_research_complete.json'
+    save(source_path,source)
+    save(tmp_path/'automation_reports/CV-SincNet'/report.SOURCE_RUN/'evidence/source_evidence_manifest.json',
+        {'complete_json':{'path':str(source_path),'git_tracked':False}})
     verdict=report.analyze(tmp_path)
     assert verdict['all384_confusions_recomputed'] and verdict['old352_metrics_exactly_unchanged']
     assert verdict['all96_summaries_recomputed'] and verdict['all88_pairs_recomputed']

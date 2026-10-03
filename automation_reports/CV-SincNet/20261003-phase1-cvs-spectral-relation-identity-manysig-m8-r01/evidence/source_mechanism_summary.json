@@ -1,0 +1,278 @@
+{
+  "status": "VERIFIED",
+  "source_only": true,
+  "target_results_read": false,
+  "source_V_packets_per_model": 27000,
+  "model_seeds": 4,
+  "scope": "Descriptive source telemetry and fixed public interventions; not causal channel recovery or new selection",
+  "variants": {
+    "relation_packet_energy": {
+      "full_source_V": {
+        "branch_output_norm_mean": {
+          "mean": 2.7063494042831437,
+          "SD": 0.52598464590404
+        },
+        "base_frequency_norm_mean": {
+          "mean": 4.937295667529106,
+          "SD": 0.36393096897838173
+        },
+        "relative_output_change_mean": {
+          "mean": 0.5477215099710006,
+          "SD": 0.098474696035562
+        },
+        "floor_fraction_mean": {
+          "mean": 0.0,
+          "SD": 0.0
+        },
+        "relation_frobenius_mean_mean": {
+          "mean": 0.9999999905890888,
+          "SD": 5.196275200289198e-10
+        }
+      },
+      "learning": {
+        "train_CE_E200": {
+          "mean": 0.0007602338893048,
+          "SD": 8.838119459239265e-05
+        },
+        "V_CE_E200": {
+          "mean": 0.08272607267306428,
+          "SD": 0.009065451475845063
+        },
+        "CE_gap_E200": {
+          "mean": 0.08196583878375949,
+          "SD": 0.009033637761221623
+        },
+        "train_CE_late_delta": {
+          "mean": -0.00014487410156725666,
+          "SD": 2.4955480578941718e-05
+        },
+        "V_CE_late_delta": {
+          "mean": -5.588333763761888e-05,
+          "SD": 0.0006183619117727357
+        },
+        "CE_gap_late_delta": {
+          "mean": 8.899076392963542e-05,
+          "SD": 0.0006391554092944858
+        }
+      },
+      "resources": {
+        "parameters": {
+          "mean": 247731.0,
+          "SD": 0.0
+        },
+        "conv_linear_MACs": {
+          "mean": 9880864.0,
+          "SD": 0.0
+        },
+        "inference_batch1_ms": {
+          "mean": 12.346374175831443,
+          "SD": 0.17862873828934994
+        },
+        "training_batch128_ms": {
+          "mean": 58.482207675115205,
+          "SD": 1.458507745941982
+        },
+        "resident_bytes": {
+          "mean": 991812.0,
+          "SD": 0.0
+        },
+        "peak_training_bytes": {
+          "mean": 334311424.0,
+          "SD": 0.0
+        }
+      },
+      "public_FIR": {
+        "delay2": {
+          "relation_relative_distance": {
+            "mean": 0.10767419263720512,
+            "SD": 0.002127435147350923
+          },
+          "mean_unit_embedding_distance": {
+            "mean": 0.1327693983912468,
+            "SD": 0.030479896096271823
+          }
+        },
+        "delay8": {
+          "relation_relative_distance": {
+            "mean": 0.1100982017815113,
+            "SD": 0.0032688988192670246
+          },
+          "mean_unit_embedding_distance": {
+            "mean": 0.1502895262092352,
+            "SD": 0.036630152374286754
+          }
+        },
+        "delay16": {
+          "relation_relative_distance": {
+            "mean": 0.11396141722798347,
+            "SD": 0.007819731378793979
+          },
+          "mean_unit_embedding_distance": {
+            "mean": 0.14440966583788395,
+            "SD": 0.025268495040374966
+          }
+        }
+      },
+      "public_qualification": {
+        "varying_gain_eligible_frequency_count": [
+          "384",
+          "384",
+          "384",
+          "384"
+        ],
+        "varying_gain_excluded_frequency_count": [
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "varying_frequency_gain_eligible_max_error": [
+          "1.8249168395996094",
+          "1.488358497619629",
+          "1.1505897045135498",
+          "1.359079122543335"
+        ],
+        "varying_frequency_gain_max_error": [
+          "1.8249168395996094",
+          "1.488358497619629",
+          "1.1505897045135498",
+          "1.359079122543335"
+        ]
+      }
+    },
+    "relation_frequency_energy": {
+      "full_source_V": {
+        "branch_output_norm_mean": {
+          "mean": 2.215874875355098,
+          "SD": 0.39138812177186233
+        },
+        "base_frequency_norm_mean": {
+          "mean": 4.87831935142367,
+          "SD": 0.3368854903309988
+        },
+        "relative_output_change_mean": {
+          "mean": 0.4551531179605949,
+          "SD": 0.08373799809825876
+        },
+        "floor_fraction_mean": {
+          "mean": 0.2939809027777778,
+          "SD": 0.0024017757089432705
+        },
+        "relation_frobenius_mean_mean": {
+          "mean": 0.739574797641072,
+          "SD": 0.0024915911663632682
+        }
+      },
+      "learning": {
+        "train_CE_E200": {
+          "mean": 0.0006940034726721934,
+          "SD": 0.00017058881933862372
+        },
+        "V_CE_E200": {
+          "mean": 0.07544136643217052,
+          "SD": 0.004696669011061807
+        },
+        "CE_gap_E200": {
+          "mean": 0.07474736295949833,
+          "SD": 0.004578528985122696
+        },
+        "train_CE_late_delta": {
+          "mean": -0.00016382929382525622,
+          "SD": 7.597430138229695e-05
+        },
+        "V_CE_late_delta": {
+          "mean": 0.000487989557866237,
+          "SD": 0.0002192919124236007
+        },
+        "CE_gap_late_delta": {
+          "mean": 0.0006518188516915005,
+          "SD": 0.00019951491475474979
+        }
+      },
+      "resources": {
+        "parameters": {
+          "mean": 247731.0,
+          "SD": 0.0
+        },
+        "conv_linear_MACs": {
+          "mean": 9880864.0,
+          "SD": 0.0
+        },
+        "inference_batch1_ms": {
+          "mean": 11.597171962057473,
+          "SD": 0.2242293999658472
+        },
+        "training_batch128_ms": {
+          "mean": 56.55230674747145,
+          "SD": 0.4737021046889057
+        },
+        "resident_bytes": {
+          "mean": 991812.0,
+          "SD": 0.0
+        },
+        "peak_training_bytes": {
+          "mean": 334317568.0,
+          "SD": 0.0
+        }
+      },
+      "public_FIR": {
+        "delay2": {
+          "relation_relative_distance": {
+            "mean": 0.030022693797945976,
+            "SD": 0.0008848607996849633
+          },
+          "mean_unit_embedding_distance": {
+            "mean": 0.13094343431293964,
+            "SD": 0.017878753027529816
+          }
+        },
+        "delay8": {
+          "relation_relative_distance": {
+            "mean": 0.1046862043440342,
+            "SD": 0.007124662525737452
+          },
+          "mean_unit_embedding_distance": {
+            "mean": 0.1613260768353939,
+            "SD": 0.01120476864767617
+          }
+        },
+        "delay16": {
+          "relation_relative_distance": {
+            "mean": 0.2370326928794384,
+            "SD": 0.03525086456893869
+          },
+          "mean_unit_embedding_distance": {
+            "mean": 0.168621726334095,
+            "SD": 0.01698322077709369
+          }
+        }
+      },
+      "public_qualification": {
+        "varying_gain_eligible_frequency_count": [
+          "384",
+          "384",
+          "384",
+          "384"
+        ],
+        "varying_gain_excluded_frequency_count": [
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "varying_frequency_gain_eligible_max_error": [
+          "2.384185791015625e-07",
+          "1.1920928955078125e-07",
+          "1.6391277313232422e-07",
+          "2.384185791015625e-07"
+        ],
+        "varying_frequency_gain_max_error": [
+          "2.384185791015625e-07",
+          "1.1920928955078125e-07",
+          "1.6391277313232422e-07",
+          "2.384185791015625e-07"
+        ]
+      }
+    }
+  }
+}

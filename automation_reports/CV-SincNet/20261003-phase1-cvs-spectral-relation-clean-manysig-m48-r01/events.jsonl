@@ -1,1 +1,3 @@
 {"at": "2026-10-03T08:33:58+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-03T08:40:59+00:00", "status": "RUNNING", "note": "Four selected clean workers verified live on GPUs0-3; 44 complete frozen controls reused; truth-last scoring pending", "evidence": ["evidence/launch_validation.json"], "row_id": null}
+{"at": "2026-10-03T08:45:52+00:00", "status": "ANALYZED", "note": "Source freeze and 48-row clean closure verified; positive paired gain vs shallow/anchor but overall performance/paper goal remains unachieved", "evidence": ["evidence/completion_verdict.json"], "row_id": null}

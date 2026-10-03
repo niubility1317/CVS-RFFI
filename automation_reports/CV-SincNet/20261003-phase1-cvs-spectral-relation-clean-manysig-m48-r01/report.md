@@ -1,37 +1,73 @@
-# CVS 频点内时间关系：源域选中四 seed clean 与 44 个冻结控制
+# CVS 频谱时序关系：独立 clean 结果
 
-- run_id：`20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01`
-- group_id：`cvs-clean-spectral-relation-confirmation`；类别：`cvs`；阶段：`Phase1-spectral-relation-clean-confirmation`
-- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+源规则选中 `relation_frequency_energy`。四 seed 准确率为 70.6926% ± 1.2835%，较当前 `response_anchor_mean` 控制 +0.7796 个百分点。结论：`POSITIVE_MEAN_ON_FIXED_CLEAN_BENCHMARK`。
 
-## 目的与对照
+四 seed 复用相同数据划分，反映本次模型与训练随机性；小幅均值改善不证明普遍、显著或稳定的性能提升。下表保留所有负差值，不据此调整候选、超参数或选择性重跑。
 
-只测试源规则选中的新候选；4 个新 clean 预测与原 44 个预测统一独立评分；不反馈调参。
+|模型|准确率/% ± seed SD|Macro-F1/% ± seed SD|
+|---|---:|---:|
+|native|76.2272 ± 0.3291|75.9075 ± 0.3709|
+|cvcnn|69.7131 ± 1.4695|69.5270 ± 1.3587|
+|real_cnn|69.3112 ± 1.2009|68.9914 ± 0.9864|
+|resnet1d|73.4826 ± 2.7392|73.1214 ± 2.5849|
+|residual_fusion|78.4543 ± 0.8436|78.2067 ± 0.9517|
+|energy_equivariant|69.6699 ± 0.6817|68.6784 ± 0.7664|
+|coupled_lag4|69.0548 ± 0.7297|67.6476 ± 1.0523|
+|adaptive_volterra_lag4|69.0158 ± 0.7715|67.6942 ± 1.0054|
+|neural_residual_shallow|69.8567 ± 1.1881|68.2451 ± 1.3308|
+|channel_dual|69.4347 ± 1.7912|67.6452 ± 2.2395|
+|response_anchor_mean|69.9129 ± 1.2142|68.3535 ± 1.4114|
+|relation_frequency_energy|70.6926 ± 1.2835|69.6197 ± 1.2645|
 
-## 数据、seed与模型来源
+|对照|配对均值 ± SD/百分点|正差值 seed|四 seed 差分/百分点|
+|---|---:|---:|---|
+|native|-5.5347 ± 1.2390|0/4|-3.9363, -6.9613, -5.6333, -5.6077|
+|cvcnn|+0.9795 ± 2.7497|3/4|+3.7810, -2.7655, +1.8786, +1.0238|
+|real_cnn|+1.3814 ± 2.2468|3/4|+4.3500, -0.7637, +1.8036, +0.1357|
+|resnet1d|-2.7900 ± 3.8570|2/4|+0.5827, -7.4185, +0.1875, -4.5119|
+|residual_fusion|-7.7618 ± 0.9065|0/4|-6.5446, -8.4542, -8.4524, -7.5958|
+|energy_equivariant|+1.0226 ± 1.8594|3/4|+2.6387, -1.5286, +2.1286, +0.8518|
+|coupled_lag4|+1.6378 ± 1.2230|4/4|+3.2821, +0.7060, +1.8565, +0.7065|
+|adaptive_volterra_lag4|+1.6768 ± 1.1579|4/4|+3.3690, +0.8958, +1.4792, +0.9631|
+|neural_residual_shallow|+0.8359 ± 0.3898|4/4|+1.0250, +0.7226, +1.2476, +0.3482|
+|channel_dual|+1.2579 ± 1.0734|3/4|+1.2089, +1.7577, +2.2780, -0.2131|
+|response_anchor_mean|+0.7796 ± 0.6040|4/4|+1.0000, +0.6107, +1.4667, +0.0411|
 
-实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
-逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+|RX（每 seed 24,000 包）|response anchor/%|新候选/% ± SD|差值/百分点|
+|---|---:|---:|---:|
+|1-1|68.2667|66.3042 ± 5.8163|-1.9625|
+|14-7|55.9698|58.2240 ± 4.0928|+2.2542|
+|2-1|75.7365|77.2271 ± 5.1693|+1.4906|
+|20-1|54.7229|58.9167 ± 2.6964|+4.1937|
+|7-14|80.3281|79.7479 ± 6.2031|-0.5802|
+|7-7|79.0594|80.5542 ± 1.9412|+1.4948|
+|8-8|75.3073|73.8740 ± 5.6972|-1.4333|
 
-## 执行与存储
+|TX（每 seed 28,000 包）|response anchor/%|新候选/% ± SD|
+|---|---:|---:|
+|14-10|91.8955|90.6723 ± 1.1999|
+|14-7|24.9723|29.9625 ± 3.2610|
+|20-15|52.7464|51.5911 ± 8.2910|
+|20-19|56.0795|55.9125 ± 4.3640|
+|6-15|95.8214|99.1295 ± 0.6057|
+|8-20|97.9625|96.8875 ± 2.2154|
 
-命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+保持原物理数据、单一 CE、E200×50、batch 128 和完整 FP32；8 个新模型从零训练，与 shallow 和 response anchor 各 4 份源记录组成 16 条源比较，按固定源规则先选择后冻结。4 个新预测与 44 个旧冻结预测统一为 48 行，逐包面对全部 6 类。全部预测固定后独立 truth-last 评分；384 个混淆矩阵、96 组汇总、88 组配对和 RX 分解复算通过。原 352 条控制指标逐字段完全一致。
 
-## 结果与覆盖
+实际可训练参数 247731；常驻模型状态 991812 bytes。batch 1 推理均值 11.5972 ms，batch 128 训练 56.5523 ms；完整 168,000 query 预测均值 16.381 s。逐 seed 硬件、训练/预测峰值显存和 MAC 口径见资源表；并发会影响耗时。CPU 峰值和新增星载传输未测量，记 N/A。
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+两种候选均以自己的 scratch Shallow 为基座，保留原 time、frequency、behavior 和统计路径。新增分支读取完整 256 点 IQ 包，以 64 点周期 Hann 窗、32 点步长形成 7 帧，在 64 个有符号频率上使用共享的 4×7 复投影，再构造同频的 Hermitian 时序关系。所选结构以逐频能量归一化；实际分母为 max(所选能量, 包内平均频率能量/64, 1e-6)。32 个实通道经两层卷积和池化后，通过零初始化的 128→160 线性出口加到原 b.f_proj(f)，再经过原频率统计与融合。全部新增参数仅由原 CE 更新。
 
-## 交接
+两种候选均新增 26744 个参数、总计 247731，初始函数分别等于自己的 scratch Shallow。1/64 相对能量 floor 已在源训练前固定。仅在理想逐频乘法 S_f→h_f S_f 且变换前后被评估能量均高于绝对与相对 floor 时，逐频能量归一化的关系统计对非零逐频复增益不变；包能量归一化仅具有公共包增益与独立逐频相位的不变性。弱频点触发 floor 时不作上述增益不变性声明。有限窗 FIR 不保证该统计严格不变，保留绝对路径的整网也不保证信道不变；关系统计还可能消除 TX 线性频响，不能据此证明 TX/RX 分离或硬件参数恢复。
 
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+该固定 clean 基准历史已暴露，不称首次盲测。无 LEO、support 适应、新增类、unknown 或在轨结果；D92 三阶段与 K×新增类表为 N/A。频谱时序关系使用完整观测包，不声明流式因果性、唯一 TX 硬件恢复、任意 RX/信道不变性或已实现信道解耦。
 
-## 已核实的启动依据
+[逐行评分](evidence/clean_scored_results.json) · [全部 RX 汇总](evidence/clean_summary.csv) · [全部 TX 汇总](evidence/per_transmitter_summary.csv) · [配对差值](evidence/clean_paired.csv) · [资源](evidence/resource_summary.json) · [独立复算](evidence/analysis_validation.json)
 
-源训练8×E200全部结束，80000步与全V标量已独立复算。固定16源记录选中relation_frequency_energy；本轮仅4份选中模型生成clean预测，44份既有预测保持原路径。完整48份预测固定后由独立scorer连接truth，生成384条ALL/RX评分。
+## 执行收尾
 
-173项条件clean测试及唯一独立P0/P1审查通过。实际checkpoint来源、FP32参数和固定Hann窗在读取query前逐模型核验。仅clean，无LEO、support适应、额外训练或候选重排。
+4份新预测、44份冻结控制及384条评分已完成；dispatcher与全部worker均终止。模型和训练release保持冻结。报告曾因源大JSON迁入local_artifacts而遇到路径衔接错误，已改为读取source_evidence_manifest中的实际路径；对应两种候选报告测试通过，随后真实384条复算通过。没有重新预测、重新评分、加载新checkpoint或调整候选。
 
-[冻结来源](evidence/source_freeze_reference.json) · [独立审查](evidence/conditional_clean_independent_review.json)。实际发布版本、PID和GPU在启动读回后补录。
+实际源commit为`d0847cd5ac9251541dbd93d31d0d7a3d933baa47`，评估release为`64d7efc5a92664d1b5746fe2e49955a682fbaad3`。本轮有相对Shallow与Anchor的正向配对增益，但仍未超过native和residual_fusion，整体目标未完成。
+
+[全流程结论](evidence/completion_verdict.json) · [实际终态](evidence/final_readback.json)。

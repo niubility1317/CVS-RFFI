@@ -3,7 +3,7 @@
 - run_id：`20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01`
 - group_id：`cvs-clean-spectral-relation-identity-ce`；类别：`cvs`；阶段：`Phase1-CVS-source-research`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+源训练、冻结选模和独立clean测试均已完成。完整结果见下方收尾及source_analysis.md，所有对照与负结果保留。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -65,3 +65,11 @@
 8份固定E200训练、80000步日志审计及完整曲线分析完成，全部训练进程和dispatcher已终止。源码版本`d0847cd5ac9251541dbd93d31d0d7a3d933baa47`，完整16源记录选择与实际远端冻结结果一致；源赢家为`relation_frequency_energy`。当前测试收尾尚未完成，不把源验证指标当作泛化结果。
 
 [完整源分析](source_analysis.md) · [源终态](evidence/source_terminal_readback.json) · [冻结核验](evidence/source_freeze_validation.json) · [架构与科学边界](../../../docs/CVS_SPECTRAL_TEMPORAL_RELATION_20261003.md)。
+
+## 本轮完整结果与限制
+
+本轮源训练8×E200、80000步和全V标量独立复算完成。逐频结构相对Shallow的源分数提升0.2343±0.1215个百分点，4/4个seed为正；整包结构仅提升0.0273±0.2690个百分点，1/4个seed为正。两者参数与训练相同，逐频结构与整包结构的源配对分数差为0.2069±0.3067个百分点，3/4为正。
+
+冻结后4份逐频模型与44份固定控制统一测试、独立评分。clean准确率70.6926%±1.2835%，相对Shallow提升0.8359±0.3898个百分点，相对Anchor提升0.7796±0.6040个百分点，均4/4为正。仍低于native 76.2272%与residual_fusion 78.4543%；7个RX中有3个相对Anchor下降。实验执行完成，整体性能与论文目标未达成。
+
+[完整源分析](source_analysis.md) · [独立clean报告](../20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01/report.md) · [全流程结论](evidence/completion_verdict.json)。不能用此测试结果回流决定结构、阈值、候选或重跑。
