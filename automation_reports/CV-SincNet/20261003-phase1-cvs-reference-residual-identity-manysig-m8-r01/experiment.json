@@ -163,7 +163,8 @@
         "source_final_diagnostics.json"
       ],
       "pid": 2560533,
-      "actual_epoch_at_launch_readback": 8
+      "actual_epoch_at_launch_readback": 8,
+      "status": "ANALYZED"
     },
     {
       "row_id": "reference_residual_inverse-s2026092701",
@@ -206,7 +207,8 @@
         "source_final_diagnostics.json"
       ],
       "pid": 2560613,
-      "actual_epoch_at_launch_readback": 7
+      "actual_epoch_at_launch_readback": 7,
+      "status": "ANALYZED"
     },
     {
       "row_id": "reference_residual_scalar-s2026092702",
@@ -249,7 +251,8 @@
         "source_final_diagnostics.json"
       ],
       "pid": 2560691,
-      "actual_epoch_at_launch_readback": 7
+      "actual_epoch_at_launch_readback": 7,
+      "status": "ANALYZED"
     },
     {
       "row_id": "reference_residual_inverse-s2026092702",
@@ -292,7 +295,8 @@
         "source_final_diagnostics.json"
       ],
       "pid": 2560772,
-      "actual_epoch_at_launch_readback": 6
+      "actual_epoch_at_launch_readback": 6,
+      "status": "ANALYZED"
     },
     {
       "row_id": "reference_residual_scalar-s2026092703",
@@ -335,7 +339,8 @@
         "source_final_diagnostics.json"
       ],
       "pid": 2560849,
-      "actual_epoch_at_launch_readback": 5
+      "actual_epoch_at_launch_readback": 5,
+      "status": "ANALYZED"
     },
     {
       "row_id": "reference_residual_inverse-s2026092703",
@@ -378,7 +383,8 @@
         "source_final_diagnostics.json"
       ],
       "pid": 2560930,
-      "actual_epoch_at_launch_readback": 4
+      "actual_epoch_at_launch_readback": 4,
+      "status": "ANALYZED"
     },
     {
       "row_id": "reference_residual_scalar-s2026092704",
@@ -421,7 +427,8 @@
         "source_final_diagnostics.json"
       ],
       "pid": 2561007,
-      "actual_epoch_at_launch_readback": 3
+      "actual_epoch_at_launch_readback": 3,
+      "status": "ANALYZED"
     },
     {
       "row_id": "reference_residual_inverse-s2026092704",
@@ -464,7 +471,8 @@
         "source_final_diagnostics.json"
       ],
       "pid": 2561088,
-      "actual_epoch_at_launch_readback": 2
+      "actual_epoch_at_launch_readback": 2,
+      "status": "ANALYZED"
     }
   ],
   "notes": [
@@ -476,7 +484,7 @@
     "All8 fixedE200 checkpoints unconditionally clean-tested on168000sameIDs; prediction fixed before independent truth-last scoring. No target feedback or selective rerun.",
     "No Phase2support,SFT,newclasses or satellite views; K and adaptation metrics N/A. Claimed real benefit requires test evidence."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "condition": "All8 source checkpoints E200 complete and frozen; unconditional fixed comparison",
     "views": [
@@ -524,7 +532,22 @@
       "native",
       "residual_fusion"
     ],
-    "comparison_scope": "Same physical IDs/four seeds; old predictions reused for reporting only, not architecture or candidate choice"
+    "comparison_scope": "Same physical IDs/four seeds; old predictions reused for reporting only, not architecture or candidate choice",
+    "status": "VERIFIED",
+    "completed_test_run": "20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01"
   },
-  "registered_at": "2026-10-03T13:44:38+00:00"
+  "registered_at": "2026-10-03T13:44:38+00:00",
+  "outcome": {
+    "status": "VERIFIED",
+    "test_run": "20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01",
+    "test_rows": 8,
+    "test_decisions": 1344000,
+    "full_log_epochs": 1600,
+    "full_log_steps": 80000,
+    "target_feedback": false,
+    "paper_claim_established": false,
+    "all_registered_test_rows_complete": true,
+    "completed_clean_checkpoint_scope": 320,
+    "performance_goal_achieved": false
+  }
 }

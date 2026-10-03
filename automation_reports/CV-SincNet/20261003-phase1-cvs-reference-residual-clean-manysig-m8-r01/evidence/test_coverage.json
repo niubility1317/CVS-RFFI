@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED",
+  "scope": "Registered Phase1 clean architecture/precision groups; not satellite or Phase2",
+  "historical_backfill_checkpoints": 304,
+  "historical_new_predictions": 216,
+  "historical_reused_predictions": 88,
+  "completed_validdual_checkpoints": 8,
+  "new_reference_residual_checkpoints": 8,
+  "total_checkpoints": 320,
+  "total_model_groups": 80,
+  "seeds_per_group": 4,
+  "query_count_per_checkpoint": 168000,
+  "total_classification_decisions": 53760000,
+  "new_test_decisions_this_round": 1344000,
+  "pending_frozen_checkpoints_in_this_registered_scope": 0,
+  "sources": [
+    "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\automation_reports\\CV-SincNet\\20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01\\report.md",
+    "../20261003-phase1-cvs-validdual-clean-manysig-m8-r01/report.md",
+    "report.md"
+  ]
+}

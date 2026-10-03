@@ -21,12 +21,12 @@
   "replaces_run_id": null,
   "authorization": "2026-10-03用户要求依据创新落地架构并跑实验，继续纯架构优化；保持原单CE及训练策略。",
   "code": {
-    "commit": "8a3871650c2a35ab5c8a63d9e6d0634946292542",
+    "commit": "ca6ba35207757fc6ad064e3c4315e67ef1b40c22",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01",
     "architecture_base_commit": "7c9b77e1d22d6adb484c5932ef39abe3767a2fcd",
-    "commit_role": "preparation_base; actual source release commit to be recorded from independent launch readback"
+    "commit_role": "actual immutable clean evaluation release verified from remote process; source training commit remains 8a3871650c2a35ab5c8a63d9e6d0634946292542"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -109,7 +109,9 @@
     "local_artifact_root": "local_artifacts/cvs_reference_residual_clean_20261003_r01",
     "launch_command": "python -m experiments.cvs_reference_residual_clean.publish --output local_artifacts/cvs_reference_residual_clean_20261003_r01",
     "gpu_policy": "Existing free capacity;max2processes/GPU;no healthy task interference",
-    "stop_rule": "Failure preserves artifacts; no automatic rerun or process termination"
+    "stop_rule": "Failure preserves artifacts; no automatic rerun or process termination",
+    "dispatcher_pid": 2572528,
+    "verified_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01"
   },
   "expected_artifacts": [
     "8 clean_predictions.npz",
@@ -131,7 +133,7 @@
       "row_id": "reference_residual_inverse-s2026092701",
       "method": "reference_residual_inverse",
       "purpose": "fixed_clean_test",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_reference_residual_clean/configs/reference_residual_inverse-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -159,13 +161,15 @@
         "8 clean_complete.json",
         "8 provenance.json",
         "8 resolved_config.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "pid": 2572544
     },
     {
       "row_id": "reference_residual_inverse-s2026092702",
       "method": "reference_residual_inverse",
       "purpose": "fixed_clean_test",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_reference_residual_clean/configs/reference_residual_inverse-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -193,13 +197,15 @@
         "8 clean_complete.json",
         "8 provenance.json",
         "8 resolved_config.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "pid": 2572622
     },
     {
       "row_id": "reference_residual_inverse-s2026092703",
       "method": "reference_residual_inverse",
       "purpose": "fixed_clean_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_reference_residual_clean/configs/reference_residual_inverse-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -227,13 +233,15 @@
         "8 clean_complete.json",
         "8 provenance.json",
         "8 resolved_config.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "pid": 2572700
     },
     {
       "row_id": "reference_residual_inverse-s2026092704",
       "method": "reference_residual_inverse",
       "purpose": "fixed_clean_test",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_reference_residual_clean/configs/reference_residual_inverse-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -261,7 +269,9 @@
         "8 clean_complete.json",
         "8 provenance.json",
         "8 resolved_config.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "pid": 2572778
     },
     {
       "row_id": "reference_residual_scalar-s2026092701",
@@ -295,7 +305,9 @@
         "8 clean_complete.json",
         "8 provenance.json",
         "8 resolved_config.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "pid": null
     },
     {
       "row_id": "reference_residual_scalar-s2026092702",
@@ -329,7 +341,9 @@
         "8 clean_complete.json",
         "8 provenance.json",
         "8 resolved_config.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "pid": null
     },
     {
       "row_id": "reference_residual_scalar-s2026092703",
@@ -363,7 +377,9 @@
         "8 clean_complete.json",
         "8 provenance.json",
         "8 resolved_config.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "pid": null
     },
     {
       "row_id": "reference_residual_scalar-s2026092704",
@@ -397,7 +413,9 @@
         "8 clean_complete.json",
         "8 provenance.json",
         "8 resolved_config.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "pid": null
     }
   ],
   "notes": [
@@ -406,7 +424,7 @@
     "Clean168000samephysicalIDs;6classes7RX;no satellite,support,newclasses,truth in predictor,extra views or batch-state adaptation.",
     "Historical benchmark exposed. Complete results report architecture outcome;not a new blind confirmation;no feedback into next model or selective rerun."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "condition": "All8 source checkpoints E200 complete and frozen; unconditional fixed comparison",
     "views": [
@@ -456,5 +474,18 @@
     ],
     "comparison_scope": "Same physical IDs/four seeds; old predictions reused for reporting only, not architecture or candidate choice"
   },
-  "registered_at": "2026-10-03T13:49:58+00:00"
+  "registered_at": "2026-10-03T13:49:58+00:00",
+  "outcome": {
+    "status": "VERIFIED",
+    "test_run": "20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01",
+    "test_rows": 8,
+    "test_decisions": 1344000,
+    "full_log_epochs": 1600,
+    "full_log_steps": 80000,
+    "target_feedback": false,
+    "paper_claim_established": false,
+    "all_registered_test_rows_complete": true,
+    "completed_clean_checkpoint_scope": 320,
+    "performance_goal_achieved": false
+  }
 }

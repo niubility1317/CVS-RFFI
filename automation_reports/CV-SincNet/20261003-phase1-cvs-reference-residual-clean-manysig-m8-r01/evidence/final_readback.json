@@ -1,0 +1,1184 @@
+{
+  "read_at": 1791036794.1634374,
+  "run_id": "20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01",
+  "identity": {
+    "user": "szu2070436088",
+    "host": "dell-DSS8440"
+  },
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 2572528,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_reference_residual_clean.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01/experiments/cvs_reference_residual_clean/configs/launch_spec.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01/dispatcher.stdout.log",
+    "commit": "ca6ba35207757fc6ad064e3c4315e67ef1b40c22",
+    "sha256": "fce26ca5c942d873e638b4b36eb46d5eb0a978908ef9340a0f84a6e8410a974f"
+  },
+  "remote_cpu_smoke": {
+    "status": "VERIFIED",
+    "rows": [
+      {
+        "row_id": "reference_residual_inverse-s2026092701",
+        "status": "VERIFIED",
+        "parameters": 189562,
+        "query_access": false
+      },
+      {
+        "row_id": "reference_residual_inverse-s2026092702",
+        "status": "VERIFIED",
+        "parameters": 189562,
+        "query_access": false
+      },
+      {
+        "row_id": "reference_residual_inverse-s2026092703",
+        "status": "VERIFIED",
+        "parameters": 189562,
+        "query_access": false
+      },
+      {
+        "row_id": "reference_residual_inverse-s2026092704",
+        "status": "VERIFIED",
+        "parameters": 189562,
+        "query_access": false
+      },
+      {
+        "row_id": "reference_residual_scalar-s2026092701",
+        "status": "VERIFIED",
+        "parameters": 189562,
+        "query_access": false
+      },
+      {
+        "row_id": "reference_residual_scalar-s2026092702",
+        "status": "VERIFIED",
+        "parameters": 189562,
+        "query_access": false
+      },
+      {
+        "row_id": "reference_residual_scalar-s2026092703",
+        "status": "VERIFIED",
+        "parameters": 189562,
+        "query_access": false
+      },
+      {
+        "row_id": "reference_residual_scalar-s2026092704",
+        "status": "VERIFIED",
+        "parameters": 189562,
+        "query_access": false
+      }
+    ],
+    "target_access": false
+  },
+  "pipeline": {
+    "status": "SCORED_COMPLETE",
+    "run_id": "20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01",
+    "pid": 2572528,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01/experiments/cvs_reference_residual_clean/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01/experiments/cvs_reference_residual_clean/configs/launch_spec.json"
+    ],
+    "launch_owner": "codex/root/reference-residual-clean-20261003",
+    "commit": "ca6ba35207757fc6ad064e3c4315e67ef1b40c22",
+    "rows": {
+      "reference_residual_inverse-s2026092701": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "reference_residual_inverse",
+        "model_seed": 2026092701,
+        "pid": 2572544,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_reference_residual_clean.predict",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01/experiments/cvs_reference_residual_clean/configs/reference_residual_inverse-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092701",
+        "started": 1791036722.073639,
+        "exit_code": 0,
+        "finished": 1791036742.7914572
+      },
+      "reference_residual_inverse-s2026092702": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "reference_residual_inverse",
+        "model_seed": 2026092702,
+        "pid": 2572622,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_reference_residual_clean.predict",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01/experiments/cvs_reference_residual_clean/configs/reference_residual_inverse-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092702",
+        "started": 1791036727.3225586,
+        "exit_code": 0,
+        "finished": 1791036748.0119824
+      },
+      "reference_residual_inverse-s2026092703": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "reference_residual_inverse",
+        "model_seed": 2026092703,
+        "pid": 2572700,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_reference_residual_clean.predict",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01/experiments/cvs_reference_residual_clean/configs/reference_residual_inverse-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092703",
+        "started": 1791036732.5677686,
+        "exit_code": 0,
+        "finished": 1791036753.2564132
+      },
+      "reference_residual_inverse-s2026092704": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "reference_residual_inverse",
+        "model_seed": 2026092704,
+        "pid": 2572778,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_reference_residual_clean.predict",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01/experiments/cvs_reference_residual_clean/configs/reference_residual_inverse-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092704",
+        "started": 1791036737.7858825,
+        "exit_code": 0,
+        "finished": 1791036758.502762
+      },
+      "reference_residual_scalar-s2026092701": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "reference_residual_scalar",
+        "model_seed": 2026092701,
+        "pid": 2572916,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_reference_residual_clean.predict",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01/experiments/cvs_reference_residual_clean/configs/reference_residual_scalar-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_scalar-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_scalar-s2026092701",
+        "started": 1791036743.006421,
+        "exit_code": 0,
+        "finished": 1791036763.7484243
+      },
+      "reference_residual_scalar-s2026092702": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "reference_residual_scalar",
+        "model_seed": 2026092702,
+        "pid": 2572994,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_reference_residual_clean.predict",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01/experiments/cvs_reference_residual_clean/configs/reference_residual_scalar-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_scalar-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_scalar-s2026092702",
+        "started": 1791036748.2510655,
+        "exit_code": 0,
+        "finished": 1791036768.7547367
+      },
+      "reference_residual_scalar-s2026092703": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "reference_residual_scalar",
+        "model_seed": 2026092703,
+        "pid": 2573072,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_reference_residual_clean.predict",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01/experiments/cvs_reference_residual_clean/configs/reference_residual_scalar-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_scalar-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_scalar-s2026092703",
+        "started": 1791036753.4968026,
+        "exit_code": 0,
+        "finished": 1791036773.7610593
+      },
+      "reference_residual_scalar-s2026092704": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "reference_residual_scalar",
+        "model_seed": 2026092704,
+        "pid": 2573152,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_reference_residual_clean.predict",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01/experiments/cvs_reference_residual_clean/configs/reference_residual_scalar-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_scalar-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_scalar-s2026092704",
+        "started": 1791036758.7424552,
+        "exit_code": 0,
+        "finished": 1791036778.767597
+      }
+    },
+    "recount_exit": 0,
+    "scorer_exit": 0
+  },
+  "selection": null,
+  "rows": [
+    {
+      "row_id": "reference_residual_inverse-s2026092701",
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 0,
+      "process": null,
+      "epoch": null,
+      "resolved": {
+        "method": "cvs_reference_residual_clean",
+        "variant": "reference_residual_inverse",
+        "model_seed": 2026092701,
+        "row_id": "reference_residual_inverse-s2026092701",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092701/source",
+        "source_release_commit": "8a3871650c2a35ab5c8a63d9e6d0634946292542",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "freeze_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/frozen_source_matrix.json",
+        "p1_capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092701",
+        "views": [
+          "clean"
+        ],
+        "device": "cuda:0",
+        "batch_size": 256,
+        "authorization": "preregistered fixed scalar/inverse comparison; all8E200 checkpoints; no selection or target feedback",
+        "pid": 2572544,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_resolved_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092701/source/resolved_config.json",
+        "truth_read": false,
+        "query_fit": false,
+        "commit": "ca6ba35207757fc6ad064e3c4315e67ef1b40c22",
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 12.921194885973819,
+        "total_seconds": 14.326071451010648,
+        "peak_cuda_allocated_bytes": 88879616
+      },
+      "profile": null,
+      "log_bytes": 133,
+      "log_tail": [
+        "CLEAN_PREDICTIONS_COMPLETE {\"count\": 168000, \"variant\": \"reference_residual_inverse\", \"model_seed\": 2026092701, \"truth_read\": false}"
+      ]
+    },
+    {
+      "row_id": "reference_residual_inverse-s2026092702",
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 1,
+      "process": null,
+      "epoch": null,
+      "resolved": {
+        "method": "cvs_reference_residual_clean",
+        "variant": "reference_residual_inverse",
+        "model_seed": 2026092702,
+        "row_id": "reference_residual_inverse-s2026092702",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092702/source",
+        "source_release_commit": "8a3871650c2a35ab5c8a63d9e6d0634946292542",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "freeze_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/frozen_source_matrix.json",
+        "p1_capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092702",
+        "views": [
+          "clean"
+        ],
+        "device": "cuda:0",
+        "batch_size": 256,
+        "authorization": "preregistered fixed scalar/inverse comparison; all8E200 checkpoints; no selection or target feedback",
+        "pid": 2572622,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_resolved_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092702/source/resolved_config.json",
+        "truth_read": false,
+        "query_fit": false,
+        "commit": "ca6ba35207757fc6ad064e3c4315e67ef1b40c22",
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 14.50130950595485,
+        "total_seconds": 15.839872793003451,
+        "peak_cuda_allocated_bytes": 88879616
+      },
+      "profile": null,
+      "log_bytes": 133,
+      "log_tail": [
+        "CLEAN_PREDICTIONS_COMPLETE {\"count\": 168000, \"variant\": \"reference_residual_inverse\", \"model_seed\": 2026092702, \"truth_read\": false}"
+      ]
+    },
+    {
+      "row_id": "reference_residual_inverse-s2026092703",
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 2,
+      "process": null,
+      "epoch": null,
+      "resolved": {
+        "method": "cvs_reference_residual_clean",
+        "variant": "reference_residual_inverse",
+        "model_seed": 2026092703,
+        "row_id": "reference_residual_inverse-s2026092703",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092703/source",
+        "source_release_commit": "8a3871650c2a35ab5c8a63d9e6d0634946292542",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "freeze_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/frozen_source_matrix.json",
+        "p1_capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092703",
+        "views": [
+          "clean"
+        ],
+        "device": "cuda:0",
+        "batch_size": 256,
+        "authorization": "preregistered fixed scalar/inverse comparison; all8E200 checkpoints; no selection or target feedback",
+        "pid": 2572700,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_resolved_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092703/source/resolved_config.json",
+        "truth_read": false,
+        "query_fit": false,
+        "commit": "ca6ba35207757fc6ad064e3c4315e67ef1b40c22",
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 13.211251900007483,
+        "total_seconds": 14.527804513985757,
+        "peak_cuda_allocated_bytes": 88879616
+      },
+      "profile": null,
+      "log_bytes": 133,
+      "log_tail": [
+        "CLEAN_PREDICTIONS_COMPLETE {\"count\": 168000, \"variant\": \"reference_residual_inverse\", \"model_seed\": 2026092703, \"truth_read\": false}"
+      ]
+    },
+    {
+      "row_id": "reference_residual_inverse-s2026092704",
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 3,
+      "process": null,
+      "epoch": null,
+      "resolved": {
+        "method": "cvs_reference_residual_clean",
+        "variant": "reference_residual_inverse",
+        "model_seed": 2026092704,
+        "row_id": "reference_residual_inverse-s2026092704",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092704/source",
+        "source_release_commit": "8a3871650c2a35ab5c8a63d9e6d0634946292542",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "freeze_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/frozen_source_matrix.json",
+        "p1_capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_inverse-s2026092704",
+        "views": [
+          "clean"
+        ],
+        "device": "cuda:0",
+        "batch_size": 256,
+        "authorization": "preregistered fixed scalar/inverse comparison; all8E200 checkpoints; no selection or target feedback",
+        "pid": 2572778,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_resolved_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092704/source/resolved_config.json",
+        "truth_read": false,
+        "query_fit": false,
+        "commit": "ca6ba35207757fc6ad064e3c4315e67ef1b40c22",
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 12.537017725000624,
+        "total_seconds": 13.85759201500332,
+        "peak_cuda_allocated_bytes": 88879616
+      },
+      "profile": null,
+      "log_bytes": 133,
+      "log_tail": [
+        "CLEAN_PREDICTIONS_COMPLETE {\"count\": 168000, \"variant\": \"reference_residual_inverse\", \"model_seed\": 2026092704, \"truth_read\": false}"
+      ]
+    },
+    {
+      "row_id": "reference_residual_scalar-s2026092701",
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 0,
+      "process": null,
+      "epoch": null,
+      "resolved": {
+        "method": "cvs_reference_residual_clean",
+        "variant": "reference_residual_scalar",
+        "model_seed": 2026092701,
+        "row_id": "reference_residual_scalar-s2026092701",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092701/source",
+        "source_release_commit": "8a3871650c2a35ab5c8a63d9e6d0634946292542",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "freeze_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/frozen_source_matrix.json",
+        "p1_capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_scalar-s2026092701",
+        "views": [
+          "clean"
+        ],
+        "device": "cuda:0",
+        "batch_size": 256,
+        "authorization": "preregistered fixed scalar/inverse comparison; all8E200 checkpoints; no selection or target feedback",
+        "pid": 2572916,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_resolved_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092701/source/resolved_config.json",
+        "truth_read": false,
+        "query_fit": false,
+        "commit": "ca6ba35207757fc6ad064e3c4315e67ef1b40c22",
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 12.779887073033024,
+        "total_seconds": 14.144128836051095,
+        "peak_cuda_allocated_bytes": 88879616
+      },
+      "profile": null,
+      "log_bytes": 132,
+      "log_tail": [
+        "CLEAN_PREDICTIONS_COMPLETE {\"count\": 168000, \"variant\": \"reference_residual_scalar\", \"model_seed\": 2026092701, \"truth_read\": false}"
+      ]
+    },
+    {
+      "row_id": "reference_residual_scalar-s2026092702",
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 1,
+      "process": null,
+      "epoch": null,
+      "resolved": {
+        "method": "cvs_reference_residual_clean",
+        "variant": "reference_residual_scalar",
+        "model_seed": 2026092702,
+        "row_id": "reference_residual_scalar-s2026092702",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092702/source",
+        "source_release_commit": "8a3871650c2a35ab5c8a63d9e6d0634946292542",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "freeze_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/frozen_source_matrix.json",
+        "p1_capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_scalar-s2026092702",
+        "views": [
+          "clean"
+        ],
+        "device": "cuda:0",
+        "batch_size": 256,
+        "authorization": "preregistered fixed scalar/inverse comparison; all8E200 checkpoints; no selection or target feedback",
+        "pid": 2572994,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_resolved_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092702/source/resolved_config.json",
+        "truth_read": false,
+        "query_fit": false,
+        "commit": "ca6ba35207757fc6ad064e3c4315e67ef1b40c22",
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 12.614939197024796,
+        "total_seconds": 13.906504822021816,
+        "peak_cuda_allocated_bytes": 88879616
+      },
+      "profile": null,
+      "log_bytes": 132,
+      "log_tail": [
+        "CLEAN_PREDICTIONS_COMPLETE {\"count\": 168000, \"variant\": \"reference_residual_scalar\", \"model_seed\": 2026092702, \"truth_read\": false}"
+      ]
+    },
+    {
+      "row_id": "reference_residual_scalar-s2026092703",
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 2,
+      "process": null,
+      "epoch": null,
+      "resolved": {
+        "method": "cvs_reference_residual_clean",
+        "variant": "reference_residual_scalar",
+        "model_seed": 2026092703,
+        "row_id": "reference_residual_scalar-s2026092703",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092703/source",
+        "source_release_commit": "8a3871650c2a35ab5c8a63d9e6d0634946292542",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "freeze_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/frozen_source_matrix.json",
+        "p1_capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_scalar-s2026092703",
+        "views": [
+          "clean"
+        ],
+        "device": "cuda:0",
+        "batch_size": 256,
+        "authorization": "preregistered fixed scalar/inverse comparison; all8E200 checkpoints; no selection or target feedback",
+        "pid": 2573072,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_resolved_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092703/source/resolved_config.json",
+        "truth_read": false,
+        "query_fit": false,
+        "commit": "ca6ba35207757fc6ad064e3c4315e67ef1b40c22",
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 12.56701121601509,
+        "total_seconds": 13.838199560006615,
+        "peak_cuda_allocated_bytes": 88879616
+      },
+      "profile": null,
+      "log_bytes": 132,
+      "log_tail": [
+        "CLEAN_PREDICTIONS_COMPLETE {\"count\": 168000, \"variant\": \"reference_residual_scalar\", \"model_seed\": 2026092703, \"truth_read\": false}"
+      ]
+    },
+    {
+      "row_id": "reference_residual_scalar-s2026092704",
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 3,
+      "process": null,
+      "epoch": null,
+      "resolved": {
+        "method": "cvs_reference_residual_clean",
+        "variant": "reference_residual_scalar",
+        "model_seed": 2026092704,
+        "row_id": "reference_residual_scalar-s2026092704",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092704/source",
+        "source_release_commit": "8a3871650c2a35ab5c8a63d9e6d0634946292542",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "freeze_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/frozen_source_matrix.json",
+        "p1_capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/reference_residual_scalar-s2026092704",
+        "views": [
+          "clean"
+        ],
+        "device": "cuda:0",
+        "batch_size": 256,
+        "authorization": "preregistered fixed scalar/inverse comparison; all8E200 checkpoints; no selection or target feedback",
+        "pid": 2573152,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_clean_20261003_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_resolved_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092704/source/resolved_config.json",
+        "truth_read": false,
+        "query_fit": false,
+        "commit": "ca6ba35207757fc6ad064e3c4315e67ef1b40c22",
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 12.210403300006874,
+        "total_seconds": 13.480067413998768,
+        "peak_cuda_allocated_bytes": 88879616
+      },
+      "profile": null,
+      "log_bytes": 132,
+      "log_tail": [
+        "CLEAN_PREDICTIONS_COMPLETE {\"count\": 168000, \"variant\": \"reference_residual_scalar\", \"model_seed\": 2026092704, \"truth_read\": false}"
+      ]
+    }
+  ],
+  "dispatcher_process": null,
+  "scoring_complete": {
+    "status": "SCORED_COMPLETE",
+    "models": 2,
+    "seeds": 4,
+    "rows": 8,
+    "records": 64,
+    "class_records": 48,
+    "view": "clean",
+    "query_count": 168000,
+    "decisions": 1344000,
+    "target_feedback_forbidden": true
+  },
+  "summary": {
+    "summary": [
+      {
+        "variant": "reference_residual_scalar",
+        "group": "ALL",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 168000,
+        "accuracy_mean": 0.7838407738095238,
+        "accuracy_seed_sd": 0.010039471625945054,
+        "macro_f1_mean": 0.7806675303884271,
+        "macro_f1_seed_sd": 0.011108050057817736,
+        "macro_accuracy_mean": 0.7838407738095238,
+        "macro_accuracy_seed_sd": 0.010039471625945054
+      },
+      {
+        "variant": "reference_residual_scalar",
+        "group": "RX1-1",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.7863229166666668,
+        "accuracy_seed_sd": 0.01366287104304537,
+        "macro_f1_mean": 0.7635879786849507,
+        "macro_f1_seed_sd": 0.023604675888590564,
+        "macro_accuracy_mean": 0.7863229166666666,
+        "macro_accuracy_seed_sd": 0.013662871043045472
+      },
+      {
+        "variant": "reference_residual_scalar",
+        "group": "RX14-7",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.6958645833333333,
+        "accuracy_seed_sd": 0.06465095362326954,
+        "macro_f1_mean": 0.6754182285023012,
+        "macro_f1_seed_sd": 0.05843863084324272,
+        "macro_accuracy_mean": 0.6958645833333335,
+        "macro_accuracy_seed_sd": 0.06465095362326949
+      },
+      {
+        "variant": "reference_residual_scalar",
+        "group": "RX2-1",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.8583125,
+        "accuracy_seed_sd": 0.013792841507530332,
+        "macro_f1_mean": 0.8559647018173652,
+        "macro_f1_seed_sd": 0.013975340339878064,
+        "macro_accuracy_mean": 0.8583124999999999,
+        "macro_accuracy_seed_sd": 0.013792841507530367
+      },
+      {
+        "variant": "reference_residual_scalar",
+        "group": "RX20-1",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.7485625,
+        "accuracy_seed_sd": 0.045726118286144944,
+        "macro_f1_mean": 0.7517580442784857,
+        "macro_f1_seed_sd": 0.04475038180161912,
+        "macro_accuracy_mean": 0.7485625,
+        "macro_accuracy_seed_sd": 0.04572611828614505
+      },
+      {
+        "variant": "reference_residual_scalar",
+        "group": "RX7-14",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.8364895833333332,
+        "accuracy_seed_sd": 0.02354109819864291,
+        "macro_f1_mean": 0.8251584606104901,
+        "macro_f1_seed_sd": 0.024711118022826214,
+        "macro_accuracy_mean": 0.8364895833333333,
+        "macro_accuracy_seed_sd": 0.02354109819864294
+      },
+      {
+        "variant": "reference_residual_scalar",
+        "group": "RX7-7",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.7821875,
+        "accuracy_seed_sd": 0.017294243449237107,
+        "macro_f1_mean": 0.77294353253394,
+        "macro_f1_seed_sd": 0.021752800619509665,
+        "macro_accuracy_mean": 0.7821875,
+        "macro_accuracy_seed_sd": 0.017294243449237155
+      },
+      {
+        "variant": "reference_residual_scalar",
+        "group": "RX8-8",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.7791458333333333,
+        "accuracy_seed_sd": 0.018027965030700165,
+        "macro_f1_mean": 0.7508199268704523,
+        "macro_f1_seed_sd": 0.032546922807184915,
+        "macro_accuracy_mean": 0.7791458333333334,
+        "macro_accuracy_seed_sd": 0.018027965030700175
+      },
+      {
+        "variant": "reference_residual_inverse",
+        "group": "ALL",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 168000,
+        "accuracy_mean": 0.7820476190476191,
+        "accuracy_seed_sd": 0.008133315269393733,
+        "macro_f1_mean": 0.7787900394570533,
+        "macro_f1_seed_sd": 0.00895472338524172,
+        "macro_accuracy_mean": 0.782047619047619,
+        "macro_accuracy_seed_sd": 0.008133315269393726
+      },
+      {
+        "variant": "reference_residual_inverse",
+        "group": "RX1-1",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.7850937499999999,
+        "accuracy_seed_sd": 0.018695704565834446,
+        "macro_f1_mean": 0.7626036510883334,
+        "macro_f1_seed_sd": 0.028925432974328428,
+        "macro_accuracy_mean": 0.78509375,
+        "macro_accuracy_seed_sd": 0.018695704565834404
+      },
+      {
+        "variant": "reference_residual_inverse",
+        "group": "RX14-7",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.6890833333333333,
+        "accuracy_seed_sd": 0.06308022339317872,
+        "macro_f1_mean": 0.6686476230195468,
+        "macro_f1_seed_sd": 0.05753066290491538,
+        "macro_accuracy_mean": 0.6890833333333334,
+        "macro_accuracy_seed_sd": 0.06308022339317874
+      },
+      {
+        "variant": "reference_residual_inverse",
+        "group": "RX2-1",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.8554270833333333,
+        "accuracy_seed_sd": 0.017098278523647408,
+        "macro_f1_mean": 0.852901561530533,
+        "macro_f1_seed_sd": 0.01814724930050159,
+        "macro_accuracy_mean": 0.8554270833333334,
+        "macro_accuracy_seed_sd": 0.01709827852364727
+      },
+      {
+        "variant": "reference_residual_inverse",
+        "group": "RX20-1",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.75090625,
+        "accuracy_seed_sd": 0.050557223434789085,
+        "macro_f1_mean": 0.75444468243216,
+        "macro_f1_seed_sd": 0.048927384082454645,
+        "macro_accuracy_mean": 0.75090625,
+        "macro_accuracy_seed_sd": 0.05055722343478898
+      },
+      {
+        "variant": "reference_residual_inverse",
+        "group": "RX7-14",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.8317604166666667,
+        "accuracy_seed_sd": 0.02563441279243513,
+        "macro_f1_mean": 0.819972844193078,
+        "macro_f1_seed_sd": 0.026567841498341585,
+        "macro_accuracy_mean": 0.8317604166666667,
+        "macro_accuracy_seed_sd": 0.025634412792435095
+      },
+      {
+        "variant": "reference_residual_inverse",
+        "group": "RX7-7",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.78146875,
+        "accuracy_seed_sd": 0.019428893831334268,
+        "macro_f1_mean": 0.7729177909568221,
+        "macro_f1_seed_sd": 0.023715375065658975,
+        "macro_accuracy_mean": 0.78146875,
+        "macro_accuracy_seed_sd": 0.019428893831334337
+      },
+      {
+        "variant": "reference_residual_inverse",
+        "group": "RX8-8",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "query_count_per_seed": 24000,
+        "accuracy_mean": 0.7805937500000001,
+        "accuracy_seed_sd": 0.019740837507797343,
+        "macro_f1_mean": 0.7540186468114922,
+        "macro_f1_seed_sd": 0.03518220441031898,
+        "macro_accuracy_mean": 0.7805937500000001,
+        "macro_accuracy_seed_sd": 0.01974083750779739
+      }
+    ],
+    "paired": [
+      {
+        "group": "ALL",
+        "inverse_minus_scalar_pp": [
+          -0.7851190476190428,
+          0.10059523809523574,
+          0.1779761904761923,
+          -0.2107142857142863
+        ],
+        "mean_pp": -0.17931547619047528,
+        "sd_pp": 0.4374133039572917,
+        "positive_seeds": 2
+      },
+      {
+        "group": "RX1-1",
+        "inverse_minus_scalar_pp": [
+          -0.5708333333333315,
+          0.7208333333333372,
+          0.16249999999999876,
+          -0.8041666666666725
+        ],
+        "mean_pp": -0.12291666666666701,
+        "sd_pp": 0.6971627353994428,
+        "positive_seeds": 2
+      },
+      {
+        "group": "RX14-7",
+        "inverse_minus_scalar_pp": [
+          -1.5250000000000097,
+          -0.3041666666666609,
+          -0.37916666666666377,
+          -0.5041666666666722
+        ],
+        "mean_pp": -0.6781250000000016,
+        "sd_pp": 0.57057856236748,
+        "positive_seeds": 0
+      },
+      {
+        "group": "RX2-1",
+        "inverse_minus_scalar_pp": [
+          -0.19166666666666776,
+          -0.1791666666666636,
+          -0.9750000000000036,
+          0.19166666666666776
+        ],
+        "mean_pp": -0.2885416666666668,
+        "sd_pp": 0.490976151170829,
+        "positive_seeds": 1
+      },
+      {
+        "group": "RX20-1",
+        "inverse_minus_scalar_pp": [
+          0.766666666666671,
+          -0.608333333333333,
+          0.8041666666666725,
+          -0.024999999999997247
+        ],
+        "mean_pp": 0.23437500000000333,
+        "sd_pp": 0.6795659613557291,
+        "positive_seeds": 2
+      },
+      {
+        "group": "RX7-14",
+        "inverse_minus_scalar_pp": [
+          -2.991666666666659,
+          0.2791666666666637,
+          0.8375000000000021,
+          -0.01666666666666483
+        ],
+        "mean_pp": -0.47291666666666454,
+        "sd_pp": 1.7161086606579354,
+        "positive_seeds": 2
+      },
+      {
+        "group": "RX7-7",
+        "inverse_minus_scalar_pp": [
+          -0.5541666666666667,
+          0.4166666666666763,
+          0.10416666666667185,
+          -0.25416666666666643
+        ],
+        "mean_pp": -0.07187499999999625,
+        "sd_pp": 0.4224922610511959,
+        "positive_seeds": 2
+      },
+      {
+        "group": "RX8-8",
+        "inverse_minus_scalar_pp": [
+          -0.42916666666666936,
+          0.37916666666666377,
+          0.6916666666666682,
+          -0.06249999999999867
+        ],
+        "mean_pp": 0.14479166666666599,
+        "sd_pp": 0.49207110249171143,
+        "positive_seeds": 2
+      }
+    ],
+    "target_feedback_forbidden": true,
+    "source_commit": "8a3871650c2a35ab5c8a63d9e6d0634946292542"
+  },
+  "gpu": ""
+}

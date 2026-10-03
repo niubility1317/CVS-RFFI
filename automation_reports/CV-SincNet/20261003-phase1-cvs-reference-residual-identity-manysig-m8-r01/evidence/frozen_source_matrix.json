@@ -1,0 +1,89 @@
+{
+  "status": "ALL_E200_FROZEN",
+  "run_id": "20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01",
+  "commit": "8a3871650c2a35ab5c8a63d9e6d0634946292542",
+  "records": [
+    {
+      "variant": "reference_residual_scalar",
+      "seed": 2026092701,
+      "accuracy": 0.981037037037037,
+      "worst_rx": 0.9468518518518518,
+      "parameters": 189562,
+      "macs": 10118296,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092701/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "seed": 2026092701,
+      "accuracy": 0.9804444444444445,
+      "worst_rx": 0.9455555555555556,
+      "parameters": 189562,
+      "macs": 10118296,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092701/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "seed": 2026092702,
+      "accuracy": 0.9827037037037037,
+      "worst_rx": 0.9483333333333334,
+      "parameters": 189562,
+      "macs": 10118296,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092702/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "seed": 2026092702,
+      "accuracy": 0.9818518518518519,
+      "worst_rx": 0.9464814814814815,
+      "parameters": 189562,
+      "macs": 10118296,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092702/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "seed": 2026092703,
+      "accuracy": 0.9789629629629629,
+      "worst_rx": 0.9422222222222222,
+      "parameters": 189562,
+      "macs": 10118296,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092703/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "seed": 2026092703,
+      "accuracy": 0.9800740740740741,
+      "worst_rx": 0.9438888888888889,
+      "parameters": 189562,
+      "macs": 10118296,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092703/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "reference_residual_scalar",
+      "seed": 2026092704,
+      "accuracy": 0.9802222222222222,
+      "worst_rx": 0.9446296296296296,
+      "parameters": 189562,
+      "macs": 10118296,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092704/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "reference_residual_inverse",
+      "seed": 2026092704,
+      "accuracy": 0.9801851851851852,
+      "worst_rx": 0.9425925925925925,
+      "parameters": 189562,
+      "macs": 10118296,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092704/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    }
+  ],
+  "target_access": false,
+  "selection": "fixed_all_arms_no_elimination"
+}
