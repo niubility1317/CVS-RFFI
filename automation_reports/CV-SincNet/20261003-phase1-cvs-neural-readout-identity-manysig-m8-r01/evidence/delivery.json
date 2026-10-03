@@ -1,0 +1,16 @@
+{
+  "status": "SUBMITTED",
+  "pid": 2241753,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.cvs_neural_readout_identity.dispatch",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/launch_spec.json"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/dispatcher.stdout.log",
+  "commit": "6ca7a522bb4be34993f442129870e68cec61bbc7",
+  "sha256": "ad68d4f593b1b34f5d38379c4a1df18f2a7650dc44fb89593478fa8f5a0f3c8a"
+}

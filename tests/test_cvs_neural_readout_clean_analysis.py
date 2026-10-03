@@ -20,13 +20,14 @@ def metrics(cm):
         macro_accuracy=float((tp/cm.sum(1)).mean()),macro_f1=float((2*tp/den).mean()))
 
 
-def fixture(candidate=VARIANTS[0]):
+def fixture(candidate=VARIANTS[0],candidate_error_index=None):
     records=[];terminal=[]
     for index,method in enumerate((*BASELINES,candidate)):
         for j,seed in enumerate(SEEDS):
             rid=f'{method}-s{seed}';overall=np.zeros((6,6),dtype=np.int64)
             for k,rx in enumerate(RX):
-                cm=np.eye(6,dtype=np.int64)*4000;error=10*(index+j+k)
+                measured_index=4 if method=='response_anchor_mean' else candidate_error_index if method==candidate and candidate_error_index is not None else index
+                cm=np.eye(6,dtype=np.int64)*4000;error=10*(measured_index+j+k)
                 for c in range(6):cm[c,c]-=error;cm[c,(c+1)%6]+=error
                 overall+=cm
                 records.append(dict(row_id=rid,method=method,receiver=rx,model_seed=seed,view='clean',**metrics(cm)))
@@ -51,23 +52,24 @@ def fixture(candidate=VARIANTS[0]):
             pairs.append(dict(candidate=candidate,baseline=method,receiver=rx,view='clean',model_seeds=list(SEEDS),accuracy_delta_pp_by_seed=values,
                 accuracy_delta_pp_mean=statistics.mean(values),accuracy_delta_pp_seed_sd=statistics.stdev(values),positive_seeds=sum(v>0 for v in values)))
     data=dict(run_id=RUN,pipeline=dict(status='ANALYZED',independent_scoring_complete=True),dispatcher_process=None,classes=collect.CLASSES.copy(),rows=terminal,
-        marker=dict(status='SCORED_COMPLETE',rows=40,models=10,seeds=4,records=320,view='clean',query_count=168000,target_feedback_forbidden=True),
+        marker=dict(status='SCORED_COMPLETE',rows=48,models=12,seeds=4,records=384,view='clean',query_count=168000,target_feedback_forbidden=True),
         results=dict(results=records),summary=dict(summary=summary,paired=pairs))
-    selection=dict(scope='neural_readout_source',status='SOURCE_SELECTION_FROZEN',selected_variant=candidate,new_candidate_selected=True,target_access=False,target_score_used=False)
+    selection=dict(scope='neural_readout_source',status='SOURCE_SELECTION_FROZEN',selected_variant=candidate,new_candidate_selected=True,target_access=False,target_score_used=False,
+                   candidate_universe=['neural_residual_shallow','response_anchor_mean',*VARIANTS])
     previous=dict(results=dict(results=copy.deepcopy([r for r in records if r['method'] in BASELINES])))
     return data,selection,previous
 
 
 @pytest.mark.parametrize('candidate',VARIANTS)
-def test_complete320_matrix_and40_terminal_rows(candidate):
+def test_complete384_matrix_and48_terminal_rows(candidate):
     data,selection,previous=fixture(candidate);lookup,receivers=validate_results(data,selection,previous)
-    assert len(lookup)==320 and set(receivers)==set(RX)
-    assert len(collect.validate_terminal(data,selection))==40
+    assert len(lookup)==384 and set(receivers)==set(RX)
+    assert len(collect.validate_terminal(data,selection))==48
 
 
-@pytest.mark.parametrize('case',('missing','duplicate','fractional_cm','metric','nan','RX_partition','old_control','old_duplicate',
+@pytest.mark.parametrize('case',('missing','duplicate','fractional_cm','metric','nan','RX_partition','old_control','old_anchor','old_duplicate',
     'summary_mean','summary_sd','missing_summary','summary_view','summary_seed','paired_seed','paired_sign','paired_duplicate',
-    'target_access','unselected','non_clean','classmap','marker_models','row_id','per_tx'))
+    'target_access','unselected','stale_source','non_clean','classmap','marker_models','row_id','per_tx'))
 def test_analysis_rejects_corrupt_or_out_of_scope_results(case):
     data,selection,previous=fixture()
     if case=='missing':data['results']['results'].pop()
@@ -78,6 +80,7 @@ def test_analysis_rejects_corrupt_or_out_of_scope_results(case):
     elif case in ('RX_partition','per_tx'):
         row=data['results']['results'][0];cm=np.asarray(row['confusion']);cm[0,0]-=1;cm[0 if case=='RX_partition' else 1,1]+=1;row.update(metrics(cm))
     elif case=='old_control':previous['results']['results'][0]['accuracy']+=.001
+    elif case=='old_anchor':next(r for r in previous['results']['results'] if r['method']=='response_anchor_mean')['accuracy']+=.001
     elif case=='old_duplicate':previous['results']['results'][-1]=copy.deepcopy(previous['results']['results'][0])
     elif case=='summary_mean':data['summary']['summary'][0]['accuracy_mean']+=.001
     elif case=='summary_sd':data['summary']['summary'][0]['macro_f1_seed_sd']+=.001
@@ -89,6 +92,7 @@ def test_analysis_rejects_corrupt_or_out_of_scope_results(case):
     elif case=='paired_duplicate':data['summary']['paired'][-1]=copy.deepcopy(data['summary']['paired'][0])
     elif case=='target_access':selection['target_access']=True
     elif case=='unselected':selection['new_candidate_selected']=False
+    elif case=='stale_source':selection['candidate_universe'].remove('response_anchor_mean')
     elif case=='non_clean':data['results']['results'][0]['view']='practical_mid'
     elif case=='classmap':data['classes'].reverse()
     elif case=='marker_models':data['marker']['models']=9
@@ -97,7 +101,7 @@ def test_analysis_rejects_corrupt_or_out_of_scope_results(case):
 
 
 @pytest.mark.parametrize('case',('dispatcher','unknown_process','old_process','missing_row','duplicate_row','missing_completion','provenance',
-    'ancestor','truth','classmap','not_analyzed','not_scored','fp32','source_path','wrong_run','old_count','missing_process','missing_dispatcher'))
+    'ancestor','truth','classmap','not_analyzed','not_scored','fp32','source_path','wrong_run','old_count','missing_process','missing_dispatcher','stale_source'))
 def test_terminal_readback_checks_old_and_new_rows(case):
     data,selection,_=fixture()
     if case=='dispatcher':data['dispatcher_process']={'pid':1}
@@ -118,12 +122,13 @@ def test_terminal_readback_checks_old_and_new_rows(case):
     elif case=='old_count':data['rows'][0]['completion']['count']=167999
     elif case=='missing_process':data['rows'][0].pop('process')
     elif case=='missing_dispatcher':data.pop('dispatcher_process')
+    elif case=='stale_source':selection['candidate_universe'].remove('response_anchor_mean')
     with pytest.raises(ValueError):collect.validate_terminal(data,selection)
 
 
 @pytest.mark.parametrize('candidate',VARIANTS)
 def test_full_report_resources_and_both_actual_parameter_counts(tmp_path,candidate):
-    data,selection,previous=fixture(candidate)
+    data,selection,previous=fixture(candidate,candidate_error_index=6)
     def save(path,value):path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value),encoding='utf-8')
     e=tmp_path/'automation_reports/CV-SincNet'/report.RUN/'evidence'
     save(e/'final_readback.json',data);save(e/'performance_selection.json',selection)
@@ -134,9 +139,14 @@ def test_full_report_resources_and_both_actual_parameter_counts(tmp_path,candida
     save(tmp_path/'automation_reports/CV-SincNet'/report.SOURCE_RUN/'evidence/source_research_complete.json',
         dict(rows=[dict(resolved=dict(variant=candidate,model_seed=s),profile=profile,epochs=[dict(peak_cuda_allocated_bytes=200000)]) for s in SEEDS]))
     verdict=report.analyze(tmp_path)
-    assert verdict['all320_confusions_recomputed'] and verdict['old288_metrics_exactly_unchanged']
+    assert verdict['all384_confusions_recomputed'] and verdict['old352_metrics_exactly_unchanged']
+    assert verdict['all96_summaries_recomputed'] and verdict['all88_pairs_recomputed']
+    assert verdict['paired_vs_response_anchor']['baseline']=='response_anchor_mean'
+    assert verdict['paired_vs_neural_shallow']['accuracy_delta_pp_mean']>0
+    assert verdict['paired_vs_response_anchor']['accuracy_delta_pp_mean']<0
+    assert verdict['scientific_verdict']=='NO_MEAN_IMPROVEMENT_ON_FIXED_CLEAN_BENCHMARK'
     resources=report.read(e/'resource_summary.json');assert all(r['parameters']==parameters for r in resources['rows'])
-    assert len((e/'per_transmitter_summary.csv').read_text(encoding='utf-8').splitlines())==61
+    assert len((e/'per_transmitter_summary.csv').read_text(encoding='utf-8').splitlines())==73
     assert '小幅均值改善不证明' in (e.parent/'report.md').read_text(encoding='utf-8')
 
 

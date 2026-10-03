@@ -52,3 +52,5 @@
 对复混合矩阵M，功率读出含`|(Mz)_k|²=Σ_i|M_ki|²|z_i|²+2Re Σ_{i<j}M_ki conj(M_kj)z_i conj(z_j)`，允许相对相位影响读出，同时共同相位抵消。原逐通道功率/自相关读出没有这个跨通道交叉项；上游卷积仍可能表达它。因此该恒等式仅定位局部结构差异，不是整体不可表达性或新的一般理论。
 
 [可执行公共反例](../experiments/cvs_neural_readout_identity/information.py)及[数值证据](../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/evidence/readout_information_counterexample.json)表明两类合法输入在原读出上碰撞、在一个合法复混合读出下可区分；没有拟合真实数据或修改正式初始化。是否学到有用区别仍由正式训练决定。
+
+恢复执行状态：8份真实源训练已启动并独立核验，执行提交`6ca7a522bb4be34993f442129870e68cec61bbc7`。已有模型和训练配置不再修改；完成后按16条源记录冻结，只有新赢家才进入条件48行clean测试。

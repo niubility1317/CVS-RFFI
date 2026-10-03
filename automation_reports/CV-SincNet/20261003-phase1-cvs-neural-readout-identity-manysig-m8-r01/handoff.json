@@ -1,24 +1,24 @@
 {
   "run_id": "20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01",
-  "status": "PLANNED",
+  "status": "RUNNING",
   "launch_owner": "codex/root/cvs-neural-readout-identity-20261003",
-  "source_records": 16,
-  "new_models": 8,
-  "source_controls": [
-    "neural_residual_shallow",
-    "response_anchor_mean"
-  ],
-  "model_and_training_unchanged": true,
+  "live_workers": 8,
+  "code_commit": "6ca7a522bb4be34993f442129870e68cec61bbc7",
+  "dispatcher_pid": 2241753,
   "performance_goal_achieved": false,
-  "paper_claim_established": false,
+  "paper_goal_achieved": false,
   "evidence": [
-    "evidence/resume_preflight.json",
-    "evidence/resumption_validation.json",
-    "evidence/readout_information_counterexample.json"
+    "evidence/launch_readback.json",
+    "evidence/launch_processes.json"
   ],
   "next": [
-    "Commit and push the reviewed source matrix",
-    "Publish once only after absent paths were independently verified",
-    "Record actual process/config/log; complete E200 and frozen conditional clean plan"
-  ]
+    "Read-only monitor; no resubmit/hot modification",
+    "Audit all80000steps; independently freeze16source records",
+    "Only newwinner: prepare/register/Git/publish48row clean; controlretained:reuse its completed frozen test",
+    "Report all results and scientific limits; target scores cannot inform further architecture"
+  ],
+  "monitor_command": "python E:/type10-7/.codex_tmp/readout_monitor.py --name progress",
+  "collect_command": "python -m experiments.cvs_neural_readout_identity.collect --root . --output local_artifacts/cvs_neural_readout_identity_20261003_r01/complete",
+  "source_analyze_command": "python -m experiments.cvs_neural_readout_identity.analyze --root .",
+  "clean_prepare_command": "python -m experiments.cvs_neural_readout_clean.prepare --selection automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/evidence/source_selection.json"
 }

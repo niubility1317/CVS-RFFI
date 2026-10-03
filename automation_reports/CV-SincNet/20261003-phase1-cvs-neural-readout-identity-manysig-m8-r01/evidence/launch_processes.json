@@ -1,0 +1,729 @@
+{
+  "read_at": 1790999435.1091247,
+  "run_id": "20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01",
+  "status": "SOURCE_TRAINING",
+  "pipeline": {
+    "status": "SOURCE_TRAINING",
+    "pid": 2241753,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/launch_spec.json"
+    ],
+    "run_id": "20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01",
+    "launch_owner": "codex/root/cvs-neural-readout-identity-20261003",
+    "commit": "6ca7a522bb4be34993f442129870e68cec61bbc7",
+    "target_access": false,
+    "rows": {
+      "readout_attention-s2026092701": {
+        "status": "RUNNING",
+        "variant": "readout_attention",
+        "model_seed": 2026092701,
+        "pid": 2241765,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_attention-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092701/source",
+        "started": 1790999362.7927752
+      },
+      "readout_complex_attention-s2026092701": {
+        "status": "RUNNING",
+        "variant": "readout_complex_attention",
+        "model_seed": 2026092701,
+        "pid": 2241844,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_complex_attention-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092701/source",
+        "started": 1790999368.0077384
+      },
+      "readout_attention-s2026092702": {
+        "status": "RUNNING",
+        "variant": "readout_attention",
+        "model_seed": 2026092702,
+        "pid": 2241925,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_attention-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092702/source",
+        "started": 1790999373.22935
+      },
+      "readout_complex_attention-s2026092702": {
+        "status": "RUNNING",
+        "variant": "readout_complex_attention",
+        "model_seed": 2026092702,
+        "pid": 2242002,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_complex_attention-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092702/source",
+        "started": 1790999378.4717648
+      },
+      "readout_attention-s2026092703": {
+        "status": "RUNNING",
+        "variant": "readout_attention",
+        "model_seed": 2026092703,
+        "pid": 2242083,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_attention-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092703/source",
+        "started": 1790999383.6887655
+      },
+      "readout_complex_attention-s2026092703": {
+        "status": "RUNNING",
+        "variant": "readout_complex_attention",
+        "model_seed": 2026092703,
+        "pid": 2242160,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_complex_attention-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092703/source",
+        "started": 1790999388.9257002
+      },
+      "readout_attention-s2026092704": {
+        "status": "RUNNING",
+        "variant": "readout_attention",
+        "model_seed": 2026092704,
+        "pid": 2242241,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_attention-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092704/source",
+        "started": 1790999394.1526656
+      },
+      "readout_complex_attention-s2026092704": {
+        "status": "RUNNING",
+        "variant": "readout_complex_attention",
+        "model_seed": 2026092704,
+        "pid": 2242378,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_complex_attention-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092704/source",
+        "started": 1790999399.36704
+      }
+    }
+  },
+  "rows": [
+    {
+      "row_id": "readout_attention-s2026092701",
+      "status": "RUNNING",
+      "pid": 2241765,
+      "gpu": 0,
+      "process": {
+        "pid": 2241765,
+        "parent_pid": 2241753,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_attention-s2026092701.json",
+          ""
+        ]
+      },
+      "epoch": 8,
+      "train_ce": 0.4063560029864311,
+      "source_v": 0.8689259259259259,
+      "epoch_seconds": 8.122059398010606,
+      "readout": {
+        "active": true,
+        "records": [
+          {
+            "block": "time.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.22538164258003235,
+            "projection_norm": 0.49919381737709045,
+            "attention_entropy_mean": 4.109523773193359,
+            "attention_effective_tokens_mean": 60.924137115478516,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": false
+          },
+          {
+            "block": "behavior.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.3131412863731384,
+            "projection_norm": 0.614874541759491,
+            "attention_entropy_mean": 4.044315814971924,
+            "attention_effective_tokens_mean": 57.638893127441406,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": false
+          }
+        ],
+        "scope": "last source batch; actual readout hooks; no additional loss or updates"
+      },
+      "log_bytes": 54178,
+      "error_tail": []
+    },
+    {
+      "row_id": "readout_complex_attention-s2026092701",
+      "status": "RUNNING",
+      "pid": 2241844,
+      "gpu": 1,
+      "process": {
+        "pid": 2241844,
+        "parent_pid": 2241753,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_complex_attention-s2026092701.json",
+          ""
+        ]
+      },
+      "epoch": 7,
+      "train_ce": 0.46524767339229584,
+      "source_v": 0.8946666666666667,
+      "epoch_seconds": 8.218310165015282,
+      "readout": {
+        "active": true,
+        "records": [
+          {
+            "block": "time.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.20671194791793823,
+            "projection_norm": 0.4838012754917145,
+            "attention_entropy_mean": 4.130171775817871,
+            "attention_effective_tokens_mean": 62.193450927734375,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": true
+          },
+          {
+            "block": "behavior.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.30765876173973083,
+            "projection_norm": 0.6355829238891602,
+            "attention_entropy_mean": 4.015787124633789,
+            "attention_effective_tokens_mean": 56.09978103637695,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": true
+          }
+        ],
+        "scope": "last source batch; actual readout hooks; no additional loss or updates"
+      },
+      "log_bytes": 48854,
+      "error_tail": []
+    },
+    {
+      "row_id": "readout_attention-s2026092702",
+      "status": "RUNNING",
+      "pid": 2241925,
+      "gpu": 2,
+      "process": {
+        "pid": 2241925,
+        "parent_pid": 2241753,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_attention-s2026092702.json",
+          ""
+        ]
+      },
+      "epoch": 7,
+      "train_ce": 0.47095304548740385,
+      "source_v": 0.8768888888888889,
+      "epoch_seconds": 8.166573277994758,
+      "readout": {
+        "active": true,
+        "records": [
+          {
+            "block": "time.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.26544153690338135,
+            "projection_norm": 0.5260166525840759,
+            "attention_entropy_mean": 4.12918758392334,
+            "attention_effective_tokens_mean": 62.148582458496094,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": false
+          },
+          {
+            "block": "behavior.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.24877578020095825,
+            "projection_norm": 0.5456873774528503,
+            "attention_entropy_mean": 3.8593201637268066,
+            "attention_effective_tokens_mean": 49.38951110839844,
+            "attention_sum_max_abs_error": 1.7881393432617188e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": false
+          }
+        ],
+        "scope": "last source batch; actual readout hooks; no additional loss or updates"
+      },
+      "log_bytes": 48732,
+      "error_tail": []
+    },
+    {
+      "row_id": "readout_complex_attention-s2026092702",
+      "status": "RUNNING",
+      "pid": 2242002,
+      "gpu": 3,
+      "process": {
+        "pid": 2242002,
+        "parent_pid": 2241753,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_complex_attention-s2026092702.json",
+          ""
+        ]
+      },
+      "epoch": 6,
+      "train_ce": 0.5442168116569519,
+      "source_v": 0.8737777777777778,
+      "epoch_seconds": 8.351208767999196,
+      "readout": {
+        "active": true,
+        "records": [
+          {
+            "block": "time.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.24673083424568176,
+            "projection_norm": 0.5107567310333252,
+            "attention_entropy_mean": 4.138103008270264,
+            "attention_effective_tokens_mean": 62.69327163696289,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": true
+          },
+          {
+            "block": "behavior.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.23435689508914948,
+            "projection_norm": 0.5317230820655823,
+            "attention_entropy_mean": 3.879157543182373,
+            "attention_effective_tokens_mean": 51.11397933959961,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": true
+          }
+        ],
+        "scope": "last source batch; actual readout hooks; no additional loss or updates"
+      },
+      "log_bytes": 43401,
+      "error_tail": []
+    },
+    {
+      "row_id": "readout_attention-s2026092703",
+      "status": "RUNNING",
+      "pid": 2242083,
+      "gpu": 4,
+      "process": {
+        "pid": 2242083,
+        "parent_pid": 2241753,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_attention-s2026092703.json",
+          ""
+        ]
+      },
+      "epoch": 5,
+      "train_ce": 0.5791490882635116,
+      "source_v": 0.8338148148148148,
+      "epoch_seconds": 7.780083105986705,
+      "readout": {
+        "active": true,
+        "records": [
+          {
+            "block": "time.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.20535936951637268,
+            "projection_norm": 0.4342711567878723,
+            "attention_entropy_mean": 4.117580413818359,
+            "attention_effective_tokens_mean": 61.462406158447266,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": false
+          },
+          {
+            "block": "behavior.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.28262004256248474,
+            "projection_norm": 0.5321266055107117,
+            "attention_entropy_mean": 4.117234706878662,
+            "attention_effective_tokens_mean": 61.469181060791016,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": false
+          }
+        ],
+        "scope": "last source batch; actual readout hooks; no additional loss or updates"
+      },
+      "log_bytes": 37912,
+      "error_tail": []
+    },
+    {
+      "row_id": "readout_complex_attention-s2026092703",
+      "status": "RUNNING",
+      "pid": 2242160,
+      "gpu": 5,
+      "process": {
+        "pid": 2242160,
+        "parent_pid": 2241753,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_complex_attention-s2026092703.json",
+          ""
+        ]
+      },
+      "epoch": 5,
+      "train_ce": 0.5720373940467834,
+      "source_v": 0.8270740740740741,
+      "epoch_seconds": 8.241398573998595,
+      "readout": {
+        "active": true,
+        "records": [
+          {
+            "block": "time.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.19687338173389435,
+            "projection_norm": 0.4469631612300873,
+            "attention_entropy_mean": 4.122429847717285,
+            "attention_effective_tokens_mean": 61.74879837036133,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": true
+          },
+          {
+            "block": "behavior.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.27559250593185425,
+            "projection_norm": 0.5580666065216064,
+            "attention_entropy_mean": 4.103516101837158,
+            "attention_effective_tokens_mean": 60.749114990234375,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": true
+          }
+        ],
+        "scope": "last source batch; actual readout hooks; no additional loss or updates"
+      },
+      "log_bytes": 37971,
+      "error_tail": []
+    },
+    {
+      "row_id": "readout_attention-s2026092704",
+      "status": "RUNNING",
+      "pid": 2242241,
+      "gpu": 6,
+      "process": {
+        "pid": 2242241,
+        "parent_pid": 2241753,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_attention-s2026092704.json",
+          ""
+        ]
+      },
+      "epoch": 4,
+      "train_ce": 0.7735296583175659,
+      "source_v": 0.7591481481481481,
+      "epoch_seconds": 8.401944601006107,
+      "readout": {
+        "active": true,
+        "records": [
+          {
+            "block": "time.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.19446025788784027,
+            "projection_norm": 0.42949262261390686,
+            "attention_entropy_mean": 4.119413375854492,
+            "attention_effective_tokens_mean": 61.541603088378906,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": false
+          },
+          {
+            "block": "behavior.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.2637947201728821,
+            "projection_norm": 0.46223151683807373,
+            "attention_entropy_mean": 4.141136169433594,
+            "attention_effective_tokens_mean": 62.8808708190918,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": false
+          }
+        ],
+        "scope": "last source batch; actual readout hooks; no additional loss or updates"
+      },
+      "log_bytes": 32540,
+      "error_tail": []
+    },
+    {
+      "row_id": "readout_complex_attention-s2026092704",
+      "status": "RUNNING",
+      "pid": 2242378,
+      "gpu": 7,
+      "process": {
+        "pid": 2242378,
+        "parent_pid": 2241753,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_neural_readout_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01/experiments/cvs_neural_readout_identity/configs/readout_complex_attention-s2026092704.json",
+          ""
+        ]
+      },
+      "epoch": 3,
+      "train_ce": 0.964389671087265,
+      "source_v": 0.7768148148148148,
+      "epoch_seconds": 8.473482605011668,
+      "readout": {
+        "active": true,
+        "records": [
+          {
+            "block": "time.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.18709273636341095,
+            "projection_norm": 0.3888552188873291,
+            "attention_entropy_mean": 4.1300201416015625,
+            "attention_effective_tokens_mean": 62.19318771362305,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": true
+          },
+          {
+            "block": "behavior.readout",
+            "packets": 28,
+            "input_shape": [
+              28,
+              2,
+              32,
+              64
+            ],
+            "output_dimension": 320,
+            "relative_output_change_mean": 0.23423448204994202,
+            "projection_norm": 0.421928733587265,
+            "attention_entropy_mean": 4.149107933044434,
+            "attention_effective_tokens_mean": 63.378883361816406,
+            "attention_sum_max_abs_error": 1.1920928955078125e-07,
+            "attention_heads": 4,
+            "attention_tokens": 64,
+            "channel_mixing": true
+          }
+        ],
+        "scope": "last source batch; actual readout hooks; no additional loss or updates"
+      },
+      "log_bytes": 27146,
+      "error_tail": []
+    }
+  ],
+  "source_selection": null,
+  "gpu": "2241765, GPU-56adac86-77cd-36c9-8770-dbf002650461, 830 MiB\n2241844, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 852 MiB\n2241925, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 830 MiB\n2242002, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 852 MiB\n2242083, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 830 MiB\n2242160, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 850 MiB\n2242241, GPU-5463e082-259e-537b-603a-01575d45801c, 830 MiB\n2242378, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 850 MiB\n"
+}

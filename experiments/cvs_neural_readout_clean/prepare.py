@@ -1,4 +1,4 @@
-"""Create four selected predictions and retain all thirty-six frozen controls."""
+"""Create four selected predictions and retain all forty-four frozen controls."""
 import argparse
 import copy
 import json
@@ -10,35 +10,37 @@ from experiments.cvs_clean_eval.prepare import CAPSULE
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE_RUN = '20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01'
-RUN = '20261003-phase1-cvs-neural-readout-clean-manysig-m40-r01'
+RUN = '20261003-phase1-cvs-neural-readout-clean-manysig-m48-r01'
 RELEASE = 'cvs_neural_readout_clean_eval_20261003_r01'
 SOURCE_RELEASE = 'cvs_neural_readout_identity_20261003_r01'
-OLD_RUN = '20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01'
+OLD_RUN = '20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01'
 SOURCE = PROJECT + '/runs/' + SOURCE_RUN
+SOURCE_CANDIDATES = ('neural_residual_shallow','response_anchor_mean',*VARIANTS)
 
 
 def main(selection):
     if selection.get('new_candidate_selected') is not True:
-        raise ValueError('Existing neural baseline retained; no new query or readout configuration')
+        raise ValueError('Existing source control retained; no new query or readout configuration')
     if (selection.get('status') != 'SOURCE_SELECTION_FROZEN' or
             selection.get('target_access') is not False or selection.get('target_score_used') is not False or
-            selection.get('selected_variant') not in VARIANTS):
+            selection.get('selected_variant') not in VARIANTS or selection.get('candidate_universe')!=list(SOURCE_CANDIDATES)):
         raise ValueError('Source-only freeze required')
     variant = selection['selected_variant']
     prefix = 'experiments/cvs_neural_readout_clean/configs/'
     remote = PROJECT + '/releases/' + RELEASE + '/'
     if (ROOT / prefix).exists():
         raise FileExistsError('Preserve actual selected clean configuration; no overwrite')
-    previous = ROOT / 'experiments/cvs_neural_residual_clean/configs'
+    previous = ROOT / 'experiments/cvs_response_fusion_clean/configs'
     old = json.loads((previous / 'launch_spec.json').read_text(encoding='utf-8'))
     spec = copy.deepcopy(json.loads((previous / 'experiment_spec.json').read_text(encoding='utf-8')))
     expected = {(v, s) for v in ('native','cvcnn','real_cnn','resnet1d','residual_fusion',
-                'energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow') for s in SEEDS}
-    if len(old['rows']) != 36 or {(r['variant'], r['model_seed']) for r in old['rows']} != expected:
-        raise ValueError('Previous immutable thirty-six-row matrix differs')
+                'energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual','response_anchor_mean') for s in SEEDS}
+    if (old.get('run_id')!=OLD_RUN or len(old['rows'])!=44 or {(r['variant'],r['model_seed']) for r in old['rows']}!=expected or
+            len(spec['rows'])!=44 or {r['row_id'] for r in spec['rows']}!={r['row_id'] for r in old['rows']}):
+        raise ValueError('Previous immutable forty-four-row matrix differs')
     spec.update(run_id=RUN, group_id='cvs-clean-neural-readout-confirmation',
-        display_name='CVS 神经网络读出：源域选中四 seed clean 与 36 个冻结控制',
-        description='只测试源规则选中的新候选；4 个新 clean 预测与原 36 个预测统一独立评分；不反馈调参。',
+        display_name='CVS 神经网络读出：源域选中四 seed clean 与 44 个冻结控制',
+        description='只测试源规则选中的新候选；4 个新 clean 预测与原 44 个预测统一独立评分；不反馈调参。',
         authorization='用户授权纯神经网络读出优化；原训练方案与单一 CE；源规则选中后完成 clean 测试。',
         status='PLANNED', parent_run_ids=[SOURCE_RUN, OLD_RUN], stage='Phase1-neural-readout-clean-confirmation',
         tags=['cvs','clean_only','ce_only','performance_priority','source_selected','frozen_prediction_reuse'])
@@ -65,23 +67,23 @@ def main(selection):
             command='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_clean_eval.predict --config '+remote+ref)
         spec['rows'].append(row)
     spec['checkpoint']['sources'] += [SOURCE+'/'+variant+'-s'+str(seed)+'/source/last.pt' for seed in SEEDS]
-    spec['checkpoint'].update(selection_rule='Fixed E200; two scratch learned readouts plus four immutable neural_residual_shallow source controls; maximum four-seed mean sourceV/worstRX score; cost only for exact performance ties; no target feedback',
-        provenance_verdict='Four actual scratch/full physical contract/FP32/payload checks before query; original 36 frozen predictions retain their validated provenance')
+    spec['checkpoint'].update(selection_rule='Fixed E200; eight scratch learned readout models plus four immutable neural_residual_shallow and four response_anchor_mean source controls; maximum four-seed mean sourceV/worstRX score; cost only for exact performance ties; no target feedback',
+        provenance_verdict='Four actual scratch/full physical contract/FP32/payload checks before query; original 44 frozen predictions retain their validated provenance')
     spec['code'].update(checkout=str(ROOT),cwd=remote.rstrip('/'))
-    spec['permissions']['query_use']='Per-packet inference over all six classes; all 40 predictions fixed before independent truth-last scorer'
+    spec['permissions']['query_use']='Per-packet inference over all six classes; all 48 predictions fixed before independent truth-last scorer'
     spec['execution'].update(launch_owner=runtime['launch_owner'],remote_run_root=runtime['runtime_root'],remote_log_root=runtime['log_root'],
         local_artifact_root='automation_reports/CV-SincNet/'+RUN,launch_command='python -m experiments.cvs_neural_readout_clean.publish --output local_artifacts/'+RELEASE)
-    spec['metrics_plan'].update(primary='Four-seed paired clean accuracy/F1/CM vs nine frozen baselines; full RX/TX and measured resources',
-        prediction_ref='New four: '+runtime['runtime_root']+'; original 36 at immutable prior paths',
+    spec['metrics_plan'].update(primary='Four-seed paired clean accuracy/F1/CM vs eleven frozen baselines including response_anchor_mean; full RX/TX and measured resources',
+        prediction_ref='New four: '+runtime['runtime_root']+'; original 44 at immutable prior paths',
         later_test='No LEO, target feedback, reselection, retraining, or unselected-candidate query')
-    spec['notes']=['40 same physical query/class/seed rows: four new and 36 immutable reused predictions',
+    spec['notes']=['48 same physical query/class/seed rows: four new and 44 immutable reused predictions',
         'Clean-only closed set with six classes; no support adaptation/new class/unknown/LEO claim',
         'Historically exposed fixed benchmark; four model seeds; retain all negative results',
         'Actual source FP32 policy is enforced before new prediction; historical control precision remains recorded']
     write(ROOT/prefix/'frozen_selection.json', enriched)
     write(ROOT/prefix/'launch_spec.json', runtime)
     write(ROOT/prefix/'experiment_spec.json', spec)
-    print(json.dumps(dict(run_id=RUN,variant=variant,new_predictions=4,reused=36,total=40)))
+    print(json.dumps(dict(run_id=RUN,variant=variant,new_predictions=4,reused=44,total=48)))
     return runtime
 
 

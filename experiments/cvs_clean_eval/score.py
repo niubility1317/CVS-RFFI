@@ -17,6 +17,7 @@ REUSED_COUPLED_RUN='20261002-phase1-cvs-coupled-clean-manysig-m28-r01'
 REUSED_ADAPTIVE_RUN='20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01'
 REUSED_CHANNEL_RUN='20261003-phase1-cvs-channel-order-clean-manysig-m40-r01'
 REUSED_NEURAL_RUN='20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01'
+REUSED_FUSION_RUN='20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01'
 CANDIDATES.update({'crossphase_raw','crossphase_half','coupled_lag1','coupled_lag4','volterra_lag1','volterra_lag4'})
 CANDIDATES.update({'adaptive_volterra_lag1','adaptive_volterra_lag4'})
 CANDIDATES.update({'orthopoly_instant','orthopoly_memory4'})
@@ -66,7 +67,7 @@ def validate_matrix(spec):
     if selection.get('scope')=='neural_readout_source':
         if selection['selected_variant'] not in {'readout_attention','readout_complex_attention'} or selection.get('new_candidate_selected') is not True:
             raise ValueError('Only selected new neural readout candidate can be scored')
-        variants=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow',selection['selected_variant'])
+        variants=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual','response_anchor_mean',selection['selected_variant'])
     if selection.get('scope')=='neural_source':
         if selection['selected_variant'] not in {'neural_residual_shallow','neural_residual_deep'} or selection.get('new_candidate_selected') is not True:
             raise ValueError('Only selected new neural residual candidate can be scored')
@@ -106,7 +107,7 @@ def validate_matrix(spec):
     if selection.get('scope') in ('neural_readout_source','channel_order_source','channel_response_source','response_fusion_source'):
         candidate=selection['selected_variant']
         if any(bool(r.get('reuse_from_run'))==(r['variant']==candidate) for r in rows):
-            raise ValueError('Source-selected confirmation requires four new selected rows and thirty-six frozen reused rows')
+            raise ValueError('Source-selected confirmation requires four new selected rows and all registered frozen control rows')
     return selection
 
 
@@ -123,10 +124,11 @@ def preflight_predictions(spec):
             coupled=row['reuse_from_run']==REUSED_COUPLED_RUN and row['variant']=='coupled_lag4'
             adaptive=row['reuse_from_run']==REUSED_ADAPTIVE_RUN and row['variant']=='adaptive_volterra_lag4'
             channel=row['reuse_from_run']==REUSED_CHANNEL_RUN and row['variant']=='channel_dual'
+            fusion=row['reuse_from_run']==REUSED_FUSION_RUN and row['variant']=='response_anchor_mean'
             neural=row['reuse_from_run']==REUSED_NEURAL_RUN and row['variant']=='neural_residual_shallow'
-            old_run=REUSED_CHANNEL_RUN if channel else REUSED_NEURAL_RUN if neural else REUSED_ADAPTIVE_RUN if adaptive else REUSED_COUPLED_RUN if coupled else REUSED_ENERGY_RUN if energy else REUSED_RESIDUAL_RUN if residual else REUSED_BASELINE_RUN
-            models=10 if channel else 9 if neural else 8 if adaptive else 7 if coupled else 6 if energy else 5 if residual else 4
-            if (not (baseline or residual or energy or coupled or adaptive or neural or channel) or root.parts[-3:]!=(old_run,row['row_id'],'prediction') or
+            old_run=REUSED_FUSION_RUN if fusion else REUSED_CHANNEL_RUN if channel else REUSED_NEURAL_RUN if neural else REUSED_ADAPTIVE_RUN if adaptive else REUSED_COUPLED_RUN if coupled else REUSED_ENERGY_RUN if energy else REUSED_RESIDUAL_RUN if residual else REUSED_BASELINE_RUN
+            models=11 if fusion else 10 if channel else 9 if neural else 8 if adaptive else 7 if coupled else 6 if energy else 5 if residual else 4
+            if (not (baseline or residual or energy or coupled or adaptive or neural or channel or fusion) or root.parts[-3:]!=(old_run,row['row_id'],'prediction') or
                 original['target_access'] or original['target_score_used'] or
                 old_marker['status']!='SCORED_COMPLETE' or old_marker['rows']!=models*4 or old_marker['models']!=models or old_marker['seeds']!=4):
                 raise ValueError('Unauthorized/incomplete frozen reuse;truth remains closed')
@@ -140,6 +142,8 @@ def preflight_predictions(spec):
                 raise ValueError('Original adaptive source selection changed')
             if channel and (original.get('scope')!='channel_order_source' or original['status']!='SOURCE_SELECTION_FROZEN' or original['selected_variant']!='channel_dual' or original.get('new_candidate_selected') is not True):
                 raise ValueError('Original channel source selection changed')
+            if fusion and (original.get('scope')!='response_fusion_source' or original['status']!='SOURCE_SELECTION_FROZEN' or original['selected_variant']!='response_anchor_mean' or original.get('new_candidate_selected') is not True):
+                raise ValueError('Original fusion source selection changed')
             if neural and (original.get('scope')!='neural_source' or original['status']!='SOURCE_SELECTION_FROZEN' or original['selected_variant']!='neural_residual_shallow' or original.get('new_candidate_selected') is not True):
                 raise ValueError('Original neural source selection changed')
             if residual and (original.get('scope') in ('baseline_only','balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source','synchronized_source','coordinate_source','additive_source','fractional_source','energy_source') or original['status']!='SOURCE_SELECTION_FROZEN' or original['selected_variant']!='residual_fusion'):
@@ -194,7 +198,9 @@ def score(spec):
     candidate='native' if selection.get('scope')=='baseline_only' else selection['selected_variant']
     if selection.get('scope') in ('channel_response_source','response_fusion_source'):
         pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual')
-    elif selection.get('scope') in ('neural_readout_source','channel_order_source'):
+    elif selection.get('scope')=='neural_readout_source':
+        pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual','response_anchor_mean')
+    elif selection.get('scope')=='channel_order_source':
         pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow')
     elif selection.get('scope') in ('orthopoly_source','moment_source','curvature_source','neural_source'):
         pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4')

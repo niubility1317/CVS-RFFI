@@ -25,11 +25,12 @@
   "replaces_run_id": null,
   "authorization": "2026-10-03用户要求继续优化完成目标；此前明确纯神经网络能力，不增加训练策略或额外损失。",
   "code": {
-    "commit": "49fd4f564a3484ebfbaf774f23d1973c425424b9",
+    "commit": "6ca7a522bb4be34993f442129870e68cec61bbc7",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_readout_identity_20261003_r01",
-    "architecture_base_commit": "f929f4d1116640474d324844e2f0824f97ca7dd0"
+    "architecture_base_commit": "f929f4d1116640474d324844e2f0824f97ca7dd0",
+    "commit_scope": "Actual immutable release independently verified"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -99,7 +100,9 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_neural_readout_identity.publish --output local_artifacts/cvs_neural_readout_identity_20261003_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 2241753,
+    "launch_verified_at": "2026-10-03T03:53:20.582698+00:00"
   },
   "expected_artifacts": [
     "last.pt",
@@ -146,7 +149,7 @@
       "row_id": "readout_attention-s2026092701",
       "method": "readout_attention",
       "purpose": "source_only_learned_readout_candidate",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_neural_readout_identity/configs/readout_attention-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -182,13 +185,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2241765,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092701.log"
     },
     {
       "row_id": "readout_complex_attention-s2026092701",
       "method": "readout_complex_attention",
       "purpose": "source_only_learned_readout_candidate",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_neural_readout_identity/configs/readout_complex_attention-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -224,13 +230,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2241844,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092701.log"
     },
     {
       "row_id": "readout_attention-s2026092702",
       "method": "readout_attention",
       "purpose": "source_only_learned_readout_candidate",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_neural_readout_identity/configs/readout_attention-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -266,13 +275,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2241925,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092702.log"
     },
     {
       "row_id": "readout_complex_attention-s2026092702",
       "method": "readout_complex_attention",
       "purpose": "source_only_learned_readout_candidate",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_neural_readout_identity/configs/readout_complex_attention-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -308,13 +320,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2242002,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092702.log"
     },
     {
       "row_id": "readout_attention-s2026092703",
       "method": "readout_attention",
       "purpose": "source_only_learned_readout_candidate",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_neural_readout_identity/configs/readout_attention-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -350,13 +365,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2242083,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092703.log"
     },
     {
       "row_id": "readout_complex_attention-s2026092703",
       "method": "readout_complex_attention",
       "purpose": "source_only_learned_readout_candidate",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_neural_readout_identity/configs/readout_complex_attention-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -392,13 +410,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2242160,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092703.log"
     },
     {
       "row_id": "readout_attention-s2026092704",
       "method": "readout_attention",
       "purpose": "source_only_learned_readout_candidate",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_neural_readout_identity/configs/readout_attention-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -434,13 +455,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2242241,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_attention-s2026092704.log"
     },
     {
       "row_id": "readout_complex_attention-s2026092704",
       "method": "readout_complex_attention",
       "purpose": "source_only_learned_readout_candidate",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_neural_readout_identity/configs/readout_complex_attention-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -476,7 +500,10 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2242378,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/readout_complex_attention-s2026092704.log"
     }
   ],
   "notes": [
@@ -494,7 +521,7 @@
     "2026-10-03 prelaunch resumption: source-comparison matrix expanded to16 with frozen Anchor; original eight model/training configs unchanged. Prior readout release/run absent independently verified. This is a source-information control study, not evidence by itself of channel robustness or paper novelty."
   ],
   "registered_at": "2026-10-02T17:18:56+00:00",
-  "status": "PLANNED",
+  "status": "RUNNING",
   "source_controls": [
     {
       "variant": "neural_residual_shallow",

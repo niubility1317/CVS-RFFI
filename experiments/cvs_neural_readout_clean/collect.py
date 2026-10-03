@@ -1,4 +1,4 @@
-"""Independently reconcile all forty completed rows; never load target truth."""
+"""Independently reconcile all forty-eight rows; never load target truth."""
 import argparse
 import json
 from pathlib import Path
@@ -7,7 +7,7 @@ from experiments.cvs_clean_eval.publish import inspect, ssh
 from experiments.cvs_clean_eval.contracts import SEEDS, evaluation_variants
 from experiments.cvs_equivariant_identity.precision import FULL_FP32_POLICY
 from experiments.cvs_neural_readout_identity.model import VARIANTS
-from experiments.cvs_neural_readout_clean.prepare import RUN, RELEASE, SOURCE_RUN, SOURCE
+from experiments.cvs_neural_readout_clean.prepare import RUN, RELEASE, SOURCE_RUN, SOURCE, SOURCE_CANDIDATES
 
 CLASSES = ['14-10','14-7','20-15','20-19','6-15','8-20']
 
@@ -15,6 +15,7 @@ CLASSES = ['14-10','14-7','20-15','20-19','6-15','8-20']
 def validate_terminal(data, selection, spec=None, require_classes=True):
     if (selection.get('scope')!='neural_readout_source' or selection.get('status')!='SOURCE_SELECTION_FROZEN' or
             selection.get('selected_variant') not in VARIANTS or selection.get('new_candidate_selected') is not True or
+            selection.get('candidate_universe')!=list(SOURCE_CANDIDATES) or
             selection.get('target_access') is not False or selection.get('target_score_used') is not False):
         raise ValueError('Frozen new source-only selection required')
     if (data.get('run_id')!=RUN or not data.get('pipeline') or data['pipeline'].get('status')!='ANALYZED' or
@@ -22,7 +23,7 @@ def validate_terminal(data, selection, spec=None, require_classes=True):
         raise ValueError('Clean dispatcher not independently terminal')
     rows=data.get('rows',[]);expected={(v,s) for v in evaluation_variants(selection) for s in SEEDS}
     actual={(r.get('resolved',{}).get('variant'),r.get('resolved',{}).get('model_seed')) for r in rows if r.get('resolved')}
-    if len(rows)!=40 or actual!=expected or len({r.get('row_id') for r in rows})!=40:
+    if len(rows)!=48 or actual!=expected or len({r.get('row_id') for r in rows})!=48:
         raise ValueError('Missing/duplicate clean completion row')
     registered={r['row_id']:r for r in spec['rows']} if spec else None
     if registered is not None and set(registered)!={r['row_id'] for r in rows}:
@@ -70,12 +71,12 @@ def collect(root, output):
     data['classes']=json.loads(ssh(script))
     validate_terminal(data,selection,spec)
     marker=data.get('marker') or {}
-    if any(marker.get(k)!=v for k,v in dict(status='SCORED_COMPLETE',models=10,seeds=4,rows=40,records=320,view='clean',query_count=168000).items()):
-        raise ValueError('Independent scorer not complete for forty rows')
+    if any(marker.get(k)!=v for k,v in dict(status='SCORED_COMPLETE',models=12,seeds=4,rows=48,records=384,view='clean',query_count=168000).items()):
+        raise ValueError('Independent scorer not complete for forty-eight rows')
     evidence=root/'automation_reports/CV-SincNet'/RUN/'evidence';evidence.mkdir(parents=True,exist_ok=True)
     for name,value in [('final_readback.json',data),('performance_selection.json',selection),('clean_scored_results.json',data['results'])]:
         (evidence/name).write_text(json.dumps(value,ensure_ascii=False,allow_nan=False,indent=2)+'\n',encoding='utf-8')
-    print(json.dumps(dict(status='VERIFIED',rows=40,source_run=SOURCE_RUN,clean_run=RUN)))
+    print(json.dumps(dict(status='VERIFIED',rows=48,source_run=SOURCE_RUN,clean_run=RUN)))
     return True
 
 

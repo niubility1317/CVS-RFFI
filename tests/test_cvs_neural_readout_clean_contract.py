@@ -65,23 +65,25 @@ def test_corruption_rejected_before_query(corruption):
 
 def selection(variant=VARIANTS[0]):
     return dict(scope='neural_readout_source',status='SOURCE_SELECTION_FROZEN',selected_variant=variant,
-                new_candidate_selected=True,target_access=False,target_score_used=False)
+                new_candidate_selected=True,target_access=False,target_score_used=False,
+                candidate_universe=['neural_residual_shallow','response_anchor_mean',*VARIANTS])
 
 
 def test_unselected_variant_and_source_path_rejected():
     chosen=VARIANTS[0];s=selection()
     c=dict(method='cvs_clean_eval',views=['clean'],variant=chosen,model_seed=2026092701,readout_source_root='/source',source_output='/source/'+chosen+'-s2026092701/source')
     assert contracts.validate_predict_config(c,s)==c
-    assert len(contracts.evaluation_variants(s))==10
-    for wrong in (dict(c,variant=VARIANTS[1]),dict(c,variant='neural_residual_shallow'),dict(c,source_output='/other'),dict(c,teacher='old.pt'),dict(c,views=['leo'])):
+    assert len(contracts.evaluation_variants(s))==12
+    for wrong in (dict(c,variant=VARIANTS[1]),dict(c,variant='neural_residual_shallow'),dict(c,variant='response_anchor_mean'),dict(c,source_output='/other'),dict(c,teacher='old.pt'),dict(c,views=['leo'])):
         with pytest.raises(ValueError):contracts.validate_predict_config(wrong,s)
 
 
-def test_source_freeze_recomputed_with_twelve_records_and_control_retention(monkeypatch):
+@pytest.mark.parametrize('retained',('neural_residual_shallow','response_anchor_mean'))
+def test_source_freeze_recomputed_with_sixteen_records_and_control_retention(monkeypatch,retained):
     from experiments.cvs_neural_readout_identity import dispatch
     records=[dict(variant=v,seed=s,accuracy=.93 if v==VARIANTS[0] else .91,worst_rx=.90,parameters=306147,macs=100)
-             for v in ('neural_residual_shallow',*VARIANTS) for s in contracts.SEEDS]
-    matrix=dict(source_controls=[dict(variant='neural_residual_shallow',model_seed=s) for s in contracts.SEEDS],
+             for v in ('neural_residual_shallow','response_anchor_mean',*VARIANTS) for s in contracts.SEEDS]
+    matrix=dict(source_controls=[dict(variant=v,model_seed=s) for v in ('neural_residual_shallow','response_anchor_mean') for s in contracts.SEEDS],
                 rows=[dict(variant=v,model_seed=s) for v in VARIANTS for s in contracts.SEEDS])
     monkeypatch.setattr(dispatch,'validate_spec',lambda _:matrix);called=[]
     def record(row,original,method):
@@ -90,15 +92,15 @@ def test_source_freeze_recomputed_with_twelve_records_and_control_retention(monk
     frozen=dict(dispatch.select_source_candidate(records),scope='neural_readout_source',source_matrix_ref='fixture')
     monkeypatch.setattr(contracts,'read',lambda p:frozen if p=='selection' else {})
     assert contracts.frozen_selection('selection')==frozen
-    assert called.count('cvs_neural_residual_identity')==4 and called.count('cvs_neural_readout_identity')==8
+    assert called.count('cvs_neural_residual_identity')==4 and called.count('cvs_response_fusion_identity')==4 and called.count('cvs_neural_readout_identity')==8
     frozen['selected_variant']=VARIANTS[1]
     with pytest.raises(ValueError):contracts.frozen_selection('selection')
-    for r in records:r['accuracy']=.99 if r['variant']=='neural_residual_shallow' else .9
+    for r in records:r['accuracy']=.99 if r['variant']==retained else .9
     frozen.clear();frozen.update(dispatch.select_source_candidate(records),scope='neural_readout_source',source_matrix_ref='fixture')
     with pytest.raises(ValueError,match='baseline retained'):contracts.frozen_selection('selection')
 
 
-def synthetic_40(tmp_path,variant=VARIANTS[0]):
+def synthetic_48(tmp_path,variant=VARIANTS[0]):
     frozen=selection(variant);save(tmp_path/'selection.json',frozen)
     capsule=tmp_path/'capsule';capsule.mkdir();ids=np.array(['synthetic-'+str(i) for i in range(12)])
     np.savez(capsule/'index.npz',ids=ids);save(capsule/'manifest.json',dict(status='VALIDATED_ONCE',classes=list('abcdef')))
@@ -108,7 +110,9 @@ def synthetic_40(tmp_path,variant=VARIANTS[0]):
               'energy_equivariant':(score.REUSED_ENERGY_RUN,6,'energy_source'),
               'coupled_lag4':(score.REUSED_COUPLED_RUN,7,'coupled_source'),
               'adaptive_volterra_lag4':(score.REUSED_ADAPTIVE_RUN,8,'adaptive_volterra_source'),
-              'neural_residual_shallow':(score.REUSED_NEURAL_RUN,9,'neural_source')}
+              'neural_residual_shallow':(score.REUSED_NEURAL_RUN,9,'neural_source'),
+              'channel_dual':(score.REUSED_CHANNEL_RUN,10,'channel_order_source'),
+              'response_anchor_mean':(score.REUSED_FUSION_RUN,11,'response_fusion_source')}
     for v in contracts.evaluation_variants(frozen):
         old,models,scope=(score.REUSED_BASELINE_RUN,4,'baseline_only') if v in score.BASELINES else old_runs.get(v,(None,None,None))
         for seed in sorted(contracts.SEEDS):
@@ -119,7 +123,7 @@ def synthetic_40(tmp_path,variant=VARIANTS[0]):
                 if v in score.BASELINES:original.update(status='FIXED_BASELINES_FROZEN',test_variants=list(score.BASELINES),model_seeds=sorted(score.SEEDS))
                 save(sel,original);save(out.parents[1]/'scoring_clean_complete.json',dict(status='SCORED_COMPLETE',models=models,seeds=4,rows=models*4))
             cfg=dict(method='cvs_clean_eval',variant=v,model_seed=seed,output_root=str(out),selection_file=str(sel),p1_capsule=str(capsule),views=['clean'],
-                neural_source_root=str(tmp_path/'source'),source_output=str(tmp_path/'source'/rid/'source'))
+                neural_source_root=str(tmp_path/'source'),channel_source_root=str(tmp_path/'source'),fusion_source_root=str(tmp_path/'source'),source_output=str(tmp_path/'source'/rid/'source'))
             cf=tmp_path/'configs'/f'{rid}.json';save(cf,cfg)
             row=dict(row_id=rid,variant=v,model_seed=seed,config=str(cf),output_root=str(out))
             if old:row['reuse_from_run']=old
@@ -132,8 +136,8 @@ def synthetic_40(tmp_path,variant=VARIANTS[0]):
 
 @pytest.mark.parametrize('variant',VARIANTS)
 @pytest.mark.parametrize('corruption',(None,'missing_row','missing_prediction','wrong_ids','neural_selection','neural_marker','neural_reuse','unmarked_control','reused_candidate'))
-def test_all40_fixed_before_first_truth_and_neural_control_reuse(tmp_path,monkeypatch,variant,corruption):
-    spec=synthetic_40(tmp_path,variant);neural=next(r for r in spec['rows'] if r['variant']=='neural_residual_shallow');cfg=score.read(neural['config'])
+def test_all48_fixed_before_first_truth_and_neural_control_reuse(tmp_path,monkeypatch,variant,corruption):
+    spec=synthetic_48(tmp_path,variant);neural=next(r for r in spec['rows'] if r['variant']=='neural_residual_shallow');cfg=score.read(neural['config'])
     monkeypatch.setattr(contracts,'frozen_selection',lambda p:score.read(p))
     assert contracts.validate_reused_row(neural)==cfg
     if corruption=='missing_row':spec['rows'].pop()
@@ -153,9 +157,34 @@ def test_all40_fixed_before_first_truth_and_neural_control_reuse(tmp_path,monkey
         if corruption.startswith('neural'):
             with pytest.raises(ValueError):contracts.validate_reused_row(neural)
     else:
-        result=score.score(spec);assert (result['models'],result['rows'],result['records'])==(10,40,120)
-        assert sum(Path(p).name=='clean_complete.json' for p in opened[:opened.index(spec['p1_truth'])])==40
-        assert len(original(Path(spec['runtime_root'])/'clean_summary.json')['paired'])==27
+        result=score.score(spec);assert (result['models'],result['rows'],result['records'])==(12,48,144)
+        assert sum(Path(p).name=='clean_complete.json' for p in opened[:opened.index(spec['p1_truth'])])==48
+        assert len(original(Path(spec['runtime_root'])/'clean_summary.json')['paired'])==33
+
+
+@pytest.mark.parametrize('corruption',(None,'selection','marker','path','variant','provenance','missing_fusion_row'))
+def test_frozen_response_anchor_reuse_and_all48_truth_gate(tmp_path,monkeypatch,corruption):
+    spec=synthetic_48(tmp_path);anchor=next(r for r in spec['rows'] if r['variant']=='response_anchor_mean')
+    cfg=score.read(anchor['config']);out=Path(anchor['output_root'])
+    monkeypatch.setattr(contracts,'frozen_selection',lambda p:score.read(p))
+    assert contracts.validate_reused_row(anchor)==cfg
+    if corruption=='selection':save(Path(cfg['selection_file']),dict(score.read(cfg['selection_file']),selected_variant='response_span_mean'))
+    elif corruption=='marker':save(out.parents[1]/'scoring_clean_complete.json',dict(status='SCORED_COMPLETE',models=11,seeds=4,rows=43))
+    elif corruption=='path':anchor['output_root']=anchor['output_root'].replace(score.REUSED_FUSION_RUN,'outside-registered-run')
+    elif corruption=='variant':anchor['variant']='response_span_mean'
+    elif corruption=='provenance':save(out/'provenance.json',dict(status='UNKNOWN',query_fit=False))
+    elif corruption=='missing_fusion_row':spec['rows'].remove(anchor)
+    opened=[];original=score.read
+    def observed(p):opened.append(str(p));return original(p)
+    monkeypatch.setattr(score,'read',observed)
+    if corruption:
+        with pytest.raises((ValueError,FileNotFoundError)):score.score(spec)
+        assert spec['p1_truth'] not in opened
+        if corruption in ('selection','marker','path','variant'):
+            with pytest.raises(ValueError):contracts.validate_reused_row(anchor)
+    else:
+        assert score.score(spec)['rows']==48
+        assert sum(Path(p).name=='clean_complete.json' for p in opened[:opened.index(spec['p1_truth'])])==48
 
 
 @pytest.mark.parametrize('variant',VARIANTS)
@@ -189,18 +218,28 @@ def test_checkpoint_loader_strict_roundtrip_and_fp32(tmp_path,monkeypatch,varian
 
 
 @pytest.mark.parametrize('variant',VARIANTS)
-def test_prepare_only_four_new_configs_and_preserves36_controls(tmp_path,monkeypatch,variant):
+def test_prepare_only_four_new_configs_and_preserves44_controls(tmp_path,monkeypatch,variant):
     import shutil
     from experiments.cvs_neural_readout_clean import prepare
-    root=Path(__file__).resolve().parents[1];base=tmp_path/'experiments/cvs_neural_residual_clean/configs';base.mkdir(parents=True)
-    for name in ('launch_spec.json','experiment_spec.json'):shutil.copyfile(root/'experiments/cvs_neural_residual_clean/configs'/name,base/name)
+    root=Path(__file__).resolve().parents[1];base=tmp_path/'experiments/cvs_response_fusion_clean/configs';base.mkdir(parents=True)
+    for name in ('launch_spec.json','experiment_spec.json'):shutil.copyfile(root/'experiments/cvs_response_fusion_clean/configs'/name,base/name)
     monkeypatch.setattr(prepare,'ROOT',tmp_path);runtime=prepare.main(selection(variant))
-    assert len(runtime['rows'])==40 and sum(bool(r.get('reuse_from_run')) for r in runtime['rows'])==36
+    assert len(runtime['rows'])==48 and sum(bool(r.get('reuse_from_run')) for r in runtime['rows'])==44
     old=score.read(base/'launch_spec.json')
-    assert all({k:r[k] for k in prior}==prior for r,prior in zip(runtime['rows'][:36],old['rows']))
-    assert {r['variant'] for r in runtime['rows'][36:]}=={variant}
+    assert all({k:r[k] for k in prior}==prior for r,prior in zip(runtime['rows'][:44],old['rows']))
+    assert {r['variant'] for r in runtime['rows'][44:]}=={variant}
+    assert runtime['run_id']=='20261003-phase1-cvs-neural-readout-clean-manysig-m48-r01'
+    assert {r['reuse_from_run'] for r in runtime['rows'] if r['variant']=='response_anchor_mean'}=={prepare.OLD_RUN}
     for seed in contracts.SEEDS:
         cfg=score.read(tmp_path/'experiments/cvs_neural_readout_clean/configs'/f'{variant}-s{seed}.json')
         assert cfg['readout_source_root']==prepare.SOURCE and 'neural_source_root' not in cfg
     with pytest.raises(ValueError):prepare.main(dict(selection(variant),new_candidate_selected=False))
     with pytest.raises(FileExistsError):prepare.main(selection(variant))
+
+
+def test_stale_source_freeze_without_anchor_cannot_generate_configs(tmp_path,monkeypatch):
+    from experiments.cvs_neural_readout_clean import prepare
+    monkeypatch.setattr(prepare,'ROOT',tmp_path)
+    stale=dict(selection(),candidate_universe=['neural_residual_shallow',*VARIANTS])
+    with pytest.raises(ValueError,match='Source-only freeze'):prepare.main(stale)
+    assert not (tmp_path/'experiments/cvs_neural_readout_clean/configs').exists()

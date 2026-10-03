@@ -1,4 +1,4 @@
-"""Recompute the actual 40-row/320-record matrix and all frozen controls."""
+"""Recompute the actual 48-row/384-record matrix and all frozen controls."""
 import argparse
 import csv
 import json
@@ -7,12 +7,12 @@ import statistics as st
 from pathlib import Path
 
 import numpy as np
-from experiments.cvs_neural_readout_clean.prepare import RUN, SOURCE_RUN, OLD_RUN
+from experiments.cvs_neural_readout_clean.prepare import RUN, SOURCE_RUN, OLD_RUN, SOURCE_CANDIDATES
 from experiments.cvs_neural_readout_clean.collect import CLASSES, validate_terminal
 from experiments.cvs_neural_readout_identity.model import VARIANTS, readout_contract
 
 BASELINES=('native','cvcnn','real_cnn','resnet1d','residual_fusion','energy_equivariant',
-           'coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow')
+           'coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual','response_anchor_mean')
 SEEDS=tuple(range(2026092701,2026092705))
 
 
@@ -29,18 +29,19 @@ def validate_results(data,selection,previous):
     candidate=selection.get('selected_variant')
     if (candidate not in VARIANTS or selection.get('status')!='SOURCE_SELECTION_FROZEN' or
             selection.get('scope')!='neural_readout_source' or selection.get('new_candidate_selected') is not True or
+            selection.get('candidate_universe')!=list(SOURCE_CANDIDATES) or
             selection.get('target_access') is not False or selection.get('target_score_used') is not False):
         raise ValueError('Selected new source-only readout required')
     if data.get('classes')!=CLASSES:raise ValueError('Frozen class map differs')
     marker=data['marker'];records=data['results']['results'];summary=data['summary']['summary'];pairs=data['summary']['paired']
-    expected_marker=dict(status='SCORED_COMPLETE',rows=40,models=10,seeds=4,records=320,query_count=168000,view='clean',target_feedback_forbidden=True)
-    if any(marker.get(k)!=v for k,v in expected_marker.items()) or len(records)!=320:
-        raise ValueError('Incomplete registered forty-row clean matrix')
+    expected_marker=dict(status='SCORED_COMPLETE',rows=48,models=12,seeds=4,records=384,query_count=168000,view='clean',target_feedback_forbidden=True)
+    if any(marker.get(k)!=v for k,v in expected_marker.items()) or len(records)!=384:
+        raise ValueError('Incomplete registered forty-eight-row clean matrix')
     methods=(*BASELINES,candidate)
     receivers=sorted({r['receiver'] for r in records if r['receiver']!='ALL'})
     lookup={(r['method'],r['receiver'],r['model_seed']):r for r in records}
     expected={(m,rx,s) for m in methods for rx in ('ALL',*receivers) for s in SEEDS}
-    if len(receivers)!=7 or len(lookup)!=320 or set(lookup)!=expected:
+    if len(receivers)!=7 or len(lookup)!=384 or set(lookup)!=expected:
         raise ValueError('Missing/duplicate method,receiver,seed')
     for row in records:
         if row.get('view')!='clean' or row.get('row_id')!=row['method']+'-s'+str(row['model_seed']):
@@ -61,10 +62,10 @@ def validate_results(data,selection,previous):
             if not np.array_equal(total,partition):raise ValueError('RX partition does not sum to overall confusion')
     old=previous['results']['results'];old_lookup={(r['method'],r['receiver'],r['model_seed']):r for r in old}
     old_expected={(m,rx,s) for m in BASELINES for rx in ('ALL',*receivers) for s in SEEDS}
-    if len(old)!=288 or set(old_lookup)!=old_expected or any(lookup[k]!=r for k,r in old_lookup.items()):
-        raise ValueError('Frozen original 288 control metrics changed or incomplete')
+    if len(old)!=352 or set(old_lookup)!=old_expected or any(lookup[k]!=r for k,r in old_lookup.items()):
+        raise ValueError('Frozen original 352 control metrics changed or incomplete')
     summary_expected={(m,rx) for m in methods for rx in ('ALL',*receivers)}
-    if len(summary)!=80 or {(r['method'],r['receiver']) for r in summary}!=summary_expected:
+    if len(summary)!=96 or {(r['method'],r['receiver']) for r in summary}!=summary_expected:
         raise ValueError('Incomplete/duplicate summary')
     for row in summary:
         if row.get('view')!='clean' or row.get('model_seeds')!=list(SEEDS) or row.get('query_count_per_seed')!=(168000 if row['receiver']=='ALL' else 24000):
@@ -74,7 +75,7 @@ def validate_results(data,selection,previous):
             if not close(st.mean(values),row.get(key+'_mean')) or not close(st.stdev(values),row.get(key+'_seed_sd')):
                 raise ValueError('Independent four-seed summary differs')
     pair_expected={(m,rx) for m in BASELINES for rx in ('ALL',*receivers)}
-    if len(pairs)!=72 or {(r['baseline'],r['receiver']) for r in pairs}!=pair_expected:
+    if len(pairs)!=88 or {(r['baseline'],r['receiver']) for r in pairs}!=pair_expected:
         raise ValueError('Incomplete/duplicate paired comparisons')
     for row in pairs:
         values=[100*(lookup[candidate,row['receiver'],seed]['accuracy']-lookup[row['baseline'],row['receiver'],seed]['accuracy']) for seed in SEEDS]
@@ -122,16 +123,16 @@ def analyze(root):
     write(e/'clean_scored_results.json',data['results'])
     write(e/'resource_summary.json',dict(rows=resources,readout_contract=architecture,
         scope='Measured same-run hardware; concurrency affects timing; CPU peak and onboard transmission unmeasured'))
-    candidate_all=by[candidate,'ALL'];control=gains['neural_residual_shallow']
+    candidate_all=by[candidate,'ALL'];control=gains['response_anchor_mean']
     verdict=dict(status='VERIFIED',candidate=candidate,accuracy_mean=candidate_all['accuracy_mean'],accuracy_seed_sd=candidate_all['accuracy_seed_sd'],
-        paired_vs_neural_shallow=control,all320_confusions_recomputed=True,old288_metrics_exactly_unchanged=True,
-        all80_summaries_recomputed=True,all72_pairs_recomputed=True,all_RX_sums_match=True,target_feedback=False,
+        paired_vs_response_anchor=control,paired_vs_neural_shallow=gains['neural_residual_shallow'],all384_confusions_recomputed=True,old352_metrics_exactly_unchanged=True,
+        all96_summaries_recomputed=True,all88_pairs_recomputed=True,all_RX_sums_match=True,target_feedback=False,
         scientific_verdict='POSITIVE_MEAN_ON_FIXED_CLEAN_BENCHMARK' if control['accuracy_delta_pp_mean']>0 else 'NO_MEAN_IMPROVEMENT_ON_FIXED_CLEAN_BENCHMARK',
         scope='Four model seeds on historically exposed clean benchmark; not broad statistical or deployment proof')
     write(e/'analysis_validation.json',verdict);write(e/'iteration_verdict.json',verdict)
     pct=lambda v:f'{100*v:.4f}'
     text='# CVS 神经网络读出：独立 clean 结果\n\n'
-    text+=f"源规则选中 `{candidate}`。四 seed 准确率为 {pct(candidate_all['accuracy_mean'])}% ± {pct(candidate_all['accuracy_seed_sd'])}%，较同核心浅层神经残差控制 {control['accuracy_delta_pp_mean']:+.4f} 个百分点。结论：`{verdict['scientific_verdict']}`。\n\n"
+    text+=f"源规则选中 `{candidate}`。四 seed 准确率为 {pct(candidate_all['accuracy_mean'])}% ± {pct(candidate_all['accuracy_seed_sd'])}%，较当前 `response_anchor_mean` 控制 {control['accuracy_delta_pp_mean']:+.4f} 个百分点。结论：`{verdict['scientific_verdict']}`。\n\n"
     text+='四 seed 仅覆盖模型初始化差异；小幅均值改善不证明普遍、显著或稳定的性能提升。下表保留所有负差值，不据此调整候选、超参数或选择性重跑。\n\n'
     text+='|模型|准确率/% ± seed SD|Macro-F1/% ± seed SD|\n|---|---:|---:|\n'
     for method in methods:
@@ -139,16 +140,16 @@ def analyze(root):
     text+='\n|对照|配对均值 ± SD/百分点|正差值 seed|四 seed 差分/百分点|\n|---|---:|---:|---|\n'
     for method in BASELINES:
         r=gains[method];text+=f"|{method}|{r['accuracy_delta_pp_mean']:+.4f} ± {r['accuracy_delta_pp_seed_sd']:.4f}|{r['positive_seeds']}/4|"+', '.join(f'{v:+.4f}' for v in r['accuracy_delta_pp_by_seed'])+'|\n'
-    text+='\n|RX（每 seed 24,000 包）|浅层控制/%|新候选/% ± SD|差值/百分点|\n|---|---:|---:|---:|\n'
+    text+='\n|RX（每 seed 24,000 包）|response anchor/%|新候选/% ± SD|差值/百分点|\n|---|---:|---:|---:|\n'
     for rx in receivers:
-        r=by[candidate,rx];c=by['neural_residual_shallow',rx]
+        r=by[candidate,rx];c=by['response_anchor_mean',rx]
         text+=f"|{rx}|{pct(c['accuracy_mean'])}|{pct(r['accuracy_mean'])} ± {pct(r['accuracy_seed_sd'])}|{100*(r['accuracy_mean']-c['accuracy_mean']):+.4f}|\n"
-    text+='\n|TX（每 seed 28,000 包）|浅层控制/%|新候选/% ± SD|\n|---|---:|---:|\n'
+    text+='\n|TX（每 seed 28,000 包）|response anchor/%|新候选/% ± SD|\n|---|---:|---:|\n'
     txby={(r['method'],r['transmitter']):r for r in tx}
     for name in CLASSES:
-        r=txby[candidate,name];c=txby['neural_residual_shallow',name]
+        r=txby[candidate,name];c=txby['response_anchor_mean',name]
         text+=f"|{name}|{pct(c['accuracy_mean'])}|{pct(r['accuracy_mean'])} ± {pct(r['accuracy_seed_sd'])}|\n"
-    text+='\n保持原物理数据、单一 CE、E200×50、batch 128 和完整 FP32；从零训练，源域固定规则先选择后冻结。4 个新预测与 36 个旧冻结预测统一为 40 行，逐包面对全部 6 类。全部预测固定后独立 truth-last 评分；320 个混淆矩阵、80 组汇总、72 组配对和 RX 分解复算通过。原 288 条控制指标逐字段完全一致。\n\n'
+    text+='\n保持原物理数据、单一 CE、E200×50、batch 128 和完整 FP32；8 个新模型从零训练，与 shallow 和 response anchor 各 4 份源记录组成 16 条源比较，按固定源规则先选择后冻结。4 个新预测与 44 个旧冻结预测统一为 48 行，逐包面对全部 6 类。全部预测固定后独立 truth-last 评分；384 个混淆矩阵、96 组汇总、88 组配对和 RX 分解复算通过。原 352 条控制指标逐字段完全一致。\n\n'
     text+=f"实际可训练参数 {parameters}；常驻模型状态 {resources[0]['resident_state_bytes']} bytes。batch 1 推理均值 {st.mean(r['inference_batch1_ms'] for r in resources):.4f} ms，batch 128 训练 {st.mean(r['training_batch128_ms'] for r in resources):.4f} ms；完整 168,000 query 预测均值 {st.mean(r['full_clean_prediction_seconds'] for r in resources):.3f} s。逐 seed 硬件、训练/预测峰值显存和 MAC 口径见资源表；并发会影响耗时。CPU 峰值和新增星载传输未测量，记 N/A。\n\n"
     text+='该固定 clean 基准历史已暴露，不称首次盲测。无 LEO、support 适应、新增类、unknown 或在轨结果；D92 三阶段与 K×新增类表为 N/A。包内注意力使用完整观测包，不声明流式因果性、唯一 TX 硬件恢复或任意 RX/信道不变性。\n\n'
     text+='[逐行评分](evidence/clean_scored_results.json) · [全部 RX 汇总](evidence/clean_summary.csv) · [全部 TX 汇总](evidence/per_transmitter_summary.csv) · [配对差值](evidence/clean_paired.csv) · [资源](evidence/resource_summary.json) · [独立复算](evidence/analysis_validation.json)\n'

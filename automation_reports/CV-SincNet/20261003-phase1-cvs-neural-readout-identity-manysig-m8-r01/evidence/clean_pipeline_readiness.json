@@ -1,0 +1,39 @@
+{
+  "status": "VERIFIED",
+  "conditional_clean_run": "20261003-phase1-cvs-neural-readout-clean-manysig-m48-r01",
+  "new_prediction_rows": 4,
+  "reused_prediction_rows": 44,
+  "total_rows": 48,
+  "scored_records": 384,
+  "summaries": 96,
+  "pairs": 88,
+  "unchanged_old_records": 352,
+  "source_records": 16,
+  "main_comparison": "response_anchor_mean",
+  "real_selection_created": false,
+  "real_target_prediction_started": false,
+  "test_evidence": {
+    "initial_readout_and_fusion_tests_passed": 191,
+    "final_readout_tests_passed": 102,
+    "counts_overlap": true,
+    "worker": "/root/readout_clean_pipeline"
+  },
+  "independent_review": {
+    "status": "PASS",
+    "reviewer": "/root/source_architecture_audit",
+    "blocking_findings": [],
+    "release_files": 1330,
+    "loaded_dependencies_covered": 101,
+    "scope": "m48matrix,source-freeze,reuse paths/provenance,truth-last,oldfusioncompatibility,release dependencies; no target scores or remote actions"
+  },
+  "modified_files": [
+    "experiments/cvs_neural_readout_clean/prepare.py",
+    "experiments/cvs_neural_readout_clean/publish.py",
+    "experiments/cvs_neural_readout_clean/collect.py",
+    "experiments/cvs_neural_readout_clean/analyze.py",
+    "experiments/cvs_clean_eval/contracts.py",
+    "experiments/cvs_clean_eval/score.py",
+    "tests/test_cvs_neural_readout_clean_contract.py",
+    "tests/test_cvs_neural_readout_clean_analysis.py"
+  ]
+}

@@ -42,6 +42,7 @@ REUSED_COUPLED_RUN='20261002-phase1-cvs-coupled-clean-manysig-m28-r01'
 REUSED_ADAPTIVE_RUN='20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01'
 REUSED_CHANNEL_RUN='20261003-phase1-cvs-channel-order-clean-manysig-m40-r01'
 REUSED_NEURAL_RUN='20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01'
+REUSED_FUSION_RUN='20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01'
 
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
@@ -86,10 +87,10 @@ def frozen_selection(path):
         from experiments.cvs_neural_readout_identity.dispatch import validate_spec,read_source_record,select_source_candidate,PROJECT
         matrix=validate_spec(read(selection['source_matrix_ref']))
         original=read(PROJECT+'/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json')
-        records=[read_source_record(r,original,'cvs_neural_residual_identity') for r in matrix['source_controls']]
+        records=[read_source_record(r,original,source_method(r['variant'])) for r in matrix['source_controls']]
         records += [read_source_record(r,original,'cvs_neural_readout_identity') for r in matrix['rows']]
         actual=select_source_candidate(records)
-        if any(selection.get(k)!=v for k,v in actual.items()):raise ValueError('Neural readout selection differs from actual twelve source-only records')
+        if any(selection.get(k)!=v for k,v in actual.items()):raise ValueError('Neural readout selection differs from actual sixteen source-only records')
         if not actual['new_candidate_selected'] or actual['selected_variant'] not in READOUT_VARIANTS:
             raise ValueError('Existing neural baseline retained; unselected readout model cannot receive new query')
         return selection
@@ -332,7 +333,7 @@ def evaluation_variants(selection):
     if selection.get('scope')=='response_fusion_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual',selection['selected_variant']]
     if selection.get('scope')=='channel_response_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual',selection['selected_variant']]
     if selection.get('scope')=='channel_order_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow',selection['selected_variant']]
-    if selection.get('scope')=='neural_readout_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow',selection['selected_variant']]
+    if selection.get('scope')=='neural_readout_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow','channel_dual','response_anchor_mean',selection['selected_variant']]
     if selection.get('scope')=='neural_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4',selection['selected_variant']]
     if selection.get('scope')=='curvature_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4',selection['selected_variant']]
     if selection.get('scope')=='moment_source':return [*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4',selection['selected_variant']]
@@ -344,6 +345,16 @@ def evaluation_variants(selection):
 
 
 def validate_reused_row(row):
+    if row.get('reuse_from_run')==REUSED_FUSION_RUN:
+        if row['variant']!='response_anchor_mean':raise ValueError('Only frozen selected response anchor can be reused')
+        out=Path(row['output_root'])
+        if out.parts[-3:]!=(REUSED_FUSION_RUN,row['row_id'],'prediction'):raise ValueError('Fusion reuse outside original run')
+        cfg=read(row['config']);original=frozen_selection(cfg['selection_file'])
+        if original.get('scope')!='response_fusion_source' or original.get('selected_variant')!='response_anchor_mean':raise ValueError('Previous fusion source selection changed')
+        validate_predict_config(cfg,original)
+        marker=read(out.parents[1]/'scoring_clean_complete.json')
+        if marker['status']!='SCORED_COMPLETE' or marker['models']!=11 or marker['seeds']!=4 or marker['rows']!=44:raise ValueError('Original fusion matrix not complete')
+        return cfg
     if row.get('reuse_from_run')==REUSED_CHANNEL_RUN:
         if row['variant']!='channel_dual':raise ValueError('Only frozen selected neural control can be reused')
         out=Path(row['output_root'])
