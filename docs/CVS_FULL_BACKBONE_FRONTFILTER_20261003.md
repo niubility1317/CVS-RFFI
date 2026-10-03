@@ -56,3 +56,5 @@ run：`20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01`。两个候选�
 如果新候选胜出，冻结后执行4份新clean预测并复用44份既有冻结预测，形成48行/384条ALL与RX评分；全部预测固定后独立truth-last。若旧控制胜出，只核验复用其原测试，不访问落选候选query。本轮无LEO、support/SFT或新类，测试结果不得反馈调整本轮或后续结构。
 
 实现：[model.py](../experiments/cvs_frontfilter_identity/model.py)。实际状态与产物以[实验报告](../automation_reports/CV-SincNet/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/report.md)为准。
+
+条件测试实现：[prepare](../experiments/cvs_frontfilter_clean/prepare.py)、[collect](../experiments/cvs_frontfilter_clean/collect.py)、[analyze](../experiments/cvs_frontfilter_clean/analyze.py)。入口在源结果冻结后使用，当前仅完成本地验证，实际测试状态以实验报告为准。

@@ -3,7 +3,7 @@
 - run_id：`20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01`
 - group_id：`cvs-clean-frontfilter-identity-ce`；类别：`cvs`；阶段：`Phase1-CVS-source-research`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（最新轮数见独立读回；最终性能尚未确定）
 
 ## 目的与对照
 
@@ -47,3 +47,21 @@
 实际发布commit为`dd5518d1493f2f79fb4213e4731e9f88cb28a349`，dispatcher PID2325550。全部8个worker的PID/CWD/argv、父进程、CUDA可见设备及nvidia-smi物理GPU映射一致，两次日志读回增长。实际配置匹配static221035/dynamic221307参数、48/320前置参数、原单CE、FP32及固定源数据角色。当前不按早期分数选模，尚未接触目标。
 
 [启动核验](evidence/launch_validation.json) · [完整实际配置与进程](evidence/launch_readback.json) · [SCP前路径与资源](evidence/pretransfer_readback.json)。
+
+## 训练进度读回
+
+2026-10-03T06:41:20.193260+00:00，8组仍正常运行，固定200轮中的第61至67轮；PID、发布版本及源数据配置与启动证据一致，8份日志均增长。未按中途分数改变训练、候选或选择规则。
+
+[完整读回](evidence/progress_01_readback.json) · [进度核验](evidence/progress_01_validation.json)。
+
+## 训练进度读回
+
+2026-10-03T06:44:32.514248+00:00，8组仍正常运行，固定200轮中的第91至97轮；PID、发布版本及源数据配置与启动证据一致，8份日志均增长。未按中途分数改变训练、候选或选择规则。
+
+[完整读回](evidence/progress_02_readback.json) · [进度核验](evidence/progress_02_validation.json)。
+
+## 条件clean入口已实现
+
+已实现冻结后使用的48行clean入口，新增契约与分析、旧crosspath/readout兼容共267个不同用例通过，独立P0/P1审查通过。当前未生成正式clean配置，未启动clean，未新增query访问。先完成固定E200源结果及16条记录的冻结选择；仅新候选胜出才准备4份预测，统一复用44份既有预测并独立truth-last评分。旧控制胜出则核验复用原测试。正在运行的source发布版本保持不变。
+
+[本地验证](evidence/conditional_clean_validation.json) · [测试记录](evidence/conditional_clean_tests.json) · [独立审查](evidence/conditional_clean_p0_p1_review.json)。

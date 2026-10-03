@@ -1,0 +1,75 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "observed_at": "2026-10-03T06:44:32.514248+00:00",
+  "dispatcher_pid": 2325550,
+  "source_code_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+  "live_workers": 8,
+  "rows": [
+    {
+      "row_id": "frontfilter_static-s2026092701",
+      "pid": 2325565,
+      "gpu": 0,
+      "epoch": 97,
+      "log_bytes": 1153698,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_dynamic-s2026092701",
+      "pid": 2325646,
+      "gpu": 1,
+      "epoch": 93,
+      "log_bytes": 1109538,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_static-s2026092702",
+      "pid": 2325770,
+      "gpu": 2,
+      "epoch": 94,
+      "log_bytes": 1123208,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_dynamic-s2026092702",
+      "pid": 2325862,
+      "gpu": 3,
+      "epoch": 93,
+      "log_bytes": 1103440,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_static-s2026092703",
+      "pid": 2325939,
+      "gpu": 4,
+      "epoch": 93,
+      "log_bytes": 1124592,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_dynamic-s2026092703",
+      "pid": 2326020,
+      "gpu": 5,
+      "epoch": 92,
+      "log_bytes": 1096706,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_static-s2026092704",
+      "pid": 2326098,
+      "gpu": 6,
+      "epoch": 92,
+      "log_bytes": 1107203,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_dynamic-s2026092704",
+      "pid": 2326179,
+      "gpu": 7,
+      "epoch": 91,
+      "log_bytes": 1105857,
+      "log_grew": true
+    }
+  ],
+  "target_access": false,
+  "performance_goal_achieved": false
+}

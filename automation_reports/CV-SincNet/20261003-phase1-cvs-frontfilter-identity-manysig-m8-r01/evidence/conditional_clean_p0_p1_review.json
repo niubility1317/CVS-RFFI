@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "p0": 0,
+  "p1": 0,
+  "reviewer": "/root/source_architecture_audit",
+  "evidence_origin": "Independent agent's tool executions and final review message in this task",
+  "scope": [
+    "experiments/cvs_frontfilter_clean/*.py",
+    "experiments/cvs_clean_eval/contracts.py",
+    "experiments/cvs_clean_eval/score.py",
+    "experiments/cvs_clean_eval/publish.py",
+    "tests/test_cvs_frontfilter_clean_contract.py",
+    "tests/test_cvs_frontfilter_clean_analysis.py"
+  ],
+  "source_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+  "focused_regressions_passed": 24,
+  "synthetic_matrix_variants": [
+    "frontfilter_static",
+    "frontfilter_dynamic"
+  ],
+  "matrix_checks": {
+    "rows": 48,
+    "scores": 384,
+    "summary": 96,
+    "paired": 88,
+    "immutable_control_scores": 352
+  },
+  "release_files_selected": 1382,
+  "local_import_dependencies_covered": 93,
+  "remote_template_compile": "PASS",
+  "verified": [
+    "Actual fixed source commit, unchanged source directory, sixteen E200 records recomputed",
+    "Retained source control prohibits new query",
+    "Checkpoint source, physical contract, FP32 and strict state loading checked before capsule access",
+    "Four new predictions and forty-four original-path frozen predictions; truth after all predictions are fixed",
+    "Both candidate synthetic matrices independently recomputed and old 352 score records unchanged",
+    "Existing crosspath and readout branches preserve behavior"
+  ],
+  "audit_boundary": "Complete 80000 source steps and720 frontend diagnostic cells are audited by the already-reviewed source collector; clean does not duplicate that audit.",
+  "formal_clean_configs_created": false,
+  "real_target_access": false,
+  "remote_access": false,
+  "code_modified_by_reviewer": false
+}

@@ -1,0 +1,86 @@
+{
+  "status": "VERIFIED",
+  "evidence_origin": "Implementation agents' actual command/tool outputs in this task; no standalone stdout logs were saved",
+  "cwd": "E:/type10-7/code/snapshots/daot_practical_three_20260918_wt",
+  "python": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+  "shell": "powershell.exe",
+  "login": false,
+  "distinct_passed": 267,
+  "successful_test_executions": 270,
+  "not_one_combined_execution": true,
+  "commands": [
+    {
+      "argv": [
+        "-m",
+        "pytest",
+        "tests/test_cvs_frontfilter_clean_contract.py",
+        "-o",
+        "addopts=",
+        "-q"
+      ],
+      "exit_code": 0,
+      "output": "62 passed in 17.38s",
+      "session": 31486,
+      "chunk": "4100b8",
+      "distinct_passed": 62
+    },
+    {
+      "argv": [
+        "-m",
+        "pytest",
+        "-q",
+        "-o",
+        "addopts=",
+        "tests/test_cvs_frontfilter_clean_analysis.py"
+      ],
+      "exit_code": 0,
+      "output": "88 passed in 6.35s",
+      "agent": "/root/readout_clean_pipeline/crosspath_collection",
+      "chunk": "053e14",
+      "distinct_passed": 88
+    },
+    {
+      "argv": [
+        "-m",
+        "pytest",
+        "tests/test_cvs_frontfilter_clean_analysis.py",
+        "-o",
+        "addopts=",
+        "-q",
+        "-k",
+        "terminal_refuses_prediction or complete384 or collect_reads_only"
+      ],
+      "exit_code": 0,
+      "output": "5 passed, 85 deselected in 2.78s",
+      "chunk": "ac34c3",
+      "new_distinct_passed": 2,
+      "repeated_passed": 3,
+      "reason": "Added two negative checks for prediction resolved source commit; reran three affected positive cases"
+    },
+    {
+      "argv": [
+        "-m",
+        "pytest",
+        "tests/test_cvs_crosspath_relation_clean_contract.py",
+        "tests/test_cvs_neural_readout_clean_contract.py",
+        "-o",
+        "addopts=",
+        "-q"
+      ],
+      "exit_code": 0,
+      "output": "115 passed in 31.31s",
+      "session": 61786,
+      "chunk": "5fde47",
+      "distinct_passed": 115
+    }
+  ],
+  "checks": {
+    "utf8_ast_files": 10,
+    "whitespace": "PASS"
+  },
+  "source_code_modified": false,
+  "source_tests_repeated": false,
+  "formal_clean_configs_created": false,
+  "real_target_access": false,
+  "remote_actions": false
+}

@@ -5,13 +5,22 @@
   "performance_goal_achieved": false,
   "paper_claim_established": false,
   "launch_owner": "codex/root/cvs-frontfilter-identity-20261003",
-  "latest_evidence": "evidence/launch_readback.json",
+  "latest_evidence": "evidence/progress_02_validation.json",
   "next": [
-    "Monitor this exact dispatcher and eight existing rows; no duplicate launch",
-    "Complete conditional clean implementation without target access",
-    "Collect all E200/80000step source artifacts and fullV frontend diagnostics,freeze16-record source selection,then finish registered test closure"
+    "Monitor exact dispatcher2325550 and eight existing workers; no duplicate launch or hot modification",
+    "After all E200: collect all80000source steps and720frontend cells; analyze and freeze16source selection",
+    "If a new winner: prepare/register/commit/push conditional clean configs before remote publish; predict four and truth-last score48rows",
+    "If a retained control: independently reconcile existing44row352score artifacts and exact selected4checkpoints; no new query",
+    "Complete report/registry/Git; performance and paper goals remain unproven until supported"
   ],
   "code_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
   "dispatcher_pid": 2325550,
-  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01"
+  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01",
+  "latest_readback": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_frontfilter_identity_20261003_r01\\progress_02\\readback.json",
+  "last_verified_epoch_range": [
+    91,
+    97
+  ],
+  "conditional_clean_status": "VERIFIED_LOCAL_WAITING_SOURCE_FREEZE",
+  "conditional_clean_module": "experiments.cvs_frontfilter_clean"
 }

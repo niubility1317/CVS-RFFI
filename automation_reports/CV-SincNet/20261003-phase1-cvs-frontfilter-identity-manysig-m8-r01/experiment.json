@@ -102,7 +102,12 @@
     "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
     "dispatcher_pid": 2325550,
     "live_workers": 8,
-    "launch_verified_at": "2026-10-03T06:33:01.452803+00:00"
+    "launch_verified_at": "2026-10-03T06:33:01.452803+00:00",
+    "latest_observed_at": "2026-10-03T06:44:32.514248+00:00",
+    "last_verified_epoch_range": [
+      91,
+      97
+    ]
   },
   "expected_artifacts": [
     "last.pt",

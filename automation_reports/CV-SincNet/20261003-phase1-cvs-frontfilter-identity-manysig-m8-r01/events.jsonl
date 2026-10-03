@@ -1,3 +1,6 @@
 {"at": "2026-10-03T06:12:35+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"timestamp": "2026-10-03T06:28:09.174373+00:00", "status": "LOCAL_VERIFIED", "evidence": "evidence/local_validation.json", "note": "Architecture/source protocol/full-V diagnostic/full-log analyzer tested; independent P0/P1 PASS; no formal data or target used for local smoke"}
 {"timestamp": "2026-10-03T06:33:01.452803+00:00", "status": "RUNNING", "evidence": "evidence/launch_validation.json", "note": "Eight live workers; configs,parent/GPU,fullCEgradients and loggrowth independently verified"}
+{"timestamp": "2026-10-03T06:41:20.193260+00:00", "status": "RUNNING", "evidence": "evidence/progress_01_validation.json", "note": "Eight existing workers alive; unchanged configs/PIDs and growing logs; no target access"}
+{"timestamp": "2026-10-03T06:44:32.514248+00:00", "status": "RUNNING", "evidence": "evidence/progress_02_validation.json", "note": "Eight existing workers alive; unchanged configs/PIDs and growing logs; no target access"}
+{"timestamp": "2026-10-03T06:46:03.869806+00:00", "status": "RUNNING", "evidence": "evidence/conditional_clean_validation.json", "note": "Conditional clean implementation locally verified; no formal config/target/remote execution"}

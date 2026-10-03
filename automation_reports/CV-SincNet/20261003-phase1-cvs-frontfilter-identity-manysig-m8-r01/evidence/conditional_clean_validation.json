@@ -1,0 +1,31 @@
+{
+  "status": "VERIFIED_LOCAL_WAITING_SOURCE_FREEZE",
+  "verified_at": "2026-10-03T06:46:03.869806+00:00",
+  "files": [
+    "experiments/cvs_frontfilter_clean/analyze.py",
+    "experiments/cvs_frontfilter_clean/collect.py",
+    "experiments/cvs_frontfilter_clean/prepare.py",
+    "experiments/cvs_frontfilter_clean/publish.py",
+    "experiments/cvs_frontfilter_clean/__init__.py",
+    "experiments/cvs_clean_eval/contracts.py",
+    "experiments/cvs_clean_eval/score.py",
+    "experiments/cvs_clean_eval/publish.py",
+    "tests/test_cvs_frontfilter_clean_contract.py",
+    "tests/test_cvs_frontfilter_clean_analysis.py"
+  ],
+  "distinct_tests_passed": 267,
+  "p0": 0,
+  "p1": 0,
+  "source_release_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+  "source_code_unchanged": true,
+  "formal_clean_configs_created": false,
+  "target_access": false,
+  "clean_launched": false,
+  "full_matrix_rows": 48,
+  "new_rows_if_selected": 4,
+  "reused_rows": 44,
+  "score_records": 384,
+  "summary_rows": 96,
+  "paired_rows": 88,
+  "old_control_records_unchanged": 352
+}
