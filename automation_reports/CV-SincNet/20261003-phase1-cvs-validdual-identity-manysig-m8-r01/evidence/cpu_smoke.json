@@ -1,0 +1,103 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "variant": "validdual_static",
+      "parameters": 221213,
+      "gradient_used_parameters": 221213,
+      "loss": 3.9300756454467773,
+      "finite": true,
+      "checkpoint_reload": true,
+      "physics": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "public_only": true,
+        "target_access": false,
+        "model_updated": false,
+        "phase_audit": [
+          {
+            "angle": 0.37,
+            "max_logit_error": 1.424551010131836e-05
+          },
+          {
+            "angle": -1.2,
+            "max_logit_error": 1.055002212524414e-05
+          },
+          {
+            "angle": 2.9,
+            "max_logit_error": 1.3113021850585938e-05
+          }
+        ],
+        "diagnostics": {
+          "validdual": {
+            "active": true,
+            "packets": 30,
+            "valid_windows": 224,
+            "raw_prefix_unchanged": true,
+            "input_change_mean": 0.0,
+            "input_change_max": 0.0,
+            "kernel_l1_max": 0.0,
+            "coefficient_packet_variance": 0.0,
+            "feature_difference_mean": 0.0,
+            "gate_mean": 0.5,
+            "gate_min": 0.5,
+            "gate_max": 0.5,
+            "correction_gradient_norm": 1.398992657661438,
+            "fusion_gradient_norm": 0.4140244722366333,
+            "scope": "one frozen current source-batch forward; no extra loss, fitting, or persistent state"
+          }
+        },
+        "claim": "Numerical report only; not channel invariance or actual transmitter accuracy"
+      }
+    },
+    {
+      "variant": "validdual_dynamic",
+      "parameters": 229725,
+      "gradient_used_parameters": 229725,
+      "loss": 3.9300756454467773,
+      "finite": true,
+      "checkpoint_reload": true,
+      "physics": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "public_only": true,
+        "target_access": false,
+        "model_updated": false,
+        "phase_audit": [
+          {
+            "angle": 0.37,
+            "max_logit_error": 1.424551010131836e-05
+          },
+          {
+            "angle": -1.2,
+            "max_logit_error": 1.055002212524414e-05
+          },
+          {
+            "angle": 2.9,
+            "max_logit_error": 1.3113021850585938e-05
+          }
+        ],
+        "diagnostics": {
+          "validdual": {
+            "active": true,
+            "packets": 30,
+            "valid_windows": 224,
+            "raw_prefix_unchanged": true,
+            "input_change_mean": 0.0,
+            "input_change_max": 0.0,
+            "kernel_l1_max": 0.0,
+            "coefficient_packet_variance": 0.0,
+            "feature_difference_mean": 0.0,
+            "gate_mean": 0.5,
+            "gate_min": 0.5,
+            "gate_max": 0.5,
+            "correction_gradient_norm": 1.5576962232589722,
+            "fusion_gradient_norm": 0.4140244722366333,
+            "scope": "one frozen current source-batch forward; no extra loss, fitting, or persistent state"
+          }
+        },
+        "claim": "Numerical report only; not channel invariance or actual transmitter accuracy"
+      }
+    }
+  ],
+  "source_access": false,
+  "target_access": false
+}
