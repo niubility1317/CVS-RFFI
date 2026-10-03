@@ -1,6 +1,6 @@
 # 显式补偿响应：下一轮Phase1架构
 
-状态：模型与单CE训练入口已实现并完成本地正确性验证，尚未发布正式训练。识别性能及论文贡献仍待验证。本设计只使用完整源V归因证据；不使用目标结果制定结构或选模规则。
+状态：正式12组源训练已发布并独立核实运行。识别性能及论文贡献仍待验证。本设计只使用完整源V归因证据；不使用目标结果制定结构或选模规则。
 
 ## 源证据与改动理由
 
@@ -43,10 +43,10 @@ G系数出口零初始化；值编码与投影保持非零随机初始化。新�
 
 ## 下一轮执行范围
 
-计划3候选×4原model/loader seed，共12个从零训练模型。保持原数据物理角色、E200×50、batch128、AdamW与cosine、FP32和单一CE。与原shallow四份和上一轮源域胜出的dual四份固定源记录组成20行选择矩阵；后者不能因目标结果而被排除，也不继承其权重。
+已登记并启动3候选×4原model/loader seed，共12个从零训练模型。保持原数据物理角色、E200×50、batch128、AdamW与cosine、FP32和单一CE。与原shallow四份和上一轮源域胜出的dual四份固定源记录组成20行选择矩阵；后者不能因目标结果而被排除，也不继承其权重。
 
 按四seed固定E200均值`0.5V+0.5最差源RX`最大者选择，完全并列后才比较成本。仅新候选胜出时，冻结其4个模型并完成clean确认，与原40份冻结预测组成44行；完整352条ALL/RX评分、88组汇总与80组配对。旧控制胜出则复用其已完成测试，不对未选候选访问目标。
 
-正式启动前仍需完成实际矩阵登记、独立source/clean运行链及原checkpoint契约支持、发布正确性审查。本文件不表示训练已经启动。实验发布后默认完成冻结和独立测试；本轮保持clean-only，不追加LEO、目标适应或新类。
+实际矩阵登记、source/clean运行链、checkpoint契约支持和一次独立P0/P1审查已完成。执行提交`83727fa93c090e6daa2b21bd8dd058cfe28b51d1`，详细运行证据见[实验报告](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/report.md)。实验发布后默认完成冻结和独立测试；本轮保持clean-only，不追加LEO、目标适应或新类。
 
 [模型](../experiments/cvs_channel_response_identity/model.py) · [原训练流程入口](../experiments/cvs_channel_response_identity/source.py) · [聚焦验证](../tests/test_cvs_channel_response_identity.py)。

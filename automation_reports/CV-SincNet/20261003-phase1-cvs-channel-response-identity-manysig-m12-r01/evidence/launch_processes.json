@@ -1,0 +1,757 @@
+{
+  "read_at": 1790990819.8398864,
+  "run_id": "20261003-phase1-cvs-channel-response-identity-manysig-m12-r01",
+  "status": "SOURCE_TRAINING",
+  "pipeline": {
+    "status": "SOURCE_TRAINING",
+    "pid": 2164478,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/launch_spec.json"
+    ],
+    "run_id": "20261003-phase1-cvs-channel-response-identity-manysig-m12-r01",
+    "launch_owner": "codex/root/cvs-channel-response-identity-20261003",
+    "commit": "83727fa93c090e6daa2b21bd8dd058cfe28b51d1",
+    "target_access": false,
+    "rows": {
+      "response_mean-s2026092701": {
+        "status": "RUNNING",
+        "variant": "response_mean",
+        "model_seed": 2026092701,
+        "pid": 2164492,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_mean-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092701/source",
+        "started": 1790990708.3171613
+      },
+      "response_attention-s2026092701": {
+        "status": "RUNNING",
+        "variant": "response_attention",
+        "model_seed": 2026092701,
+        "pid": 2164571,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_attention-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092701/source",
+        "started": 1790990713.5680423
+      },
+      "response_order_attention-s2026092701": {
+        "status": "RUNNING",
+        "variant": "response_order_attention",
+        "model_seed": 2026092701,
+        "pid": 2164650,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_order_attention-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092701/source",
+        "started": 1790990718.8083055
+      },
+      "response_mean-s2026092702": {
+        "status": "RUNNING",
+        "variant": "response_mean",
+        "model_seed": 2026092702,
+        "pid": 2164729,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_mean-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092702/source",
+        "started": 1790990724.0527654
+      },
+      "response_attention-s2026092702": {
+        "status": "RUNNING",
+        "variant": "response_attention",
+        "model_seed": 2026092702,
+        "pid": 2164863,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_attention-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092702/source",
+        "started": 1790990729.292151
+      },
+      "response_order_attention-s2026092702": {
+        "status": "RUNNING",
+        "variant": "response_order_attention",
+        "model_seed": 2026092702,
+        "pid": 2165347,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_order_attention-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092702/source",
+        "started": 1790990734.5109906
+      },
+      "response_mean-s2026092703": {
+        "status": "RUNNING",
+        "variant": "response_mean",
+        "model_seed": 2026092703,
+        "pid": 2165426,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_mean-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092703/source",
+        "started": 1790990739.7431414
+      },
+      "response_attention-s2026092703": {
+        "status": "RUNNING",
+        "variant": "response_attention",
+        "model_seed": 2026092703,
+        "pid": 2165505,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_attention-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092703/source",
+        "started": 1790990744.9604404
+      },
+      "response_order_attention-s2026092703": {
+        "status": "RUNNING",
+        "variant": "response_order_attention",
+        "model_seed": 2026092703,
+        "pid": 2165586,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_order_attention-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092703/source",
+        "started": 1790990750.1827118
+      },
+      "response_mean-s2026092704": {
+        "status": "RUNNING",
+        "variant": "response_mean",
+        "model_seed": 2026092704,
+        "pid": 2165706,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_mean-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_mean-s2026092704/source",
+        "started": 1790990755.4097295
+      },
+      "response_attention-s2026092704": {
+        "status": "RUNNING",
+        "variant": "response_attention",
+        "model_seed": 2026092704,
+        "pid": 2165789,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_attention-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_attention-s2026092704/source",
+        "started": 1790990760.614502
+      },
+      "response_order_attention-s2026092704": {
+        "status": "RUNNING",
+        "variant": "response_order_attention",
+        "model_seed": 2026092704,
+        "pid": 2165863,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_order_attention-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/response_order_attention-s2026092704/source",
+        "started": 1790990765.8454177
+      }
+    }
+  },
+  "rows": [
+    {
+      "row_id": "response_mean-s2026092701",
+      "status": "RUNNING",
+      "pid": 2164492,
+      "gpu": 0,
+      "process": {
+        "pid": 2164492,
+        "parent_pid": 2164478,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_mean-s2026092701.json",
+          ""
+        ]
+      },
+      "epoch": 12,
+      "train_ce": 0.23761722162365914,
+      "source_v": 0.9494814814814815,
+      "epoch_seconds": 8.986066943005426,
+      "channel": {
+        "active": true,
+        "variant": "response_mean",
+        "packets": 28,
+        "compensation_input_relative": 0.049607958644628525,
+        "response_feature_relative": 0.060915060341358185,
+        "response_token_norm": 3.184860944747925,
+        "response_pooled_norm": 0.14695267379283905,
+        "response_projection_relative": 0.03292526304721832,
+        "response_order_relative": null,
+        "attention_entropy": 5.505331993103027,
+        "compensation_exit_gradient_norm": 0.02486424520611763,
+        "value_gradient_norm": 0.0054928893223404884,
+        "projection_gradient_norm": 0.009573343209922314,
+        "attention_gradient_norm": null,
+        "scope": "given source batch only, no fitting or persistent state"
+      },
+      "log_bytes": 74520,
+      "error_tail": []
+    },
+    {
+      "row_id": "response_attention-s2026092701",
+      "status": "RUNNING",
+      "pid": 2164571,
+      "gpu": 1,
+      "process": {
+        "pid": 2164571,
+        "parent_pid": 2164478,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_attention-s2026092701.json",
+          ""
+        ]
+      },
+      "epoch": 11,
+      "train_ce": 0.2977337884902954,
+      "source_v": 0.9305925925925926,
+      "epoch_seconds": 8.67775967498892,
+      "channel": {
+        "active": true,
+        "variant": "response_attention",
+        "packets": 28,
+        "compensation_input_relative": 0.05468851700425148,
+        "response_feature_relative": 0.06853237003087997,
+        "response_token_norm": 3.979363203048706,
+        "response_pooled_norm": 0.3232228755950928,
+        "response_projection_relative": 0.06714330613613129,
+        "response_order_relative": null,
+        "attention_entropy": 5.466671943664551,
+        "compensation_exit_gradient_norm": 0.027293408289551735,
+        "value_gradient_norm": 0.010288713499903679,
+        "projection_gradient_norm": 0.03546782210469246,
+        "attention_gradient_norm": 0.006894208025187254,
+        "scope": "given source batch only, no fitting or persistent state"
+      },
+      "log_bytes": 69608,
+      "error_tail": []
+    },
+    {
+      "row_id": "response_order_attention-s2026092701",
+      "status": "RUNNING",
+      "pid": 2164650,
+      "gpu": 2,
+      "process": {
+        "pid": 2164650,
+        "parent_pid": 2164478,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_order_attention-s2026092701.json",
+          ""
+        ]
+      },
+      "epoch": 11,
+      "train_ce": 0.31471092730760575,
+      "source_v": 0.9277037037037037,
+      "epoch_seconds": 8.77970507700229,
+      "channel": {
+        "active": true,
+        "variant": "response_order_attention",
+        "packets": 28,
+        "compensation_input_relative": 0.06563244760036469,
+        "response_feature_relative": 0.07580450922250748,
+        "response_token_norm": 4.118916034698486,
+        "response_pooled_norm": 0.2422850877046585,
+        "response_projection_relative": 0.05324200540781021,
+        "response_order_relative": 0.011691618710756302,
+        "attention_entropy": 5.4432854652404785,
+        "compensation_exit_gradient_norm": 0.05288350582122803,
+        "value_gradient_norm": 0.023244520649313927,
+        "projection_gradient_norm": 0.03606327250599861,
+        "attention_gradient_norm": 0.0076145026832818985,
+        "scope": "given source batch only, no fitting or persistent state"
+      },
+      "log_bytes": 69878,
+      "error_tail": []
+    },
+    {
+      "row_id": "response_mean-s2026092702",
+      "status": "RUNNING",
+      "pid": 2164729,
+      "gpu": 3,
+      "process": {
+        "pid": 2164729,
+        "parent_pid": 2164478,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_mean-s2026092702.json",
+          ""
+        ]
+      },
+      "epoch": 10,
+      "train_ce": 0.3032941484451294,
+      "source_v": 0.9345925925925926,
+      "epoch_seconds": 8.968612988013774,
+      "channel": {
+        "active": true,
+        "variant": "response_mean",
+        "packets": 28,
+        "compensation_input_relative": 0.043211303651332855,
+        "response_feature_relative": 0.04329464212059975,
+        "response_token_norm": 2.3523073196411133,
+        "response_pooled_norm": 0.07288245856761932,
+        "response_projection_relative": 0.009649637155234814,
+        "response_order_relative": null,
+        "attention_entropy": 5.505331993103027,
+        "compensation_exit_gradient_norm": 0.023213159292936325,
+        "value_gradient_norm": 0.007337129674851894,
+        "projection_gradient_norm": 0.009259524755179882,
+        "attention_gradient_norm": null,
+        "scope": "given source batch only, no fitting or persistent state"
+      },
+      "log_bytes": 64174,
+      "error_tail": []
+    },
+    {
+      "row_id": "response_attention-s2026092702",
+      "status": "RUNNING",
+      "pid": 2164863,
+      "gpu": 4,
+      "process": {
+        "pid": 2164863,
+        "parent_pid": 2164478,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_attention-s2026092702.json",
+          ""
+        ]
+      },
+      "epoch": 9,
+      "train_ce": 0.356612468957901,
+      "source_v": 0.9261111111111111,
+      "epoch_seconds": 8.713407592003932,
+      "channel": {
+        "active": true,
+        "variant": "response_attention",
+        "packets": 28,
+        "compensation_input_relative": 0.04039713367819786,
+        "response_feature_relative": 0.043540921062231064,
+        "response_token_norm": 2.3356337547302246,
+        "response_pooled_norm": 0.05612058937549591,
+        "response_projection_relative": 0.007164813578128815,
+        "response_order_relative": null,
+        "attention_entropy": 5.497500896453857,
+        "compensation_exit_gradient_norm": 0.037833258509635925,
+        "value_gradient_norm": 0.00876231025904417,
+        "projection_gradient_norm": 0.01314622163772583,
+        "attention_gradient_norm": 0.00250055524520576,
+        "scope": "given source batch only, no fitting or persistent state"
+      },
+      "log_bytes": 59182,
+      "error_tail": []
+    },
+    {
+      "row_id": "response_order_attention-s2026092702",
+      "status": "RUNNING",
+      "pid": 2165347,
+      "gpu": 5,
+      "process": {
+        "pid": 2165347,
+        "parent_pid": 2164478,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_order_attention-s2026092702.json",
+          ""
+        ]
+      },
+      "epoch": 8,
+      "train_ce": 0.3964254868030548,
+      "source_v": 0.8930370370370371,
+      "epoch_seconds": 8.777338468004018,
+      "channel": {
+        "active": true,
+        "variant": "response_order_attention",
+        "packets": 28,
+        "compensation_input_relative": 0.03825851157307625,
+        "response_feature_relative": 0.040523361414670944,
+        "response_token_norm": 2.194990634918213,
+        "response_pooled_norm": 0.04549484699964523,
+        "response_projection_relative": 0.005461290944367647,
+        "response_order_relative": 0.005913746543228626,
+        "attention_entropy": 5.491683006286621,
+        "compensation_exit_gradient_norm": 0.022982874885201454,
+        "value_gradient_norm": 0.009972033090889454,
+        "projection_gradient_norm": 0.01509043201804161,
+        "attention_gradient_norm": 0.0010193043854087591,
+        "scope": "given source batch only, no fitting or persistent state"
+      },
+      "log_bytes": 54240,
+      "error_tail": []
+    },
+    {
+      "row_id": "response_mean-s2026092703",
+      "status": "RUNNING",
+      "pid": 2165426,
+      "gpu": 6,
+      "process": {
+        "pid": 2165426,
+        "parent_pid": 2164478,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_mean-s2026092703.json",
+          ""
+        ]
+      },
+      "epoch": 8,
+      "train_ce": 0.37021932899951937,
+      "source_v": 0.9070370370370371,
+      "epoch_seconds": 8.689030915003968,
+      "channel": {
+        "active": true,
+        "variant": "response_mean",
+        "packets": 28,
+        "compensation_input_relative": 0.031026815995573997,
+        "response_feature_relative": 0.0349300280213356,
+        "response_token_norm": 2.0042037963867188,
+        "response_pooled_norm": 0.08235316723585129,
+        "response_projection_relative": 0.013707701116800308,
+        "response_order_relative": null,
+        "attention_entropy": 5.505331993103027,
+        "compensation_exit_gradient_norm": 0.19142238795757294,
+        "value_gradient_norm": 0.025515848770737648,
+        "projection_gradient_norm": 0.03284808248281479,
+        "attention_gradient_norm": null,
+        "scope": "given source batch only, no fitting or persistent state"
+      },
+      "log_bytes": 53721,
+      "error_tail": []
+    },
+    {
+      "row_id": "response_attention-s2026092703",
+      "status": "RUNNING",
+      "pid": 2165505,
+      "gpu": 7,
+      "process": {
+        "pid": 2165505,
+        "parent_pid": 2164478,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_attention-s2026092703.json",
+          ""
+        ]
+      },
+      "epoch": 8,
+      "train_ce": 0.37283726572990417,
+      "source_v": 0.9217777777777778,
+      "epoch_seconds": 8.517329507012619,
+      "channel": {
+        "active": true,
+        "variant": "response_attention",
+        "packets": 28,
+        "compensation_input_relative": 0.03356092423200607,
+        "response_feature_relative": 0.0378282256424427,
+        "response_token_norm": 2.1901350021362305,
+        "response_pooled_norm": 0.07108431309461594,
+        "response_projection_relative": 0.010171419940888882,
+        "response_order_relative": null,
+        "attention_entropy": 5.498326778411865,
+        "compensation_exit_gradient_norm": 0.20872732996940613,
+        "value_gradient_norm": 0.03664945438504219,
+        "projection_gradient_norm": 0.0324677899479866,
+        "attention_gradient_norm": 0.00512149091809988,
+        "scope": "given source batch only, no fitting or persistent state"
+      },
+      "log_bytes": 53945,
+      "error_tail": []
+    },
+    {
+      "row_id": "response_order_attention-s2026092703",
+      "status": "RUNNING",
+      "pid": 2165586,
+      "gpu": 3,
+      "process": {
+        "pid": 2165586,
+        "parent_pid": 2164478,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_order_attention-s2026092703.json",
+          ""
+        ]
+      },
+      "epoch": 7,
+      "train_ce": 0.4089327174425125,
+      "source_v": 0.8862222222222222,
+      "epoch_seconds": 8.949707426014356,
+      "channel": {
+        "active": true,
+        "variant": "response_order_attention",
+        "packets": 28,
+        "compensation_input_relative": 0.02788504958152771,
+        "response_feature_relative": 0.027949975803494453,
+        "response_token_norm": 1.5203198194503784,
+        "response_pooled_norm": 0.03685980662703514,
+        "response_projection_relative": 0.005012325011193752,
+        "response_order_relative": 0.003219515783712268,
+        "attention_entropy": 5.502978801727295,
+        "compensation_exit_gradient_norm": 0.052424509078264236,
+        "value_gradient_norm": 0.007283157203346491,
+        "projection_gradient_norm": 0.007010613102465868,
+        "attention_gradient_norm": 0.000318746839184314,
+        "scope": "given source batch only, no fitting or persistent state"
+      },
+      "log_bytes": 48914,
+      "error_tail": []
+    },
+    {
+      "row_id": "response_mean-s2026092704",
+      "status": "RUNNING",
+      "pid": 2165706,
+      "gpu": 6,
+      "process": {
+        "pid": 2165706,
+        "parent_pid": 2164478,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_mean-s2026092704.json",
+          ""
+        ]
+      },
+      "epoch": 6,
+      "train_ce": 0.5380115002393723,
+      "source_v": 0.8462222222222222,
+      "epoch_seconds": 9.286135230009677,
+      "channel": {
+        "active": true,
+        "variant": "response_mean",
+        "packets": 28,
+        "compensation_input_relative": 0.030724069103598595,
+        "response_feature_relative": 0.03422830253839493,
+        "response_token_norm": 2.06937313079834,
+        "response_pooled_norm": 0.05870094895362854,
+        "response_projection_relative": 0.006547459401190281,
+        "response_order_relative": null,
+        "attention_entropy": 5.505331993103027,
+        "compensation_exit_gradient_norm": 0.08198320865631104,
+        "value_gradient_norm": 0.01697748713195324,
+        "projection_gradient_norm": 0.017556123435497284,
+        "attention_gradient_norm": null,
+        "scope": "given source batch only, no fitting or persistent state"
+      },
+      "log_bytes": 43374,
+      "error_tail": []
+    },
+    {
+      "row_id": "response_attention-s2026092704",
+      "status": "RUNNING",
+      "pid": 2165789,
+      "gpu": 0,
+      "process": {
+        "pid": 2165789,
+        "parent_pid": 2164478,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_attention-s2026092704.json",
+          ""
+        ]
+      },
+      "epoch": 5,
+      "train_ce": 0.637907766699791,
+      "source_v": 0.8574074074074074,
+      "epoch_seconds": 9.108590304007521,
+      "channel": {
+        "active": true,
+        "variant": "response_attention",
+        "packets": 28,
+        "compensation_input_relative": 0.024646244943141937,
+        "response_feature_relative": 0.03046565130352974,
+        "response_token_norm": 1.9564365148544312,
+        "response_pooled_norm": 0.04700945317745209,
+        "response_projection_relative": 0.004531537648290396,
+        "response_order_relative": null,
+        "attention_entropy": 5.502026557922363,
+        "compensation_exit_gradient_norm": 0.019519664347171783,
+        "value_gradient_norm": 0.004674768541008234,
+        "projection_gradient_norm": 0.0053523024544119835,
+        "attention_gradient_norm": 0.0009106257930397987,
+        "scope": "given source batch only, no fitting or persistent state"
+      },
+      "log_bytes": 38321,
+      "error_tail": []
+    },
+    {
+      "row_id": "response_order_attention-s2026092704",
+      "status": "RUNNING",
+      "pid": 2165863,
+      "gpu": 1,
+      "process": {
+        "pid": 2165863,
+        "parent_pid": 2164478,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_channel_response_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_response_identity_20261003_r01/experiments/cvs_channel_response_identity/configs/response_order_attention-s2026092704.json",
+          ""
+        ]
+      },
+      "epoch": 5,
+      "train_ce": 0.6381963002681732,
+      "source_v": 0.852925925925926,
+      "epoch_seconds": 9.173453552997671,
+      "channel": {
+        "active": true,
+        "variant": "response_order_attention",
+        "packets": 28,
+        "compensation_input_relative": 0.02837224304676056,
+        "response_feature_relative": 0.03359379991889,
+        "response_token_norm": 2.1615328788757324,
+        "response_pooled_norm": 0.05228111892938614,
+        "response_projection_relative": 0.005845717620104551,
+        "response_order_relative": 0.0035887944977730513,
+        "attention_entropy": 5.497048854827881,
+        "compensation_exit_gradient_norm": 0.03148752450942993,
+        "value_gradient_norm": 0.005969669204205275,
+        "projection_gradient_norm": 0.006028818432241678,
+        "attention_gradient_norm": 0.0014065067516639829,
+        "scope": "given source batch only, no fitting or persistent state"
+      },
+      "log_bytes": 38441,
+      "error_tail": []
+    }
+  ],
+  "source_selection": null,
+  "gpu": "2164492, GPU-56adac86-77cd-36c9-8770-dbf002650461, 698 MiB\n2165789, GPU-56adac86-77cd-36c9-8770-dbf002650461, 716 MiB\n2164571, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 716 MiB\n2165863, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 722 MiB\n2164650, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 722 MiB\n2164729, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 698 MiB\n2165586, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 722 MiB\n2164863, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 716 MiB\n2165347, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 722 MiB\n2165426, GPU-5463e082-259e-537b-603a-01575d45801c, 698 MiB\n2165706, GPU-5463e082-259e-537b-603a-01575d45801c, 698 MiB\n2165505, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 716 MiB\n"
+}
