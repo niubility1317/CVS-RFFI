@@ -10,3 +10,4 @@
 |CVS 加性坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/report.md)|
 |CVS 坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/report.md)|
 |CVS相位曲率：冻结源域归因结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/report.md)|
+|CVS补偿与顺序差：完整源V冻结归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/report.md)|

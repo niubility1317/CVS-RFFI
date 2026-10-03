@@ -1,0 +1,440 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01",
+  "group_id": "cvs-channel-frozen-source-attribution",
+  "display_name": "CVS补偿与顺序差读出：完整源V冻结支路归因",
+  "description": "量化源机制日志缺失的D交叉统计/投影以及双路冗余；固定权重干预，不训练，不访问目标，不改变已冻结选择。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-V-frozen-attribution",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "source_only",
+    "diagnostic",
+    "channel_attribution",
+    "no_training"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [
+    "20261003-phase1-cvs-channel-order-identity-manysig-m16-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续追求纯神经网络架构、原单CE与Phase1论文目标；本诊断用于补齐既有源机制证据，不重测目标或改变旧选择。",
+  "code": {
+    "commit": "PENDING_COMMIT_BEFORE_RELEASE",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01",
+    "architecture_base_commit": "8d9600a432f9dcb80e2bfcc9dc90cbb1847e1908",
+    "commit_scope": "Diagnostic release commit recorded after submission; model code imported from fixed original source release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center256; unit packet RMS; fs=25000000Hz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "each row source_output/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "ManySig.tx_list: all6; actual physical class strings exported at runtime",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "NONE; source V only",
+    "external_method_exception": null,
+    "claim_scope": "Within-checkpoint frozen source V mechanism; no training, target, source reselection or generalization claim",
+    "target_access": false,
+    "training": false
+  },
+  "checkpoint": {
+    "initialization": "load_verified_source_scratch_E200_frozen_only",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_dual-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_dual-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_dual-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_dual-s2026092704/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_order-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_order-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_order-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/channel_order-s2026092704/source/last.pt"
+    ],
+    "provenance_verdict": "Reuse prior full source provenance; recheck complete source metadata and exact payload before strict weight load",
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "selection_rule": "Fixed original E200 per registered seed; no checkpoint selection or inheritance for training",
+    "mode": "frozen_source_diagnostic_only"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/channel-source-attribution-20261003",
+    "gpu_policy": "Available capacity only;at most two total training jobs/GPU;>=12GB free;no healthy task interference",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01",
+    "launch_command": "python -m experiments.cvs_channel_attribution.publish --output local_artifacts/cvs_channel_attribution_source_20261003_r01/delivery",
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "completion.json",
+    "source_scalar_diagnostics.npz",
+    "*_source_predictions.npz",
+    "independent_recount.json",
+    "report.md"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_V_accuracy",
+      "source_V_CE",
+      "source_RX_accuracy",
+      "paired_helped_hurt",
+      "prediction_changes",
+      "readout_cosine",
+      "D_feature_readout_projection",
+      "temporal_cross_coherence",
+      "seconds",
+      "peak_cuda_allocated_bytes"
+    ],
+    "dimensions": [
+      "architecture",
+      "model_seed",
+      "source_receiver"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01",
+    "scorer_ref": "N/A: source-only release does not score target",
+    "primary": "Paired full27000 sourceV accuracy/CE/RX under fixed-weight branch interventions; all-V readout and projection magnitudes",
+    "later_test": "N/A: frozen source-only mechanistic diagnostic, no new model or target access; already completed frozen clean evidence retained unchanged"
+  },
+  "rows": [
+    {
+      "row_id": "channel_dual-s2026092701",
+      "method": "channel_dual",
+      "purpose": "frozen_full_source_V_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_channel_attribution/launch_spec.json#channel_dual-s2026092701",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "one complete27000 V pass; five dual or six order fixed-weight classifier conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092701.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_scalar_diagnostics.npz",
+        "*_source_predictions.npz"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "channel_dual-s2026092702",
+      "method": "channel_dual",
+      "purpose": "frozen_full_source_V_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_channel_attribution/launch_spec.json#channel_dual-s2026092702",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "one complete27000 V pass; five dual or six order fixed-weight classifier conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092702.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_scalar_diagnostics.npz",
+        "*_source_predictions.npz"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "channel_dual-s2026092703",
+      "method": "channel_dual",
+      "purpose": "frozen_full_source_V_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_channel_attribution/launch_spec.json#channel_dual-s2026092703",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "one complete27000 V pass; five dual or six order fixed-weight classifier conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092703.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_scalar_diagnostics.npz",
+        "*_source_predictions.npz"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "channel_dual-s2026092704",
+      "method": "channel_dual",
+      "purpose": "frozen_full_source_V_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_channel_attribution/launch_spec.json#channel_dual-s2026092704",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "one complete27000 V pass; five dual or six order fixed-weight classifier conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_dual-s2026092704.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_scalar_diagnostics.npz",
+        "*_source_predictions.npz"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "channel_order-s2026092701",
+      "method": "channel_order",
+      "purpose": "frozen_full_source_V_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_channel_attribution/launch_spec.json#channel_order-s2026092701",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "one complete27000 V pass; five dual or six order fixed-weight classifier conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092701.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_scalar_diagnostics.npz",
+        "*_source_predictions.npz"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "channel_order-s2026092702",
+      "method": "channel_order",
+      "purpose": "frozen_full_source_V_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_channel_attribution/launch_spec.json#channel_order-s2026092702",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "one complete27000 V pass; five dual or six order fixed-weight classifier conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092702.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_scalar_diagnostics.npz",
+        "*_source_predictions.npz"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "channel_order-s2026092703",
+      "method": "channel_order",
+      "purpose": "frozen_full_source_V_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_channel_attribution/launch_spec.json#channel_order-s2026092703",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "one complete27000 V pass; five dual or six order fixed-weight classifier conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092703.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_scalar_diagnostics.npz",
+        "*_source_predictions.npz"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "channel_order-s2026092704",
+      "method": "channel_order",
+      "purpose": "frozen_full_source_V_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_channel_attribution/launch_spec.json#channel_order-s2026092704",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlymodel/loaderRNGvaries;fixedphysicalsplit;noaugmentation/support/evaluationRNG",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "one complete27000 V pass; five dual or six order fixed-weight classifier conditions; zero optimizer updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_attribution_source_20261003_r01/run.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/channel_order-s2026092704.json",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "completion.json",
+        "source_scalar_diagnostics.npz",
+        "*_source_predictions.npz"
+      ],
+      "status": "PLANNED"
+    }
+  ],
+  "notes": [
+    "8 E200 frozen models: dual/order x4 model seeds;44conditions; same27000 sourceV physical packets",
+    "Only source split is constructed. No gradients, optimizer, fitting, normalization/prototype updates or new model selection.",
+    "Full source V, not epoch-end batch: D feature/readout/projection and temporal coherence; original/compensated readout similarity; per-RX paired predictions.",
+    "Ablation measures within-checkpoint dependence, not scratch-retraining causal contribution; no target generalization claim.",
+    "No target score determines this design: missing D projection/readout evidence identified in source mechanism report before this diagnostic.",
+    "All existing data/checkpoints/predictions preserved; new immutable release/run."
+  ],
+  "status": "PLANNED",
+  "test_completion_plan": {
+    "status": "NOT_APPLICABLE_SOURCE_DIAGNOSTIC",
+    "reason": "No new trainable candidate; fixed-weight interventions cannot be selected or evaluated on target. Original source winner clean test already complete; not rerun."
+  },
+  "registered_at": "2026-10-03T00:47:18+00:00"
+}

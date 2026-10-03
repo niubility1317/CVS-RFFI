@@ -1,0 +1,10 @@
+{
+  "status": "VERIFIED",
+  "tests": 11,
+  "command": "python -m pytest -q tests/test_cvs_channel_attribution.py",
+  "interpreter": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+  "nonzero_decomposition": true,
+  "g_identity_matches_actual_network": true,
+  "protocol_negative_cases": 7,
+  "source_only": true
+}

@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T18:42:36+00:00
+更新：2026-10-03T00:52:59+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|76|
+|managed_run|77|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,7 +20,7 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|59|
+|[cvs](by_method/cvs.md)|60|
 |[ce_only](by_method/ce_only.md)|47|
 |[clean_only](by_method/clean_only.md)|46|
 |[performance_priority](by_method/performance_priority.md)|40|
@@ -31,7 +31,7 @@
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|15|
 |[daot](by_method/daot.md)|11|
 |[rc4](by_method/rc4.md)|10|
-|[source_only](by_method/source_only.md)|9|
+|[source_only](by_method/source_only.md)|10|
 |[practical](by_method/practical.md)|8|
 |[residual_noeq](by_method/residual_noeq.md)|8|
 |[concat](by_method/concat.md)|7|
@@ -43,8 +43,8 @@
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
+|[diagnostic](by_method/diagnostic.md)|5|
 |[relative_cfo](by_method/relative_cfo.md)|5|
-|[diagnostic](by_method/diagnostic.md)|4|
 |[final200](by_method/final200.md)|4|
 |[sixscene](by_method/sixscene.md)|3|
 |[d92](by_method/d92.md)|3|
@@ -121,6 +121,8 @@
 |[frozen_evaluation](by_method/frozen_evaluation.md)|1|
 |[rf_behavior_operator](by_method/rf_behavior_operator.md)|1|
 |[user_fixed_architecture](by_method/user_fixed_architecture.md)|1|
+|[channel_attribution](by_method/channel_attribution.md)|1|
+|[no_training](by_method/no_training.md)|1|
 |[channel_order](by_method/channel_order.md)|1|
 |[packet_compensation](by_method/packet_compensation.md)|1|
 |[neural_readout](by_method/neural_readout.md)|1|
@@ -200,6 +202,7 @@
 |CVS 固定身份网络：mid／low urban 拼接增强|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/report.md)|
 |CVS 全路径逐包同步身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/report.md)|
 |CVS 复数Volterra延迟相位记忆：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|
+|CVS补偿与顺序差：完整源V冻结归因|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/report.md)|
 |CVS 信道与非线性运算次序：独立 clean 结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/report.md)|
 |CVS信道补偿与顺序差值：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md)|
 |CVS纯网络读出优化：源实验预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)|
