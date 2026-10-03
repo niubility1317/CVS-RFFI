@@ -1,0 +1,15 @@
+{
+  "run_id": "20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01",
+  "status": "LOCAL_VERIFIED",
+  "live_workers": 0,
+  "performance_goal_achieved": false,
+  "paper_claim_established": false,
+  "launch_owner": "codex/root/cvs-frontfilter-identity-20261003",
+  "latest_evidence": "evidence/local_validation.json",
+  "next": [
+    "Commit and push exact code/configs, independently compare remote OID",
+    "Publish once to new exclusive release after read-only preflight; independently check all workers/config/GPU/log growth",
+    "Implement conditional clean compatibility without target access during source training",
+    "Collect full E200 source artifacts,freeze16-record source selection,and finish preregistered conditional clean or control reuse"
+  ]
+}

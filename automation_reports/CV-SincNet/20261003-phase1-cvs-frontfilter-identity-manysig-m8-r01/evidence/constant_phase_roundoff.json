@@ -1,0 +1,736 @@
+{
+  "status": "NUMERICAL_LIMITATION_REPRODUCED",
+  "torch_version": "2.10.0+cu128",
+  "python": "3.10.19",
+  "device": "cpu",
+  "model_seed": 2026092701,
+  "data_seed": 2026100300,
+  "packet_order": [
+    "zero",
+    "constant_IQ_1",
+    "two_tone",
+    "gaussian"
+  ],
+  "public_synthetic_only": true,
+  "formal_data_access": false,
+  "target_access": false,
+  "training_steps": 3,
+  "loss": "single CE",
+  "records": [
+    {
+      "tag": "frontfilter_static_initial",
+      "dtype": "torch.float32",
+      "logit_max_abs_error_by_packet": [
+        0.0,
+        1.430511474609375e-06,
+        7.3909759521484375e-06,
+        1.6689300537109375e-06
+      ],
+      "path_max_abs_error_by_packet": {
+        "time": [
+          0.0,
+          4.76837158203125e-07,
+          3.2782554626464844e-07,
+          3.129243850708008e-07
+        ],
+        "behavior": [
+          0.0,
+          4.76837158203125e-07,
+          2.980232238769531e-07,
+          2.086162567138672e-07
+        ],
+        "freq_gate": [
+          0.0,
+          0.0,
+          4.550907760858536e-06,
+          4.76837158203125e-07
+        ],
+        "frequency": [
+          0.0,
+          0.0,
+          1.9073486328125e-06,
+          5.364418029785156e-07
+        ]
+      },
+      "front_equiv_error_by_packet": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "coeff_error_by_packet": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "context_error_by_packet": [
+        0.0,
+        0.0,
+        5.960464477539063e-08,
+        7.450580596923828e-09
+      ],
+      "spectral_epsilon": 1e-08,
+      "constant_spectral_channels": [
+        "logP_pos",
+        "logP_neg",
+        "logR",
+        "asym"
+      ],
+      "constant_spectral_error_by_channel": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "constant_non_dc_positive_bin_power_min": 0.0,
+      "constant_non_dc_positive_bin_power_max": 0.0,
+      "constant_dc_power": 131072.0,
+      "constant_filter_delta_max": 0.0
+    },
+    {
+      "tag": "frontfilter_static_initial",
+      "dtype": "torch.float64",
+      "logit_max_abs_error_by_packet": [
+        0.0,
+        1.36621017610139e-07,
+        1.5636694472576096e-07,
+        8.639282644828938e-08
+      ],
+      "path_max_abs_error_by_packet": {
+        "time": [
+          0.0,
+          7.035122712162334e-08,
+          5.137120312123655e-08,
+          4.066554215587104e-08
+        ],
+        "behavior": [
+          0.0,
+          1.2212453270876722e-15,
+          6.661338147750939e-16,
+          4.440892098500626e-16
+        ],
+        "freq_gate": [
+          0.0,
+          0.0,
+          5.440092820663267e-15,
+          8.881784197001252e-16
+        ],
+        "frequency": [
+          0.0,
+          0.0,
+          4.315992008230296e-15,
+          4.996003610813204e-16
+        ]
+      },
+      "front_equiv_error_by_packet": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "coeff_error_by_packet": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "context_error_by_packet": [
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        1.0408340855860843e-17
+      ],
+      "spectral_epsilon": 1e-08,
+      "constant_spectral_channels": [
+        "logP_pos",
+        "logP_neg",
+        "logR",
+        "asym"
+      ],
+      "constant_spectral_error_by_channel": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "constant_non_dc_positive_bin_power_min": 0.0,
+      "constant_non_dc_positive_bin_power_max": 0.0,
+      "constant_dc_power": 131072.0,
+      "constant_filter_delta_max": 0.0
+    },
+    {
+      "tag": "frontfilter_static_trained",
+      "dtype": "torch.float32",
+      "logit_max_abs_error_by_packet": [
+        0.0,
+        0.015033483505249023,
+        3.814697265625e-06,
+        2.0265579223632812e-06
+      ],
+      "path_max_abs_error_by_packet": {
+        "time": [
+          0.0,
+          4.76837158203125e-07,
+          4.172325134277344e-07,
+          2.980232238769531e-07
+        ],
+        "behavior": [
+          0.0,
+          4.470348358154297e-07,
+          2.384185791015625e-07,
+          2.384185791015625e-07
+        ],
+        "freq_gate": [
+          0.0,
+          0.017328739166259766,
+          3.91155481338501e-06,
+          4.76837158203125e-07
+        ],
+        "frequency": [
+          0.0,
+          0.009323656558990479,
+          2.384185791015625e-06,
+          3.2782554626464844e-07
+        ]
+      },
+      "front_equiv_error_by_packet": [
+        0.0,
+        1.1920928955078125e-07,
+        1.1920928955078125e-07,
+        2.384185791015625e-07
+      ],
+      "coeff_error_by_packet": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "context_error_by_packet": [
+        0.0,
+        0.0,
+        5.960464477539063e-08,
+        7.450580596923828e-09
+      ],
+      "spectral_epsilon": 1e-08,
+      "constant_spectral_channels": [
+        "logP_pos",
+        "logP_neg",
+        "logR",
+        "asym"
+      ],
+      "constant_spectral_error_by_channel": [
+        8.855529642914917e-10,
+        2.5565416450490375e-10,
+        0.030477523803710938,
+        0.015258997678756714
+      ],
+      "constant_non_dc_positive_bin_power_min": 9.621027585726694e-11,
+      "constant_non_dc_positive_bin_power_max": 6.784551942473627e-08,
+      "constant_dc_power": 131097.625,
+      "constant_filter_delta_max": 0.00016307830810546875
+    },
+    {
+      "tag": "frontfilter_static_trained",
+      "dtype": "torch.float64",
+      "logit_max_abs_error_by_packet": [
+        0.0,
+        2.0159317160040047e-07,
+        1.5601213365634692e-07,
+        9.001877110392797e-08
+      ],
+      "path_max_abs_error_by_packet": {
+        "time": [
+          0.0,
+          1.4984317259214563e-07,
+          5.205482056513944e-08,
+          4.820597618304667e-08
+        ],
+        "behavior": [
+          0.0,
+          9.43689570931383e-16,
+          6.661338147750939e-16,
+          6.002143226879753e-16
+        ],
+        "freq_gate": [
+          0.0,
+          1.9887119728778657e-11,
+          2.0435042547006788e-14,
+          8.881784197001252e-16
+        ],
+        "frequency": [
+          0.0,
+          1.5133200248484968e-11,
+          9.672818102046676e-15,
+          9.992007221626409e-16
+        ]
+      },
+      "front_equiv_error_by_packet": [
+        0.0,
+        2.220446049250313e-16,
+        2.220446049250313e-16,
+        4.440892098500626e-16
+      ],
+      "coeff_error_by_packet": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "context_error_by_packet": [
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        1.0408340855860843e-17
+      ],
+      "spectral_epsilon": 1e-08,
+      "constant_spectral_channels": [
+        "logP_pos",
+        "logP_neg",
+        "logR",
+        "asym"
+      ],
+      "constant_spectral_error_by_channel": [
+        9.892947777236203e-19,
+        6.438906237010776e-19,
+        2.72968314618538e-11,
+        1.4523965363721913e-11
+      ],
+      "constant_non_dc_positive_bin_power_min": 9.102154487914632e-11,
+      "constant_non_dc_positive_bin_power_max": 6.748259373640203e-08,
+      "constant_dc_power": 131097.6198383871,
+      "constant_filter_delta_max": 0.00016306647539399144
+    },
+    {
+      "tag": "frontfilter_static_trained_backbone_no_filter",
+      "dtype": "torch.float32",
+      "logit_max_abs_error_by_packet": [
+        0.0,
+        1.7881393432617188e-06,
+        5.4836273193359375e-06,
+        2.1457672119140625e-06
+      ],
+      "path_max_abs_error_by_packet": {
+        "time": [
+          0.0,
+          5.960464477539062e-07,
+          2.980232238769531e-07,
+          2.682209014892578e-07
+        ],
+        "behavior": [
+          0.0,
+          4.172325134277344e-07,
+          2.980232238769531e-07,
+          2.086162567138672e-07
+        ],
+        "freq_gate": [
+          0.0,
+          0.0,
+          4.553701728582382e-06,
+          4.76837158203125e-07
+        ],
+        "frequency": [
+          0.0,
+          0.0,
+          1.7434358596801758e-06,
+          3.5762786865234375e-07
+        ]
+      }
+    },
+    {
+      "tag": "frontfilter_static_trained_backbone_no_filter",
+      "dtype": "torch.float64",
+      "logit_max_abs_error_by_packet": [
+        0.0,
+        1.5911829542858413e-07,
+        1.0458815880021177e-07,
+        4.6845265999628793e-08
+      ],
+      "path_max_abs_error_by_packet": {
+        "time": [
+          0.0,
+          6.914718897466088e-08,
+          4.703531523986282e-08,
+          3.631811035589849e-08
+        ],
+        "behavior": [
+          0.0,
+          1.0408340855860843e-15,
+          4.996003610813204e-16,
+          4.440892098500626e-16
+        ],
+        "freq_gate": [
+          0.0,
+          0.0,
+          5.4262150328554526e-15,
+          1.3322676295501878e-15
+        ],
+        "frequency": [
+          0.0,
+          0.0,
+          4.191091917959966e-15,
+          6.661338147750939e-16
+        ]
+      }
+    },
+    {
+      "tag": "frontfilter_dynamic_initial",
+      "dtype": "torch.float32",
+      "logit_max_abs_error_by_packet": [
+        0.0,
+        1.430511474609375e-06,
+        7.3909759521484375e-06,
+        1.6689300537109375e-06
+      ],
+      "path_max_abs_error_by_packet": {
+        "time": [
+          0.0,
+          4.76837158203125e-07,
+          3.2782554626464844e-07,
+          3.129243850708008e-07
+        ],
+        "behavior": [
+          0.0,
+          4.76837158203125e-07,
+          2.980232238769531e-07,
+          2.086162567138672e-07
+        ],
+        "freq_gate": [
+          0.0,
+          0.0,
+          4.550907760858536e-06,
+          4.76837158203125e-07
+        ],
+        "frequency": [
+          0.0,
+          0.0,
+          1.9073486328125e-06,
+          5.364418029785156e-07
+        ]
+      },
+      "front_equiv_error_by_packet": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "coeff_error_by_packet": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "context_error_by_packet": [
+        0.0,
+        0.0,
+        5.960464477539063e-08,
+        7.450580596923828e-09
+      ],
+      "spectral_epsilon": 1e-08,
+      "constant_spectral_channels": [
+        "logP_pos",
+        "logP_neg",
+        "logR",
+        "asym"
+      ],
+      "constant_spectral_error_by_channel": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "constant_non_dc_positive_bin_power_min": 0.0,
+      "constant_non_dc_positive_bin_power_max": 0.0,
+      "constant_dc_power": 131072.0,
+      "constant_filter_delta_max": 0.0
+    },
+    {
+      "tag": "frontfilter_dynamic_initial",
+      "dtype": "torch.float64",
+      "logit_max_abs_error_by_packet": [
+        0.0,
+        1.36621017610139e-07,
+        1.5636694472576096e-07,
+        8.639282644828938e-08
+      ],
+      "path_max_abs_error_by_packet": {
+        "time": [
+          0.0,
+          7.035122712162334e-08,
+          5.137120312123655e-08,
+          4.066554215587104e-08
+        ],
+        "behavior": [
+          0.0,
+          1.2212453270876722e-15,
+          6.661338147750939e-16,
+          4.440892098500626e-16
+        ],
+        "freq_gate": [
+          0.0,
+          0.0,
+          5.440092820663267e-15,
+          8.881784197001252e-16
+        ],
+        "frequency": [
+          0.0,
+          0.0,
+          4.315992008230296e-15,
+          4.996003610813204e-16
+        ]
+      },
+      "front_equiv_error_by_packet": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "coeff_error_by_packet": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "context_error_by_packet": [
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        1.0408340855860843e-17
+      ],
+      "spectral_epsilon": 1e-08,
+      "constant_spectral_channels": [
+        "logP_pos",
+        "logP_neg",
+        "logR",
+        "asym"
+      ],
+      "constant_spectral_error_by_channel": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "constant_non_dc_positive_bin_power_min": 0.0,
+      "constant_non_dc_positive_bin_power_max": 0.0,
+      "constant_dc_power": 131072.0,
+      "constant_filter_delta_max": 0.0
+    },
+    {
+      "tag": "frontfilter_dynamic_trained",
+      "dtype": "torch.float32",
+      "logit_max_abs_error_by_packet": [
+        0.0,
+        0.0034152939915657043,
+        5.7220458984375e-06,
+        1.1920928955078125e-06
+      ],
+      "path_max_abs_error_by_packet": {
+        "time": [
+          0.0,
+          4.6193599700927734e-07,
+          2.980232238769531e-07,
+          2.980232238769531e-07
+        ],
+        "behavior": [
+          0.0,
+          5.662441253662109e-07,
+          2.8312206268310547e-07,
+          2.682209014892578e-07
+        ],
+        "freq_gate": [
+          0.0,
+          0.00573885440826416,
+          5.980953574180603e-06,
+          5.960464477539062e-07
+        ],
+        "frequency": [
+          0.0,
+          0.004553556442260742,
+          2.9802322387695312e-06,
+          3.5762786865234375e-07
+        ]
+      },
+      "front_equiv_error_by_packet": [
+        0.0,
+        1.1920928955078125e-07,
+        1.7881393432617188e-07,
+        2.384185791015625e-07
+      ],
+      "coeff_error_by_packet": [
+        0.0,
+        0.0,
+        6.821210263296962e-12,
+        0.0
+      ],
+      "context_error_by_packet": [
+        0.0,
+        0.0,
+        5.960464477539063e-08,
+        7.450580596923828e-09
+      ],
+      "spectral_epsilon": 1e-08,
+      "constant_spectral_channels": [
+        "logP_pos",
+        "logP_neg",
+        "logR",
+        "asym"
+      ],
+      "constant_spectral_error_by_channel": [
+        9.6520125225652e-10,
+        9.698624126031063e-10,
+        0.004070460796356201,
+        0.001982167363166809
+      ],
+      "constant_non_dc_positive_bin_power_min": 8.919847260813185e-08,
+      "constant_non_dc_positive_bin_power_max": 3.8778401290073816e-07,
+      "constant_dc_power": 131116.3125,
+      "constant_filter_delta_max": 0.00046443939208984375
+    },
+    {
+      "tag": "frontfilter_dynamic_trained",
+      "dtype": "torch.float64",
+      "logit_max_abs_error_by_packet": [
+        0.0,
+        1.0681892348429756e-07,
+        1.0936706851261135e-07,
+        9.095047404095169e-08
+      ],
+      "path_max_abs_error_by_packet": {
+        "time": [
+          0.0,
+          7.620112163486681e-08,
+          5.399876118472591e-08,
+          3.162935750811169e-08
+        ],
+        "behavior": [
+          0.0,
+          9.71445146547012e-16,
+          5.551115123125783e-16,
+          4.440892098500626e-16
+        ],
+        "freq_gate": [
+          0.0,
+          1.6361856314262013e-11,
+          3.913536161803677e-15,
+          1.2212453270876722e-15
+        ],
+        "frequency": [
+          0.0,
+          8.51033132853729e-12,
+          2.7200464103316335e-15,
+          8.881784197001252e-16
+        ]
+      },
+      "front_equiv_error_by_packet": [
+        0.0,
+        2.220446049250313e-16,
+        2.220446049250313e-16,
+        4.440892098500626e-16
+      ],
+      "coeff_error_by_packet": [
+        0.0,
+        0.0,
+        2.168404344971009e-19,
+        1.3552527156068805e-20
+      ],
+      "context_error_by_packet": [
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        1.0408340855860843e-17
+      ],
+      "spectral_epsilon": 1e-08,
+      "constant_spectral_channels": [
+        "logP_pos",
+        "logP_neg",
+        "logR",
+        "asym"
+      ],
+      "constant_spectral_error_by_channel": [
+        1.4732549930712453e-18,
+        6.2052574924665975e-18,
+        1.2888190514814823e-11,
+        6.377981476290984e-12
+      ],
+      "constant_non_dc_positive_bin_power_min": 8.92312737085928e-08,
+      "constant_non_dc_positive_bin_power_max": 3.8759758185963036e-07,
+      "constant_dc_power": 131116.2896522032,
+      "constant_filter_delta_max": 0.00046441467748370435
+    },
+    {
+      "tag": "frontfilter_dynamic_trained_backbone_no_filter",
+      "dtype": "torch.float32",
+      "logit_max_abs_error_by_packet": [
+        0.0,
+        9.5367431640625e-07,
+        5.245208740234375e-06,
+        1.6689300537109375e-06
+      ],
+      "path_max_abs_error_by_packet": {
+        "time": [
+          0.0,
+          5.662441253662109e-07,
+          3.2782554626464844e-07,
+          2.8312206268310547e-07
+        ],
+        "behavior": [
+          0.0,
+          4.172325134277344e-07,
+          2.384185791015625e-07,
+          2.682209014892578e-07
+        ],
+        "freq_gate": [
+          0.0,
+          0.0,
+          4.5532360672950745e-06,
+          4.76837158203125e-07
+        ],
+        "frequency": [
+          0.0,
+          0.0,
+          1.7955899238586426e-06,
+          4.172325134277344e-07
+        ]
+      }
+    },
+    {
+      "tag": "frontfilter_dynamic_trained_backbone_no_filter",
+      "dtype": "torch.float64",
+      "logit_max_abs_error_by_packet": [
+        0.0,
+        1.5792855112550797e-07,
+        1.1542530731212253e-07,
+        4.2470392092042175e-08
+      ],
+      "path_max_abs_error_by_packet": {
+        "time": [
+          0.0,
+          6.955743891978727e-08,
+          4.686615279192452e-08,
+          3.5513613043380854e-08
+        ],
+        "behavior": [
+          0.0,
+          9.43689570931383e-16,
+          4.996003610813204e-16,
+          7.771561172376096e-16
+        ],
+        "freq_gate": [
+          0.0,
+          0.0,
+          5.440092820663267e-15,
+          8.881784197001252e-16
+        ],
+        "frequency": [
+          0.0,
+          0.0,
+          4.468647674116255e-15,
+          6.661338147750939e-16
+        ]
+      }
+    }
+  ],
+  "interpretation": "Zero-padding of a near-identity FIR creates tiny non-DC boundary spectra on pure DC input. FP32 cancellation and input rounding are amplified by retained logR/asym features at epsilon=1e-8. FIR phase-equivariance itself remains within floating-point error. Nondegenerate FP32 and same-state FP64 checks pass; no uniform whole-network FP32 error bound is claimed for DC.",
+  "production_model_changed": false,
+  "tolerance_relaxed": false
+}

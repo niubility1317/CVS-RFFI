@@ -1,0 +1,3510 @@
+{
+  "status": "VERIFIED",
+  "data_access": false,
+  "target_access": false,
+  "checkpoint_loading": false,
+  "public_synthetic_input": true,
+  "loss": "single cross_entropy",
+  "records": [
+    {
+      "variant": "frontfilter_static",
+      "model_seed": 2026092701,
+      "status": "VERIFIED",
+      "parameters": 221035,
+      "new_trainable_parameters": 48,
+      "initial_function_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_basis_initialization": true,
+      "contract": {
+        "mode": "frontfilter_static",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "CE-trained bounded received-waveform filter; not physical channel inversion or TX/RX separation",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 48,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "frontfilter_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "total_parameters": 221035,
+        "total_trainable_parameters": 221035,
+        "frontfilter_active": true,
+        "frontfilter_variant": "frontfilter_static",
+        "frontfilter_dynamic": false,
+        "frontfilter_basis_count": 4,
+        "frontfilter_taps": 5,
+        "frontfilter_rho": 0.25,
+        "frontfilter_basis_bound": "complex-modulus L1 <= 1",
+        "frontfilter_coefficient_bound": "complex-modulus L1 <= 1",
+        "frontfilter_context_dimension": null,
+        "frontfilter_context_hidden": null,
+        "frontfilter_context": "global learned complex coefficients; no input conditioning",
+        "frontfilter_exit_initialization": "zero",
+        "frontfilter_boundary": "same symmetric two-sample zero padding; no crop; correlation tap convention",
+        "frontfilter_wiring": "NeuralResidualCVS.features(G_x(x)); time, frequency and behavior all receive G_x(x)",
+        "frontfilter_original_input_bypass": false,
+        "frontfilter_auxiliary_branch": false,
+        "frontfilter_post_unit_rms": false,
+        "frontfilter_detach": false,
+        "frontfilter_fixed_coefficient_singular_value_bounds": [
+          0.75,
+          1.25
+        ],
+        "frontfilter_dynamic_map_invertible_claim": false,
+        "frontfilter_cross_packet_state": false,
+        "frontfilter_inference_fit": false,
+        "frontfilter_output_samples": 256,
+        "frontfilter_loss": "unchanged single cross_entropy"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 5.208761692047119,
+          "frontfilter_gradient_norms": {
+            "basis": 0.0,
+            "coeff_raw": 0.11543296277523041
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 5.018869876861572,
+          "frontfilter_gradient_norms": {
+            "basis": 0.6821862459182739,
+            "coeff_raw": 878.697998046875
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 2.145925521850586,
+          "frontfilter_gradient_norms": {
+            "basis": 1.7541128396987915,
+            "coeff_raw": 1834.85791015625
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.33547592163086,
+        "behavior_weight_norm": 13.407958030700684,
+        "radial_gate_a_abs_mean": 0.00042001402471214533,
+        "time_gradient_norm": 9.96822452545166,
+        "behavior_gradient_norm": 5.598630905151367,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0011842994717881083
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006206054822541773
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0007983886171132326
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0006882896996103227
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006316340295597911
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.1175870895385742e-08,
+              "relative_energy_fraction_variance_mean": 0.0005379677168093622
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0005390755832195282,
+            0.0005300873890519142
+          ],
+          "coefficients": [
+            0.0005390755250118673,
+            0.0005300873308442533
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.271587371826172,
+              "degree3_relative_input_change_mean": 0.00023866136325523257,
+              "degree5_relative_input_change_mean": 0.00022286895546130836
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.01571168377995491,
+              "projection_norm": 0.027292076498270035
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.013427993282675743,
+              "projection_norm": 0.029944177716970444
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "diagnostic_input_scopes": {
+          "coordinate_cfo_and_coherence": "original_input_x",
+          "normalization_adaptive_input_neural_residual": "actual_G_x(x), exactly once per diagnostic forward",
+          "core_weights_and_gradients": "parameters and last CE gradients, no input-dependent estimate"
+        },
+        "frontfilter": {
+          "active": true,
+          "variant": "frontfilter_static",
+          "dynamic": false,
+          "records": [
+            {
+              "block": "frontfilter",
+              "packets": 4,
+              "relative_input_change_mean": 8.410819282289594e-05,
+              "relative_input_change_max": 0.00012994493590667844,
+              "input_norm_ratio_min": 0.9999997615814209,
+              "input_norm_ratio_max": 1.000103235244751,
+              "input_norm_ratio_eligible_packets": 3,
+              "coefficient_l1_mean": 0.001109207863919437,
+              "coefficient_l1_max": 0.001109207863919437,
+              "kernel_l1_mean": 0.000769981590565294,
+              "kernel_l1_max": 0.000769981590565294,
+              "basis_l1_max": 1.0,
+              "bound_active_fraction": 0.0,
+              "basis_bound_active_fraction": 1.0,
+              "coefficient_packet_variance": 0.0,
+              "coefficient_l1_by_packet": [
+                0.001109207863919437,
+                0.001109207863919437,
+                0.001109207863919437,
+                0.001109207863919437
+              ],
+              "kernel_l1_by_packet": [
+                0.000769981590565294,
+                0.000769981590565294,
+                0.000769981590565294,
+                0.000769981590565294
+              ],
+              "coefficients": [
+                [
+                  [
+                    -0.0001310313818976283,
+                    0.00025488671963103116,
+                    -9.045434126164764e-05,
+                    -0.0004895213060081005
+                  ],
+                  [
+                    -0.0001122139219660312,
+                    0.00022672403429169208,
+                    -1.2311174941714853e-05,
+                    0.00012108038936275989
+                  ]
+                ],
+                [
+                  [
+                    -0.0001310313818976283,
+                    0.00025488671963103116,
+                    -9.045434126164764e-05,
+                    -0.0004895213060081005
+                  ],
+                  [
+                    -0.0001122139219660312,
+                    0.00022672403429169208,
+                    -1.2311174941714853e-05,
+                    0.00012108038936275989
+                  ]
+                ],
+                [
+                  [
+                    -0.0001310313818976283,
+                    0.00025488671963103116,
+                    -9.045434126164764e-05,
+                    -0.0004895213060081005
+                  ],
+                  [
+                    -0.0001122139219660312,
+                    0.00022672403429169208,
+                    -1.2311174941714853e-05,
+                    0.00012108038936275989
+                  ]
+                ],
+                [
+                  [
+                    -0.0001310313818976283,
+                    0.00025488671963103116,
+                    -9.045434126164764e-05,
+                    -0.0004895213060081005
+                  ],
+                  [
+                    -0.0001122139219660312,
+                    0.00022672403429169208,
+                    -1.2311174941714853e-05,
+                    0.00012108038936275989
+                  ]
+                ]
+              ],
+              "fixed_coefficient_delta_operator_bound_max": 0.0001924953976413235,
+              "basis_gradient_norm": 1.7541128396987915,
+              "context_gradient_norm": null,
+              "exit_gradient_norm": 1834.85791015625
+            }
+          ],
+          "scope": "Current input x and one actual G_x(x); no post-filter unit RMS, fitting, state or parameter updates; gradients from last CE backward",
+          "fixed_coefficient_bound_only": true,
+          "dynamic_map_invertible_claim": false
+        }
+      },
+      "inference_state_unchanged": true,
+      "common_phase_max_abs_error": 0.015033483505249023,
+      "ordinary_fp32_phase_max_abs_error": 3.814697265625e-06,
+      "constant_fp32_phase_max_abs_error": 0.015033483505249023,
+      "constant_same_state_fp64_phase_max_abs_error": 1.892203083109223e-07,
+      "constant_fp32_uniform_tolerance_claim": false,
+      "numerical_scope": "Ordinary noise/tone/zero FP32 checked; pureDC FP32 reported with same-state FP64 confirmation. Retained spectral log-ratio sensitivity is not repaired or hidden.",
+      "packet_independence_max_abs_error": 3.516674041748047e-06
+    },
+    {
+      "variant": "frontfilter_static",
+      "model_seed": 2026092702,
+      "status": "VERIFIED",
+      "parameters": 221035,
+      "new_trainable_parameters": 48,
+      "initial_function_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_basis_initialization": true,
+      "contract": {
+        "mode": "frontfilter_static",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "CE-trained bounded received-waveform filter; not physical channel inversion or TX/RX separation",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 48,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "frontfilter_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "total_parameters": 221035,
+        "total_trainable_parameters": 221035,
+        "frontfilter_active": true,
+        "frontfilter_variant": "frontfilter_static",
+        "frontfilter_dynamic": false,
+        "frontfilter_basis_count": 4,
+        "frontfilter_taps": 5,
+        "frontfilter_rho": 0.25,
+        "frontfilter_basis_bound": "complex-modulus L1 <= 1",
+        "frontfilter_coefficient_bound": "complex-modulus L1 <= 1",
+        "frontfilter_context_dimension": null,
+        "frontfilter_context_hidden": null,
+        "frontfilter_context": "global learned complex coefficients; no input conditioning",
+        "frontfilter_exit_initialization": "zero",
+        "frontfilter_boundary": "same symmetric two-sample zero padding; no crop; correlation tap convention",
+        "frontfilter_wiring": "NeuralResidualCVS.features(G_x(x)); time, frequency and behavior all receive G_x(x)",
+        "frontfilter_original_input_bypass": false,
+        "frontfilter_auxiliary_branch": false,
+        "frontfilter_post_unit_rms": false,
+        "frontfilter_detach": false,
+        "frontfilter_fixed_coefficient_singular_value_bounds": [
+          0.75,
+          1.25
+        ],
+        "frontfilter_dynamic_map_invertible_claim": false,
+        "frontfilter_cross_packet_state": false,
+        "frontfilter_inference_fit": false,
+        "frontfilter_output_samples": 256,
+        "frontfilter_loss": "unchanged single cross_entropy"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 2.545590400695801,
+          "frontfilter_gradient_norms": {
+            "basis": 0.0,
+            "coeff_raw": 0.22927267849445343
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 2.451791524887085,
+          "frontfilter_gradient_norms": {
+            "basis": 0.22630168497562408,
+            "coeff_raw": 203.20263671875
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 3.1693851947784424,
+          "frontfilter_gradient_norms": {
+            "basis": 0.2269231230020523,
+            "coeff_raw": 295.36700439453125
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.381498336791992,
+        "behavior_weight_norm": 13.168401718139648,
+        "radial_gate_a_abs_mean": 0.0003766014997381717,
+        "time_gradient_norm": 7.6367621421813965,
+        "behavior_gradient_norm": 3.020165205001831,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0017360133351758122
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0007217268575914204
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0011000839294865727
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0006883504684083164
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0004397186858113855
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0004903276567347348
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            -0.0004301176522858441,
+            -0.0005186664639040828
+          ],
+          "coefficients": [
+            -0.00043011762318201363,
+            -0.0005186664056964219
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.28179931640625,
+              "degree3_relative_input_change_mean": 0.00019042511121369898,
+              "degree5_relative_input_change_mean": 0.00021806976292282343
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.014151861891150475,
+              "projection_norm": 0.025131847709417343
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.01159408874809742,
+              "projection_norm": 0.02886393666267395
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "diagnostic_input_scopes": {
+          "coordinate_cfo_and_coherence": "original_input_x",
+          "normalization_adaptive_input_neural_residual": "actual_G_x(x), exactly once per diagnostic forward",
+          "core_weights_and_gradients": "parameters and last CE gradients, no input-dependent estimate"
+        },
+        "frontfilter": {
+          "active": true,
+          "variant": "frontfilter_static",
+          "dynamic": false,
+          "records": [
+            {
+              "block": "frontfilter",
+              "packets": 4,
+              "relative_input_change_mean": 0.00010680725245038047,
+              "relative_input_change_max": 0.0001573508488945663,
+              "input_norm_ratio_min": 0.9999730587005615,
+              "input_norm_ratio_max": 1.000038743019104,
+              "input_norm_ratio_eligible_packets": 3,
+              "coefficient_l1_mean": 0.0012835707748308778,
+              "coefficient_l1_max": 0.0012835707748308778,
+              "kernel_l1_mean": 0.0009862702572718263,
+              "kernel_l1_max": 0.0009862702572718263,
+              "basis_l1_max": 1.0,
+              "bound_active_fraction": 0.0,
+              "basis_bound_active_fraction": 1.0,
+              "coefficient_packet_variance": 0.0,
+              "coefficient_l1_by_packet": [
+                0.0012835707748308778,
+                0.0012835707748308778,
+                0.0012835707748308778,
+                0.0012835707748308778
+              ],
+              "kernel_l1_by_packet": [
+                0.0009862702572718263,
+                0.0009862702572718263,
+                0.0009862702572718263,
+                0.0009862702572718263
+              ],
+              "coefficients": [
+                [
+                  [
+                    0.000148985258419998,
+                    0.000520657398737967,
+                    -7.495805039070547e-05,
+                    -0.00011759690823964775
+                  ],
+                  [
+                    -0.0002275493461638689,
+                    -0.0005202591419219971,
+                    -8.061223343247548e-05,
+                    -0.00011641009768936783
+                  ]
+                ],
+                [
+                  [
+                    0.000148985258419998,
+                    0.000520657398737967,
+                    -7.495805039070547e-05,
+                    -0.00011759690823964775
+                  ],
+                  [
+                    -0.0002275493461638689,
+                    -0.0005202591419219971,
+                    -8.061223343247548e-05,
+                    -0.00011641009768936783
+                  ]
+                ],
+                [
+                  [
+                    0.000148985258419998,
+                    0.000520657398737967,
+                    -7.495805039070547e-05,
+                    -0.00011759690823964775
+                  ],
+                  [
+                    -0.0002275493461638689,
+                    -0.0005202591419219971,
+                    -8.061223343247548e-05,
+                    -0.00011641009768936783
+                  ]
+                ],
+                [
+                  [
+                    0.000148985258419998,
+                    0.000520657398737967,
+                    -7.495805039070547e-05,
+                    -0.00011759690823964775
+                  ],
+                  [
+                    -0.0002275493461638689,
+                    -0.0005202591419219971,
+                    -8.061223343247548e-05,
+                    -0.00011641009768936783
+                  ]
+                ]
+              ],
+              "fixed_coefficient_delta_operator_bound_max": 0.00024656756431795657,
+              "basis_gradient_norm": 0.2269231230020523,
+              "context_gradient_norm": null,
+              "exit_gradient_norm": 295.36700439453125
+            }
+          ],
+          "scope": "Current input x and one actual G_x(x); no post-filter unit RMS, fitting, state or parameter updates; gradients from last CE backward",
+          "fixed_coefficient_bound_only": true,
+          "dynamic_map_invertible_claim": false
+        }
+      },
+      "inference_state_unchanged": true,
+      "common_phase_max_abs_error": 0.014487504959106445,
+      "ordinary_fp32_phase_max_abs_error": 2.7418136596679688e-06,
+      "constant_fp32_phase_max_abs_error": 0.014487504959106445,
+      "constant_same_state_fp64_phase_max_abs_error": 2.3004292559747341e-07,
+      "constant_fp32_uniform_tolerance_claim": false,
+      "numerical_scope": "Ordinary noise/tone/zero FP32 checked; pureDC FP32 reported with same-state FP64 confirmation. Retained spectral log-ratio sensitivity is not repaired or hidden.",
+      "packet_independence_max_abs_error": 2.6226043701171875e-06
+    },
+    {
+      "variant": "frontfilter_static",
+      "model_seed": 2026092703,
+      "status": "VERIFIED",
+      "parameters": 221035,
+      "new_trainable_parameters": 48,
+      "initial_function_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_basis_initialization": true,
+      "contract": {
+        "mode": "frontfilter_static",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "CE-trained bounded received-waveform filter; not physical channel inversion or TX/RX separation",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 48,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "frontfilter_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "total_parameters": 221035,
+        "total_trainable_parameters": 221035,
+        "frontfilter_active": true,
+        "frontfilter_variant": "frontfilter_static",
+        "frontfilter_dynamic": false,
+        "frontfilter_basis_count": 4,
+        "frontfilter_taps": 5,
+        "frontfilter_rho": 0.25,
+        "frontfilter_basis_bound": "complex-modulus L1 <= 1",
+        "frontfilter_coefficient_bound": "complex-modulus L1 <= 1",
+        "frontfilter_context_dimension": null,
+        "frontfilter_context_hidden": null,
+        "frontfilter_context": "global learned complex coefficients; no input conditioning",
+        "frontfilter_exit_initialization": "zero",
+        "frontfilter_boundary": "same symmetric two-sample zero padding; no crop; correlation tap convention",
+        "frontfilter_wiring": "NeuralResidualCVS.features(G_x(x)); time, frequency and behavior all receive G_x(x)",
+        "frontfilter_original_input_bypass": false,
+        "frontfilter_auxiliary_branch": false,
+        "frontfilter_post_unit_rms": false,
+        "frontfilter_detach": false,
+        "frontfilter_fixed_coefficient_singular_value_bounds": [
+          0.75,
+          1.25
+        ],
+        "frontfilter_dynamic_map_invertible_claim": false,
+        "frontfilter_cross_packet_state": false,
+        "frontfilter_inference_fit": false,
+        "frontfilter_output_samples": 256,
+        "frontfilter_loss": "unchanged single cross_entropy"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 3.8938300609588623,
+          "frontfilter_gradient_norms": {
+            "basis": 0.0,
+            "coeff_raw": 0.1696031242609024
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 1.7308281660079956,
+          "frontfilter_gradient_norms": {
+            "basis": 0.49235475063323975,
+            "coeff_raw": 1240.1402587890625
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 1.6935832500457764,
+          "frontfilter_gradient_norms": {
+            "basis": 0.3993827998638153,
+            "coeff_raw": 310.796630859375
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.300113677978516,
+        "behavior_weight_norm": 13.382795333862305,
+        "radial_gate_a_abs_mean": 0.00041904300451278687,
+        "time_gradient_norm": 10.328571319580078,
+        "behavior_gradient_norm": 3.17526912689209,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.001834102557040751
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0008369277347810566
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0009348015300929546
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.000973468879237771
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0006089211674407125
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006929487572051585
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0005702711059711874,
+            0.0005899725947529078
+          ],
+          "coefficients": [
+            0.0005702710477635264,
+            0.0005899725365452468
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.274901390075684,
+              "degree3_relative_input_change_mean": 0.0002524744195397943,
+              "degree5_relative_input_change_mean": 0.00024804516579024494
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.015903431922197342,
+              "projection_norm": 0.026983089745044708
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.012740056030452251,
+              "projection_norm": 0.03093203902244568
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "diagnostic_input_scopes": {
+          "coordinate_cfo_and_coherence": "original_input_x",
+          "normalization_adaptive_input_neural_residual": "actual_G_x(x), exactly once per diagnostic forward",
+          "core_weights_and_gradients": "parameters and last CE gradients, no input-dependent estimate"
+        },
+        "frontfilter": {
+          "active": true,
+          "variant": "frontfilter_static",
+          "dynamic": false,
+          "records": [
+            {
+              "block": "frontfilter",
+              "packets": 4,
+              "relative_input_change_mean": 0.00014256351278163493,
+              "relative_input_change_max": 0.00021533634571824223,
+              "input_norm_ratio_min": 0.9999908208847046,
+              "input_norm_ratio_max": 1.0000118017196655,
+              "input_norm_ratio_eligible_packets": 3,
+              "coefficient_l1_mean": 0.0019025481306016445,
+              "coefficient_l1_max": 0.0019025481306016445,
+              "kernel_l1_mean": 0.0014687776565551758,
+              "kernel_l1_max": 0.0014687776565551758,
+              "basis_l1_max": 1.0000001192092896,
+              "bound_active_fraction": 0.0,
+              "basis_bound_active_fraction": 1.0,
+              "coefficient_packet_variance": 0.0,
+              "coefficient_l1_by_packet": [
+                0.0019025481306016445,
+                0.0019025481306016445,
+                0.0019025481306016445,
+                0.0019025481306016445
+              ],
+              "kernel_l1_by_packet": [
+                0.0014687776565551758,
+                0.0014687776565551758,
+                0.0014687776565551758,
+                0.0014687776565551758
+              ],
+              "coefficients": [
+                [
+                  [
+                    -6.621488864766434e-06,
+                    0.0004362662439234555,
+                    -0.00048610393423587084,
+                    9.892325761029497e-05
+                  ],
+                  [
+                    6.46556873107329e-05,
+                    -0.0004795888380613178,
+                    0.00046794465743005276,
+                    -0.0005048864986747503
+                  ]
+                ],
+                [
+                  [
+                    -6.621488864766434e-06,
+                    0.0004362662439234555,
+                    -0.00048610393423587084,
+                    9.892325761029497e-05
+                  ],
+                  [
+                    6.46556873107329e-05,
+                    -0.0004795888380613178,
+                    0.00046794465743005276,
+                    -0.0005048864986747503
+                  ]
+                ],
+                [
+                  [
+                    -6.621488864766434e-06,
+                    0.0004362662439234555,
+                    -0.00048610393423587084,
+                    9.892325761029497e-05
+                  ],
+                  [
+                    6.46556873107329e-05,
+                    -0.0004795888380613178,
+                    0.00046794465743005276,
+                    -0.0005048864986747503
+                  ]
+                ],
+                [
+                  [
+                    -6.621488864766434e-06,
+                    0.0004362662439234555,
+                    -0.00048610393423587084,
+                    9.892325761029497e-05
+                  ],
+                  [
+                    6.46556873107329e-05,
+                    -0.0004795888380613178,
+                    0.00046794465743005276,
+                    -0.0005048864986747503
+                  ]
+                ]
+              ],
+              "fixed_coefficient_delta_operator_bound_max": 0.00036719441413879395,
+              "basis_gradient_norm": 0.3993827998638153,
+              "context_gradient_norm": null,
+              "exit_gradient_norm": 310.796630859375
+            }
+          ],
+          "scope": "Current input x and one actual G_x(x); no post-filter unit RMS, fitting, state or parameter updates; gradients from last CE backward",
+          "fixed_coefficient_bound_only": true,
+          "dynamic_map_invertible_claim": false
+        }
+      },
+      "inference_state_unchanged": true,
+      "common_phase_max_abs_error": 0.00442957878112793,
+      "ordinary_fp32_phase_max_abs_error": 4.172325134277344e-06,
+      "constant_fp32_phase_max_abs_error": 0.00442957878112793,
+      "constant_same_state_fp64_phase_max_abs_error": 2.3111506508577406e-07,
+      "constant_fp32_uniform_tolerance_claim": false,
+      "numerical_scope": "Ordinary noise/tone/zero FP32 checked; pureDC FP32 reported with same-state FP64 confirmation. Retained spectral log-ratio sensitivity is not repaired or hidden.",
+      "packet_independence_max_abs_error": 1.6763806343078613e-06
+    },
+    {
+      "variant": "frontfilter_static",
+      "model_seed": 2026092704,
+      "status": "VERIFIED",
+      "parameters": 221035,
+      "new_trainable_parameters": 48,
+      "initial_function_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_basis_initialization": true,
+      "contract": {
+        "mode": "frontfilter_static",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "CE-trained bounded received-waveform filter; not physical channel inversion or TX/RX separation",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 48,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "frontfilter_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "total_parameters": 221035,
+        "total_trainable_parameters": 221035,
+        "frontfilter_active": true,
+        "frontfilter_variant": "frontfilter_static",
+        "frontfilter_dynamic": false,
+        "frontfilter_basis_count": 4,
+        "frontfilter_taps": 5,
+        "frontfilter_rho": 0.25,
+        "frontfilter_basis_bound": "complex-modulus L1 <= 1",
+        "frontfilter_coefficient_bound": "complex-modulus L1 <= 1",
+        "frontfilter_context_dimension": null,
+        "frontfilter_context_hidden": null,
+        "frontfilter_context": "global learned complex coefficients; no input conditioning",
+        "frontfilter_exit_initialization": "zero",
+        "frontfilter_boundary": "same symmetric two-sample zero padding; no crop; correlation tap convention",
+        "frontfilter_wiring": "NeuralResidualCVS.features(G_x(x)); time, frequency and behavior all receive G_x(x)",
+        "frontfilter_original_input_bypass": false,
+        "frontfilter_auxiliary_branch": false,
+        "frontfilter_post_unit_rms": false,
+        "frontfilter_detach": false,
+        "frontfilter_fixed_coefficient_singular_value_bounds": [
+          0.75,
+          1.25
+        ],
+        "frontfilter_dynamic_map_invertible_claim": false,
+        "frontfilter_cross_packet_state": false,
+        "frontfilter_inference_fit": false,
+        "frontfilter_output_samples": 256,
+        "frontfilter_loss": "unchanged single cross_entropy"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 3.1035003662109375,
+          "frontfilter_gradient_norms": {
+            "basis": 0.0,
+            "coeff_raw": 0.07799742370843887
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 2.870096206665039,
+          "frontfilter_gradient_norms": {
+            "basis": 0.5145331025123596,
+            "coeff_raw": 678.8701171875
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 2.491149425506592,
+          "frontfilter_gradient_norms": {
+            "basis": 0.9012070894241333,
+            "coeff_raw": 1266.95263671875
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.338373184204102,
+        "behavior_weight_norm": 13.36050033569336,
+        "radial_gate_a_abs_mean": 0.00042824551928788424,
+        "time_gradient_norm": 8.633432388305664,
+        "behavior_gradient_norm": 3.1277806758880615,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0024741804227232933
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0010554231703281403
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0010326090268790722
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0011643375037238002
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.1175870895385742e-08,
+              "relative_energy_fraction_variance_mean": 0.000571514421608299
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0007384379277937114
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.000562921806704253,
+            -0.0005810513976030052
+          ],
+          "coefficients": [
+            0.000562921748496592,
+            -0.0005810513393953443
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.281452178955078,
+              "degree3_relative_input_change_mean": 0.00024922704324126244,
+              "degree5_relative_input_change_mean": 0.00024430511984974146
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.017478447407484055,
+              "projection_norm": 0.026948969811201096
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.012540735304355621,
+              "projection_norm": 0.031625162810087204
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "diagnostic_input_scopes": {
+          "coordinate_cfo_and_coherence": "original_input_x",
+          "normalization_adaptive_input_neural_residual": "actual_G_x(x), exactly once per diagnostic forward",
+          "core_weights_and_gradients": "parameters and last CE gradients, no input-dependent estimate"
+        },
+        "frontfilter": {
+          "active": true,
+          "variant": "frontfilter_static",
+          "dynamic": false,
+          "records": [
+            {
+              "block": "frontfilter",
+              "packets": 4,
+              "relative_input_change_mean": 5.6361521274084225e-05,
+              "relative_input_change_max": 0.00015001240535639226,
+              "input_norm_ratio_min": 0.9999598860740662,
+              "input_norm_ratio_max": 1.000019907951355,
+              "input_norm_ratio_eligible_packets": 3,
+              "coefficient_l1_mean": 0.0015206198440864682,
+              "coefficient_l1_max": 0.0015206198440864682,
+              "kernel_l1_mean": 0.0012695520417764783,
+              "kernel_l1_max": 0.0012695520417764783,
+              "basis_l1_max": 1.0000001192092896,
+              "bound_active_fraction": 0.0,
+              "basis_bound_active_fraction": 1.0,
+              "coefficient_packet_variance": 0.0,
+              "coefficient_l1_by_packet": [
+                0.0015206198440864682,
+                0.0015206198440864682,
+                0.0015206198440864682,
+                0.0015206198440864682
+              ],
+              "kernel_l1_by_packet": [
+                0.0012695520417764783,
+                0.0012695520417764783,
+                0.0012695520417764783,
+                0.0012695520417764783
+              ],
+              "coefficients": [
+                [
+                  [
+                    6.662499799858779e-05,
+                    7.273383380379528e-05,
+                    -0.0004158282245043665,
+                    -0.00026860335492528975
+                  ],
+                  [
+                    -0.00014999312406871468,
+                    -0.00010985655535478145,
+                    -0.0004903472145088017,
+                    0.0005161043372936547
+                  ]
+                ],
+                [
+                  [
+                    6.662499799858779e-05,
+                    7.273383380379528e-05,
+                    -0.0004158282245043665,
+                    -0.00026860335492528975
+                  ],
+                  [
+                    -0.00014999312406871468,
+                    -0.00010985655535478145,
+                    -0.0004903472145088017,
+                    0.0005161043372936547
+                  ]
+                ],
+                [
+                  [
+                    6.662499799858779e-05,
+                    7.273383380379528e-05,
+                    -0.0004158282245043665,
+                    -0.00026860335492528975
+                  ],
+                  [
+                    -0.00014999312406871468,
+                    -0.00010985655535478145,
+                    -0.0004903472145088017,
+                    0.0005161043372936547
+                  ]
+                ],
+                [
+                  [
+                    6.662499799858779e-05,
+                    7.273383380379528e-05,
+                    -0.0004158282245043665,
+                    -0.00026860335492528975
+                  ],
+                  [
+                    -0.00014999312406871468,
+                    -0.00010985655535478145,
+                    -0.0004903472145088017,
+                    0.0005161043372936547
+                  ]
+                ]
+              ],
+              "fixed_coefficient_delta_operator_bound_max": 0.00031738801044411957,
+              "basis_gradient_norm": 0.9012070894241333,
+              "context_gradient_norm": null,
+              "exit_gradient_norm": 1266.95263671875
+            }
+          ],
+          "scope": "Current input x and one actual G_x(x); no post-filter unit RMS, fitting, state or parameter updates; gradients from last CE backward",
+          "fixed_coefficient_bound_only": true,
+          "dynamic_map_invertible_claim": false
+        }
+      },
+      "inference_state_unchanged": true,
+      "common_phase_max_abs_error": 0.006881237030029297,
+      "ordinary_fp32_phase_max_abs_error": 1.6689300537109375e-06,
+      "constant_fp32_phase_max_abs_error": 0.006881237030029297,
+      "constant_same_state_fp64_phase_max_abs_error": 1.752985252512218e-07,
+      "constant_fp32_uniform_tolerance_claim": false,
+      "numerical_scope": "Ordinary noise/tone/zero FP32 checked; pureDC FP32 reported with same-state FP64 confirmation. Retained spectral log-ratio sensitivity is not repaired or hidden.",
+      "packet_independence_max_abs_error": 1.9073486328125e-06
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "model_seed": 2026092701,
+      "status": "VERIFIED",
+      "parameters": 221307,
+      "new_trainable_parameters": 320,
+      "initial_function_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_basis_initialization": true,
+      "contract": {
+        "mode": "frontfilter_dynamic",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "CE-trained bounded received-waveform filter; not physical channel inversion or TX/RX separation",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 320,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "frontfilter_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "total_parameters": 221307,
+        "total_trainable_parameters": 221307,
+        "frontfilter_active": true,
+        "frontfilter_variant": "frontfilter_dynamic",
+        "frontfilter_dynamic": true,
+        "frontfilter_basis_count": 4,
+        "frontfilter_taps": 5,
+        "frontfilter_rho": 0.25,
+        "frontfilter_basis_bound": "complex-modulus L1 <= 1",
+        "frontfilter_coefficient_bound": "complex-modulus L1 <= 1",
+        "frontfilter_context_dimension": 8,
+        "frontfilter_context_hidden": 16,
+        "frontfilter_context": "current-packet logpower mean/std and lag1/2/4 complex autocorrelation",
+        "frontfilter_exit_initialization": "zero",
+        "frontfilter_boundary": "same symmetric two-sample zero padding; no crop; correlation tap convention",
+        "frontfilter_wiring": "NeuralResidualCVS.features(G_x(x)); time, frequency and behavior all receive G_x(x)",
+        "frontfilter_original_input_bypass": false,
+        "frontfilter_auxiliary_branch": false,
+        "frontfilter_post_unit_rms": false,
+        "frontfilter_detach": false,
+        "frontfilter_fixed_coefficient_singular_value_bounds": [
+          0.75,
+          1.25
+        ],
+        "frontfilter_dynamic_map_invertible_claim": false,
+        "frontfilter_cross_packet_state": false,
+        "frontfilter_inference_fit": false,
+        "frontfilter_output_samples": 256,
+        "frontfilter_loss": "unchanged single cross_entropy"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 5.208761692047119,
+          "frontfilter_gradient_norms": {
+            "basis": 0.0,
+            "context.0.weight": 0.0,
+            "context.0.bias": 0.0,
+            "context.2.weight": 0.06434186547994614,
+            "context.2.bias": 0.11543296277523041
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 5.0703325271606445,
+          "frontfilter_gradient_norms": {
+            "basis": 1.2515745162963867,
+            "context.0.weight": 0.1027490422129631,
+            "context.0.bias": 0.05010851100087166,
+            "context.2.weight": 417.3084716796875,
+            "context.2.bias": 581.7186279296875
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 2.0292162895202637,
+          "frontfilter_gradient_norms": {
+            "basis": 1.0680136680603027,
+            "context.0.weight": 0.5920729041099548,
+            "context.0.bias": 0.2886370122432709,
+            "context.2.weight": 444.9107971191406,
+            "context.2.bias": 621.3030395507812
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.335580825805664,
+        "behavior_weight_norm": 13.407950401306152,
+        "radial_gate_a_abs_mean": 0.00042175932321697474,
+        "time_gradient_norm": 9.51616382598877,
+        "behavior_gradient_norm": 5.247318267822266,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0011816330952569842
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.1175870895385742e-08,
+              "relative_energy_fraction_variance_mean": 0.0006232971791177988
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0007915112073533237
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006889902870170772
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.000630996364634484
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0005384406540542841
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0005384078831411898,
+            0.0005305041559040546
+          ],
+          "coefficients": [
+            0.0005384078249335289,
+            0.0005305040976963937
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.272688865661621,
+              "degree3_relative_input_change_mean": 0.00023836959735490382,
+              "degree5_relative_input_change_mean": 0.00022304321464616805
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.015950143337249756,
+              "projection_norm": 0.027622118592262268
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.013399561867117882,
+              "projection_norm": 0.02990037575364113
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "diagnostic_input_scopes": {
+          "coordinate_cfo_and_coherence": "original_input_x",
+          "normalization_adaptive_input_neural_residual": "actual_G_x(x), exactly once per diagnostic forward",
+          "core_weights_and_gradients": "parameters and last CE gradients, no input-dependent estimate"
+        },
+        "frontfilter": {
+          "active": true,
+          "variant": "frontfilter_dynamic",
+          "dynamic": true,
+          "records": [
+            {
+              "block": "frontfilter",
+              "packets": 4,
+              "relative_input_change_mean": 0.0001619975082576275,
+              "relative_input_change_max": 0.00024682923685759306,
+              "input_norm_ratio_min": 1.0000550746917725,
+              "input_norm_ratio_max": 1.0002284049987793,
+              "input_norm_ratio_eligible_packets": 3,
+              "coefficient_l1_mean": 0.0036801849491894245,
+              "coefficient_l1_max": 0.004769276827573776,
+              "kernel_l1_mean": 0.0017574996454641223,
+              "kernel_l1_max": 0.0022401870228350163,
+              "basis_l1_max": 1.0,
+              "bound_active_fraction": 0.0,
+              "basis_bound_active_fraction": 1.0,
+              "coefficient_packet_variance": 3.527615177745247e-08,
+              "coefficient_l1_by_packet": [
+                0.002420792356133461,
+                0.004769276827573776,
+                0.004330403171479702,
+                0.003200267441570759
+              ],
+              "kernel_l1_by_packet": [
+                0.0011729798279702663,
+                0.0022401870228350163,
+                0.002046068897470832,
+                0.001570762600749731
+              ],
+              "coefficients": [
+                [
+                  [
+                    -0.0006845825701020658,
+                    -5.493617572938092e-05,
+                    1.0544970791670494e-05,
+                    9.576677985023707e-05
+                  ],
+                  [
+                    -4.412565249367617e-05,
+                    -0.00017771308193914592,
+                    0.0007688688929192722,
+                    0.000773934880271554
+                  ]
+                ],
+                [
+                  [
+                    -0.0011591613292694092,
+                    -0.0003730441094376147,
+                    -5.444708585855551e-05,
+                    0.0004919362254440784
+                  ],
+                  [
+                    -0.00035705434856936336,
+                    -0.000368348672054708,
+                    0.0014257633592933416,
+                    0.0015280802035704255
+                  ]
+                ],
+                [
+                  [
+                    -0.0010511225555092096,
+                    -0.0003183862427249551,
+                    -9.983932613977231e-07,
+                    0.000435545138316229
+                  ],
+                  [
+                    -0.0003048127982765436,
+                    -0.0003292513429187238,
+                    0.0012987738009542227,
+                    0.0014136125100776553
+                  ]
+                ],
+                [
+                  [
+                    -0.0009314513299614191,
+                    -2.416928327875212e-05,
+                    2.41562956944108e-05,
+                    3.961199399782345e-05
+                  ],
+                  [
+                    -7.041337084956467e-06,
+                    -0.0002295790909556672,
+                    0.0010266739409416914,
+                    0.001010207342915237
+                  ]
+                ]
+              ],
+              "fixed_coefficient_delta_operator_bound_max": 0.0005600467557087541,
+              "basis_gradient_norm": 1.0680136680603027,
+              "context_gradient_norm": 764.175048828125,
+              "exit_gradient_norm": 764.1748046875
+            }
+          ],
+          "scope": "Current input x and one actual G_x(x); no post-filter unit RMS, fitting, state or parameter updates; gradients from last CE backward",
+          "fixed_coefficient_bound_only": true,
+          "dynamic_map_invertible_claim": false
+        }
+      },
+      "inference_state_unchanged": true,
+      "common_phase_max_abs_error": 0.0034152939915657043,
+      "ordinary_fp32_phase_max_abs_error": 5.7220458984375e-06,
+      "constant_fp32_phase_max_abs_error": 0.0034152939915657043,
+      "constant_same_state_fp64_phase_max_abs_error": 1.4035610274021337e-07,
+      "constant_fp32_uniform_tolerance_claim": false,
+      "numerical_scope": "Ordinary noise/tone/zero FP32 checked; pureDC FP32 reported with same-state FP64 confirmation. Retained spectral log-ratio sensitivity is not repaired or hidden.",
+      "packet_independence_max_abs_error": 2.1457672119140625e-06
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "model_seed": 2026092702,
+      "status": "VERIFIED",
+      "parameters": 221307,
+      "new_trainable_parameters": 320,
+      "initial_function_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_basis_initialization": true,
+      "contract": {
+        "mode": "frontfilter_dynamic",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "CE-trained bounded received-waveform filter; not physical channel inversion or TX/RX separation",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 320,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "frontfilter_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "total_parameters": 221307,
+        "total_trainable_parameters": 221307,
+        "frontfilter_active": true,
+        "frontfilter_variant": "frontfilter_dynamic",
+        "frontfilter_dynamic": true,
+        "frontfilter_basis_count": 4,
+        "frontfilter_taps": 5,
+        "frontfilter_rho": 0.25,
+        "frontfilter_basis_bound": "complex-modulus L1 <= 1",
+        "frontfilter_coefficient_bound": "complex-modulus L1 <= 1",
+        "frontfilter_context_dimension": 8,
+        "frontfilter_context_hidden": 16,
+        "frontfilter_context": "current-packet logpower mean/std and lag1/2/4 complex autocorrelation",
+        "frontfilter_exit_initialization": "zero",
+        "frontfilter_boundary": "same symmetric two-sample zero padding; no crop; correlation tap convention",
+        "frontfilter_wiring": "NeuralResidualCVS.features(G_x(x)); time, frequency and behavior all receive G_x(x)",
+        "frontfilter_original_input_bypass": false,
+        "frontfilter_auxiliary_branch": false,
+        "frontfilter_post_unit_rms": false,
+        "frontfilter_detach": false,
+        "frontfilter_fixed_coefficient_singular_value_bounds": [
+          0.75,
+          1.25
+        ],
+        "frontfilter_dynamic_map_invertible_claim": false,
+        "frontfilter_cross_packet_state": false,
+        "frontfilter_inference_fit": false,
+        "frontfilter_output_samples": 256,
+        "frontfilter_loss": "unchanged single cross_entropy"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 2.545590400695801,
+          "frontfilter_gradient_norms": {
+            "basis": 0.0,
+            "context.0.weight": 0.0,
+            "context.0.bias": 0.0,
+            "context.2.weight": 0.1699315905570984,
+            "context.2.bias": 0.22927267849445343
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 2.5021536350250244,
+          "frontfilter_gradient_norms": {
+            "basis": 0.4626272916793823,
+            "context.0.weight": 0.13254369795322418,
+            "context.0.bias": 0.06459850817918777,
+            "context.2.weight": 208.42955017089844,
+            "context.2.bias": 165.49932861328125
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 3.2711329460144043,
+          "frontfilter_gradient_norms": {
+            "basis": 0.5867367386817932,
+            "context.0.weight": 0.15587881207466125,
+            "context.0.bias": 0.07599842548370361,
+            "context.2.weight": 212.9703369140625,
+            "context.2.bias": 169.19900512695312
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.38164234161377,
+        "behavior_weight_norm": 13.168411254882812,
+        "radial_gate_a_abs_mean": 0.0003807069733738899,
+        "time_gradient_norm": 6.677992820739746,
+        "behavior_gradient_norm": 3.188398599624634,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0017343993531540036
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.000722019758541137
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0011030997848138213
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0006874813116155565
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00043960113544017076
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00048927211901173
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            -0.00043023013859055936,
+            -0.0005175950936973095
+          ],
+          "coefficients": [
+            -0.0004302301094867289,
+            -0.0005175950354896486
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.290433883666992,
+              "degree3_relative_input_change_mean": 0.000190478065633215,
+              "degree5_relative_input_change_mean": 0.00021761530661024153
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.014263516291975975,
+              "projection_norm": 0.025282694026827812
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.011599451303482056,
+              "projection_norm": 0.028865672647953033
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "diagnostic_input_scopes": {
+          "coordinate_cfo_and_coherence": "original_input_x",
+          "normalization_adaptive_input_neural_residual": "actual_G_x(x), exactly once per diagnostic forward",
+          "core_weights_and_gradients": "parameters and last CE gradients, no input-dependent estimate"
+        },
+        "frontfilter": {
+          "active": true,
+          "variant": "frontfilter_dynamic",
+          "dynamic": true,
+          "records": [
+            {
+              "block": "frontfilter",
+              "packets": 4,
+              "relative_input_change_mean": 0.0005126536707393825,
+              "relative_input_change_max": 0.0008103966247290373,
+              "input_norm_ratio_min": 0.9999940991401672,
+              "input_norm_ratio_max": 1.0003197193145752,
+              "input_norm_ratio_eligible_packets": 3,
+              "coefficient_l1_mean": 0.006343052256852388,
+              "coefficient_l1_max": 0.008458875119686127,
+              "kernel_l1_mean": 0.004719168413430452,
+              "kernel_l1_max": 0.006142386235296726,
+              "basis_l1_max": 1.0,
+              "bound_active_fraction": 0.0,
+              "basis_bound_active_fraction": 1.0,
+              "coefficient_packet_variance": 1.0443775977364567e-07,
+              "coefficient_l1_by_packet": [
+                0.004087293520569801,
+                0.008458875119686127,
+                0.007392487488687038,
+                0.005433554295450449
+              ],
+              "kernel_l1_by_packet": [
+                0.0031213762704283,
+                0.006142386235296726,
+                0.005313376896083355,
+                0.004299534950405359
+              ],
+              "coefficients": [
+                [
+                  [
+                    0.0009747689473442733,
+                    0.0009724993724375963,
+                    0.0007916061440482736,
+                    -0.00024835372460074723
+                  ],
+                  [
+                    -0.0005685685318894684,
+                    -0.0009247239795513451,
+                    -0.0009215651080012321,
+                    0.00031608695280738175
+                  ]
+                ],
+                [
+                  [
+                    0.0020065256394445896,
+                    0.002220478607341647,
+                    0.0018025696044787765,
+                    -0.0007286095642484725
+                  ],
+                  [
+                    -0.0007963359239511192,
+                    -0.0016078652115538716,
+                    -0.001600389601662755,
+                    0.0008872996550053358
+                  ]
+                ],
+                [
+                  [
+                    0.0017448652070015669,
+                    0.0019284021109342575,
+                    0.001585121382959187,
+                    -0.0006322315311990678
+                  ],
+                  [
+                    -0.0006359471008181572,
+                    -0.0013494587037712336,
+                    -0.0013428318779915571,
+                    0.0009053082903847098
+                  ]
+                ],
+                [
+                  [
+                    0.0013394744601100683,
+                    0.0012820037081837654,
+                    0.00098558166064322,
+                    -0.00023522184346802533
+                  ],
+                  [
+                    -0.0008459391538053751,
+                    -0.001289502950385213,
+                    -0.0012855851091444492,
+                    0.0003371223574504256
+                  ]
+                ]
+              ],
+              "fixed_coefficient_delta_operator_bound_max": 0.0015355965588241816,
+              "basis_gradient_norm": 0.5867367386817932,
+              "context_gradient_norm": 272.00128173828125,
+              "exit_gradient_norm": 272.001220703125
+            }
+          ],
+          "scope": "Current input x and one actual G_x(x); no post-filter unit RMS, fitting, state or parameter updates; gradients from last CE backward",
+          "fixed_coefficient_bound_only": true,
+          "dynamic_map_invertible_claim": false
+        }
+      },
+      "inference_state_unchanged": true,
+      "common_phase_max_abs_error": 0.0008165091276168823,
+      "ordinary_fp32_phase_max_abs_error": 3.874301910400391e-06,
+      "constant_fp32_phase_max_abs_error": 0.0008165091276168823,
+      "constant_same_state_fp64_phase_max_abs_error": 3.449195437044139e-07,
+      "constant_fp32_uniform_tolerance_claim": false,
+      "numerical_scope": "Ordinary noise/tone/zero FP32 checked; pureDC FP32 reported with same-state FP64 confirmation. Retained spectral log-ratio sensitivity is not repaired or hidden.",
+      "packet_independence_max_abs_error": 2.346932888031006e-06
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "model_seed": 2026092703,
+      "status": "VERIFIED",
+      "parameters": 221307,
+      "new_trainable_parameters": 320,
+      "initial_function_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_basis_initialization": true,
+      "contract": {
+        "mode": "frontfilter_dynamic",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "CE-trained bounded received-waveform filter; not physical channel inversion or TX/RX separation",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 320,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "frontfilter_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "total_parameters": 221307,
+        "total_trainable_parameters": 221307,
+        "frontfilter_active": true,
+        "frontfilter_variant": "frontfilter_dynamic",
+        "frontfilter_dynamic": true,
+        "frontfilter_basis_count": 4,
+        "frontfilter_taps": 5,
+        "frontfilter_rho": 0.25,
+        "frontfilter_basis_bound": "complex-modulus L1 <= 1",
+        "frontfilter_coefficient_bound": "complex-modulus L1 <= 1",
+        "frontfilter_context_dimension": 8,
+        "frontfilter_context_hidden": 16,
+        "frontfilter_context": "current-packet logpower mean/std and lag1/2/4 complex autocorrelation",
+        "frontfilter_exit_initialization": "zero",
+        "frontfilter_boundary": "same symmetric two-sample zero padding; no crop; correlation tap convention",
+        "frontfilter_wiring": "NeuralResidualCVS.features(G_x(x)); time, frequency and behavior all receive G_x(x)",
+        "frontfilter_original_input_bypass": false,
+        "frontfilter_auxiliary_branch": false,
+        "frontfilter_post_unit_rms": false,
+        "frontfilter_detach": false,
+        "frontfilter_fixed_coefficient_singular_value_bounds": [
+          0.75,
+          1.25
+        ],
+        "frontfilter_dynamic_map_invertible_claim": false,
+        "frontfilter_cross_packet_state": false,
+        "frontfilter_inference_fit": false,
+        "frontfilter_output_samples": 256,
+        "frontfilter_loss": "unchanged single cross_entropy"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 3.8938300609588623,
+          "frontfilter_gradient_norms": {
+            "basis": 0.0,
+            "context.0.weight": 0.0,
+            "context.0.bias": 0.0,
+            "context.2.weight": 0.22384946048259735,
+            "context.2.bias": 0.1696031242609024
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 1.6072111129760742,
+          "frontfilter_gradient_norms": {
+            "basis": 0.5028787851333618,
+            "context.0.weight": 0.04975815862417221,
+            "context.0.bias": 0.024266576394438744,
+            "context.2.weight": 315.4518737792969,
+            "context.2.bias": 166.59326171875
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 1.6593304872512817,
+          "frontfilter_gradient_norms": {
+            "basis": 0.34409216046333313,
+            "context.0.weight": 0.006679699756205082,
+            "context.0.bias": 0.003229806898161769,
+            "context.2.weight": 106.41727447509766,
+            "context.2.bias": 56.219200134277344
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.30008602142334,
+        "behavior_weight_norm": 13.382805824279785,
+        "radial_gate_a_abs_mean": 0.000422700890339911,
+        "time_gradient_norm": 10.150964736938477,
+        "behavior_gradient_norm": 3.081033229827881,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0018312875181436539
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0008336696773767471
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0009483219473622739
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0009733098559081554
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0006099078455008566
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0006932089454494417
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0005694676656275988,
+            0.0005899580428376794
+          ],
+          "coefficients": [
+            0.0005694676074199378,
+            0.0005899579846300185
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.280374526977539,
+              "degree3_relative_input_change_mean": 0.0002520998823456466,
+              "degree5_relative_input_change_mean": 0.0002480052935425192
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.01626209169626236,
+              "projection_norm": 0.02743552252650261
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.012739215046167374,
+              "projection_norm": 0.030946925282478333
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "diagnostic_input_scopes": {
+          "coordinate_cfo_and_coherence": "original_input_x",
+          "normalization_adaptive_input_neural_residual": "actual_G_x(x), exactly once per diagnostic forward",
+          "core_weights_and_gradients": "parameters and last CE gradients, no input-dependent estimate"
+        },
+        "frontfilter": {
+          "active": true,
+          "variant": "frontfilter_dynamic",
+          "dynamic": true,
+          "records": [
+            {
+              "block": "frontfilter",
+              "packets": 4,
+              "relative_input_change_mean": 0.0007994237821549177,
+              "relative_input_change_max": 0.0013420433970168233,
+              "input_norm_ratio_min": 1.0000171661376953,
+              "input_norm_ratio_max": 1.0006479024887085,
+              "input_norm_ratio_eligible_packets": 3,
+              "coefficient_l1_mean": 0.007809110917150974,
+              "coefficient_l1_max": 0.011137016117572784,
+              "kernel_l1_mean": 0.005744166672229767,
+              "kernel_l1_max": 0.008195996284484863,
+              "basis_l1_max": 1.0,
+              "bound_active_fraction": 0.0,
+              "basis_bound_active_fraction": 1.0,
+              "coefficient_packet_variance": 3.7073948533361545e-07,
+              "coefficient_l1_by_packet": [
+                0.003367417026311159,
+                0.011137016117572784,
+                0.010386001318693161,
+                0.006346008740365505
+              ],
+              "kernel_l1_by_packet": [
+                0.0024792752228677273,
+                0.008195996284484863,
+                0.007636074908077717,
+                0.0046653179451823235
+              ],
+              "coefficients": [
+                [
+                  [
+                    -0.00020262395264580846,
+                    0.0008767794352024794,
+                    -0.0008996751857921481,
+                    -0.00019867607625201344
+                  ],
+                  [
+                    -0.00011473724589450285,
+                    0.00022328682825900614,
+                    0.0008613102836534381,
+                    -0.0009640385978855193
+                  ]
+                ],
+                [
+                  [
+                    -0.0006571504636667669,
+                    0.00290190358646214,
+                    -0.002977559808641672,
+                    -0.0006576561136171222
+                  ],
+                  [
+                    -0.0003934077685698867,
+                    0.000726121012121439,
+                    0.0028503076173365116,
+                    -0.0031907588709145784
+                  ]
+                ],
+                [
+                  [
+                    -0.000587432412430644,
+                    0.002709991531446576,
+                    -0.002780650509521365,
+                    -0.000613932847045362
+                  ],
+                  [
+                    -0.00039353722240775824,
+                    0.0006515197455883026,
+                    0.0026619620621204376,
+                    -0.0029797102324664593
+                  ]
+                ],
+                [
+                  [
+                    -0.00035617241519503295,
+                    0.0016562959644943476,
+                    -0.0016995359910652041,
+                    -0.0003751736949197948
+                  ],
+                  [
+                    -0.000242854148382321,
+                    0.0003950149693991989,
+                    0.0016272298526018858,
+                    -0.0018209912814199924
+                  ]
+                ]
+              ],
+              "fixed_coefficient_delta_operator_bound_max": 0.002048999071121216,
+              "basis_gradient_norm": 0.34409216046333313,
+              "context_gradient_norm": 120.35462188720703,
+              "exit_gradient_norm": 120.35462188720703
+            }
+          ],
+          "scope": "Current input x and one actual G_x(x); no post-filter unit RMS, fitting, state or parameter updates; gradients from last CE backward",
+          "fixed_coefficient_bound_only": true,
+          "dynamic_map_invertible_claim": false
+        }
+      },
+      "inference_state_unchanged": true,
+      "common_phase_max_abs_error": 0.0002822279930114746,
+      "ordinary_fp32_phase_max_abs_error": 4.76837158203125e-06,
+      "constant_fp32_phase_max_abs_error": 0.0002822279930114746,
+      "constant_same_state_fp64_phase_max_abs_error": 1.7622772330305736e-07,
+      "constant_fp32_uniform_tolerance_claim": false,
+      "numerical_scope": "Ordinary noise/tone/zero FP32 checked; pureDC FP32 reported with same-state FP64 confirmation. Retained spectral log-ratio sensitivity is not repaired or hidden.",
+      "packet_independence_max_abs_error": 1.6689300537109375e-06
+    },
+    {
+      "variant": "frontfilter_dynamic",
+      "model_seed": 2026092704,
+      "status": "VERIFIED",
+      "parameters": 221307,
+      "new_trainable_parameters": 320,
+      "initial_function_exact": true,
+      "old_state_exact": true,
+      "cpu_rng_preserved": true,
+      "paired_basis_initialization": true,
+      "contract": {
+        "mode": "frontfilter_dynamic",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "CE-trained bounded received-waveform filter; not physical channel inversion or TX/RX separation",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 320,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "frontfilter_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact own scratch neural_residual_shallow; isolated new initialization RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false,
+        "neural_residual_active": true,
+        "neural_depth_per_path": 1,
+        "neural_paths": [
+          "time.2",
+          "behavior.2"
+        ],
+        "neural_channels": [
+          32,
+          64,
+          32
+        ],
+        "neural_kernel": 5,
+        "neural_time_padding": "symmetric",
+        "neural_behavior_padding": "causal_left",
+        "neural_rule": "z+complex_pointwise_project(radial(depthwise_k5(radial(complex_pointwise_expand(z)))))",
+        "neural_exit_initialization": "zero",
+        "neural_hidden_initialization": "random complex fan-in",
+        "neural_shared_gain": "one RMS over complex channels and time per packet",
+        "neural_loss": "unchanged single cross_entropy",
+        "new_training_strategy": false,
+        "feature_curvature_active": false,
+        "base_variant": "neural_residual_shallow",
+        "base_trainable_parameters": 220987,
+        "total_parameters": 221307,
+        "total_trainable_parameters": 221307,
+        "frontfilter_active": true,
+        "frontfilter_variant": "frontfilter_dynamic",
+        "frontfilter_dynamic": true,
+        "frontfilter_basis_count": 4,
+        "frontfilter_taps": 5,
+        "frontfilter_rho": 0.25,
+        "frontfilter_basis_bound": "complex-modulus L1 <= 1",
+        "frontfilter_coefficient_bound": "complex-modulus L1 <= 1",
+        "frontfilter_context_dimension": 8,
+        "frontfilter_context_hidden": 16,
+        "frontfilter_context": "current-packet logpower mean/std and lag1/2/4 complex autocorrelation",
+        "frontfilter_exit_initialization": "zero",
+        "frontfilter_boundary": "same symmetric two-sample zero padding; no crop; correlation tap convention",
+        "frontfilter_wiring": "NeuralResidualCVS.features(G_x(x)); time, frequency and behavior all receive G_x(x)",
+        "frontfilter_original_input_bypass": false,
+        "frontfilter_auxiliary_branch": false,
+        "frontfilter_post_unit_rms": false,
+        "frontfilter_detach": false,
+        "frontfilter_fixed_coefficient_singular_value_bounds": [
+          0.75,
+          1.25
+        ],
+        "frontfilter_dynamic_map_invertible_claim": false,
+        "frontfilter_cross_packet_state": false,
+        "frontfilter_inference_fit": false,
+        "frontfilter_output_samples": 256,
+        "frontfilter_loss": "unchanged single cross_entropy"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "cross_entropy": 3.1035003662109375,
+          "frontfilter_gradient_norms": {
+            "basis": 0.0,
+            "context.0.weight": 0.0,
+            "context.0.bias": 0.0,
+            "context.2.weight": 0.04312734678387642,
+            "context.2.bias": 0.07799742370843887
+          }
+        },
+        {
+          "step": 2,
+          "cross_entropy": 2.875626802444458,
+          "frontfilter_gradient_norms": {
+            "basis": 0.46182480454444885,
+            "context.0.weight": 0.05786728486418724,
+            "context.0.bias": 0.0281898882240057,
+            "context.2.weight": 60.60285949707031,
+            "context.2.bias": 98.93253326416016
+          }
+        },
+        {
+          "step": 3,
+          "cross_entropy": 2.670597553253174,
+          "frontfilter_gradient_norms": {
+            "basis": 0.18250155448913574,
+            "context.0.weight": 0.03555820882320404,
+            "context.0.bias": 0.017343692481517792,
+            "context.2.weight": 52.43524932861328,
+            "context.2.bias": 85.73924255371094
+          }
+        }
+      ],
+      "diagnostics": {
+        "time_weight_norm": 13.338430404663086,
+        "behavior_weight_norm": 13.36053466796875,
+        "radial_gate_a_abs_mean": 0.0004299812135286629,
+        "time_gradient_norm": 7.225847244262695,
+        "behavior_gradient_norm": 3.2179388999938965,
+        "scope": "Measured weights and last source batch gradient;not hardware parameter recovery",
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "received_relative_cfo_hz_mean": 46801.2734375,
+        "received_relative_cfo_hz_min": -329804.75,
+        "received_relative_cfo_hz_max": 517009.84375,
+        "nominal_residual_cfo_hz_mean": 46801.2734375,
+        "coherence_mean": 0.5121498703956604,
+        "fallback_fraction": 0.25,
+        "hardware_parameter_recovery": false,
+        "whole_affine_phase_invariant": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0024704511743038893
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00105285516474396
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0010317758424207568
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0011647779028862715
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0005724132061004639
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 3,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0007370130042545497
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0005657395231537521,
+            -0.0005816837074235082
+          ],
+          "coefficients": [
+            0.0005657394649460912,
+            -0.0005816836492158473
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 4,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 9.279629707336426,
+              "degree3_relative_input_change_mean": 0.00025046791415661573,
+              "degree5_relative_input_change_mean": 0.0002445699938107282
+            }
+          ]
+        },
+        "neural_residual": {
+          "active": true,
+          "records": [
+            {
+              "block": "time.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.017627794295549393,
+              "projection_norm": 0.02722352370619774
+            },
+            {
+              "block": "behavior.2.neural.0",
+              "packets": 4,
+              "relative_output_change_mean": 0.012662969529628754,
+              "projection_norm": 0.031871043145656586
+            }
+          ],
+          "scope": "last source batch; no additional loss or updates"
+        },
+        "diagnostic_input_scopes": {
+          "coordinate_cfo_and_coherence": "original_input_x",
+          "normalization_adaptive_input_neural_residual": "actual_G_x(x), exactly once per diagnostic forward",
+          "core_weights_and_gradients": "parameters and last CE gradients, no input-dependent estimate"
+        },
+        "frontfilter": {
+          "active": true,
+          "variant": "frontfilter_dynamic",
+          "dynamic": true,
+          "records": [
+            {
+              "block": "frontfilter",
+              "packets": 4,
+              "relative_input_change_mean": 0.00012268198770470917,
+              "relative_input_change_max": 0.00022642903786618263,
+              "input_norm_ratio_min": 0.9999693036079407,
+              "input_norm_ratio_max": 1.0000075101852417,
+              "input_norm_ratio_eligible_packets": 3,
+              "coefficient_l1_mean": 0.003798627993091941,
+              "coefficient_l1_max": 0.00447414256632328,
+              "kernel_l1_mean": 0.0016933802980929613,
+              "kernel_l1_max": 0.00196671299636364,
+              "basis_l1_max": 1.0,
+              "bound_active_fraction": 0.0,
+              "basis_bound_active_fraction": 1.0,
+              "coefficient_packet_variance": 3.698305661714585e-08,
+              "coefficient_l1_by_packet": [
+                0.002582625253126025,
+                0.004290923476219177,
+                0.00447414256632328,
+                0.003846820443868637
+              ],
+              "kernel_l1_by_packet": [
+                0.001323010539636016,
+                0.0017395052127540112,
+                0.0017442922107875347,
+                0.00196671299636364
+              ],
+              "coefficients": [
+                [
+                  [
+                    4.4985426939092577e-05,
+                    1.166648871731013e-05,
+                    -0.00020185907487757504,
+                    -0.000744468707125634
+                  ],
+                  [
+                    -0.00041826770757324994,
+                    0.0007071789586916566,
+                    -0.0006601996719837189,
+                    0.0001729774085106328
+                  ]
+                ],
+                [
+                  [
+                    -0.0002948031178675592,
+                    -0.000587655755225569,
+                    -3.977329470217228e-05,
+                    -0.0009876989061012864
+                  ],
+                  [
+                    -0.0006225100951269269,
+                    0.0011955257505178452,
+                    -0.0012806213926523924,
+                    4.554701445158571e-05
+                  ]
+                ],
+                [
+                  [
+                    -0.0003562249185051769,
+                    -0.0005757985054515302,
+                    -3.1170966394711286e-05,
+                    -0.0010669487528502941
+                  ],
+                  [
+                    -0.0006113544222898781,
+                    0.0012854983797296882,
+                    -0.0012906730407848954,
+                    -5.6435637816321105e-06
+                  ]
+                ],
+                [
+                  [
+                    8.204377081710845e-05,
+                    6.826230674050748e-06,
+                    -0.00037810904905200005,
+                    -0.0009958918672055006
+                  ],
+                  [
+                    -0.0006405254825949669,
+                    0.0010739759309217334,
+                    -0.0010236313100904226,
+                    0.0002848651784006506
+                  ]
+                ]
+              ],
+              "fixed_coefficient_delta_operator_bound_max": 0.00049167824909091,
+              "basis_gradient_norm": 0.18250155448913574,
+              "context_gradient_norm": 100.50211334228516,
+              "exit_gradient_norm": 100.50210571289062
+            }
+          ],
+          "scope": "Current input x and one actual G_x(x); no post-filter unit RMS, fitting, state or parameter updates; gradients from last CE backward",
+          "fixed_coefficient_bound_only": true,
+          "dynamic_map_invertible_claim": false
+        }
+      },
+      "inference_state_unchanged": true,
+      "common_phase_max_abs_error": 0.0064678192138671875,
+      "ordinary_fp32_phase_max_abs_error": 3.337860107421875e-06,
+      "constant_fp32_phase_max_abs_error": 0.0064678192138671875,
+      "constant_same_state_fp64_phase_max_abs_error": 1.5756505605812876e-07,
+      "constant_fp32_uniform_tolerance_claim": false,
+      "numerical_scope": "Ordinary noise/tone/zero FP32 checked; pureDC FP32 reported with same-state FP64 confirmation. Retained spectral log-ratio sensitivity is not repaired or hidden.",
+      "packet_independence_max_abs_error": 2.2724270820617676e-06
+    }
+  ]
+}

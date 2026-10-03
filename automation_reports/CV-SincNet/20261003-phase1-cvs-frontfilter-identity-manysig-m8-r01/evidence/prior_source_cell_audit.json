@@ -1,0 +1,1033 @@
+{
+  "status": "VERIFIED",
+  "source_run": "20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01",
+  "source_cells": 1440,
+  "models": 16,
+  "unique_physical_V_per_model": 27000,
+  "source_only": true,
+  "target_results_read": false,
+  "artifact": "evidence/source_cells.csv",
+  "summary": [
+    {
+      "variant": "crosspath_coherence",
+      "axis": "ALL",
+      "value": "ALL",
+      "accuracy_mean": 0.98375,
+      "seed_sd": 0.0005951910622217976,
+      "total_model_decisions": 108000,
+      "cumulative_errors": 1755,
+      "paired_anchor_delta_pp": -0.06851851851852053,
+      "paired_anchor_delta_sd": 0.08195708558420592,
+      "paired_anchor_delta_by_seed": [
+        -0.1888888888888829,
+        -0.029629629629635,
+        -0.048148148148152714,
+        -0.007407407407411526
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "RX",
+      "value": 1,
+      "accuracy_mean": 0.9963425925925926,
+      "seed_sd": 0.0002330195813355436,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 79,
+      "paired_anchor_delta_pp": -0.03240740740740877,
+      "paired_anchor_delta_sd": 0.04106214412237873,
+      "paired_anchor_delta_by_seed": [
+        -0.05555555555555314,
+        -0.018518518518517713,
+        0.018518518518517713,
+        -0.07407407407408195
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "RX",
+      "value": 3,
+      "accuracy_mean": 0.9552314814814815,
+      "seed_sd": 0.0012684396659280541,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 967,
+      "paired_anchor_delta_pp": -0.2962962962962973,
+      "paired_anchor_delta_sd": 0.24567591039669953,
+      "paired_anchor_delta_by_seed": [
+        -0.6296296296296355,
+        -0.2592592592592591,
+        -0.2592592592592591,
+        -0.037037037037035425
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "RX",
+      "value": 4,
+      "accuracy_mean": 0.9900925925925926,
+      "seed_sd": 0.0010310674745981573,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 214,
+      "paired_anchor_delta_pp": -0.05555555555555591,
+      "paired_anchor_delta_sd": 0.11809337326980693,
+      "paired_anchor_delta_by_seed": [
+        -0.1481481481481417,
+        0.037037037037035425,
+        0.05555555555555314,
+        -0.16666666666667052
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "RX",
+      "value": 6,
+      "accuracy_mean": 0.9968055555555555,
+      "seed_sd": 0.0010516496936667204,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 69,
+      "paired_anchor_delta_pp": 0.10648148148147962,
+      "paired_anchor_delta_sd": 0.08865065812558165,
+      "paired_anchor_delta_by_seed": [
+        0.20370370370369484,
+        0.07407407407408195,
+        0.0,
+        0.1481481481481417
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "RX",
+      "value": 8,
+      "accuracy_mean": 0.9802777777777778,
+      "seed_sd": 0.0015822229157995758,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 426,
+      "paired_anchor_delta_pp": -0.06481481481481477,
+      "paired_anchor_delta_sd": 0.17730131625117124,
+      "paired_anchor_delta_by_seed": [
+        -0.3148148148148122,
+        0.018518518518517713,
+        -0.05555555555555314,
+        0.09259259259258856
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "TX",
+      "value": 0,
+      "accuracy_mean": 0.9828333333333333,
+      "seed_sd": 0.0022323841727288525,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 309,
+      "paired_anchor_delta_pp": -0.044444444444444176,
+      "paired_anchor_delta_sd": 0.28167634580490897,
+      "paired_anchor_delta_by_seed": [
+        0.04444444444444695,
+        -0.13333333333332975,
+        -0.3777777777777769,
+        0.288888888888883
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "TX",
+      "value": 1,
+      "accuracy_mean": 0.9743333333333333,
+      "seed_sd": 0.0025239592648001402,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 462,
+      "paired_anchor_delta_pp": -0.06666666666666488,
+      "paired_anchor_delta_sd": 0.19958805311566855,
+      "paired_anchor_delta_by_seed": [
+        -0.31111111111111756,
+        -0.06666666666665932,
+        -0.06666666666665932,
+        0.1777777777777767
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "TX",
+      "value": 2,
+      "accuracy_mean": 0.9934444444444445,
+      "seed_sd": 0.0009854914589370435,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 118,
+      "paired_anchor_delta_pp": -0.03333333333333521,
+      "paired_anchor_delta_sd": 0.11258284558200322,
+      "paired_anchor_delta_by_seed": [
+        -0.11111111111110628,
+        -0.0888888888888939,
+        0.13333333333332975,
+        -0.06666666666667043
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "TX",
+      "value": 3,
+      "accuracy_mean": 0.9735,
+      "seed_sd": 0.0014098419489388596,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 477,
+      "paired_anchor_delta_pp": -0.12222222222222079,
+      "paired_anchor_delta_sd": 0.42065987746668554,
+      "paired_anchor_delta_by_seed": [
+        -0.6444444444444364,
+        0.33333333333334103,
+        0.06666666666665932,
+        -0.24444444444444713
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "TX",
+      "value": 4,
+      "accuracy_mean": 0.9877222222222223,
+      "seed_sd": 0.0009139972355002202,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 221,
+      "paired_anchor_delta_pp": -0.038888888888882756,
+      "paired_anchor_delta_sd": 0.05844345865947765,
+      "paired_anchor_delta_by_seed": [
+        -0.06666666666665932,
+        -0.0888888888888828,
+        0.04444444444444695,
+        -0.04444444444443585
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "TX",
+      "value": 5,
+      "accuracy_mean": 0.9906666666666667,
+      "seed_sd": 0.0006542045086168767,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 168,
+      "paired_anchor_delta_pp": -0.10555555555555596,
+      "paired_anchor_delta_sd": 0.04927457294685573,
+      "paired_anchor_delta_by_seed": [
+        -0.04444444444443585,
+        -0.13333333333334085,
+        -0.0888888888888939,
+        -0.15555555555555323
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "day",
+      "value": 1,
+      "accuracy_mean": 0.9847222222222223,
+      "seed_sd": 0.0009318330092895666,
+      "total_model_decisions": 36000,
+      "cumulative_errors": 550,
+      "paired_anchor_delta_pp": -0.03888888888888831,
+      "paired_anchor_delta_sd": 0.07830509078468717,
+      "paired_anchor_delta_by_seed": [
+        -0.0888888888888828,
+        0.07777777777777661,
+        -0.07777777777777661,
+        -0.06666666666667043
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "day",
+      "value": 2,
+      "accuracy_mean": 0.9861111111111112,
+      "seed_sd": 0.000601780622565606,
+      "total_model_decisions": 36000,
+      "cumulative_errors": 500,
+      "paired_anchor_delta_pp": -0.05277777777777659,
+      "paired_anchor_delta_sd": 0.13406435405732178,
+      "paired_anchor_delta_by_seed": [
+        -0.20000000000000018,
+        -0.12222222222222356,
+        0.011111111111117289,
+        0.10000000000000009
+      ]
+    },
+    {
+      "variant": "crosspath_coherence",
+      "axis": "day",
+      "value": 3,
+      "accuracy_mean": 0.9804166666666667,
+      "seed_sd": 0.0007718024438583467,
+      "total_model_decisions": 36000,
+      "cumulative_errors": 705,
+      "paired_anchor_delta_pp": -0.11388888888889115,
+      "paired_anchor_delta_sd": 0.11013459778665874,
+      "paired_anchor_delta_by_seed": [
+        -0.2777777777777768,
+        -0.04444444444444695,
+        -0.07777777777777661,
+        -0.05555555555556424
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "ALL",
+      "value": "ALL",
+      "accuracy_mean": 0.9835462962962962,
+      "seed_sd": 0.0005913374052437601,
+      "total_model_decisions": 108000,
+      "cumulative_errors": 1777,
+      "paired_anchor_delta_pp": -0.0888888888888939,
+      "paired_anchor_delta_sd": 0.07596355586624465,
+      "paired_anchor_delta_by_seed": [
+        -0.20000000000000018,
+        -0.05555555555556424,
+        -0.07037037037037619,
+        -0.029629629629635
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "RX",
+      "value": 1,
+      "accuracy_mean": 0.9967592592592593,
+      "seed_sd": 0.0004899539464934214,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 70,
+      "paired_anchor_delta_pp": 0.009259259259258856,
+      "paired_anchor_delta_sd": 0.05757641390795314,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        -0.018518518518517713,
+        0.09259259259258856,
+        -0.037037037037035425
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "RX",
+      "value": 3,
+      "accuracy_mean": 0.954675925925926,
+      "seed_sd": 0.0020194244201179458,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 979,
+      "paired_anchor_delta_pp": -0.35185185185184764,
+      "paired_anchor_delta_sd": 0.16355112715421982,
+      "paired_anchor_delta_by_seed": [
+        -0.5185185185185182,
+        -0.24074074074074137,
+        -0.4629629629629539,
+        -0.18518518518517713
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "RX",
+      "value": 4,
+      "accuracy_mean": 0.9901388888888889,
+      "seed_sd": 0.0013723292639145363,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 213,
+      "paired_anchor_delta_pp": -0.050925925925926485,
+      "paired_anchor_delta_sd": 0.12593954174754723,
+      "paired_anchor_delta_by_seed": [
+        -0.18518518518517713,
+        0.07407407407407085,
+        0.037037037037035425,
+        -0.1296296296296351
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "RX",
+      "value": 6,
+      "accuracy_mean": 0.9966666666666667,
+      "seed_sd": 0.0008685955110783988,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 72,
+      "paired_anchor_delta_pp": 0.09259259259259411,
+      "paired_anchor_delta_sd": 0.0756015352710761,
+      "paired_anchor_delta_by_seed": [
+        0.1666666666666594,
+        0.03703703703704653,
+        0.018518518518528815,
+        0.1481481481481417
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "RX",
+      "value": 8,
+      "accuracy_mean": 0.9794907407407407,
+      "seed_sd": 0.0016170601107938132,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 443,
+      "paired_anchor_delta_pp": -0.14351851851851782,
+      "paired_anchor_delta_sd": 0.22598410503685837,
+      "paired_anchor_delta_by_seed": [
+        -0.462962962962965,
+        -0.129629629629624,
+        -0.037037037037035425,
+        0.05555555555555314
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "TX",
+      "value": 0,
+      "accuracy_mean": 0.983111111111111,
+      "seed_sd": 0.0017870130491577413,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 304,
+      "paired_anchor_delta_pp": -0.01666666666666483,
+      "paired_anchor_delta_sd": 0.2705732369307946,
+      "paired_anchor_delta_by_seed": [
+        0.04444444444444695,
+        -0.15555555555555323,
+        -0.288888888888883,
+        0.33333333333332993
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "TX",
+      "value": 1,
+      "accuracy_mean": 0.9737777777777777,
+      "seed_sd": 0.002908763543121757,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 472,
+      "paired_anchor_delta_pp": -0.12222222222222079,
+      "paired_anchor_delta_sd": 0.16777409856157802,
+      "paired_anchor_delta_by_seed": [
+        -0.3555555555555645,
+        -0.0888888888888828,
+        -0.0888888888888828,
+        0.04444444444444695
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "TX",
+      "value": 2,
+      "accuracy_mean": 0.9932222222222222,
+      "seed_sd": 0.0010501812502783658,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 122,
+      "paired_anchor_delta_pp": -0.05555555555555869,
+      "paired_anchor_delta_sd": 0.11547005383792383,
+      "paired_anchor_delta_by_seed": [
+        -0.13333333333332975,
+        -0.06666666666667043,
+        0.11111111111110628,
+        -0.13333333333334085
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "TX",
+      "value": 3,
+      "accuracy_mean": 0.9728333333333333,
+      "seed_sd": 0.0013131183630544928,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 489,
+      "paired_anchor_delta_pp": -0.18888888888888566,
+      "paired_anchor_delta_sd": 0.36761941314599816,
+      "paired_anchor_delta_by_seed": [
+        -0.6222222222222129,
+        0.24444444444444713,
+        -0.06666666666667043,
+        -0.31111111111110645
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "TX",
+      "value": 4,
+      "accuracy_mean": 0.9877222222222222,
+      "seed_sd": 0.0006382847385042615,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 221,
+      "paired_anchor_delta_pp": -0.03888888888888831,
+      "paired_anchor_delta_sd": 0.04927457294684947,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        -0.11111111111110628,
+        -0.022222222222223476,
+        -0.022222222222223476
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "TX",
+      "value": 5,
+      "accuracy_mean": 0.9906111111111111,
+      "seed_sd": 0.000458122847290877,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 169,
+      "paired_anchor_delta_pp": -0.11111111111110905,
+      "paired_anchor_delta_sd": 0.04057204129667721,
+      "paired_anchor_delta_by_seed": [
+        -0.13333333333332975,
+        -0.15555555555555323,
+        -0.06666666666667043,
+        -0.0888888888888828
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "day",
+      "value": 1,
+      "accuracy_mean": 0.9846388888888888,
+      "seed_sd": 0.0005546288567359798,
+      "total_model_decisions": 36000,
+      "cumulative_errors": 553,
+      "paired_anchor_delta_pp": -0.04722222222222072,
+      "paired_anchor_delta_sd": 0.0630989816200013,
+      "paired_anchor_delta_by_seed": [
+        -0.13333333333332975,
+        0.0,
+        -0.05555555555555314,
+        0.0
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "day",
+      "value": 2,
+      "accuracy_mean": 0.9857777777777778,
+      "seed_sd": 0.0008164965809277368,
+      "total_model_decisions": 36000,
+      "cumulative_errors": 512,
+      "paired_anchor_delta_pp": -0.08611111111111458,
+      "paired_anchor_delta_sd": 0.12583057392117725,
+      "paired_anchor_delta_by_seed": [
+        -0.24444444444444713,
+        -0.12222222222222356,
+        -0.022222222222223476,
+        0.04444444444443585
+      ]
+    },
+    {
+      "variant": "crosspath_gram",
+      "axis": "day",
+      "value": 3,
+      "accuracy_mean": 0.9802222222222222,
+      "seed_sd": 0.0010343881513902988,
+      "total_model_decisions": 36000,
+      "cumulative_errors": 712,
+      "paired_anchor_delta_pp": -0.13333333333333808,
+      "paired_anchor_delta_sd": 0.07257747386024188,
+      "paired_anchor_delta_by_seed": [
+        -0.22222222222222365,
+        -0.04444444444444695,
+        -0.13333333333334085,
+        -0.13333333333334085
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "ALL",
+      "value": "ALL",
+      "accuracy_mean": 0.9844259259259259,
+      "seed_sd": 0.001052138719358642,
+      "total_model_decisions": 108000,
+      "cumulative_errors": 1682,
+      "paired_anchor_delta_pp": -0.0009259259259264407,
+      "paired_anchor_delta_sd": 0.023497365815651573,
+      "paired_anchor_delta_by_seed": [
+        0.007407407407411526,
+        -0.033333333333340764,
+        0.0,
+        0.022222222222223476
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "RX",
+      "value": 1,
+      "accuracy_mean": 0.9968518518518519,
+      "seed_sd": 0.00026189140043945063,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 68,
+      "paired_anchor_delta_pp": 0.018518518518517713,
+      "paired_anchor_delta_sd": 0.01512030705421649,
+      "paired_anchor_delta_by_seed": [
+        0.018518518518517713,
+        0.0,
+        0.037037037037035425,
+        0.018518518518517713
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "RX",
+      "value": 3,
+      "accuracy_mean": 0.9580092592592593,
+      "seed_sd": 0.0022899903458703176,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 907,
+      "paired_anchor_delta_pp": -0.018518518518517713,
+      "paired_anchor_delta_sd": 0.03381003441390578,
+      "paired_anchor_delta_by_seed": [
+        -0.05555555555556424,
+        -0.037037037037035425,
+        0.018518518518528815,
+        0.0
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "RX",
+      "value": 4,
+      "accuracy_mean": 0.9900925925925925,
+      "seed_sd": 0.0012605294973248554,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 214,
+      "paired_anchor_delta_pp": -0.05555555555555869,
+      "paired_anchor_delta_sd": 0.015120307054221023,
+      "paired_anchor_delta_by_seed": [
+        -0.037037037037035425,
+        -0.05555555555556424,
+        -0.07407407407408195,
+        -0.05555555555555314
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "RX",
+      "value": 6,
+      "accuracy_mean": 0.9958796296296296,
+      "seed_sd": 0.0010624638566702866,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 89,
+      "paired_anchor_delta_pp": 0.01388888888889106,
+      "paired_anchor_delta_sd": 0.038176903940904845,
+      "paired_anchor_delta_by_seed": [
+        0.05555555555555314,
+        -0.018518518518517713,
+        0.03703703703704653,
+        -0.018518518518517713
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "RX",
+      "value": 8,
+      "accuracy_mean": 0.9812962962962963,
+      "seed_sd": 0.002755051062274231,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 404,
+      "paired_anchor_delta_pp": 0.0370370370370382,
+      "paired_anchor_delta_sd": 0.09799078929868918,
+      "paired_anchor_delta_by_seed": [
+        0.05555555555555314,
+        -0.05555555555555314,
+        -0.018518518518517713,
+        0.16666666666667052
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "TX",
+      "value": 0,
+      "accuracy_mean": 0.9838333333333333,
+      "seed_sd": 0.0011529172160202638,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 291,
+      "paired_anchor_delta_pp": 0.05555555555555869,
+      "paired_anchor_delta_sd": 0.12372809695177661,
+      "paired_anchor_delta_by_seed": [
+        0.11111111111111738,
+        -0.11111111111110628,
+        0.04444444444444695,
+        0.1777777777777767
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "TX",
+      "value": 1,
+      "accuracy_mean": 0.9752777777777778,
+      "seed_sd": 0.004283665981222538,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 445,
+      "paired_anchor_delta_pp": 0.027777777777779344,
+      "paired_anchor_delta_sd": 0.04927457294684655,
+      "paired_anchor_delta_by_seed": [
+        0.0888888888888828,
+        0.0,
+        -0.022222222222212373,
+        0.04444444444444695
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "TX",
+      "value": 2,
+      "accuracy_mean": 0.9932777777777778,
+      "seed_sd": 0.0009834013368408634,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 121,
+      "paired_anchor_delta_pp": -0.050000000000000044,
+      "paired_anchor_delta_sd": 0.0333333333333309,
+      "paired_anchor_delta_by_seed": [
+        -0.0888888888888828,
+        -0.06666666666667043,
+        -0.022222222222223476,
+        -0.022222222222223476
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "TX",
+      "value": 3,
+      "accuracy_mean": 0.9743333333333333,
+      "seed_sd": 0.0030872097754333096,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 462,
+      "paired_anchor_delta_pp": -0.03888888888888831,
+      "paired_anchor_delta_sd": 0.03795166950355133,
+      "paired_anchor_delta_by_seed": [
+        -0.0888888888888828,
+        -0.022222222222223476,
+        -0.04444444444444695,
+        0.0
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "TX",
+      "value": 4,
+      "accuracy_mean": 0.9883333333333333,
+      "seed_sd": 0.0013394919496314802,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 210,
+      "paired_anchor_delta_pp": 0.02222222222222625,
+      "paired_anchor_delta_sd": 0.0480054866548706,
+      "paired_anchor_delta_by_seed": [
+        0.022222222222223476,
+        0.04444444444444695,
+        0.06666666666667043,
+        -0.04444444444443585
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "TX",
+      "value": 5,
+      "accuracy_mean": 0.9915,
+      "seed_sd": 0.0006382847385042131,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 153,
+      "paired_anchor_delta_pp": -0.022222222222223476,
+      "paired_anchor_delta_sd": 0.0181443684650616,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        -0.04444444444444695,
+        -0.022222222222223476,
+        -0.022222222222223476
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "day",
+      "value": 1,
+      "accuracy_mean": 0.9850277777777777,
+      "seed_sd": 0.0010516496936666853,
+      "total_model_decisions": 36000,
+      "cumulative_errors": 539,
+      "paired_anchor_delta_pp": -0.008333333333335191,
+      "paired_anchor_delta_sd": 0.03557291243017771,
+      "paired_anchor_delta_by_seed": [
+        -0.022222222222223476,
+        -0.03333333333332966,
+        -0.022222222222223476,
+        0.04444444444443585
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "day",
+      "value": 2,
+      "accuracy_mean": 0.9868611111111111,
+      "seed_sd": 0.0012648297271503329,
+      "total_model_decisions": 36000,
+      "cumulative_errors": 473,
+      "paired_anchor_delta_pp": 0.0222222222222207,
+      "paired_anchor_delta_sd": 0.043508667127666156,
+      "paired_anchor_delta_by_seed": [
+        0.011111111111106187,
+        -0.03333333333332966,
+        0.04444444444444695,
+        0.06666666666665932
+      ]
+    },
+    {
+      "variant": "neural_residual_shallow",
+      "axis": "day",
+      "value": 3,
+      "accuracy_mean": 0.9813888888888889,
+      "seed_sd": 0.001406919993572055,
+      "total_model_decisions": 36000,
+      "cumulative_errors": 670,
+      "paired_anchor_delta_pp": -0.016666666666667607,
+      "paired_anchor_delta_sd": 0.03454584834477891,
+      "paired_anchor_delta_by_seed": [
+        0.033333333333340764,
+        -0.033333333333340764,
+        -0.022222222222223476,
+        -0.04444444444444695
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "ALL",
+      "value": "ALL",
+      "accuracy_mean": 0.9844351851851851,
+      "seed_sd": 0.0011198728616844903,
+      "total_model_decisions": 108000,
+      "cumulative_errors": 1681,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "RX",
+      "value": 1,
+      "accuracy_mean": 0.9966666666666667,
+      "seed_sd": 0.00021383343303318542,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 72,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "RX",
+      "value": 3,
+      "accuracy_mean": 0.9581944444444445,
+      "seed_sd": 0.0025318050042982803,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 903,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "RX",
+      "value": 4,
+      "accuracy_mean": 0.9906481481481482,
+      "seed_sd": 0.0011760838816825723,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 202,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "RX",
+      "value": 6,
+      "accuracy_mean": 0.9957407407407407,
+      "seed_sd": 0.0007560153527108518,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 92,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "RX",
+      "value": 8,
+      "accuracy_mean": 0.980925925925926,
+      "seed_sd": 0.003091354080382455,
+      "total_model_decisions": 21600,
+      "cumulative_errors": 412,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "TX",
+      "value": 0,
+      "accuracy_mean": 0.9832777777777777,
+      "seed_sd": 0.002187694729721816,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 301,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "TX",
+      "value": 1,
+      "accuracy_mean": 0.975,
+      "seed_sd": 0.004194843002894181,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 450,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "TX",
+      "value": 2,
+      "accuracy_mean": 0.9937777777777778,
+      "seed_sd": 0.0009072184232530438,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 112,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "TX",
+      "value": 3,
+      "accuracy_mean": 0.9747222222222223,
+      "seed_sd": 0.003376876097974258,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 455,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "TX",
+      "value": 4,
+      "accuracy_mean": 0.988111111111111,
+      "seed_sd": 0.0011111111111111183,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 214,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "TX",
+      "value": 5,
+      "accuracy_mean": 0.9917222222222222,
+      "seed_sd": 0.0007342306519110738,
+      "total_model_decisions": 18000,
+      "cumulative_errors": 149,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "day",
+      "value": 1,
+      "accuracy_mean": 0.985111111111111,
+      "seed_sd": 0.0011653431646334686,
+      "total_model_decisions": 36000,
+      "cumulative_errors": 536,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "day",
+      "value": 2,
+      "accuracy_mean": 0.9866388888888888,
+      "seed_sd": 0.0016638865702079987,
+      "total_model_decisions": 36000,
+      "cumulative_errors": 481,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "variant": "response_anchor_mean",
+      "axis": "day",
+      "value": 3,
+      "accuracy_mean": 0.9815555555555555,
+      "seed_sd": 0.0010961961916258044,
+      "total_model_decisions": 36000,
+      "cumulative_errors": 664,
+      "paired_anchor_delta_pp": 0.0,
+      "paired_anchor_delta_sd": 0.0,
+      "paired_anchor_delta_by_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "scope": "Full balanced 6TXx5RXx3dayx4seedx4variant sourceV cell aggregates. Repeated model decisions are not independent physical samples; no causal attribution or sample-level overlap claim."
+}
