@@ -17,7 +17,7 @@ from experiments.cvs_mirror_subspace_identity.collect import validate_completed,
 from experiments.cvs_mirror_subspace_identity.publish import CONNECTION, ssh
 from experiments.cvs_spectral_relation_identity.physics import public_inputs, causal_fir, unit_rms
 
-RUN = '20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01'
+RUN = '20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02'
 SOURCE_RUN = '20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01'
 DELAYS = (2, 8, 16)
 SEEDS = (2026092701, 2026092702, 2026092703, 2026092704)
@@ -62,6 +62,15 @@ def load_verified_state(model, state, expected_contract):
     if not torch.equal(state[window],reference[window]):raise ValueError('Actual periodic Hann window differs')
     model.load_state_dict(state,strict=True)
     if model.contract()!=expected_contract:raise ValueError('Actual loaded architecture contract differs')
+
+
+def validate_source_contract(actual,reference,row):
+    extensions=dict(equalized=1,out_len=256,classes=['14-10','14-7','20-15','20-19','6-15','8-20'],
+                    physical_roles='EXACT_MATCH',dataset_path=row['resolved']['dataset'],normalize=True)
+    if (any(actual.get(k)!=value for k,value in reference.items()) or
+            any(actual.get(k)!=value for k,value in extensions.items()) or
+            set(actual)!=set(reference)|set(extensions)):
+        raise ValueError('Original source contract or known training extensions differ')
 
 
 @torch.no_grad()
@@ -138,8 +147,9 @@ def run(root, output):
             subprocess.run(['scp',*CONNECTION,'N607:'+source_root+'/'+name,str(folder/name)],check=True,capture_output=True)
         payload=torch.load(folder/'last.pt', map_location='cpu', weights_only=False)
         actual_contract=json.loads((folder/'source_contract.json').read_text(encoding='utf-8'))
-        if validate_payload(payload,row) != actual_contract or actual_contract != reference_contract:
-            raise ValueError('Checkpoint and original source physical contract differ')
+        if validate_payload(payload,row) != actual_contract:
+            raise ValueError('Checkpoint and source physical contract differ')
+        validate_source_contract(actual_contract,reference_contract,row)
         model=build(row['resolved']['variant'])
         load_verified_state(model,payload['model'],row['resolved']['mirror_relation_actual'])
         started=time.time();arrays=diagnose(model);np.savez_compressed(folder/'public_arrays.npz',**arrays)

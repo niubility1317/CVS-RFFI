@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 import torch
 from experiments.cvs_mirror_mechanism.analyze import packet_metrics,rows_from_arrays,write_csv,analyze
-from experiments.cvs_mirror_mechanism.diagnose import diagnose,validate_payload,load_verified_state,SOURCE_COMMIT
+from experiments.cvs_mirror_mechanism.diagnose import diagnose,validate_payload,load_verified_state,validate_source_contract,SOURCE_COMMIT
 from experiments.cvs_mirror_subspace_identity.model import build
 
 
@@ -89,3 +89,18 @@ def test_existing_analysis_is_never_replaced(tmp_path):
     with pytest.raises(FileExistsError):write_csv(p,[dict(x=1)])
     with pytest.raises(FileExistsError):analyze(tmp_path/'unused',tmp_path/'report')
     assert p.read_text(encoding='utf-8')=='preserve'
+
+
+@pytest.mark.parametrize('mutation',[None,'reference','extension','unknown'])
+def test_original_contract_with_exact_training_extensions(mutation):
+    row=dict(resolved=dict(dataset='/source/ManySig.pkl'))
+    reference=dict(role_ids={'V':['known_id']},source_rxs=[1,3,4,6,8])
+    actual=copy.deepcopy(reference)
+    actual.update(equalized=1,out_len=256,classes=['14-10','14-7','20-15','20-19','6-15','8-20'],
+                  physical_roles='EXACT_MATCH',dataset_path='/source/ManySig.pkl',normalize=True)
+    if mutation=='reference':actual['role_ids']['V']=['wrong_id']
+    elif mutation=='extension':actual['equalized']=0
+    elif mutation=='unknown':actual['target_access']=True
+    if mutation is None:validate_source_contract(actual,reference,row)
+    else:
+        with pytest.raises(ValueError):validate_source_contract(actual,reference,row)

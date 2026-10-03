@@ -1,13 +1,7 @@
 {
+  "status": "FAILED",
   "run_id": "20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
-  "status": "LOCAL_VERIFIED",
-  "source_run": "20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01",
-  "source_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
-  "output": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
-  "next": [
-    "Independent P0/P1 check",
-    "Commit/push/readback",
-    "Run once locally, read-only source downloads",
-    "Independently recount all tensors, explain evidence and deliver report"
-  ]
+  "replacement_run": "20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
+  "evidence": "evidence/technical_failure.json",
+  "preserve_outputs": true
 }

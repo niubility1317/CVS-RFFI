@@ -1,0 +1,17 @@
+{
+  "status": "FAILED",
+  "layer": "diagnostic metadata compatibility before checkpoint load",
+  "message": "Whole JSON equality rejected six legitimate training extensions",
+  "original_fields_exactly_equal": true,
+  "payload_equals_row_contract": true,
+  "remote_writes": false,
+  "optimizer_steps": 0,
+  "models_evaluated": 0,
+  "target_access": false,
+  "source_training_affected": false,
+  "retained_output": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+  "tool_failure_chunk": "0c0239",
+  "independent_reconciliation_chunk": "66b6a7",
+  "source_models_unchanged": true,
+  "replacement_run": "20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02"
+}

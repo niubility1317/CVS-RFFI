@@ -1,6 +1,6 @@
 {
   "schema": "experiment_record_v1",
-  "run_id": "20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+  "run_id": "20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
   "group_id": "cvs-mirror-frozen-public-mechanism",
   "display_name": "CVS镜像关系：冻结公开信号绝对误差与低秩分解",
   "description": "分离有限FIR关系绝对变化和近零分母放大；所有公开信号/频对和FP32/FP64诊断均保留，不拟合、不使用源IQ或target。",
@@ -18,7 +18,7 @@
   "parent_run_ids": [
     "20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01"
   ],
-  "replaces_run_id": null,
+  "replaces_run_id": "20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
   "authorization": "用户要求持续深入优化纯神经网络；本次仅验证机制并保存负结果，保持原训练策略，不新增query。",
   "code": {
     "commit": "49ed55d4803f9392236fa49cfe02d066cc0102cc",
@@ -26,7 +26,7 @@
     "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
     "source_release_commit": "bb0ffae4263419a992a44de8975ec7eb83c4596f",
-    "commit_note": "Preparation baseline; actual committed diagnostic version recorded at launch"
+    "commit_note": "r02 preparation baseline; actual committed execution recorded in launch.json"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -122,8 +122,8 @@
     "gpu_policy": "No GPU process launch",
     "remote_run_root": null,
     "remote_log_root": null,
-    "local_artifact_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
-    "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+    "local_artifact_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
+    "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
     "stop_rule": "Fail on metadata/state/nonfinite/collision; preserve partial outputs, no automatic retry"
   },
   "expected_artifacts": [
@@ -164,8 +164,8 @@
       "method": "mirror_energy",
       "purpose": "frozen_public_FIR_mechanism",
       "gpu": null,
-      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_energy-s2026092701",
-      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02/experiment.json#mirror_energy-s2026092701",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -183,9 +183,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
-      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_energy-s2026092701",
-      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
-      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\mirror_energy-s2026092701",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
       "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092701/source/last.pt",
       "expected_artifacts": [
         "public_arrays.npz",
@@ -198,8 +198,8 @@
       "method": "mirror_subspace",
       "purpose": "frozen_public_FIR_mechanism",
       "gpu": null,
-      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_subspace-s2026092701",
-      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02/experiment.json#mirror_subspace-s2026092701",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -217,9 +217,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
-      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_subspace-s2026092701",
-      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
-      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\mirror_subspace-s2026092701",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
       "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092701/source/last.pt",
       "expected_artifacts": [
         "public_arrays.npz",
@@ -232,8 +232,8 @@
       "method": "mirror_energy",
       "purpose": "frozen_public_FIR_mechanism",
       "gpu": null,
-      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_energy-s2026092702",
-      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02/experiment.json#mirror_energy-s2026092702",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -251,9 +251,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
-      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_energy-s2026092702",
-      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
-      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\mirror_energy-s2026092702",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
       "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092702/source/last.pt",
       "expected_artifacts": [
         "public_arrays.npz",
@@ -266,8 +266,8 @@
       "method": "mirror_subspace",
       "purpose": "frozen_public_FIR_mechanism",
       "gpu": null,
-      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_subspace-s2026092702",
-      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02/experiment.json#mirror_subspace-s2026092702",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -285,9 +285,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
-      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_subspace-s2026092702",
-      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
-      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\mirror_subspace-s2026092702",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
       "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092702/source/last.pt",
       "expected_artifacts": [
         "public_arrays.npz",
@@ -300,8 +300,8 @@
       "method": "mirror_energy",
       "purpose": "frozen_public_FIR_mechanism",
       "gpu": null,
-      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_energy-s2026092703",
-      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02/experiment.json#mirror_energy-s2026092703",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -319,9 +319,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
-      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_energy-s2026092703",
-      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
-      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\mirror_energy-s2026092703",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
       "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092703/source/last.pt",
       "expected_artifacts": [
         "public_arrays.npz",
@@ -334,8 +334,8 @@
       "method": "mirror_subspace",
       "purpose": "frozen_public_FIR_mechanism",
       "gpu": null,
-      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_subspace-s2026092703",
-      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02/experiment.json#mirror_subspace-s2026092703",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -353,9 +353,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
-      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_subspace-s2026092703",
-      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
-      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\mirror_subspace-s2026092703",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
       "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092703/source/last.pt",
       "expected_artifacts": [
         "public_arrays.npz",
@@ -368,8 +368,8 @@
       "method": "mirror_energy",
       "purpose": "frozen_public_FIR_mechanism",
       "gpu": null,
-      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_energy-s2026092704",
-      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02/experiment.json#mirror_energy-s2026092704",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092704,
@@ -387,9 +387,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
-      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_energy-s2026092704",
-      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
-      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\mirror_energy-s2026092704",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
       "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_energy-s2026092704/source/last.pt",
       "expected_artifacts": [
         "public_arrays.npz",
@@ -402,8 +402,8 @@
       "method": "mirror_subspace",
       "purpose": "frozen_public_FIR_mechanism",
       "gpu": null,
-      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/experiment.json#mirror_subspace-s2026092704",
-      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
+      "config_ref": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02/experiment.json#mirror_subspace-s2026092704",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092704,
@@ -421,9 +421,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "30 publicsignals x baseline/3FIR x 2arithmetic; fullmodel FP32 only;zero optimizer steps",
-      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\mirror_subspace-s2026092704",
-      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01\\launch.json",
-      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\mirror_subspace-s2026092704",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02\\launch.json",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mirror_mechanism.diagnose --root E:/type10-7/code/snapshots/daot_practical_three_20260918_wt --output E:/type10-7/code/snapshots/daot_practical_three_20260918_wt/local_artifacts/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
       "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/mirror_subspace-s2026092704/source/last.pt",
       "expected_artifacts": [
         "public_arrays.npz",
@@ -436,9 +436,10 @@
     "Original source models and selection remain immutable; no clean retest for a diagnostic without a new candidate.",
     "CPU Torch2.10 and original GPU Torch2.1 differ; discrepancies retained rather than treating values as identical.",
     "FP64 copies weights for arithmetic diagnosis only; not new training, precision selection or performance candidate.",
-    "Near-zero relative denominators interpreted alongside absolute norms and all signal groups; no signals/pairs excluded."
+    "Near-zero relative denominators interpreted alongside absolute norms and all signal groups; no signals/pairs excluded.",
+    "r02 fixes only original contract versus six known source training extensions; same eight checkpoints/public matrix, r01 preserved"
   ],
-  "status": "FAILED",
+  "status": "LOCAL_VERIFIED",
   "source_controls": [
     {
       "variant": "neural_residual_shallow",
@@ -517,22 +518,5 @@
     "status": "NOT_APPLICABLE_PUBLIC_DIAGNOSTIC",
     "reason": "No new trained/classifying candidate or target access; original source run already closed through retained-control test verification"
   },
-  "registered_at": "2026-10-03T10:05:22+00:00",
-  "outcome": {
-    "status": "FAILED",
-    "layer": "diagnostic metadata compatibility before checkpoint load",
-    "message": "Whole JSON equality rejected six legitimate training extensions",
-    "original_fields_exactly_equal": true,
-    "payload_equals_row_contract": true,
-    "remote_writes": false,
-    "optimizer_steps": 0,
-    "models_evaluated": 0,
-    "target_access": false,
-    "source_training_affected": false,
-    "retained_output": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
-    "tool_failure_chunk": "0c0239",
-    "independent_reconciliation_chunk": "66b6a7",
-    "source_models_unchanged": true,
-    "replacement_run": "20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02"
-  }
+  "registered_at": "2026-10-03T10:10:41+00:00"
 }

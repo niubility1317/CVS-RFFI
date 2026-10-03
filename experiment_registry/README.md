@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T10:07:30+00:00
+更新：2026-10-03T10:10:41+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|90|
+|managed_run|91|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,7 +21,7 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|235|
+|[cvs](by_method/cvs.md)|236|
 |[adv3b02](by_method/adv3b02.md)|146|
 |[phase2](by_method/phase2.md)|118|
 |[phase1](by_method/phase1.md)|112|
@@ -40,8 +40,8 @@
 |[d92](by_method/d92.md)|15|
 |[source_only](by_method/source_only.md)|14|
 |[response](by_method/response.md)|13|
+|[diagnostic](by_method/diagnostic.md)|12|
 |[daot](by_method/daot.md)|11|
-|[diagnostic](by_method/diagnostic.md)|11|
 |[drift](by_method/drift.md)|11|
 |[rc4](by_method/rc4.md)|10|
 |[comparison](by_method/comparison.md)|10|
@@ -52,9 +52,9 @@
 |[csil](by_method/csil.md)|8|
 |[concat](by_method/concat.md)|7|
 |[residual](by_method/residual.md)|7|
+|[no_training](by_method/no_training.md)|7|
 |[truth_last](by_method/truth_last.md)|6|
 |[lightweight](by_method/lightweight.md)|6|
-|[no_training](by_method/no_training.md)|6|
 |[core90](by_method/core90.md)|6|
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
@@ -71,6 +71,7 @@
 |[frozen_weights](by_method/frozen_weights.md)|3|
 |[packet_synchronization](by_method/packet_synchronization.md)|3|
 |[fixed_parameter_budget](by_method/fixed_parameter_budget.md)|3|
+|[mirror_relation](by_method/mirror_relation.md)|3|
 |[packet_compensation](by_method/packet_compensation.md)|3|
 |[smoke](by_method/smoke.md)|3|
 |[evaluation](by_method/evaluation.md)|2|
@@ -92,7 +93,7 @@
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
 |[benchmark_informed](by_method/benchmark_informed.md)|2|
-|[mirror_relation](by_method/mirror_relation.md)|2|
+|[public_only](by_method/public_only.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[nm fdu](by_method/nm_fdu.md)|2|
 |[protonet](by_method/protonet.md)|2|
@@ -142,7 +143,6 @@
 |[user_fixed_architecture](by_method/user_fixed_architecture.md)|1|
 |[channel_attribution](by_method/channel_attribution.md)|1|
 |[frontfilter_attribution](by_method/frontfilter_attribution.md)|1|
-|[public_only](by_method/public_only.md)|1|
 |[readout_attribution](by_method/readout_attribution.md)|1|
 |[response_attribution](by_method/response_attribution.md)|1|
 |[response_geometry](by_method/response_geometry.md)|1|
@@ -234,6 +234,7 @@
 |CVS补偿与顺序差：完整源V冻结归因|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/report.md)|
 |CVS全主干前置滤波：固定权重源域反事实|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/report.md)|
 |CVS镜像关系：冻结公开信号机制分解|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/report.md)|
+|CVS镜像关系：冻结公开信号机制分解|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02/report.md)|
 |CVS读出：完整源V分支归因与TX/RX/日期关联|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/report.md)|
 |CVS显式补偿响应：完整源V冻结归因|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)|
 |CVS补偿响应：完整源V判别几何|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|
@@ -280,4 +281,3 @@
 |cvs_orthopoly_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_orthopoly_identity_20261002_r01)|
 |CVS 包内正交包络输入：结构假设与固定实验|legacy_evidence_group|[打开](../docs/CVS_PACKET_ORTHOGONAL_ENVELOPE_20261002.md)|
 |cvs_adaptive_volterra_clean_eval_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_adaptive_volterra_clean_eval_20261002_r01)|
-|cvs_adaptive_volterra_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_adaptive_volterra_identity_20261002_r01)|

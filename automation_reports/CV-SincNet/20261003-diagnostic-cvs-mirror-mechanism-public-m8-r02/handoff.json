@@ -1,0 +1,11 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "run_id": "20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02",
+  "replaces_run": "20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01",
+  "source_run": "20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01",
+  "next": [
+    "Focused review; commit and push",
+    "One local diagnostic execution",
+    "Independent tensor recount and report"
+  ]
+}

@@ -6,7 +6,7 @@ from pathlib import Path
 import statistics
 import numpy as np
 
-RUN='20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01'
+RUN='20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02'
 GROUPS=('noise','tone','periodic','dc','zero')
 DELAYS=(2,8,16)
 
