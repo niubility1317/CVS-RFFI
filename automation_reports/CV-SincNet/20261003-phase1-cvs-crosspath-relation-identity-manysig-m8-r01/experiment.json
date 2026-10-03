@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-03用户授权源域架构优化实验；保持原单CE、原数据与训练策略。",
   "code": {
-    "commit": "772e088fd85996948cedaf0d13c7cc3198fd5b97",
+    "commit": "e136f7868e5ff2569d2a61578ea909a4b1d3daa0",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crosspath_relation_identity_20261003_r01",
@@ -98,7 +98,10 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_crosspath_relation_identity.publish --output local_artifacts/cvs_crosspath_relation_identity_20261003_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 2289161,
+    "live_workers": 8,
+    "launch_verified_at": "2026-10-03T05:26:45.185025+00:00"
   },
   "expected_artifacts": [
     "last.pt",
@@ -145,7 +148,7 @@
       "row_id": "crosspath_gram-s2026092701",
       "method": "crosspath_gram",
       "purpose": "source_only_crosspath_relation_candidate",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_crosspath_relation_identity/configs/crosspath_gram-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/crosspath_gram-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -181,13 +184,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2289177
     },
     {
       "row_id": "crosspath_coherence-s2026092701",
       "method": "crosspath_coherence",
       "purpose": "source_only_crosspath_relation_candidate",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_crosspath_relation_identity/configs/crosspath_coherence-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/crosspath_coherence-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -223,13 +228,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2289257
     },
     {
       "row_id": "crosspath_gram-s2026092702",
       "method": "crosspath_gram",
       "purpose": "source_only_crosspath_relation_candidate",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_crosspath_relation_identity/configs/crosspath_gram-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/crosspath_gram-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -265,13 +272,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2289336
     },
     {
       "row_id": "crosspath_coherence-s2026092702",
       "method": "crosspath_coherence",
       "purpose": "source_only_crosspath_relation_candidate",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_crosspath_relation_identity/configs/crosspath_coherence-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/crosspath_coherence-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -307,13 +316,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2289415
     },
     {
       "row_id": "crosspath_gram-s2026092703",
       "method": "crosspath_gram",
       "purpose": "source_only_crosspath_relation_candidate",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_crosspath_relation_identity/configs/crosspath_gram-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/crosspath_gram-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -349,13 +360,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2289494
     },
     {
       "row_id": "crosspath_coherence-s2026092703",
       "method": "crosspath_coherence",
       "purpose": "source_only_crosspath_relation_candidate",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_crosspath_relation_identity/configs/crosspath_coherence-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/crosspath_coherence-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -391,13 +404,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2289573
     },
     {
       "row_id": "crosspath_gram-s2026092704",
       "method": "crosspath_gram",
       "purpose": "source_only_crosspath_relation_candidate",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_crosspath_relation_identity/configs/crosspath_gram-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/crosspath_gram-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -433,13 +448,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2289653
     },
     {
       "row_id": "crosspath_coherence-s2026092704",
       "method": "crosspath_coherence",
       "purpose": "source_only_crosspath_relation_candidate",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_crosspath_relation_identity/configs/crosspath_coherence-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/crosspath_coherence-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -475,7 +492,9 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2290142
     }
   ],
   "notes": [
@@ -493,7 +512,7 @@
     "Detailed step/epoch/compactJSONL/CSV/text reports measuredCE/LR/gradients/relationoutputs/norms/floors/sourceV/time/memory. Lasttrainingbatch28 telemetry is not fullsource or physicalchannel causality evidence. MAC conv/matmul only,not totalFLOPs. All negativeoutcomes preserved."
   ],
   "registered_at": "2026-10-03T05:16:42+00:00",
-  "status": "PLANNED",
+  "status": "RUNNING",
   "source_controls": [
     {
       "variant": "neural_residual_shallow",

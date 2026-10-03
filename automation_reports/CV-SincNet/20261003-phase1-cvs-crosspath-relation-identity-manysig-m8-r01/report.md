@@ -1,6 +1,6 @@
 # CVS跨通路复相关：匹配源训练与条件clean测试
 
-状态LOCAL_VERIFIED，尚未启动。两种架构实现完成：跨通路整体能量归一化Gram与逐投影通道coherence；8份从零训练，每种4个model seed，E200。识别性能与Phase1论文目标仍未达成。
+状态RUNNING，8份训练已独立核实存活并输出epoch。两种架构实现完成：跨通路整体能量归一化Gram与逐投影通道coherence；8份从零训练，每种4个model seed，E200。识别性能与Phase1论文目标仍未达成。
 
 ## 结构与研究依据
 
@@ -25,3 +25,9 @@
 模型15项针对性测试通过，涵盖配对初始化/旧state与RNG、独立复数公式、lag方向/共同窗口、范数界、精确增益性质适用范围、零/低能量梯度、全模型CE连通性、逐包独立性和诊断状态保持。8组public synthetic smoke验证所有4seed×2结构的初始函数相等及3步原CE更新；不加载正式数据或历史checkpoint。源管线及完整分析102项聚焦测试通过，合计117项模型/协议/分析测试。一次独立P0/P1审查PASS，无发现；检查了实际8配置、8控制、16源记录选择、发布832文件中的59个导入依赖以及四段远端模板。该审查范围是模型与源发布，条件clean实现需在源冻结后核对。
 
 唯一launch owner为`codex/root/cvs-crosspath-relation-identity-20261003`。从固定Git提交发布，不可覆盖release/archive/run/log；SCP前核实路径、身份、磁盘与GPU。远端先执行无正式数据的模型smoke，各训练row加载数据前执行自己的真实scratch checkpoint smoke，再按每GPU最多两个训练任务启动。低性能不触发停止、重启或选择性重跑；技术异常按原预登记规则保留产物处理。
+
+## 启动读回
+
+实际发布commit为`e136f7868e5ff2569d2a61578ea909a4b1d3daa0`，dispatcher PID2289161。全部8个worker的PID/CWD/argv、父进程、CUDA可见设备和nvidia-smi物理GPU映射一致，GPU0至7各一份训练；两次日志读回均增长。全部实际配置匹配233275参数、12288关系参数、原单CE、FP32和原源数据角色。启动验证时各row处于E4至E9，源分数尚未冻结，不能据早期结果选模。
+
+[启动独立核验](evidence/launch_validation.json) · [完整实际配置与进程](evidence/launch_readback.json) · [SCP前路径与资源](evidence/pretransfer_readback.json)。条件clean入口正在准备，当前零目标访问。

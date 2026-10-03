@@ -1,12 +1,16 @@
 {
   "run_id": "20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01",
-  "status": "LOCAL_VERIFIED",
-  "live_workers": 0,
+  "status": "RUNNING",
+  "live_workers": 8,
   "launch_owner": "codex/root/cvs-crosspath-relation-identity-20261003",
   "performance_goal_achieved": false,
   "next": [
-    "Commit/push and independently compare remote OID",
-    "Publish once; independently verify live PID/CWD/argv/config/GPU/logs",
-    "Collect all source artifacts and fixed source selection; complete conditional clean test"
-  ]
+    "Monitor this exact dispatcher and 8 rows; never restart from a timeout",
+    "Finish conditional clean implementation without target access",
+    "Collect all E200 source artifacts and freeze source selection; perform the registered test closure"
+  ],
+  "code_commit": "e136f7868e5ff2569d2a61578ea909a4b1d3daa0",
+  "dispatcher_pid": 2289161,
+  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crosspath_relation_identity_20261003_r01",
+  "latest_evidence": "evidence/launch_readback.json"
 }
