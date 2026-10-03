@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T10:16:11+00:00
+更新：2026-10-03T10:32:49+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|91|
+|managed_run|92|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,7 +21,7 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|236|
+|[cvs](by_method/cvs.md)|237|
 |[adv3b02](by_method/adv3b02.md)|146|
 |[phase2](by_method/phase2.md)|118|
 |[phase1](by_method/phase1.md)|112|
@@ -37,10 +37,10 @@
 |[rff_physics](by_method/rff_physics.md)|20|
 |[source_selected](by_method/source_selected.md)|18|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|17|
+|[source_only](by_method/source_only.md)|15|
 |[d92](by_method/d92.md)|15|
-|[source_only](by_method/source_only.md)|14|
+|[diagnostic](by_method/diagnostic.md)|13|
 |[response](by_method/response.md)|13|
-|[diagnostic](by_method/diagnostic.md)|12|
 |[daot](by_method/daot.md)|11|
 |[drift](by_method/drift.md)|11|
 |[rc4](by_method/rc4.md)|10|
@@ -48,11 +48,11 @@
 |[riei](by_method/riei.md)|10|
 |[practical](by_method/practical.md)|8|
 |[residual_noeq](by_method/residual_noeq.md)|8|
+|[no_training](by_method/no_training.md)|8|
 |[mopc](by_method/mopc.md)|8|
 |[csil](by_method/csil.md)|8|
 |[concat](by_method/concat.md)|7|
 |[residual](by_method/residual.md)|7|
-|[no_training](by_method/no_training.md)|7|
 |[truth_last](by_method/truth_last.md)|6|
 |[lightweight](by_method/lightweight.md)|6|
 |[core90](by_method/core90.md)|6|
@@ -144,6 +144,7 @@
 |[channel_attribution](by_method/channel_attribution.md)|1|
 |[frontfilter_attribution](by_method/frontfilter_attribution.md)|1|
 |[readout_attribution](by_method/readout_attribution.md)|1|
+|[relation_attribution](by_method/relation_attribution.md)|1|
 |[response_attribution](by_method/response_attribution.md)|1|
 |[response_geometry](by_method/response_geometry.md)|1|
 |[channel_order](by_method/channel_order.md)|1|
@@ -236,6 +237,7 @@
 |CVS镜像关系：冻结公开信号机制分解|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r01/report.md)|
 |CVS镜像关系：冻结公开信号机制分解|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-mechanism-public-m8-r02/report.md)|
 |CVS读出：完整源V分支归因与TX/RX/日期关联|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/report.md)|
+|CVS谱关系与镜像子空间：完整源V冻结反事实|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/report.md)|
 |CVS显式补偿响应：完整源V冻结归因|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)|
 |CVS补偿响应：完整源V判别几何|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|
 |CVS 信道与非线性运算次序：独立 clean 结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/report.md)|
@@ -280,4 +282,3 @@
 |包内正交坐标的实验结果与结构限制|legacy_evidence_group|[打开](../docs/CVS_ORTHOGONAL_COORDINATE_LIMIT_20261002.md)|
 |cvs_orthopoly_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_orthopoly_identity_20261002_r01)|
 |CVS 包内正交包络输入：结构假设与固定实验|legacy_evidence_group|[打开](../docs/CVS_PACKET_ORTHOGONAL_ENVELOPE_20261002.md)|
-|cvs_adaptive_volterra_clean_eval_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_adaptive_volterra_clean_eval_20261002_r01)|
