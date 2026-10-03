@@ -1,0 +1,27 @@
+{
+  "status": "VERIFIED",
+  "distinct_tests_passed": 79,
+  "tests": [
+    {
+      "command": "python -m pytest tests/test_cvs_frontfilter_attribution.py -o addopts= -q",
+      "passed": 58,
+      "result": "58 passed in9.86s",
+      "exit_code": 0,
+      "tool_chunk": "1b4174",
+      "evidence_origin": "Implementation worker command output"
+    },
+    {
+      "command": "python -X utf8 -m pytest tests/test_cvs_frontfilter_attribution_collect.py -o addopts= -q",
+      "passed": 21,
+      "result": "21 passed in3.11s",
+      "exit_code": 0,
+      "tool_chunk": "ea7758",
+      "evidence_origin": "Parent command output"
+    }
+  ],
+  "remote_templates_compile": "PASS",
+  "source_training_code_unchanged": true,
+  "real_data_access": false,
+  "target_access": false,
+  "note": "Checks used synthetic metadata and public/random tensors; actual checkpoint smoke occurs in launcher before source data"
+}

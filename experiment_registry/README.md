@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T07:01:46+00:00
+更新：2026-10-03T07:30:32+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|85|
+|managed_run|86|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,7 +21,7 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|230|
+|[cvs](by_method/cvs.md)|231|
 |[adv3b02](by_method/adv3b02.md)|146|
 |[phase2](by_method/phase2.md)|118|
 |[phase1](by_method/phase1.md)|112|
@@ -38,14 +38,14 @@
 |[source_selected](by_method/source_selected.md)|17|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|16|
 |[d92](by_method/d92.md)|15|
-|[source_only](by_method/source_only.md)|13|
+|[source_only](by_method/source_only.md)|14|
 |[response](by_method/response.md)|13|
 |[daot](by_method/daot.md)|11|
 |[drift](by_method/drift.md)|11|
 |[rc4](by_method/rc4.md)|10|
+|[diagnostic](by_method/diagnostic.md)|10|
 |[comparison](by_method/comparison.md)|10|
 |[riei](by_method/riei.md)|10|
-|[diagnostic](by_method/diagnostic.md)|9|
 |[practical](by_method/practical.md)|8|
 |[residual_noeq](by_method/residual_noeq.md)|8|
 |[mopc](by_method/mopc.md)|8|
@@ -59,8 +59,8 @@
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
 |[relative_cfo](by_method/relative_cfo.md)|5|
+|[no_training](by_method/no_training.md)|5|
 |[final200](by_method/final200.md)|4|
-|[no_training](by_method/no_training.md)|4|
 |[receiver_agnostic](by_method/receiver_agnostic.md)|4|
 |[repair](by_method/repair.md)|4|
 |[shot](by_method/shot.md)|4|
@@ -140,6 +140,7 @@
 |[rf_behavior_operator](by_method/rf_behavior_operator.md)|1|
 |[user_fixed_architecture](by_method/user_fixed_architecture.md)|1|
 |[channel_attribution](by_method/channel_attribution.md)|1|
+|[frontfilter_attribution](by_method/frontfilter_attribution.md)|1|
 |[readout_attribution](by_method/readout_attribution.md)|1|
 |[response_attribution](by_method/response_attribution.md)|1|
 |[response_geometry](by_method/response_geometry.md)|1|
@@ -228,6 +229,7 @@
 |CVS 全路径逐包同步身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/report.md)|
 |CVS 复数Volterra延迟相位记忆：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|
 |CVS补偿与顺序差：完整源V冻结归因|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/report.md)|
+|CVS全主干前置滤波：逐包/训练源均值/恒等输入的固定权重诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/report.md)|
 |CVS读出：完整源V分支归因与TX/RX/日期关联|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/report.md)|
 |CVS显式补偿响应：完整源V冻结归因|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)|
 |CVS补偿响应：完整源V判别几何|managed_run|[打开](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|
@@ -276,4 +278,3 @@
 |cvs_volterra_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_volterra_identity_20261002_r01)|
 |同参数复数相位记忆输入|legacy_evidence_group|[打开](../docs/CVS_VOLTERRA_PHASE_MEMORY_20261002.md)|
 |cvs_coupled_clean_eval_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_coupled_clean_eval_20261002_r01)|
-|cvs_coupled_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_coupled_identity_20261002_r01)|

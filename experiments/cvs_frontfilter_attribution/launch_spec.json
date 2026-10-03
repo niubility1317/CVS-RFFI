@@ -1,0 +1,136 @@
+{
+  "run_id": "20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01",
+  "launch_owner": "codex/root/frontfilter-source-attribution-20261003",
+  "runtime_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01",
+  "log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01",
+  "rows": [
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01",
+      "source_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_static-s2026092701/source",
+      "variant": "frontfilter_static",
+      "model_seed": 2026092701,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092701",
+      "conditions": [
+        "all_on",
+        "mean_L",
+        "g_identity"
+      ],
+      "role": "V",
+      "coefficient_role": "L_s",
+      "launch_owner": "codex/root/frontfilter-source-attribution-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01",
+      "source_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_dynamic-s2026092701/source",
+      "variant": "frontfilter_dynamic",
+      "model_seed": 2026092701,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092701",
+      "conditions": [
+        "all_on",
+        "mean_L",
+        "g_identity"
+      ],
+      "role": "V",
+      "coefficient_role": "L_s",
+      "launch_owner": "codex/root/frontfilter-source-attribution-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01",
+      "source_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_static-s2026092702/source",
+      "variant": "frontfilter_static",
+      "model_seed": 2026092702,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092702",
+      "conditions": [
+        "all_on",
+        "mean_L",
+        "g_identity"
+      ],
+      "role": "V",
+      "coefficient_role": "L_s",
+      "launch_owner": "codex/root/frontfilter-source-attribution-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01",
+      "source_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_dynamic-s2026092702/source",
+      "variant": "frontfilter_dynamic",
+      "model_seed": 2026092702,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092702",
+      "conditions": [
+        "all_on",
+        "mean_L",
+        "g_identity"
+      ],
+      "role": "V",
+      "coefficient_role": "L_s",
+      "launch_owner": "codex/root/frontfilter-source-attribution-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01",
+      "source_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_static-s2026092703/source",
+      "variant": "frontfilter_static",
+      "model_seed": 2026092703,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092703",
+      "conditions": [
+        "all_on",
+        "mean_L",
+        "g_identity"
+      ],
+      "role": "V",
+      "coefficient_role": "L_s",
+      "launch_owner": "codex/root/frontfilter-source-attribution-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01",
+      "source_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_dynamic-s2026092703/source",
+      "variant": "frontfilter_dynamic",
+      "model_seed": 2026092703,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092703",
+      "conditions": [
+        "all_on",
+        "mean_L",
+        "g_identity"
+      ],
+      "role": "V",
+      "coefficient_role": "L_s",
+      "launch_owner": "codex/root/frontfilter-source-attribution-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01",
+      "source_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_static-s2026092704/source",
+      "variant": "frontfilter_static",
+      "model_seed": 2026092704,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_static-s2026092704",
+      "conditions": [
+        "all_on",
+        "mean_L",
+        "g_identity"
+      ],
+      "role": "V",
+      "coefficient_role": "L_s",
+      "launch_owner": "codex/root/frontfilter-source-attribution-20261003"
+    },
+    {
+      "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01",
+      "source_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_dynamic-s2026092704/source",
+      "variant": "frontfilter_dynamic",
+      "model_seed": 2026092704,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/frontfilter_dynamic-s2026092704",
+      "conditions": [
+        "all_on",
+        "mean_L",
+        "g_identity"
+      ],
+      "role": "V",
+      "coefficient_role": "L_s",
+      "launch_owner": "codex/root/frontfilter-source-attribution-20261003"
+    }
+  ]
+}
