@@ -1,0 +1,176 @@
+{
+  "status": "VERIFIED",
+  "verified_at": "2026-10-03T06:33:01.452803+00:00",
+  "code_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
+  "dispatcher_pid": 2325550,
+  "live_workers": 8,
+  "all_configs_match": true,
+  "all_logs_growing": true,
+  "all_parameters_receive_CE_gradients": true,
+  "process_gpu_evidence": [
+    {
+      "pid": 2325565,
+      "gpu": 0,
+      "visible": [
+        "0"
+      ],
+      "parent": 2325550,
+      "actual_gpu": {
+        "uuid": "GPU-56adac86-77cd-36c9-8770-dbf002650461",
+        "memory": "652 MiB"
+      },
+      "expected_uuid": "GPU-56adac86-77cd-36c9-8770-dbf002650461"
+    },
+    {
+      "pid": 2325646,
+      "gpu": 1,
+      "visible": [
+        "1"
+      ],
+      "parent": 2325550,
+      "actual_gpu": {
+        "uuid": "GPU-a2d039ff-1792-4222-2b47-140429e10f94",
+        "memory": "652 MiB"
+      },
+      "expected_uuid": "GPU-a2d039ff-1792-4222-2b47-140429e10f94"
+    },
+    {
+      "pid": 2325770,
+      "gpu": 2,
+      "visible": [
+        "2"
+      ],
+      "parent": 2325550,
+      "actual_gpu": {
+        "uuid": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562",
+        "memory": "652 MiB"
+      },
+      "expected_uuid": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562"
+    },
+    {
+      "pid": 2325862,
+      "gpu": 3,
+      "visible": [
+        "3"
+      ],
+      "parent": 2325550,
+      "actual_gpu": {
+        "uuid": "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97",
+        "memory": "652 MiB"
+      },
+      "expected_uuid": "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97"
+    },
+    {
+      "pid": 2325939,
+      "gpu": 4,
+      "visible": [
+        "4"
+      ],
+      "parent": 2325550,
+      "actual_gpu": {
+        "uuid": "GPU-95d925a1-7218-ca7b-adef-164241f4f491",
+        "memory": "652 MiB"
+      },
+      "expected_uuid": "GPU-95d925a1-7218-ca7b-adef-164241f4f491"
+    },
+    {
+      "pid": 2326020,
+      "gpu": 5,
+      "visible": [
+        "5"
+      ],
+      "parent": 2325550,
+      "actual_gpu": {
+        "uuid": "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331",
+        "memory": "652 MiB"
+      },
+      "expected_uuid": "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331"
+    },
+    {
+      "pid": 2326098,
+      "gpu": 6,
+      "visible": [
+        "6"
+      ],
+      "parent": 2325550,
+      "actual_gpu": {
+        "uuid": "GPU-5463e082-259e-537b-603a-01575d45801c",
+        "memory": "652 MiB"
+      },
+      "expected_uuid": "GPU-5463e082-259e-537b-603a-01575d45801c"
+    },
+    {
+      "pid": 2326179,
+      "gpu": 7,
+      "visible": [
+        "7"
+      ],
+      "parent": 2325550,
+      "actual_gpu": {
+        "uuid": "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9",
+        "memory": "652 MiB"
+      },
+      "expected_uuid": "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9"
+    }
+  ],
+  "rows": [
+    {
+      "row_id": "frontfilter_static-s2026092701",
+      "pid": 2325565,
+      "gpu": 0,
+      "epoch": 21,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_dynamic-s2026092701",
+      "pid": 2325646,
+      "gpu": 1,
+      "epoch": 20,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_static-s2026092702",
+      "pid": 2325770,
+      "gpu": 2,
+      "epoch": 20,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_dynamic-s2026092702",
+      "pid": 2325862,
+      "gpu": 3,
+      "epoch": 19,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_static-s2026092703",
+      "pid": 2325939,
+      "gpu": 4,
+      "epoch": 19,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_dynamic-s2026092703",
+      "pid": 2326020,
+      "gpu": 5,
+      "epoch": 18,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_static-s2026092704",
+      "pid": 2326098,
+      "gpu": 6,
+      "epoch": 17,
+      "log_grew": true
+    },
+    {
+      "row_id": "frontfilter_dynamic-s2026092704",
+      "pid": 2326179,
+      "gpu": 7,
+      "epoch": 16,
+      "log_grew": true
+    }
+  ],
+  "target_access": false,
+  "performance_goal_achieved": false
+}

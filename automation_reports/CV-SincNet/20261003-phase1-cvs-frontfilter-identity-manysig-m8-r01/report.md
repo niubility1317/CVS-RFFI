@@ -38,6 +38,12 @@
 
 ## 本地验证
 
-状态LOCAL_VERIFIED，尚未启动。模型20项、源协议58项、全V诊断5项、源分析87项，共170项独立测试通过；另完成8行公开输入三步CE冒烟与一次P0/P1发布审查。检查不代表性能提升。纯DC数值边界保留原始失败和分层核验。
+状态RUNNING，8份训练已独立核实存活并输出epoch。模型20项、源协议58项、全V诊断5项、源分析87项，共170项独立测试通过；另完成8行公开输入三步CE冒烟与一次P0/P1发布审查。检查不代表性能提升。纯DC数值边界保留原始失败和分层核验。
 
 [本地验证](evidence/local_validation.json) · [8行冒烟](evidence/local_model_smoke.json) · [数值根因](evidence/constant_phase_roundoff.json) · [独立审查](evidence/source_p0_p1_review.json)。
+
+## 启动读回
+
+实际发布commit为`dd5518d1493f2f79fb4213e4731e9f88cb28a349`，dispatcher PID2325550。全部8个worker的PID/CWD/argv、父进程、CUDA可见设备及nvidia-smi物理GPU映射一致，两次日志读回增长。实际配置匹配static221035/dynamic221307参数、48/320前置参数、原单CE、FP32及固定源数据角色。当前不按早期分数选模，尚未接触目标。
+
+[启动核验](evidence/launch_validation.json) · [完整实际配置与进程](evidence/launch_readback.json) · [SCP前路径与资源](evidence/pretransfer_readback.json)。

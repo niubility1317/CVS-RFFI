@@ -24,12 +24,12 @@
   "replaces_run_id": null,
   "authorization": "2026-10-03用户要求依据创新落地架构并跑实验，继续纯架构优化；保持原单CE及训练策略。",
   "code": {
-    "commit": "7c9b77e1d22d6adb484c5932ef39abe3767a2fcd",
+    "commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_identity_20261003_r01",
     "architecture_base_commit": "7c9b77e1d22d6adb484c5932ef39abe3767a2fcd",
-    "commit_role": "preparation_base; actual source release commit to be recorded from independent launch readback"
+    "commit_role": "actual independently verified source release"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -99,7 +99,10 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_frontfilter_identity.publish --output local_artifacts/cvs_frontfilter_identity_20261003_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 2325550,
+    "live_workers": 8,
+    "launch_verified_at": "2026-10-03T06:33:01.452803+00:00"
   },
   "expected_artifacts": [
     "last.pt",
@@ -146,7 +149,7 @@
       "row_id": "frontfilter_static-s2026092701",
       "method": "frontfilter_static",
       "purpose": "source_only_full_backbone_frontfilter_candidate",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_frontfilter_identity/configs/frontfilter_static-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_static-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -182,13 +185,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2325565
     },
     {
       "row_id": "frontfilter_dynamic-s2026092701",
       "method": "frontfilter_dynamic",
       "purpose": "source_only_full_backbone_frontfilter_candidate",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_frontfilter_identity/configs/frontfilter_dynamic-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_dynamic-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -224,13 +229,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2325646
     },
     {
       "row_id": "frontfilter_static-s2026092702",
       "method": "frontfilter_static",
       "purpose": "source_only_full_backbone_frontfilter_candidate",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_frontfilter_identity/configs/frontfilter_static-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_static-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -266,13 +273,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2325770
     },
     {
       "row_id": "frontfilter_dynamic-s2026092702",
       "method": "frontfilter_dynamic",
       "purpose": "source_only_full_backbone_frontfilter_candidate",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_frontfilter_identity/configs/frontfilter_dynamic-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_dynamic-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -308,13 +317,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2325862
     },
     {
       "row_id": "frontfilter_static-s2026092703",
       "method": "frontfilter_static",
       "purpose": "source_only_full_backbone_frontfilter_candidate",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_frontfilter_identity/configs/frontfilter_static-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_static-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -350,13 +361,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2325939
     },
     {
       "row_id": "frontfilter_dynamic-s2026092703",
       "method": "frontfilter_dynamic",
       "purpose": "source_only_full_backbone_frontfilter_candidate",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_frontfilter_identity/configs/frontfilter_dynamic-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_dynamic-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -392,13 +405,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2326020
     },
     {
       "row_id": "frontfilter_static-s2026092704",
       "method": "frontfilter_static",
       "purpose": "source_only_full_backbone_frontfilter_candidate",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_frontfilter_identity/configs/frontfilter_static-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_static-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -434,13 +449,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2326098
     },
     {
       "row_id": "frontfilter_dynamic-s2026092704",
       "method": "frontfilter_dynamic",
       "purpose": "source_only_full_backbone_frontfilter_candidate",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_frontfilter_identity/configs/frontfilter_dynamic-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/frontfilter_dynamic-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -476,7 +493,9 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2326179
     }
   ],
   "notes": [
@@ -494,7 +513,7 @@
     "Final frozen all27000V forward captures the actual single frontend call and stores90TX/RX/day cells of input changes,norm ratios,coefficient/kernel L1 and8D coefficient means/trace variances; no extra fitting or source selection use."
   ],
   "registered_at": "2026-10-03T06:12:35+00:00",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "source_controls": [
     {
       "variant": "neural_residual_shallow",
