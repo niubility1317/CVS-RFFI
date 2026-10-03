@@ -1,0 +1,40 @@
+{
+  "status": "VERIFIED",
+  "candidate": "response_anchor_mean",
+  "accuracy_mean": 0.6991294642857143,
+  "accuracy_seed_sd": 0.012142241829064652,
+  "paired_vs_channel_dual": {
+    "candidate": "response_anchor_mean",
+    "baseline": "channel_dual",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      0.20892857142857935,
+      1.1470238095238172,
+      0.8113095238095225,
+      -0.25416666666666643
+    ],
+    "accuracy_delta_pp_mean": 0.47827380952381315,
+    "accuracy_delta_pp_seed_sd": 0.6237401323031124,
+    "positive_seeds": 3
+  },
+  "all352_confusions_recomputed": true,
+  "old320_metrics_exactly_unchanged": true,
+  "all88_summaries_recomputed": true,
+  "all80_pairs_recomputed": true,
+  "all_RX_sums_match": true,
+  "target_feedback": false,
+  "response_compensation_active": true,
+  "response_order_active": false,
+  "fusion_mode": "response_anchor_mean",
+  "fusion_final_joint_normalization": false,
+  "fusion_new_parameters": 0,
+  "scientific_verdict": "POSITIVE_MEAN_ON_FIXED_CLEAN_BENCHMARK",
+  "scope": "Four model seeds on historically exposed clean benchmark; not broad statistical or deployment proof"
+}

@@ -12,7 +12,7 @@
 |response_span_mean|98.4389|95.7685|97.1037|-0.0264±0.0931|2/4|237147|
 |response_anchor_mean|98.4435|95.8194|97.1315|+0.0014±0.0497|2/4|237147|
 
-固定规则选中`response_anchor_mean`。后续只对该候选4模型执行预登记clean测试。
+固定规则选中`response_anchor_mean`。该候选4模型已完成预登记clean测试，结果见下方收尾记录。
 
 ![完整5600轮含控制曲线](evidence/source_curves.png)
 
@@ -31,3 +31,11 @@
 源V使用已见源RX；四seed不是独立数据集。新增容量是否提高独立clean识别必须由冻结测试证明。没有追加损失、增强、重加权、采样策略、teacher或目标适应。D92的适应三阶段/K×新增类为N/A。
 
 [逐seed](evidence/source_final.csv) · [完整曲线](evidence/source_curves.csv) · [实际新增分支输出](evidence/response_outputs.csv) · [全部TX/RX/day单元](evidence/source_cells.csv) · [资源](evidence/source_resources.csv) · [80000步审计](evidence/source_completion_validation.json) · [原设计](../../../docs/CVS_RESPONSE_FUSION_DESIGN_20261003.md)。
+
+## 本轮收尾
+
+本轮实现、8份E200训练和冻结后的独立clean测试已完成。Anchor准确率69.9129%±1.2142%（4个模型seed的样本标准差），较channel_dual提高0.4783±0.6237个百分点，3/4个seed为正；较同主干shallow仅提高0.0562±0.2182个百分点，3/4个seed为正。相对native低6.3143个百分点，相对固定residual_fusion低8.5414个百分点，二者均为0/4个seed胜出。因此只能报告相对近期双路控制的局部均值恢复，不能据此认定整体识别提升、信道鲁棒性或Phase1论文贡献成立。误差项是seed标准差，不是置信区间；同一数据划分的4个模型不构成4个独立测试域。
+
+源分数仅领先双路0.0014个百分点，不能当作稳定的源性能增益。共审计80000个新训练步，44行预测全部完成，352条评分、88组汇总和80组配对独立复算通过，既有320条控制评分完全不变。未选Span结构未访问query。
+
+[完整独立测试](../20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md) · [完成判定](../20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/evidence/completion_verdict.json)。

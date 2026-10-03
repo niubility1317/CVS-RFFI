@@ -1,17 +1,118 @@
 {
   "run_id": "20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01",
-  "status": "TRAINING_COMPLETE",
-  "live_workers": 0,
-  "code_commit": "0772695891677ccf70e595224a32979b0285c5f8",
-  "selected_variant": "response_anchor_mean",
-  "clean_run": "20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01",
+  "status": "ANALYZED",
+  "task_scope_complete": true,
   "performance_goal_achieved": false,
+  "paper_claim_established": false,
+  "live_workers": 0,
+  "selected_variant": "response_anchor_mean",
+  "code_commit": "0772695891677ccf70e595224a32979b0285c5f8",
+  "source_run": "20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01",
+  "clean_run": "20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01",
+  "outcome": {
+    "execution_complete": true,
+    "performance_goal_achieved": false,
+    "paper_claim_established": false,
+    "scientific_verdict": "LOCAL_GAIN_VS_CHANNEL_DUAL_BUT_NO_OVERALL_PERFORMANCE_GOAL",
+    "selected_variant": "response_anchor_mean",
+    "clean_accuracy": 0.6991294642857143,
+    "clean_accuracy_seed_sd": 0.012142241829064652,
+    "paired_comparisons": {
+      "channel_dual": {
+        "candidate": "response_anchor_mean",
+        "baseline": "channel_dual",
+        "receiver": "ALL",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "accuracy_delta_pp_by_seed": [
+          0.20892857142857935,
+          1.1470238095238172,
+          0.8113095238095225,
+          -0.25416666666666643
+        ],
+        "accuracy_delta_pp_mean": 0.47827380952381315,
+        "accuracy_delta_pp_seed_sd": 0.6237401323031124,
+        "positive_seeds": 3
+      },
+      "neural_residual_shallow": {
+        "candidate": "response_anchor_mean",
+        "baseline": "neural_residual_shallow",
+        "receiver": "ALL",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "accuracy_delta_pp_by_seed": [
+          0.024999999999997247,
+          0.11190476190476861,
+          -0.21904761904762982,
+          0.3071428571428614
+        ],
+        "accuracy_delta_pp_mean": 0.056249999999999356,
+        "accuracy_delta_pp_seed_sd": 0.21818189646964972,
+        "positive_seeds": 3
+      },
+      "native": {
+        "candidate": "response_anchor_mean",
+        "baseline": "native",
+        "receiver": "ALL",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "accuracy_delta_pp_by_seed": [
+          -4.936309523809523,
+          -7.5720238095238095,
+          -7.100000000000007,
+          -5.648809523809528
+        ],
+        "accuracy_delta_pp_mean": -6.314285714285718,
+        "accuracy_delta_pp_seed_sd": 1.2303019949858713,
+        "positive_seeds": 0
+      },
+      "residual_fusion": {
+        "candidate": "response_anchor_mean",
+        "baseline": "residual_fusion",
+        "receiver": "ALL",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "accuracy_delta_pp_by_seed": [
+          -7.544642857142858,
+          -9.06488095238095,
+          -9.919047619047628,
+          -7.636904761904761
+        ],
+        "accuracy_delta_pp_mean": -8.54136904761905,
+        "accuracy_delta_pp_seed_sd": 1.1523283246706444,
+        "positive_seeds": 0
+      }
+    },
+    "target_feedback": false,
+    "evidence_ref": "../20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/evidence/analysis_validation.json",
+    "scope": "Fixed historically exposed clean benchmark; four model seeds, same physical split; no broad channel invariance proof"
+  },
   "evidence": [
     "evidence/source_completion_validation.json",
-    "evidence/source_analysis_validation.json"
+    "../20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/evidence/completion_verdict.json"
   ],
   "next": [
-    "Publish actual selected four clean predictions and independently score44rows",
-    "Preserve all negative outcomes and report paper/performance gaps"
+    "Preserve all source and test outcomes; no unselected candidate test or rerun",
+    "Overall architecture/paper goal remains open; any later design requires source-only evidence and must not use target results"
   ]
 }

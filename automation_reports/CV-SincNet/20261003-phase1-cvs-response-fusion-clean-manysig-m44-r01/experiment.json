@@ -23,13 +23,13 @@
   "replaces_run_id": null,
   "authorization": "用户授权信道相关架构实现与实验；原训练方案与单一 CE；源规则选中后完成 clean 测试。",
   "code": {
-    "commit": "ef3ccdd2d9939fcc5a6754b04b6ba193753e2a42",
+    "commit": "21441a1f4a87c4b1f50b359b481ed0d7416834ed",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_fusion_clean_eval_20261003_r01",
     "architecture_base_commit": "f929f4d1116640474d324844e2f0824f97ca7dd0",
     "note": "Preparation base; actual immutable clean release commit recorded after submission; actual source FP32 and phase lag frozen before query",
-    "commit_scope": "Preparation baseline; actual immutable evaluation release recorded after launch"
+    "commit_scope": "Actual immutable clean release, independent process readback"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -144,7 +144,11 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01",
     "launch_command": "python -m experiments.cvs_response_fusion_clean.publish --output local_artifacts/cvs_response_fusion_clean_eval_20261003_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 2228177,
+    "launch_verified_at": "2026-10-03T03:27:41.012788+00:00",
+    "completed_verified_at": "2026-10-03T03:35:23.458101+00:00",
+    "live_workers": 0
   },
   "expected_artifacts": [
     "pipeline_state.json",
@@ -215,7 +219,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "cvcnn-s2026092701",
@@ -250,7 +255,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "real_cnn-s2026092701",
@@ -285,7 +291,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "resnet1d-s2026092701",
@@ -320,7 +327,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "native-s2026092702",
@@ -355,7 +363,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "cvcnn-s2026092702",
@@ -390,7 +399,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "real_cnn-s2026092702",
@@ -425,7 +435,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "resnet1d-s2026092702",
@@ -460,7 +471,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "native-s2026092703",
@@ -495,7 +507,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "cvcnn-s2026092703",
@@ -530,7 +543,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "real_cnn-s2026092703",
@@ -565,7 +579,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "resnet1d-s2026092703",
@@ -600,7 +615,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "native-s2026092704",
@@ -635,7 +651,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "cvcnn-s2026092704",
@@ -670,7 +687,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "real_cnn-s2026092704",
@@ -705,7 +723,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "resnet1d-s2026092704",
@@ -740,7 +759,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "residual_fusion-s2026092701",
@@ -775,7 +795,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "residual_fusion-s2026092702",
@@ -810,7 +831,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "residual_fusion-s2026092703",
@@ -845,7 +867,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "residual_fusion-s2026092704",
@@ -880,7 +903,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "energy_equivariant-s2026092701",
@@ -915,7 +939,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01"
+      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "energy_equivariant-s2026092702",
@@ -950,7 +975,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01"
+      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "energy_equivariant-s2026092703",
@@ -985,7 +1011,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01"
+      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "energy_equivariant-s2026092704",
@@ -1020,7 +1047,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01"
+      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "coupled_lag4-s2026092701",
@@ -1055,7 +1083,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01"
+      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "coupled_lag4-s2026092702",
@@ -1090,7 +1119,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01"
+      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "coupled_lag4-s2026092703",
@@ -1125,7 +1155,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01"
+      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "coupled_lag4-s2026092704",
@@ -1160,7 +1191,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01"
+      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092701",
@@ -1195,7 +1227,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01"
+      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092702",
@@ -1230,7 +1263,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01"
+      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092703",
@@ -1265,7 +1299,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01"
+      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092704",
@@ -1300,7 +1335,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01"
+      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "neural_residual_shallow-s2026092701",
@@ -1335,7 +1371,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01"
+      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "neural_residual_shallow-s2026092702",
@@ -1370,7 +1407,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01"
+      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "neural_residual_shallow-s2026092703",
@@ -1405,7 +1443,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01"
+      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "neural_residual_shallow-s2026092704",
@@ -1440,7 +1479,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01"
+      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "channel_dual-s2026092701",
@@ -1475,7 +1515,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261003-phase1-cvs-channel-order-clean-manysig-m40-r01"
+      "reuse_from_run": "20261003-phase1-cvs-channel-order-clean-manysig-m40-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "channel_dual-s2026092702",
@@ -1510,7 +1551,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261003-phase1-cvs-channel-order-clean-manysig-m40-r01"
+      "reuse_from_run": "20261003-phase1-cvs-channel-order-clean-manysig-m40-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "channel_dual-s2026092703",
@@ -1545,7 +1587,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261003-phase1-cvs-channel-order-clean-manysig-m40-r01"
+      "reuse_from_run": "20261003-phase1-cvs-channel-order-clean-manysig-m40-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "channel_dual-s2026092704",
@@ -1580,13 +1623,14 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261003-phase1-cvs-channel-order-clean-manysig-m40-r01"
+      "reuse_from_run": "20261003-phase1-cvs-channel-order-clean-manysig-m40-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "response_anchor_mean-s2026092701",
       "method": "response_anchor_mean",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_response_fusion_clean/configs/response_anchor_mean-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/response_anchor_mean-s2026092701/prediction/resolved_config.json",
       "data_overrides": {},
@@ -1614,13 +1658,16 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "status": "PREDICTIONS_COMPLETE",
+      "pid": 2228196,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/response_anchor_mean-s2026092701.log"
     },
     {
       "row_id": "response_anchor_mean-s2026092702",
       "method": "response_anchor_mean",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_response_fusion_clean/configs/response_anchor_mean-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/response_anchor_mean-s2026092702/prediction/resolved_config.json",
       "data_overrides": {},
@@ -1648,13 +1695,16 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "status": "PREDICTIONS_COMPLETE",
+      "pid": 2228203,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/response_anchor_mean-s2026092702.log"
     },
     {
       "row_id": "response_anchor_mean-s2026092703",
       "method": "response_anchor_mean",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_response_fusion_clean/configs/response_anchor_mean-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/response_anchor_mean-s2026092703/prediction/resolved_config.json",
       "data_overrides": {},
@@ -1682,13 +1732,16 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "status": "PREDICTIONS_COMPLETE",
+      "pid": 2228280,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/response_anchor_mean-s2026092703.log"
     },
     {
       "row_id": "response_anchor_mean-s2026092704",
       "method": "response_anchor_mean",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_response_fusion_clean/configs/response_anchor_mean-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/response_anchor_mean-s2026092704/prediction/resolved_config.json",
       "data_overrides": {},
@@ -1716,7 +1769,10 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "status": "PREDICTIONS_COMPLETE",
+      "pid": 2228358,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/response_anchor_mean-s2026092704.log"
     }
   ],
   "notes": [
@@ -1726,5 +1782,103 @@
     "Actual source FP32 policy is enforced before new prediction; historical control precision remains recorded"
   ],
   "registered_at": "2026-10-03T03:23:03+00:00",
-  "status": "PLANNED"
+  "status": "ANALYZED",
+  "outcome": {
+    "execution_complete": true,
+    "performance_goal_achieved": false,
+    "paper_claim_established": false,
+    "scientific_verdict": "LOCAL_GAIN_VS_CHANNEL_DUAL_BUT_NO_OVERALL_PERFORMANCE_GOAL",
+    "selected_variant": "response_anchor_mean",
+    "clean_accuracy": 0.6991294642857143,
+    "clean_accuracy_seed_sd": 0.012142241829064652,
+    "paired_comparisons": {
+      "channel_dual": {
+        "candidate": "response_anchor_mean",
+        "baseline": "channel_dual",
+        "receiver": "ALL",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "accuracy_delta_pp_by_seed": [
+          0.20892857142857935,
+          1.1470238095238172,
+          0.8113095238095225,
+          -0.25416666666666643
+        ],
+        "accuracy_delta_pp_mean": 0.47827380952381315,
+        "accuracy_delta_pp_seed_sd": 0.6237401323031124,
+        "positive_seeds": 3
+      },
+      "neural_residual_shallow": {
+        "candidate": "response_anchor_mean",
+        "baseline": "neural_residual_shallow",
+        "receiver": "ALL",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "accuracy_delta_pp_by_seed": [
+          0.024999999999997247,
+          0.11190476190476861,
+          -0.21904761904762982,
+          0.3071428571428614
+        ],
+        "accuracy_delta_pp_mean": 0.056249999999999356,
+        "accuracy_delta_pp_seed_sd": 0.21818189646964972,
+        "positive_seeds": 3
+      },
+      "native": {
+        "candidate": "response_anchor_mean",
+        "baseline": "native",
+        "receiver": "ALL",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "accuracy_delta_pp_by_seed": [
+          -4.936309523809523,
+          -7.5720238095238095,
+          -7.100000000000007,
+          -5.648809523809528
+        ],
+        "accuracy_delta_pp_mean": -6.314285714285718,
+        "accuracy_delta_pp_seed_sd": 1.2303019949858713,
+        "positive_seeds": 0
+      },
+      "residual_fusion": {
+        "candidate": "response_anchor_mean",
+        "baseline": "residual_fusion",
+        "receiver": "ALL",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "accuracy_delta_pp_by_seed": [
+          -7.544642857142858,
+          -9.06488095238095,
+          -9.919047619047628,
+          -7.636904761904761
+        ],
+        "accuracy_delta_pp_mean": -8.54136904761905,
+        "accuracy_delta_pp_seed_sd": 1.1523283246706444,
+        "positive_seeds": 0
+      }
+    },
+    "target_feedback": false,
+    "evidence_ref": "../20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/evidence/analysis_validation.json",
+    "scope": "Fixed historically exposed clean benchmark; four model seeds, same physical split; no broad channel invariance proof"
+  }
 }

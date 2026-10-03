@@ -1,1 +1,3 @@
 {"at": "2026-10-03T03:23:03+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-03T03:27:41+00:00", "status": "RUNNING", "note": "VERIFIED four actual response_anchor_mean predictors on four GPUs, scratch provenance and CWD/argv/config;40 immutable predictions reused", "evidence": ["evidence/launch_readback.json"], "row_id": null}
+{"at": "2026-10-03T03:35:23+00:00", "status": "ANALYZED", "note": "VERIFIED 8 scratch E200 models, frozen source selection, 44-row independent clean score; local gain vs dual, overall performance/paper goal not achieved", "evidence": ["evidence/final_readback.json", "evidence/analysis_validation.json", "evidence/completion_verdict.json"], "row_id": null}
