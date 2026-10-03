@@ -1,0 +1,18 @@
+{
+  "status": "SUBMITTED",
+  "pid": 2269811,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01/dispatch.py",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01/launch_spec.json"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01/dispatcher.log",
+  "commit": "d3cb40404f54e924c0d396f69883428ddb2962fd",
+  "sha256": "e1948c3573585cfbbbe08aefac506129bfb81d74a05440980948d1b105865254",
+  "preflight_gpu": "0, 24124\n1, 24124\n2, 24124\n3, 24124\n4, 24124\n5, 24124\n6, 24124\n7, 24124\n",
+  "preflight_apps": "",
+  "disk_free_bytes": 5733718421504
+}

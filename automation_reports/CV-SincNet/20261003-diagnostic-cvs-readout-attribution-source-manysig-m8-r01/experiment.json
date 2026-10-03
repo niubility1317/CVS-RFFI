@@ -21,12 +21,12 @@
   "replaces_run_id": null,
   "authorization": "用户授权继续优化纯神经网络架构并深入分析；原单CE训练不变，本诊断仅补充冻结源机制证据。",
   "code": {
-    "commit": "7f2666f0fa107a0dd5aac410f1722f6ebfb6a395",
+    "commit": "d3cb40404f54e924c0d396f69883428ddb2962fd",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_readout_attribution_source_20261003_r01",
     "architecture_base_commit": "6ca7a522bb4be34993f442129870e68cec61bbc7",
-    "commit_scope": "Preparation baseline; actual diagnostic release commit recorded after launch. Model imported from original immutable source release."
+    "commit_scope": "Actual immutable diagnostic release; original model source release stays6ca7a522b"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -108,7 +108,10 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_readout_attribution.publish --output local_artifacts/cvs_readout_attribution_source_20261003_r01/delivery",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 2269811,
+    "live_workers": 0,
+    "completed_verified_at": "2026-10-03T04:54:09.518605+00:00"
   },
   "expected_artifacts": [
     "resolved_config.json",
@@ -137,7 +140,7 @@
       "row_id": "readout_attention-s2026092701",
       "method": "readout_attention",
       "purpose": "frozen_full_source_V_readout_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_attention-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -164,13 +167,16 @@
         "resolved_config.json",
         "completion.json",
         "source_readout_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2269826,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092701.log"
     },
     {
       "row_id": "readout_attention-s2026092702",
       "method": "readout_attention",
       "purpose": "frozen_full_source_V_readout_attribution",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_attention-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -197,13 +203,16 @@
         "resolved_config.json",
         "completion.json",
         "source_readout_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2269904,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092702.log"
     },
     {
       "row_id": "readout_attention-s2026092703",
       "method": "readout_attention",
       "purpose": "frozen_full_source_V_readout_attribution",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_attention-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -230,13 +239,16 @@
         "resolved_config.json",
         "completion.json",
         "source_readout_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2269982,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092703.log"
     },
     {
       "row_id": "readout_attention-s2026092704",
       "method": "readout_attention",
       "purpose": "frozen_full_source_V_readout_attribution",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_attention-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -263,13 +275,16 @@
         "resolved_config.json",
         "completion.json",
         "source_readout_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2270113,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_attention-s2026092704.log"
     },
     {
       "row_id": "readout_complex_attention-s2026092701",
       "method": "readout_complex_attention",
       "purpose": "frozen_full_source_V_readout_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_complex_attention-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -296,13 +311,16 @@
         "resolved_config.json",
         "completion.json",
         "source_readout_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2270602,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092701.log"
     },
     {
       "row_id": "readout_complex_attention-s2026092702",
       "method": "readout_complex_attention",
       "purpose": "frozen_full_source_V_readout_attribution",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_complex_attention-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -329,13 +347,16 @@
         "resolved_config.json",
         "completion.json",
         "source_readout_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2270682,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092702.log"
     },
     {
       "row_id": "readout_complex_attention-s2026092703",
       "method": "readout_complex_attention",
       "purpose": "frozen_full_source_V_readout_attribution",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_complex_attention-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -362,13 +383,16 @@
         "resolved_config.json",
         "completion.json",
         "source_readout_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2270760,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092703.log"
     },
     {
       "row_id": "readout_complex_attention-s2026092704",
       "method": "readout_complex_attention",
       "purpose": "frozen_full_source_V_readout_attribution",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_readout_attribution/launch_spec.json#readout_complex_attention-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -395,7 +419,10 @@
         "resolved_config.json",
         "completion.json",
         "source_readout_geometry.npz"
-      ]
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 2270838,
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/readout_complex_attention-s2026092704.log"
     }
   ],
   "notes": [
@@ -406,10 +433,19 @@
     "Full-V feature geometry stays on ground N607; no source features enter Phase2 or target runtime",
     "Source-only diagnostic, no new trainable candidate; retained source winner and its completed clean evidence remain unchanged"
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "status": "NOT_APPLICABLE_SOURCE_DIAGNOSTIC",
     "reason": "No new candidate or source reselection; retained Anchor clean already verified in parent; no unselected readout query permitted"
   },
-  "registered_at": "2026-10-03T04:38:58+00:00"
+  "registered_at": "2026-10-03T04:38:58+00:00",
+  "outcome": {
+    "status": "VERIFIED",
+    "models": 8,
+    "conditions": 32,
+    "source_packets": 27000,
+    "prediction_decisions": 864000,
+    "source_only": true,
+    "performance_goal_achieved": false
+  }
 }

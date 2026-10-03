@@ -1,0 +1,49 @@
+{
+  "status": "VERIFIED",
+  "execution_complete": true,
+  "performance_goal_achieved": false,
+  "paper_claim_established": false,
+  "model_count": 8,
+  "source_decisions": 864000,
+  "source_only": true,
+  "optimizer_updates": 0,
+  "new_target_predictions": 0,
+  "scientific_verdict": "STRONG_BEHAVIOR_READOUT_DEPENDENCE_WITHOUT_SOURCE_GENERALIZATION_GAIN",
+  "summary": [
+    {
+      "variant": "readout_attention",
+      "time_contribution_pp": 1.4166666666666667,
+      "behavior_contribution_pp": 24.475925925925925,
+      "both_contribution_pp": 33.56018518518518,
+      "accuracy_interaction_pp": -7.667592592592593,
+      "time_relative_output": 0.4595097710788124,
+      "behavior_relative_output": 0.5973831792431199,
+      "behavior_delta_tx_fraction": 0.40281121986902846,
+      "behavior_delta_rx_fraction": 0.08460569990147172,
+      "time_delta_tx_rx_fraction": 0.4169147341629323
+    },
+    {
+      "variant": "readout_complex_attention",
+      "time_contribution_pp": 0.587037037037037,
+      "behavior_contribution_pp": 36.24629629629629,
+      "both_contribution_pp": 41.41481481481482,
+      "accuracy_interaction_pp": -4.5814814814814815,
+      "time_relative_output": 0.43184638968526434,
+      "behavior_relative_output": 0.6271363164359459,
+      "behavior_delta_tx_fraction": 0.47989160493959393,
+      "behavior_delta_rx_fraction": 0.04963788028851212,
+      "time_delta_tx_rx_fraction": 0.37375644978429434
+    }
+  ],
+  "supported": [
+    "Both added paths affect frozen source predictions; behavior branch dependence is large",
+    "Keeping a skip operator does not preserve the separately trained baseline function after co-adaptation",
+    "Behavior delta has substantial observed TX mean scatter; a receiver-only explanation is unsupported"
+  ],
+  "not_proven": [
+    "TX/RX causal disentanglement",
+    "physical channel invariance",
+    "benefit of removing a branch and retraining",
+    "new target performance gain"
+  ]
+}

@@ -1,12 +1,20 @@
 {
   "run_id": "20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01",
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "live_workers": 0,
-  "launch_owner": "codex/root/readout-source-attribution-20261003",
+  "task_scope_complete": true,
   "performance_goal_achieved": false,
+  "paper_claim_established": false,
+  "code_commit": "d3cb40404f54e924c0d396f69883428ddb2962fd",
+  "source_run": "20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01",
+  "evidence": [
+    "evidence/final_readback.json",
+    "evidence/independent_recount.json",
+    "evidence/mechanism_verdict.json"
+  ],
   "next": [
-    "Complete P0/P1 review, commit and publish once",
-    "Verify live processes and full source artifacts",
-    "Independent full-array recount and source-only interpretation"
+    "Use source-only evidence to design a readout that addresses learned-path co-adaptation and observed TXxRX interactions",
+    "Do not treat source factor scatter as physical disentanglement or branch knockout as a retrained candidate",
+    "No diagnostic relaunch, target feedback, added losses or training strategy changes"
   ]
 }
