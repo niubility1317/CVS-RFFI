@@ -1,15 +1,27 @@
 {
   "run_id": "20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01",
-  "status": "PLANNED",
+  "status": "RUNNING",
   "launch_owner": "codex/root/cvs-response-fusion-identity-20261003",
-  "live_workers": 0,
-  "source_matrix": "8new+20frozen=28",
-  "clean_matrix": "conditional4new+40frozen=44",
+  "live_workers": 8,
+  "code_commit": "0772695891677ccf70e595224a32979b0285c5f8",
+  "dispatcher_pid": 2209071,
   "performance_goal_achieved": false,
+  "paper_goal_achieved": false,
+  "evidence": [
+    "evidence/launch_readback.json",
+    "evidence/launch_processes.json",
+    "evidence/clean_pipeline_validation.json",
+    "evidence/clean_publication_review.json"
+  ],
   "next": [
-    "Scoped source publication review and committed release",
-    "Launch once and independently reconcile actual processes/config/logs",
-    "Audit80000steps and source selection; implement conditional clean pathway while training",
-    "Complete authorized fixed clean test if new variant selected"
-  ]
+    "Read-only monitor; no resubmit/hot change",
+    "Collect all80000steps and independently freeze28source records",
+    "New winner only: prepare/register/Git/publish44row clean; olddual retained:verify existing control test",
+    "Complete analysis,all negatives retained"
+  ],
+  "monitor_command": "python E:/type10-7/.codex_tmp/response_fusion_monitor.py --name progress",
+  "collect_command": "python -m experiments.cvs_response_fusion_identity.collect --root . --output local_artifacts/cvs_response_fusion_identity_20261003_r01/complete",
+  "source_analyze_command": "python -m experiments.cvs_response_fusion_identity.analyze --root .",
+  "clean_prepare_command": "python -m experiments.cvs_response_fusion_clean.prepare --selection automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/evidence/source_selection.json",
+  "conditional_clean_pipeline": "IMPLEMENTED_AND_REVIEWED; generate actual winner configs only after complete source freeze"
 }

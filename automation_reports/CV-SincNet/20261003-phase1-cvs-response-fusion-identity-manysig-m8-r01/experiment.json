@@ -26,12 +26,12 @@
   "replaces_run_id": null,
   "authorization": "2026-10-03用户明确要求“根据创新完成优化设计落地实现，跑实验”；遵循此前纯神经网络结构、原CE训练方案及无额外损失的边界。",
   "code": {
-    "commit": "bf695d390fa53c9c8cdcb69dad829f32a8313d48",
+    "commit": "0772695891677ccf70e595224a32979b0285c5f8",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_fusion_identity_20261003_r01",
     "architecture_base_commit": "bf695d390fa53c9c8cdcb69dad829f32a8313d48",
-    "commit_scope": "Preparation baseline; actual immutable release OID recorded with independent launch evidence"
+    "commit_scope": "Actual immutable release independently verified"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -101,7 +101,9 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_response_fusion_identity.publish --output local_artifacts/cvs_response_fusion_identity_20261003_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 2209071,
+    "launch_verified_at": "2026-10-03T02:54:11.858471+00:00"
   },
   "expected_artifacts": [
     "last.pt",
@@ -148,7 +150,7 @@
       "row_id": "response_span_mean-s2026092701",
       "method": "response_span_mean",
       "purpose": "source_only_constrained_response_fusion_candidate",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_response_fusion_identity/configs/response_span_mean-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_span_mean-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -184,13 +186,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2209086,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_span_mean-s2026092701.log"
     },
     {
       "row_id": "response_anchor_mean-s2026092701",
       "method": "response_anchor_mean",
       "purpose": "source_only_constrained_response_fusion_candidate",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_response_fusion_identity/configs/response_anchor_mean-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -226,13 +231,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2209167,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092701.log"
     },
     {
       "row_id": "response_span_mean-s2026092702",
       "method": "response_span_mean",
       "purpose": "source_only_constrained_response_fusion_candidate",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_response_fusion_identity/configs/response_span_mean-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_span_mean-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -268,13 +276,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2209244,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_span_mean-s2026092702.log"
     },
     {
       "row_id": "response_anchor_mean-s2026092702",
       "method": "response_anchor_mean",
       "purpose": "source_only_constrained_response_fusion_candidate",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_response_fusion_identity/configs/response_anchor_mean-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -310,13 +321,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2209325,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092702.log"
     },
     {
       "row_id": "response_span_mean-s2026092703",
       "method": "response_span_mean",
       "purpose": "source_only_constrained_response_fusion_candidate",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_response_fusion_identity/configs/response_span_mean-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_span_mean-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -352,13 +366,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2209454,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_span_mean-s2026092703.log"
     },
     {
       "row_id": "response_anchor_mean-s2026092703",
       "method": "response_anchor_mean",
       "purpose": "source_only_constrained_response_fusion_candidate",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_response_fusion_identity/configs/response_anchor_mean-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -394,13 +411,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2209869,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092703.log"
     },
     {
       "row_id": "response_span_mean-s2026092704",
       "method": "response_span_mean",
       "purpose": "source_only_constrained_response_fusion_candidate",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_response_fusion_identity/configs/response_span_mean-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_span_mean-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -436,13 +456,16 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2210080,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_span_mean-s2026092704.log"
     },
     {
       "row_id": "response_anchor_mean-s2026092704",
       "method": "response_anchor_mean",
       "purpose": "source_only_constrained_response_fusion_candidate",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_response_fusion_identity/configs/response_anchor_mean-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -478,7 +501,10 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "pid": 2210161,
+      "status": "RUNNING",
+      "actual_log_ref": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092704.log"
     }
   ],
   "notes": [
@@ -495,7 +521,7 @@
     "All12 historical response records are fixed and verified below channel_dual under the same rule,so cannot become selected without an integrity failure. If an old control wins, verify its identity and existing completed clean evidence; never invent a test for an untested control."
   ],
   "registered_at": "2026-10-03T02:46:14+00:00",
-  "status": "PLANNED",
+  "status": "RUNNING",
   "source_controls": [
     {
       "variant": "neural_residual_shallow",

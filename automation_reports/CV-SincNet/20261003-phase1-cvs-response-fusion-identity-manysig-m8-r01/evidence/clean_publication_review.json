@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "p0": [],
+  "p1": [],
+  "reviewer": "source_architecture_audit",
+  "scope": "Conditional selected4new+40frozen clean pipeline,checkpoint loader,scorer and dependency publication",
+  "source_records": 28,
+  "clean_rows": 44,
+  "score_records": 352,
+  "summaries": 88,
+  "paired_records": 80,
+  "loaded_dependencies": 96,
+  "published_existing_files": 1322,
+  "anchor_roundtrip_logit_max_error": 0,
+  "wrong_joint_normalization_detected_max_error": 0.3261,
+  "synthetic_only": true,
+  "target_access": false,
+  "remote_mutation": false
+}

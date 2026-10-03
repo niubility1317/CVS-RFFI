@@ -1,0 +1,13 @@
+{
+  "status": "VERIFIED",
+  "tests": 211,
+  "fixture_repair": "New source-freeze fixture updated from prior20-record matrix to actual28; targeted test passed. Import aliases corrected before collection. Other210 checks passed;46 report checks passed again after report metadata additions.",
+  "commands": [
+    "python -m pytest tests/test_cvs_response_fusion_clean_contract.py tests/test_cvs_response_fusion_clean_analysis.py tests/test_cvs_channel_response_clean_contract.py tests/test_cvs_clean_eval.py -q",
+    "python -m pytest tests/test_cvs_response_fusion_clean_contract.py::test_source_freeze_recomputed_with_twenty_eight_records_and_control_retention -q",
+    "python -m pytest tests/test_cvs_response_fusion_clean_analysis.py -q"
+  ],
+  "actual_clean_configuration_created": false,
+  "target_access": false,
+  "remote_source_modified": false
+}

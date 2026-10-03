@@ -1,6 +1,6 @@
 # 补偿响应融合：阻断分类无关方向的归一化捷径
 
-状态：两个架构原型已实现，8项聚焦测试通过；正式训练尚未发布，性能未知。设计仅依据[完整源V几何诊断](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)，不使用目标结果。保持原始单一分类交叉熵、数据、采样、优化器和训练预算。
+状态：两个架构及源训练接入已完成，78项模型/源流程检查通过；8组正式源训练已启动并独立核实，性能未知。设计仅依据[完整源V几何诊断](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)，不使用目标结果。保持原始单一分类交叉熵、数据、采样、优化器和训练预算。
 
 ## 这次修改针对什么
 
@@ -53,8 +53,8 @@ z=\frac{b}{\max(\|b\|,10^{-4})}
 
 ## 下一轮固定实验计划
 
-拟登记2结构×4原model/loader seed，从零E200×50训练。保留既有shallow、channel_dual及三个response结构的20份固定源记录，与8份新记录组成28行源选择矩阵。继续按四seed固定E200的`0.5源V+0.5最差源RX`选择，完全并列才比较成本，不改变选择标准来迁就新结构。
+已登记并启动2结构×4原model/loader seed，从零E200×50训练。保留既有shallow、channel_dual及三个response结构的20份固定源记录，与8份新记录组成28行源选择矩阵。继续按四seed固定E200的`0.5源V+0.5最差源RX`选择，完全并列才比较成本，不改变选择标准来迁就新结构。
 
 只有新结构胜出才对其4个冻结模型进行clean预测，并与已有40份冻结预测组成44行独立truth-last评分；既有固定源记录的最高分仍为已经测试的channel_dual，保留该控制时复用其原测试。未选结构不访问query，历史目标结果不用于结构、参数或重跑选择。本轮不追加LEO、目标微调或新类。
 
-上述是待正式登记执行的计划，不表示已有新实验运行。实现：[模型](../experiments/cvs_response_fusion_identity/model.py)；验证：[聚焦测试](../tests/test_cvs_response_fusion_identity.py)。
+执行提交`0772695891677ccf70e595224a32979b0285c5f8`，运行证据见[实验报告](../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)。实现：[模型](../experiments/cvs_response_fusion_identity/model.py)；验证：[聚焦测试](../tests/test_cvs_response_fusion_identity.py)。

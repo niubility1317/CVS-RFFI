@@ -69,7 +69,7 @@
 |CVS信道补偿与顺序差值：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md)|
 |CVS显式补偿响应：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/report.md)|
 |CVS纯网络读出优化：源实验预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)|
-|CVS约束响应融合：类别差异子空间与独立归一化×四seed|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)|
+|CVS约束响应融合：源训练|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)|
 |补偿响应融合：阻断分类无关方向的归一化捷径|legacy_evidence_group|[打开](../../docs/CVS_RESPONSE_FUSION_DESIGN_20261003.md)|
 |cvs_response_geometry_source_20261003_r01|legacy_evidence_group|[打开](../../local_artifacts/cvs_response_geometry_source_20261003_r01)|
 |显式补偿响应：下一轮Phase1架构|legacy_evidence_group|[打开](../../docs/CVS_CHANNEL_RESPONSE_DESIGN_20261003.md)|

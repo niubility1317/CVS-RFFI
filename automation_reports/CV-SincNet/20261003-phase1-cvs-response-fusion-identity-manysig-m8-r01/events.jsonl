@@ -1,1 +1,2 @@
 {"at": "2026-10-03T02:46:14+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-03T02:54:11+00:00", "status": "RUNNING", "note": "8rows on8GPUs; actual source configs,CE,gradients,processes and growing logs independently verified", "evidence": ["evidence/launch_readback.json", "evidence/launch_processes.json"], "row_id": null}

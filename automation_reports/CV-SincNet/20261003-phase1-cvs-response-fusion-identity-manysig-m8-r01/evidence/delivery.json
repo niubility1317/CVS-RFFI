@@ -1,0 +1,16 @@
+{
+  "status": "SUBMITTED",
+  "pid": 2209071,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_fusion_identity_20261003_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.cvs_response_fusion_identity.dispatch",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_fusion_identity_20261003_r01/experiments/cvs_response_fusion_identity/configs/launch_spec.json"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_response_fusion_identity_20261003_r01/dispatcher.stdout.log",
+  "commit": "0772695891677ccf70e595224a32979b0285c5f8",
+  "sha256": "b30d44be06f6edb0b0f3fa6bb634f66df9fef52f7fd382b1ef84a1fb9b933211"
+}
