@@ -1,41 +1,103 @@
-# CVS跨通路复相关：匹配源训练与条件clean测试
+# CVS跨路径关系读出：完整源训练结果
 
-状态RUNNING，8份训练已独立核实存活并输出epoch。两种架构实现完成：跨通路整体能量归一化Gram与逐投影通道coherence；8份从零训练，每种4个model seed，E200。识别性能与Phase1论文目标仍未达成。
+**本轮实验与测试收尾已完成，新结构未提升性能，整体论文目标未达成。** 8份scratch E200训练、80000步日志审计和完整曲线分析完成。Gram与coherence的固定源分数分别为96.9111%和96.9491%，相对同主干Shallow下降0.2106±0.1123和0.1727±0.1513个百分点，均为0/4个seed胜出。配对SD描述固定数据划分下的模型seed差异，不是置信区间。源规则保留Anchor。
 
-## 结构与研究依据
+8个scratch模型完成200轮×50步。源选择由完整16记录独立重算，包含同主干shallow和当前源赢家Anchor；两种新结构均从scratch Shallow初始化，既有控制仅复用元数据。训练策略和单一CE保持不变。以下是源验证指标，不是测试结果。
 
-依据前轮完整源训练与冻结读出归因，研究两路独立池化未显式保留的time×behavior关系。原Shallow骨干及两路原320维统计全部保留；每条末层复数通路32→8投影，固定lag0/4/8、共同behavior位置8至63，对应time位置t-lag，每个lag恰好56对。计算未中心化复交叉矩，差别仅为整分支RMS或逐投影通道RMS分母。三矩阵实虚部384→16→320为无偏置线性低秩出口，末层零初始化，加到behavior统计。原time统计、频域分支、160维最终表征和分类器保留。两种模型均233275参数，新增12288。
+|结构|源V/%|最差源RX/%|固定源分数/%|相对控制/百分点±配对SD|正提升seed|参数|
+|---|---:|---:|---:|---:|---:|---:|
+|neural_residual_shallow|98.4426|95.8009|97.1218|+0.0000±0.0000|0/4|220987|
+|response_anchor_mean|98.4435|95.8194|97.1315|+0.0097±0.0234|2/4|237147|
+|crosspath_gram|98.3546|95.4676|96.9111|-0.2106±0.1123|0/4|233275|
+|crosspath_coherence|98.3750|95.5231|96.9491|-0.1727±0.1513|0/4|233275|
 
-详见[设计推导与边界](../../../docs/CVS_CROSSPATH_RELATION_DESIGN_20261003.md)及[模型实现](../../../experiments/cvs_crosspath_relation_identity/model.py)。低秩出口不保证避免共同适应；投影特征的增益不变性不等于真实信道/RX不变性。三个lag不是物理同步操作。单一结构矩阵不能排除新增容量解释，不能直接声明充分论文创新。
+固定规则选中`response_anchor_mean`。保留既有控制，未选候选不访问query，复用已有控制clean完成证据。
 
-## 冻结训练与输入边界
+![完整3200轮含控制曲线](evidence/source_curves.png)
 
-新模型scratch-only，无checkpoint祖先、预训练、resume、teacher、EMA或蒸馏。旧Shallow及Anchor仅为固定源统计控制，不加载其权重进行训练。复用已核实源物理划分：L6300、U56700不使用、V27000，6TX、RX1/3/4/6/8、day1/2/3，equalized=1、center256、unitRMS，split392005。四seed为2026092701至2026092704，仅改变模型/loader RNG。
+|结构|batch1推理/ms|batch128训练/ms|
+|---|---:|---:|
+|neural_residual_shallow|9.8971|51.4826|
+|response_anchor_mean|12.8663|58.7296|
+|crosspath_gram|11.3522|52.5647|
+|crosspath_coherence|11.1751|55.6323|
 
-保持原单一TX交叉熵、batch128不丢尾批、E200×50步、AdamW lr0.0002、wd0.0001、余弦最低lr0.000001、FP32/TF32关闭。不加增强、额外loss、采样/加权、阶段训练或目标适配。V只评估；不更新参数、归一化或其他状态。详细step/epoch/文本及紧凑CSV/JSONL保留实际loss、LR、梯度、关系范数/数值下界触发、源V/RX、耗时和资源。末批诊断范围为28包，不冒充全源或因果物理诊断。
+资源在实际RTX3090/FP32环境测量，并行运行可能影响时间。MAC计数包含实际aten卷积（包括功能式复卷积）及矩阵乘法，未计FFT、归一化、门控、池化和逐元素运算；不是总FLOPs。峰值内存与常驻状态保留逐seed值。新模块同样只由CE更新；零出口的首步内部零梯度是初始化性质，不能与训练后失活混同。
 
-## 选择与测试收尾
 
-固定16源记录：8新候选+4Shallow+4Anchor；比较四seed E200平均的0.5×V准确率+0.5×最差源RX准确率。性能完全并列后比较成本，不按更轻优先接受较低性能；不按最佳epoch选择。旧控制只读取既有合规源产物，目标指标不参与设计或选择。
+## 训练CE与源V CE
 
-新结构胜出后，条件run `20261003-phase1-cvs-crosspath-relation-clean-manysig-m48-r01`执行4份新clean预测并复用44份固定控制，168000个物理query、6TX、7RX；预测固定后独立truth-last评分。旧控制胜出则核实复用其既有冻结测试，不对落选候选新增query。只测clean，不追加LEO、support或SFT。具体逐行路径、六类seed与输入输出见[experiment.json](experiment.json)，训练配置见[configs](../../../experiments/cvs_crosspath_relation_identity/configs/experiment_spec.json)。
+固定E200；表中为四个模型seed的均值±样本SD。CE差值先按同seed计算V CE−训练CE，再汇总；不是误差率差。训练CE是50个batch均值的等权平均（49×128+28样本），源V CE是全部27000个验证样本的均值；二者的数据、平均方式和train/eval模式不同。
 
-## 本地验证与发布
+|结构|E200训练CE|E200源V CE|E200 CE差值|后段训练CE变化|后段源V CE变化|后段CE差值变化|
+|---|---:|---:|---:|---:|---:|---:|
+|neural_residual_shallow|0.000711±0.000169|0.086423±0.003526|0.085711±0.003457|-0.000176±0.000098|0.000855±0.000636|0.001031±0.000697|
+|response_anchor_mean|0.000785±0.000131|0.087126±0.003733|0.086341±0.003705|-0.000170±0.000050|0.000680±0.000165|0.000850±0.000125|
+|crosspath_gram|0.000700±0.000073|0.096787±0.005724|0.096087±0.005744|-0.000189±0.000072|0.001193±0.000793|0.001382±0.000815|
+|crosspath_coherence|0.000686±0.000155|0.095973±0.004665|0.095287±0.004553|-0.000153±0.000023|0.000859±0.000237|0.001012±0.000234|
 
-模型15项针对性测试通过，涵盖配对初始化/旧state与RNG、独立复数公式、lag方向/共同窗口、范数界、精确增益性质适用范围、零/低能量梯度、全模型CE连通性、逐包独立性和诊断状态保持。8组public synthetic smoke验证所有4seed×2结构的初始函数相等及3步原CE更新；不加载正式数据或历史checkpoint。源管线及完整分析102项聚焦测试通过，合计117项模型/协议/分析测试。一次独立P0/P1审查PASS，无发现；检查了实际8配置、8控制、16源记录选择、发布832文件中的59个导入依赖以及四段远端模板。该审查范围是模型与源发布，条件clean实现需在源冻结后核对。
+后段变化固定定义为E176–200均值减E151–175均值，按seed配对后汇总；完整E1–200四seed均值/SD见[source_curve_summary.csv](evidence/source_curve_summary.csv)。这些窗口只描述曲线，不重新选择epoch，也不设鲁棒性门槛。
 
-唯一launch owner为`codex/root/cvs-crosspath-relation-identity-20261003`。从固定Git提交发布，不可覆盖release/archive/run/log；SCP前核实路径、身份、磁盘与GPU。远端先执行无正式数据的模型smoke，各训练row加载数据前执行自己的真实scratch checkpoint smoke，再按每GPU最多两个训练任务启动。低性能不触发停止、重启或选择性重跑；技术异常按原预登记规则保留产物处理。
+## 两种关系归一化的固定E200配对差异
 
-## 启动读回
+以下均为crosspath_coherence−crosspath_gram，同seed配对，单位为百分点。
 
-实际发布commit为`e136f7868e5ff2569d2a61578ea909a4b1d3daa0`，dispatcher PID2289161。全部8个worker的PID/CWD/argv、父进程、CUDA可见设备和nvidia-smi物理GPU映射一致，GPU0至7各一份训练；两次日志读回均增长。全部实际配置匹配233275参数、12288关系参数、原单CE、FP32和原源数据角色。启动验证时各row处于E4至E9，源分数尚未冻结，不能据早期结果选模。
+|指标|均值±配对SD|正差seed|零差seed|
+|---|---:|---:|---:|
+|score|+0.0380±0.0748|3/4|0/4|
+|V|+0.0204±0.0064|4/4|0/4|
+|worst_RX|+0.0556±0.1458|2/4|0/4|
 
-[启动独立核验](evidence/launch_validation.json) · [完整实际配置与进程](evidence/launch_readback.json) · [SCP前路径与资源](evidence/pretransfer_readback.json)。条件clean入口正在准备，当前零目标访问。
+四seed共用相同数据，只描述此次源训练差异；小幅均值变化不能单独支持稳定提升或独立clean提升。
 
-## 条件测试实现就绪
+## 已有关系分支遥测
 
-[条件clean入口](../../../experiments/cvs_crosspath_relation_clean/prepare.py)已实现并通过147项新测试、102项既有readout兼容测试。独立P0/P1审查PASS，另执行14项有界合成回归，核对了发布范围内100个本地导入依赖及四段模板。上述均为本地合成/模型加载验证，不是实际目标成绩。新scope严格核对源release commit、完整16源记录、来源/物理角色/FP32/参数与checkpoint payload；全部48行预测固定后才连接truth。
+下表只用E200最后一个训练batch的28个样本，关系分支指标按四seed汇总。输出变化是新增关系输出相对behavior skip输出的逐样本L2范数比均值。
 
-正式clean configs仍不存在，未启动测试或读取真实目标数据；训练release保持原版本。最新已核实8组训练处于E90至E95/200，见[进度证据](evidence/source_progress.json)。完成E200及合法源冻结后直接按预登记条件收尾，不再索要已有范围的测试许可。
+|结构/分支|相对输出变化|16→320投影范数|384→16压缩范数|
+|---|---:|---:|---:|
+|crosspath_gram/crosspath.readout|0.054332±0.005189|3.994510±0.453982|4.437684±0.154406|
+|crosspath_coherence/crosspath.readout|0.050525±0.005663|4.058616±0.477773|4.492370±0.109620|
 
-[条件测试本地验证](evidence/conditional_clean_local_validation.json)。
+两个权重范数均为Frobenius范数。出口384→16→320没有激活与bias；rank≤16仅是架构上界，当前未测量矩阵或特征的实际秩。
+
+|结构|lag0关系范数|lag4关系范数|lag8关系范数|
+|---|---:|---:|---:|
+|crosspath_gram|0.212594±0.007180|0.209650±0.006942|0.223016±0.009986|
+|crosspath_coherence|0.203348±0.007236|0.211938±0.009459|0.222473±0.007894|
+
+各lag关系范数是归一化、除以8后的复关系统计Frobenius范数的逐样本均值；使用未经中心化的复交叉矩，不是中心化协方差。下表为各路径/lag中功率低于1e-6的测量比例。gram的分母按整条投影分支计算，coherence按投影channel计算，二者不能混合汇总。
+
+|结构|time_lag0_floor_fraction|time_lag4_floor_fraction|time_lag8_floor_fraction|behavior_lag0_floor_fraction|behavior_lag4_floor_fraction|behavior_lag8_floor_fraction|
+|---|---:|---:|---:|---:|---:|---:|
+|crosspath_gram|0.000000±0.000000|0.000000±0.000000|0.000000±0.000000|0.000000±0.000000|0.000000±0.000000|0.000000±0.000000|
+|crosspath_coherence|0.000000±0.000000|0.000000±0.000000|0.000000±0.000000|0.000000±0.000000|0.000000±0.000000|0.000000±0.000000|
+
+这28个样本不能代表全源分布，也不能支持信道变化的因果结论。跨路径关系统计及其归一化不会直接证明发射机特异信息、物理信道移除或信道解耦。三个lag均以behavior位置8至63为共同窗口，对应time位置t−lag，每个lag使用56对特征。
+
+|结构|全200轮梯度均值|E200梯度均值|E151–200梯度均值|
+|---|---:|---:|---:|
+|crosspath_gram|0.083202±0.018909|0.009436±0.002732|0.011036±0.001640|
+|crosspath_coherence|0.081047±0.019507|0.008647±0.001316|0.010009±0.002011|
+
+梯度使用每个新模型全部200条epoch记录，每条是50个已有step梯度范数的均值，覆盖整个新增关系分支的12288个参数。原collector另行审计每模型10000步；当前离线产物不含原始step数组，未计算step极值或分支内独立组件梯度。epoch均值的范围、零值计数和已有步数审计信息保留在逐seed表中；梯度非零仅表示CE更新经过这些参数。
+
+[CE与后段逐seed](evidence/source_learning_by_seed.csv) · [关系配对逐seed](evidence/readout_pairwise_by_seed.csv) · [全部1600条关系梯度epoch均值](evidence/readout_gradient_epochs.csv) · [梯度逐seed摘要](evidence/readout_gradient_by_seed.csv) · [E200关系逐seed](evidence/readout_last_epoch.csv) · [完整分析与口径](evidence/source_learning_analysis.json)。
+
+源V使用已见源RX；四seed不是独立数据集。新增容量是否提高独立clean识别必须由冻结测试证明。没有追加损失、增强、重加权、采样策略、teacher或目标适应。D92的适应三阶段/K×新增类为N/A。
+
+[逐seed](evidence/source_final.csv) · [完整曲线](evidence/source_curves.csv) · [实际新增关系输出](evidence/readout_outputs.csv) · [全部TX/RX/day单元](evidence/source_cells.csv) · [资源](evidence/source_resources.csv) · [80000步审计](evidence/source_completion_validation.json)。
+
+## 源产物终态核验
+
+8份固定E200训练、80000步日志审计及完整曲线分析完成，全部训练进程和dispatcher已终止。源码版本`e136f7868e5ff2569d2a61578ea909a4b1d3daa0`，完整16源记录选择与实际远端冻结结果一致；源赢家为`response_anchor_mean`。当前测试收尾尚未完成，不把源验证指标当作泛化结果。
+
+[源终态](evidence/source_terminal_readback.json) · [冻结核验](evidence/source_freeze_validation.json) · [架构与科学边界](../../../docs/CVS_CROSSPATH_RELATION_DESIGN_20261003.md)。
+
+## 负结果解释与测试收尾
+
+新分支持续收到CE梯度，E200最后28个训练样本上的关系出口相对skip约为5.43%和5.05%，因此不能把负结果直接解释为分支未执行；这些局部幅度也不能代表全源贡献。训练CE为0.000700和0.000686，与Shallow的0.000711接近，源V CE却从0.086423升至0.096787和0.095973。曲线与源准确率共同支持过拟合的描述，但没有识别信道/RX捷径这一因果机制。coherence比Gram平均高0.0380个百分点，仍未超过基准，不能据此宣称信道鲁棒。本轮只检验所实现的有限滞后跨路径关系结构，不能否定所有关系建模，也不能证明纯CE架构创新不可行。
+
+未入选候选不访问query，条件48行clean实验未激活。独立读回既有44行clean状态、预测配置与provenance，352条评分完全未变；4个Anchor checkpoint与本次源选择逐seed对应。复用Anchor既有clean准确率69.9129%±1.2142%，不产生新的测试证据，也不把该分数记给本轮新结构。
+
+[复用核验](evidence/retained_control_test_verification.json) · [既有完整clean报告](../20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md) · [本轮判定](evidence/completion_verdict.json)。保留全部负结果；后续设计只依据源证据。

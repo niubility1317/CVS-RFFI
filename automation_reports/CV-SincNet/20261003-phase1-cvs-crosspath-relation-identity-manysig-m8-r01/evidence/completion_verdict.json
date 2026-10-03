@@ -1,0 +1,67 @@
+{
+  "status": "VERIFIED",
+  "verified_at": "2026-10-03T05:58:13.183077+00:00",
+  "execution_complete": true,
+  "performance_goal_achieved": false,
+  "paper_claim_established": false,
+  "scientific_verdict": "CROSSPATH_RELATION_CANDIDATES_NOT_IMPROVED_EXISTING_ANCHOR_RETAINED",
+  "selected_variant": "response_anchor_mean",
+  "new_source_models": 8,
+  "new_source_steps": 80000,
+  "source_summary": [
+    {
+      "variant": "neural_residual_shallow",
+      "V": 0.9844259259259259,
+      "worst_RX": 0.9580092592592593,
+      "score": 0.9712175925925925,
+      "paired_score_pp": 0.0,
+      "paired_score_SD": 0.0,
+      "positive_seeds": 0,
+      "parameters": 220987,
+      "inference_ms": 9.897062799791456,
+      "training_ms": 51.4825539496087
+    },
+    {
+      "variant": "response_anchor_mean",
+      "V": 0.9844351851851851,
+      "worst_RX": 0.9581944444444445,
+      "score": 0.9713148148148147,
+      "paired_score_pp": 0.009722222222222077,
+      "paired_score_SD": 0.02344257203920715,
+      "positive_seeds": 2,
+      "parameters": 237147,
+      "inference_ms": 12.86628827547247,
+      "training_ms": 58.72958109976025
+    },
+    {
+      "variant": "crosspath_gram",
+      "V": 0.9835462962962962,
+      "worst_RX": 0.954675925925926,
+      "score": 0.9691111111111111,
+      "paired_score_pp": -0.21064814814814592,
+      "paired_score_SD": 0.11225109639542642,
+      "positive_seeds": 0,
+      "parameters": 233275,
+      "inference_ms": 11.352189537501545,
+      "training_ms": 52.56468522493378
+    },
+    {
+      "variant": "crosspath_coherence",
+      "V": 0.98375,
+      "worst_RX": 0.9552314814814815,
+      "score": 0.9694907407407407,
+      "paired_score_pp": -0.17268518518518683,
+      "paired_score_SD": 0.15131926325822373,
+      "positive_seeds": 0,
+      "parameters": 233275,
+      "inference_ms": 11.175050075325998,
+      "training_ms": 55.63228072496713
+    }
+  ],
+  "new_target_predictions": 0,
+  "test_completion": "REUSED_VERIFIED_FROZEN_CONTROL",
+  "completed_test_run": "20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01",
+  "retained_control_clean_accuracy": 0.6991294642857143,
+  "retained_control_clean_seed_sd": 0.012142241829064652,
+  "target_feedback": false
+}

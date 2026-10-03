@@ -86,3 +86,11 @@ RFF已有多尺度与注意力融合研究，例如[Fine-Grained Radio Frequency
 该矩阵能比较归一化效应和整块结构相对Shallow的变化，但不能独立排除新增容量解释，也不能单独分离各lag或低秩约束的效应。这些限制不能靠冻结关闭分支的诊断替代重训消融。源V仍属于已见接收机，不能把源改进写成未见域泛化。
 
 实现：[model.py](../experiments/cvs_crosspath_relation_identity/model.py)。实验实际配置、启动和结果以[原run登记](../automation_reports/CV-SincNet/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/report.md)为准。
+
+## 执行结果
+
+8份scratch E200训练、80000步日志审计和完整曲线分析完成。Gram与coherence的固定源分数分别为96.9111%和96.9491%，相对同主干Shallow下降0.2106±0.1123和0.1727±0.1513个百分点，均为0/4个seed胜出。配对SD描述固定数据划分下的模型seed差异，不是置信区间。源规则保留Anchor。
+
+新分支持续收到CE梯度，E200最后28个训练样本上的关系出口相对skip约为5.43%和5.05%，因此不能把负结果直接解释为分支未执行；这些局部幅度也不能代表全源贡献。训练CE为0.000700和0.000686，与Shallow的0.000711接近，源V CE却从0.086423升至0.096787和0.095973。曲线与源准确率共同支持过拟合的描述，但没有识别信道/RX捷径这一因果机制。coherence比Gram平均高0.0380个百分点，仍未超过基准，不能据此宣称信道鲁棒。本轮只检验所实现的有限滞后跨路径关系结构，不能否定所有关系建模，也不能证明纯CE架构创新不可行。
+
+[完整实验报告](../automation_reports/CV-SincNet/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/report.md)。冻结后核验复用Anchor既有clean证据；未激活新候选测试。纯架构提升和论文结论仍未建立。

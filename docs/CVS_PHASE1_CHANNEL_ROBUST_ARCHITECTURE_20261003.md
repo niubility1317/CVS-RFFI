@@ -89,7 +89,7 @@ F是网络构造的非线性映射，d并非对真实发射机或接收机非线
 
 ## 当前工作衔接
 
-注意力读出run`20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01`的8份scratch E200训练与完整源分析已经完成，实际源发布commit为`6ca7a522bb4be34993f442129870e68cec61bbc7`。两种新读出均未超过固定源控制，源规则保留Anchor，没有为落选读出新增目标访问；详见[实验记录](../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)。随后完成的[冻结分支归因](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/report.md)显示较强行为分支依赖，但不证明RX捷径或物理解耦。下一轮[跨通路复相关设计](CVS_CROSSPATH_RELATION_DESIGN_20261003.md)据源证据比较池化前关系及投影通道增益归一化，仍保持单一CE。本文不修改健康远端任务，也不扩张原clean测试到LEO或新的数据视图。
+注意力读出run`20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01`的8份scratch E200训练与完整源分析已经完成，实际源发布commit为`6ca7a522bb4be34993f442129870e68cec61bbc7`。两种新读出均未超过固定源控制，源规则保留Anchor，没有为落选读出新增目标访问；详见[实验记录](../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)。随后完成的[冻结分支归因](../automation_reports/CV-SincNet/20261003-diagnostic-cvs-readout-attribution-source-manysig-m8-r01/report.md)显示较强行为分支依赖，但不证明RX捷径或物理解耦。随后完成的[跨通路复相关实验](CVS_CROSSPATH_RELATION_DESIGN_20261003.md)保持单一CE，以8份scratch E200训练比较池化前关系及投影通道增益归一化；两个候选均未超过同主干源控制，未获得新的泛化提升证据。本文不修改健康远端任务，也不扩张原clean测试到LEO或新的数据视图。
 
 单凭Phase1可以形成独立论文研究，但目前交付的是有物理动机和明确验证路径的架构假设；新颖性、效果和投稿质量仍需实现、对照及独立实测支撑。
 

@@ -46,7 +46,7 @@
 |CVS 信道与非线性运算次序：独立 clean 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/report.md)|
 |CVS信道补偿与顺序差值：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md)|
 |CVS显式补偿响应：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/report.md)|
-|CVS跨通路复相关：匹配源训练与条件clean测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/report.md)|
+|CVS跨路径关系读出：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/report.md)|
 |CVS可学习注意力读出：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)|
 |CVS 约束响应融合：独立 clean 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md)|
 |CVS约束响应融合：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)|

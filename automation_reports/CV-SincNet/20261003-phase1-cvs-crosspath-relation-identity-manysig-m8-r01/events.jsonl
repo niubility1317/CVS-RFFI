@@ -1,3 +1,5 @@
 {"at": "2026-10-03T05:16:42+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-03T05:21:13+00:00", "status": "LOCAL_VERIFIED", "note": "Source-model-protocol-analysis-117-tests-and-independent-P0-P1-PASS", "evidence": ["evidence/local_validation.json"], "row_id": null}
 {"timestamp": "2026-10-03T05:26:45.185025+00:00", "status": "RUNNING", "evidence": "evidence/launch_validation.json", "note": "Eight live source workers; actual config, parent/GPU mappings and log growth independently verified"}
+{"timestamp": "2026-10-03T05:54:25.378309+00:00", "status": "SOURCE_SELECTION_FROZEN_TEST_PENDING", "evidence": "evidence/source_freeze_validation.json", "note": "All eight E200 source runs and 80000 steps verified; selection independently recomputed; test pending"}
+{"at": "2026-10-03T05:58:13+00:00", "status": "ANALYZED", "note": "VERIFIED eight scratch E200 models/80000 steps; crosspath candidates lose; Anchor retained and prior clean reconciled; zero new query", "evidence": ["evidence/source_completion_validation.json", "evidence/completion_verdict.json"], "row_id": null}

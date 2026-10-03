@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS跨通路复相关：匹配源训练与条件clean测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/report.md)|
+|CVS跨路径关系读出：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/report.md)|
