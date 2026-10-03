@@ -48,6 +48,7 @@
 |CVS显式补偿响应：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/report.md)|
 |CVS跨路径关系读出：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-crosspath-relation-identity-manysig-m8-r01/report.md)|
 |CVS全主干前置滤波：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/report.md)|
+|CVS镜像频对关系：能量与子空间投影×四seed|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/report.md)|
 |CVS可学习注意力读出：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)|
 |CVS 约束响应融合：独立 clean 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md)|
 |CVS约束响应融合：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)|

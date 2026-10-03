@@ -1,0 +1,22 @@
+{
+  "verdict": "PASS",
+  "reviewer": "/root/frontfilter_model",
+  "scope": "Single required independent P0/P1 experiment review plus focused correction verification",
+  "original_P1": "FP32 rank-deficient adjugate cancellation gives negative trace, rejected by source scalar checks",
+  "resolution": "Equivalent exterior-product Gram and Cauchy-Binet determinant; no trace clipping or mathematical/training change",
+  "validation": {
+    "focused_tests_passed": 13,
+    "original_reproductions_passed": 8,
+    "minimum_trace": 0,
+    "source_records": 20,
+    "source_candidates": 5,
+    "registered_training_rows": 8,
+    "conditional_clean_rows": 52,
+    "release_files": 851,
+    "local_dependencies_covered": 63,
+    "remote_templates_compiled": 3
+  },
+  "unresolved_P0_P1": [],
+  "real_data_access": false,
+  "remote_action": false
+}

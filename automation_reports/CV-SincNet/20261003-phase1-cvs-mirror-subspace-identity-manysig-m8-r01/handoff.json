@@ -1,0 +1,19 @@
+{
+  "run_id": "20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01",
+  "status": "LOCAL_VERIFIED",
+  "release": "cvs_mirror_subspace_identity_20261003_r01",
+  "launch_owner": "codex/root/cvs-mirror-subspace-identity-20261003",
+  "performance_goal_achieved": false,
+  "paper_claim_established": false,
+  "completed": [
+    "architecture implementation",
+    "108 local cases",
+    "8-model public CE/physics",
+    "source preregistration"
+  ],
+  "next": [
+    "Finish focused independent numerical-fix readback",
+    "Git commit/push/readback, remote preflight and unique source launch",
+    "Collect complete source logs/27000V scalars; freeze 20-source-record selection; conditional clean closure"
+  ]
+}

@@ -1,0 +1,2863 @@
+{
+  "status": "VERIFIED",
+  "models": 8,
+  "public_ce_updates": 24,
+  "records": [
+    {
+      "variant": "mirror_energy",
+      "seed": 2026092701,
+      "total_parameters": 247731,
+      "new_parameters": 26744,
+      "steps": [
+        {
+          "step": 1,
+          "ce": 3.1878623962402344,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.4603055715560913,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 2,
+          "ce": 2.7453055381774902,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.2539350390434265,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 3,
+          "ce": 2.7154927253723145,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.23096655309200287,
+          "gradient_used_parameters": 247731
+        }
+      ],
+      "all_new_tensors_changed": {
+        "mix_real": true,
+        "mix_imag": true,
+        "encoder.0.weight": true,
+        "encoder.0.bias": true,
+        "encoder.2.weight": true,
+        "encoder.2.bias": true,
+        "project.weight": true
+      },
+      "public_cpu_forward_batch30_ms": 30.13420000206679,
+      "elapsed_seconds": 0.8438847999786958,
+      "physics": {
+        "schema": "mirror_relation_public_physics_v1",
+        "synthetic_only": true,
+        "target_access": false,
+        "training_augmentation": false,
+        "optimizer_updates": 0,
+        "public_packets": 30,
+        "signal_groups": [
+          "6 fixed broadband noise",
+          "6 analytic tones",
+          "6 periodic envelope signals",
+          "6 DC",
+          "6 zero"
+        ],
+        "ideal_mixing": {
+          "total_pair_count": 186,
+          "eligible_pair_count": 186,
+          "excluded_pair_count": 0,
+          "energy_excluded_pair_count": 0,
+          "determinant_excluded_pair_count": 0,
+          "qualified_max_error": 0.217818945646286,
+          "excluded_max_error": null,
+          "full_max_error": 0.217818945646286,
+          "full_relative_distance": 0.261312335729599,
+          "original_energy_floor_count": 0,
+          "changed_energy_floor_count": 0,
+          "original_determinant_floor_count": 0,
+          "changed_determinant_floor_count": 0,
+          "unitary_mixing_max_error": 2.384185791015625e-07,
+          "minimum_mixing_abs_determinant": 0.7653592228889465,
+          "scope": "Public spectral tensors; qualification requires both energy and determinant floors inactive before and after mixing"
+        },
+        "time_iq": {
+          "total_pair_count": 558,
+          "eligible_pair_count": 222,
+          "excluded_pair_count": 336,
+          "energy_excluded_pair_count": 307,
+          "determinant_excluded_pair_count": 334,
+          "qualified_max_error": 0.12010737508535385,
+          "excluded_max_error": 0.015940621495246887,
+          "full_max_error": 0.12010737508535385,
+          "full_relative_distance": 0.08054646849632263,
+          "original_energy_floor_count": 307,
+          "changed_energy_floor_count": 307,
+          "original_determinant_floor_count": 334,
+          "changed_determinant_floor_count": 334,
+          "commutation_max_error": 1.430511474609375e-06,
+          "receiver_a": [
+            1.04,
+            0.12
+          ],
+          "receiver_b": [
+            0.14,
+            -0.07
+          ]
+        },
+        "all_public_domain": {
+          "total_pair_count": 930,
+          "eligible_pair_count": 222,
+          "excluded_pair_count": 708,
+          "energy_excluded_pair_count": 673,
+          "determinant_excluded_pair_count": 706,
+          "qualified_max_error": 0.12010737508535385,
+          "excluded_max_error": 0.01594078540802002,
+          "full_max_error": 0.12010737508535385,
+          "full_relative_distance": 0.04832789674401283,
+          "original_energy_floor_count": 673,
+          "changed_energy_floor_count": 673,
+          "original_determinant_floor_count": 706,
+          "changed_determinant_floor_count": 706
+        },
+        "whole_model_phase": {
+          "ordinary_max_abs_error": 2.3126602172851562e-05,
+          "zero_finite": true
+        },
+        "finite_fir_sensitivity": [
+          {
+            "name": "delay2",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                2,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.03879766911268234,
+            "mean_unit_embedding_distance": 0.12083566188812256
+          },
+          {
+            "name": "delay8",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                8,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.07338246703147888,
+            "mean_unit_embedding_distance": 0.12664176523685455
+          },
+          {
+            "name": "delay16",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                16,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.15077412128448486,
+            "mean_unit_embedding_distance": 0.11773451417684555
+          }
+        ],
+        "tx_rx_sensitivity": {
+          "am_am": {
+            "relation_relative_distance": 0.06297192722558975,
+            "mean_unit_embedding_distance": 0.02925659529864788
+          },
+          "am_pm": {
+            "relation_relative_distance": 0.0943705290555954,
+            "mean_unit_embedding_distance": 0.041302911937236786
+          },
+          "rx_iq": {
+            "relation_relative_distance": 0.08054646849632263,
+            "mean_unit_embedding_distance": 0.07145515829324722
+          }
+        },
+        "mirror_relation": {
+          "active": true,
+          "variant": "mirror_energy",
+          "records": [
+            {
+              "block": "frequency.mirror_relation",
+              "packets": 30,
+              "relative_output_change_mean": 0.003421742469072342,
+              "relative_output_change_max": 0.003944160882383585,
+              "floor_fraction": 0.7236559391021729,
+              "floor_fraction_by_frequency": [
+                0.20000000298023224,
+                0.4000000059604645,
+                0.4333333373069763,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.699999988079071,
+                0.6000000238418579,
+                0.699999988079071,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_floor_fraction": 0.7591397762298584,
+              "determinant_floor_fraction_by_frequency": [
+                0.6333333253860474,
+                0.6333333253860474,
+                0.6000000238418579,
+                0.5666666626930237,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.699999988079071,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_mean": 0.027817869558930397,
+              "determinant_minimum": 0.0,
+              "alpha_mean": 0.2811097800731659,
+              "alpha_minimum": 0.0,
+              "relation_norm_mean": 0.2506922781467438,
+              "relation_norm_max": 1.0000001192092896,
+              "relation_trace_mean": 0.2811097800731659,
+              "relation_trace_max": 1.000000238418579,
+              "relation_norm_by_frequency": [
+                0.7617942690849304,
+                0.57133549451828,
+                0.534823477268219,
+                0.43033185601234436,
+                0.3644409775733948,
+                0.3689655065536499,
+                0.3135359585285187,
+                0.36730748414993286,
+                0.2863330841064453,
+                0.16534824669361115,
+                0.16668516397476196,
+                0.1730661392211914,
+                0.17600153386592865,
+                0.16928216814994812,
+                0.1671435534954071,
+                0.16886006295681,
+                0.17476025223731995,
+                0.17952004075050354,
+                0.1731739640235901,
+                0.16870954632759094,
+                0.16809388995170593,
+                0.1717565804719925,
+                0.18230052292346954,
+                0.16590175032615662,
+                0.1814674437046051,
+                0.17746536433696747,
+                0.1530105024576187,
+                0.1707218438386917,
+                0.16937381029129028,
+                0.1735270470380783,
+                0.17642323672771454
+              ],
+              "relation_trace_by_frequency": [
+                0.800000011920929,
+                0.6000000238418579,
+                0.5714915990829468,
+                0.47230473160743713,
+                0.40758100152015686,
+                0.4015679657459259,
+                0.3431827425956726,
+                0.4001709520816803,
+                0.3145931363105774,
+                0.20259276032447815,
+                0.2006365954875946,
+                0.20019468665122986,
+                0.20002730190753937,
+                0.200032040476799,
+                0.20001550018787384,
+                0.200004443526268,
+                0.20000246167182922,
+                0.2000015377998352,
+                0.20000110566616058,
+                0.20000074803829193,
+                0.20000053942203522,
+                0.20000037550926208,
+                0.20000025629997253,
+                0.20000018179416656,
+                0.2000001221895218,
+                0.2000000774860382,
+                0.20000006258487701,
+                0.20000003278255463,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224
+              ],
+              "mix_norm": 1.9413888454437256,
+              "projection_norm": 0.05835758522152901,
+              "mix_gradient_norm": 6.403700535884127e-05,
+              "projection_gradient_norm": 0.2309645265340805,
+              "encoder_gradient_norm": 0.0009651151485741138,
+              "use_subspace": false,
+              "frames": 7,
+              "frequency_pairs": 31,
+              "output_dimension": 160
+            }
+          ],
+          "scope": "All supplied packets/7 frames/31 mirror pairs; source coverage only when all V supplied; last measured CE gradients, no updates"
+        },
+        "limits": [
+          "Qualified subspace property only; finite FIR and nonlinear RX are outside exact model",
+          "The quotient can erase TX linear IQ distinctions too; absolute backbone retained",
+          "Rank-one subspace output tends to zero; energy/determinant excluded pairs reported",
+          "No whole-model receiver invariance or accuracy inference"
+        ]
+      }
+    },
+    {
+      "variant": "mirror_subspace",
+      "seed": 2026092701,
+      "total_parameters": 247731,
+      "new_parameters": 26744,
+      "steps": [
+        {
+          "step": 1,
+          "ce": 3.1878623962402344,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.4598151445388794,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 2,
+          "ce": 2.7453184127807617,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.25310927629470825,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 3,
+          "ce": 2.715487003326416,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.23089221119880676,
+          "gradient_used_parameters": 247731
+        }
+      ],
+      "all_new_tensors_changed": {
+        "mix_real": true,
+        "mix_imag": true,
+        "encoder.0.weight": true,
+        "encoder.0.bias": true,
+        "encoder.2.weight": true,
+        "encoder.2.bias": true,
+        "project.weight": true
+      },
+      "public_cpu_forward_batch30_ms": 31.298040004912764,
+      "elapsed_seconds": 0.7931866000290029,
+      "physics": {
+        "schema": "mirror_relation_public_physics_v1",
+        "synthetic_only": true,
+        "target_access": false,
+        "training_augmentation": false,
+        "optimizer_updates": 0,
+        "public_packets": 30,
+        "signal_groups": [
+          "6 fixed broadband noise",
+          "6 analytic tones",
+          "6 periodic envelope signals",
+          "6 DC",
+          "6 zero"
+        ],
+        "ideal_mixing": {
+          "total_pair_count": 186,
+          "eligible_pair_count": 186,
+          "excluded_pair_count": 0,
+          "energy_excluded_pair_count": 0,
+          "determinant_excluded_pair_count": 0,
+          "qualified_max_error": 1.7881393432617188e-07,
+          "excluded_max_error": null,
+          "full_max_error": 1.7881393432617188e-07,
+          "full_relative_distance": 1.520842403124334e-07,
+          "original_energy_floor_count": 0,
+          "changed_energy_floor_count": 0,
+          "original_determinant_floor_count": 0,
+          "changed_determinant_floor_count": 0,
+          "unitary_mixing_max_error": 1.1920928955078125e-07,
+          "minimum_mixing_abs_determinant": 0.7653592228889465,
+          "scope": "Public spectral tensors; qualification requires both energy and determinant floors inactive before and after mixing"
+        },
+        "time_iq": {
+          "total_pair_count": 558,
+          "eligible_pair_count": 222,
+          "excluded_pair_count": 336,
+          "energy_excluded_pair_count": 307,
+          "determinant_excluded_pair_count": 334,
+          "qualified_max_error": 2.0638108253479004e-06,
+          "excluded_max_error": 0.04771631956100464,
+          "full_max_error": 0.04771631956100464,
+          "full_relative_distance": 0.030763791874051094,
+          "original_energy_floor_count": 307,
+          "changed_energy_floor_count": 307,
+          "original_determinant_floor_count": 334,
+          "changed_determinant_floor_count": 334,
+          "commutation_max_error": 1.9073486328125e-06,
+          "receiver_a": [
+            1.04,
+            0.12
+          ],
+          "receiver_b": [
+            0.14,
+            -0.07
+          ]
+        },
+        "all_public_domain": {
+          "total_pair_count": 930,
+          "eligible_pair_count": 222,
+          "excluded_pair_count": 708,
+          "energy_excluded_pair_count": 673,
+          "determinant_excluded_pair_count": 706,
+          "qualified_max_error": 1.7881393432617188e-07,
+          "excluded_max_error": 0.047716498374938965,
+          "full_max_error": 0.047716498374938965,
+          "full_relative_distance": 0.17810744047164917,
+          "original_energy_floor_count": 673,
+          "changed_energy_floor_count": 673,
+          "original_determinant_floor_count": 706,
+          "changed_determinant_floor_count": 706
+        },
+        "whole_model_phase": {
+          "ordinary_max_abs_error": 2.3484230041503906e-05,
+          "zero_finite": true
+        },
+        "finite_fir_sensitivity": [
+          {
+            "name": "delay2",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                2,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.04413965344429016,
+            "mean_unit_embedding_distance": 0.12083571404218674
+          },
+          {
+            "name": "delay8",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                8,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 103.90780639648438,
+            "mean_unit_embedding_distance": 0.12664204835891724
+          },
+          {
+            "name": "delay16",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                16,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 6483.16259765625,
+            "mean_unit_embedding_distance": 0.11773383617401123
+          }
+        ],
+        "tx_rx_sensitivity": {
+          "am_am": {
+            "relation_relative_distance": 0.15299972891807556,
+            "mean_unit_embedding_distance": 0.029255986213684082
+          },
+          "am_pm": {
+            "relation_relative_distance": 0.21880371868610382,
+            "mean_unit_embedding_distance": 0.04130232334136963
+          },
+          "rx_iq": {
+            "relation_relative_distance": 0.030795663595199585,
+            "mean_unit_embedding_distance": 0.07145465165376663
+          }
+        },
+        "mirror_relation": {
+          "active": true,
+          "variant": "mirror_subspace",
+          "records": [
+            {
+              "block": "frequency.mirror_relation",
+              "packets": 30,
+              "relative_output_change_mean": 0.003444300265982747,
+              "relative_output_change_max": 0.003946203272789717,
+              "floor_fraction": 0.7236559391021729,
+              "floor_fraction_by_frequency": [
+                0.20000000298023224,
+                0.4000000059604645,
+                0.4333333373069763,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.699999988079071,
+                0.6000000238418579,
+                0.699999988079071,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_floor_fraction": 0.7591397762298584,
+              "determinant_floor_fraction_by_frequency": [
+                0.6333333253860474,
+                0.6333333253860474,
+                0.6000000238418579,
+                0.5666666626930237,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.699999988079071,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_mean": 0.027821009978652,
+              "determinant_minimum": 0.0,
+              "alpha_mean": 0.2811099886894226,
+              "alpha_minimum": 0.0,
+              "relation_norm_mean": 0.17532914876937866,
+              "relation_norm_max": 0.7071069478988647,
+              "relation_trace_mean": 0.2479528933763504,
+              "relation_trace_max": 1.000000238418579,
+              "relation_norm_by_frequency": [
+                0.2895972430706024,
+                0.28515782952308655,
+                0.3014751970767975,
+                0.3227626383304596,
+                0.2831806540489197,
+                0.28284862637519836,
+                0.2239440381526947,
+                0.18280380964279175,
+                0.15216268599033356,
+                0.14142277836799622,
+                0.14142157137393951,
+                0.141421377658844,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213627576828,
+                0.1414213627576828,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216
+              ],
+              "relation_trace_by_frequency": [
+                0.4095523953437805,
+                0.4032740890979767,
+                0.42635032534599304,
+                0.4564552903175354,
+                0.40047791600227356,
+                0.40000835061073303,
+                0.3167046904563904,
+                0.2585236430168152,
+                0.21519054472446442,
+                0.20000199973583221,
+                0.20000028610229492,
+                0.20000003278255463,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.19999998807907104,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224
+              ],
+              "mix_norm": 1.9414393901824951,
+              "projection_norm": 0.058299724012613297,
+              "mix_gradient_norm": 4.6447006752714515e-05,
+              "projection_gradient_norm": 0.23089081048965454,
+              "encoder_gradient_norm": 0.0008012753096409142,
+              "use_subspace": true,
+              "frames": 7,
+              "frequency_pairs": 31,
+              "output_dimension": 160
+            }
+          ],
+          "scope": "All supplied packets/7 frames/31 mirror pairs; source coverage only when all V supplied; last measured CE gradients, no updates"
+        },
+        "limits": [
+          "Qualified subspace property only; finite FIR and nonlinear RX are outside exact model",
+          "The quotient can erase TX linear IQ distinctions too; absolute backbone retained",
+          "Rank-one subspace output tends to zero; energy/determinant excluded pairs reported",
+          "No whole-model receiver invariance or accuracy inference"
+        ]
+      }
+    },
+    {
+      "variant": "mirror_energy",
+      "seed": 2026092702,
+      "total_parameters": 247731,
+      "new_parameters": 26744,
+      "steps": [
+        {
+          "step": 1,
+          "ce": 3.9957926273345947,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.46750929951667786,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 2,
+          "ce": 2.7400810718536377,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.2423085868358612,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 3,
+          "ce": 3.188901424407959,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.36227285861968994,
+          "gradient_used_parameters": 247731
+        }
+      ],
+      "all_new_tensors_changed": {
+        "mix_real": true,
+        "mix_imag": true,
+        "encoder.0.weight": true,
+        "encoder.0.bias": true,
+        "encoder.2.weight": true,
+        "encoder.2.bias": true,
+        "project.weight": true
+      },
+      "public_cpu_forward_batch30_ms": 29.78149999398738,
+      "elapsed_seconds": 0.7644283999688923,
+      "physics": {
+        "schema": "mirror_relation_public_physics_v1",
+        "synthetic_only": true,
+        "target_access": false,
+        "training_augmentation": false,
+        "optimizer_updates": 0,
+        "public_packets": 30,
+        "signal_groups": [
+          "6 fixed broadband noise",
+          "6 analytic tones",
+          "6 periodic envelope signals",
+          "6 DC",
+          "6 zero"
+        ],
+        "ideal_mixing": {
+          "total_pair_count": 186,
+          "eligible_pair_count": 186,
+          "excluded_pair_count": 0,
+          "energy_excluded_pair_count": 0,
+          "determinant_excluded_pair_count": 0,
+          "qualified_max_error": 0.2559572160243988,
+          "excluded_max_error": null,
+          "full_max_error": 0.2559572160243988,
+          "full_relative_distance": 0.27010807394981384,
+          "original_energy_floor_count": 0,
+          "changed_energy_floor_count": 0,
+          "original_determinant_floor_count": 0,
+          "changed_determinant_floor_count": 0,
+          "unitary_mixing_max_error": 2.086162567138672e-07,
+          "minimum_mixing_abs_determinant": 0.7653592228889465,
+          "scope": "Public spectral tensors; qualification requires both energy and determinant floors inactive before and after mixing"
+        },
+        "time_iq": {
+          "total_pair_count": 558,
+          "eligible_pair_count": 224,
+          "excluded_pair_count": 334,
+          "energy_excluded_pair_count": 309,
+          "determinant_excluded_pair_count": 329,
+          "qualified_max_error": 0.12072402238845825,
+          "excluded_max_error": 0.02664017677307129,
+          "full_max_error": 0.12072402238845825,
+          "full_relative_distance": 0.08881586045026779,
+          "original_energy_floor_count": 309,
+          "changed_energy_floor_count": 308,
+          "original_determinant_floor_count": 329,
+          "changed_determinant_floor_count": 329,
+          "commutation_max_error": 1.9073486328125e-06,
+          "receiver_a": [
+            1.04,
+            0.12
+          ],
+          "receiver_b": [
+            0.14,
+            -0.07
+          ]
+        },
+        "all_public_domain": {
+          "total_pair_count": 930,
+          "eligible_pair_count": 224,
+          "excluded_pair_count": 706,
+          "energy_excluded_pair_count": 675,
+          "determinant_excluded_pair_count": 701,
+          "qualified_max_error": 0.12072402238845825,
+          "excluded_max_error": 0.026639819145202637,
+          "full_max_error": 0.12072402238845825,
+          "full_relative_distance": 0.05328952893614769,
+          "original_energy_floor_count": 675,
+          "changed_energy_floor_count": 674,
+          "original_determinant_floor_count": 701,
+          "changed_determinant_floor_count": 701
+        },
+        "whole_model_phase": {
+          "ordinary_max_abs_error": 1.0132789611816406e-05,
+          "zero_finite": true
+        },
+        "finite_fir_sensitivity": [
+          {
+            "name": "delay2",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                2,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.04503389075398445,
+            "mean_unit_embedding_distance": 0.13397127389907837
+          },
+          {
+            "name": "delay8",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                8,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.07897255569696426,
+            "mean_unit_embedding_distance": 0.13353107869625092
+          },
+          {
+            "name": "delay16",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                16,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.17137496173381805,
+            "mean_unit_embedding_distance": 0.12306050211191177
+          }
+        ],
+        "tx_rx_sensitivity": {
+          "am_am": {
+            "relation_relative_distance": 0.07490401715040207,
+            "mean_unit_embedding_distance": 0.0476980097591877
+          },
+          "am_pm": {
+            "relation_relative_distance": 0.10562242567539215,
+            "mean_unit_embedding_distance": 0.05750757455825806
+          },
+          "rx_iq": {
+            "relation_relative_distance": 0.088815838098526,
+            "mean_unit_embedding_distance": 0.08815121650695801
+          }
+        },
+        "mirror_relation": {
+          "active": true,
+          "variant": "mirror_energy",
+          "records": [
+            {
+              "block": "frequency.mirror_relation",
+              "packets": 30,
+              "relative_output_change_mean": 0.003144628368318081,
+              "relative_output_change_max": 0.0036713925655931234,
+              "floor_fraction": 0.725806474685669,
+              "floor_fraction_by_frequency": [
+                0.20000000298023224,
+                0.4000000059604645,
+                0.4333333373069763,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.699999988079071,
+                0.6333333253860474,
+                0.7333333492279053,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_floor_fraction": 0.7537634372711182,
+              "determinant_floor_fraction_by_frequency": [
+                0.6333333253860474,
+                0.6333333253860474,
+                0.5666666626930237,
+                0.5333333611488342,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6666666865348816,
+                0.7666666507720947,
+                0.7666666507720947,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_mean": 0.031643372029066086,
+              "determinant_minimum": 0.0,
+              "alpha_mean": 0.28095152974128723,
+              "alpha_minimum": 0.0,
+              "relation_norm_mean": 0.24606741964817047,
+              "relation_norm_max": 1.0,
+              "relation_trace_mean": 0.28095152974128723,
+              "relation_trace_max": 1.000000238418579,
+              "relation_norm_by_frequency": [
+                0.7574090957641602,
+                0.5553308725357056,
+                0.5237122774124146,
+                0.42771896719932556,
+                0.35877200961112976,
+                0.35426750779151917,
+                0.31970441341400146,
+                0.34827473759651184,
+                0.274255633354187,
+                0.16921363770961761,
+                0.16166917979717255,
+                0.17199251055717468,
+                0.16952362656593323,
+                0.1643935590982437,
+                0.1666180044412613,
+                0.16042855381965637,
+                0.16644366085529327,
+                0.1785881519317627,
+                0.1748381406068802,
+                0.18009433150291443,
+                0.17015118896961212,
+                0.17103511095046997,
+                0.16483013331890106,
+                0.16475893557071686,
+                0.17123332619667053,
+                0.1668217033147812,
+                0.17040371894836426,
+                0.16475313901901245,
+                0.16586682200431824,
+                0.16469289362430573,
+                0.17029410600662231
+              ],
+              "relation_trace_by_frequency": [
+                0.800000011920929,
+                0.6000000238418579,
+                0.571524977684021,
+                0.47254493832588196,
+                0.4076659083366394,
+                0.4016026258468628,
+                0.35433897376060486,
+                0.38703352212905884,
+                0.3060818314552307,
+                0.207292839884758,
+                0.20092041790485382,
+                0.20036917924880981,
+                0.20004190504550934,
+                0.20003531873226166,
+                0.2000306248664856,
+                0.2000063955783844,
+                0.20000258088111877,
+                0.20000162720680237,
+                0.20000115036964417,
+                0.2000008076429367,
+                0.2000005692243576,
+                0.20000037550926208,
+                0.20000027120113373,
+                0.20000019669532776,
+                0.2000001221895218,
+                0.2000000774860382,
+                0.20000006258487701,
+                0.20000003278255463,
+                0.20000001788139343,
+                0.20000000298023224,
+                0.20000000298023224
+              ],
+              "mix_norm": 1.9630622863769531,
+              "projection_norm": 0.060231178998947144,
+              "mix_gradient_norm": 0.0002720565244089812,
+              "projection_gradient_norm": 0.36225682497024536,
+              "encoder_gradient_norm": 0.0033985369373112917,
+              "use_subspace": false,
+              "frames": 7,
+              "frequency_pairs": 31,
+              "output_dimension": 160
+            }
+          ],
+          "scope": "All supplied packets/7 frames/31 mirror pairs; source coverage only when all V supplied; last measured CE gradients, no updates"
+        },
+        "limits": [
+          "Qualified subspace property only; finite FIR and nonlinear RX are outside exact model",
+          "The quotient can erase TX linear IQ distinctions too; absolute backbone retained",
+          "Rank-one subspace output tends to zero; energy/determinant excluded pairs reported",
+          "No whole-model receiver invariance or accuracy inference"
+        ]
+      }
+    },
+    {
+      "variant": "mirror_subspace",
+      "seed": 2026092702,
+      "total_parameters": 247731,
+      "new_parameters": 26744,
+      "steps": [
+        {
+          "step": 1,
+          "ce": 3.9957926273345947,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.4660695791244507,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 2,
+          "ce": 2.740107297897339,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.23954634368419647,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 3,
+          "ce": 3.1889853477478027,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.3595711290836334,
+          "gradient_used_parameters": 247731
+        }
+      ],
+      "all_new_tensors_changed": {
+        "mix_real": true,
+        "mix_imag": true,
+        "encoder.0.weight": true,
+        "encoder.0.bias": true,
+        "encoder.2.weight": true,
+        "encoder.2.bias": true,
+        "project.weight": true
+      },
+      "public_cpu_forward_batch30_ms": 28.926919994410127,
+      "elapsed_seconds": 0.7991603999980725,
+      "physics": {
+        "schema": "mirror_relation_public_physics_v1",
+        "synthetic_only": true,
+        "target_access": false,
+        "training_augmentation": false,
+        "optimizer_updates": 0,
+        "public_packets": 30,
+        "signal_groups": [
+          "6 fixed broadband noise",
+          "6 analytic tones",
+          "6 periodic envelope signals",
+          "6 DC",
+          "6 zero"
+        ],
+        "ideal_mixing": {
+          "total_pair_count": 186,
+          "eligible_pair_count": 186,
+          "excluded_pair_count": 0,
+          "energy_excluded_pair_count": 0,
+          "determinant_excluded_pair_count": 0,
+          "qualified_max_error": 1.4901161193847656e-07,
+          "excluded_max_error": null,
+          "full_max_error": 1.4901161193847656e-07,
+          "full_relative_distance": 1.473002129159795e-07,
+          "original_energy_floor_count": 0,
+          "changed_energy_floor_count": 0,
+          "original_determinant_floor_count": 0,
+          "changed_determinant_floor_count": 0,
+          "unitary_mixing_max_error": 1.4901161193847656e-07,
+          "minimum_mixing_abs_determinant": 0.7653592228889465,
+          "scope": "Public spectral tensors; qualification requires both energy and determinant floors inactive before and after mixing"
+        },
+        "time_iq": {
+          "total_pair_count": 558,
+          "eligible_pair_count": 224,
+          "excluded_pair_count": 334,
+          "energy_excluded_pair_count": 309,
+          "determinant_excluded_pair_count": 329,
+          "qualified_max_error": 2.332031726837158e-06,
+          "excluded_max_error": 0.04595750570297241,
+          "full_max_error": 0.04595750570297241,
+          "full_relative_distance": 0.028369562700390816,
+          "original_energy_floor_count": 309,
+          "changed_energy_floor_count": 308,
+          "original_determinant_floor_count": 329,
+          "changed_determinant_floor_count": 329,
+          "commutation_max_error": 1.9073486328125e-06,
+          "receiver_a": [
+            1.04,
+            0.12
+          ],
+          "receiver_b": [
+            0.14,
+            -0.07
+          ]
+        },
+        "all_public_domain": {
+          "total_pair_count": 930,
+          "eligible_pair_count": 224,
+          "excluded_pair_count": 706,
+          "energy_excluded_pair_count": 675,
+          "determinant_excluded_pair_count": 701,
+          "qualified_max_error": 1.1920928955078125e-07,
+          "excluded_max_error": 0.04595750570297241,
+          "full_max_error": 0.04595750570297241,
+          "full_relative_distance": 0.19830065965652466,
+          "original_energy_floor_count": 675,
+          "changed_energy_floor_count": 674,
+          "original_determinant_floor_count": 701,
+          "changed_determinant_floor_count": 701
+        },
+        "whole_model_phase": {
+          "ordinary_max_abs_error": 9.715557098388672e-06,
+          "zero_finite": true
+        },
+        "finite_fir_sensitivity": [
+          {
+            "name": "delay2",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                2,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.04429711401462555,
+            "mean_unit_embedding_distance": 0.13397209346294403
+          },
+          {
+            "name": "delay8",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                8,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 56.92157745361328,
+            "mean_unit_embedding_distance": 0.1335325688123703
+          },
+          {
+            "name": "delay16",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                16,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 3450.5791015625,
+            "mean_unit_embedding_distance": 0.12306158989667892
+          }
+        ],
+        "tx_rx_sensitivity": {
+          "am_am": {
+            "relation_relative_distance": 0.14490719139575958,
+            "mean_unit_embedding_distance": 0.04769885912537575
+          },
+          "am_pm": {
+            "relation_relative_distance": 0.20710355043411255,
+            "mean_unit_embedding_distance": 0.057507771998643875
+          },
+          "rx_iq": {
+            "relation_relative_distance": 0.0283683929592371,
+            "mean_unit_embedding_distance": 0.08815214037895203
+          }
+        },
+        "mirror_relation": {
+          "active": true,
+          "variant": "mirror_subspace",
+          "records": [
+            {
+              "block": "frequency.mirror_relation",
+              "packets": 30,
+              "relative_output_change_mean": 0.0031559569761157036,
+              "relative_output_change_max": 0.003665030701085925,
+              "floor_fraction": 0.725806474685669,
+              "floor_fraction_by_frequency": [
+                0.20000000298023224,
+                0.4000000059604645,
+                0.4333333373069763,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.699999988079071,
+                0.6333333253860474,
+                0.7333333492279053,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_floor_fraction": 0.7537634372711182,
+              "determinant_floor_fraction_by_frequency": [
+                0.6333333253860474,
+                0.6333333253860474,
+                0.5666666626930237,
+                0.5333333611488342,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6666666865348816,
+                0.7666666507720947,
+                0.7666666507720947,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_mean": 0.031640082597732544,
+              "determinant_minimum": 0.0,
+              "alpha_mean": 0.28095272183418274,
+              "alpha_minimum": 0.0,
+              "relation_norm_mean": 0.17838139832019806,
+              "relation_norm_max": 0.7071068286895752,
+              "relation_trace_mean": 0.2522693872451782,
+              "relation_trace_max": 1.0000001192092896,
+              "relation_norm_by_frequency": [
+                0.314747154712677,
+                0.28242528438568115,
+                0.3302243649959564,
+                0.32259702682495117,
+                0.2834419906139374,
+                0.28285449743270874,
+                0.23753827810287476,
+                0.20031467080116272,
+                0.1643153876066208,
+                0.14151379466056824,
+                0.14142383635044098,
+                0.14142140746116638,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213627576828,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213329553604,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213329553604,
+                0.1414213627576828,
+                0.1414213478565216
+              ],
+              "relation_trace_by_frequency": [
+                0.4451196789741516,
+                0.3994096517562866,
+                0.46700772643089294,
+                0.4562210738658905,
+                0.400847464799881,
+                0.4000166356563568,
+                0.33592984080314636,
+                0.2832876741886139,
+                0.2323770821094513,
+                0.20013073086738586,
+                0.2000034898519516,
+                0.2000000923871994,
+                0.20000000298023224,
+                0.19999998807907104,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.19999998807907104,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224
+              ],
+              "mix_norm": 1.9632309675216675,
+              "projection_norm": 0.06014171615242958,
+              "mix_gradient_norm": 0.00019008548406418413,
+              "projection_gradient_norm": 0.35955730080604553,
+              "encoder_gradient_norm": 0.0031482591293752193,
+              "use_subspace": true,
+              "frames": 7,
+              "frequency_pairs": 31,
+              "output_dimension": 160
+            }
+          ],
+          "scope": "All supplied packets/7 frames/31 mirror pairs; source coverage only when all V supplied; last measured CE gradients, no updates"
+        },
+        "limits": [
+          "Qualified subspace property only; finite FIR and nonlinear RX are outside exact model",
+          "The quotient can erase TX linear IQ distinctions too; absolute backbone retained",
+          "Rank-one subspace output tends to zero; energy/determinant excluded pairs reported",
+          "No whole-model receiver invariance or accuracy inference"
+        ]
+      }
+    },
+    {
+      "variant": "mirror_energy",
+      "seed": 2026092703,
+      "total_parameters": 247731,
+      "new_parameters": 26744,
+      "steps": [
+        {
+          "step": 1,
+          "ce": 3.3819146156311035,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.48131120204925537,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 2,
+          "ce": 2.7138149738311768,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.2427239567041397,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 3,
+          "ce": 2.9698119163513184,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.21532003581523895,
+          "gradient_used_parameters": 247731
+        }
+      ],
+      "all_new_tensors_changed": {
+        "mix_real": true,
+        "mix_imag": true,
+        "encoder.0.weight": true,
+        "encoder.0.bias": true,
+        "encoder.2.weight": true,
+        "encoder.2.bias": true,
+        "project.weight": true
+      },
+      "public_cpu_forward_batch30_ms": 30.180560005828738,
+      "elapsed_seconds": 0.8147064000368118,
+      "physics": {
+        "schema": "mirror_relation_public_physics_v1",
+        "synthetic_only": true,
+        "target_access": false,
+        "training_augmentation": false,
+        "optimizer_updates": 0,
+        "public_packets": 30,
+        "signal_groups": [
+          "6 fixed broadband noise",
+          "6 analytic tones",
+          "6 periodic envelope signals",
+          "6 DC",
+          "6 zero"
+        ],
+        "ideal_mixing": {
+          "total_pair_count": 186,
+          "eligible_pair_count": 186,
+          "excluded_pair_count": 0,
+          "energy_excluded_pair_count": 0,
+          "determinant_excluded_pair_count": 0,
+          "qualified_max_error": 0.23618337512016296,
+          "excluded_max_error": null,
+          "full_max_error": 0.23618337512016296,
+          "full_relative_distance": 0.2792310416698456,
+          "original_energy_floor_count": 0,
+          "changed_energy_floor_count": 0,
+          "original_determinant_floor_count": 0,
+          "changed_determinant_floor_count": 0,
+          "unitary_mixing_max_error": 1.7881393432617188e-07,
+          "minimum_mixing_abs_determinant": 0.7653592228889465,
+          "scope": "Public spectral tensors; qualification requires both energy and determinant floors inactive before and after mixing"
+        },
+        "time_iq": {
+          "total_pair_count": 558,
+          "eligible_pair_count": 224,
+          "excluded_pair_count": 334,
+          "energy_excluded_pair_count": 306,
+          "determinant_excluded_pair_count": 332,
+          "qualified_max_error": 0.11298421025276184,
+          "excluded_max_error": 0.013313792645931244,
+          "full_max_error": 0.11298421025276184,
+          "full_relative_distance": 0.09141400456428528,
+          "original_energy_floor_count": 306,
+          "changed_energy_floor_count": 306,
+          "original_determinant_floor_count": 332,
+          "changed_determinant_floor_count": 332,
+          "commutation_max_error": 1.1920928955078125e-06,
+          "receiver_a": [
+            1.04,
+            0.12
+          ],
+          "receiver_b": [
+            0.14,
+            -0.07
+          ]
+        },
+        "all_public_domain": {
+          "total_pair_count": 930,
+          "eligible_pair_count": 224,
+          "excluded_pair_count": 706,
+          "energy_excluded_pair_count": 672,
+          "determinant_excluded_pair_count": 704,
+          "qualified_max_error": 0.11298426985740662,
+          "excluded_max_error": 0.013313651084899902,
+          "full_max_error": 0.11298426985740662,
+          "full_relative_distance": 0.054848428815603256,
+          "original_energy_floor_count": 672,
+          "changed_energy_floor_count": 672,
+          "original_determinant_floor_count": 704,
+          "changed_determinant_floor_count": 704
+        },
+        "whole_model_phase": {
+          "ordinary_max_abs_error": 1.4901161193847656e-05,
+          "zero_finite": true
+        },
+        "finite_fir_sensitivity": [
+          {
+            "name": "delay2",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                2,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.04380606859922409,
+            "mean_unit_embedding_distance": 0.1341782659292221
+          },
+          {
+            "name": "delay8",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                8,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.07370425760746002,
+            "mean_unit_embedding_distance": 0.15014532208442688
+          },
+          {
+            "name": "delay16",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                16,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.14730887115001678,
+            "mean_unit_embedding_distance": 0.14561697840690613
+          }
+        ],
+        "tx_rx_sensitivity": {
+          "am_am": {
+            "relation_relative_distance": 0.07115116715431213,
+            "mean_unit_embedding_distance": 0.032926738262176514
+          },
+          "am_pm": {
+            "relation_relative_distance": 0.10797829926013947,
+            "mean_unit_embedding_distance": 0.04731747880578041
+          },
+          "rx_iq": {
+            "relation_relative_distance": 0.09141400456428528,
+            "mean_unit_embedding_distance": 0.0807211697101593
+          }
+        },
+        "mirror_relation": {
+          "active": true,
+          "variant": "mirror_energy",
+          "records": [
+            {
+              "block": "frequency.mirror_relation",
+              "packets": 30,
+              "relative_output_change_mean": 0.003574714530259371,
+              "relative_output_change_max": 0.004110300913453102,
+              "floor_fraction": 0.7225806713104248,
+              "floor_fraction_by_frequency": [
+                0.20000000298023224,
+                0.4000000059604645,
+                0.4333333373069763,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6666666865348816,
+                0.6000000238418579,
+                0.699999988079071,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_floor_fraction": 0.7569892406463623,
+              "determinant_floor_fraction_by_frequency": [
+                0.6000000238418579,
+                0.6333333253860474,
+                0.6333333253860474,
+                0.5333333611488342,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6666666865348816,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_mean": 0.031236106529831886,
+              "determinant_minimum": 0.0,
+              "alpha_mean": 0.2814999222755432,
+              "alpha_minimum": 0.0,
+              "relation_norm_mean": 0.24702386558055878,
+              "relation_norm_max": 1.0,
+              "relation_trace_mean": 0.2814999222755432,
+              "relation_trace_max": 1.000000238418579,
+              "relation_norm_by_frequency": [
+                0.7638728618621826,
+                0.5618028044700623,
+                0.5366404056549072,
+                0.42932435870170593,
+                0.3537980020046234,
+                0.357686847448349,
+                0.324405699968338,
+                0.369284451007843,
+                0.2820205092430115,
+                0.1625257283449173,
+                0.16871973872184753,
+                0.16211523115634918,
+                0.1634368896484375,
+                0.1643499732017517,
+                0.1735665500164032,
+                0.16308310627937317,
+                0.16115880012512207,
+                0.16229848563671112,
+                0.1657031625509262,
+                0.17178870737552643,
+                0.16890905797481537,
+                0.16142632067203522,
+                0.16638855636119843,
+                0.1623125970363617,
+                0.17018872499465942,
+                0.17553071677684784,
+                0.1705063432455063,
+                0.16879725456237793,
+                0.1750819832086563,
+                0.16786926984786987,
+                0.17314721643924713
+              ],
+              "relation_trace_by_frequency": [
+                0.800000011920929,
+                0.6000000238418579,
+                0.5715461373329163,
+                0.4724605679512024,
+                0.4076385498046875,
+                0.4015922248363495,
+                0.35757312178611755,
+                0.4001767337322235,
+                0.31118759512901306,
+                0.20326471328735352,
+                0.20068056881427765,
+                0.20028017461299896,
+                0.20002655684947968,
+                0.20002985000610352,
+                0.20002906024456024,
+                0.20000489056110382,
+                0.20000232756137848,
+                0.20000149309635162,
+                0.2000010758638382,
+                0.20000071823596954,
+                0.20000050961971283,
+                0.20000037550926208,
+                0.20000025629997253,
+                0.20000018179416656,
+                0.2000001221895218,
+                0.20000006258487701,
+                0.20000006258487701,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224
+              ],
+              "mix_norm": 2.109853506088257,
+              "projection_norm": 0.061161432415246964,
+              "mix_gradient_norm": 0.00022503387299366295,
+              "projection_gradient_norm": 0.21530720591545105,
+              "encoder_gradient_norm": 0.0023395754396915436,
+              "use_subspace": false,
+              "frames": 7,
+              "frequency_pairs": 31,
+              "output_dimension": 160
+            }
+          ],
+          "scope": "All supplied packets/7 frames/31 mirror pairs; source coverage only when all V supplied; last measured CE gradients, no updates"
+        },
+        "limits": [
+          "Qualified subspace property only; finite FIR and nonlinear RX are outside exact model",
+          "The quotient can erase TX linear IQ distinctions too; absolute backbone retained",
+          "Rank-one subspace output tends to zero; energy/determinant excluded pairs reported",
+          "No whole-model receiver invariance or accuracy inference"
+        ]
+      }
+    },
+    {
+      "variant": "mirror_subspace",
+      "seed": 2026092703,
+      "total_parameters": 247731,
+      "new_parameters": 26744,
+      "steps": [
+        {
+          "step": 1,
+          "ce": 3.3819146156311035,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.47967636585235596,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 2,
+          "ce": 2.7138688564300537,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.24107393622398376,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 3,
+          "ce": 2.9699184894561768,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.2140669971704483,
+          "gradient_used_parameters": 247731
+        }
+      ],
+      "all_new_tensors_changed": {
+        "mix_real": true,
+        "mix_imag": true,
+        "encoder.0.weight": true,
+        "encoder.0.bias": true,
+        "encoder.2.weight": true,
+        "encoder.2.bias": true,
+        "project.weight": true
+      },
+      "public_cpu_forward_batch30_ms": 28.578659996856004,
+      "elapsed_seconds": 0.7719522999832407,
+      "physics": {
+        "schema": "mirror_relation_public_physics_v1",
+        "synthetic_only": true,
+        "target_access": false,
+        "training_augmentation": false,
+        "optimizer_updates": 0,
+        "public_packets": 30,
+        "signal_groups": [
+          "6 fixed broadband noise",
+          "6 analytic tones",
+          "6 periodic envelope signals",
+          "6 DC",
+          "6 zero"
+        ],
+        "ideal_mixing": {
+          "total_pair_count": 186,
+          "eligible_pair_count": 186,
+          "excluded_pair_count": 0,
+          "energy_excluded_pair_count": 0,
+          "determinant_excluded_pair_count": 0,
+          "qualified_max_error": 1.1920928955078125e-07,
+          "excluded_max_error": null,
+          "full_max_error": 1.1920928955078125e-07,
+          "full_relative_distance": 1.47265907912697e-07,
+          "original_energy_floor_count": 0,
+          "changed_energy_floor_count": 0,
+          "original_determinant_floor_count": 0,
+          "changed_determinant_floor_count": 0,
+          "unitary_mixing_max_error": 1.4901161193847656e-07,
+          "minimum_mixing_abs_determinant": 0.7653592228889465,
+          "scope": "Public spectral tensors; qualification requires both energy and determinant floors inactive before and after mixing"
+        },
+        "time_iq": {
+          "total_pair_count": 558,
+          "eligible_pair_count": 224,
+          "excluded_pair_count": 334,
+          "energy_excluded_pair_count": 306,
+          "determinant_excluded_pair_count": 332,
+          "qualified_max_error": 6.496906280517578e-06,
+          "excluded_max_error": 0.03878563642501831,
+          "full_max_error": 0.03878563642501831,
+          "full_relative_distance": 0.030805597081780434,
+          "original_energy_floor_count": 306,
+          "changed_energy_floor_count": 306,
+          "original_determinant_floor_count": 332,
+          "changed_determinant_floor_count": 332,
+          "commutation_max_error": 2.86102294921875e-06,
+          "receiver_a": [
+            1.04,
+            0.12
+          ],
+          "receiver_b": [
+            0.14,
+            -0.07
+          ]
+        },
+        "all_public_domain": {
+          "total_pair_count": 930,
+          "eligible_pair_count": 224,
+          "excluded_pair_count": 706,
+          "energy_excluded_pair_count": 672,
+          "determinant_excluded_pair_count": 704,
+          "qualified_max_error": 1.4901161193847656e-07,
+          "excluded_max_error": 0.03878474235534668,
+          "full_max_error": 0.03878474235534668,
+          "full_relative_distance": 0.26559120416641235,
+          "original_energy_floor_count": 672,
+          "changed_energy_floor_count": 672,
+          "original_determinant_floor_count": 704,
+          "changed_determinant_floor_count": 704
+        },
+        "whole_model_phase": {
+          "ordinary_max_abs_error": 1.4722347259521484e-05,
+          "zero_finite": true
+        },
+        "finite_fir_sensitivity": [
+          {
+            "name": "delay2",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                2,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.04530373215675354,
+            "mean_unit_embedding_distance": 0.13417792320251465
+          },
+          {
+            "name": "delay8",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                8,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 18.04960823059082,
+            "mean_unit_embedding_distance": 0.15014398097991943
+          },
+          {
+            "name": "delay16",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                16,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 1124.4913330078125,
+            "mean_unit_embedding_distance": 0.14561595022678375
+          }
+        ],
+        "tx_rx_sensitivity": {
+          "am_am": {
+            "relation_relative_distance": 0.1559501588344574,
+            "mean_unit_embedding_distance": 0.03292716294527054
+          },
+          "am_pm": {
+            "relation_relative_distance": 0.23484189808368683,
+            "mean_unit_embedding_distance": 0.0473175123333931
+          },
+          "rx_iq": {
+            "relation_relative_distance": 0.030763553455471992,
+            "mean_unit_embedding_distance": 0.08072099834680557
+          }
+        },
+        "mirror_relation": {
+          "active": true,
+          "variant": "mirror_subspace",
+          "records": [
+            {
+              "block": "frequency.mirror_relation",
+              "packets": 30,
+              "relative_output_change_mean": 0.003566109575331211,
+              "relative_output_change_max": 0.0041343593038618565,
+              "floor_fraction": 0.7225806713104248,
+              "floor_fraction_by_frequency": [
+                0.20000000298023224,
+                0.4000000059604645,
+                0.4333333373069763,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6666666865348816,
+                0.6000000238418579,
+                0.699999988079071,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_floor_fraction": 0.7569892406463623,
+              "determinant_floor_fraction_by_frequency": [
+                0.6000000238418579,
+                0.6333333253860474,
+                0.6333333253860474,
+                0.5333333611488342,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6666666865348816,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_mean": 0.031237304210662842,
+              "determinant_minimum": 0.0,
+              "alpha_mean": 0.28150102496147156,
+              "alpha_minimum": 0.0,
+              "relation_norm_mean": 0.17821989953517914,
+              "relation_norm_max": 0.70710688829422,
+              "relation_trace_mean": 0.2520410418510437,
+              "relation_trace_max": 1.000000238418579,
+              "relation_norm_by_frequency": [
+                0.33221009373664856,
+                0.2815083861351013,
+                0.31879672408103943,
+                0.3280450403690338,
+                0.2834170460700989,
+                0.2828529179096222,
+                0.23867814242839813,
+                0.20146647095680237,
+                0.14656254649162292,
+                0.14143142104148865,
+                0.14142157137393951,
+                0.141421377658844,
+                0.1414213627576828,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213329553604,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213627576828
+              ],
+              "relation_trace_by_frequency": [
+                0.46981608867645264,
+                0.3981129825115204,
+                0.45084667205810547,
+                0.4639257490634918,
+                0.40081220865249634,
+                0.4000144302845001,
+                0.3375419080257416,
+                0.28491657972335815,
+                0.20727071166038513,
+                0.20001424849033356,
+                0.20000030100345612,
+                0.20000003278255463,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.19999998807907104,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224
+              ],
+              "mix_norm": 2.1097140312194824,
+              "projection_norm": 0.060803040862083435,
+              "mix_gradient_norm": 0.0001348612568108365,
+              "projection_gradient_norm": 0.2140554040670395,
+              "encoder_gradient_norm": 0.002223932184278965,
+              "use_subspace": true,
+              "frames": 7,
+              "frequency_pairs": 31,
+              "output_dimension": 160
+            }
+          ],
+          "scope": "All supplied packets/7 frames/31 mirror pairs; source coverage only when all V supplied; last measured CE gradients, no updates"
+        },
+        "limits": [
+          "Qualified subspace property only; finite FIR and nonlinear RX are outside exact model",
+          "The quotient can erase TX linear IQ distinctions too; absolute backbone retained",
+          "Rank-one subspace output tends to zero; energy/determinant excluded pairs reported",
+          "No whole-model receiver invariance or accuracy inference"
+        ]
+      }
+    },
+    {
+      "variant": "mirror_energy",
+      "seed": 2026092704,
+      "total_parameters": 247731,
+      "new_parameters": 26744,
+      "steps": [
+        {
+          "step": 1,
+          "ce": 3.506398916244507,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.5736227631568909,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 2,
+          "ce": 3.6315596103668213,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.34782615303993225,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 3,
+          "ce": 3.164997100830078,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.33763548731803894,
+          "gradient_used_parameters": 247731
+        }
+      ],
+      "all_new_tensors_changed": {
+        "mix_real": true,
+        "mix_imag": true,
+        "encoder.0.weight": true,
+        "encoder.0.bias": true,
+        "encoder.2.weight": true,
+        "encoder.2.bias": true,
+        "project.weight": true
+      },
+      "public_cpu_forward_batch30_ms": 30.41341999778524,
+      "elapsed_seconds": 0.7821418999810703,
+      "physics": {
+        "schema": "mirror_relation_public_physics_v1",
+        "synthetic_only": true,
+        "target_access": false,
+        "training_augmentation": false,
+        "optimizer_updates": 0,
+        "public_packets": 30,
+        "signal_groups": [
+          "6 fixed broadband noise",
+          "6 analytic tones",
+          "6 periodic envelope signals",
+          "6 DC",
+          "6 zero"
+        ],
+        "ideal_mixing": {
+          "total_pair_count": 186,
+          "eligible_pair_count": 186,
+          "excluded_pair_count": 0,
+          "energy_excluded_pair_count": 0,
+          "determinant_excluded_pair_count": 0,
+          "qualified_max_error": 0.23044267296791077,
+          "excluded_max_error": null,
+          "full_max_error": 0.23044267296791077,
+          "full_relative_distance": 0.26192834973335266,
+          "original_energy_floor_count": 0,
+          "changed_energy_floor_count": 0,
+          "original_determinant_floor_count": 0,
+          "changed_determinant_floor_count": 0,
+          "unitary_mixing_max_error": 1.7881393432617188e-07,
+          "minimum_mixing_abs_determinant": 0.7653592228889465,
+          "scope": "Public spectral tensors; qualification requires both energy and determinant floors inactive before and after mixing"
+        },
+        "time_iq": {
+          "total_pair_count": 558,
+          "eligible_pair_count": 221,
+          "excluded_pair_count": 337,
+          "energy_excluded_pair_count": 309,
+          "determinant_excluded_pair_count": 335,
+          "qualified_max_error": 0.10079288482666016,
+          "excluded_max_error": 0.07627919316291809,
+          "full_max_error": 0.10079288482666016,
+          "full_relative_distance": 0.08457101136445999,
+          "original_energy_floor_count": 309,
+          "changed_energy_floor_count": 309,
+          "original_determinant_floor_count": 333,
+          "changed_determinant_floor_count": 335,
+          "commutation_max_error": 1.9073486328125e-06,
+          "receiver_a": [
+            1.04,
+            0.12
+          ],
+          "receiver_b": [
+            0.14,
+            -0.07
+          ]
+        },
+        "all_public_domain": {
+          "total_pair_count": 930,
+          "eligible_pair_count": 221,
+          "excluded_pair_count": 709,
+          "energy_excluded_pair_count": 675,
+          "determinant_excluded_pair_count": 707,
+          "qualified_max_error": 0.10079282522201538,
+          "excluded_max_error": 0.07627895474433899,
+          "full_max_error": 0.10079282522201538,
+          "full_relative_distance": 0.05074262619018555,
+          "original_energy_floor_count": 675,
+          "changed_energy_floor_count": 675,
+          "original_determinant_floor_count": 705,
+          "changed_determinant_floor_count": 707
+        },
+        "whole_model_phase": {
+          "ordinary_max_abs_error": 8.463859558105469e-06,
+          "zero_finite": true
+        },
+        "finite_fir_sensitivity": [
+          {
+            "name": "delay2",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                2,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.044926755130290985,
+            "mean_unit_embedding_distance": 0.1230451911687851
+          },
+          {
+            "name": "delay8",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                8,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.09002101421356201,
+            "mean_unit_embedding_distance": 0.12385683506727219
+          },
+          {
+            "name": "delay16",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                16,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.16733574867248535,
+            "mean_unit_embedding_distance": 0.13103452324867249
+          }
+        ],
+        "tx_rx_sensitivity": {
+          "am_am": {
+            "relation_relative_distance": 0.07932550460100174,
+            "mean_unit_embedding_distance": 0.037884533405303955
+          },
+          "am_pm": {
+            "relation_relative_distance": 0.09897910803556442,
+            "mean_unit_embedding_distance": 0.04647323861718178
+          },
+          "rx_iq": {
+            "relation_relative_distance": 0.0845709964632988,
+            "mean_unit_embedding_distance": 0.10792582482099533
+          }
+        },
+        "mirror_relation": {
+          "active": true,
+          "variant": "mirror_energy",
+          "records": [
+            {
+              "block": "frequency.mirror_relation",
+              "packets": 30,
+              "relative_output_change_mean": 0.003903032513335347,
+              "relative_output_change_max": 0.004579199478030205,
+              "floor_fraction": 0.725806474685669,
+              "floor_fraction_by_frequency": [
+                0.20000000298023224,
+                0.4000000059604645,
+                0.4333333373069763,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6333333253860474,
+                0.699999988079071,
+                0.6000000238418579,
+                0.7333333492279053,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_floor_fraction": 0.7580645084381104,
+              "determinant_floor_fraction_by_frequency": [
+                0.6000000238418579,
+                0.6666666865348816,
+                0.6333333253860474,
+                0.5666666626930237,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.7333333492279053,
+                0.7333333492279053,
+                0.7666666507720947,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_mean": 0.029491646215319633,
+              "determinant_minimum": 0.0,
+              "alpha_mean": 0.28126537799835205,
+              "alpha_minimum": 0.0,
+              "relation_norm_mean": 0.24889273941516876,
+              "relation_norm_max": 1.0,
+              "relation_trace_mean": 0.28126537799835205,
+              "relation_trace_max": 1.000000238418579,
+              "relation_norm_by_frequency": [
+                0.7660702466964722,
+                0.5636088252067566,
+                0.5377424359321594,
+                0.43243396282196045,
+                0.35758915543556213,
+                0.34425437450408936,
+                0.3167196810245514,
+                0.37251779437065125,
+                0.29536834359169006,
+                0.16596007347106934,
+                0.16496695578098297,
+                0.1696796715259552,
+                0.17489950358867645,
+                0.1737765669822693,
+                0.1594170778989792,
+                0.1605818122625351,
+                0.17088764905929565,
+                0.1718614548444748,
+                0.174059197306633,
+                0.1764364093542099,
+                0.16347458958625793,
+                0.16251595318317413,
+                0.17506729066371918,
+                0.17069397866725922,
+                0.16709767282009125,
+                0.1635826677083969,
+                0.1689145714044571,
+                0.17513886094093323,
+                0.17065930366516113,
+                0.17673969268798828,
+                0.17295928299427032
+              ],
+              "relation_trace_by_frequency": [
+                0.800000011920929,
+                0.6000000238418579,
+                0.5714948177337646,
+                0.47206345200538635,
+                0.4074898064136505,
+                0.3878578245639801,
+                0.3446756899356842,
+                0.4001616835594177,
+                0.3331032395362854,
+                0.20168961584568024,
+                0.20041653513908386,
+                0.20017598569393158,
+                0.20003408193588257,
+                0.2000422179698944,
+                0.20001231133937836,
+                0.20000319182872772,
+                0.20000194013118744,
+                0.20000122487545013,
+                0.2000008523464203,
+                0.20000059902668,
+                0.20000042021274567,
+                0.20000028610229492,
+                0.20000019669532776,
+                0.2000001221895218,
+                0.2000000923871994,
+                0.20000004768371582,
+                0.20000004768371582,
+                0.20000001788139343,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224
+              ],
+              "mix_norm": 1.9096577167510986,
+              "projection_norm": 0.060816723853349686,
+              "mix_gradient_norm": 0.00011617653217399493,
+              "projection_gradient_norm": 0.33763036131858826,
+              "encoder_gradient_norm": 0.001858514384366572,
+              "use_subspace": false,
+              "frames": 7,
+              "frequency_pairs": 31,
+              "output_dimension": 160
+            }
+          ],
+          "scope": "All supplied packets/7 frames/31 mirror pairs; source coverage only when all V supplied; last measured CE gradients, no updates"
+        },
+        "limits": [
+          "Qualified subspace property only; finite FIR and nonlinear RX are outside exact model",
+          "The quotient can erase TX linear IQ distinctions too; absolute backbone retained",
+          "Rank-one subspace output tends to zero; energy/determinant excluded pairs reported",
+          "No whole-model receiver invariance or accuracy inference"
+        ]
+      }
+    },
+    {
+      "variant": "mirror_subspace",
+      "seed": 2026092704,
+      "total_parameters": 247731,
+      "new_parameters": 26744,
+      "steps": [
+        {
+          "step": 1,
+          "ce": 3.506398916244507,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.5716548562049866,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 2,
+          "ce": 3.631603956222534,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.346454918384552,
+          "gradient_used_parameters": 247731
+        },
+        {
+          "step": 3,
+          "ce": 3.165057420730591,
+          "ce_weight": 1.0,
+          "extra_losses": [],
+          "new_gradient_norm": 0.3364561200141907,
+          "gradient_used_parameters": 247731
+        }
+      ],
+      "all_new_tensors_changed": {
+        "mix_real": true,
+        "mix_imag": true,
+        "encoder.0.weight": true,
+        "encoder.0.bias": true,
+        "encoder.2.weight": true,
+        "encoder.2.bias": true,
+        "project.weight": true
+      },
+      "public_cpu_forward_batch30_ms": 30.996919993776828,
+      "elapsed_seconds": 0.775013400008902,
+      "physics": {
+        "schema": "mirror_relation_public_physics_v1",
+        "synthetic_only": true,
+        "target_access": false,
+        "training_augmentation": false,
+        "optimizer_updates": 0,
+        "public_packets": 30,
+        "signal_groups": [
+          "6 fixed broadband noise",
+          "6 analytic tones",
+          "6 periodic envelope signals",
+          "6 DC",
+          "6 zero"
+        ],
+        "ideal_mixing": {
+          "total_pair_count": 186,
+          "eligible_pair_count": 186,
+          "excluded_pair_count": 0,
+          "energy_excluded_pair_count": 0,
+          "determinant_excluded_pair_count": 0,
+          "qualified_max_error": 1.4901161193847656e-07,
+          "excluded_max_error": null,
+          "full_max_error": 1.4901161193847656e-07,
+          "full_relative_distance": 1.484425382614063e-07,
+          "original_energy_floor_count": 0,
+          "changed_energy_floor_count": 0,
+          "original_determinant_floor_count": 0,
+          "changed_determinant_floor_count": 0,
+          "unitary_mixing_max_error": 1.1920928955078125e-07,
+          "minimum_mixing_abs_determinant": 0.7653592228889465,
+          "scope": "Public spectral tensors; qualification requires both energy and determinant floors inactive before and after mixing"
+        },
+        "time_iq": {
+          "total_pair_count": 558,
+          "eligible_pair_count": 221,
+          "excluded_pair_count": 337,
+          "energy_excluded_pair_count": 309,
+          "determinant_excluded_pair_count": 335,
+          "qualified_max_error": 2.115964889526367e-06,
+          "excluded_max_error": 0.05788023769855499,
+          "full_max_error": 0.05788023769855499,
+          "full_relative_distance": 0.0343371145427227,
+          "original_energy_floor_count": 309,
+          "changed_energy_floor_count": 309,
+          "original_determinant_floor_count": 333,
+          "changed_determinant_floor_count": 335,
+          "commutation_max_error": 1.9073486328125e-06,
+          "receiver_a": [
+            1.04,
+            0.12
+          ],
+          "receiver_b": [
+            0.14,
+            -0.07
+          ]
+        },
+        "all_public_domain": {
+          "total_pair_count": 930,
+          "eligible_pair_count": 221,
+          "excluded_pair_count": 709,
+          "energy_excluded_pair_count": 675,
+          "determinant_excluded_pair_count": 707,
+          "qualified_max_error": 1.4901161193847656e-07,
+          "excluded_max_error": 0.0578799843788147,
+          "full_max_error": 0.0578799843788147,
+          "full_relative_distance": 0.15931710600852966,
+          "original_energy_floor_count": 675,
+          "changed_energy_floor_count": 675,
+          "original_determinant_floor_count": 705,
+          "changed_determinant_floor_count": 707
+        },
+        "whole_model_phase": {
+          "ordinary_max_abs_error": 9.834766387939453e-06,
+          "zero_finite": true
+        },
+        "finite_fir_sensitivity": [
+          {
+            "name": "delay2",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                2,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 0.04768393933773041,
+            "mean_unit_embedding_distance": 0.12304667383432388
+          },
+          {
+            "name": "delay8",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                8,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 24.99002456665039,
+            "mean_unit_embedding_distance": 0.12385782599449158
+          },
+          {
+            "name": "delay16",
+            "taps": [
+              [
+                0,
+                1.0,
+                0.0
+              ],
+              [
+                16,
+                0.23,
+                0.09
+              ]
+            ],
+            "relation_relative_distance": 1559.5621337890625,
+            "mean_unit_embedding_distance": 0.13103559613227844
+          }
+        ],
+        "tx_rx_sensitivity": {
+          "am_am": {
+            "relation_relative_distance": 0.15864460170269012,
+            "mean_unit_embedding_distance": 0.037885621190071106
+          },
+          "am_pm": {
+            "relation_relative_distance": 0.22217603027820587,
+            "mean_unit_embedding_distance": 0.04647320881485939
+          },
+          "rx_iq": {
+            "relation_relative_distance": 0.034341707825660706,
+            "mean_unit_embedding_distance": 0.10792729258537292
+          }
+        },
+        "mirror_relation": {
+          "active": true,
+          "variant": "mirror_subspace",
+          "records": [
+            {
+              "block": "frequency.mirror_relation",
+              "packets": 30,
+              "relative_output_change_mean": 0.003900334471836686,
+              "relative_output_change_max": 0.004548840224742889,
+              "floor_fraction": 0.725806474685669,
+              "floor_fraction_by_frequency": [
+                0.20000000298023224,
+                0.4000000059604645,
+                0.4333333373069763,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6333333253860474,
+                0.699999988079071,
+                0.6000000238418579,
+                0.7333333492279053,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_floor_fraction": 0.7580645084381104,
+              "determinant_floor_fraction_by_frequency": [
+                0.6000000238418579,
+                0.6666666865348816,
+                0.6333333253860474,
+                0.5666666626930237,
+                0.6000000238418579,
+                0.6000000238418579,
+                0.7333333492279053,
+                0.7333333492279053,
+                0.7666666507720947,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929
+              ],
+              "determinant_mean": 0.029491186141967773,
+              "determinant_minimum": 0.0,
+              "alpha_mean": 0.2812669277191162,
+              "alpha_minimum": 0.0,
+              "relation_norm_mean": 0.1754993051290512,
+              "relation_norm_max": 0.70710688829422,
+              "relation_trace_mean": 0.24819350242614746,
+              "relation_trace_max": 1.000000238418579,
+              "relation_norm_by_frequency": [
+                0.3050164580345154,
+                0.2674582898616791,
+                0.2829568684101105,
+                0.32423102855682373,
+                0.2830093204975128,
+                0.27320054173469543,
+                0.2037002146244049,
+                0.21722906827926636,
+                0.17240628600120544,
+                0.14142180979251862,
+                0.1414213925600052,
+                0.1414213478565216,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213627576828,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213627576828,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216,
+                0.1414213478565216
+              ],
+              "relation_trace_by_frequency": [
+                0.43135836720466614,
+                0.3782431185245514,
+                0.40016141533851624,
+                0.4585318863391876,
+                0.4002356231212616,
+                0.3863639235496521,
+                0.28807562589645386,
+                0.3072083294391632,
+                0.24381932616233826,
+                0.20000062882900238,
+                0.20000003278255463,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.19999998807907104,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224
+              ],
+              "mix_norm": 1.909922480583191,
+              "projection_norm": 0.06058710068464279,
+              "mix_gradient_norm": 8.790256106294692e-05,
+              "projection_gradient_norm": 0.33644989132881165,
+              "encoder_gradient_norm": 0.0020474663469940424,
+              "use_subspace": true,
+              "frames": 7,
+              "frequency_pairs": 31,
+              "output_dimension": 160
+            }
+          ],
+          "scope": "All supplied packets/7 frames/31 mirror pairs; source coverage only when all V supplied; last measured CE gradients, no updates"
+        },
+        "limits": [
+          "Qualified subspace property only; finite FIR and nonlinear RX are outside exact model",
+          "The quotient can erase TX linear IQ distinctions too; absolute backbone retained",
+          "Rank-one subspace output tends to zero; energy/determinant excluded pairs reported",
+          "No whole-model receiver invariance or accuracy inference"
+        ]
+      }
+    }
+  ],
+  "real_data_access": false,
+  "target_access": false,
+  "scope": "Public correctness and activity only; no formal training or recognition evidence",
+  "hardware": {
+    "device": "cpu",
+    "torch_version": "2.10.0+cu128",
+    "threads": 2
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "status": "VERIFIED",
+  "at": "2026-10-03T09:18:22.448406+00:00",
+  "distinct_tests_passed": 108,
+  "verification_chunks": [
+    "10c049",
+    "eeb47f"
+  ],
+  "note": "107 checks passed after numerical fix; one stale prepared-contract fixture failed, updated all 8 configs and passed the single affected test. No suppressed failures.",
+  "public_ce_models": 8,
+  "public_ce_updates": 24,
+  "public_smoke": "public_cpu_smoke.json",
+  "real_data_access": false,
+  "target_access": false,
+  "independent_review": "PASS; independent_review.json"
+}
