@@ -23,3 +23,7 @@
 按输入预测滤波器已有先行工作：[Dynamic Filter Networks，NIPS2016](https://papers.nips.cc/paper_files/paper/2016/hash/8bf1211fd4b7b94528899de0a43b9fb3-Abstract.html)。因此不把动态卷积本身作为首次创新。本轮待验证的具体结构是有效历史修正、原始指纹保留及共享主干融合的组合；性能与论文价值尚未证明。此文献核对只是定向筛查，不是完整新颖性检索。
 
 历史基准已暴露，最终报告必须披露这一事实。不能根据本轮目标测试结果再调门控、tap数、选模或选择性重跑。当前只完成本地验证；训练、独立测试评分及最终性能结论尚未完成。
+
+## 实际发布
+
+N607发布VERIFIED，执行提交`91ade405e1cec130805289ea2517c1b3ab659a02`，dispatcher PID`2508597`。独立读回核对host/user、CWD、argv、原始数据角色、实际参数及日志。当前状态计数：{"RUNNING": 8, "QUEUED": 0, "FAILED": 0, "SOURCE_TRAINED": 0}。远端CPU权重保存/载入与反传通过。全部8行的源训练与后续测试仍未完成，不据训练早期分数宣称性能提升。

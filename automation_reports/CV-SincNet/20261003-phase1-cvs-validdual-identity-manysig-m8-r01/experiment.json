@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-03用户要求依据创新落地架构并跑实验，继续纯架构优化；保持原单CE及训练策略。",
   "code": {
-    "commit": "604b87153da2756537ea3cbf27523560242f192e",
+    "commit": "91ade405e1cec130805289ea2517c1b3ab659a02",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01",
@@ -97,7 +97,9 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261003-phase1-cvs-validdual-identity-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_validdual_identity.publish --output local_artifacts/cvs_validdual_identity_20261003_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 2508597,
+    "verified_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_validdual_identity_20261003_r01"
   },
   "expected_artifacts": [
     "last.pt",
@@ -126,7 +128,7 @@
       "row_id": "validdual_static-s2026092701",
       "method": "validdual_static",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_validdual_identity/configs/validdual_static-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_static-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -162,13 +164,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2508638
     },
     {
       "row_id": "validdual_dynamic-s2026092701",
       "method": "validdual_dynamic",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_validdual_identity/configs/validdual_dynamic-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_dynamic-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -204,13 +208,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2508719
     },
     {
       "row_id": "validdual_static-s2026092702",
       "method": "validdual_static",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_validdual_identity/configs/validdual_static-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_static-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -246,13 +252,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2508798
     },
     {
       "row_id": "validdual_dynamic-s2026092702",
       "method": "validdual_dynamic",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_validdual_identity/configs/validdual_dynamic-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_dynamic-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -288,13 +296,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2508877
     },
     {
       "row_id": "validdual_static-s2026092703",
       "method": "validdual_static",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_validdual_identity/configs/validdual_static-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_static-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -330,13 +340,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2508956
     },
     {
       "row_id": "validdual_dynamic-s2026092703",
       "method": "validdual_dynamic",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_validdual_identity/configs/validdual_dynamic-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_dynamic-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -372,13 +384,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2509091
     },
     {
       "row_id": "validdual_static-s2026092704",
       "method": "validdual_static",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_validdual_identity/configs/validdual_static-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_static-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -414,13 +428,15 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2509168
     },
     {
       "row_id": "validdual_dynamic-s2026092704",
       "method": "validdual_dynamic",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_validdual_identity/configs/validdual_dynamic-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/validdual_dynamic-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -456,7 +472,9 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2509249
     }
   ],
   "notes": [
@@ -470,7 +488,7 @@
     "No Phase2support/SFT/newclass/LEO in this run. K and adaptation metrics N/A. Original6300L/56700unusedU/27000V source roles and4modelseeds retained."
   ],
   "registered_at": "2026-10-03T11:55:56+00:00",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "test_completion_plan": {
     "condition": "Unconditional fixed static/dynamic comparison after all8 source checkpoints complete and freeze",
     "views": [
