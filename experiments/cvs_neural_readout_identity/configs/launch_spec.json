@@ -64,23 +64,51 @@
   "source_controls": [
     {
       "variant": "neural_residual_shallow",
+      "method": "cvs_neural_residual_identity",
       "model_seed": 2026092701,
       "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092701/source"
     },
     {
       "variant": "neural_residual_shallow",
+      "method": "cvs_neural_residual_identity",
       "model_seed": 2026092702,
       "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092702/source"
     },
     {
       "variant": "neural_residual_shallow",
+      "method": "cvs_neural_residual_identity",
       "model_seed": 2026092703,
       "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092703/source"
     },
     {
       "variant": "neural_residual_shallow",
+      "method": "cvs_neural_residual_identity",
       "model_seed": 2026092704,
       "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092704/source"
+    },
+    {
+      "variant": "response_anchor_mean",
+      "method": "cvs_response_fusion_identity",
+      "model_seed": 2026092701,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092701/source"
+    },
+    {
+      "variant": "response_anchor_mean",
+      "method": "cvs_response_fusion_identity",
+      "model_seed": 2026092702,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092702/source"
+    },
+    {
+      "variant": "response_anchor_mean",
+      "method": "cvs_response_fusion_identity",
+      "model_seed": 2026092703,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092703/source"
+    },
+    {
+      "variant": "response_anchor_mean",
+      "method": "cvs_response_fusion_identity",
+      "model_seed": 2026092704,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092704/source"
     }
   ],
   "numerical_policy": {

@@ -6,7 +6,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from experiments.cvs_neural_readout_identity.prepare import RUN
 from experiments.cvs_neural_readout_identity.collect import validate_completed
-from experiments.cvs_neural_readout_identity.dispatch import CONTROL_RUN,CONTROL,CANDIDATES
+from experiments.cvs_neural_readout_identity.dispatch import CONTROL_RUN,CONTROL,CANDIDATES,ANCHOR_CONTROL,ANCHOR_CONTROL_RUN
 
 def read(p):return json.loads(p.read_text(encoding='utf-8'))
 def write(p,d):p.write_text(json.dumps(d,ensure_ascii=False,indent=2,allow_nan=False)+'\n',encoding='utf-8')
@@ -20,6 +20,9 @@ def analyze(root):
     old=read(root/'automation_reports/CV-SincNet'/CONTROL_RUN/'evidence/source_research_complete.json')
     controls=[r for r in old['rows'] if r['resolved']['variant']==CONTROL]
     assert len(controls)==4
+    anchor=read(root/'automation_reports/CV-SincNet'/ANCHOR_CONTROL_RUN/'evidence/source_research_complete.json')
+    controls += [r for r in anchor['rows'] if r['resolved']['variant']==ANCHOR_CONTROL]
+    assert len(controls)==8
     curves=[];final=[];resources=[];neural=[];cells=[]
     for row in controls+data['rows']:
         variant=row['resolved']['variant'];seed=row['resolved']['model_seed'];base=dict(variant=variant,model_seed=seed)
@@ -38,7 +41,7 @@ def analyze(root):
         summary.append(dict(variant=variant,V=st.mean(r['V'] for r in rows),worst_RX=st.mean(r['worst_RX'] for r in rows),score=st.mean(r['score'] for r in rows),paired_score_pp=st.mean(differences),paired_score_SD=st.stdev(differences),positive_seeds=sum(d>0 for d in differences),parameters=profiles[0]['parameters'],inference_ms=st.mean(r['inference_batch1_ms'] for r in profiles),training_ms=st.mean(r['training_batch128_ms'] for r in profiles)))
     table(e/'source_summary.csv',summary)
     figure,axes=plt.subplots(2,2,figsize=(12,7),layout='constrained')
-    for variant,color in zip(CANDIDATES,['#334155','#0284c7','#db7a13']):
+    for variant,color in zip(CANDIDATES,['#334155','#7046b1','#0284c7','#db7a13']):
         for ax,key,label in zip(axes.flat,['V','worst_RX','train_CE','V_CE'],['Source V accuracy (%)','Worst seen-source RX (%)','Training CE','Source V CE']):
             values=[st.mean(r[key] for r in curves if r['variant']==variant and r['epoch']==epoch) for epoch in range(1,201)]
             ax.plot(range(1,201),[x*100 if key in ('V','worst_RX') else x for x in values],label=variant,color=color,linewidth=1.5)
@@ -47,16 +50,16 @@ def analyze(root):
     axes[0,0].legend(fontsize=8)
     for ext in ('png','pdf'):figure.savefig(e/('source_curves.'+ext),dpi=180)
     plt.close(figure)
-    text='# CVS可学习注意力读出：完整源训练结果\n\n8个scratch模型完成200轮×50步。源选择由完整12记录独立重算，训练策略和单一CE保持不变。以下是源验证指标，不是测试结果。\n\n'
+    text='# CVS可学习注意力读出：完整源训练结果\n\n8个scratch模型完成200轮×50步。源选择由完整16记录独立重算，包含同主干shallow和当前源赢家Anchor，训练策略和单一CE保持不变。以下是源验证指标，不是测试结果。\n\n'
     text+='|结构|源V/%|最差源RX/%|固定源分数/%|相对控制/百分点±配对SD|正提升seed|参数|\n|---|---:|---:|---:|---:|---:|---:|\n'
     for r in summary:text+=f"|{r['variant']}|{100*r['V']:.4f}|{100*r['worst_RX']:.4f}|{100*r['score']:.4f}|{r['paired_score_pp']:+.4f}±{r['paired_score_SD']:.4f}|{r['positive_seeds']}/4|{r['parameters']}|\n"
-    text+=f"\n固定规则选中`{selection['selected_variant']}`。"+('后续只对该候选4模型执行预登记clean测试。' if selection['new_candidate_selected'] else '保留既有控制，未选候选不访问query，复用已有控制clean完成证据。')+'\n\n![完整2400轮含控制曲线](evidence/source_curves.png)\n\n'
+    text+=f"\n固定规则选中`{selection['selected_variant']}`。"+('后续只对该候选4模型执行预登记clean测试。' if selection['new_candidate_selected'] else '保留既有控制，未选候选不访问query，复用已有控制clean完成证据。')+'\n\n![完整3200轮含控制曲线](evidence/source_curves.png)\n\n'
     text+='|结构|batch1推理/ms|batch128训练/ms|\n|---|---:|---:|\n'
     for r in summary:text+=f"|{r['variant']}|{r['inference_ms']:.4f}|{r['training_ms']:.4f}|\n"
     text+='\n资源在实际RTX3090/FP32环境测量，并行运行可能影响时间。MAC计数包含实际aten卷积（包括功能式复卷积）及矩阵乘法，未计FFT、归一化、门控、池化和逐元素运算；不是总FLOPs。峰值内存与常驻状态保留逐seed值。新模块同样只由CE更新；零出口的首步内部零梯度是初始化性质，不能与训练后失活混同。\n\n'
     text+='源V使用已见源RX；四seed不是独立数据集。新增容量是否提高独立clean识别必须由冻结测试证明。没有追加损失、增强、重加权、采样策略、teacher或目标适应。D92的适应三阶段/K×新增类为N/A。\n\n[逐seed](evidence/source_final.csv) · [完整曲线](evidence/source_curves.csv) · [实际新增分支输出](evidence/readout_outputs.csv) · [全部TX/RX/day单元](evidence/source_cells.csv) · [资源](evidence/source_resources.csv) · [80000步审计](evidence/source_completion_validation.json) · [原设计](../../../docs/CVS_NEURAL_READOUT_20261003.md)。\n'
     (folder/'report.md').write_text(text,encoding='utf-8')
-    write(e/'source_analysis_validation.json',dict(status='VERIFIED',models=8,source_epochs=1600,control_epochs=800,selection=selection,summary=summary,readout_output_records=len(neural),target_results_read=False))
+    write(e/'source_analysis_validation.json',dict(status='VERIFIED',models=8,source_epochs=1600,control_epochs=1600,selection=selection,summary=summary,readout_output_records=len(neural),target_results_read=False))
     print(json.dumps(dict(status='VERIFIED',summary=summary,selection=selection),ensure_ascii=False))
 
 if __name__=='__main__':

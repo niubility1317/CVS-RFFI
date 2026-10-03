@@ -1,19 +1,24 @@
 {
   "run_id": "20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01",
   "status": "PLANNED",
-  "goal": "Phase1 standalone architecture research: RFF physics-aware and channel robustness, original single CE",
   "launch_owner": "codex/root/cvs-neural-readout-identity-20261003",
-  "live_workers": 0,
+  "source_records": 16,
+  "new_models": 8,
+  "source_controls": [
+    "neural_residual_shallow",
+    "response_anchor_mean"
+  ],
+  "model_and_training_unchanged": true,
   "performance_goal_achieved": false,
-  "local_validation": "VERIFIED",
-  "launch_disposition": "NOT_LAUNCHED_PENDING_CHANNEL_ROBUST_ARCHITECTURE_DESIGN",
+  "paper_claim_established": false,
   "evidence": [
-    "evidence/public_cpu_smoke.json",
-    "evidence/local_validation.json",
-    "../../../docs/CVS_PHASE1_CHANNEL_ROBUST_ARCHITECTURE_20261003.md"
+    "evidence/resume_preflight.json",
+    "evidence/resumption_validation.json",
+    "evidence/readout_information_counterexample.json"
   ],
   "next": [
-    "Resolve the channel-robust structural hypothesis and its source-only experiment design before a new release",
-    "Retain the locally tested attention candidate as an optional readout ablation; do not infer launch from old handoff"
+    "Commit and push the reviewed source matrix",
+    "Publish once only after absent paths were independently verified",
+    "Record actual process/config/log; complete E200 and frozen conditional clean plan"
   ]
 }

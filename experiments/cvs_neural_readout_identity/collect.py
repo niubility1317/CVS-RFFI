@@ -163,7 +163,7 @@ else:
     exec(SOURCE_READER,globals())
     exec(LOG_AUDITOR,globals())
     original=read(Path(PROJECT)/'runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json')
-    controls=[read_source_record(r,original,'cvs_neural_residual_identity') for r in cfg['controls']]
+    controls=[read_source_record(r,original,r['method']) for r in cfg['controls']]
     result=dict(ready=True,read_at=time.time(),run_id=cfg['run'],pipeline=state,
         source_selection=read(p/'source_selection.json'),source_controls=controls,rows=[])
     for rid,row in state['rows'].items():
@@ -280,7 +280,7 @@ def collect(root, output, run_id=None):
     if not data['ready']:
         print(json.dumps(data)); return False
     selection = validate_completed(data)
-    validation = dict(status='VERIFIED',new_rows=8,control_rows=4,new_epochs=1600,new_steps=80000,
+    validation = dict(status='VERIFIED',new_rows=8,control_rows=8,new_epochs=1600,new_steps=80000,
                       full_stdout_scanned=True,step_epoch_csv_stdout_reconciled=True,
                       full_source_records_reverified=True,source_rule_recomputed=True,target_access=False,
                       source_selection=selection)

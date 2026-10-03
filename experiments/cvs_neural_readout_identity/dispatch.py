@@ -16,19 +16,26 @@ from experiments.cvs_neural_readout_identity.model import VARIANTS
 from experiments.cvs_neural_readout_identity.source import validate_config
 SEEDS={2026092701,2026092702,2026092703,2026092704}
 CONTROL='neural_residual_shallow'
-CANDIDATES=(CONTROL,*VARIANTS)
+ANCHOR_CONTROL='response_anchor_mean'
+CANDIDATES=(CONTROL,ANCHOR_CONTROL,*VARIANTS)
 PROJECT='/home/szu2070436088/2510044040/CV-SincNet'
 CONTROL_RUN='20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01'
+ANCHOR_CONTROL_RUN='20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01'
 
 
 def control_rows():
-    return [dict(variant=CONTROL,model_seed=s,source_output=PROJECT+'/runs/'+CONTROL_RUN+'/'+CONTROL+'-s'+str(s)+'/source') for s in sorted(SEEDS)]
+    return [dict(variant=v,method=m,model_seed=s,source_output=PROJECT+'/runs/'+run+'/'+v+'-s'+str(s)+'/source')
+            for v,m,run in ((CONTROL,'cvs_neural_residual_identity',CONTROL_RUN),
+                            (ANCHOR_CONTROL,'cvs_response_fusion_identity',ANCHOR_CONTROL_RUN)) for s in sorted(SEEDS)]
 
 
 def read_source_record(row,original_contract,method):
     """Only fixed source artifacts; no checkpoint or target scores are loaded."""
     if method=='cvs_neural_residual_identity':
         from experiments.cvs_neural_residual_identity.dispatch import read_source_record as read_control
+        return read_control(row,original_contract,method)
+    if method=='cvs_response_fusion_identity':
+        from experiments.cvs_response_fusion_identity.dispatch import read_source_record as read_control
         return read_control(row,original_contract,method)
     if method!='cvs_neural_readout_identity':raise ValueError('Unregistered source family')
     folder=Path(row['source_output'])
@@ -92,7 +99,7 @@ def validate_spec(spec):
 
 def select_source_candidate(records):
     groups={v:[r for r in records if r['variant']==v] for v in CANDIDATES}
-    if len(records)!=12 or any(len(rows)!=4 or {r['seed'] for r in rows}!=SEEDS for rows in groups.values()):
+    if len(records)!=16 or any(len(rows)!=4 or {r['seed'] for r in rows}!=SEEDS for rows in groups.values()):
         raise ValueError('Incomplete source matrix; cannot select')
     summary={v:dict(score=statistics.mean(.5*r['accuracy']+.5*r['worst_rx'] for r in rows),
         source_accuracy=statistics.mean(r['accuracy'] for r in rows),worst_rx_accuracy=statistics.mean(r['worst_rx'] for r in rows),
@@ -112,7 +119,7 @@ def frozen_choice(summary):
 def dispatch(spec_path):
     spec=validate_spec(json.loads(Path(spec_path).read_text(encoding='utf-8')))
     original=json.loads(Path(PROJECT+'/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json').read_text(encoding='utf-8'))
-    controls=[read_source_record(r,original,'cvs_neural_residual_identity') for r in spec['source_controls']]
+    controls=[read_source_record(r,original,r['method']) for r in spec['source_controls']]
     run,logs=Path(spec['runtime_root']),Path(spec['log_root'])
     run.mkdir(parents=True,exist_ok=False);logs.mkdir(parents=True,exist_ok=False)
     state=dict(status='SOURCE_TRAINING',pid=os.getpid(),cwd=str(ROOT),argv=sys.argv,run_id=spec['run_id'],

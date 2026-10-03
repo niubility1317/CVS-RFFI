@@ -1,2 +1,3 @@
 {"at": "2026-10-02T17:18:56+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"timestamp": "2026-10-02T17:31:09.324265+00:00", "status": "PLANNED", "event": "LOCAL_VERIFIED_NOT_LAUNCHED", "note": "用户明确论文仅以Phase1为主，增加信道变化鲁棒性的结构研究。当前attention候选完成本地验证但未发布/未启动；保留为可选读出消融，不将它视为已验证的信道鲁棒网络。", "evidence": ["evidence/local_validation.json"]}
+{"at": "2026-10-03T03:48:59+00:00", "status": "PLANNED", "note": "Verified no prior launch; unchanged readout candidates resumed as source-information controls; add current source winner Anchor before source/target access", "evidence": ["evidence/resume_preflight.json", "evidence/resumption_validation.json", "evidence/readout_information_counterexample.json"], "row_id": null}

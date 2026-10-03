@@ -1,0 +1,18 @@
+{
+  "status": "VERIFIED_PUBLIC_FEATURE_COUNTEREXAMPLE",
+  "feature_shape": [
+    3,
+    2,
+    32,
+    64
+  ],
+  "original_readout_independent_phase_error": 2.220446049250313e-16,
+  "attention_without_mixing_independent_phase_error": 2.220446049250313e-16,
+  "constructed_mixing_independent_phase_difference": 1.9939340022498986,
+  "constructed_mixing_common_phase_error": 4.440892098500626e-16,
+  "formal_data_access": false,
+  "checkpoint_loaded": false,
+  "optimization_steps": 0,
+  "experiment_initialization_changed": false,
+  "scope": "Readout expressivity only; no whole-network information-loss, channel-invariance, TX-origin or performance claim"
+}

@@ -19,7 +19,8 @@
   ],
   "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
   "parent_run_ids": [
-    "20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01"
+    "20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01",
+    "20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01"
   ],
   "replaces_run_id": null,
   "authorization": "2026-10-03用户要求继续优化完成目标；此前明确纯神经网络能力，不增加训练策略或额外损失。",
@@ -88,7 +89,7 @@
     "sources": [],
     "provenance_verdict": "SCRATCH_NO_INHERITANCE",
     "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-    "selection_rule": "Own scratch fixedE200;max four-seed mean(0.5V+0.5worstsourceRX). Current shallow control is source metadata only; no inherited weights or target scores."
+    "selection_rule": "Own scratch fixedE200;max four-seed mean(0.5V+0.5worstsourceRX). Shallow and current source winner Anchor controls are source metadata only; no inherited weights or target scores."
   },
   "execution": {
     "host": "N607",
@@ -138,7 +139,7 @@
     "prediction_ref": "N/A until source_selection.json is frozen",
     "scorer_ref": "N/A: source-only release does not score target",
     "primary": "CompleteE200/10000steps CE,V/worstRX,fixedsource ranking;actual readout gradients/output/attention;90sourceTXRXday cells and resources",
-    "later_test": "Only source-selected new variant:4new predictions+36immutable controls;40rows clean. If control retained,reuse its already completed test."
+    "later_test": "Only source-selected new variant:4new predictions+44immutable controls;48rows clean. If control retained,reuse its already completed test."
   },
   "rows": [
     {
@@ -481,58 +482,88 @@
   "notes": [
     "Only architecture changes. Same original single cross_entropy/E200/AdamW/cosine/data/loader;no addedloss,augmentation,teacher,EMA,weighting,sampling,curriculum,stagedtraining or targetadaptation.",
     "Design derives from exact source CSV/selection evidence and architecture code: deeperconv lowers trainingCE but raises sourceVCE;fixed channelwise statistics may discard learnable channel/time information. The bottleneck remains a hypothesis.",
-    "All models from scratch;retain neural_residual_shallow topology,frequencybranch,160embedding and cosine30classifier. Source control is the prior source winner, chosen without target scores.",
+    "All models from scratch;retain neural_residual_shallow topology,frequencybranch,160embedding and cosine30classifier. Shallow is the matched direct backbone control; Anchor is the current source winner. Both are fixed metadata-only controls, chosen without target scores.",
     "Per time/behavior path,retain original320InvariantReadout as skip. Newlogpower32→Conv1d32to16k3pad1→GELU→Conv1d16to4k1→softmax over currentpacket64positions;4 weighted32values→flatten128→biasfreeLinear320zeroexit→addskip.",
     "Secondcandidate adds learned32to32complexpointwise mixing beforelogpower, initializedcomplexidentity. Bothscorestructures identical;two paths independent. NewRNG isolated,initialfunction exactly ownscratchshallow;hidden firststepzerograd expected,secondstep verified.",
     "Parameters306147/310243;new85160/89256 over220987base. NoRX/TX/role identifiers,queryclasscounts,batchstatistics ormutableteststate. Globalcommonphase property doesnot imply arbitraryRX/CFO invariance or TXhardware recovery.",
     "Same L6300,U56700unused,V27000,RX1/3/4/6/8,day1/2/3,split392005,4modelseeds,batch128/nodrop,200x50steps,AdamW2e-4,wd1e-4,cosine1e-6,fullFP32/TF32False.",
-    "Fixed12source records=8new+4shallowcontrols;maxmean0.5V+0.5worstRX,exactperformance ties then costs. No bestepoch,earlystop,targetreorder or selective rerun.",
+    "Fixed16source records=8new+4shallowcontrols+4Anchorcontrols;maxmean0.5V+0.5worstRX,exactperformance ties then costs. No bestepoch,earlystop,targetreorder or selective rerun.",
     "SourceV uses seen RX;history/source docs may contain appended test results. Design inputs are explicit source-only CSV/JSON and code;incidental oldtarget exposure disclosed,not used. Finalconfirmation remains historicalbenchmark,not firstblind.",
-    "Newcandidate winner only:4newclean+36frozen=40rows/320ALL+RXscores,same168000physicalquery/6TX/7RX. Allpredictionsfixed thenindependenttruthlast. NoLEO/support/SFT/newclasses.",
-    "Detailed step/epoch/compactJSONL/CSV/text reports measuredCE/LR/gradients/readoutattention/sourceV/time/memory. MAC conv/matmul only,not totalFLOPs. All negativeoutcomes preserved."
+    "Newcandidate winner only:4newclean+44frozen=48rows/384ALL+RXscores,same168000physicalquery/6TX/7RX. Allpredictionsfixed thenindependenttruthlast. NoLEO/support/SFT/newclasses.",
+    "Detailed step/epoch/compactJSONL/CSV/text reports measuredCE/LR/gradients/readoutattention/sourceV/time/memory. MAC conv/matmul only,not totalFLOPs. All negativeoutcomes preserved.",
+    "2026-10-03 prelaunch resumption: source-comparison matrix expanded to16 with frozen Anchor; original eight model/training configs unchanged. Prior readout release/run absent independently verified. This is a source-information control study, not evidence by itself of channel robustness or paper novelty."
   ],
   "registered_at": "2026-10-01T04:29:08+00:00",
   "status": "PLANNED",
   "source_controls": [
     {
       "variant": "neural_residual_shallow",
+      "method": "cvs_neural_residual_identity",
       "model_seed": 2026092701,
       "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092701/source"
     },
     {
       "variant": "neural_residual_shallow",
+      "method": "cvs_neural_residual_identity",
       "model_seed": 2026092702,
       "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092702/source"
     },
     {
       "variant": "neural_residual_shallow",
+      "method": "cvs_neural_residual_identity",
       "model_seed": 2026092703,
       "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092703/source"
     },
     {
       "variant": "neural_residual_shallow",
+      "method": "cvs_neural_residual_identity",
       "model_seed": 2026092704,
       "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092704/source"
+    },
+    {
+      "variant": "response_anchor_mean",
+      "method": "cvs_response_fusion_identity",
+      "model_seed": 2026092701,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092701/source"
+    },
+    {
+      "variant": "response_anchor_mean",
+      "method": "cvs_response_fusion_identity",
+      "model_seed": 2026092702,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092702/source"
+    },
+    {
+      "variant": "response_anchor_mean",
+      "method": "cvs_response_fusion_identity",
+      "model_seed": 2026092703,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092703/source"
+    },
+    {
+      "variant": "response_anchor_mean",
+      "method": "cvs_response_fusion_identity",
+      "model_seed": 2026092704,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/response_anchor_mean-s2026092704/source"
     }
   ],
   "test_completion_plan": {
-    "run_id": "20261003-phase1-cvs-neural-readout-clean-manysig-m40-r01",
-    "condition": "Only new source winner; otherwise reuse current shallow control test with zero newquery",
+    "run_id": "20261003-phase1-cvs-neural-readout-clean-manysig-m48-r01",
+    "condition": "Only new source winner; otherwise reuse selected fixed control test with zero newquery",
     "views": [
       "clean"
     ],
     "query_count": 168000,
     "registered_classes": 6,
     "new_prediction_rows": 4,
-    "reused_rows": 36,
-    "total_rows": 40,
+    "reused_rows": 44,
+    "total_rows": 48,
     "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
     "physical_id_index": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/index.npz",
     "truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json",
-    "retained_baseline_test_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+    "retained_baseline_test_run": "20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01",
     "baseline_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
     "candidate_universe": [
       "neural_residual_shallow",
+      "response_anchor_mean",
       "readout_attention",
       "readout_complex_attention"
     ],
