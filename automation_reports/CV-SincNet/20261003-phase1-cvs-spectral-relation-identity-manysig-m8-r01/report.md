@@ -34,7 +34,7 @@
 
 8个公开模型完成24次原CE更新；全部新增tensor发生变化、全部参数具有有限CE梯度。理想频点增益性质和有限窗FIR敏感性分别报告。公开检查不是实际识别成绩；不依其数值筛选候选。[公开完整证据](evidence/public_cpu_smoke.json) · [汇总](evidence/public_validation_summary.json)。
 
-本次模型从零训练，无历史checkpoint祖先；Shallow与Anchor仅作为固定源元数据控制。真实scratch checkpoint读回检查在每个source worker读取源IQ前执行。正式训练尚未发布，源代码commit及实际运行证据在版本固定和启动后补录。
+本次模型从零训练，无历史checkpoint祖先；Shallow与Anchor仅作为固定源元数据控制。真实scratch checkpoint读回检查在每个source worker读取源IQ前执行。正式训练已发布；实际源代码commit和进程证据见下方启动读回。
 
 ## 公开反例驱动的训练前修正
 
@@ -51,3 +51,11 @@
 实际发布commit为`d0847cd5ac9251541dbd93d31d0d7a3d933baa47`，dispatcher PID2372927。全部8个worker的PID/CWD/argv、父进程、CUDA可见设备及nvidia-smi物理GPU映射一致，两次日志读回增长。实际配置匹配两个候选各247731参数、26744谱关系参数、原单CE、FP32及固定源数据角色。当前不按早期分数选模，尚未接触目标。
 
 [启动核验](evidence/launch_validation.json) · [完整实际配置与进程](evidence/launch_readback.json) · [SCP前路径与资源](evidence/pretransfer_readback.json)。
+
+## 训练中补齐的离线收尾工具
+
+源collector覆盖8模型完整80000步及1600轮日志，独立复算每模型27000个V样本的关系标量与90个分组，并重算16条源记录的固定选择。大型JSON与NPZ只保留在local_artifacts，Git收录紧凑审计及引用。分析按同seed计算差异，保留完整曲线和固定后段窗口，不改变E200选择。
+
+条件clean实现完成：仅新source winner的4个模型加入44个既有冻结预测，48份预测固定后独立连接truth；未选中新模型不测试。新contract67项、分析93项及旧兼容13项测试通过；另一次独立P0/P1审查通过34项聚焦检查，不重复计入173项。尚未创建正式clean配置或访问目标。源release与模型仍固定为d0847cd5ac9251541dbd93d31d0d7a3d933baa47。
+
+[条件clean独立审查](evidence/conditional_clean_independent_review.json) · [最近训练读回](evidence/continuation_readback.json)。完整工具验证清单见[evidence/offline_tooling_validation.json](evidence/offline_tooling_validation.json)。

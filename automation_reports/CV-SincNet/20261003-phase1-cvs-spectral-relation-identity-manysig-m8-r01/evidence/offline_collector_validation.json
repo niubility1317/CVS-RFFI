@@ -1,0 +1,56 @@
+{
+  "status": "VERIFIED",
+  "source_release_commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
+  "scope": "Offline synthetic source collector validation only; no real dataset, target, remote execution, publication or checkpoint loading",
+  "files": [
+    "experiments/cvs_spectral_relation_identity/collect.py",
+    "tests/test_cvs_spectral_relation_collect.py"
+  ],
+  "validation": [
+    {
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -B -X utf8 -m pytest -q -o addopts= -p no:cacheprovider tests/test_cvs_spectral_relation_collect.py",
+      "result": "68 passed in 27.25s",
+      "exit_code": 0,
+      "session_id": 77154,
+      "completion_chunk": "432473",
+      "scope": "Original complete collector suite before adding the collector-to-analysis integration case"
+    },
+    {
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -B -X utf8 -m pytest -q -o addopts= -p no:cacheprovider tests/test_cvs_spectral_relation_collect.py::test_saved_collector_evidence_runs_complete_analysis_without_schema_adapters tests/test_cvs_spectral_relation_collect.py::test_incomplete_or_mismatched_completion_cannot_freeze",
+      "result": "15 passed in 20.11s",
+      "exit_code": 0,
+      "session_id": 80435,
+      "completion_chunk": "1e3dec",
+      "scope": "One new full collector-to-analyze integration plus 14 completion negative cases after resource validation was completed"
+    }
+  ],
+  "distinct_cases_passed": 69,
+  "coverage": {
+    "new_models": 8,
+    "control_metadata_rows": 8,
+    "source_selection_records": 16,
+    "full_epochs": 1600,
+    "full_optimizer_steps": 80000,
+    "packets_per_scalar_npz": 27000,
+    "scalar_npz_files": 8,
+    "source_scalar_packets": 216000,
+    "source_scalar_cells": 720,
+    "remote_template_offline_compile": true,
+    "public_physics_actual_synthetic_both_variants": true,
+    "full_source_id_pairing_across_models": true,
+    "collector_to_analysis_report_csv_png_pdf": true
+  },
+  "artifact_policy": {
+    "complete_json": "local_artifacts only",
+    "scalar_npz": "local_artifacts only; no large feature vectors",
+    "report_evidence": "compact selection, validation and manifest"
+  },
+  "limitations": [
+    "Opaque physical IDs are checked against exact source V set and paired across all eight models; collector does not independently decode TX/RX/day from those hashes.",
+    "Remote source artifact collection and real-run completion have not been executed by this validation."
+  ],
+  "source_model_config_modified": false,
+  "target_results_read": false,
+  "remote_accessed": false,
+  "commit_performed": false
+}

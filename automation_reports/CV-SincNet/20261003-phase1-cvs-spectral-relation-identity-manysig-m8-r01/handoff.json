@@ -5,13 +5,15 @@
   "launch_owner": "codex/root/cvs-spectral-relation-identity-20261003",
   "performance_goal_achieved": false,
   "paper_claim_established": false,
-  "latest_evidence": "evidence/launch_readback.json",
+  "latest_evidence": "evidence/continuation_readback.json",
   "next": [
-    "Monitor this exact dispatcher and eight existing rows; no duplicate launch",
-    "Complete conditional clean implementation without target access",
-    "Collect all E200/80000step source artifacts and fullV spectral relation diagnostics,freeze16-record source selection,then finish registered test closure"
+    "Monitor only the existing eight E200 workers; no restart or duplicate launch",
+    "After terminal source state, collect and analyze complete E200 source artifacts; reproduce 16-record selection",
+    "If new candidate wins, prepare/register/publish only its four clean rows plus 44 frozen controls; otherwise verify selected old frozen test closure"
   ],
   "code_commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
   "dispatcher_pid": 2372927,
-  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_spectral_relation_identity_20261003_r01"
+  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_spectral_relation_identity_20261003_r01",
+  "conditional_clean_implementation": "Complete; independent P0/P1 passed; no actual clean config yet",
+  "source_collection": "Complete offline collector; independently audited all-step/NPZ synthetic fixtures"
 }

@@ -1,0 +1,40 @@
+{
+  "status": "VERIFIED",
+  "source_release_commit": "d0847cd5ac9251541dbd93d31d0d7a3d933baa47",
+  "scope": "Synthetic and offline tooling validation; not completed real-source or clean accuracy evidence",
+  "source_collector": {
+    "initial_suite": 68,
+    "additional_integration_test": 1,
+    "integration_batch_passed": 15,
+    "repeated_completion_cases": 14,
+    "evidence": "offline_collector_validation.json"
+  },
+  "source_analysis": {
+    "passed": 15,
+    "seconds": 2.68,
+    "exit_code": 0,
+    "tool_chunk": "05d5de"
+  },
+  "conditional_clean": {
+    "contract_passed": 67,
+    "analysis_passed": 93,
+    "old_compatibility_passed": 13,
+    "distinct_cases": 173,
+    "tool_chunks": [
+      "62f3f2",
+      "e70c5d",
+      "0afeb8"
+    ]
+  },
+  "conditional_clean_independent_review": {
+    "verdict": "PASS",
+    "focused_passed": 34,
+    "counted_as_additional_unique_tests": false,
+    "evidence": "conditional_clean_independent_review.json"
+  },
+  "real_target_access": false,
+  "source_model_changed": false,
+  "source_training_restarted": false,
+  "actual_source_completion": false,
+  "actual_clean_completion": false
+}
