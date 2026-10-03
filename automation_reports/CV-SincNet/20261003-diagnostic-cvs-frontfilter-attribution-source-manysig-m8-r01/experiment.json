@@ -21,12 +21,12 @@
   "replaces_run_id": null,
   "authorization": "用户持续推进纯神经网络架构优化与Phase1论文目标；源域固定权重机制诊断，无目标访问与训练策略改变。",
   "code": {
-    "commit": null,
+    "commit": "f54d3b97c8c5be4775a6343f32ce42707a5e2e29",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frontfilter_attribution_source_20261003_r01",
     "architecture_base_commit": "dd5518d1493f2f79fb4213e4731e9f88cb28a349",
-    "commit_scope": "Diagnostic release recorded after commit; runtime imports immutable original source release"
+    "commit_scope": "Verified implementation commit; actual release commit will be recorded from delivery and independent readback"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
