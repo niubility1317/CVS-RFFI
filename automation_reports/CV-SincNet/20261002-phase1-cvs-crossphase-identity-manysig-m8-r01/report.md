@@ -160,3 +160,8 @@ RTX3090/Torch2.1/FP32；两个新候选和四份energy控制均采用显式完�
 本轮源候选实验ANALYZED／VERIFIED，独立核对全部80000步、1600轮与源选择。8个worker及dispatcher均自然退出；旧energy源控制保留，新候选clean测试按预登记为N/A，新增query为0。仅核对旧energy clean评分完成metadata：原24行、6模型、4种子、每seed168000包完整；没有为本轮研发读取旧目标分数。原目标“进一步提高纯CE clean性能”尚未完成。
 
 [最终进程证据](evidence/final_source_readback.json) · [保留clean完成metadata](evidence/retained_clean_metadata.json)。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

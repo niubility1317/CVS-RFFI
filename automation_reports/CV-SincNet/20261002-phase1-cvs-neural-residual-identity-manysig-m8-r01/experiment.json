@@ -951,5 +951,23 @@
       "no_target_driven_reselection": true
     },
     "test_evidence": "../20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01/evidence/analysis_validation.json"
+  },
+  "retrospective_clean_test": {
+    "status": "VERIFIED",
+    "run_id": "20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01",
+    "model_rows": 8,
+    "row_ids": [
+      "g20-neural_residual_shallow-s2026092701",
+      "g20-neural_residual_deep-s2026092701",
+      "g20-neural_residual_shallow-s2026092702",
+      "g20-neural_residual_deep-s2026092702",
+      "g20-neural_residual_shallow-s2026092703",
+      "g20-neural_residual_deep-s2026092703",
+      "g20-neural_residual_shallow-s2026092704",
+      "g20-neural_residual_deep-s2026092704"
+    ],
+    "query_count_per_row": 168000,
+    "report": "../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md",
+    "scope": "User-authorized all-frozen backfill;historical source selection unchanged"
   }
 }

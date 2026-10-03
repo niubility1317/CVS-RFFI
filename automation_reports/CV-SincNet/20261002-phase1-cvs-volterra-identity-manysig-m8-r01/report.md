@@ -138,3 +138,8 @@ RTX3090/Torch2.1/FP32；两个新候选和四份coupled_lag4控制均采用显�
 已按冻结规则保留 `coupled_lag4`；独立远端读回四份既有clean预测的完整标记、来源、配置及文件存在性，与原28行/224条评分完成标记一致。此核对不读取目标分数、IQ、truth、预测数组或模型权重。本轮新增clean预测0份，两个未选Volterra候选测试均N/A；不重跑历史控制。[保留控制证据](evidence/retained_control_clean_readback.json) · [既有clean报告](../20261002-phase1-cvs-coupled-clean-manysig-m28-r01/report.md) · [本轮判定](evidence/iteration_verdict.json)。
 
 状态ANALYZED／VERIFIED，本轮源实验及规定收尾完成，整体性能与真正RFF physics-aware目标仍未证明。全部负结果、源权重和日志保留。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

@@ -95,3 +95,8 @@ RTX3090/Torch2.1/完整FP32；统计口径见逐seed资源。MAC不包含包内�
 11项检查 PASS（2.73秒）。既有30组公共合成IQ显示逐包逆坐标恢复误差至1.1102e-16，实际scratch卷积恢复误差至4.4409e-16；统一实数逆矩阵的相对残差分别约0.0040和0.0019。包内系数关系随IQ统计量变化，但这不证明完整CNN表达能力受限或本轮退步的原因。完整逆变换只恢复原lift函数，不能单独作为性能改进。未读取正式源IQ、训练checkpoint、target query/truth，未更新源选模。
 
 [原理与实现边界](../../../docs/CVS_ORTHOGONAL_COORDINATE_LIMIT_20261002.md) · [公共测量](evidence/public_conditioning_transport.json)。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

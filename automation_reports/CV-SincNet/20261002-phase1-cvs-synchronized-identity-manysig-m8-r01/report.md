@@ -98,3 +98,8 @@ RTX3090/Torch2.1/FP32；新模型全部cuDNN TF32=False，旧残差控制保留�
 固定源规则选择原 residual_fusion，原四 seed clean 测试为 78.4543% ± 0.8436%（样本标准差），每行168000包。原20行/160份CM完整独立评分证据仍有效，本次只读核实四个ALL混淆矩阵与均值/SD，未重跑或读取新query/truth。两个未选新模型测试为N/A；条件24行新测试没有生成或发布。原结果只用于报告，不反馈本轮选择或后续设计。
 
 [原独立测试报告](../20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md) · [保留测试核实](evidence/retained_baseline_test.json)。状态ANALYZED；本轮默认条件收尾完成，性能及真正RFF physics aware总体目标未完成。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

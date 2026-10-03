@@ -30,3 +30,8 @@ N607已用短连接独立核实普通用户szu2070436088/host dell-DSS8440、项
 ## 独立clean确认完成
 
 选中balanced_fusion由独立子run 20261001-phase1-cvs-balanced-clean-manysig-m24-r01完成clean四seed确认，原20预测只读复用，统一24行192条结果评分。78.2292%±1.7151%，较原CVS+2.0019个百分点，但较上一轮残差CVS-0.2251个百分点（2/4seed提升）。当前新增研发没有证明进一步识别提升，不以参数减少代替性能目标。源run自身未读取target，未选signed候选不测试，原源选择与性能优先冻结均保留。完整结果：[确认报告](../20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

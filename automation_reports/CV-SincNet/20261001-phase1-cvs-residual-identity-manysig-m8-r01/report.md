@@ -69,3 +69,8 @@ run_id：`20261001-phase1-cvs-residual-identity-manysig-m8-r01`。状态：SOURC
 ## 冻结候选最终确认已完成
 
 source-only run自身从未读取目标；其已冻结residual_fusion由独立子run `20261001-phase1-cvs-selected-clean-manysig-m20-r01`完成四seed clean确认，并只读复用16基准预测。最终accuracy78.4543%±0.8436%，较原CVS配对+2.2271个百分点，全部四seed正提升；总参数减少57.03%，有效CE参数少48.30%。完整结果与资源/限制见[确认报告](../20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)。未选中的候选不做目标测试，目标成绩不回流source选择。该source矩阵及关联确认现已完成分析。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

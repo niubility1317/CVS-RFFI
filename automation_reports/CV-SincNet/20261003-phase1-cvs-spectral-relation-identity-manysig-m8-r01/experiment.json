@@ -737,5 +737,23 @@
     "target_feedback": false,
     "additional_target_tuning": false,
     "scope": "Fixed historically exposed clean benchmark and four paired model seeds; not broad channel invariance or paper readiness"
+  },
+  "retrospective_clean_test": {
+    "status": "VERIFIED",
+    "run_id": "20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01",
+    "model_rows": 8,
+    "row_ids": [
+      "g35-relation_packet_energy-s2026092701",
+      "g35-relation_frequency_energy-s2026092701",
+      "g35-relation_packet_energy-s2026092702",
+      "g35-relation_frequency_energy-s2026092702",
+      "g35-relation_packet_energy-s2026092703",
+      "g35-relation_frequency_energy-s2026092703",
+      "g35-relation_packet_energy-s2026092704",
+      "g35-relation_frequency_energy-s2026092704"
+    ],
+    "query_count_per_row": 168000,
+    "report": "../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md",
+    "scope": "User-authorized all-frozen backfill;historical source selection unchanged"
   }
 }

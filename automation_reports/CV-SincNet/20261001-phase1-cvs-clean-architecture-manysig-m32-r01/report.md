@@ -69,3 +69,8 @@ run_id：`20261001-phase1-cvs-clean-architecture-manysig-m32-r01`。当前状态
 本矩阵独立源选择为 `orthogonal_pa`。原选择产物保留；用户已追加先研发 CVS，后续将与新残差融合的两候选联合六候选，在任何当前 clean 预测前形成最终冻结结果。当前不据目标成绩更换架构或 seed。
 
 GPU profile 均实际完成；并发环境下平均时间为观察值，不当成隔离资源的速度比。完整逐行资源与完成记录见 [source_complete_readback.json](evidence/source_complete_readback.json)，摘要见 [source_complete_summary.json](evidence/source_complete_summary.json)。原矩阵不再有运行 source 子进程，产物保留；新 CVS-only 8 行继续独立训练。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部32个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

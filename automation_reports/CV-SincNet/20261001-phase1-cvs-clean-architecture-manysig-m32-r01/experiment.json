@@ -1273,5 +1273,47 @@
     "data seed null: role allocation fixed by existing source contract; augmentation/support/evaluation seeds null: no augmentation/support; clean evaluation IDs fixed after source selection."
   ],
   "registered_at": "2026-10-01T06:14:18+00:00",
-  "status": "PLANNED"
+  "status": "PLANNED",
+  "retrospective_clean_test": {
+    "status": "VERIFIED",
+    "run_id": "20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01",
+    "model_rows": 32,
+    "row_ids": [
+      "g03-native-s2026092701",
+      "g03-orthogonal_pa-s2026092701",
+      "g03-moment_pool-s2026092701",
+      "g03-orthogonal_moment-s2026092701",
+      "g03-shared_complex-s2026092701",
+      "g03-cvcnn-s2026092701",
+      "g03-real_cnn-s2026092701",
+      "g03-resnet1d-s2026092701",
+      "g03-native-s2026092702",
+      "g03-orthogonal_pa-s2026092702",
+      "g03-moment_pool-s2026092702",
+      "g03-orthogonal_moment-s2026092702",
+      "g03-shared_complex-s2026092702",
+      "g03-cvcnn-s2026092702",
+      "g03-real_cnn-s2026092702",
+      "g03-resnet1d-s2026092702",
+      "g03-native-s2026092703",
+      "g03-orthogonal_pa-s2026092703",
+      "g03-moment_pool-s2026092703",
+      "g03-orthogonal_moment-s2026092703",
+      "g03-shared_complex-s2026092703",
+      "g03-cvcnn-s2026092703",
+      "g03-real_cnn-s2026092703",
+      "g03-resnet1d-s2026092703",
+      "g03-native-s2026092704",
+      "g03-orthogonal_pa-s2026092704",
+      "g03-moment_pool-s2026092704",
+      "g03-orthogonal_moment-s2026092704",
+      "g03-shared_complex-s2026092704",
+      "g03-cvcnn-s2026092704",
+      "g03-real_cnn-s2026092704",
+      "g03-resnet1d-s2026092704"
+    ],
+    "query_count_per_row": 168000,
+    "report": "../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md",
+    "scope": "User-authorized all-frozen backfill;historical source selection unchanged"
+  }
 }

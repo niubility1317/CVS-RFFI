@@ -650,5 +650,23 @@
     "actual_outcome": "Original residual source winner;verified existing clean retained;newunselected testsN/A;no new query",
     "actual_run_id": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
     "conditional_new_run_not_launched": "20261002-phase1-cvs-additive-clean-manysig-m24-r01"
+  },
+  "retrospective_clean_test": {
+    "status": "VERIFIED",
+    "run_id": "20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01",
+    "model_rows": 8,
+    "row_ids": [
+      "g10-additive_equivariant-s2026092701",
+      "g10-additive_gauge-s2026092701",
+      "g10-additive_equivariant-s2026092702",
+      "g10-additive_gauge-s2026092702",
+      "g10-additive_equivariant-s2026092703",
+      "g10-additive_gauge-s2026092703",
+      "g10-additive_equivariant-s2026092704",
+      "g10-additive_gauge-s2026092704"
+    ],
+    "query_count_per_row": 168000,
+    "report": "../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md",
+    "scope": "User-authorized all-frozen backfill;historical source selection unchanged"
   }
 }

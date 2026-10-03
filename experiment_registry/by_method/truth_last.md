@@ -12,4 +12,4 @@
 |Native comparison paired adaptation and registration|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/report.md)|
 |无信道增强四基准的 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-clean-baselines-manysig-m16-r01/report.md)|
 |residual_fusion 完整六环境测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/report.md)|
-|全部既有冻结架构的clean补测|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)|
+|全部既有冻结架构的clean测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)|

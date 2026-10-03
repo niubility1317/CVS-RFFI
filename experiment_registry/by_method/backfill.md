@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|全部既有冻结架构的clean补测|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)|
+|全部既有冻结架构的clean测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)|

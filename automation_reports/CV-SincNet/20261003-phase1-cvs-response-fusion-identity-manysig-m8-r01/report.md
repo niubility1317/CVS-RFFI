@@ -39,3 +39,8 @@
 源分数仅领先双路0.0014个百分点，不能当作稳定的源性能增益。共审计80000个新训练步，44行预测全部完成，352条评分、88组汇总和80组配对独立复算通过，既有320条控制评分完全不变。未选Span结构未访问query。
 
 [完整独立测试](../20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md) · [完成判定](../20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/evidence/completion_verdict.json)。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

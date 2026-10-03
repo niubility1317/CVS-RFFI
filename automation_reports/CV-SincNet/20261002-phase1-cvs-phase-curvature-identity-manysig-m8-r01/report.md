@@ -21,3 +21,8 @@
 当前源实验与条件测试收尾已闭合：完整日志和自然退出VERIFIED；原控制的4模型clean已在32行矩阵评分完成，本轮仅复用完成证据，无新query。曲率两候选未胜出，性能提升目标未完成。后续进行独立源域机制归因。[控制测试复用](evidence/existing_clean_reuse.json)。
 
 2026-10-02补充：独立源归因72条件已全部完成并逐预测文件复算，见[归因结果](../20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/report.md)。下一轮按用户新强调的边界只改神经网络结构，不增加训练策略或损失。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

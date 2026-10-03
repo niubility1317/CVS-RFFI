@@ -132,3 +132,8 @@ RTX3090/Torch2.1/FP32；新模型全部cuDNN TF32=False，旧残差控制保留�
 只依据实际归一化公式发现每通道逐包RMS会弱化通道能量比例；已形成改用跨通道共享RMS的原型，保持202553参数、全部scratch初始化、深度和宽度。7项合成检查通过，未接触正式数据、权重或目标结果，未正式训练；不据此声称识别收益。该本地原型不改变本轮不可变训练与冻结选择。
 
 [数学假设](../../../docs/CVS_ENERGY_IDENTITY_HYPOTHESIS_20261002.md) · [原型核实](evidence/energy_prototype_validation.json)。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

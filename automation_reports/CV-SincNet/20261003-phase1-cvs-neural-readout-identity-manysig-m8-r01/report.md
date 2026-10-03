@@ -83,3 +83,8 @@
 按预登记规则，两种未入选读出均不访问query，条件48行clean实验未激活。独立读回既有44行clean完成状态、预测配置与provenance，352条评分完全未变；其中4个Anchor checkpoint与本次源选择控制逐seed一致。复用Anchor既有clean准确率69.9129%±1.2142%，不产生新的测试证据，也不宣称本轮新增结构获得该结果。
 
 [复用核验](evidence/retained_control_test_verification.json) · [既有完整clean报告](../20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md) · [本轮判定](evidence/completion_verdict.json)。后续结构决策只允许使用源证据；保留全部负结果，不换seed、延长预算或重跑以筛选成绩。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

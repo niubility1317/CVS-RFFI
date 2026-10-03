@@ -71,3 +71,8 @@ RTX3090/Torch2.1/完整FP32。新候选202557参数，控制202555，仅新增2�
 实际源终态 VERIFIED：dispatcher 与8个worker均自然退出，8行各200轮/10000步。源运行commit `a31fd318996be20f030aeccd7ed6ed614ce7048d`。[终态证据](evidence/final_source_readback.json)。固定源规则选中 `adaptive_volterra_lag4`；保留已有源控制，两个未选新候选的clean均为N/A，不追加query；既有控制clean已完成证据见前一轮报告。目标仍未证明完成。
 
 源分析表逐项核对 VERIFIED，1600轮四系数与完整日志一致。固定规则保留已有adaptive控制；其32行历史clean矩阵及4份选中控制预测均已完成，CM/均值/配对此前独立核实，本轮只复用完成元数据，不读取新query或输出历史目标分数。两个未选候选clean均N/A。[本轮收尾](evidence/final_analysis_readback.json) · [控制测试复用](evidence/existing_clean_reuse.json) · [既有控制测试报告](../20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01/report.md)。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

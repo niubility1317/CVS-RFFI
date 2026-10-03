@@ -67,3 +67,8 @@
 固定源规则选中的仍是历史 `residual_fusion`。已独立重新读取原20行评分标记、完整预测完成状态、summary和全部160条评分；与历史记录逐字段一致。没有重新推理或评分，没有访问两个未选gauge候选的query。保留基线准确率 78.4543%±0.8436%，Macro-F1 78.2067%±0.9517%；这些是原残差模型的历史测试，不能当作本轮gauge测试结果。
 
 本轮状态 ANALYZED_SOURCE_REJECTION_BASELINE_RETAINED。两个新模型测试 N/A（源规则未选中），无新的clean确认run。前瞻默认收尾分支已完成；不宣称新候选获得测试提升或整个研发目标完成。完整[基线保留证据](evidence/retained_baseline_test_readback.json)、[本轮判定](evidence/iteration_verdict.json)、[原完整测试报告](../20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

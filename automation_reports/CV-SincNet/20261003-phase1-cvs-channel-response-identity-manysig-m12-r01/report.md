@@ -41,3 +41,8 @@
 这些是同一冻结模型上的依赖诊断，不能替代从零训练消融。新架构相对固定控制的四seed源分数没有提升；未选候选的目标指标为N/A，当前不声称信道不变、TX/RX解耦或达到独立论文的性能要求。
 
 [测试复用核对](evidence/reused_control_clean_validation.json) · [本轮结论](evidence/iteration_verdict.json) · [完整源域诊断](../20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部12个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

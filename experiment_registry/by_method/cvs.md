@@ -70,7 +70,7 @@
 |谱关系与镜像子空间的完整源域归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-relation-attribution-source-manysig-m12-r01/report.md)|
 |CVS显式补偿响应：完整源V冻结归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)|
 |CVS补偿响应：完整源V判别几何|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|
-|全部既有冻结架构的clean补测|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)|
+|全部既有冻结架构的clean测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)|
 |CVS 信道与非线性运算次序：独立 clean 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/report.md)|
 |CVS信道补偿与顺序差值：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md)|
 |CVS显式补偿响应：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-response-identity-manysig-m12-r01/report.md)|

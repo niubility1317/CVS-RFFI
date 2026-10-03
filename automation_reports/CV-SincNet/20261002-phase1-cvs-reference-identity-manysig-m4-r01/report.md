@@ -97,3 +97,8 @@ flat 复增益/相位经整包 RMS 后消去幅度尺度，参考分支的相对
 10 项模型/数学检查、13 项源协议检查、52 项条件 clean 生命周期检查均为既有 PASS；新增 12 项完整日志核对检查 PASS，collector/analyzer 独立 P0/P1 审查 PASS。正式四行 40000 步、800 轮 JSONL/CSV/stdout 已实际核对；远端最终读回确认四 worker 与 dispatcher 均自然结束，没有停止、重启或热修改。
 
 本轮 immutable source commit 为 `bc26714f58932bc7d50b393b4c8e9a3d5a6937e1`；本地收尾代码与报告的提交另行记录。本轮没有待启动 clean run。整体身份表征及性能目标尚未完成；下一步按合法源机制研究整体干扰处理，保留此前相位规范化负结果，不依据历史目标成绩选择结构或重跑。[收尾验证](evidence/completion_tools_validation.json) · [最终进程读回](evidence/source_final_readback.json) · [下一步源研发交接](evidence/next_source_handoff.json)。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部4个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

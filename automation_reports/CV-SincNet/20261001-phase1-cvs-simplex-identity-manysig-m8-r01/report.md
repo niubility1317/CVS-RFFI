@@ -30,3 +30,8 @@ MAC不含QR因子分解和归一化等算子；实际N607训练/推理耗时、�
 ## 独立 clean 确认完成
 
 选中 `simplex_fixed` 由独立子 run `20261001-phase1-cvs-simplex-clean-manysig-m24-r01` 完成四 seed clean 测试，原 20 预测只读复用，共 24 行、192 条评分。准确率 77.3348% ± 2.5494%，较上轮残差 CVS -1.1195 个百分点（1/4 seed 提升）。本轮没有进一步提高平均准确率，参数更少不能替代性能目标。源 run 未读取 target，未选候选不测试，测试评分不回流调参或重选。见[完整确认报告](../20261001-phase1-cvs-simplex-clean-manysig-m24-r01/report.md)。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。

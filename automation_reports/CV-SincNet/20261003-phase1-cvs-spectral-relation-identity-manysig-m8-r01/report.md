@@ -73,3 +73,8 @@
 冻结后4份逐频模型与44份固定控制统一测试、独立评分。clean准确率70.6926%±1.2835%，相对Shallow提升0.8359±0.3898个百分点，相对Anchor提升0.7796±0.6040个百分点，均4/4为正。仍低于native 76.2272%与residual_fusion 78.4543%；7个RX中有3个相对Anchor下降。实验执行完成，整体性能与论文目标未达成。
 
 [完整源分析](source_analysis.md) · [独立clean报告](../20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01/report.md) · [全流程结论](evidence/completion_verdict.json)。不能用此测试结果回流决定结构、阈值、候选或重跑。
+
+
+## 2026-10-03完整测试补齐
+
+本批全部8个固定E200模型已纳入[全量clean测试报告](../20261003-phase1-cvs-all-frozen-clean-backfill-manysig-m304-r01/report.md)，每模型168,000个测试样本；此前未晋级且未测试的候选也已补测，已有预测复用。304行预测固定后统一独立truth-last评分，完整分类决定复算通过。测试结果见汇总报告和逐seed/RX/TX表；历史源域选择记录保持原样。
