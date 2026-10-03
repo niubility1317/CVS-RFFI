@@ -1,0 +1,302 @@
+{
+  "status": "VERIFIED",
+  "source_only": true,
+  "target_results_read": false,
+  "source_V_packets_per_model": 27000,
+  "model_seeds": 4,
+  "scope": "Descriptive source telemetry and fixed public interventions; not causal channel recovery or new selection",
+  "variants": {
+    "mirror_energy": {
+      "full_source_V": {
+        "branch_output_norm_mean": {
+          "mean": 1.6049906808095122,
+          "SD": 0.5269460665423082
+        },
+        "base_frequency_norm_mean": {
+          "mean": 4.856963178488943,
+          "SD": 0.3287418605447197
+        },
+        "relative_output_change_mean": {
+          "mean": 0.32886850411393165,
+          "SD": 0.10126049095105577
+        },
+        "floor_fraction_mean": {
+          "mean": 0.2785946750886462,
+          "SD": 0.003729726350564903
+        },
+        "determinant_floor_fraction_mean": {
+          "mean": 0.2039513081383926,
+          "SD": 0.005755976170891593
+        },
+        "determinant_mean_mean": {
+          "mean": 0.0862354553285598,
+          "SD": 0.01039322836336089
+        },
+        "alpha_mean_mean": {
+          "mean": 0.7527933630854995,
+          "SD": 0.0039003729209864677
+        },
+        "relation_frobenius_mean_mean": {
+          "mean": 0.6566030747217161,
+          "SD": 0.013588681078209425
+        }
+      },
+      "learning": {
+        "train_CE_E200": {
+          "mean": 0.0007662853592410101,
+          "SD": 0.0001564204973992256
+        },
+        "V_CE_E200": {
+          "mean": 0.0831891619842147,
+          "SD": 0.0023317036884839817
+        },
+        "CE_gap_E200": {
+          "mean": 0.08242287662497369,
+          "SD": 0.002196412351035987
+        },
+        "train_CE_late_delta": {
+          "mean": -0.0001848855497424666,
+          "SD": 7.286574361120582e-05
+        },
+        "V_CE_late_delta": {
+          "mean": 0.0002711558499326923,
+          "SD": 0.0004653086624243788
+        },
+        "CE_gap_late_delta": {
+          "mean": 0.00045604139967516527,
+          "SD": 0.0004250580508833952
+        }
+      },
+      "resources": {
+        "parameters": {
+          "mean": 247731.0,
+          "SD": 0.0
+        },
+        "conv_linear_MACs": {
+          "mean": 9677888.0,
+          "SD": 0.0
+        },
+        "inference_batch1_ms": {
+          "mean": 12.145921199407894,
+          "SD": 0.15669559368110686
+        },
+        "training_batch128_ms": {
+          "mean": 57.66324202413671,
+          "SD": 0.5418433273365854
+        },
+        "resident_bytes": {
+          "mean": 991812.0,
+          "SD": 0.0
+        },
+        "peak_training_bytes": {
+          "mean": 288489984.0,
+          "SD": 0.0
+        }
+      },
+      "public_FIR": {
+        "delay2": {
+          "relation_relative_distance": {
+            "mean": 0.044696127995848656,
+            "SD": 0.0033669330575095088
+          },
+          "mean_unit_embedding_distance": {
+            "mean": 0.12723213993012905,
+            "SD": 0.018665805023666514
+          }
+        },
+        "delay8": {
+          "relation_relative_distance": {
+            "mean": 0.07879885472357273,
+            "SD": 0.00402947097911931
+          },
+          "mean_unit_embedding_distance": {
+            "mean": 0.14687643945217133,
+            "SD": 0.02344784531290304
+          }
+        },
+        "delay16": {
+          "relation_relative_distance": {
+            "mean": 0.16618582978844643,
+            "SD": 0.012552320411411098
+          },
+          "mean_unit_embedding_distance": {
+            "mean": 0.1629367470741272,
+            "SD": 0.015692621933534406
+          }
+        }
+      },
+      "public_qualification": {
+        "eligible_pair_count": [
+          "186",
+          "186",
+          "186",
+          "186"
+        ],
+        "excluded_pair_count": [
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "qualified_max_error": [
+          "0.21635311841964722",
+          "0.24443912506103516",
+          "0.21529650688171387",
+          "0.20688046514987946"
+        ],
+        "full_max_error": [
+          "0.21635311841964722",
+          "0.24443912506103516",
+          "0.21529650688171387",
+          "0.20688046514987946"
+        ]
+      }
+    },
+    "mirror_subspace": {
+      "full_source_V": {
+        "branch_output_norm_mean": {
+          "mean": 1.5084464961097197,
+          "SD": 0.1624479292421397
+        },
+        "base_frequency_norm_mean": {
+          "mean": 4.849798216936765,
+          "SD": 0.33032256672961535
+        },
+        "relative_output_change_mean": {
+          "mean": 0.31161572250534125,
+          "SD": 0.028982106243101557
+        },
+        "floor_fraction_mean": {
+          "mean": 0.2813730501562909,
+          "SD": 0.005022560749121593
+        },
+        "determinant_floor_fraction_mean": {
+          "mean": 0.20896146330402957,
+          "SD": 0.003019931707773427
+        },
+        "determinant_mean_mean": {
+          "mean": 0.07620464040398063,
+          "SD": 0.008935329113555065
+        },
+        "alpha_mean_mean": {
+          "mean": 0.7497633887374843,
+          "SD": 0.0041096599033476336
+        },
+        "relation_frobenius_mean_mean": {
+          "mean": 0.5277870270322871,
+          "SD": 0.0028324935626653676
+        }
+      },
+      "learning": {
+        "train_CE_E200": {
+          "mean": 0.0007277263229116215,
+          "SD": 0.00013610295716545592
+        },
+        "V_CE_E200": {
+          "mean": 0.08172397621237998,
+          "SD": 0.003744679279316245
+        },
+        "CE_gap_E200": {
+          "mean": 0.08099624988946837,
+          "SD": 0.0036277484009062835
+        },
+        "train_CE_late_delta": {
+          "mean": -0.00018244107225546036,
+          "SD": 3.2557966926584475e-05
+        },
+        "V_CE_late_delta": {
+          "mean": 0.0005848079008759152,
+          "SD": 0.00015050804658036708
+        },
+        "CE_gap_late_delta": {
+          "mean": 0.0007672489731313757,
+          "SD": 0.0001633942604336799
+        }
+      },
+      "resources": {
+        "parameters": {
+          "mean": 247731.0,
+          "SD": 0.0
+        },
+        "conv_linear_MACs": {
+          "mean": 9677888.0,
+          "SD": 0.0
+        },
+        "inference_batch1_ms": {
+          "mean": 12.071038924477762,
+          "SD": 0.07927428375216677
+        },
+        "training_batch128_ms": {
+          "mean": 56.78509802673943,
+          "SD": 2.316499127259192
+        },
+        "resident_bytes": {
+          "mean": 991812.0,
+          "SD": 0.0
+        },
+        "peak_training_bytes": {
+          "mean": 288807424.0,
+          "SD": 0.0
+        }
+      },
+      "public_FIR": {
+        "delay2": {
+          "relation_relative_distance": {
+            "mean": 0.046830407343804836,
+            "SD": 0.006457995139690823
+          },
+          "mean_unit_embedding_distance": {
+            "mean": 0.12703631445765495,
+            "SD": 0.010479493554483812
+          }
+        },
+        "delay8": {
+          "relation_relative_distance": {
+            "mean": 59.52939224243164,
+            "SD": 46.32668134477421
+          },
+          "mean_unit_embedding_distance": {
+            "mean": 0.14943852648139,
+            "SD": 0.009838173268009842
+          }
+        },
+        "delay16": {
+          "relation_relative_distance": {
+            "mean": 3642.6571044921875,
+            "SD": 2827.4393087414346
+          },
+          "mean_unit_embedding_distance": {
+            "mean": 0.1726454570889473,
+            "SD": 0.01862757559226502
+          }
+        }
+      },
+      "public_qualification": {
+        "eligible_pair_count": [
+          "186",
+          "186",
+          "186",
+          "186"
+        ],
+        "excluded_pair_count": [
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "qualified_max_error": [
+          "1.1920928955078125e-07",
+          "1.1920928955078125e-07",
+          "1.1920928955078125e-07",
+          "1.1920928955078125e-07"
+        ],
+        "full_max_error": [
+          "1.1920928955078125e-07",
+          "1.1920928955078125e-07",
+          "1.1920928955078125e-07",
+          "1.1920928955078125e-07"
+        ]
+      }
+    }
+  }
+}

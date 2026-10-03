@@ -1,0 +1,42 @@
+{
+  "status": "VERIFIED",
+  "verified_at": "2026-10-03T09:52:08.334035+00:00",
+  "source_winner": "relation_frequency_energy",
+  "completed_clean_run": "20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01",
+  "new_predictions": 0,
+  "new_scoring": 0,
+  "all384_scores_exactly_unchanged": true,
+  "all48_provenance_config_completion_records_unchanged": true,
+  "same_four_selected_source_checkpoints": true,
+  "retained_rows": [
+    {
+      "model_seed": 2026092701,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092701/source",
+      "prediction_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01/relation_frequency_energy-s2026092701/prediction",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092701/source/last.pt"
+    },
+    {
+      "model_seed": 2026092702,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092702/source",
+      "prediction_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01/relation_frequency_energy-s2026092702/prediction",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092702/source/last.pt"
+    },
+    {
+      "model_seed": 2026092703,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092703/source",
+      "prediction_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01/relation_frequency_energy-s2026092703/prediction",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092703/source/last.pt"
+    },
+    {
+      "model_seed": 2026092704,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092704/source",
+      "prediction_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01/relation_frequency_energy-s2026092704/prediction",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/relation_frequency_energy-s2026092704/source/last.pt"
+    }
+  ],
+  "clean_accuracy": 0.7069255952380953,
+  "clean_seed_sd": 0.012835491672170771,
+  "target_feedback": false,
+  "original_validation_ref": "../20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01/evidence/analysis_validation.json",
+  "note": "Historical fixed benchmark control verified after source freeze; not a new independent test and not a score of either new architecture."
+}

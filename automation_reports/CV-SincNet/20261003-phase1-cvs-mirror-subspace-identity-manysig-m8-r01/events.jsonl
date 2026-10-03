@@ -1,3 +1,5 @@
 {"at": "2026-10-03T09:18:22+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-03T09:18:22+00:00", "status": "LOCAL_VERIFIED", "note": "8 own-scratch candidates registered; original single CE and source contract; remote not started", "evidence": ["evidence/local_validation.json"], "row_id": null}
 {"timestamp": "2026-10-03T09:24:45.892740+00:00", "status": "RUNNING", "evidence": "evidence/launch_validation.json", "note": "Eight live workers; configs,parent/GPU,fullCEgradients and loggrowth independently verified"}
+{"timestamp": "2026-10-03T09:51:35.120828+00:00", "status": "SOURCE_SELECTION_FROZEN_TEST_PENDING", "evidence": "evidence/source_freeze_validation.json", "note": "All eight E200 source runs and 80000 steps verified; selection independently recomputed; test pending"}
+{"at": "2026-10-03T09:52:08+00:00", "status": "ANALYZED", "note": "Eight E200 source models/80000steps/720 frontend cells verified; retained source control clean independently reconciled; zero new query", "evidence": ["evidence/completion_verdict.json"], "row_id": null}

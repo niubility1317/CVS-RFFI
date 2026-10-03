@@ -1,0 +1,69 @@
+{
+  "status": "VERIFIED",
+  "verified_at": "2026-10-03T09:52:08.334035+00:00",
+  "execution_complete": true,
+  "performance_goal_achieved": false,
+  "paper_claim_established": false,
+  "scientific_verdict": "MIRROR_SUBSPACE_DID_NOT_REPLACE_FIXED_SOURCE_CONTROL",
+  "selected_variant": "relation_frequency_energy",
+  "new_source_models": 8,
+  "new_source_steps": 80000,
+  "source_summary": [
+    {
+      "variant": "neural_residual_shallow",
+      "seeds": 4,
+      "V_mean": 0.9844259259259259,
+      "V_SD": 0.001052138719358642,
+      "worst_RX_mean": 0.9580092592592593,
+      "worst_RX_SD": 0.0022899903458703176,
+      "score_mean": 0.9712175925925925,
+      "score_SD": 0.001630777864276852
+    },
+    {
+      "variant": "response_anchor_mean",
+      "seeds": 4,
+      "V_mean": 0.9844351851851851,
+      "V_SD": 0.0011198728616844903,
+      "worst_RX_mean": 0.9581944444444445,
+      "worst_RX_SD": 0.0025318050042982803,
+      "score_mean": 0.9713148148148147,
+      "score_SD": 0.0018148778018799478
+    },
+    {
+      "variant": "relation_frequency_energy",
+      "seeds": 4,
+      "V_mean": 0.9857314814814815,
+      "V_SD": 0.0011112654213834743,
+      "worst_RX_mean": 0.9613888888888888,
+      "worst_RX_SD": 0.0036835873451445938,
+      "score_mean": 0.9735601851851852,
+      "score_SD": 0.0023940930489866224
+    },
+    {
+      "variant": "mirror_energy",
+      "seeds": 4,
+      "V_mean": 0.9841851851851852,
+      "V_SD": 0.0009452308514839703,
+      "worst_RX_mean": 0.9577777777777778,
+      "worst_RX_SD": 0.0018207260745373385,
+      "score_mean": 0.9709814814814814,
+      "score_SD": 0.0013647700044572288
+    },
+    {
+      "variant": "mirror_subspace",
+      "seeds": 4,
+      "V_mean": 0.9846574074074075,
+      "V_SD": 0.0013358600886685314,
+      "worst_RX_mean": 0.9576851851851852,
+      "worst_RX_SD": 0.0043757552094931505,
+      "score_mean": 0.9711712962962963,
+      "score_SD": 0.0028519470482748503
+    }
+  ],
+  "new_target_predictions": 0,
+  "test_completion": "REUSED_VERIFIED_FROZEN_CONTROL",
+  "completed_test_run": "20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01",
+  "retained_control_clean_accuracy": 0.7069255952380953,
+  "retained_control_clean_seed_sd": 0.012835491672170771,
+  "target_feedback": false
+}
