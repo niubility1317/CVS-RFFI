@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "reviewer": "/root/frontfilter_model",
+  "scope": "Final frozen clean-test P0/P1",
+  "tests": 17,
+  "chunks": [
+    "e496d3",
+    "5279a6"
+  ],
+  "checks": [
+    "8x168000 full preflight",
+    "Missing row keeps truth closed",
+    "Source full contract/scratch/E200/FP32 weights andFP64 physical layer",
+    "Release dependency closure and37 source files identical to source execution commit",
+    "All8 fixed configs; separate truth-last score; independent recount"
+  ],
+  "real_data_access": false,
+  "remote_access": false
+}

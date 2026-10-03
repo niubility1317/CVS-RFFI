@@ -1,2 +1,4 @@
 {"at": "2026-10-03T13:44:38+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-03T13:44:38+00:00", "status": "LOCAL_VERIFIED", "note": "本地scratch smoke及11项源边界负测通过，等待一次独立管线审查", "evidence": ["evidence/local_cpu_smoke.json", "report.md"], "row_id": null}
+{"at": "2026-10-03T13:50:58+00:00", "status": "LANDED", "note": "固定Git版本发布，远端编译及scratch checkpoint smoke通过", "evidence": ["evidence/launch_package.json", "evidence/launch_submit.json"], "row_id": null}
+{"at": "2026-10-03T13:50:58+00:00", "status": "RUNNING", "note": "8行PID/CWD/命令/GPU0-7/实际配置与增长日志独立核实；2至8轮，无额外损失", "evidence": ["evidence/launch_readback.json"], "row_id": null}

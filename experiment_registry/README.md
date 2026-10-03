@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T13:47:46+00:00
+更新：2026-10-03T13:52:07+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|99|
+|managed_run|100|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,12 +21,12 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|244|
+|[cvs](by_method/cvs.md)|245|
 |[adv3b02](by_method/adv3b02.md)|146|
 |[phase2](by_method/phase2.md)|118|
 |[phase1](by_method/phase1.md)|113|
 |[stage2](by_method/stage2.md)|67|
-|[clean_only](by_method/clean_only.md)|58|
+|[clean_only](by_method/clean_only.md)|59|
 |[ce_only](by_method/ce_only.md)|58|
 |[qknn](by_method/qknn.md)|56|
 |[performance_priority](by_method/performance_priority.md)|48|
@@ -62,6 +62,7 @@
 |[relative_cfo](by_method/relative_cfo.md)|5|
 |[final200](by_method/final200.md)|4|
 |[mirror_relation](by_method/mirror_relation.md)|4|
+|[fixed_comparison](by_method/fixed_comparison.md)|4|
 |[receiver_agnostic](by_method/receiver_agnostic.md)|4|
 |[repair](by_method/repair.md)|4|
 |[shot](by_method/shot.md)|4|
@@ -74,9 +75,9 @@
 |[packet_synchronization](by_method/packet_synchronization.md)|3|
 |[fixed_parameter_budget](by_method/fixed_parameter_budget.md)|3|
 |[public_only](by_method/public_only.md)|3|
+|[reference_residual](by_method/reference_residual.md)|3|
 |[valid_history](by_method/valid_history.md)|3|
 |[packet_compensation](by_method/packet_compensation.md)|3|
-|[fixed_comparison](by_method/fixed_comparison.md)|3|
 |[smoke](by_method/smoke.md)|3|
 |[evaluation](by_method/evaluation.md)|2|
 |[true256](by_method/true256.md)|2|
@@ -96,8 +97,8 @@
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
 |[benchmark_informed](by_method/benchmark_informed.md)|2|
-|[reference_residual](by_method/reference_residual.md)|2|
 |[public_signals](by_method/public_signals.md)|2|
+|[independent_test](by_method/independent_test.md)|2|
 |[dual_path](by_method/dual_path.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[nm fdu](by_method/nm_fdu.md)|2|
@@ -164,7 +165,6 @@
 |[context_attention](by_method/context_attention.md)|1|
 |[response_fusion](by_method/response_fusion.md)|1|
 |[spectral_relation](by_method/spectral_relation.md)|1|
-|[independent_test](by_method/independent_test.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
 |[fedcvs](by_method/fedcvs.md)|1|
 
@@ -261,6 +261,7 @@
 |CVS全主干前置滤波：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-frontfilter-identity-manysig-m8-r01/report.md)|
 |CVS镜像频对关系：能量与子空间投影×四seed|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-mirror-subspace-identity-manysig-m8-r01/report.md)|
 |CVS可学习注意力读出：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)|
+|参考约束残差网络：全部八行clean测试|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01/report.md)|
 |参考约束残差网络：固定八行训练及测试|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/report.md)|
 |CVS 约束响应融合：独立 clean 结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md)|
 |CVS约束响应融合：完整源训练结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)|
@@ -291,4 +292,3 @@
 |CVS可学习复卷积残差结构实验|legacy_evidence_group|[打开](../docs/CVS_NEURAL_RESIDUAL_20261002.md)|
 |cvs_neural_residual_clean_eval_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_neural_residual_clean_eval_20261002_r01)|
 |cvs_neural_residual_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_neural_residual_identity_20261002_r01)|
-|cvs_curvature_attribution_source_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_curvature_attribution_source_20261002_r01)|

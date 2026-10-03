@@ -1,12 +1,14 @@
 {
   "run_id": "20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
+  "source_execution_commit": "8a3871650c2a35ab5c8a63d9e6d0634946292542",
+  "dispatcher_pid": 2560516,
   "launch_owner": "codex/root/reference-residual-20261003",
   "next": [
-    "Finish independent source-pipeline review",
-    "Commit/push/readback and publish once",
-    "Read back PID/CWD/GPU/log growth",
-    "Prepare all-eight clean tests; source completion is not final result"
+    "Read-only monitor healthy source until all8E200 frozen",
+    "Then publish registered20261003-phase1-cvs-reference-residual-clean-manysig-m8-r01 once",
+    "Complete predictions,truth-last score,recount and full-log analysis"
   ],
+  "real_test_complete": false,
   "goal_complete": false
 }

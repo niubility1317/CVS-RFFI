@@ -26,7 +26,8 @@
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_residual_identity_20261003_r01",
     "architecture_base_commit": "7c9b77e1d22d6adb484c5932ef39abe3767a2fcd",
-    "commit_role": "preparation_base; actual source release commit to be recorded from independent launch readback"
+    "commit_role": "preparation_base; actual source release commit to be recorded from independent launch readback",
+    "execution_commit": "8a3871650c2a35ab5c8a63d9e6d0634946292542"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -96,7 +97,8 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01",
     "local_artifact_root": "local_artifacts/cvs_reference_residual_identity_20261003_r01",
     "launch_command": "python -m experiments.cvs_reference_residual_identity.publish --output local_artifacts/cvs_reference_residual_identity_20261003_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 2560516
   },
   "expected_artifacts": [
     "last.pt",
@@ -124,7 +126,7 @@
       "row_id": "reference_residual_scalar-s2026092701",
       "method": "reference_residual_scalar",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_reference_residual_identity/source_configs/reference_residual_scalar-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -159,13 +161,15 @@
         "epoch_compact.jsonl",
         "epoch_metrics.csv",
         "source_final_diagnostics.json"
-      ]
+      ],
+      "pid": 2560533,
+      "actual_epoch_at_launch_readback": 8
     },
     {
       "row_id": "reference_residual_inverse-s2026092701",
       "method": "reference_residual_inverse",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_reference_residual_identity/source_configs/reference_residual_inverse-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -200,13 +204,15 @@
         "epoch_compact.jsonl",
         "epoch_metrics.csv",
         "source_final_diagnostics.json"
-      ]
+      ],
+      "pid": 2560613,
+      "actual_epoch_at_launch_readback": 7
     },
     {
       "row_id": "reference_residual_scalar-s2026092702",
       "method": "reference_residual_scalar",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_reference_residual_identity/source_configs/reference_residual_scalar-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -241,13 +247,15 @@
         "epoch_compact.jsonl",
         "epoch_metrics.csv",
         "source_final_diagnostics.json"
-      ]
+      ],
+      "pid": 2560691,
+      "actual_epoch_at_launch_readback": 7
     },
     {
       "row_id": "reference_residual_inverse-s2026092702",
       "method": "reference_residual_inverse",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_reference_residual_identity/source_configs/reference_residual_inverse-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -282,13 +290,15 @@
         "epoch_compact.jsonl",
         "epoch_metrics.csv",
         "source_final_diagnostics.json"
-      ]
+      ],
+      "pid": 2560772,
+      "actual_epoch_at_launch_readback": 6
     },
     {
       "row_id": "reference_residual_scalar-s2026092703",
       "method": "reference_residual_scalar",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_reference_residual_identity/source_configs/reference_residual_scalar-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -323,13 +333,15 @@
         "epoch_compact.jsonl",
         "epoch_metrics.csv",
         "source_final_diagnostics.json"
-      ]
+      ],
+      "pid": 2560849,
+      "actual_epoch_at_launch_readback": 5
     },
     {
       "row_id": "reference_residual_inverse-s2026092703",
       "method": "reference_residual_inverse",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_reference_residual_identity/source_configs/reference_residual_inverse-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -364,13 +376,15 @@
         "epoch_compact.jsonl",
         "epoch_metrics.csv",
         "source_final_diagnostics.json"
-      ]
+      ],
+      "pid": 2560930,
+      "actual_epoch_at_launch_readback": 4
     },
     {
       "row_id": "reference_residual_scalar-s2026092704",
       "method": "reference_residual_scalar",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_reference_residual_identity/source_configs/reference_residual_scalar-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_scalar-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -405,13 +419,15 @@
         "epoch_compact.jsonl",
         "epoch_metrics.csv",
         "source_final_diagnostics.json"
-      ]
+      ],
+      "pid": 2561007,
+      "actual_epoch_at_launch_readback": 3
     },
     {
       "row_id": "reference_residual_inverse-s2026092704",
       "method": "reference_residual_inverse",
       "purpose": "fixed_comparison_arm",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_reference_residual_identity/source_configs/reference_residual_inverse-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-reference-residual-identity-manysig-m8-r01/reference_residual_inverse-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -446,7 +462,9 @@
         "epoch_compact.jsonl",
         "epoch_metrics.csv",
         "source_final_diagnostics.json"
-      ]
+      ],
+      "pid": 2561088,
+      "actual_epoch_at_launch_readback": 2
     }
   ],
   "notes": [
@@ -458,7 +476,7 @@
     "All8 fixedE200 checkpoints unconditionally clean-tested on168000sameIDs; prediction fixed before independent truth-last scoring. No target feedback or selective rerun.",
     "No Phase2support,SFT,newclasses or satellite views; K and adaptation metrics N/A. Claimed real benefit requires test evidence."
   ],
-  "status": "PLANNED",
+  "status": "RUNNING",
   "test_completion_plan": {
     "condition": "All8 source checkpoints E200 complete and frozen; unconditional fixed comparison",
     "views": [
