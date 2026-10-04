@@ -1,0 +1,186 @@
+{
+  "status": "VERIFIED",
+  "read_at": 1791117889.2994487,
+  "controller_verified": true,
+  "controller_pid": 3163411,
+  "preserved_workers": {
+    "r2-bridge-s2026092701": true,
+    "r2-twostage-s2026092701": true,
+    "r2-ema-s2026092701": true,
+    "r2-pseudo-s2026092701": true,
+    "r2-bridge-s2026092702": true,
+    "r2-twostage-s2026092702": true,
+    "r2-ema-s2026092702": true,
+    "r2-pseudo-s2026092702": true
+  },
+  "gpu_counts": {
+    "0": 2,
+    "1": 2,
+    "2": 2,
+    "3": 2,
+    "4": 2,
+    "5": 2,
+    "6": 2,
+    "7": 2
+  },
+  "rows": [
+    {
+      "row_id": "r2-bridge-s2026092701",
+      "pid": 3157224,
+      "gpu": 0,
+      "verified": true,
+      "epoch": 15,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-twostage-s2026092701",
+      "pid": 3157233,
+      "gpu": 1,
+      "verified": true,
+      "epoch": 15,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-ema-s2026092701",
+      "pid": 3157243,
+      "gpu": 2,
+      "verified": true,
+      "epoch": 15,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-pseudo-s2026092701",
+      "pid": 3157316,
+      "gpu": 3,
+      "verified": true,
+      "epoch": 15,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-bridge-s2026092702",
+      "pid": 3157397,
+      "gpu": 4,
+      "verified": true,
+      "epoch": 15,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-twostage-s2026092702",
+      "pid": 3157541,
+      "gpu": 5,
+      "verified": true,
+      "epoch": 15,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-ema-s2026092702",
+      "pid": 3157553,
+      "gpu": 6,
+      "verified": true,
+      "epoch": 15,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-pseudo-s2026092702",
+      "pid": 3157631,
+      "gpu": 7,
+      "verified": true,
+      "epoch": 15,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-bridge-s2026092703",
+      "pid": 3163432,
+      "gpu": 0,
+      "verified": true,
+      "epoch": 1,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-twostage-s2026092703",
+      "pid": 3163441,
+      "gpu": 1,
+      "verified": true,
+      "epoch": 1,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-ema-s2026092703",
+      "pid": 3163451,
+      "gpu": 4,
+      "verified": true,
+      "epoch": 1,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-pseudo-s2026092703",
+      "pid": 3163461,
+      "gpu": 5,
+      "verified": true,
+      "epoch": 1,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-bridge-s2026092704",
+      "pid": 3163534,
+      "gpu": 2,
+      "verified": true,
+      "epoch": 1,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-twostage-s2026092704",
+      "pid": 3163608,
+      "gpu": 3,
+      "verified": true,
+      "epoch": 1,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-ema-s2026092704",
+      "pid": 3163682,
+      "gpu": 6,
+      "verified": true,
+      "epoch": 1,
+      "log_growth": true
+    },
+    {
+      "row_id": "r2-pseudo-s2026092704",
+      "pid": 3163757,
+      "gpu": 7,
+      "verified": true,
+      "epoch": 1,
+      "log_growth": true
+    }
+  ],
+  "failure": null,
+  "queue": {
+    "phase": "r2",
+    "kind": "source",
+    "active": [
+      "r2-bridge-s2026092701",
+      "r2-twostage-s2026092701",
+      "r2-ema-s2026092701",
+      "r2-pseudo-s2026092701",
+      "r2-bridge-s2026092702",
+      "r2-twostage-s2026092702",
+      "r2-ema-s2026092702",
+      "r2-pseudo-s2026092702",
+      "r2-bridge-s2026092703",
+      "r2-twostage-s2026092703",
+      "r2-ema-s2026092703",
+      "r2-pseudo-s2026092703",
+      "r2-bridge-s2026092704",
+      "r2-twostage-s2026092704",
+      "r2-ema-s2026092704",
+      "r2-pseudo-s2026092704"
+    ],
+    "pending": [],
+    "failures": [],
+    "updated_at": 1791117883.708261,
+    "max_active": 16,
+    "per_gpu_limit": 2,
+    "controller_pid": 3163411,
+    "controller_release": "cvs_reference_stack_dispatch16_20261004_r01"
+  }
+}

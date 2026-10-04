@@ -1,0 +1,29 @@
+{
+  "status": "SUBMITTED",
+  "pid": 3163411,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_dispatch16_20261004_r01/capacity16.py",
+    "--worker-root",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+    "--handoff",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_dispatch16_20261004_r01/handoff.json"
+  ],
+  "control_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_dispatch16_20261004_r01",
+  "commit": "27729a13cc659d075025840f9c0a6bcbe056dada",
+  "worker_commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+  "old_dispatcher_pid": 3157203,
+  "preserved_worker_pids": [
+    3157224,
+    3157233,
+    3157243,
+    3157316,
+    3157397,
+    3157541,
+    3157553,
+    3157631
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_dispatch16_20261004_r01/dispatcher.stdout.log"
+}

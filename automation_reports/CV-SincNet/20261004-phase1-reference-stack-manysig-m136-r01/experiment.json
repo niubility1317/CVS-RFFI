@@ -91,24 +91,31 @@
   "execution": {
     "host": "N607",
     "launch_owner": "codex/root/reference-stack-20261004",
-    "gpu_policy": "8 concurrent, <=2 total jobs/GPU, >=12GB free; sequential dependency queue; preserve others",
+    "gpu_policy": "16 concurrent; <=2 total jobs/GPU; >=12GB free before launch; preserve existing workers",
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261004-phase1-reference-stack-manysig-m136-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261004-phase1-reference-stack-manysig-m136-r01",
     "launch_command": "python -m experiments.cvs_phase1_stack.publish --output local_artifacts/cvs_reference_stack_20261004_r01",
     "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention.",
-    "actual_pid": 3157203,
+    "actual_pid": 3163411,
     "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
     "actual_argv": [
       "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
       "-u",
-      "-m",
-      "experiments.cvs_phase1_stack.dispatch"
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_dispatch16_20261004_r01/capacity16.py",
+      "--worker-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "--handoff",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_dispatch16_20261004_r01/handoff.json"
     ],
     "startup_verdict": "VERIFIED",
-    "startup_evidence": "evidence/launch_verification.json",
+    "startup_evidence": "evidence/capacity16/verification.json",
     "requested_gpu_policy": "User2026-10-04: two experiments per GPU,16 concurrent; >=12GB free before additional launch; preserve existing training PIDs",
-    "capacity_change_status": "LOCAL_VERIFIED_PENDING_HANDOFF"
+    "capacity_change_status": "VERIFIED",
+    "previous_dispatcher_pid": 3157203,
+    "control_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_dispatch16_20261004_r01",
+    "control_commit": "27729a13cc659d075025840f9c0a6bcbe056dada",
+    "worker_commit": "0c73c904c8331f26254761042516f1ae43ed9c98"
   },
   "expected_artifacts": [
     "initial_smoke.pt",
@@ -712,7 +719,7 @@
       "row_id": "r2-bridge-s2026092703",
       "method": "r2-bridge",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_stack/configs/r2-bridge-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -764,13 +771,23 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "actual_pid": 3163432,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092703.json"
+      ]
     },
     {
       "row_id": "r2-twostage-s2026092703",
       "method": "r2-twostage",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_phase1_stack/configs/r2-twostage-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -822,13 +839,23 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "actual_pid": 3163441,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092703.json"
+      ]
     },
     {
       "row_id": "r2-ema-s2026092703",
       "method": "r2-ema",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/configs/r2-ema-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -880,13 +907,23 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "actual_pid": 3163451,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092703.json"
+      ]
     },
     {
       "row_id": "r2-pseudo-s2026092703",
       "method": "r2-pseudo",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_phase1_stack/configs/r2-pseudo-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -938,13 +975,23 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "actual_pid": 3163461,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092703.json"
+      ]
     },
     {
       "row_id": "r2-bridge-s2026092704",
       "method": "r2-bridge",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/configs/r2-bridge-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -996,13 +1043,23 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "actual_pid": 3163534,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092704.json"
+      ]
     },
     {
       "row_id": "r2-twostage-s2026092704",
       "method": "r2-twostage",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_phase1_stack/configs/r2-twostage-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -1054,13 +1111,23 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "actual_pid": 3163608,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092704.json"
+      ]
     },
     {
       "row_id": "r2-ema-s2026092704",
       "method": "r2-ema",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/configs/r2-ema-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -1112,13 +1179,23 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "actual_pid": 3163682,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092704.json"
+      ]
     },
     {
       "row_id": "r2-pseudo-s2026092704",
       "method": "r2-pseudo",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_phase1_stack/configs/r2-pseudo-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -1170,7 +1247,17 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "actual_pid": 3163757,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092704.json"
+      ]
     },
     {
       "row_id": "r3-base-s2026092701",
