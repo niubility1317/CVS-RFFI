@@ -1,0 +1,24 @@
+{
+  "read_at": 1791124854.929533,
+  "completed": 0,
+  "running": 16,
+  "waiting_dependency": 120,
+  "epochs_min": 107,
+  "epochs_max": 119,
+  "epochs_executed": 1811,
+  "planned_epochs": 27200,
+  "recent20_epoch_seconds_median": 75.41135942935944,
+  "r2_remaining_hours_estimate": [
+    2,
+    3
+  ],
+  "all_training_days_planning_range": [
+    2,
+    4
+  ],
+  "evaluation_hours_provisional": [
+    1,
+    3
+  ],
+  "assumption": "No failures; keep16concurrent. LaterDG/MUSE/DAOT/RC4 cost not yet measured, so not a completion guarantee."
+}

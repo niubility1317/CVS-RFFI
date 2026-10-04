@@ -8272,7 +8272,17 @@
       11
     ],
     "scene_partition": "one satellite observation per ID; three disjoint scene strata",
-    "all_source_stages_frozen_before_query": true
+    "all_source_stages_frozen_before_query": true,
+    "required_full_sixscene_followup_run": "20261004-phase1-reference-stack-sixscene-manysig-m136-r01",
+    "requested_final_views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ]
   },
   "stage_policies": {
     "arms": {
