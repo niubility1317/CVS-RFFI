@@ -145,3 +145,7 @@ R6删组含义：no_leo仅移除有标签concat卫星增强，DAOT/MUSE各自视
 近期每轮约75至79秒；考虑伪标签阶段增加计算，R2预估尚需2至3小时。全批训练暂按2至4天排期，后续DG/MUSE/DAOT/RC4尚无本批实测速度，区间是粗估而非承诺。额外七视图评估暂留1至3小时，待首批推理实测校准。
 
 用户明确追加clean与六个residual完整星地环境。原三场景分层测试保留；新增依赖评估run：`20261004-phase1-reference-stack-sixscene-manysig-m136-r01`，等待父run全部ANALYZED后自动执行136行×7视图×168000个物理query。训练与源域选择流程不改。是否已经成功排队以新增run的启动证据为准。
+
+## 后续训练执行加速（2026-10-05）
+
+用户授权优化后续训练速度。诊断、限制和实现见[加速诊断报告](../20261004-diagnostic-reference-stack-speed-synthetic-m12-r01/report.md)。拟只将未启动R3–R6路由到独立执行release；健康R2保持原PID及代码。正式科学配置、预算、每卡两行和clean+六residual自动测试不变。当前发布状态以本段后续独立读回为准。

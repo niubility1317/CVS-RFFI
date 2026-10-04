@@ -1,0 +1,8 @@
+{
+  "status": "FAILED_DIAGNOSTIC_ONLY",
+  "layer": "CUDA deterministic kernel availability",
+  "error": "median CUDA with indices output does not have a deterministic implementation",
+  "retained": true,
+  "formal_workers_affected": false,
+  "followup": "CPU deterministic parity; GPU throughput retains original numerical policy"
+}

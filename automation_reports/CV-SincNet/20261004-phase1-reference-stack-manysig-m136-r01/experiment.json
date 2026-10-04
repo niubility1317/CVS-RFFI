@@ -115,7 +115,22 @@
     "previous_dispatcher_pid": 3157203,
     "control_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_dispatch16_20261004_r01",
     "control_commit": "27729a13cc659d075025840f9c0a6bcbe056dada",
-    "worker_commit": "0c73c904c8331f26254761042516f1ae43ed9c98"
+    "worker_commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+    "future_acceleration": {
+      "release": "cvs_reference_stack_fast_20261005_r01",
+      "scope": "unstarted R3–R6 only; R2 preserved",
+      "policy": [
+        "a1_gradient_snapshot",
+        "source_validation_reuse",
+        "same-dtype scalar readback",
+        "incremental native epoch telemetry"
+      ],
+      "diagnostic_run": "20261004-diagnostic-reference-stack-speed-synthetic-m12-r01",
+      "status": "LOCAL_VERIFICATION_IN_PROGRESS",
+      "worker_model_commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+      "budgets_unchanged": true,
+      "target_plan_unchanged": true
+    }
   },
   "expected_artifacts": [
     "initial_smoke.pt",

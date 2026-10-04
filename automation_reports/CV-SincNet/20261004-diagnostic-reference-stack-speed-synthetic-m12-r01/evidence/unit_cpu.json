@@ -1,0 +1,13 @@
+{
+  "status": "VERIFIED",
+  "device": "cpu",
+  "torch": "2.10.0+cu128",
+  "checks": [
+    "gradient_norm_before_after_clip_exact",
+    "nonfinite_gradient_exact",
+    "nested_log_values_exact",
+    "cache_exact_and_input_parameter_invalidation",
+    "incremental_jsonl_csv_values_schema_exact"
+  ],
+  "target_access": false
+}

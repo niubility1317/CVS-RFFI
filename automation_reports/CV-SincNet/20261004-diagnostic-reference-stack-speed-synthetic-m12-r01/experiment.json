@@ -1,0 +1,657 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261004-diagnostic-reference-stack-speed-synthetic-m12-r01",
+  "group_id": "reference-stack-execution-speed-equivalence",
+  "display_name": "R2至R6执行加速：合成输入配对耗时与完整状态一致性",
+  "description": "诊断原生执行路径，比较原始与批量遥测/梯度快照/源验证复用实现；不访问正式数据或target，不改变正式训练预算。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "diagnostic",
+    "runtime",
+    "synthetic",
+    "no_target",
+    "equivalence"
+  ],
+  "comparison_group_id": "synthetic-runtime-equivalence-no-physical-data",
+  "parent_run_ids": [
+    "20261004-phase1-reference-stack-manysig-m136-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求全面分析R2耗时并优化后续训练速度。",
+  "code": {
+    "commit": "release implementation committed after these local checks; see main run execution release commit",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+    "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt"
+  },
+  "data": {
+    "dataset": "synthetic deterministic Gaussian IQ; no realdataset",
+    "version": "Synthetic(seed700+index)",
+    "representation": "2x256 synthetic",
+    "contract_ref": "experiments/cvs_phase1_stack/speed_benchmark.py:Synthetic",
+    "physical_ids_ref": "synthetic base_index only; not realphysicalIDs",
+    "label_map_ref": "speed_benchmark.Synthetic: y=index%6",
+    "source_receivers": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Synthetic labels index%6; no ManySig data accessed",
+    "roles": {
+      "synthetic_only": true,
+      "per_variant": "see diagnostic_variants; no physical data"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "no support orquery",
+    "leo_config_ref": "unchanged original practical residual schedule on synthetic samples"
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "frozen Phase1 inference only; separate truth-last scorer",
+    "external_method_exception": null,
+    "claim_scope": "BENCHMARK_INFORMED_FIXED_DESIGN: user-fixed architecture on exposed benchmark; no fresh blind architecture-selection claim. No test feedback into tuning, selection or selective rerun."
+  },
+  "checkpoint": {
+    "initialization": "scratch synthetic only",
+    "sources": [],
+    "provenance_verdict": "NO_REAL_DATA_NO_CHECKPOINT_INHERITANCE",
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "selection_rule": "no performance selection; require equivalent model optimizer RNG and losses"
+  },
+  "execution": {
+    "host": "local Windows RTX5070Ti",
+    "launch_owner": "codex/root/reference-stack-speed-20261004",
+    "gpu_policy": "one local GPU diagnostic process; no N607 training slots used",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01",
+    "launch_command": "python -m experiments.cvs_phase1_stack.speed_benchmark per registered row",
+    "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention."
+  },
+  "expected_artifacts": [
+    "stdout.log",
+    "steps.jsonl.gz",
+    "metrics_epoch.jsonl",
+    "state.pt",
+    "result.json",
+    "execution_profile/summary.json",
+    "comparison.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "source_V_accuracy",
+      "clean_ce",
+      "satellite_ce",
+      "gradient_norm",
+      "optimizer_steps",
+      "parameter_count",
+      "peak_cuda_allocated_bytes",
+      "wall_time"
+    ],
+    "dimensions": [
+      "arm",
+      "model_seed",
+      "view",
+      "receiver",
+      "transmitter"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "speed_benchmark.compare",
+    "primary": "per-epoch wall time,logging time; exact model/optimizer/loss/RNG state equality; profiler CPU/GPU attribution",
+    "full_cvs_reference": "DAOT+RC4 results descriptive only; its U_s use and optimization-step budget differ"
+  },
+  "rows": [
+    {
+      "row_id": "r2-pseudo-base",
+      "method": "native_execution",
+      "purpose": "synthetic_runtime_equivalence",
+      "gpu": 0,
+      "config_ref": "experiments/cvs_phase1_stack/speed_benchmark.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r2-pseudo-base-det\\result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 700,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "synthetic generation700+index; native seed2026092701; no physical split",
+      "k": null,
+      "scenario": "synthetic nativeepochs91,131,181",
+      "optimizer": "native AdamW/FastTrust",
+      "lr": 0.0002,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "diagnostic variant documented in diagnostic_variants; no formal budget change",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r2-pseudo-base-det",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r2-pseudo-base-det\\stdout.log",
+      "command": "python -m experiments.cvs_phase1_stack.speed_benchmark --stage r2 --arm pseudo --val-size 2048 --steps 3 --deterministic --output E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r2-pseudo-base-det",
+      "expected_artifacts": [
+        "stdout.log",
+        "steps.jsonl.gz",
+        "metrics_epoch.jsonl",
+        "state.pt",
+        "result.json",
+        "execution_profile/summary.json",
+        "comparison.json"
+      ],
+      "variant_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r2-pseudo-base",
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r2-pseudo-base-det",
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r2-pseudo-base-repeat"
+      ],
+      "status": "ANALYZED",
+      "status_evidence": "evidence/benchmark_summary.json"
+    },
+    {
+      "row_id": "r2-pseudo-fast",
+      "method": "native_execution_fast",
+      "purpose": "synthetic_runtime_equivalence",
+      "gpu": 0,
+      "config_ref": "experiments/cvs_phase1_stack/speed_benchmark.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r2-pseudo-fast-det\\result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 700,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "synthetic generation700+index; native seed2026092701; no physical split",
+      "k": null,
+      "scenario": "synthetic nativeepochs91,131,181",
+      "optimizer": "native AdamW/FastTrust",
+      "lr": 0.0002,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "diagnostic variant documented in diagnostic_variants; no formal budget change",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r2-pseudo-fast-det",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r2-pseudo-fast-det\\stdout.log",
+      "command": "python -m experiments.cvs_phase1_stack.speed_benchmark --stage r2 --arm pseudo --val-size 2048 --steps 3 --deterministic --fast --output E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r2-pseudo-fast-det",
+      "expected_artifacts": [
+        "stdout.log",
+        "steps.jsonl.gz",
+        "metrics_epoch.jsonl",
+        "state.pt",
+        "result.json",
+        "execution_profile/summary.json",
+        "comparison.json"
+      ],
+      "variant_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r2-pseudo-fast",
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r2-pseudo-fast-det"
+      ],
+      "status": "ANALYZED",
+      "status_evidence": "evidence/benchmark_summary.json"
+    },
+    {
+      "row_id": "r3-all_dg-base",
+      "method": "native_execution",
+      "purpose": "synthetic_runtime_equivalence",
+      "gpu": 0,
+      "config_ref": "experiments/cvs_phase1_stack/speed_benchmark.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r3-all_dg-base-det\\result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 700,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "synthetic generation700+index; native seed2026092701; no physical split",
+      "k": null,
+      "scenario": "synthetic nativeepochs91,131,181",
+      "optimizer": "native AdamW/FastTrust",
+      "lr": 0.0002,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "diagnostic variant documented in diagnostic_variants; no formal budget change",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r3-all_dg-base-det",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r3-all_dg-base-det\\stdout.log",
+      "command": "python -m experiments.cvs_phase1_stack.speed_benchmark --stage r3 --arm all_dg --val-size 2048 --steps 3 --deterministic --output E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r3-all_dg-base-det",
+      "expected_artifacts": [
+        "stdout.log",
+        "steps.jsonl.gz",
+        "metrics_epoch.jsonl",
+        "state.pt",
+        "result.json",
+        "execution_profile/summary.json",
+        "comparison.json"
+      ],
+      "variant_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r3-all_dg-base-det"
+      ],
+      "status": "ANALYZED",
+      "status_evidence": "evidence/benchmark_summary.json"
+    },
+    {
+      "row_id": "r3-all_dg-fast",
+      "method": "native_execution_fast",
+      "purpose": "synthetic_runtime_equivalence",
+      "gpu": 0,
+      "config_ref": "experiments/cvs_phase1_stack/speed_benchmark.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r3-all_dg-fast-det\\result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 700,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "synthetic generation700+index; native seed2026092701; no physical split",
+      "k": null,
+      "scenario": "synthetic nativeepochs91,131,181",
+      "optimizer": "native AdamW/FastTrust",
+      "lr": 0.0002,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "diagnostic variant documented in diagnostic_variants; no formal budget change",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r3-all_dg-fast-det",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r3-all_dg-fast-det\\stdout.log",
+      "command": "python -m experiments.cvs_phase1_stack.speed_benchmark --stage r3 --arm all_dg --val-size 2048 --steps 3 --deterministic --fast --output E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r3-all_dg-fast-det",
+      "expected_artifacts": [
+        "stdout.log",
+        "steps.jsonl.gz",
+        "metrics_epoch.jsonl",
+        "state.pt",
+        "result.json",
+        "execution_profile/summary.json",
+        "comparison.json"
+      ],
+      "variant_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r3-all_dg-fast-det"
+      ],
+      "status": "ANALYZED",
+      "status_evidence": "evidence/benchmark_summary.json"
+    },
+    {
+      "row_id": "r4-all_open-base",
+      "method": "native_execution",
+      "purpose": "synthetic_runtime_equivalence",
+      "gpu": 0,
+      "config_ref": "experiments/cvs_phase1_stack/speed_benchmark.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r4-all_open-base-det\\result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 700,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "synthetic generation700+index; native seed2026092701; no physical split",
+      "k": null,
+      "scenario": "synthetic nativeepochs91,131,181",
+      "optimizer": "native AdamW/FastTrust",
+      "lr": 0.0002,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "diagnostic variant documented in diagnostic_variants; no formal budget change",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r4-all_open-base-det",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r4-all_open-base-det\\stdout.log",
+      "command": "python -m experiments.cvs_phase1_stack.speed_benchmark --stage r4 --arm all_open --val-size 2048 --steps 3 --deterministic --output E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r4-all_open-base-det",
+      "expected_artifacts": [
+        "stdout.log",
+        "steps.jsonl.gz",
+        "metrics_epoch.jsonl",
+        "state.pt",
+        "result.json",
+        "execution_profile/summary.json",
+        "comparison.json"
+      ],
+      "variant_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r4-all_open-base-det"
+      ],
+      "status": "ANALYZED",
+      "status_evidence": "evidence/benchmark_summary.json"
+    },
+    {
+      "row_id": "r4-all_open-fast",
+      "method": "native_execution_fast",
+      "purpose": "synthetic_runtime_equivalence",
+      "gpu": 0,
+      "config_ref": "experiments/cvs_phase1_stack/speed_benchmark.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r4-all_open-fast-det\\result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 700,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "synthetic generation700+index; native seed2026092701; no physical split",
+      "k": null,
+      "scenario": "synthetic nativeepochs91,131,181",
+      "optimizer": "native AdamW/FastTrust",
+      "lr": 0.0002,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "diagnostic variant documented in diagnostic_variants; no formal budget change",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r4-all_open-fast-det",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r4-all_open-fast-det\\stdout.log",
+      "command": "python -m experiments.cvs_phase1_stack.speed_benchmark --stage r4 --arm all_open --val-size 2048 --steps 3 --deterministic --fast --output E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r4-all_open-fast-det",
+      "expected_artifacts": [
+        "stdout.log",
+        "steps.jsonl.gz",
+        "metrics_epoch.jsonl",
+        "state.pt",
+        "result.json",
+        "execution_profile/summary.json",
+        "comparison.json"
+      ],
+      "variant_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r4-all_open-fast-det"
+      ],
+      "status": "ANALYZED",
+      "status_evidence": "evidence/benchmark_summary.json"
+    },
+    {
+      "row_id": "r5-both-base",
+      "method": "native_execution",
+      "purpose": "synthetic_runtime_equivalence",
+      "gpu": 0,
+      "config_ref": "experiments/cvs_phase1_stack/speed_benchmark.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r5-both-base-gpu-throughput\\result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 700,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "synthetic generation700+index; native seed2026092701; no physical split",
+      "k": null,
+      "scenario": "synthetic nativeepochs91,131,181",
+      "optimizer": "native AdamW/FastTrust",
+      "lr": 0.0002,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "diagnostic variant documented in diagnostic_variants; no formal budget change",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r5-both-base-gpu-throughput",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r5-both-base-gpu-throughput\\stdout.log",
+      "command": "python -m experiments.cvs_phase1_stack.speed_benchmark --stage r5 --arm both --val-size 2048 --steps 4 --output E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r5-both-base-gpu-throughput",
+      "expected_artifacts": [
+        "stdout.log",
+        "steps.jsonl.gz",
+        "metrics_epoch.jsonl",
+        "state.pt",
+        "result.json",
+        "execution_profile/summary.json",
+        "comparison.json"
+      ],
+      "variant_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r5-both-base-cpu-det",
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r5-both-base-det",
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r5-both-base-gpu-throughput"
+      ],
+      "status": "ANALYZED",
+      "status_evidence": "evidence/benchmark_summary.json"
+    },
+    {
+      "row_id": "r5-both-fast",
+      "method": "native_execution_fast",
+      "purpose": "synthetic_runtime_equivalence",
+      "gpu": 0,
+      "config_ref": "experiments/cvs_phase1_stack/speed_benchmark.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r5-both-fast-gpu-throughput\\result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 700,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "synthetic generation700+index; native seed2026092701; no physical split",
+      "k": null,
+      "scenario": "synthetic nativeepochs91,131,181",
+      "optimizer": "native AdamW/FastTrust",
+      "lr": 0.0002,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "diagnostic variant documented in diagnostic_variants; no formal budget change",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r5-both-fast-gpu-throughput",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r5-both-fast-gpu-throughput\\stdout.log",
+      "command": "python -m experiments.cvs_phase1_stack.speed_benchmark --stage r5 --arm both --val-size 2048 --steps 4 --fast --output E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r5-both-fast-gpu-throughput",
+      "expected_artifacts": [
+        "stdout.log",
+        "steps.jsonl.gz",
+        "metrics_epoch.jsonl",
+        "state.pt",
+        "result.json",
+        "execution_profile/summary.json",
+        "comparison.json"
+      ],
+      "variant_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r5-both-fast-cpu-det",
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r5-both-fast-gpu-throughput"
+      ],
+      "status": "ANALYZED",
+      "status_evidence": "evidence/benchmark_summary.json"
+    },
+    {
+      "row_id": "r6-full-base",
+      "method": "native_execution",
+      "purpose": "synthetic_runtime_equivalence",
+      "gpu": 0,
+      "config_ref": "experiments/cvs_phase1_stack/speed_benchmark.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-full-base-gpu-throughput\\result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 700,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "synthetic generation700+index; native seed2026092701; no physical split",
+      "k": null,
+      "scenario": "synthetic nativeepochs91,131,181",
+      "optimizer": "native AdamW/FastTrust",
+      "lr": 0.0002,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "diagnostic variant documented in diagnostic_variants; no formal budget change",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-full-base-gpu-throughput",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-full-base-gpu-throughput\\stdout.log",
+      "command": "python -m experiments.cvs_phase1_stack.speed_benchmark --stage r6 --arm full --val-size 2048 --steps 4 --output E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-full-base-gpu-throughput",
+      "expected_artifacts": [
+        "stdout.log",
+        "steps.jsonl.gz",
+        "metrics_epoch.jsonl",
+        "state.pt",
+        "result.json",
+        "execution_profile/summary.json",
+        "comparison.json"
+      ],
+      "variant_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-full-base-cpu-det",
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-full-base-gpu-throughput"
+      ],
+      "status": "ANALYZED",
+      "status_evidence": "evidence/benchmark_summary.json"
+    },
+    {
+      "row_id": "r6-full-fast",
+      "method": "native_execution_fast",
+      "purpose": "synthetic_runtime_equivalence",
+      "gpu": 0,
+      "config_ref": "experiments/cvs_phase1_stack/speed_benchmark.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-full-fast-gpu-throughput\\result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 700,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "synthetic generation700+index; native seed2026092701; no physical split",
+      "k": null,
+      "scenario": "synthetic nativeepochs91,131,181",
+      "optimizer": "native AdamW/FastTrust",
+      "lr": 0.0002,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "diagnostic variant documented in diagnostic_variants; no formal budget change",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-full-fast-gpu-throughput",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-full-fast-gpu-throughput\\stdout.log",
+      "command": "python -m experiments.cvs_phase1_stack.speed_benchmark --stage r6 --arm full --val-size 2048 --steps 4 --fast --output E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-full-fast-gpu-throughput",
+      "expected_artifacts": [
+        "stdout.log",
+        "steps.jsonl.gz",
+        "metrics_epoch.jsonl",
+        "state.pt",
+        "result.json",
+        "execution_profile/summary.json",
+        "comparison.json"
+      ],
+      "variant_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-full-fast",
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-full-fast-cpu-det",
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-full-fast-gpu-throughput"
+      ],
+      "status": "ANALYZED",
+      "status_evidence": "evidence/benchmark_summary.json"
+    },
+    {
+      "row_id": "r6-native_full-base",
+      "method": "native_execution",
+      "purpose": "synthetic_runtime_equivalence",
+      "gpu": 0,
+      "config_ref": "experiments/cvs_phase1_stack/speed_benchmark.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-native_full-base-gpu-throughput\\result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 700,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "synthetic generation700+index; native seed2026092701; no physical split",
+      "k": null,
+      "scenario": "synthetic nativeepochs91,131,181",
+      "optimizer": "native AdamW/FastTrust",
+      "lr": 0.0002,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "diagnostic variant documented in diagnostic_variants; no formal budget change",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-native_full-base-gpu-throughput",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-native_full-base-gpu-throughput\\stdout.log",
+      "command": "python -m experiments.cvs_phase1_stack.speed_benchmark --stage r6 --arm native_full --val-size 2048 --steps 4 --output E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-native_full-base-gpu-throughput",
+      "expected_artifacts": [
+        "stdout.log",
+        "steps.jsonl.gz",
+        "metrics_epoch.jsonl",
+        "state.pt",
+        "result.json",
+        "execution_profile/summary.json",
+        "comparison.json"
+      ],
+      "variant_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-native_full-base-cpu-det",
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-native_full-base-gpu-throughput"
+      ],
+      "status": "ANALYZED",
+      "status_evidence": "evidence/benchmark_summary.json"
+    },
+    {
+      "row_id": "r6-native_full-fast",
+      "method": "native_execution_fast",
+      "purpose": "synthetic_runtime_equivalence",
+      "gpu": 0,
+      "config_ref": "experiments/cvs_phase1_stack/speed_benchmark.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-native_full-fast-gpu-throughput\\result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 700,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "synthetic generation700+index; native seed2026092701; no physical split",
+      "k": null,
+      "scenario": "synthetic nativeepochs91,131,181",
+      "optimizer": "native AdamW/FastTrust",
+      "lr": 0.0002,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "diagnostic variant documented in diagnostic_variants; no formal budget change",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-native_full-fast-gpu-throughput",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-native_full-fast-gpu-throughput\\stdout.log",
+      "command": "python -m experiments.cvs_phase1_stack.speed_benchmark --stage r6 --arm native_full --val-size 2048 --steps 4 --fast --output E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-native_full-fast-gpu-throughput",
+      "expected_artifacts": [
+        "stdout.log",
+        "steps.jsonl.gz",
+        "metrics_epoch.jsonl",
+        "state.pt",
+        "result.json",
+        "execution_profile/summary.json",
+        "comparison.json"
+      ],
+      "variant_artifacts": [
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-native_full-fast-cpu-det",
+        "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01\\r6-native_full-fast-gpu-throughput"
+      ],
+      "status": "ANALYZED",
+      "status_evidence": "evidence/benchmark_summary.json"
+    }
+  ],
+  "notes": [
+    "Synthetic timing on localRTX5070Ti is not a N607 speed guarantee. No target/source IQ or formalcheckpoint used.",
+    "Formal R2 healthyprocesses preserved; only futureunstarted jobs eligible for validated equivalent optimizations. FP32/batch/steps/epochs/scientificselection unchanged.",
+    "Baseline vsoptimized uses exact same original code/input/seed; epochs91,131,181,8steps each synthetic (not200formalepochs). Resources/elapsedlogged. Full loganalysis of liveN607 is read-only and source-only.",
+    "Diagnostic variants documented on 2026-10-05T00:14:18.131913+08:00; original output directories retained. This is execution-only diagnostic, no final target evaluation applicable.",
+    "Diagnostic variants documented on 2026-10-05T00:16:29.254026+08:00; original output directories retained. This is execution-only diagnostic, no final target evaluation applicable.",
+    "Diagnostic variants documented on 2026-10-05T00:19:32.582642+08:00; original output directories retained. This is execution-only diagnostic, no final target evaluation applicable."
+  ],
+  "status": "ANALYZED",
+  "test_completion_plan": {
+    "applicable": false,
+    "reason": "explicit execution-only synthetic diagnostic; no model for real target testing"
+  },
+  "registered_at": "2026-10-04T15:54:30+00:00",
+  "diagnostic_variants": {
+    "initial_gpu": "3 epochs ×8 updates, V256; baseline repeat preserves original CUDA nondeterminism",
+    "cuda_deterministic": "R2/R3/R4: 3 epochs ×3 updates, Lbatch128/Ubatch256, V2048",
+    "unsupported_cuda": "R5 deterministic CUDA median unsupported; failure preserved; no formal task affected",
+    "cpu_deterministic": "R5/R6full/native: 3 epochs ×2 updates, batch24, V96",
+    "gpu_throughput": "R5/R6full/native: 3 epochs ×4 updates, Lbatch128/Ubatch256, V2048; original FP32 policy"
+  }
+}

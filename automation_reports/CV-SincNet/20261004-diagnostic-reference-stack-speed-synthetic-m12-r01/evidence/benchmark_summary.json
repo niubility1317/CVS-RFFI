@@ -1,0 +1,439 @@
+{
+  "updated_at": "2026-10-05T00:19:32.582642+08:00",
+  "comparisons": {
+    "r2-pseudo": {
+      "exact_equal": true,
+      "differences": [],
+      "difference_count": 0
+    },
+    "r3-all_dg": {
+      "exact_equal": true,
+      "differences": [],
+      "difference_count": 0
+    },
+    "r4-all_open": {
+      "exact_equal": true,
+      "differences": [],
+      "difference_count": 0
+    },
+    "r5-both": {
+      "exact_equal": true,
+      "differences": [],
+      "difference_count": 0
+    },
+    "r6-full": {
+      "exact_equal": true,
+      "differences": [],
+      "difference_count": 0
+    },
+    "r6-native_full": {
+      "exact_equal": true,
+      "differences": [],
+      "difference_count": 0
+    }
+  },
+  "benchmarks": [
+    {
+      "case": "r2-pseudo",
+      "base": {
+        "stage": "r2",
+        "arm": "pseudo",
+        "fast": false,
+        "wall_seconds": 27.19146770000225,
+        "epochs": [
+          {
+            "epoch": 91,
+            "seconds": 20.289314031600952
+          },
+          {
+            "epoch": 131,
+            "seconds": 3.226684808731079
+          },
+          {
+            "epoch": 181,
+            "seconds": 3.3124282360076904
+          }
+        ],
+        "steps": 9,
+        "logging_seconds": 0.04406119987834245,
+        "hardware": "NVIDIA GeForce RTX 5070 Ti",
+        "torch": "2.10.0+cu128",
+        "profile": false,
+        "synthetic": true,
+        "target_access": false,
+        "val_size": 2048,
+        "deterministic_diagnostic_only": true
+      },
+      "fast": {
+        "stage": "r2",
+        "arm": "pseudo",
+        "fast": true,
+        "wall_seconds": 26.566131400002632,
+        "epochs": [
+          {
+            "epoch": 91,
+            "seconds": 20.107224225997925
+          },
+          {
+            "epoch": 131,
+            "seconds": 3.0394785404205322
+          },
+          {
+            "epoch": 181,
+            "seconds": 3.08602237701416
+          }
+        ],
+        "steps": 9,
+        "logging_seconds": 0.014878999965731055,
+        "hardware": "NVIDIA GeForce RTX 5070 Ti",
+        "torch": "2.10.0+cu128",
+        "profile": false,
+        "synthetic": true,
+        "target_access": false,
+        "val_size": 2048,
+        "deterministic_diagnostic_only": true
+      },
+      "post_warmup_base_s": 6.5391130447387695,
+      "post_warmup_fast_s": 6.125500917434692,
+      "reduction_percent": 6.325202278569886,
+      "scope": "synthetic local GPU; first epoch excluded; not N607/formal-run speed guarantee"
+    },
+    {
+      "case": "r3-all_dg",
+      "base": {
+        "stage": "r3",
+        "arm": "all_dg",
+        "fast": false,
+        "wall_seconds": 29.554519800003618,
+        "epochs": [
+          {
+            "epoch": 91,
+            "seconds": 21.118982791900635
+          },
+          {
+            "epoch": 131,
+            "seconds": 4.04911208152771
+          },
+          {
+            "epoch": 181,
+            "seconds": 4.073218822479248
+          }
+        ],
+        "steps": 9,
+        "logging_seconds": 0.042278300039470196,
+        "hardware": "NVIDIA GeForce RTX 5070 Ti",
+        "torch": "2.10.0+cu128",
+        "profile": false,
+        "synthetic": true,
+        "target_access": false,
+        "val_size": 2048,
+        "deterministic_diagnostic_only": true
+      },
+      "fast": {
+        "stage": "r3",
+        "arm": "all_dg",
+        "fast": true,
+        "wall_seconds": 25.31636709999293,
+        "epochs": [
+          {
+            "epoch": 91,
+            "seconds": 17.397879600524902
+          },
+          {
+            "epoch": 131,
+            "seconds": 3.7432684898376465
+          },
+          {
+            "epoch": 181,
+            "seconds": 3.8449573516845703
+          }
+        ],
+        "steps": 9,
+        "logging_seconds": 0.015021000057458878,
+        "hardware": "NVIDIA GeForce RTX 5070 Ti",
+        "torch": "2.10.0+cu128",
+        "profile": false,
+        "synthetic": true,
+        "target_access": false,
+        "val_size": 2048,
+        "deterministic_diagnostic_only": true
+      },
+      "post_warmup_base_s": 8.122330904006958,
+      "post_warmup_fast_s": 7.588225841522217,
+      "reduction_percent": 6.575760933616404,
+      "scope": "synthetic local GPU; first epoch excluded; not N607/formal-run speed guarantee"
+    },
+    {
+      "case": "r4-all_open",
+      "base": {
+        "stage": "r4",
+        "arm": "all_open",
+        "fast": false,
+        "wall_seconds": 45.73385259998031,
+        "epochs": [
+          {
+            "epoch": 91,
+            "seconds": 26.39461088180542
+          },
+          {
+            "epoch": 131,
+            "seconds": 9.15126919746399
+          },
+          {
+            "epoch": 181,
+            "seconds": 9.435272932052612
+          }
+        ],
+        "steps": 9,
+        "logging_seconds": 0.04004620003979653,
+        "hardware": "NVIDIA GeForce RTX 5070 Ti",
+        "torch": "2.10.0+cu128",
+        "profile": false,
+        "synthetic": true,
+        "target_access": false,
+        "val_size": 2048,
+        "deterministic_diagnostic_only": true
+      },
+      "fast": {
+        "stage": "r4",
+        "arm": "all_open",
+        "fast": true,
+        "wall_seconds": 43.203253699990455,
+        "epochs": [
+          {
+            "epoch": 91,
+            "seconds": 25.486931324005127
+          },
+          {
+            "epoch": 131,
+            "seconds": 8.726438760757446
+          },
+          {
+            "epoch": 181,
+            "seconds": 8.629064321517944
+          }
+        ],
+        "steps": 9,
+        "logging_seconds": 0.017774300125893205,
+        "hardware": "NVIDIA GeForce RTX 5070 Ti",
+        "torch": "2.10.0+cu128",
+        "profile": false,
+        "synthetic": true,
+        "target_access": false,
+        "val_size": 2048,
+        "deterministic_diagnostic_only": true
+      },
+      "post_warmup_base_s": 18.5865421295166,
+      "post_warmup_fast_s": 17.35550308227539,
+      "reduction_percent": 6.623281719982998,
+      "scope": "synthetic local GPU; first epoch excluded; not N607/formal-run speed guarantee"
+    },
+    {
+      "case": "r5-both",
+      "base": {
+        "stage": "r5",
+        "arm": "both",
+        "fast": false,
+        "wall_seconds": 56.6909702999983,
+        "epochs": [
+          {
+            "epoch": 91,
+            "seconds": 30.77752161026001
+          },
+          {
+            "epoch": 131,
+            "seconds": 12.026487112045288
+          },
+          {
+            "epoch": 181,
+            "seconds": 12.283283948898315
+          }
+        ],
+        "steps": 12,
+        "logging_seconds": 0.08881199994357303,
+        "hardware": "NVIDIA GeForce RTX 5070 Ti",
+        "torch": "2.10.0+cu128",
+        "profile": false,
+        "synthetic": true,
+        "target_access": false,
+        "val_size": 2048,
+        "deterministic_diagnostic_only": false,
+        "device": "cuda:0",
+        "batch_size": 128
+      },
+      "fast": {
+        "stage": "r5",
+        "arm": "both",
+        "fast": true,
+        "wall_seconds": 56.52546869998332,
+        "epochs": [
+          {
+            "epoch": 91,
+            "seconds": 30.97083616256714
+          },
+          {
+            "epoch": 131,
+            "seconds": 12.0931556224823
+          },
+          {
+            "epoch": 181,
+            "seconds": 11.818771600723267
+          }
+        ],
+        "steps": 12,
+        "logging_seconds": 0.02761109999846667,
+        "hardware": "NVIDIA GeForce RTX 5070 Ti",
+        "torch": "2.10.0+cu128",
+        "profile": false,
+        "synthetic": true,
+        "target_access": false,
+        "val_size": 2048,
+        "deterministic_diagnostic_only": false,
+        "device": "cuda:0",
+        "batch_size": 128
+      },
+      "post_warmup_base_s": 24.309771060943604,
+      "post_warmup_fast_s": 23.911927223205566,
+      "reduction_percent": 1.636559376641844,
+      "scope": "synthetic local GPU; first epoch excluded; not N607/formal-run speed guarantee"
+    },
+    {
+      "case": "r6-full",
+      "base": {
+        "stage": "r6",
+        "arm": "full",
+        "fast": false,
+        "wall_seconds": 57.365636400005314,
+        "epochs": [
+          {
+            "epoch": 91,
+            "seconds": 31.244983196258545
+          },
+          {
+            "epoch": 131,
+            "seconds": 12.371341466903687
+          },
+          {
+            "epoch": 181,
+            "seconds": 12.120698928833008
+          }
+        ],
+        "steps": 12,
+        "logging_seconds": 0.08756459999131039,
+        "hardware": "NVIDIA GeForce RTX 5070 Ti",
+        "torch": "2.10.0+cu128",
+        "profile": false,
+        "synthetic": true,
+        "target_access": false,
+        "val_size": 2048,
+        "deterministic_diagnostic_only": false,
+        "device": "cuda:0",
+        "batch_size": 128
+      },
+      "fast": {
+        "stage": "r6",
+        "arm": "full",
+        "fast": true,
+        "wall_seconds": 53.36142370000016,
+        "epochs": [
+          {
+            "epoch": 91,
+            "seconds": 27.36845088005066
+          },
+          {
+            "epoch": 131,
+            "seconds": 12.181282997131348
+          },
+          {
+            "epoch": 181,
+            "seconds": 12.182721138000488
+          }
+        ],
+        "steps": 12,
+        "logging_seconds": 0.028450199984945357,
+        "hardware": "NVIDIA GeForce RTX 5070 Ti",
+        "torch": "2.10.0+cu128",
+        "profile": false,
+        "synthetic": true,
+        "target_access": false,
+        "val_size": 2048,
+        "deterministic_diagnostic_only": false,
+        "device": "cuda:0",
+        "batch_size": 128
+      },
+      "post_warmup_base_s": 24.492040395736694,
+      "post_warmup_fast_s": 24.364004135131836,
+      "reduction_percent": 0.5227668194894286,
+      "scope": "synthetic local GPU; first epoch excluded; not N607/formal-run speed guarantee"
+    },
+    {
+      "case": "r6-native_full",
+      "base": {
+        "stage": "r6",
+        "arm": "native_full",
+        "fast": false,
+        "wall_seconds": 56.34407180000562,
+        "epochs": [
+          {
+            "epoch": 91,
+            "seconds": 29.55601930618286
+          },
+          {
+            "epoch": 131,
+            "seconds": 12.380282163619995
+          },
+          {
+            "epoch": 181,
+            "seconds": 12.381956100463867
+          }
+        ],
+        "steps": 12,
+        "logging_seconds": 0.08786299999337643,
+        "hardware": "NVIDIA GeForce RTX 5070 Ti",
+        "torch": "2.10.0+cu128",
+        "profile": false,
+        "synthetic": true,
+        "target_access": false,
+        "val_size": 2048,
+        "deterministic_diagnostic_only": false,
+        "device": "cuda:0",
+        "batch_size": 128
+      },
+      "fast": {
+        "stage": "r6",
+        "arm": "native_full",
+        "fast": true,
+        "wall_seconds": 55.301218100008555,
+        "epochs": [
+          {
+            "epoch": 91,
+            "seconds": 29.886108875274658
+          },
+          {
+            "epoch": 131,
+            "seconds": 11.920334100723267
+          },
+          {
+            "epoch": 181,
+            "seconds": 11.764036893844604
+          }
+        ],
+        "steps": 12,
+        "logging_seconds": 0.027183000114746392,
+        "hardware": "NVIDIA GeForce RTX 5070 Ti",
+        "torch": "2.10.0+cu128",
+        "profile": false,
+        "synthetic": true,
+        "target_access": false,
+        "val_size": 2048,
+        "deterministic_diagnostic_only": false,
+        "device": "cuda:0",
+        "batch_size": 128
+      },
+      "post_warmup_base_s": 24.762238264083862,
+      "post_warmup_fast_s": 23.68437099456787,
+      "reduction_percent": 4.352866885540685,
+      "scope": "synthetic local GPU; first epoch excluded; not N607/formal-run speed guarantee"
+    }
+  ]
+}

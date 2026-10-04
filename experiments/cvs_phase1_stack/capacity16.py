@@ -10,6 +10,8 @@ import time
 CONTROL_RELEASE='cvs_reference_stack_dispatch16_20261004_r01'
 WORKER_COMMIT='0c73c904c8331f26254761042516f1ae43ed9c98'
 MAX_ACTIVE=16
+SOURCE_ENTRY=None
+OWNER_MARKER='capacity16_owner.json'
 
 
 def proc(pid):
@@ -81,6 +83,8 @@ def queue(d,jobs,kind,phase,adoptions):
             if len(caps[gpu]['pids'])>=2 or caps[gpu]['free_mb']<12000:break
             row=pending.pop(0);rid=row['row_id']
             cmd=[sys.executable,'-u','-m','experiments.cvs_phase1_stack.'+kind,'--config',row['config']]
+            if SOURCE_ENTRY is not None and kind=='source' and phase in ['r3','r4','r5','r6']:
+                cmd=[sys.executable,'-u',str(SOURCE_ENTRY),'--worker-root',str(d.ROOT),'--config',row['config']]
             log=Path(d.PROJECT)/'logs'/d.RUN/(kind+'-'+rid+'.log')
             env=dict(os.environ,PYTHONPATH=str(d.ROOT)+os.pathsep+str(d.ROOT/'code'),CUDA_VISIBLE_DEVICES=str(gpu),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONUNBUFFERED='1')
             with log.open('x') as h:p=subprocess.Popen(cmd,cwd=d.ROOT,env=env,stdin=subprocess.DEVNULL,stdout=h,stderr=subprocess.STDOUT,start_new_session=True)
@@ -100,11 +104,12 @@ def run(worker_root,handoff):
     if prior['run_id']!=d.RUN or prior['max_active']!=16 or prior['worker_commit']!=WORKER_COMMIT:raise ValueError('Invalid handoff scope')
     if proc(prior['old_dispatcher']['pid']):raise RuntimeError('Old dispatcher still active')
     if (root/'failure.json').exists() or (root/'completion.json').exists():raise RuntimeError('Run is failed or already completed')
-    marker=root/'capacity16_owner.json'
+    marker=root/OWNER_MARKER
     with marker.open('x') as f:json.dump(dict(pid=os.getpid(),control_release=CONTROL_RELEASE,started=time.time()),f)
     active=dict(pid=os.getpid(),cwd=os.getcwd(),argv=[sys.executable,*sys.argv],owner=d.OWNER,max_active=16,per_gpu_limit=2,
                 worker_release=str(worker_root),worker_commit=WORKER_COMMIT,control_release=CONTROL_RELEASE,
                 control_commit=(Path(__file__).parent/'release_commit.txt').read_text().strip(),handoff=str(handoff))
+    if SOURCE_ENTRY is not None:active['future_source_entry']=str(SOURCE_ENTRY)
     d.write(root/'dispatcher_active.json',active)
     try:
         parent=d.read(root/'parent_source_freeze.json')
