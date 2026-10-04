@@ -3,7 +3,7 @@
 - run_id：`20261004-phase1-reference-overlay-r1-manysig-m16-r01`
 - group_id：`cvs-reference-original-phase1-overlay`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -118,3 +118,24 @@
 日志包括实际配置、每步完整JSONL、每epoch详细文本、紧凑JSONL及CSV；记录clean/sat CE、实际权重、LR、梯度、MixStyle调用与实际改变样本、LEO批次场景与命中数、V/各源RX及耗时。缺失项null并按阶段解释。
 
 本地验证：8项针对性测试通过；四组CPU真实机制合成smoke通过，三LEO场景实际执行，checkpoint重载输出完全相同。独立P0/P1审查覆盖model/augmentation/source/predict/contract/prepare/dispatch/analyze，未发现阻断问题；远端发布与启动状态需另行读回。
+
+## 发布与当前状态
+
+2026-10-04 16:30（Asia/Hong_Kong）启动；独立启动读回VERIFIED。运行代码commit：`14a8196c711388f9d1266b3979e8468df72539de`，远端分支OID与该提交一致。dispatcher PID：3049566。
+
+首批8行GPU0至7，已执行到epoch2至4；另外8行由同一dispatcher排队。全部首批PID/CWD/argv/实际177025参数、L/U/V计数、每epoch50步、无target访问、GPU进程及日志增长均核实。远端Torch2.1.0+cu121的四机制合成smoke通过，正式行各自scratch checkpoint无query重载通过。
+
+| row | PID | GPU | 核实时epoch |
+|---|---:|---:|---:|
+| ce-s2026092701 | 3049585 | 0 | 4 |
+| leo-s2026092701 | 3049594 | 1 | 2 |
+| mixstyle-s2026092701 | 3049604 | 2 | 3 |
+| leo_mixstyle-s2026092701 | 3049678 | 3 | 2 |
+| ce-s2026092702 | 3049759 | 4 | 4 |
+| leo-s2026092702 | 3049911 | 5 | 2 |
+| mixstyle-s2026092702 | 3049987 | 6 | 3 |
+| leo_mixstyle-s2026092702 | 3050001 | 7 | 2 |
+
+LEO实际channel改变样本非零；MixStyle实际改变样本非零、每epoch两个位置合计100次调用；早期satellite_weight=0符合E80起效。当前没有训练完成、预测或评分结果，不能宣称实验全部完成。
+
+下一步由既有dispatcher自动完成余下源训练、统一源矩阵冻结、16行clean/satellite预测、独立truth-last评分及bincount复算。恢复时先读`queue_state.json`、`completion.json`、`failure.json`及本次证据，禁止重复发布。最终结果应回填本报告并再次登记/Git交付。

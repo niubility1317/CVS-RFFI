@@ -1,0 +1,189 @@
+{
+  "run_id": "20261004-phase1-reference-overlay-r1-manysig-m16-r01",
+  "dispatcher": {
+    "pid": 3049566,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_overlay.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/launch_spec.json",
+      ""
+    ],
+    "status": [
+      "Name:\tpython",
+      "Umask:\t0002",
+      "State:\tS (sleeping)",
+      "Tgid:\t3049566",
+      "Ngid:\t0",
+      "Pid:\t3049566"
+    ]
+  },
+  "failure": null,
+  "queue": {
+    "stage": "source",
+    "active": [
+      "ce-s2026092701",
+      "leo-s2026092701",
+      "mixstyle-s2026092701",
+      "leo_mixstyle-s2026092701",
+      "ce-s2026092702",
+      "leo-s2026092702",
+      "mixstyle-s2026092702",
+      "leo_mixstyle-s2026092702"
+    ],
+    "pending": [
+      "ce-s2026092703",
+      "leo-s2026092703",
+      "mixstyle-s2026092703",
+      "leo_mixstyle-s2026092703",
+      "ce-s2026092704",
+      "leo-s2026092704",
+      "mixstyle-s2026092704",
+      "leo_mixstyle-s2026092704"
+    ],
+    "failures": [],
+    "updated_at": 1791102624.4823887
+  },
+  "remote_smoke": "PASS",
+  "rows": [
+    {
+      "row_id": "ce-s2026092701",
+      "pid": 3049585,
+      "gpu": 0,
+      "runtime_verified": true,
+      "epoch": 4,
+      "log_growth": true,
+      "log_bytes": 7712,
+      "measured_mechanism": {
+        "mixstyle_calls": 0,
+        "mixstyle_changed_layer_samples": 0,
+        "channel_changed_sample_exposure": 0,
+        "concat_sample_exposure": 0,
+        "satellite_weight": 0.0,
+        "optimizer_steps_total": 200
+      }
+    },
+    {
+      "row_id": "leo-s2026092701",
+      "pid": 3049594,
+      "gpu": 1,
+      "runtime_verified": true,
+      "epoch": 2,
+      "log_growth": true,
+      "log_bytes": 5766,
+      "measured_mechanism": {
+        "mixstyle_calls": 0,
+        "mixstyle_changed_layer_samples": 0,
+        "channel_changed_sample_exposure": 2560,
+        "concat_sample_exposure": 6300,
+        "satellite_weight": 0.0,
+        "optimizer_steps_total": 100
+      }
+    },
+    {
+      "row_id": "mixstyle-s2026092701",
+      "pid": 3049604,
+      "gpu": 2,
+      "runtime_verified": true,
+      "epoch": 3,
+      "log_growth": true,
+      "log_bytes": 6751,
+      "measured_mechanism": {
+        "mixstyle_calls": 100,
+        "mixstyle_changed_layer_samples": 2048,
+        "channel_changed_sample_exposure": 0,
+        "concat_sample_exposure": 0,
+        "satellite_weight": 0.0,
+        "optimizer_steps_total": 150
+      }
+    },
+    {
+      "row_id": "leo_mixstyle-s2026092701",
+      "pid": 3049678,
+      "gpu": 3,
+      "runtime_verified": true,
+      "epoch": 2,
+      "log_growth": true,
+      "log_bytes": 5821,
+      "measured_mechanism": {
+        "mixstyle_calls": 100,
+        "mixstyle_changed_layer_samples": 3128,
+        "channel_changed_sample_exposure": 2560,
+        "concat_sample_exposure": 6300,
+        "satellite_weight": 0.0,
+        "optimizer_steps_total": 100
+      }
+    },
+    {
+      "row_id": "ce-s2026092702",
+      "pid": 3049759,
+      "gpu": 4,
+      "runtime_verified": true,
+      "epoch": 4,
+      "log_growth": true,
+      "log_bytes": 7678,
+      "measured_mechanism": {
+        "mixstyle_calls": 0,
+        "mixstyle_changed_layer_samples": 0,
+        "channel_changed_sample_exposure": 0,
+        "concat_sample_exposure": 0,
+        "satellite_weight": 0.0,
+        "optimizer_steps_total": 200
+      }
+    },
+    {
+      "row_id": "leo-s2026092702",
+      "pid": 3049911,
+      "gpu": 5,
+      "runtime_verified": true,
+      "epoch": 2,
+      "log_growth": true,
+      "log_bytes": 5777,
+      "measured_mechanism": {
+        "mixstyle_calls": 0,
+        "mixstyle_changed_layer_samples": 0,
+        "channel_changed_sample_exposure": 2560,
+        "concat_sample_exposure": 6300,
+        "satellite_weight": 0.0,
+        "optimizer_steps_total": 100
+      }
+    },
+    {
+      "row_id": "mixstyle-s2026092702",
+      "pid": 3049987,
+      "gpu": 6,
+      "runtime_verified": true,
+      "epoch": 3,
+      "log_growth": true,
+      "log_bytes": 6747,
+      "measured_mechanism": {
+        "mixstyle_calls": 100,
+        "mixstyle_changed_layer_samples": 2048,
+        "channel_changed_sample_exposure": 0,
+        "concat_sample_exposure": 0,
+        "satellite_weight": 0.0,
+        "optimizer_steps_total": 150
+      }
+    },
+    {
+      "row_id": "leo_mixstyle-s2026092702",
+      "pid": 3050001,
+      "gpu": 7,
+      "runtime_verified": true,
+      "epoch": 2,
+      "log_growth": true,
+      "log_bytes": 5792,
+      "measured_mechanism": {
+        "mixstyle_calls": 100,
+        "mixstyle_changed_layer_samples": 3072,
+        "channel_changed_sample_exposure": 2560,
+        "concat_sample_exposure": 6300,
+        "satellite_weight": 0.0,
+        "optimizer_steps_total": 100
+      }
+    }
+  ]
+}

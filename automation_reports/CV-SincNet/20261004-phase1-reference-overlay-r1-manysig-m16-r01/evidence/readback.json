@@ -1,0 +1,1679 @@
+{
+  "read_at": 1791102627.8844001,
+  "run_id": "20261004-phase1-reference-overlay-r1-manysig-m16-r01",
+  "release_exists": true,
+  "run_exists": true,
+  "rows": [
+    {
+      "row_id": "ce-s2026092701",
+      "stage": "source",
+      "pid": 3049585,
+      "gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-ce-s2026092701.json"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/source-ce-s2026092701.log",
+      "process": {
+        "pid": 3049585,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_overlay.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-ce-s2026092701.json",
+          ""
+        ],
+        "status": [
+          "Name:\tpython",
+          "Umask:\t0002",
+          "State:\tR (running)",
+          "Tgid:\t3049585",
+          "Ngid:\t3049585",
+          "Pid:\t3049585"
+        ]
+      },
+      "children": [
+        {
+          "pid": 3049585,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_phase1_overlay.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-ce-s2026092701.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tR (running)",
+            "Tgid:\t3049585",
+            "Ngid:\t3049585",
+            "Pid:\t3049585"
+          ]
+        }
+      ],
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092701,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "effective": {
+        "pid": 3049585,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "total_parameters": 177025,
+        "trainable_parameters": null,
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "arm": "ce",
+        "architecture_actual": {
+          "variant": "reference_response",
+          "architecture": {
+            "mode": "reference_response",
+            "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+            "nominal_wifi_bandwidth_hz": 20000000,
+            "sample_rate_hz": 25000000,
+            "window": [
+              80,
+              160
+            ],
+            "period_samples": 20,
+            "cycles": 4,
+            "delay_grid_count": 320,
+            "delay_grid_step_samples": 0.0625,
+            "epsilon": 1e-06,
+            "residual_soft_radius": 4.0,
+            "response_features": 29,
+            "relative_cfo_alias_period_hz": 1250000,
+            "reference_branch_flat_gain_phase_quotient": true,
+            "whole_model_invariant": false,
+            "raw_identity_path_retained": true,
+            "rx_arbitrary_channel_invariant": false,
+            "iq_convention_identified": false,
+            "hardware_parameter_estimation": false,
+            "initial_residual_gain": 0.0,
+            "learned_frontend_parameters": 0,
+            "interpretation": "Relative received in-band transfer/quality/CFO; RX/channel/equalizer remain confounds"
+          },
+          "identity_parameters": 177025,
+          "mixstyle_enabled": false,
+          "mixstyle_layers": [
+            "t1",
+            "time_down"
+          ],
+          "mixstyle_p": 0.18,
+          "mixstyle_alpha": 0.1,
+          "mixstyle_eps": 1e-06,
+          "mixstyle_strength": 0.7,
+          "mixstyle_mix": "same_tx_crossdomain",
+          "mixstyle_fallback": "skip"
+        },
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "model_seed": 2026092701,
+        "augmentation_seed": null,
+        "target_access": false,
+        "commit": "14a8196c711388f9d1266b3979e8468df72539de"
+      },
+      "epoch": {
+        "epoch": 4,
+        "arm": "ce",
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 200,
+        "source_sample_exposure": 6300,
+        "concat_sample_exposure": 0,
+        "channel_changed_sample_exposure": 0,
+        "total_loss": 0.8491801679134369,
+        "clean_ce": 0.8491801679134369,
+        "satellite_ce": null,
+        "gradient_norm": 4.769449715614319,
+        "satellite_weight": 0.0,
+        "clean_weight": 1.0,
+        "learning_rate": 0.00019988954255871605,
+        "mixstyle_calls": 0,
+        "mixstyle_changed_layer_samples": 0,
+        "scene_batch_counts": {
+          "disabled": 50
+        },
+        "gradient_used_parameters": 177025,
+        "response_gain_abs_mean": 0.01075232308357954,
+        "response_gain_gradient_norm": 0.4004223644733429,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.8769629629629629,
+        "source_val_ce": 0.4268396200797072,
+        "source_val_rx_accuracy": {
+          "1": 0.9109259259259259,
+          "3": 0.7674074074074074,
+          "4": 0.9144444444444444,
+          "6": 0.9590740740740741,
+          "8": 0.832962962962963
+        },
+        "source_val_worst_rx": 0.7674074074074074,
+        "elapsed_seconds": 6.234980673994869,
+        "peak_cuda_allocated_bytes": 176052224
+      },
+      "source_completion": null,
+      "prediction_complete": null,
+      "log_bytes": 7712,
+      "log_tail": [
+        "EPOCH {\"epoch\": 3, \"arm\": \"ce\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 150, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 0, \"channel_changed_sample_exposure\": 0, \"total_loss\": 1.1788311064243318, \"clean_ce\": 1.1788311064243318, \"satellite_ce\": null, \"gradient_norm\": 3.811333475112915, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.00019995090275639032, \"mixstyle_calls\": 0, \"mixstyle_changed_layer_samples\": 0, \"scene_batch_counts\": {\"disabled\": 50}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.0073776752687990665, \"response_gain_gradient_norm\": 0.3620845079421997, \"source_val_count\": 27000, \"source_val_accuracy\": 0.8287777777777777, \"source_val_ce\": 0.612270957103482, \"source_val_rx_accuracy\": {\"1\": 0.8753703703703704, \"3\": 0.7562962962962962, \"4\": 0.8475925925925926, \"6\": 0.8490740740740741, \"8\": 0.8155555555555556}, \"source_val_worst_rx\": 0.7562962962962962, \"elapsed_seconds\": 6.01338516396936, \"peak_cuda_allocated_bytes\": 176052224}",
+        "EPOCH {\"epoch\": 4, \"arm\": \"ce\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 200, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 0, \"channel_changed_sample_exposure\": 0, \"total_loss\": 0.8491801679134369, \"clean_ce\": 0.8491801679134369, \"satellite_ce\": null, \"gradient_norm\": 4.769449715614319, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.00019988954255871605, \"mixstyle_calls\": 0, \"mixstyle_changed_layer_samples\": 0, \"scene_batch_counts\": {\"disabled\": 50}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.01075232308357954, \"response_gain_gradient_norm\": 0.4004223644733429, \"source_val_count\": 27000, \"source_val_accuracy\": 0.8769629629629629, \"source_val_ce\": 0.4268396200797072, \"source_val_rx_accuracy\": {\"1\": 0.9109259259259259, \"3\": 0.7674074074074074, \"4\": 0.9144444444444444, \"6\": 0.9590740740740741, \"8\": 0.832962962962963}, \"source_val_worst_rx\": 0.7674074074074074, \"elapsed_seconds\": 6.234980673994869, \"peak_cuda_allocated_bytes\": 176052224}"
+      ]
+    },
+    {
+      "row_id": "leo-s2026092701",
+      "stage": "source",
+      "pid": 3049594,
+      "gpu": 1,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo-s2026092701.json"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/source-leo-s2026092701.log",
+      "process": {
+        "pid": 3049594,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_overlay.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo-s2026092701.json",
+          ""
+        ],
+        "status": [
+          "Name:\tpython",
+          "Umask:\t0002",
+          "State:\tR (running)",
+          "Tgid:\t3049594",
+          "Ngid:\t3049594",
+          "Pid:\t3049594"
+        ]
+      },
+      "children": [
+        {
+          "pid": 3049594,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_phase1_overlay.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo-s2026092701.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tR (running)",
+            "Tgid:\t3049594",
+            "Ngid:\t3049594",
+            "Pid:\t3049594"
+          ]
+        }
+      ],
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092701,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "effective": {
+        "pid": 3049594,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "total_parameters": 177025,
+        "trainable_parameters": null,
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "arm": "leo",
+        "architecture_actual": {
+          "variant": "reference_response",
+          "architecture": {
+            "mode": "reference_response",
+            "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+            "nominal_wifi_bandwidth_hz": 20000000,
+            "sample_rate_hz": 25000000,
+            "window": [
+              80,
+              160
+            ],
+            "period_samples": 20,
+            "cycles": 4,
+            "delay_grid_count": 320,
+            "delay_grid_step_samples": 0.0625,
+            "epsilon": 1e-06,
+            "residual_soft_radius": 4.0,
+            "response_features": 29,
+            "relative_cfo_alias_period_hz": 1250000,
+            "reference_branch_flat_gain_phase_quotient": true,
+            "whole_model_invariant": false,
+            "raw_identity_path_retained": true,
+            "rx_arbitrary_channel_invariant": false,
+            "iq_convention_identified": false,
+            "hardware_parameter_estimation": false,
+            "initial_residual_gain": 0.0,
+            "learned_frontend_parameters": 0,
+            "interpretation": "Relative received in-band transfer/quality/CFO; RX/channel/equalizer remain confounds"
+          },
+          "identity_parameters": 177025,
+          "mixstyle_enabled": false,
+          "mixstyle_layers": [
+            "t1",
+            "time_down"
+          ],
+          "mixstyle_p": 0.18,
+          "mixstyle_alpha": 0.1,
+          "mixstyle_eps": 1e-06,
+          "mixstyle_strength": 0.7,
+          "mixstyle_mix": "same_tx_crossdomain",
+          "mixstyle_fallback": "skip"
+        },
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "model_seed": 2026092701,
+        "augmentation_seed": 2027,
+        "target_access": false,
+        "commit": "14a8196c711388f9d1266b3979e8468df72539de"
+      },
+      "epoch": {
+        "epoch": 2,
+        "arm": "leo",
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 100,
+        "source_sample_exposure": 6300,
+        "concat_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 2560,
+        "total_loss": 1.7339225387573243,
+        "clean_ce": 1.7339225387573243,
+        "satellite_ce": null,
+        "gradient_norm": 3.647942986488342,
+        "satellite_weight": 0.0,
+        "clean_weight": 1.0,
+        "learning_rate": 0.00019998772493192525,
+        "mixstyle_calls": 0,
+        "mixstyle_changed_layer_samples": 0,
+        "scene_batch_counts": {
+          "clean_duplicate": 30,
+          "practical_high": 20
+        },
+        "gradient_used_parameters": 177025,
+        "response_gain_abs_mean": 0.004281801637262106,
+        "response_gain_gradient_norm": 0.3778100907802582,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.7489259259259259,
+        "source_val_ce": 1.0287056044825802,
+        "source_val_rx_accuracy": {
+          "1": 0.8294444444444444,
+          "3": 0.5987037037037037,
+          "4": 0.8153703703703704,
+          "6": 0.8090740740740741,
+          "8": 0.692037037037037
+        },
+        "source_val_worst_rx": 0.5987037037037037,
+        "elapsed_seconds": 9.97824349498842,
+        "peak_cuda_allocated_bytes": 328402944
+      },
+      "source_completion": null,
+      "prediction_complete": null,
+      "log_bytes": 5766,
+      "log_tail": [
+        "EPOCH {\"epoch\": 1, \"arm\": \"leo\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 50, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 6300, \"channel_changed_sample_exposure\": 2176, \"total_loss\": 2.412565109729767, \"clean_ce\": 2.412565109729767, \"satellite_ce\": null, \"gradient_norm\": 5.363762264251709, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.0002, \"mixstyle_calls\": 0, \"mixstyle_changed_layer_samples\": 0, \"scene_batch_counts\": {\"clean_duplicate\": 33, \"practical_high\": 17}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.002095042960718274, \"response_gain_gradient_norm\": 0.5097112655639648, \"source_val_count\": 27000, \"source_val_accuracy\": 0.46814814814814815, \"source_val_ce\": 1.4921685443454318, \"source_val_rx_accuracy\": {\"1\": 0.61, \"3\": 0.3233333333333333, \"4\": 0.5155555555555555, \"6\": 0.5703703703703704, \"8\": 0.3214814814814815}, \"source_val_worst_rx\": 0.3214814814814815, \"elapsed_seconds\": 10.21286551200319, \"peak_cuda_allocated_bytes\": 328402944}",
+        "EPOCH {\"epoch\": 2, \"arm\": \"leo\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 100, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 6300, \"channel_changed_sample_exposure\": 2560, \"total_loss\": 1.7339225387573243, \"clean_ce\": 1.7339225387573243, \"satellite_ce\": null, \"gradient_norm\": 3.647942986488342, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.00019998772493192525, \"mixstyle_calls\": 0, \"mixstyle_changed_layer_samples\": 0, \"scene_batch_counts\": {\"clean_duplicate\": 30, \"practical_high\": 20}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.004281801637262106, \"response_gain_gradient_norm\": 0.3778100907802582, \"source_val_count\": 27000, \"source_val_accuracy\": 0.7489259259259259, \"source_val_ce\": 1.0287056044825802, \"source_val_rx_accuracy\": {\"1\": 0.8294444444444444, \"3\": 0.5987037037037037, \"4\": 0.8153703703703704, \"6\": 0.8090740740740741, \"8\": 0.692037037037037}, \"source_val_worst_rx\": 0.5987037037037037, \"elapsed_seconds\": 9.97824349498842, \"peak_cuda_allocated_bytes\": 328402944}"
+      ]
+    },
+    {
+      "row_id": "mixstyle-s2026092701",
+      "stage": "source",
+      "pid": 3049604,
+      "gpu": 2,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-mixstyle-s2026092701.json"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/source-mixstyle-s2026092701.log",
+      "process": {
+        "pid": 3049604,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_overlay.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-mixstyle-s2026092701.json",
+          ""
+        ],
+        "status": [
+          "Name:\tpython",
+          "Umask:\t0002",
+          "State:\tR (running)",
+          "Tgid:\t3049604",
+          "Ngid:\t3049604",
+          "Pid:\t3049604"
+        ]
+      },
+      "children": [
+        {
+          "pid": 3049604,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_phase1_overlay.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-mixstyle-s2026092701.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tR (running)",
+            "Tgid:\t3049604",
+            "Ngid:\t3049604",
+            "Pid:\t3049604"
+          ]
+        },
+        {
+          "pid": 3049678,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_phase1_overlay.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo_mixstyle-s2026092701.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tS (sleeping)",
+            "Tgid:\t3049678",
+            "Ngid:\t3050221",
+            "Pid:\t3049678"
+          ]
+        }
+      ],
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092701,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "effective": {
+        "pid": 3049604,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "total_parameters": 177025,
+        "trainable_parameters": null,
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "arm": "mixstyle",
+        "architecture_actual": {
+          "variant": "reference_response",
+          "architecture": {
+            "mode": "reference_response",
+            "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+            "nominal_wifi_bandwidth_hz": 20000000,
+            "sample_rate_hz": 25000000,
+            "window": [
+              80,
+              160
+            ],
+            "period_samples": 20,
+            "cycles": 4,
+            "delay_grid_count": 320,
+            "delay_grid_step_samples": 0.0625,
+            "epsilon": 1e-06,
+            "residual_soft_radius": 4.0,
+            "response_features": 29,
+            "relative_cfo_alias_period_hz": 1250000,
+            "reference_branch_flat_gain_phase_quotient": true,
+            "whole_model_invariant": false,
+            "raw_identity_path_retained": true,
+            "rx_arbitrary_channel_invariant": false,
+            "iq_convention_identified": false,
+            "hardware_parameter_estimation": false,
+            "initial_residual_gain": 0.0,
+            "learned_frontend_parameters": 0,
+            "interpretation": "Relative received in-band transfer/quality/CFO; RX/channel/equalizer remain confounds"
+          },
+          "identity_parameters": 177025,
+          "mixstyle_enabled": true,
+          "mixstyle_layers": [
+            "t1",
+            "time_down"
+          ],
+          "mixstyle_p": 0.18,
+          "mixstyle_alpha": 0.1,
+          "mixstyle_eps": 1e-06,
+          "mixstyle_strength": 0.7,
+          "mixstyle_mix": "same_tx_crossdomain",
+          "mixstyle_fallback": "skip"
+        },
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "model_seed": 2026092701,
+        "augmentation_seed": null,
+        "target_access": false,
+        "commit": "14a8196c711388f9d1266b3979e8468df72539de"
+      },
+      "epoch": {
+        "epoch": 3,
+        "arm": "mixstyle",
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 150,
+        "source_sample_exposure": 6300,
+        "concat_sample_exposure": 0,
+        "channel_changed_sample_exposure": 0,
+        "total_loss": 1.2385810220241547,
+        "clean_ce": 1.2385810220241547,
+        "satellite_ce": null,
+        "gradient_norm": 3.7766749048233033,
+        "satellite_weight": 0.0,
+        "clean_weight": 1.0,
+        "learning_rate": 0.00019995090275639032,
+        "mixstyle_calls": 100,
+        "mixstyle_changed_layer_samples": 2048,
+        "scene_batch_counts": {
+          "disabled": 50
+        },
+        "gradient_used_parameters": 177025,
+        "response_gain_abs_mean": 0.0067471652291715145,
+        "response_gain_gradient_norm": 0.36463722586631775,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.7764074074074074,
+        "source_val_ce": 0.6928330144087473,
+        "source_val_rx_accuracy": {
+          "1": 0.827037037037037,
+          "3": 0.7214814814814815,
+          "4": 0.7688888888888888,
+          "6": 0.7512962962962964,
+          "8": 0.8133333333333334
+        },
+        "source_val_worst_rx": 0.7214814814814815,
+        "elapsed_seconds": 6.510261665971484,
+        "peak_cuda_allocated_bytes": 176101888
+      },
+      "source_completion": null,
+      "prediction_complete": null,
+      "log_bytes": 6751,
+      "log_tail": [
+        "EPOCH {\"epoch\": 2, \"arm\": \"mixstyle\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 100, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 0, \"channel_changed_sample_exposure\": 0, \"total_loss\": 1.7558712983131408, \"clean_ce\": 1.7558712983131408, \"satellite_ce\": null, \"gradient_norm\": 3.819402160644531, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.00019998772493192525, \"mixstyle_calls\": 100, \"mixstyle_changed_layer_samples\": 3200, \"scene_batch_counts\": {\"disabled\": 50}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.0040361019782722, \"response_gain_gradient_norm\": 0.4047943353652954, \"source_val_count\": 27000, \"source_val_accuracy\": 0.6755555555555556, \"source_val_ce\": 1.0661234166887072, \"source_val_rx_accuracy\": {\"1\": 0.695, \"3\": 0.5557407407407408, \"4\": 0.6648148148148149, \"6\": 0.7687037037037037, \"8\": 0.6935185185185185}, \"source_val_worst_rx\": 0.5557407407407408, \"elapsed_seconds\": 6.738266010012012, \"peak_cuda_allocated_bytes\": 176101888}",
+        "EPOCH {\"epoch\": 3, \"arm\": \"mixstyle\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 150, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 0, \"channel_changed_sample_exposure\": 0, \"total_loss\": 1.2385810220241547, \"clean_ce\": 1.2385810220241547, \"satellite_ce\": null, \"gradient_norm\": 3.7766749048233033, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.00019995090275639032, \"mixstyle_calls\": 100, \"mixstyle_changed_layer_samples\": 2048, \"scene_batch_counts\": {\"disabled\": 50}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.0067471652291715145, \"response_gain_gradient_norm\": 0.36463722586631775, \"source_val_count\": 27000, \"source_val_accuracy\": 0.7764074074074074, \"source_val_ce\": 0.6928330144087473, \"source_val_rx_accuracy\": {\"1\": 0.827037037037037, \"3\": 0.7214814814814815, \"4\": 0.7688888888888888, \"6\": 0.7512962962962964, \"8\": 0.8133333333333334}, \"source_val_worst_rx\": 0.7214814814814815, \"elapsed_seconds\": 6.510261665971484, \"peak_cuda_allocated_bytes\": 176101888}"
+      ]
+    },
+    {
+      "row_id": "leo_mixstyle-s2026092701",
+      "stage": "source",
+      "pid": 3049678,
+      "gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo_mixstyle-s2026092701.json"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/source-leo_mixstyle-s2026092701.log",
+      "process": {
+        "pid": 3049678,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_overlay.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo_mixstyle-s2026092701.json",
+          ""
+        ],
+        "status": [
+          "Name:\tpython",
+          "Umask:\t0002",
+          "State:\tR (running)",
+          "Tgid:\t3049678",
+          "Ngid:\t3050221",
+          "Pid:\t3049678"
+        ]
+      },
+      "children": [
+        {
+          "pid": 3049678,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_phase1_overlay.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo_mixstyle-s2026092701.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tR (running)",
+            "Tgid:\t3049678",
+            "Ngid:\t3050221",
+            "Pid:\t3049678"
+          ]
+        }
+      ],
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092701,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "effective": {
+        "pid": 3049678,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "total_parameters": 177025,
+        "trainable_parameters": null,
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "arm": "leo_mixstyle",
+        "architecture_actual": {
+          "variant": "reference_response",
+          "architecture": {
+            "mode": "reference_response",
+            "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+            "nominal_wifi_bandwidth_hz": 20000000,
+            "sample_rate_hz": 25000000,
+            "window": [
+              80,
+              160
+            ],
+            "period_samples": 20,
+            "cycles": 4,
+            "delay_grid_count": 320,
+            "delay_grid_step_samples": 0.0625,
+            "epsilon": 1e-06,
+            "residual_soft_radius": 4.0,
+            "response_features": 29,
+            "relative_cfo_alias_period_hz": 1250000,
+            "reference_branch_flat_gain_phase_quotient": true,
+            "whole_model_invariant": false,
+            "raw_identity_path_retained": true,
+            "rx_arbitrary_channel_invariant": false,
+            "iq_convention_identified": false,
+            "hardware_parameter_estimation": false,
+            "initial_residual_gain": 0.0,
+            "learned_frontend_parameters": 0,
+            "interpretation": "Relative received in-band transfer/quality/CFO; RX/channel/equalizer remain confounds"
+          },
+          "identity_parameters": 177025,
+          "mixstyle_enabled": true,
+          "mixstyle_layers": [
+            "t1",
+            "time_down"
+          ],
+          "mixstyle_p": 0.18,
+          "mixstyle_alpha": 0.1,
+          "mixstyle_eps": 1e-06,
+          "mixstyle_strength": 0.7,
+          "mixstyle_mix": "same_tx_crossdomain",
+          "mixstyle_fallback": "skip"
+        },
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "model_seed": 2026092701,
+        "augmentation_seed": 2027,
+        "target_access": false,
+        "commit": "14a8196c711388f9d1266b3979e8468df72539de"
+      },
+      "epoch": {
+        "epoch": 2,
+        "arm": "leo_mixstyle",
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 100,
+        "source_sample_exposure": 6300,
+        "concat_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 2560,
+        "total_loss": 1.7272172904014587,
+        "clean_ce": 1.7272172904014587,
+        "satellite_ce": null,
+        "gradient_norm": 3.657889266014099,
+        "satellite_weight": 0.0,
+        "clean_weight": 1.0,
+        "learning_rate": 0.00019998772493192525,
+        "mixstyle_calls": 100,
+        "mixstyle_changed_layer_samples": 3128,
+        "scene_batch_counts": {
+          "clean_duplicate": 30,
+          "practical_high": 20
+        },
+        "gradient_used_parameters": 177025,
+        "response_gain_abs_mean": 0.0041930484585464,
+        "response_gain_gradient_norm": 0.3099430501461029,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.712925925925926,
+        "source_val_ce": 1.032676983586064,
+        "source_val_rx_accuracy": {
+          "1": 0.7544444444444445,
+          "3": 0.5703703703703704,
+          "4": 0.7677777777777778,
+          "6": 0.8042592592592592,
+          "8": 0.6677777777777778
+        },
+        "source_val_worst_rx": 0.5703703703703704,
+        "elapsed_seconds": 10.636776696017478,
+        "peak_cuda_allocated_bytes": 329075200
+      },
+      "source_completion": null,
+      "prediction_complete": null,
+      "log_bytes": 5821,
+      "log_tail": [
+        "EPOCH {\"epoch\": 1, \"arm\": \"leo_mixstyle\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 50, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 6300, \"channel_changed_sample_exposure\": 2176, \"total_loss\": 2.43209703207016, \"clean_ce\": 2.43209703207016, \"satellite_ce\": null, \"gradient_norm\": 5.495897889137268, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.0002, \"mixstyle_calls\": 100, \"mixstyle_changed_layer_samples\": 4664, \"scene_batch_counts\": {\"clean_duplicate\": 33, \"practical_high\": 17}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.002065797569230199, \"response_gain_gradient_norm\": 0.45248809456825256, \"source_val_count\": 27000, \"source_val_accuracy\": 0.5437037037037037, \"source_val_ce\": 1.476730288470233, \"source_val_rx_accuracy\": {\"1\": 0.6581481481481481, \"3\": 0.3675925925925926, \"4\": 0.5783333333333334, \"6\": 0.732037037037037, \"8\": 0.3824074074074074}, \"source_val_worst_rx\": 0.3675925925925926, \"elapsed_seconds\": 10.469148076954298, \"peak_cuda_allocated_bytes\": 329075200}",
+        "EPOCH {\"epoch\": 2, \"arm\": \"leo_mixstyle\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 100, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 6300, \"channel_changed_sample_exposure\": 2560, \"total_loss\": 1.7272172904014587, \"clean_ce\": 1.7272172904014587, \"satellite_ce\": null, \"gradient_norm\": 3.657889266014099, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.00019998772493192525, \"mixstyle_calls\": 100, \"mixstyle_changed_layer_samples\": 3128, \"scene_batch_counts\": {\"clean_duplicate\": 30, \"practical_high\": 20}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.0041930484585464, \"response_gain_gradient_norm\": 0.3099430501461029, \"source_val_count\": 27000, \"source_val_accuracy\": 0.712925925925926, \"source_val_ce\": 1.032676983586064, \"source_val_rx_accuracy\": {\"1\": 0.7544444444444445, \"3\": 0.5703703703703704, \"4\": 0.7677777777777778, \"6\": 0.8042592592592592, \"8\": 0.6677777777777778}, \"source_val_worst_rx\": 0.5703703703703704, \"elapsed_seconds\": 10.636776696017478, \"peak_cuda_allocated_bytes\": 329075200}"
+      ]
+    },
+    {
+      "row_id": "ce-s2026092702",
+      "stage": "source",
+      "pid": 3049759,
+      "gpu": 4,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-ce-s2026092702.json"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/source-ce-s2026092702.log",
+      "process": {
+        "pid": 3049759,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_overlay.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-ce-s2026092702.json",
+          ""
+        ],
+        "status": [
+          "Name:\tpython",
+          "Umask:\t0002",
+          "State:\tR (running)",
+          "Tgid:\t3049759",
+          "Ngid:\t3049759",
+          "Pid:\t3049759"
+        ]
+      },
+      "children": [
+        {
+          "pid": 3049759,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_phase1_overlay.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-ce-s2026092702.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tR (running)",
+            "Tgid:\t3049759",
+            "Ngid:\t3049759",
+            "Pid:\t3049759"
+          ]
+        }
+      ],
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092702,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "effective": {
+        "pid": 3049759,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "total_parameters": 177025,
+        "trainable_parameters": null,
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "arm": "ce",
+        "architecture_actual": {
+          "variant": "reference_response",
+          "architecture": {
+            "mode": "reference_response",
+            "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+            "nominal_wifi_bandwidth_hz": 20000000,
+            "sample_rate_hz": 25000000,
+            "window": [
+              80,
+              160
+            ],
+            "period_samples": 20,
+            "cycles": 4,
+            "delay_grid_count": 320,
+            "delay_grid_step_samples": 0.0625,
+            "epsilon": 1e-06,
+            "residual_soft_radius": 4.0,
+            "response_features": 29,
+            "relative_cfo_alias_period_hz": 1250000,
+            "reference_branch_flat_gain_phase_quotient": true,
+            "whole_model_invariant": false,
+            "raw_identity_path_retained": true,
+            "rx_arbitrary_channel_invariant": false,
+            "iq_convention_identified": false,
+            "hardware_parameter_estimation": false,
+            "initial_residual_gain": 0.0,
+            "learned_frontend_parameters": 0,
+            "interpretation": "Relative received in-band transfer/quality/CFO; RX/channel/equalizer remain confounds"
+          },
+          "identity_parameters": 177025,
+          "mixstyle_enabled": false,
+          "mixstyle_layers": [
+            "t1",
+            "time_down"
+          ],
+          "mixstyle_p": 0.18,
+          "mixstyle_alpha": 0.1,
+          "mixstyle_eps": 1e-06,
+          "mixstyle_strength": 0.7,
+          "mixstyle_mix": "same_tx_crossdomain",
+          "mixstyle_fallback": "skip"
+        },
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "model_seed": 2026092702,
+        "augmentation_seed": null,
+        "target_access": false,
+        "commit": "14a8196c711388f9d1266b3979e8468df72539de"
+      },
+      "epoch": {
+        "epoch": 4,
+        "arm": "ce",
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 200,
+        "source_sample_exposure": 6300,
+        "concat_sample_exposure": 0,
+        "channel_changed_sample_exposure": 0,
+        "total_loss": 0.8431565308570862,
+        "clean_ce": 0.8431565308570862,
+        "satellite_ce": null,
+        "gradient_norm": 5.03447434425354,
+        "satellite_weight": 0.0,
+        "clean_weight": 1.0,
+        "learning_rate": 0.00019988954255871605,
+        "mixstyle_calls": 0,
+        "mixstyle_changed_layer_samples": 0,
+        "scene_batch_counts": {
+          "disabled": 50
+        },
+        "gradient_used_parameters": 177025,
+        "response_gain_abs_mean": 0.014474654570221901,
+        "response_gain_gradient_norm": 0.3411678373813629,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.7934444444444444,
+        "source_val_ce": 0.5442073972981285,
+        "source_val_rx_accuracy": {
+          "1": 0.902962962962963,
+          "3": 0.6931481481481482,
+          "4": 0.7185185185185186,
+          "6": 0.8153703703703704,
+          "8": 0.8372222222222222
+        },
+        "source_val_worst_rx": 0.6931481481481482,
+        "elapsed_seconds": 6.17751850298373,
+        "peak_cuda_allocated_bytes": 176052224
+      },
+      "source_completion": null,
+      "prediction_complete": null,
+      "log_bytes": 7678,
+      "log_tail": [
+        "EPOCH {\"epoch\": 3, \"arm\": \"ce\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 150, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 0, \"channel_changed_sample_exposure\": 0, \"total_loss\": 1.2043087577819824, \"clean_ce\": 1.2043087577819824, \"satellite_ce\": null, \"gradient_norm\": 4.481529631614685, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.00019995090275639032, \"mixstyle_calls\": 0, \"mixstyle_changed_layer_samples\": 0, \"scene_batch_counts\": {\"disabled\": 50}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.009806706570088863, \"response_gain_gradient_norm\": 0.25500980019569397, \"source_val_count\": 27000, \"source_val_accuracy\": 0.769074074074074, \"source_val_ce\": 0.6522382599247827, \"source_val_rx_accuracy\": {\"1\": 0.817037037037037, \"3\": 0.567037037037037, \"4\": 0.8225925925925925, \"6\": 0.8307407407407408, \"8\": 0.807962962962963}, \"source_val_worst_rx\": 0.567037037037037, \"elapsed_seconds\": 6.20905268198112, \"peak_cuda_allocated_bytes\": 176052224}",
+        "EPOCH {\"epoch\": 4, \"arm\": \"ce\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 200, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 0, \"channel_changed_sample_exposure\": 0, \"total_loss\": 0.8431565308570862, \"clean_ce\": 0.8431565308570862, \"satellite_ce\": null, \"gradient_norm\": 5.03447434425354, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.00019988954255871605, \"mixstyle_calls\": 0, \"mixstyle_changed_layer_samples\": 0, \"scene_batch_counts\": {\"disabled\": 50}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.014474654570221901, \"response_gain_gradient_norm\": 0.3411678373813629, \"source_val_count\": 27000, \"source_val_accuracy\": 0.7934444444444444, \"source_val_ce\": 0.5442073972981285, \"source_val_rx_accuracy\": {\"1\": 0.902962962962963, \"3\": 0.6931481481481482, \"4\": 0.7185185185185186, \"6\": 0.8153703703703704, \"8\": 0.8372222222222222}, \"source_val_worst_rx\": 0.6931481481481482, \"elapsed_seconds\": 6.17751850298373, \"peak_cuda_allocated_bytes\": 176052224}"
+      ]
+    },
+    {
+      "row_id": "leo-s2026092702",
+      "stage": "source",
+      "pid": 3049911,
+      "gpu": 5,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo-s2026092702.json"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/source-leo-s2026092702.log",
+      "process": {
+        "pid": 3049911,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_overlay.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo-s2026092702.json",
+          ""
+        ],
+        "status": [
+          "Name:\tpython",
+          "Umask:\t0002",
+          "State:\tS (sleeping)",
+          "Tgid:\t3049911",
+          "Ngid:\t3049911",
+          "Pid:\t3049911"
+        ]
+      },
+      "children": [
+        {
+          "pid": 3049911,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_phase1_overlay.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo-s2026092702.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tS (sleeping)",
+            "Tgid:\t3049911",
+            "Ngid:\t3049911",
+            "Pid:\t3049911"
+          ]
+        }
+      ],
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092702,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "effective": {
+        "pid": 3049911,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "total_parameters": 177025,
+        "trainable_parameters": null,
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "arm": "leo",
+        "architecture_actual": {
+          "variant": "reference_response",
+          "architecture": {
+            "mode": "reference_response",
+            "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+            "nominal_wifi_bandwidth_hz": 20000000,
+            "sample_rate_hz": 25000000,
+            "window": [
+              80,
+              160
+            ],
+            "period_samples": 20,
+            "cycles": 4,
+            "delay_grid_count": 320,
+            "delay_grid_step_samples": 0.0625,
+            "epsilon": 1e-06,
+            "residual_soft_radius": 4.0,
+            "response_features": 29,
+            "relative_cfo_alias_period_hz": 1250000,
+            "reference_branch_flat_gain_phase_quotient": true,
+            "whole_model_invariant": false,
+            "raw_identity_path_retained": true,
+            "rx_arbitrary_channel_invariant": false,
+            "iq_convention_identified": false,
+            "hardware_parameter_estimation": false,
+            "initial_residual_gain": 0.0,
+            "learned_frontend_parameters": 0,
+            "interpretation": "Relative received in-band transfer/quality/CFO; RX/channel/equalizer remain confounds"
+          },
+          "identity_parameters": 177025,
+          "mixstyle_enabled": false,
+          "mixstyle_layers": [
+            "t1",
+            "time_down"
+          ],
+          "mixstyle_p": 0.18,
+          "mixstyle_alpha": 0.1,
+          "mixstyle_eps": 1e-06,
+          "mixstyle_strength": 0.7,
+          "mixstyle_mix": "same_tx_crossdomain",
+          "mixstyle_fallback": "skip"
+        },
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "model_seed": 2026092702,
+        "augmentation_seed": 2027,
+        "target_access": false,
+        "commit": "14a8196c711388f9d1266b3979e8468df72539de"
+      },
+      "epoch": {
+        "epoch": 2,
+        "arm": "leo",
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 100,
+        "source_sample_exposure": 6300,
+        "concat_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 2560,
+        "total_loss": 1.8631447553634644,
+        "clean_ce": 1.8631447553634644,
+        "satellite_ce": null,
+        "gradient_norm": 4.1411710500717165,
+        "satellite_weight": 0.0,
+        "clean_weight": 1.0,
+        "learning_rate": 0.00019998772493192525,
+        "mixstyle_calls": 0,
+        "mixstyle_changed_layer_samples": 0,
+        "scene_batch_counts": {
+          "clean_duplicate": 30,
+          "practical_high": 20
+        },
+        "gradient_used_parameters": 177025,
+        "response_gain_abs_mean": 0.005232351366430521,
+        "response_gain_gradient_norm": 0.31682828068733215,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.5614814814814815,
+        "source_val_ce": 1.0706528262385615,
+        "source_val_rx_accuracy": {
+          "1": 0.5692592592592592,
+          "3": 0.4698148148148148,
+          "4": 0.45092592592592595,
+          "6": 0.5553703703703704,
+          "8": 0.7620370370370371
+        },
+        "source_val_worst_rx": 0.45092592592592595,
+        "elapsed_seconds": 10.276800469961017,
+        "peak_cuda_allocated_bytes": 328402944
+      },
+      "source_completion": null,
+      "prediction_complete": null,
+      "log_bytes": 5777,
+      "log_tail": [
+        "EPOCH {\"epoch\": 1, \"arm\": \"leo\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 50, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 6300, \"channel_changed_sample_exposure\": 2176, \"total_loss\": 2.5466045713424683, \"clean_ce\": 2.5466045713424683, \"satellite_ce\": null, \"gradient_norm\": 5.992281556129456, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.0002, \"mixstyle_calls\": 0, \"mixstyle_changed_layer_samples\": 0, \"scene_batch_counts\": {\"clean_duplicate\": 33, \"practical_high\": 17}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.002207061043009162, \"response_gain_gradient_norm\": 0.3661387860774994, \"source_val_count\": 27000, \"source_val_accuracy\": 0.464, \"source_val_ce\": 1.405411004808214, \"source_val_rx_accuracy\": {\"1\": 0.5118518518518519, \"3\": 0.3864814814814815, \"4\": 0.47314814814814815, \"6\": 0.46814814814814815, \"8\": 0.4803703703703704}, \"source_val_worst_rx\": 0.3864814814814815, \"elapsed_seconds\": 10.274281002988573, \"peak_cuda_allocated_bytes\": 328402944}",
+        "EPOCH {\"epoch\": 2, \"arm\": \"leo\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 100, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 6300, \"channel_changed_sample_exposure\": 2560, \"total_loss\": 1.8631447553634644, \"clean_ce\": 1.8631447553634644, \"satellite_ce\": null, \"gradient_norm\": 4.1411710500717165, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.00019998772493192525, \"mixstyle_calls\": 0, \"mixstyle_changed_layer_samples\": 0, \"scene_batch_counts\": {\"clean_duplicate\": 30, \"practical_high\": 20}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.005232351366430521, \"response_gain_gradient_norm\": 0.31682828068733215, \"source_val_count\": 27000, \"source_val_accuracy\": 0.5614814814814815, \"source_val_ce\": 1.0706528262385615, \"source_val_rx_accuracy\": {\"1\": 0.5692592592592592, \"3\": 0.4698148148148148, \"4\": 0.45092592592592595, \"6\": 0.5553703703703704, \"8\": 0.7620370370370371}, \"source_val_worst_rx\": 0.45092592592592595, \"elapsed_seconds\": 10.276800469961017, \"peak_cuda_allocated_bytes\": 328402944}"
+      ]
+    },
+    {
+      "row_id": "mixstyle-s2026092702",
+      "stage": "source",
+      "pid": 3049987,
+      "gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-mixstyle-s2026092702.json"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/source-mixstyle-s2026092702.log",
+      "process": {
+        "pid": 3049987,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_overlay.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-mixstyle-s2026092702.json",
+          ""
+        ],
+        "status": [
+          "Name:\tpython",
+          "Umask:\t0002",
+          "State:\tR (running)",
+          "Tgid:\t3049987",
+          "Ngid:\t3049987",
+          "Pid:\t3049987"
+        ]
+      },
+      "children": [
+        {
+          "pid": 3049987,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_phase1_overlay.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-mixstyle-s2026092702.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tR (running)",
+            "Tgid:\t3049987",
+            "Ngid:\t3049987",
+            "Pid:\t3049987"
+          ]
+        },
+        {
+          "pid": 3050001,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_phase1_overlay.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo_mixstyle-s2026092702.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tR (running)",
+            "Tgid:\t3050001",
+            "Ngid:\t3050001",
+            "Pid:\t3050001"
+          ]
+        }
+      ],
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092702,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "effective": {
+        "pid": 3049987,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "total_parameters": 177025,
+        "trainable_parameters": null,
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "arm": "mixstyle",
+        "architecture_actual": {
+          "variant": "reference_response",
+          "architecture": {
+            "mode": "reference_response",
+            "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+            "nominal_wifi_bandwidth_hz": 20000000,
+            "sample_rate_hz": 25000000,
+            "window": [
+              80,
+              160
+            ],
+            "period_samples": 20,
+            "cycles": 4,
+            "delay_grid_count": 320,
+            "delay_grid_step_samples": 0.0625,
+            "epsilon": 1e-06,
+            "residual_soft_radius": 4.0,
+            "response_features": 29,
+            "relative_cfo_alias_period_hz": 1250000,
+            "reference_branch_flat_gain_phase_quotient": true,
+            "whole_model_invariant": false,
+            "raw_identity_path_retained": true,
+            "rx_arbitrary_channel_invariant": false,
+            "iq_convention_identified": false,
+            "hardware_parameter_estimation": false,
+            "initial_residual_gain": 0.0,
+            "learned_frontend_parameters": 0,
+            "interpretation": "Relative received in-band transfer/quality/CFO; RX/channel/equalizer remain confounds"
+          },
+          "identity_parameters": 177025,
+          "mixstyle_enabled": true,
+          "mixstyle_layers": [
+            "t1",
+            "time_down"
+          ],
+          "mixstyle_p": 0.18,
+          "mixstyle_alpha": 0.1,
+          "mixstyle_eps": 1e-06,
+          "mixstyle_strength": 0.7,
+          "mixstyle_mix": "same_tx_crossdomain",
+          "mixstyle_fallback": "skip"
+        },
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "model_seed": 2026092702,
+        "augmentation_seed": null,
+        "target_access": false,
+        "commit": "14a8196c711388f9d1266b3979e8468df72539de"
+      },
+      "epoch": {
+        "epoch": 3,
+        "arm": "mixstyle",
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 150,
+        "source_sample_exposure": 6300,
+        "concat_sample_exposure": 0,
+        "channel_changed_sample_exposure": 0,
+        "total_loss": 1.2190858268737792,
+        "clean_ce": 1.2190858268737792,
+        "satellite_ce": null,
+        "gradient_norm": 4.3910808181762695,
+        "satellite_weight": 0.0,
+        "clean_weight": 1.0,
+        "learning_rate": 0.00019995090275639032,
+        "mixstyle_calls": 100,
+        "mixstyle_changed_layer_samples": 2048,
+        "scene_batch_counts": {
+          "disabled": 50
+        },
+        "gradient_used_parameters": 177025,
+        "response_gain_abs_mean": 0.00965419877320528,
+        "response_gain_gradient_norm": 0.33716610074043274,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.7678518518518519,
+        "source_val_ce": 0.6600196369312428,
+        "source_val_rx_accuracy": {
+          "1": 0.8196296296296296,
+          "3": 0.5883333333333334,
+          "4": 0.7794444444444445,
+          "6": 0.8416666666666667,
+          "8": 0.8101851851851852
+        },
+        "source_val_worst_rx": 0.5883333333333334,
+        "elapsed_seconds": 6.716021397034638,
+        "peak_cuda_allocated_bytes": 176101888
+      },
+      "source_completion": null,
+      "prediction_complete": null,
+      "log_bytes": 6747,
+      "log_tail": [
+        "EPOCH {\"epoch\": 2, \"arm\": \"mixstyle\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 100, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 0, \"channel_changed_sample_exposure\": 0, \"total_loss\": 1.860853295326233, \"clean_ce\": 1.860853295326233, \"satellite_ce\": null, \"gradient_norm\": 4.5252445936203, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.00019998772493192525, \"mixstyle_calls\": 100, \"mixstyle_changed_layer_samples\": 2304, \"scene_batch_counts\": {\"disabled\": 50}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.005225371569395065, \"response_gain_gradient_norm\": 0.3691919147968292, \"source_val_count\": 27000, \"source_val_accuracy\": 0.5748518518518518, \"source_val_ce\": 1.0458432608710395, \"source_val_rx_accuracy\": {\"1\": 0.5766666666666667, \"3\": 0.48685185185185187, \"4\": 0.4809259259259259, \"6\": 0.5661111111111111, \"8\": 0.7637037037037037}, \"source_val_worst_rx\": 0.4809259259259259, \"elapsed_seconds\": 6.638870478025638, \"peak_cuda_allocated_bytes\": 176101888}",
+        "EPOCH {\"epoch\": 3, \"arm\": \"mixstyle\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 150, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 0, \"channel_changed_sample_exposure\": 0, \"total_loss\": 1.2190858268737792, \"clean_ce\": 1.2190858268737792, \"satellite_ce\": null, \"gradient_norm\": 4.3910808181762695, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.00019995090275639032, \"mixstyle_calls\": 100, \"mixstyle_changed_layer_samples\": 2048, \"scene_batch_counts\": {\"disabled\": 50}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.00965419877320528, \"response_gain_gradient_norm\": 0.33716610074043274, \"source_val_count\": 27000, \"source_val_accuracy\": 0.7678518518518519, \"source_val_ce\": 0.6600196369312428, \"source_val_rx_accuracy\": {\"1\": 0.8196296296296296, \"3\": 0.5883333333333334, \"4\": 0.7794444444444445, \"6\": 0.8416666666666667, \"8\": 0.8101851851851852}, \"source_val_worst_rx\": 0.5883333333333334, \"elapsed_seconds\": 6.716021397034638, \"peak_cuda_allocated_bytes\": 176101888}"
+      ]
+    },
+    {
+      "row_id": "leo_mixstyle-s2026092702",
+      "stage": "source",
+      "pid": 3050001,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo_mixstyle-s2026092702.json"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/source-leo_mixstyle-s2026092702.log",
+      "process": {
+        "pid": 3050001,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_overlay.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo_mixstyle-s2026092702.json",
+          ""
+        ],
+        "status": [
+          "Name:\tpython",
+          "Umask:\t0002",
+          "State:\tR (running)",
+          "Tgid:\t3050001",
+          "Ngid:\t3050001",
+          "Pid:\t3050001"
+        ]
+      },
+      "children": [
+        {
+          "pid": 3050001,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_phase1_overlay.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo_mixstyle-s2026092702.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tR (running)",
+            "Tgid:\t3050001",
+            "Ngid:\t3050001",
+            "Pid:\t3050001"
+          ]
+        }
+      ],
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092702,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "effective": {
+        "pid": 3050001,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "total_parameters": 177025,
+        "trainable_parameters": null,
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "arm": "leo_mixstyle",
+        "architecture_actual": {
+          "variant": "reference_response",
+          "architecture": {
+            "mode": "reference_response",
+            "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+            "nominal_wifi_bandwidth_hz": 20000000,
+            "sample_rate_hz": 25000000,
+            "window": [
+              80,
+              160
+            ],
+            "period_samples": 20,
+            "cycles": 4,
+            "delay_grid_count": 320,
+            "delay_grid_step_samples": 0.0625,
+            "epsilon": 1e-06,
+            "residual_soft_radius": 4.0,
+            "response_features": 29,
+            "relative_cfo_alias_period_hz": 1250000,
+            "reference_branch_flat_gain_phase_quotient": true,
+            "whole_model_invariant": false,
+            "raw_identity_path_retained": true,
+            "rx_arbitrary_channel_invariant": false,
+            "iq_convention_identified": false,
+            "hardware_parameter_estimation": false,
+            "initial_residual_gain": 0.0,
+            "learned_frontend_parameters": 0,
+            "interpretation": "Relative received in-band transfer/quality/CFO; RX/channel/equalizer remain confounds"
+          },
+          "identity_parameters": 177025,
+          "mixstyle_enabled": true,
+          "mixstyle_layers": [
+            "t1",
+            "time_down"
+          ],
+          "mixstyle_p": 0.18,
+          "mixstyle_alpha": 0.1,
+          "mixstyle_eps": 1e-06,
+          "mixstyle_strength": 0.7,
+          "mixstyle_mix": "same_tx_crossdomain",
+          "mixstyle_fallback": "skip"
+        },
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "model_seed": 2026092702,
+        "augmentation_seed": 2027,
+        "target_access": false,
+        "commit": "14a8196c711388f9d1266b3979e8468df72539de"
+      },
+      "epoch": {
+        "epoch": 2,
+        "arm": "leo_mixstyle",
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 100,
+        "source_sample_exposure": 6300,
+        "concat_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 2560,
+        "total_loss": 1.8216070127487183,
+        "clean_ce": 1.8216070127487183,
+        "satellite_ce": null,
+        "gradient_norm": 4.330545902252197,
+        "satellite_weight": 0.0,
+        "clean_weight": 1.0,
+        "learning_rate": 0.00019998772493192525,
+        "mixstyle_calls": 100,
+        "mixstyle_changed_layer_samples": 3072,
+        "scene_batch_counts": {
+          "clean_duplicate": 30,
+          "practical_high": 20
+        },
+        "gradient_used_parameters": 177025,
+        "response_gain_abs_mean": 0.005281149409711361,
+        "response_gain_gradient_norm": 0.33950501680374146,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.5766296296296296,
+        "source_val_ce": 1.0416869196008753,
+        "source_val_rx_accuracy": {
+          "1": 0.5524074074074075,
+          "3": 0.5416666666666666,
+          "4": 0.5001851851851852,
+          "6": 0.495,
+          "8": 0.7938888888888889
+        },
+        "source_val_worst_rx": 0.495,
+        "elapsed_seconds": 11.57844211999327,
+        "peak_cuda_allocated_bytes": 329075200
+      },
+      "source_completion": null,
+      "prediction_complete": null,
+      "log_bytes": 5792,
+      "log_tail": [
+        "EPOCH {\"epoch\": 1, \"arm\": \"leo_mixstyle\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 50, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 6300, \"channel_changed_sample_exposure\": 2176, \"total_loss\": 2.5515099573135376, \"clean_ce\": 2.5515099573135376, \"satellite_ce\": null, \"gradient_norm\": 5.814705538749695, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.0002, \"mixstyle_calls\": 100, \"mixstyle_changed_layer_samples\": 4864, \"scene_batch_counts\": {\"clean_duplicate\": 33, \"practical_high\": 17}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.0022456280421465635, \"response_gain_gradient_norm\": 0.34565719962120056, \"source_val_count\": 27000, \"source_val_accuracy\": 0.5047037037037037, \"source_val_ce\": 1.3709237636990017, \"source_val_rx_accuracy\": {\"1\": 0.6190740740740741, \"3\": 0.3257407407407407, \"4\": 0.6411111111111111, \"6\": 0.6075925925925926, \"8\": 0.33}, \"source_val_worst_rx\": 0.3257407407407407, \"elapsed_seconds\": 11.276883792015724, \"peak_cuda_allocated_bytes\": 329075200}",
+        "EPOCH {\"epoch\": 2, \"arm\": \"leo_mixstyle\", \"optimizer_steps\": 50, \"optimizer_steps_total\": 100, \"source_sample_exposure\": 6300, \"concat_sample_exposure\": 6300, \"channel_changed_sample_exposure\": 2560, \"total_loss\": 1.8216070127487183, \"clean_ce\": 1.8216070127487183, \"satellite_ce\": null, \"gradient_norm\": 4.330545902252197, \"satellite_weight\": 0.0, \"clean_weight\": 1.0, \"learning_rate\": 0.00019998772493192525, \"mixstyle_calls\": 100, \"mixstyle_changed_layer_samples\": 3072, \"scene_batch_counts\": {\"clean_duplicate\": 30, \"practical_high\": 20}, \"gradient_used_parameters\": 177025, \"response_gain_abs_mean\": 0.005281149409711361, \"response_gain_gradient_norm\": 0.33950501680374146, \"source_val_count\": 27000, \"source_val_accuracy\": 0.5766296296296296, \"source_val_ce\": 1.0416869196008753, \"source_val_rx_accuracy\": {\"1\": 0.5524074074074075, \"3\": 0.5416666666666666, \"4\": 0.5001851851851852, \"6\": 0.495, \"8\": 0.7938888888888889}, \"source_val_worst_rx\": 0.495, \"elapsed_seconds\": 11.57844211999327, \"peak_cuda_allocated_bytes\": 329075200}"
+      ]
+    }
+  ],
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 3049566,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_overlay.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/launch_spec.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/dispatcher.stdout.log",
+    "commit": "14a8196c711388f9d1266b3979e8468df72539de",
+    "sha256": "7da478a3c4a55cd052969c3ac917ffdf9f029ceb5592433241a42bc2456a715c"
+  },
+  "dispatcher": {
+    "pid": 3049566,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/launch_spec.json"
+    ],
+    "run_id": "20261004-phase1-reference-overlay-r1-manysig-m16-r01",
+    "launch_owner": "codex/root/reference-overlay-r1-20261004",
+    "commit": "14a8196c711388f9d1266b3979e8468df72539de"
+  },
+  "completion": null,
+  "failure": null,
+  "scoring": null,
+  "queue": {
+    "stage": "source",
+    "active": [
+      "ce-s2026092701",
+      "leo-s2026092701",
+      "mixstyle-s2026092701",
+      "leo_mixstyle-s2026092701",
+      "ce-s2026092702",
+      "leo-s2026092702",
+      "mixstyle-s2026092702",
+      "leo_mixstyle-s2026092702"
+    ],
+    "pending": [
+      "ce-s2026092703",
+      "leo-s2026092703",
+      "mixstyle-s2026092703",
+      "leo_mixstyle-s2026092703",
+      "ce-s2026092704",
+      "leo-s2026092704",
+      "mixstyle-s2026092704",
+      "leo_mixstyle-s2026092704"
+    ],
+    "failures": [],
+    "updated_at": 1791102624.4823887
+  },
+  "source_freeze": null,
+  "prediction_launch": null,
+  "remote_smoke": {
+    "status": "PASS",
+    "device": "cpu",
+    "torch": "2.1.0+cu121",
+    "rows": [
+      {
+        "arm": "ce",
+        "parameters": 177025,
+        "loss": 1.958356261253357,
+        "actual_channel_scenes": [],
+        "checkpoint_roundtrip": "EXACT",
+        "forward_backward": "PASS"
+      },
+      {
+        "arm": "leo",
+        "parameters": 177025,
+        "loss": 4.763837814331055,
+        "actual_channel_scenes": [
+          "practical_high",
+          "practical_low_urban",
+          "practical_mid"
+        ],
+        "checkpoint_roundtrip": "EXACT",
+        "forward_backward": "PASS"
+      },
+      {
+        "arm": "mixstyle",
+        "parameters": 177025,
+        "loss": 2.968050718307495,
+        "actual_channel_scenes": [],
+        "checkpoint_roundtrip": "EXACT",
+        "forward_backward": "PASS"
+      },
+      {
+        "arm": "leo_mixstyle",
+        "parameters": 177025,
+        "loss": 3.9981679916381836,
+        "actual_channel_scenes": [
+          "practical_high",
+          "practical_low_urban",
+          "practical_mid"
+        ],
+        "checkpoint_roundtrip": "EXACT",
+        "forward_backward": "PASS"
+      }
+    ],
+    "real_data_access": false,
+    "checkpoint_ancestors": []
+  },
+  "dispatcher_process": {
+    "pid": 3049566,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_overlay.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/launch_spec.json",
+      ""
+    ],
+    "status": [
+      "Name:\tpython",
+      "Umask:\t0002",
+      "State:\tS (sleeping)",
+      "Tgid:\t3049566",
+      "Ngid:\t0",
+      "Pid:\t3049566"
+    ]
+  },
+  "gpu": "3049585, GPU-56adac86-77cd-36c9-8770-dbf002650461, 570 MiB\n3049594, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 698 MiB\n3049604, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 570 MiB\n3049678, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 698 MiB\n3049759, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 570 MiB\n3049911, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 698 MiB\n3049987, GPU-5463e082-259e-537b-603a-01575d45801c, 570 MiB\n3050001, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 698 MiB\n"
+}

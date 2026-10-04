@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "用户：使用 reference_response 逐步探索加上原来的各种 CVS 方法机制；先给出计划；按你设计的，再细一点，发布实验。",
   "code": {
-    "commit": "release_commit.txt fixes actual committed runtime, verified before launch",
+    "commit": "14a8196c711388f9d1266b3979e8468df72539de",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01"
@@ -98,7 +98,19 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261004-phase1-reference-overlay-r1-manysig-m16-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261004-phase1-reference-overlay-r1-manysig-m16-r01",
     "launch_command": "python -m experiments.cvs_phase1_overlay.publish --output local_artifacts/cvs_reference_overlay_r1_20261004_r01",
-    "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention."
+    "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention.",
+    "actual_pid": 3049566,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_overlay.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/launch_spec.json"
+    ],
+    "startup_verdict": "VERIFIED",
+    "startup_evidence": "evidence/launch_verification.json"
   },
   "expected_artifacts": [
     "initialization.json",
@@ -153,7 +165,7 @@
       "row_id": "ce-s2026092701",
       "method": "ce",
       "purpose": "fixed_factorial_original_mechanism",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_overlay/configs/source-ce-s2026092701.json",
       "prediction_config_ref": "experiments/cvs_phase1_overlay/configs/predict-ce-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/ce-s2026092701/source/resolved_config.json",
@@ -200,13 +212,24 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
+      ],
+      "status": "RUNNING",
+      "actual_pid": 3049585,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-ce-s2026092701.json"
       ]
     },
     {
       "row_id": "leo-s2026092701",
       "method": "leo",
       "purpose": "fixed_factorial_original_mechanism",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_phase1_overlay/configs/source-leo-s2026092701.json",
       "prediction_config_ref": "experiments/cvs_phase1_overlay/configs/predict-leo-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/leo-s2026092701/source/resolved_config.json",
@@ -253,13 +276,24 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
+      ],
+      "status": "RUNNING",
+      "actual_pid": 3049594,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo-s2026092701.json"
       ]
     },
     {
       "row_id": "mixstyle-s2026092701",
       "method": "mixstyle",
       "purpose": "fixed_factorial_original_mechanism",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_overlay/configs/source-mixstyle-s2026092701.json",
       "prediction_config_ref": "experiments/cvs_phase1_overlay/configs/predict-mixstyle-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/mixstyle-s2026092701/source/resolved_config.json",
@@ -306,13 +340,24 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
+      ],
+      "status": "RUNNING",
+      "actual_pid": 3049604,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-mixstyle-s2026092701.json"
       ]
     },
     {
       "row_id": "leo_mixstyle-s2026092701",
       "method": "leo_mixstyle",
       "purpose": "fixed_factorial_original_mechanism",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_phase1_overlay/configs/source-leo_mixstyle-s2026092701.json",
       "prediction_config_ref": "experiments/cvs_phase1_overlay/configs/predict-leo_mixstyle-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/leo_mixstyle-s2026092701/source/resolved_config.json",
@@ -359,13 +404,24 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
+      ],
+      "status": "RUNNING",
+      "actual_pid": 3049678,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo_mixstyle-s2026092701.json"
       ]
     },
     {
       "row_id": "ce-s2026092702",
       "method": "ce",
       "purpose": "fixed_factorial_original_mechanism",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_overlay/configs/source-ce-s2026092702.json",
       "prediction_config_ref": "experiments/cvs_phase1_overlay/configs/predict-ce-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/ce-s2026092702/source/resolved_config.json",
@@ -412,13 +468,24 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
+      ],
+      "status": "RUNNING",
+      "actual_pid": 3049759,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-ce-s2026092702.json"
       ]
     },
     {
       "row_id": "leo-s2026092702",
       "method": "leo",
       "purpose": "fixed_factorial_original_mechanism",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_phase1_overlay/configs/source-leo-s2026092702.json",
       "prediction_config_ref": "experiments/cvs_phase1_overlay/configs/predict-leo-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/leo-s2026092702/source/resolved_config.json",
@@ -465,13 +532,24 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
+      ],
+      "status": "RUNNING",
+      "actual_pid": 3049911,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo-s2026092702.json"
       ]
     },
     {
       "row_id": "mixstyle-s2026092702",
       "method": "mixstyle",
       "purpose": "fixed_factorial_original_mechanism",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_overlay/configs/source-mixstyle-s2026092702.json",
       "prediction_config_ref": "experiments/cvs_phase1_overlay/configs/predict-mixstyle-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/mixstyle-s2026092702/source/resolved_config.json",
@@ -518,13 +596,24 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
+      ],
+      "status": "RUNNING",
+      "actual_pid": 3049987,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-mixstyle-s2026092702.json"
       ]
     },
     {
       "row_id": "leo_mixstyle-s2026092702",
       "method": "leo_mixstyle",
       "purpose": "fixed_factorial_original_mechanism",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_phase1_overlay/configs/source-leo_mixstyle-s2026092702.json",
       "prediction_config_ref": "experiments/cvs_phase1_overlay/configs/predict-leo_mixstyle-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-overlay-r1-manysig-m16-r01/leo_mixstyle-s2026092702/source/resolved_config.json",
@@ -571,6 +660,17 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
+      ],
+      "status": "RUNNING",
+      "actual_pid": 3050001,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_overlay.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01/experiments/cvs_phase1_overlay/configs/source-leo_mixstyle-s2026092702.json"
       ]
     },
     {
@@ -624,7 +724,8 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "leo-s2026092703",
@@ -677,7 +778,8 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "mixstyle-s2026092703",
@@ -730,7 +832,8 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "leo_mixstyle-s2026092703",
@@ -783,7 +886,8 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "ce-s2026092704",
@@ -836,7 +940,8 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "leo-s2026092704",
@@ -889,7 +994,8 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "mixstyle-s2026092704",
@@ -942,7 +1048,8 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "leo_mixstyle-s2026092704",
@@ -995,7 +1102,8 @@
         "paired_effects.json",
         "analysis.md",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED"
     }
   ],
   "notes": [
@@ -1014,7 +1122,7 @@
     "Technical failure preserves all artifacts; no automatic retrain or low-score stop. Whole pipeline ends ANALYZED only after complete scoring and independent recount."
   ],
   "registered_at": "2026-10-04T08:28:04+00:00",
-  "status": "PLANNED",
+  "status": "RUNNING",
   "test_completion_plan": {
     "views": [
       "clean",
