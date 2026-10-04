@@ -106,7 +106,9 @@
       "experiments.cvs_phase1_stack.dispatch"
     ],
     "startup_verdict": "VERIFIED",
-    "startup_evidence": "evidence/launch_verification.json"
+    "startup_evidence": "evidence/launch_verification.json",
+    "requested_gpu_policy": "User2026-10-04: two experiments per GPU,16 concurrent; >=12GB free before additional launch; preserve existing training PIDs",
+    "capacity_change_status": "LOCAL_VERIFIED_PENDING_HANDOFF"
   },
   "expected_artifacts": [
     "initial_smoke.pt",
@@ -8144,7 +8146,8 @@
     "Scratch EMA originates only from ownstudent; no imported state. E200 final weights only. Fullnative metrics and compressed fullstep logs, compact JSONL/CSV with nonfinite missingvaluesnull.",
     "Clean168000 and one pairedsatellite168000 observations with disjointthreepracticalscene strata; immutableexistingVALIDATED_ONCEcapsule. Allpredictions beforetruth. No Phase2/K/newclass/H claims.",
     "Retain technicalfailures/negative results; noautomatic retry, no low-scorestop, no interference with healthy tasks. Nonfinite loss/gradient fails immediately; logged_steps and successful optimizer_steps must both equal44400 before freeze. Failure stops laterqueue after activejobsfinish; completion requiresindependent scoring/recount.",
-    "R2 bridge includes originalRF augmentation and native schedules/domainbranch; EMA arm maintains teacher state but student remains inference/selection model; no isolatedEMA inference benefit claim."
+    "R2 bridge includes originalRF augmentation and native schedules/domainbranch; EMA arm maintains teacher state but student remains inference/selection model; no isolatedEMA inference benefit claim.",
+    "2026-10-04 user explicitly changes parallelism to two experiments perGPU. Controller-only handoff adopts existing8workers without restarting/stopping them; original worker code/config/weights/seed/budget and source selection/test barrier preserved; totalcap16. Original8concurrent registration remains historical."
   ],
   "status": "RUNNING",
   "test_completion_plan": {
