@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "torch": "2.10.0+cu128",
+  "rows": [
+    {
+      "arm": "ce",
+      "parameters": 177025,
+      "loss": 3.029726028442383,
+      "actual_channel_scenes": [],
+      "checkpoint_roundtrip": "EXACT",
+      "forward_backward": "PASS"
+    },
+    {
+      "arm": "leo",
+      "parameters": 177025,
+      "loss": 5.721698760986328,
+      "actual_channel_scenes": [
+        "practical_high",
+        "practical_low_urban",
+        "practical_mid"
+      ],
+      "checkpoint_roundtrip": "EXACT",
+      "forward_backward": "PASS"
+    },
+    {
+      "arm": "mixstyle",
+      "parameters": 177025,
+      "loss": 3.6117441654205322,
+      "actual_channel_scenes": [],
+      "checkpoint_roundtrip": "EXACT",
+      "forward_backward": "PASS"
+    },
+    {
+      "arm": "leo_mixstyle",
+      "parameters": 177025,
+      "loss": 6.279266834259033,
+      "actual_channel_scenes": [
+        "practical_high",
+        "practical_low_urban",
+        "practical_mid"
+      ],
+      "checkpoint_roundtrip": "EXACT",
+      "forward_backward": "PASS"
+    }
+  ],
+  "real_data_access": false,
+  "checkpoint_ancestors": []
+}
