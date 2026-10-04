@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求全面分析R2耗时并优化后续训练速度。",
   "code": {
-    "commit": "release implementation committed after these local checks; see main run execution release commit",
+    "commit": "eb1c6d4d70587a25142e2369753dcdf1c60e5a29",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
     "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt"
@@ -80,7 +80,8 @@
     "remote_log_root": null,
     "local_artifact_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_reference_stack_speed_20261004_r01",
     "launch_command": "python -m experiments.cvs_phase1_stack.speed_benchmark per registered row",
-    "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention."
+    "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention.",
+    "delivery_release_commit": "7d29968511875f8b0b2bb724977f435dfdc485b0"
   },
   "expected_artifacts": [
     "stdout.log",

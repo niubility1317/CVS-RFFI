@@ -1,0 +1,44 @@
+{
+  "status": "VERIFIED",
+  "read_at": 1791130950.985953,
+  "controller_pid": 3261036,
+  "r2_alive": 16,
+  "r2_complete": 0,
+  "r2_epochs": {
+    "r2-bridge-s2026092701": 199,
+    "r2-twostage-s2026092701": 199,
+    "r2-ema-s2026092701": 197,
+    "r2-pseudo-s2026092701": 183,
+    "r2-bridge-s2026092702": 197,
+    "r2-twostage-s2026092702": 199,
+    "r2-ema-s2026092702": 196,
+    "r2-pseudo-s2026092702": 180,
+    "r2-bridge-s2026092703": 191,
+    "r2-twostage-s2026092703": 190,
+    "r2-ema-s2026092703": 186,
+    "r2-pseudo-s2026092703": 172,
+    "r2-bridge-s2026092704": 190,
+    "r2-twostage-s2026092704": 188,
+    "r2-ema-s2026092704": 186,
+    "r2-pseudo-s2026092704": 174
+  },
+  "future_optimized_rows": 120,
+  "old_workers_unchanged": true,
+  "scientific_budget_unchanged": true,
+  "per_gpu_limit": 2,
+  "sixscene_pid": 3219697,
+  "sixscene_alive": true,
+  "compatibility": {
+    "status": "VERIFIED",
+    "device": "cpu",
+    "torch": "2.1.0+cu121",
+    "checks": [
+      "gradient_norm_before_after_clip_exact",
+      "nonfinite_gradient_exact",
+      "nested_log_values_exact",
+      "cache_exact_and_input_parameter_invalidation",
+      "incremental_jsonl_csv_values_schema_exact"
+    ],
+    "target_access": false
+  }
+}

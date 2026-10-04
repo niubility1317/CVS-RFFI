@@ -1,0 +1,229 @@
+{
+  "status": "SUBMITTED",
+  "pid": 3261036,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/fast_dispatch.py",
+    "--worker-root",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+    "--handoff",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/handoff.json"
+  ],
+  "control_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02",
+  "commit": "7d29968511875f8b0b2bb724977f435dfdc485b0",
+  "old_dispatcher_pid": 3163411,
+  "preserved_workers": {
+    "r2-bridge-s2026092701": {
+      "pid": 3157224,
+      "start_ticks": 36481833,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092701.json"
+      ]
+    },
+    "r2-twostage-s2026092701": {
+      "pid": 3157233,
+      "start_ticks": 36481880,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092701.json"
+      ]
+    },
+    "r2-ema-s2026092701": {
+      "pid": 3157243,
+      "start_ticks": 36481921,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092701.json"
+      ]
+    },
+    "r2-pseudo-s2026092701": {
+      "pid": 3157316,
+      "start_ticks": 36481966,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092701.json"
+      ]
+    },
+    "r2-bridge-s2026092702": {
+      "pid": 3157397,
+      "start_ticks": 36482046,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092702.json"
+      ]
+    },
+    "r2-twostage-s2026092702": {
+      "pid": 3157541,
+      "start_ticks": 36482117,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092702.json"
+      ]
+    },
+    "r2-ema-s2026092702": {
+      "pid": 3157553,
+      "start_ticks": 36482178,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092702.json"
+      ]
+    },
+    "r2-pseudo-s2026092702": {
+      "pid": 3157631,
+      "start_ticks": 36482242,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092702.json"
+      ]
+    },
+    "r2-bridge-s2026092703": {
+      "pid": 3163432,
+      "start_ticks": 36550515,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092703.json"
+      ]
+    },
+    "r2-twostage-s2026092703": {
+      "pid": 3163441,
+      "start_ticks": 36550556,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092703.json"
+      ]
+    },
+    "r2-ema-s2026092703": {
+      "pid": 3163451,
+      "start_ticks": 36550594,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092703.json"
+      ]
+    },
+    "r2-pseudo-s2026092703": {
+      "pid": 3163461,
+      "start_ticks": 36550631,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092703.json"
+      ]
+    },
+    "r2-bridge-s2026092704": {
+      "pid": 3163534,
+      "start_ticks": 36550670,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092704.json"
+      ]
+    },
+    "r2-twostage-s2026092704": {
+      "pid": 3163608,
+      "start_ticks": 36550711,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092704.json"
+      ]
+    },
+    "r2-ema-s2026092704": {
+      "pid": 3163682,
+      "start_ticks": 36550756,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092704.json"
+      ]
+    },
+    "r2-pseudo-s2026092704": {
+      "pid": 3163757,
+      "start_ticks": 36550802,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092704.json"
+      ]
+    }
+  },
+  "naturally_completed": [],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/dispatcher.stdout.log"
+}

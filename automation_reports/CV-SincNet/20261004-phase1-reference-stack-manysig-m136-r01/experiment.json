@@ -126,13 +126,33 @@
         "incremental native epoch telemetry"
       ],
       "diagnostic_run": "20261004-diagnostic-reference-stack-speed-synthetic-m12-r01",
-      "status": "LOCAL_VERIFIED_NOT_YET_DEPLOYED",
+      "status": "VERIFIED_QUEUED_FOR_R3_R6",
       "worker_model_commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
       "budgets_unchanged": true,
       "target_plan_unchanged": true,
       "failed_release": "cvs_reference_stack_fast_20261005_r01",
       "failure_layer": "controller identity readback omitted Python -u; no process signalled",
-      "diagnostic_verdict": "6 paired cases exact; CPU/CUDA local checks; Torch2.1 remote CPU compatibility VERIFIED"
+      "diagnostic_verdict": "6 paired cases exact; CPU/CUDA local checks; Torch2.1 remote CPU compatibility VERIFIED",
+      "commit": "7d29968511875f8b0b2bb724977f435dfdc485b0",
+      "controller_pid": 3261036,
+      "evidence": "evidence/fast_execution/verification.json",
+      "verified_at": "2026-10-05T00:22:30.985953+08:00"
+    },
+    "active_controller": {
+      "pid": 3261036,
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02",
+      "commit": "7d29968511875f8b0b2bb724977f435dfdc485b0",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/fast_dispatch.py",
+        "--worker-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "--handoff",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/handoff.json"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "scope": "controller-only handoff; all original workers adopted unchanged"
     }
   },
   "expected_artifacts": [

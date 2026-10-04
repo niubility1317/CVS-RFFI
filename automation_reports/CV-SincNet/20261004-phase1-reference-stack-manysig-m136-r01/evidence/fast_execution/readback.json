@@ -1,0 +1,1540 @@
+{
+  "read_at": 1791130950.985953,
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 3261036,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/fast_dispatch.py",
+      "--worker-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "--handoff",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/handoff.json"
+    ],
+    "control_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02",
+    "commit": "7d29968511875f8b0b2bb724977f435dfdc485b0",
+    "old_dispatcher_pid": 3163411,
+    "preserved_workers": {
+      "r2-bridge-s2026092701": {
+        "pid": 3157224,
+        "start_ticks": 36481833,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092701.json"
+        ]
+      },
+      "r2-twostage-s2026092701": {
+        "pid": 3157233,
+        "start_ticks": 36481880,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092701.json"
+        ]
+      },
+      "r2-ema-s2026092701": {
+        "pid": 3157243,
+        "start_ticks": 36481921,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092701.json"
+        ]
+      },
+      "r2-pseudo-s2026092701": {
+        "pid": 3157316,
+        "start_ticks": 36481966,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092701.json"
+        ]
+      },
+      "r2-bridge-s2026092702": {
+        "pid": 3157397,
+        "start_ticks": 36482046,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092702.json"
+        ]
+      },
+      "r2-twostage-s2026092702": {
+        "pid": 3157541,
+        "start_ticks": 36482117,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092702.json"
+        ]
+      },
+      "r2-ema-s2026092702": {
+        "pid": 3157553,
+        "start_ticks": 36482178,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092702.json"
+        ]
+      },
+      "r2-pseudo-s2026092702": {
+        "pid": 3157631,
+        "start_ticks": 36482242,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092702.json"
+        ]
+      },
+      "r2-bridge-s2026092703": {
+        "pid": 3163432,
+        "start_ticks": 36550515,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092703.json"
+        ]
+      },
+      "r2-twostage-s2026092703": {
+        "pid": 3163441,
+        "start_ticks": 36550556,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092703.json"
+        ]
+      },
+      "r2-ema-s2026092703": {
+        "pid": 3163451,
+        "start_ticks": 36550594,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092703.json"
+        ]
+      },
+      "r2-pseudo-s2026092703": {
+        "pid": 3163461,
+        "start_ticks": 36550631,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092703.json"
+        ]
+      },
+      "r2-bridge-s2026092704": {
+        "pid": 3163534,
+        "start_ticks": 36550670,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092704.json"
+        ]
+      },
+      "r2-twostage-s2026092704": {
+        "pid": 3163608,
+        "start_ticks": 36550711,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092704.json"
+        ]
+      },
+      "r2-ema-s2026092704": {
+        "pid": 3163682,
+        "start_ticks": 36550756,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092704.json"
+        ]
+      },
+      "r2-pseudo-s2026092704": {
+        "pid": 3163757,
+        "start_ticks": 36550802,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092704.json"
+        ]
+      }
+    },
+    "naturally_completed": [],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/dispatcher.stdout.log"
+  },
+  "active": {
+    "pid": 3261036,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/fast_dispatch.py",
+      "--worker-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "--handoff",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/handoff.json"
+    ],
+    "owner": "codex/root/reference-stack-20261004",
+    "max_active": 16,
+    "per_gpu_limit": 2,
+    "worker_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+    "worker_commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+    "control_release": "cvs_reference_stack_fast_20261005_r02",
+    "control_commit": "7d29968511875f8b0b2bb724977f435dfdc485b0",
+    "handoff": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/handoff.json",
+    "future_source_entry": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/fast_source.py"
+  },
+  "controller": {
+    "pid": 3261036,
+    "start_ticks": 37864621,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/fast_dispatch.py",
+      "--worker-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+      "--handoff",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_fast_20261005_r02/handoff.json"
+    ]
+  },
+  "old_controller": null,
+  "queue": {
+    "phase": "r2",
+    "kind": "source",
+    "active": [
+      "r2-bridge-s2026092701",
+      "r2-twostage-s2026092701",
+      "r2-ema-s2026092701",
+      "r2-pseudo-s2026092701",
+      "r2-bridge-s2026092702",
+      "r2-twostage-s2026092702",
+      "r2-ema-s2026092702",
+      "r2-pseudo-s2026092702",
+      "r2-bridge-s2026092703",
+      "r2-twostage-s2026092703",
+      "r2-ema-s2026092703",
+      "r2-pseudo-s2026092703",
+      "r2-bridge-s2026092704",
+      "r2-twostage-s2026092704",
+      "r2-ema-s2026092704",
+      "r2-pseudo-s2026092704"
+    ],
+    "pending": [],
+    "failures": [],
+    "updated_at": 1791130943.0621514,
+    "max_active": 16,
+    "per_gpu_limit": 2,
+    "controller_pid": 3261036,
+    "controller_release": "cvs_reference_stack_fast_20261005_r02"
+  },
+  "failure": null,
+  "compatibility": {
+    "status": "VERIFIED",
+    "device": "cpu",
+    "torch": "2.1.0+cu121",
+    "checks": [
+      "gradient_norm_before_after_clip_exact",
+      "nonfinite_gradient_exact",
+      "nested_log_values_exact",
+      "cache_exact_and_input_parameter_invalidation",
+      "incremental_jsonl_csv_values_schema_exact"
+    ],
+    "target_access": false
+  },
+  "workers": [
+    {
+      "row_id": "r2-bridge-s2026092701",
+      "pid": 3157224,
+      "gpu": 0,
+      "process": {
+        "pid": 3157224,
+        "start_ticks": 36481833,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092701.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 199,
+      "epoch_s": 77.49990701675415,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "bridge",
+        "model_seed": 2026092701,
+        "row_id": "r2-bridge-s2026092701",
+        "features": [
+          "leo"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3157224,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "0",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092701/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-twostage-s2026092701",
+      "pid": 3157233,
+      "gpu": 1,
+      "process": {
+        "pid": 3157233,
+        "start_ticks": 36481880,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092701.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 199,
+      "epoch_s": 77.3577811717987,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "twostage",
+        "model_seed": 2026092701,
+        "row_id": "r2-twostage-s2026092701",
+        "features": [
+          "leo",
+          "twostage"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3157233,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "1",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092701/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-ema-s2026092701",
+      "pid": 3157243,
+      "gpu": 2,
+      "process": {
+        "pid": 3157243,
+        "start_ticks": 36481921,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092701.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 197,
+      "epoch_s": 78.99639010429382,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "ema",
+        "model_seed": 2026092701,
+        "row_id": "r2-ema-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "twostage"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3157243,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "2",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092701/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-pseudo-s2026092701",
+      "pid": 3157316,
+      "gpu": 3,
+      "process": {
+        "pid": 3157316,
+        "start_ticks": 36481966,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092701.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 183,
+      "epoch_s": 95.72766256332397,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "pseudo",
+        "model_seed": 2026092701,
+        "row_id": "r2-pseudo-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3157316,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "3",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092701/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-bridge-s2026092702",
+      "pid": 3157397,
+      "gpu": 4,
+      "process": {
+        "pid": 3157397,
+        "start_ticks": 36482046,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092702.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 197,
+      "epoch_s": 79.99782633781433,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "bridge",
+        "model_seed": 2026092702,
+        "row_id": "r2-bridge-s2026092702",
+        "features": [
+          "leo"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3157397,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "4",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092702/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-twostage-s2026092702",
+      "pid": 3157541,
+      "gpu": 5,
+      "process": {
+        "pid": 3157541,
+        "start_ticks": 36482117,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092702.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 199,
+      "epoch_s": 77.35434460639954,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "twostage",
+        "model_seed": 2026092702,
+        "row_id": "r2-twostage-s2026092702",
+        "features": [
+          "leo",
+          "twostage"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3157541,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "5",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092702/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-ema-s2026092702",
+      "pid": 3157553,
+      "gpu": 6,
+      "process": {
+        "pid": 3157553,
+        "start_ticks": 36482178,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092702.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 196,
+      "epoch_s": 75.92744588851929,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "ema",
+        "model_seed": 2026092702,
+        "row_id": "r2-ema-s2026092702",
+        "features": [
+          "ema",
+          "leo",
+          "twostage"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3157553,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "6",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092702/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-pseudo-s2026092702",
+      "pid": 3157631,
+      "gpu": 7,
+      "process": {
+        "pid": 3157631,
+        "start_ticks": 36482242,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092702.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 180,
+      "epoch_s": 99.82303595542908,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "pseudo",
+        "model_seed": 2026092702,
+        "row_id": "r2-pseudo-s2026092702",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3157631,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "7",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092702/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-bridge-s2026092703",
+      "pid": 3163432,
+      "gpu": 0,
+      "process": {
+        "pid": 3163432,
+        "start_ticks": 36550515,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092703.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 191,
+      "epoch_s": 75.893390417099,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "bridge",
+        "model_seed": 2026092703,
+        "row_id": "r2-bridge-s2026092703",
+        "features": [
+          "leo"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3163432,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "0",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092703/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-twostage-s2026092703",
+      "pid": 3163441,
+      "gpu": 1,
+      "process": {
+        "pid": 3163441,
+        "start_ticks": 36550556,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092703.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 190,
+      "epoch_s": 75.94303059577942,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "twostage",
+        "model_seed": 2026092703,
+        "row_id": "r2-twostage-s2026092703",
+        "features": [
+          "leo",
+          "twostage"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3163441,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "1",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092703/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-ema-s2026092703",
+      "pid": 3163451,
+      "gpu": 4,
+      "process": {
+        "pid": 3163451,
+        "start_ticks": 36550594,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092703.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 186,
+      "epoch_s": 79.34968543052673,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "ema",
+        "model_seed": 2026092703,
+        "row_id": "r2-ema-s2026092703",
+        "features": [
+          "ema",
+          "leo",
+          "twostage"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3163451,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "4",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092703/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-pseudo-s2026092703",
+      "pid": 3163461,
+      "gpu": 5,
+      "process": {
+        "pid": 3163461,
+        "start_ticks": 36550631,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092703.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 172,
+      "epoch_s": 96.52722191810608,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "pseudo",
+        "model_seed": 2026092703,
+        "row_id": "r2-pseudo-s2026092703",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3163461,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "5",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092703/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-bridge-s2026092704",
+      "pid": 3163534,
+      "gpu": 2,
+      "process": {
+        "pid": 3163534,
+        "start_ticks": 36550670,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-bridge-s2026092704.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 190,
+      "epoch_s": 78.07244491577148,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "bridge",
+        "model_seed": 2026092704,
+        "row_id": "r2-bridge-s2026092704",
+        "features": [
+          "leo"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3163534,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "2",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092704/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-twostage-s2026092704",
+      "pid": 3163608,
+      "gpu": 3,
+      "process": {
+        "pid": 3163608,
+        "start_ticks": 36550711,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-twostage-s2026092704.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 188,
+      "epoch_s": 75.50358557701111,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "twostage",
+        "model_seed": 2026092704,
+        "row_id": "r2-twostage-s2026092704",
+        "features": [
+          "leo",
+          "twostage"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3163608,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "3",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092704/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-ema-s2026092704",
+      "pid": 3163682,
+      "gpu": 6,
+      "process": {
+        "pid": 3163682,
+        "start_ticks": 36550756,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092704.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 186,
+      "epoch_s": 74.5432596206665,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "ema",
+        "model_seed": 2026092704,
+        "row_id": "r2-ema-s2026092704",
+        "features": [
+          "ema",
+          "leo",
+          "twostage"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3163682,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "6",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092704/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    },
+    {
+      "row_id": "r2-pseudo-s2026092704",
+      "pid": 3163757,
+      "gpu": 7,
+      "process": {
+        "pid": 3163757,
+        "start_ticks": 36550802,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-pseudo-s2026092704.json"
+        ]
+      },
+      "completed": null,
+      "epoch": 174,
+      "epoch_s": 100.20722579956055,
+      "resolved": {
+        "schema": "reference_stack_v1",
+        "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+        "stage": "r2",
+        "arm": "pseudo",
+        "model_seed": 2026092704,
+        "row_id": "r2-pseudo-s2026092704",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "leo"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false,
+        "pid": 3163757,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c73c904c8331f26254761042516f1ae43ed9c98",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "7",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092704/source/resolved_native_args.json"
+      },
+      "native_flags": {
+        "a1_runtime_fast": false,
+        "a1_gradient_snapshot": false,
+        "source_validation_reuse": false
+      }
+    }
+  ],
+  "sixscene_submit": {
+    "status": "SUBMITTED",
+    "pid": 3219697,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_sixscene_20261004_r01/sixscene_after.py",
+      "--mode",
+      "dispatch"
+    ],
+    "commit": "f85907dc3cc1e7589da0fdfc5acfc83a040c2d51",
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_sixscene_20261004_r01/dispatcher.stdout.log",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-sixscene-manysig-m136-r01"
+  },
+  "sixscene_process": {
+    "pid": 3219697,
+    "start_ticks": 37308472,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_sixscene_20261004_r01/sixscene_after.py",
+      "--mode",
+      "dispatch"
+    ]
+  },
+  "sixscene_runtime": {
+    "status": "WAITING_PARENT_COMPLETION",
+    "parent_run": "20261004-phase1-reference-stack-manysig-m136-r01",
+    "updated_at": 1791130906.9730468,
+    "target_read": false,
+    "gpu_reserved": false
+  }
+}
