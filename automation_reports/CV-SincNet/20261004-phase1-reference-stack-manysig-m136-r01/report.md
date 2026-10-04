@@ -3,7 +3,7 @@
 - run_id：`20261004-phase1-reference-stack-manysig-m136-r01`
 - group_id：`cvs-reference-original-phase1-overlay`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING；发布VERIFIED（2026-10-04独立读回，首批8行已到第2轮，其余按依赖排队）
 
 ## 目的与对照
 
@@ -84,3 +84,23 @@ R6删组含义：no_leo仅移除有标签concat卫星增强，DAOT/MUSE各自视
 
 唯一配置维护位置：本run的experiment.json；逐行模板指向运行前生成的真实配置。源码规则：`design.py`。只有完整预测、评分和独立复算均完成，才能登记ANALYZED。
 
+## 发布与当前状态
+
+2026-10-04T20:33:39.086489+08:00独立读回：发布VERIFIED，运行RUNNING。代码commit：`0c73c904c8331f26254761042516f1ae43ed9c98`；发布前已独立核对Git远端OID。dispatcher PID：3157203。
+
+136行均已提交至唯一调度器：R2首批8行GPU0至7运行，R2另8行排队，R3至R6共120行等待源域前序依赖。首批PID/CWD/argv、实际844754主模型参数（含原域分支）、L/U/V物理角色一致、scratch来源、完整FP32和GPU进程均核实；日志增长及首轮完成已验证。
+
+| row | PID | GPU | 核实时epoch |
+|---|---:|---:|---:|
+| r2-bridge-s2026092701 | 3157224 | 0 | 2 |
+| r2-twostage-s2026092701 | 3157233 | 1 | 2 |
+| r2-ema-s2026092701 | 3157243 | 2 | 2 |
+| r2-pseudo-s2026092701 | 3157316 | 3 | 2 |
+| r2-bridge-s2026092702 | 3157397 | 4 | 2 |
+| r2-twostage-s2026092702 | 3157541 | 5 | 2 |
+| r2-ema-s2026092702 | 3157553 | 6 | 2 |
+| r2-pseudo-s2026092702 | 3157631 | 7 | 2 |
+
+远端CPU合成集成冒烟覆盖5组×第1、41、80、131、181轮，全部PASS；无正式数据或query接触。正式行自身初始化checkpoint无query重载通过。当前本批无最终预测/评分，不能宣称性能提升或实验全部完成。
+
+后续由已运行dispatcher顺序完成R2至R6源训练与源域选择，再统一136行clean/satellite预测、独立truth-last评分和第二实现复算。不创建额外定时任务。恢复先读queue_state/completion/failure，禁止重复发布。最终评分后应回填本报告、登记和Git；技术失败保留原产物，不自动重试。

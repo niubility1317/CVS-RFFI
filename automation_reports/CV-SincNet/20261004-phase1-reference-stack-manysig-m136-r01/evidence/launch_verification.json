@@ -1,0 +1,187 @@
+{
+  "run_id": "20261004-phase1-reference-stack-manysig-m136-r01",
+  "status": "VERIFIED",
+  "read_at": 1791117219.0864887,
+  "rows": [
+    {
+      "row_id": "r2-bridge-s2026092701",
+      "pid": 3157224,
+      "gpu": 0,
+      "runtime_verified": true,
+      "log_growth": true,
+      "epoch": 2,
+      "total_parameters": 844754,
+      "log_bytes": 16146
+    },
+    {
+      "row_id": "r2-twostage-s2026092701",
+      "pid": 3157233,
+      "gpu": 1,
+      "runtime_verified": true,
+      "log_growth": true,
+      "epoch": 2,
+      "total_parameters": 844754,
+      "log_bytes": 16172
+    },
+    {
+      "row_id": "r2-ema-s2026092701",
+      "pid": 3157243,
+      "gpu": 2,
+      "runtime_verified": true,
+      "log_growth": true,
+      "epoch": 2,
+      "total_parameters": 844754,
+      "log_bytes": 16112
+    },
+    {
+      "row_id": "r2-pseudo-s2026092701",
+      "pid": 3157316,
+      "gpu": 3,
+      "runtime_verified": true,
+      "log_growth": true,
+      "epoch": 2,
+      "total_parameters": 844754,
+      "log_bytes": 16154
+    },
+    {
+      "row_id": "r2-bridge-s2026092702",
+      "pid": 3157397,
+      "gpu": 4,
+      "runtime_verified": true,
+      "log_growth": true,
+      "epoch": 2,
+      "total_parameters": 844754,
+      "log_bytes": 16146
+    },
+    {
+      "row_id": "r2-twostage-s2026092702",
+      "pid": 3157541,
+      "gpu": 5,
+      "runtime_verified": true,
+      "log_growth": true,
+      "epoch": 2,
+      "total_parameters": 844754,
+      "log_bytes": 16172
+    },
+    {
+      "row_id": "r2-ema-s2026092702",
+      "pid": 3157553,
+      "gpu": 6,
+      "runtime_verified": true,
+      "log_growth": true,
+      "epoch": 2,
+      "total_parameters": 844754,
+      "log_bytes": 16112
+    },
+    {
+      "row_id": "r2-pseudo-s2026092702",
+      "pid": 3157631,
+      "gpu": 7,
+      "runtime_verified": true,
+      "log_growth": true,
+      "epoch": 2,
+      "total_parameters": 844754,
+      "log_bytes": 16154
+    }
+  ],
+  "failure": null,
+  "remote_smoke": {
+    "status": "PASS",
+    "device": "cpu",
+    "rows": [
+      {
+        "stage": "r2",
+        "arm": "pseudo",
+        "epochs": [
+          1,
+          41,
+          80,
+          131,
+          181
+        ],
+        "source": "synthetic",
+        "status": "PASS"
+      },
+      {
+        "stage": "r4",
+        "arm": "all_open",
+        "epochs": [
+          1,
+          41,
+          80,
+          131,
+          181
+        ],
+        "source": "synthetic",
+        "status": "PASS"
+      },
+      {
+        "stage": "r5",
+        "arm": "base",
+        "epochs": [
+          1,
+          41,
+          80,
+          131,
+          181
+        ],
+        "source": "synthetic",
+        "status": "PASS"
+      },
+      {
+        "stage": "r6",
+        "arm": "full",
+        "epochs": [
+          1,
+          41,
+          80,
+          131,
+          181
+        ],
+        "source": "synthetic",
+        "status": "PASS"
+      },
+      {
+        "stage": "r6",
+        "arm": "native_full",
+        "epochs": [
+          1,
+          41,
+          80,
+          131,
+          181
+        ],
+        "source": "synthetic",
+        "status": "PASS"
+      }
+    ],
+    "target_access": false,
+    "formal_weights": false
+  },
+  "queue": {
+    "phase": "r2",
+    "kind": "source",
+    "active": [
+      "r2-bridge-s2026092701",
+      "r2-twostage-s2026092701",
+      "r2-ema-s2026092701",
+      "r2-pseudo-s2026092701",
+      "r2-bridge-s2026092702",
+      "r2-twostage-s2026092702",
+      "r2-ema-s2026092702",
+      "r2-pseudo-s2026092702"
+    ],
+    "pending": [
+      "r2-bridge-s2026092703",
+      "r2-twostage-s2026092703",
+      "r2-ema-s2026092703",
+      "r2-pseudo-s2026092703",
+      "r2-bridge-s2026092704",
+      "r2-twostage-s2026092704",
+      "r2-ema-s2026092704",
+      "r2-pseudo-s2026092704"
+    ],
+    "failures": [],
+    "updated_at": 1791117218.1133914
+  }
+}
