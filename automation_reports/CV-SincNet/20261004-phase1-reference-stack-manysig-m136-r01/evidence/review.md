@@ -1,0 +1,1 @@
+独立P0/P1审查：/root/phase1_review。已审查design/runtime/source/dispatch/predict/smoke及原生U真值诊断修订。发现1项P1：不足预算行可能封存。已修复非有限值立即失败、source及freeze双重要求44400日志/成功更新；审查者定向复核及回归测试通过，P1解除。发布与分析脚本未纳入该审查，由主Agent验证复用路径和独立读回。

@@ -1,0 +1,11 @@
+{
+  "stage": "r2",
+  "arm": "ema",
+  "model_seed": 2026092703,
+  "row_id": "r2-ema-s2026092703",
+  "initialization": "scratch",
+  "parent_features_rule": "R1 source_matrix_frozen.json:leo",
+  "feature_delta_function": "experiments.cvs_phase1_stack.design:features",
+  "resolved_source_config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r2-ema-s2026092703.json",
+  "prediction_config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/predict-r2-ema-s2026092703.json"
+}

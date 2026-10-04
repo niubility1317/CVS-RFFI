@@ -1,0 +1,73 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "rows": [
+    {
+      "stage": "r2",
+      "arm": "pseudo",
+      "epochs": [
+        1,
+        41,
+        80,
+        131,
+        181
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "r4",
+      "arm": "all_open",
+      "epochs": [
+        1,
+        41,
+        80,
+        131,
+        181
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "r5",
+      "arm": "base",
+      "epochs": [
+        1,
+        41,
+        80,
+        131,
+        181
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "r6",
+      "arm": "full",
+      "epochs": [
+        1,
+        41,
+        80,
+        131,
+        181
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "r6",
+      "arm": "native_full",
+      "epochs": [
+        1,
+        41,
+        80,
+        131,
+        181
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    }
+  ],
+  "target_access": false,
+  "formal_weights": false
+}

@@ -1,0 +1,11 @@
+{
+  "stage": "r4",
+  "arm": "owfeat",
+  "model_seed": 2026092701,
+  "row_id": "r4-owfeat-s2026092701",
+  "initialization": "scratch",
+  "parent_features_rule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r3_source_frozen.json:features",
+  "feature_delta_function": "experiments.cvs_phase1_stack.design:features",
+  "resolved_source_config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/source-r4-owfeat-s2026092701.json",
+  "prediction_config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/configs/predict-r4-owfeat-s2026092701.json"
+}

@@ -3,3 +3,4 @@
 [返回总索引](../README.md)
 
 - [reference_response 原 Phase1 机制叠加：LEO×MixStyle 四 seed 消融](../../automation_reports/CV-SincNet/20261004-phase1-reference-overlay-r1-manysig-m16-r01/report.md)
+- [reference_response原Phase1剩余机制：R2至R6共136行](../../automation_reports/CV-SincNet/20261004-phase1-reference-stack-manysig-m136-r01/report.md)

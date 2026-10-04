@@ -10784,8 +10784,10 @@ def train(args) -> int:
                     mask = base_mask & strong_mask
                     pseudo_total = int(pseudo.numel())
                     pseudo_selected = int(mask.sum().detach().item())
-                    pseudo_correct = int(((pseudo == y_u) & mask).sum().detach().item())
-                    pseudo_truth_available = 1.0
+                    # A label-blind U_s loader uses -1 sentinels. Never present
+                    # their diagnostic precision as a measured zero accuracy.
+                    pseudo_truth_available = float(bool((y_u >= 0).all()))
+                    pseudo_correct = int(((pseudo == y_u) & mask).sum().detach().item()) if pseudo_truth_available else 0
                     if bool(mask.any()):
                         loss_u = F.cross_entropy(out_s["tx_logits"][mask], pseudo[mask])
                     else:

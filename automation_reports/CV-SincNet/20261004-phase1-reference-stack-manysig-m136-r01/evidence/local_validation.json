@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "focused_tests": 11,
+  "interpreter": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "native_smoke": "local_native_smoke.json",
+  "epochs": [
+    1,
+    41,
+    80,
+    131,
+    181
+  ],
+  "synthetic_cases": 5,
+  "review": "review.md",
+  "compileall": "PASS",
+  "registry": "VALID",
+  "target_access": false
+}
