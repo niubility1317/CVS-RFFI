@@ -1,0 +1,149 @@
+{
+  "read_at": 1791125433.49378,
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 3219697,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_sixscene_20261004_r01/sixscene_after.py",
+      "--mode",
+      "dispatch"
+    ],
+    "commit": "f85907dc3cc1e7589da0fdfc5acfc83a040c2d51",
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_sixscene_20261004_r01/dispatcher.stdout.log",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-sixscene-manysig-m136-r01"
+  },
+  "process": {
+    "pid": 3219697,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_sixscene_20261004_r01/sixscene_after.py",
+      "--mode",
+      "dispatch"
+    ]
+  },
+  "state": {
+    "status": "WAITING_PARENT_COMPLETION",
+    "parent_run": "20261004-phase1-reference-stack-manysig-m136-r01",
+    "updated_at": 1791125381.6121044,
+    "target_read": false,
+    "gpu_reserved": false
+  },
+  "failure": null,
+  "dispatcher": {
+    "pid": 3219697,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_sixscene_20261004_r01/sixscene_after.py",
+      "--mode",
+      "dispatch"
+    ],
+    "owner": "codex/root/reference-stack-sixscene-20261004",
+    "evaluation_commit": "f85907dc3cc1e7589da0fdfc5acfc83a040c2d51",
+    "parent_run": "20261004-phase1-reference-stack-manysig-m136-r01"
+  },
+  "prediction_files": 0,
+  "gpu": "3157224, GPU-56adac86-77cd-36c9-8770-dbf002650461, 3600 MiB\n3163432, GPU-56adac86-77cd-36c9-8770-dbf002650461, 3600 MiB\n3157233, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 3600 MiB\n3163441, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 3600 MiB\n3157243, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 3604 MiB\n3163534, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 3600 MiB\n3157316, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 3604 MiB\n3163608, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 3600 MiB\n3157397, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 3600 MiB\n3163451, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 3602 MiB\n3157541, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 3600 MiB\n3163461, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 3602 MiB\n3157553, GPU-5463e082-259e-537b-603a-01575d45801c, 3604 MiB\n3163682, GPU-5463e082-259e-537b-603a-01575d45801c, 3602 MiB\n3157631, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 3604 MiB\n3163757, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 3602 MiB\n",
+  "parent_queue": {
+    "phase": "r2",
+    "kind": "source",
+    "active": [
+      "r2-bridge-s2026092701",
+      "r2-twostage-s2026092701",
+      "r2-ema-s2026092701",
+      "r2-pseudo-s2026092701",
+      "r2-bridge-s2026092702",
+      "r2-twostage-s2026092702",
+      "r2-ema-s2026092702",
+      "r2-pseudo-s2026092702",
+      "r2-bridge-s2026092703",
+      "r2-twostage-s2026092703",
+      "r2-ema-s2026092703",
+      "r2-pseudo-s2026092703",
+      "r2-bridge-s2026092704",
+      "r2-twostage-s2026092704",
+      "r2-ema-s2026092704",
+      "r2-pseudo-s2026092704"
+    ],
+    "pending": [],
+    "failures": [],
+    "updated_at": 1791125423.74454,
+    "max_active": 16,
+    "per_gpu_limit": 2,
+    "controller_pid": 3163411,
+    "controller_release": "cvs_reference_stack_dispatch16_20261004_r01"
+  },
+  "parent_failure": null,
+  "parent_completed": 0,
+  "parent_rows": [
+    {
+      "row_id": "r2-bridge-s2026092701",
+      "epoch": 126
+    },
+    {
+      "row_id": "r2-bridge-s2026092702",
+      "epoch": 126
+    },
+    {
+      "row_id": "r2-bridge-s2026092703",
+      "epoch": 117
+    },
+    {
+      "row_id": "r2-bridge-s2026092704",
+      "epoch": 117
+    },
+    {
+      "row_id": "r2-ema-s2026092701",
+      "epoch": 125
+    },
+    {
+      "row_id": "r2-ema-s2026092702",
+      "epoch": 125
+    },
+    {
+      "row_id": "r2-ema-s2026092703",
+      "epoch": 115
+    },
+    {
+      "row_id": "r2-ema-s2026092704",
+      "epoch": 115
+    },
+    {
+      "row_id": "r2-pseudo-s2026092701",
+      "epoch": 126
+    },
+    {
+      "row_id": "r2-pseudo-s2026092702",
+      "epoch": 124
+    },
+    {
+      "row_id": "r2-pseudo-s2026092703",
+      "epoch": 115
+    },
+    {
+      "row_id": "r2-pseudo-s2026092704",
+      "epoch": 115
+    },
+    {
+      "row_id": "r2-twostage-s2026092701",
+      "epoch": 126
+    },
+    {
+      "row_id": "r2-twostage-s2026092702",
+      "epoch": 126
+    },
+    {
+      "row_id": "r2-twostage-s2026092703",
+      "epoch": 117
+    },
+    {
+      "row_id": "r2-twostage-s2026092704",
+      "epoch": 116
+    }
+  ]
+}

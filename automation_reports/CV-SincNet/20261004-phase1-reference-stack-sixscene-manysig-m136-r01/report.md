@@ -3,7 +3,7 @@
 - run_id：`20261004-phase1-reference-stack-sixscene-manysig-m136-r01`
 - group_id：`cvs-reference-phase1-stack-sixscene-evaluation`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：WAITING_PARENT_COMPLETION（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -37,3 +37,10 @@
 最多16个预测任务，每卡最多2个。全部136×7组预测固定后，独立评分进程连接truth，计算总体/RX/TX的Accuracy、Macro-F1和混淆矩阵；第二实现bincount逐项复算。最终输出四seed均值/标准差、最差RX和固定配对差值。测试不反馈模型、超参数、候选排序或重跑。
 
 等待父实验失败时，本评估保留失败记录并停止，不自动重试。完整六环境与原3环境分层不同；Phase2适应/K/新增类/H均N/A。当前尚无本评估预测或评分结果。4项定向测试和独立P0/P1审查已通过。
+
+
+## 自动等待已发布
+
+2026-10-04T22:50:33.493780+08:00独立读回VERIFIED。等待进程PID 3219697，精确CWD/argv与发布凭据一致；state=WAITING_PARENT_COMPLETION，没有GPU占用、预测文件或故障。父队列仍16并发，训练未受干预。发布commit：`f85907dc3cc1e7589da0fdfc5acfc83a040c2d51`，发布前Git远端OID已核实。
+
+本任务已真实排队：父run全部完成后自动执行clean和六个完整residual环境预测、truth-last评分、第二实现复算及同row报告。无需用户再次确认或手动启动。最终本地登记与Git结果收尾仍应在结果产生后同步，不把当前等待状态写成测试完成。

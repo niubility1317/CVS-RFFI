@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-04：不要忘了跑完自动进行测试集测试包括clean和六个residual星地环境。",
   "code": {
-    "commit": "evaluation release_commit.txt fixes actual Git commit; worker code 0c73c904c8331f26254761042516f1ae43ed9c98",
+    "commit": "f85907dc3cc1e7589da0fdfc5acfc83a040c2d51",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01"
@@ -102,7 +102,18 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261004-phase1-reference-stack-sixscene-manysig-m136-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261004-phase1-reference-stack-sixscene-manysig-m136-r01",
     "launch_command": "python -m experiments.cvs_phase1_stack.publish_sixscene --output local_artifacts/cvs_reference_stack_sixscene_20261004_r01",
-    "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention."
+    "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention.",
+    "actual_pid": 3219697,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_20261004_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_sixscene_20261004_r01/sixscene_after.py",
+      "--mode",
+      "dispatch"
+    ],
+    "startup_verdict": "VERIFIED",
+    "startup_evidence": "evidence/readback.json"
   },
   "expected_artifacts": [
     "dispatcher.json",
@@ -189,7 +200,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-twostage-s2026092701",
@@ -234,7 +246,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-ema-s2026092701",
@@ -279,7 +292,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-pseudo-s2026092701",
@@ -324,7 +338,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-bridge-s2026092702",
@@ -369,7 +384,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-twostage-s2026092702",
@@ -414,7 +430,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-ema-s2026092702",
@@ -459,7 +476,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-pseudo-s2026092702",
@@ -504,7 +522,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-bridge-s2026092703",
@@ -549,7 +568,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-twostage-s2026092703",
@@ -594,7 +614,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-ema-s2026092703",
@@ -639,7 +660,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-pseudo-s2026092703",
@@ -684,7 +706,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-bridge-s2026092704",
@@ -729,7 +752,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-twostage-s2026092704",
@@ -774,7 +798,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-ema-s2026092704",
@@ -819,7 +844,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r2-pseudo-s2026092704",
@@ -864,7 +890,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-base-s2026092701",
@@ -909,7 +936,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-domain-s2026092701",
@@ -954,7 +982,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-orth-s2026092701",
@@ -999,7 +1028,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-cons-s2026092701",
@@ -1044,7 +1074,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-group_ce-s2026092701",
@@ -1089,7 +1120,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-fishr-s2026092701",
@@ -1134,7 +1166,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-all_dg-s2026092701",
@@ -1179,7 +1212,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-base-s2026092702",
@@ -1224,7 +1258,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-domain-s2026092702",
@@ -1269,7 +1304,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-orth-s2026092702",
@@ -1314,7 +1350,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-cons-s2026092702",
@@ -1359,7 +1396,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-group_ce-s2026092702",
@@ -1404,7 +1442,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-fishr-s2026092702",
@@ -1449,7 +1488,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-all_dg-s2026092702",
@@ -1494,7 +1534,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-base-s2026092703",
@@ -1539,7 +1580,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-domain-s2026092703",
@@ -1584,7 +1626,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-orth-s2026092703",
@@ -1629,7 +1672,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-cons-s2026092703",
@@ -1674,7 +1718,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-group_ce-s2026092703",
@@ -1719,7 +1764,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-fishr-s2026092703",
@@ -1764,7 +1810,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-all_dg-s2026092703",
@@ -1809,7 +1856,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-base-s2026092704",
@@ -1854,7 +1902,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-domain-s2026092704",
@@ -1899,7 +1948,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-orth-s2026092704",
@@ -1944,7 +1994,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-cons-s2026092704",
@@ -1989,7 +2040,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-group_ce-s2026092704",
@@ -2034,7 +2086,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-fishr-s2026092704",
@@ -2079,7 +2132,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r3-all_dg-s2026092704",
@@ -2124,7 +2178,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-base-s2026092701",
@@ -2169,7 +2224,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-proto-s2026092701",
@@ -2214,7 +2270,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-compact-s2026092701",
@@ -2259,7 +2316,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-owfeat-s2026092701",
@@ -2304,7 +2362,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-proxy-s2026092701",
@@ -2349,7 +2408,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-softmix-s2026092701",
@@ -2394,7 +2454,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-episode-s2026092701",
@@ -2439,7 +2500,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-all_open-s2026092701",
@@ -2484,7 +2546,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-base-s2026092702",
@@ -2529,7 +2592,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-proto-s2026092702",
@@ -2574,7 +2638,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-compact-s2026092702",
@@ -2619,7 +2684,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-owfeat-s2026092702",
@@ -2664,7 +2730,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-proxy-s2026092702",
@@ -2709,7 +2776,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-softmix-s2026092702",
@@ -2754,7 +2822,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-episode-s2026092702",
@@ -2799,7 +2868,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-all_open-s2026092702",
@@ -2844,7 +2914,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-base-s2026092703",
@@ -2889,7 +2960,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-proto-s2026092703",
@@ -2934,7 +3006,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-compact-s2026092703",
@@ -2979,7 +3052,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-owfeat-s2026092703",
@@ -3024,7 +3098,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-proxy-s2026092703",
@@ -3069,7 +3144,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-softmix-s2026092703",
@@ -3114,7 +3190,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-episode-s2026092703",
@@ -3159,7 +3236,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-all_open-s2026092703",
@@ -3204,7 +3282,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-base-s2026092704",
@@ -3249,7 +3328,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-proto-s2026092704",
@@ -3294,7 +3374,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-compact-s2026092704",
@@ -3339,7 +3420,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-owfeat-s2026092704",
@@ -3384,7 +3466,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-proxy-s2026092704",
@@ -3429,7 +3512,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-softmix-s2026092704",
@@ -3474,7 +3558,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-episode-s2026092704",
@@ -3519,7 +3604,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r4-all_open-s2026092704",
@@ -3564,7 +3650,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-base-s2026092701",
@@ -3609,7 +3696,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-daot-s2026092701",
@@ -3654,7 +3742,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-rc4-s2026092701",
@@ -3699,7 +3788,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-both-s2026092701",
@@ -3744,7 +3834,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-base-s2026092702",
@@ -3789,7 +3880,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-daot-s2026092702",
@@ -3834,7 +3926,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-rc4-s2026092702",
@@ -3879,7 +3972,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-both-s2026092702",
@@ -3924,7 +4018,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-base-s2026092703",
@@ -3969,7 +4064,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-daot-s2026092703",
@@ -4014,7 +4110,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-rc4-s2026092703",
@@ -4059,7 +4156,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-both-s2026092703",
@@ -4104,7 +4202,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-base-s2026092704",
@@ -4149,7 +4248,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-daot-s2026092704",
@@ -4194,7 +4294,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-rc4-s2026092704",
@@ -4239,7 +4340,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r5-both-s2026092704",
@@ -4284,7 +4386,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-selected-s2026092701",
@@ -4329,7 +4432,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-full-s2026092701",
@@ -4374,7 +4478,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-native_full-s2026092701",
@@ -4419,7 +4524,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_leo-s2026092701",
@@ -4464,7 +4570,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_mixstyle-s2026092701",
@@ -4509,7 +4616,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_pseudo-s2026092701",
@@ -4554,7 +4662,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_dg-s2026092701",
@@ -4599,7 +4708,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_proto_compact-s2026092701",
@@ -4644,7 +4754,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_open_boundary-s2026092701",
@@ -4689,7 +4800,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_daot-s2026092701",
@@ -4734,7 +4846,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_rc4-s2026092701",
@@ -4779,7 +4892,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-selected-s2026092702",
@@ -4824,7 +4938,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-full-s2026092702",
@@ -4869,7 +4984,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-native_full-s2026092702",
@@ -4914,7 +5030,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_leo-s2026092702",
@@ -4959,7 +5076,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_mixstyle-s2026092702",
@@ -5004,7 +5122,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_pseudo-s2026092702",
@@ -5049,7 +5168,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_dg-s2026092702",
@@ -5094,7 +5214,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_proto_compact-s2026092702",
@@ -5139,7 +5260,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_open_boundary-s2026092702",
@@ -5184,7 +5306,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_daot-s2026092702",
@@ -5229,7 +5352,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_rc4-s2026092702",
@@ -5274,7 +5398,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-selected-s2026092703",
@@ -5319,7 +5444,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-full-s2026092703",
@@ -5364,7 +5490,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-native_full-s2026092703",
@@ -5409,7 +5536,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_leo-s2026092703",
@@ -5454,7 +5582,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_mixstyle-s2026092703",
@@ -5499,7 +5628,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_pseudo-s2026092703",
@@ -5544,7 +5674,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_dg-s2026092703",
@@ -5589,7 +5720,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_proto_compact-s2026092703",
@@ -5634,7 +5766,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_open_boundary-s2026092703",
@@ -5679,7 +5812,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_daot-s2026092703",
@@ -5724,7 +5858,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_rc4-s2026092703",
@@ -5769,7 +5904,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-selected-s2026092704",
@@ -5814,7 +5950,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-full-s2026092704",
@@ -5859,7 +5996,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-native_full-s2026092704",
@@ -5904,7 +6042,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_leo-s2026092704",
@@ -5949,7 +6088,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_mixstyle-s2026092704",
@@ -5994,7 +6134,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_pseudo-s2026092704",
@@ -6039,7 +6180,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_dg-s2026092704",
@@ -6084,7 +6226,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_proto_compact-s2026092704",
@@ -6129,7 +6272,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_open_boundary-s2026092704",
@@ -6174,7 +6318,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_daot-s2026092704",
@@ -6219,7 +6364,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     },
     {
       "row_id": "r6-no_rc4-s2026092704",
@@ -6264,7 +6410,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "WAITING_PARENT_COMPLETION"
     }
   ],
   "notes": [
@@ -6276,7 +6423,7 @@
     "Wait process checks every60seconds withoutGPU; failedparent stops evaluation with retainedfailureevidence. Noautomatic retries; at most16 predictors and2/GPU.",
     "Existing threepartition test stays intact; this companion executes afterward and is required finalclean+sixscene delivery. Inference timing and CUDAallocatedpeak measured; unmeasuredcostsN/A."
   ],
-  "status": "PLANNED",
+  "status": "WAITING_PARENT_COMPLETION",
   "test_completion_plan": {
     "views": [
       "clean",
