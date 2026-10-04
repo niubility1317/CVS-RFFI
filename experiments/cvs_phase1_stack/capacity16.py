@@ -24,6 +24,15 @@ def proc(pid):
     except (FileNotFoundError,ProcessLookupError):return None
 
 
+def controller_identity(active,receipt,worker_root):
+    current=proc(active['pid'])
+    if (not current or active['pid']!=receipt['pid'] or current['argv']!=receipt['argv']
+            or current['cwd']!=str(worker_root) or receipt['cwd']!=str(worker_root)
+            or active['cwd']!=str(worker_root)):
+        raise ValueError('Active controller identity mismatch')
+    return current
+
+
 class Adopted:
     def __init__(self,identity,complete):self.identity=identity;self.pid=identity['pid'];self.complete=complete
     def poll(self):
@@ -106,7 +115,7 @@ def run(worker_root,handoff):
     if (root/'failure.json').exists() or (root/'completion.json').exists():raise RuntimeError('Run is failed or already completed')
     marker=root/OWNER_MARKER
     with marker.open('x') as f:json.dump(dict(pid=os.getpid(),control_release=CONTROL_RELEASE,started=time.time()),f)
-    active=dict(pid=os.getpid(),cwd=os.getcwd(),argv=[sys.executable,*sys.argv],owner=d.OWNER,max_active=16,per_gpu_limit=2,
+    active=dict(pid=os.getpid(),cwd=os.getcwd(),argv=proc(os.getpid())['argv'],owner=d.OWNER,max_active=16,per_gpu_limit=2,
                 worker_release=str(worker_root),worker_commit=WORKER_COMMIT,control_release=CONTROL_RELEASE,
                 control_commit=(Path(__file__).parent/'release_commit.txt').read_text().strip(),handoff=str(handoff))
     if SOURCE_ENTRY is not None:active['future_source_entry']=str(SOURCE_ENTRY)

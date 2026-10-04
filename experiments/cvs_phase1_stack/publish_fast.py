@@ -10,7 +10,7 @@ from experiments.cvs_phase1_stack.design import PROJECT,RUN,RELEASE as WORKER_RE
 from experiments.cvs_phase1_stack.capacity16 import WORKER_COMMIT
 from experiments.cvs_phase1_stack.publish import ROOT,CONNECTION,ssh
 
-RELEASE='cvs_reference_stack_fast_20261005_r01'
+RELEASE='cvs_reference_stack_fast_20261005_r02'
 FILES=['capacity16.py','fast_dispatch.py','fast_source.py','fast_execution.py','speed_checks.py']
 
 REMOTE=r'''
@@ -38,9 +38,10 @@ subprocess.run([python,str(control/'fast_source.py'),'--help'],stdout=subprocess
 subprocess.run([python,str(control/'fast_dispatch.py'),'--help'],stdout=subprocess.DEVNULL,check=True)
 spec=importlib.util.spec_from_file_location('capacity',control/'capacity16.py');cap=importlib.util.module_from_spec(spec);spec.loader.exec_module(cap)
 def read(p):return json.loads(p.read_text())
-active=read(run/'dispatcher_active.json');old=cap.proc(active['pid'])
-if not old or old['argv']!=active['argv'] or old['cwd']!=str(worker):raise ValueError('Active controller identity mismatch')
+active=read(run/'dispatcher_active.json')
 if active['control_release']!='cvs_reference_stack_dispatch16_20261004_r01' or active['worker_commit']!=c['worker_commit']:raise ValueError('Unexpected owner')
+old_receipt=read(project/'releases'/active['control_release']/'submit.json')
+old=cap.controller_identity(active,old_receipt,worker)
 queue=read(run/'queue_state.json')
 if queue['phase']!='r2' or queue['kind']!='source' or queue['failures']:raise ValueError('R2 handoff window changed; reconcile')
 def snapshot_workers():

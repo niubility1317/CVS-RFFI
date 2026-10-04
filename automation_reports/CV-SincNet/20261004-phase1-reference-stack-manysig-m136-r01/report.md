@@ -149,3 +149,5 @@ R6删组含义：no_leo仅移除有标签concat卫星增强，DAOT/MUSE各自视
 ## 后续训练执行加速（2026-10-05）
 
 用户授权优化后续训练速度。诊断、限制和实现见[加速诊断报告](../20261004-diagnostic-reference-stack-speed-synthetic-m12-r01/report.md)。拟只将未启动R3–R6路由到独立执行release；健康R2保持原PID及代码。正式科学配置、预算、每卡两行和clean+六residual自动测试不变。当前发布状态以本段后续独立读回为准。
+
+首次发布r01在交接前身份检查处FAILED：旧controller通过sys.argv自报的参数不包含解释器-u，而/proc和原启动凭据包含。独立读回确认原PID3163411及全部16个worker继续运行，没有发送停止信号。远端Torch2.1五项CPU兼容检查已VERIFIED。修复为核对原启动凭据的完整argv、PID、CWD，并让新controller记录/proc真实argv；4项回归测试通过，使用新release r02，保留r01产物。

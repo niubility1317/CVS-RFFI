@@ -3,7 +3,7 @@ import argparse
 from pathlib import Path
 import capacity16 as controller
 
-RELEASE='cvs_reference_stack_fast_20261005_r01'
+RELEASE='cvs_reference_stack_fast_20261005_r02'
 
 def run(worker_root,handoff):
     controller.CONTROL_RELEASE=RELEASE
