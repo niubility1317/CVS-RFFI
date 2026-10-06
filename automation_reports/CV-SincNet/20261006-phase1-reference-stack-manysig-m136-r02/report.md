@@ -41,3 +41,7 @@ R2保持原目录、配置、权重和日志；发布前逐行核对源契约、
 发布r02曾在启动前因误用契约字段classes而失败；独立读回确认无submit及run目录，未启动进程，原release保留。r03以完整expected源契约逐项匹配修复，远端Torch2.1 CPU兼容检查VERIFIED。
 
 随后审查发现原预测入口具有同一schema缺陷。已发布独立测试修复run `20261006-phase1-reference-stack-sixscene-manysig-m136-r03`，PID=4176081，commit=3b5a73a6930cbdfa5db0ddd11ab49326256904ec，当前WAITING_PARENT_SCHEMA_FAILURE。它等待全部源域冻结、旧预测入口自然退出且已知故障证据匹配后，在独立目录完成原混合测试，再完成clean及六完整residual视图的预测、truth-last评分和独立复算。旧训练/等待器未停止、未热改；旧失败记录继续保留。当前本批目标测试完成0/136，不能宣称实验全部完成。
+
+## 2026-10-06下午进度与详细测试结果
+
+2026-10-06T16:13:09.802859+08:00：新增矩阵训练完成28/136，R3另16行运行且自动补位正常；R2至R6尚无目标测试。R1全部16行完成预测、独立评分及复算，状态ANALYZED；本次已更正本地旧RUNNING登记。完整场景/seed/RX/TX指标、640条原始评分与当前队列见[详细报告](evidence/status_20261006_pm/report.md)。六个完整residual环境仍无测试结果，等待全部源训练冻结。

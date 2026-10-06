@@ -213,7 +213,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "actual_pid": 3049585,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
       "actual_argv": [
@@ -277,7 +277,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "actual_pid": 3049594,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
       "actual_argv": [
@@ -341,7 +341,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "actual_pid": 3049604,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
       "actual_argv": [
@@ -405,7 +405,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "actual_pid": 3049678,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
       "actual_argv": [
@@ -469,7 +469,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "actual_pid": 3049759,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
       "actual_argv": [
@@ -533,7 +533,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "actual_pid": 3049911,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
       "actual_argv": [
@@ -597,7 +597,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "actual_pid": 3049987,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
       "actual_argv": [
@@ -661,7 +661,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "actual_pid": 3050001,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_overlay_r1_20261004_r01",
       "actual_argv": [
@@ -725,7 +725,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "ANALYZED"
     },
     {
       "row_id": "leo-s2026092703",
@@ -779,7 +779,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "ANALYZED"
     },
     {
       "row_id": "mixstyle-s2026092703",
@@ -833,7 +833,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "ANALYZED"
     },
     {
       "row_id": "leo_mixstyle-s2026092703",
@@ -887,7 +887,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "ANALYZED"
     },
     {
       "row_id": "ce-s2026092704",
@@ -941,7 +941,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "ANALYZED"
     },
     {
       "row_id": "leo-s2026092704",
@@ -995,7 +995,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "ANALYZED"
     },
     {
       "row_id": "mixstyle-s2026092704",
@@ -1049,7 +1049,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "ANALYZED"
     },
     {
       "row_id": "leo_mixstyle-s2026092704",
@@ -1103,7 +1103,7 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "QUEUED"
+      "status": "ANALYZED"
     }
   ],
   "notes": [
@@ -1122,7 +1122,7 @@
     "Technical failure preserves all artifacts; no automatic retrain or low-score stop. Whole pipeline ends ANALYZED only after complete scoring and independent recount."
   ],
   "registered_at": "2026-10-04T08:28:04+00:00",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "views": [
       "clean",
@@ -1158,5 +1158,6 @@
       11
     ],
     "scene_partition": "one satellite observation per ID; three disjoint scene strata"
-  }
+  },
+  "latest_status_evidence": "evidence/status_20261006_pm/summary.json"
 }

@@ -1,0 +1,213 @@
+{
+  "read_at": 1791274389.8028586,
+  "failure": null,
+  "queue": {
+    "phase": "r3",
+    "kind": "source",
+    "active": [
+      "r3-cons-s2026092701",
+      "r3-all_dg-s2026092701",
+      "r3-cons-s2026092702",
+      "r3-all_dg-s2026092702",
+      "r3-orth-s2026092703",
+      "r3-cons-s2026092703",
+      "r3-group_ce-s2026092703",
+      "r3-fishr-s2026092703",
+      "r3-all_dg-s2026092703",
+      "r3-base-s2026092704",
+      "r3-domain-s2026092704",
+      "r3-orth-s2026092704",
+      "r3-cons-s2026092704",
+      "r3-group_ce-s2026092704",
+      "r3-fishr-s2026092704",
+      "r3-all_dg-s2026092704"
+    ],
+    "pending": [],
+    "failures": [],
+    "updated_at": 1791274384.942894,
+    "max_active": 16,
+    "per_gpu_limit": 2,
+    "controller_pid": 4170278,
+    "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+  },
+  "stages_frozen": [
+    "r2_source_frozen.json"
+  ],
+  "source_complete": 28,
+  "active": [
+    {
+      "row": "r3-all_dg-s2026092701",
+      "epoch": 187,
+      "gpu": 6,
+      "seconds": 116.28569269180298
+    },
+    {
+      "row": "r3-all_dg-s2026092702",
+      "epoch": 191,
+      "gpu": 2,
+      "seconds": 116.54813957214355
+    },
+    {
+      "row": "r3-all_dg-s2026092703",
+      "epoch": 20,
+      "gpu": 1,
+      "seconds": 70.0101683139801
+    },
+    {
+      "row": "r3-all_dg-s2026092704",
+      "epoch": 9,
+      "gpu": 4,
+      "seconds": 63.941752433776855
+    },
+    {
+      "row": "r3-base-s2026092704",
+      "epoch": 26,
+      "gpu": 5,
+      "seconds": 50.98188662528992
+    },
+    {
+      "row": "r3-cons-s2026092701",
+      "epoch": 198,
+      "gpu": 3,
+      "seconds": 111.01915383338928
+    },
+    {
+      "row": "r3-cons-s2026092702",
+      "epoch": 196,
+      "gpu": 4,
+      "seconds": 114.9285831451416
+    },
+    {
+      "row": "r3-cons-s2026092703",
+      "epoch": 46,
+      "gpu": 7,
+      "seconds": 81.99878931045532
+    },
+    {
+      "row": "r3-cons-s2026092704",
+      "epoch": 18,
+      "gpu": 6,
+      "seconds": 70.47733354568481
+    },
+    {
+      "row": "r3-domain-s2026092704",
+      "epoch": 19,
+      "gpu": 7,
+      "seconds": 58.64318299293518
+    },
+    {
+      "row": "r3-fishr-s2026092703",
+      "epoch": 26,
+      "gpu": 0,
+      "seconds": 62.96766805648804
+    },
+    {
+      "row": "r3-fishr-s2026092704",
+      "epoch": 12,
+      "gpu": 3,
+      "seconds": 63.7587628364563
+    },
+    {
+      "row": "r3-group_ce-s2026092703",
+      "epoch": 46,
+      "gpu": 1,
+      "seconds": 79.22585535049438
+    },
+    {
+      "row": "r3-group_ce-s2026092704",
+      "epoch": 16,
+      "gpu": 5,
+      "seconds": 59.02344846725464
+    },
+    {
+      "row": "r3-orth-s2026092703",
+      "epoch": 51,
+      "gpu": 0,
+      "seconds": 74.93086099624634
+    },
+    {
+      "row": "r3-orth-s2026092704",
+      "epoch": 21,
+      "gpu": 2,
+      "seconds": 60.004369497299194
+    }
+  ],
+  "evaluation": {
+    "controller": {
+      "record": {
+        "pid": 4176081,
+        "start_ticks": 50471903,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_evaluation_repair_20261006_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.evaluation_recovery"
+        ],
+        "run_id": "20261006-phase1-reference-stack-sixscene-manysig-m136-r03",
+        "owner": "codex/root/reference-stack-evaluation-recovery-20261006",
+        "release": "cvs_reference_stack_evaluation_repair_20261006_r01",
+        "commit": "3b5a73a6930cbdfa5db0ddd11ab49326256904ec",
+        "parent_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      },
+      "process": {
+        "pid": 4176081,
+        "start_ticks": 50471903,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_evaluation_repair_20261006_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.evaluation_recovery"
+        ]
+      }
+    },
+    "state": {
+      "status": "WAITING_PARENT_SCHEMA_FAILURE",
+      "parent_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "updated_at": 1791274373.5481145,
+      "target_read": false,
+      "gpu_reserved": false
+    },
+    "failure": null,
+    "completion": null
+  },
+  "tests": {
+    "r1": {
+      "completion": {
+        "status": "ANALYZED",
+        "rows": 16,
+        "target_feedback_forbidden": true,
+        "independent_recount": "VERIFIED"
+      },
+      "scoring": {
+        "status": "SCORED_COMPLETE",
+        "records": 640,
+        "paired_records": 0,
+        "target_feedback_forbidden": true
+      },
+      "recount": {
+        "status": "VERIFIED",
+        "records": 640,
+        "rows": 16,
+        "query_per_row": 168000,
+        "physical_ids": "EXACT_MATCH",
+        "method": "numpy.bincount independent confusion/accuracy/F1",
+        "target_feedback_forbidden": true
+      },
+      "predictions_complete": 16
+    },
+    "mixed": {
+      "completion": null,
+      "scoring": null,
+      "recount": null,
+      "predictions_complete": 0
+    },
+    "seven_views": {
+      "completion": null,
+      "scoring": null,
+      "recount": null,
+      "predictions_complete": 0
+    }
+  }
+}

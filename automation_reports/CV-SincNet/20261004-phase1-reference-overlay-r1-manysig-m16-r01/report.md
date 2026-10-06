@@ -139,3 +139,7 @@
 LEO实际channel改变样本非零；MixStyle实际改变样本非零、每epoch两个位置合计100次调用；早期satellite_weight=0符合E80起效。当前没有训练完成、预测或评分结果，不能宣称实验全部完成。
 
 下一步由既有dispatcher自动完成余下源训练、统一源矩阵冻结、16行clean/satellite预测、独立truth-last评分及bincount复算。恢复时先读`queue_state.json`、`completion.json`、`failure.json`及本次证据，禁止重复发布。最终结果应回填本报告并再次登记/Git交付。
+
+## 2026-10-06下午进度与详细测试结果
+
+2026-10-06T16:13:09.802859+08:00：新增矩阵训练完成28/136，R3另16行运行且自动补位正常；R2至R6尚无目标测试。R1全部16行完成预测、独立评分及复算，状态ANALYZED；本次已更正本地旧RUNNING登记。完整场景/seed/RX/TX指标、640条原始评分与当前队列见[详细报告](evidence/status_20261006_pm/report.md)。六个完整residual环境仍无测试结果，等待全部源训练冻结。
