@@ -12,6 +12,7 @@ ROOT=Path(__file__).resolve().parents[2];sys.path[:0]=[str(ROOT),str(ROOT/'code'
 import torch
 from experiments.cvs_phase1_stack.design import *
 from experiments.cvs_phase1_stack.runtime import installed
+from experiments.cvs_phase1_stack.fast_execution import configure,batch_clean,incremental_native_writer,POLICY
 from experiments.cvs_equivariant_identity.precision import numerical_context,actual_flags
 
 
@@ -44,10 +45,11 @@ def source_validation(model,loader,device):
 
 def train(c):
     validate(c);out=Path(c['output_root'])
+    if c['stage']=='r2':raise ValueError('Recovery reuses completed R2 artifacts; never retrain them')
     if out.exists():raise FileExistsError(out)
     device=torch.device('cuda:0');torch.set_num_threads(2)
-    a=make_args(c);expected=read(SOURCE);state={};started=time.time()
-    with numerical_context(FULL_FP32_POLICY),installed(c) as n:
+    a=configure(make_args(c));expected=read(SOURCE);state={};started=time.time()
+    with numerical_context(FULL_FP32_POLICY),installed(c) as n,incremental_native_writer(n):
         from cvsrffi.xuc_fusion.native import role_ids_from_native
         from scripts.train_daot_rc4_baseline import resolved_config
         build_data=n._build_ssdg_wisig_data;build_model=n.build_baseline_model;writer=n._write_ssdg_epoch_telemetry;detach=n._detach_log_mapping
@@ -70,7 +72,7 @@ def train(c):
             write(out/'resolved_config.json',dict(c,pid=os.getpid(),cwd=os.getcwd(),python=sys.executable,
                 commit=(ROOT/'release_commit.txt').read_text().strip(),torch_version=torch.__version__,
                 cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),total_parameters=sum(p.numel() for p in m.parameters()),
-                hardware=torch.cuda.get_device_name(dev),backend_flags=actual_flags(),native_args_ref=str(out/'resolved_native_args.json')))
+                hardware=torch.cuda.get_device_name(dev),backend_flags=actual_flags(),native_args_ref=str(out/'resolved_native_args.json'),execution_policy=POLICY))
             write(out/'initialization.json',dict(scratch_only=True,checkpoint_sources=[],ancestors=[],source_roles='EXACT_MATCH',target_contact=False,teacher_origin='own scratch student only',seed=c['model_seed']))
             print('SMOKE PASS own scratch checkpoint; query_read=false',flush=True)
             return m
@@ -79,7 +81,7 @@ def train(c):
             if 'train/loss' in result:
                 state['steps']=state.get('steps',0)+1
                 if 'step_file' not in state:state['step_file']=gzip.open(out/'step_metrics.jsonl.gz','xt',encoding='utf-8',compresslevel=3)
-                state['step_file'].write(json.dumps(dict(step=state['steps'],epoch=(state['steps']-1)//222+1,metrics=clean(result)),allow_nan=False)+'\n')
+                state['step_file'].write(json.dumps(dict(step=state['steps'],epoch=(state['steps']-1)//222+1,metrics=batch_clean(result)),allow_nan=False)+'\n')
                 if result.get('train/skipped_nonfinite_loss',0) or result.get('train/skipped_nonfinite_grad',0):
                     state['step_file'].flush()
                     raise FloatingPointError('Native nonfinite loss/gradient: preserve artifacts; no automatic retry')

@@ -18,9 +18,13 @@ def proc(pid):
     p=Path('/proc')/str(pid)
     try:
         stat=(p/'stat').read_text().rsplit(')',1)[1].split()
-        if stat[0]=='Z':return None
-        return dict(pid=int(pid),start_ticks=int(stat[19]),cwd=str((p/'cwd').resolve()),
-                    argv=[v for v in (p/'cmdline').read_bytes().decode().split('\0') if v])
+        if stat[0] in {'Z','X','x'}:return None
+        argv=[v for v in (p/'cmdline').read_bytes().decode().split('\0') if v]
+        if not argv:return None
+        cwd=str((p/'cwd').resolve(strict=True))
+        after=(p/'stat').read_text().rsplit(')',1)[1].split()
+        if after[0] in {'Z','X','x'} or after[19]!=stat[19]:return None
+        return dict(pid=int(pid),start_ticks=int(stat[19]),cwd=cwd,argv=argv)
     except (FileNotFoundError,ProcessLookupError):return None
 
 

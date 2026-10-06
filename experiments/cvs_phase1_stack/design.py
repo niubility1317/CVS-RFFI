@@ -2,11 +2,12 @@ import copy
 from pathlib import Path
 from experiments.cvs_phase1_overlay.contract import PROJECT,SOURCE,CAPSULE,TRUTH,SEEDS,CLASSES,SCENES,read,write,FULL_FP32_POLICY
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261004-phase1-reference-stack-manysig-m136-r01'
-RELEASE='cvs_reference_stack_20261004_r01'
+RUN='20261006-phase1-reference-stack-manysig-m136-r02'
+RELEASE='cvs_reference_stack_recovery_20261006_r02'
+REUSED_R2_RUN='20261004-phase1-reference-stack-manysig-m136-r01'
 PARENT_RUN='20261004-phase1-reference-overlay-r1-manysig-m16-r01'
 BASE=PROJECT+'/runs/'+RUN
-OWNER='codex/root/reference-stack-20261004'
+OWNER='codex/root/reference-stack-recovery-20261006'
 DG=['domain','orth','cons','group_ce','fishr']
 OPEN=['proto','compact','owfeat','proxy','softmix','episode']
 ALL=['leo','mixstyle','twostage','ema','pseudo',*DG,*OPEN,'muse','daot','rc4']
@@ -52,9 +53,10 @@ def rows():
 
 
 def config(row,parent):
-    return dict(schema='reference_stack_v1',run_id=RUN,**row,features=features(row['stage'],row['arm'],parent),
+    origin=REUSED_R2_RUN if row['stage']=='r2' else RUN
+    return dict(schema='reference_stack_v1',run_id=origin,**row,features=features(row['stage'],row['arm'],parent),
         parent_features=sorted(parent),variant='native' if row['arm']=='native_full' else 'reference_response',
-        source_contract=SOURCE,dataset=PROJECT+'/Dataset_WigSig/ManySig.pkl',output_root=BASE+'/'+row['row_id']+'/source',
+        source_contract=SOURCE,dataset=PROJECT+'/Dataset_WigSig/ManySig.pkl',output_root=PROJECT+'/runs/'+origin+'/'+row['row_id']+'/source',
         epochs=200,steps_per_epoch=222,model_initialization='scratch',checkpoint_sources=[],numerical_policy=FULL_FP32_POLICY,
         method='cvs_phase1_stack',target_access=False)
 
@@ -83,7 +85,7 @@ def make_args(c,device='cuda:0'):
     for mechanism,weights in WEIGHTS.items():
         if mechanism in f:
             for k,v in weights.items():setattr(a,k,v)
-    fixed=dict(wisig_pkl=c['dataset'],output_dir=c['output_root'],candidate_id=c['row_id'],run_id=RUN,seed=c['model_seed'],
+    fixed=dict(wisig_pkl=c['dataset'],output_dir=c['output_root'],candidate_id=c['row_id'],run_id=c['run_id'],seed=c['model_seed'],
         device=device,sample_rate_hz=25000000.,epochs=200,label_epochs=130 if 'twostage' in f else 200,pseudo_epochs=70 if 'twostage' in f else 0,
         amp=False,from_scratch=True,a1_scratch_only=True,baseline_ckpt='',teacher_ckpt='',num_workers=0,
         use_muse_ssdg='muse' in f,muse_level='M3' if 'muse' in f else 'M0',muse_unlabeled_batch_size=256,

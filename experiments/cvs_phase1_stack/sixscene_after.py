@@ -7,11 +7,11 @@ import subprocess
 import sys
 import time
 
-RUN='20261004-phase1-reference-stack-sixscene-manysig-m136-r01'
-RELEASE='cvs_reference_stack_sixscene_20261004_r01'
+RUN='20261006-phase1-reference-stack-sixscene-manysig-m136-r02'
+RELEASE='cvs_reference_stack_recovery_20261006_r02'
 PROJECT='/home/szu2070436088/2510044040/CV-SincNet'
-WORKER_ROOT=Path(PROJECT)/'releases/cvs_reference_stack_20261004_r01'
-WORKER_COMMIT='0c73c904c8331f26254761042516f1ae43ed9c98'
+WORKER_ROOT=Path(PROJECT)/'releases'/RELEASE
+WORKER_COMMIT=None  # Resolved from this same immutable release in original().
 BASE=Path(PROJECT)/'runs'/RUN
 VIEWS_ROOT=Path(PROJECT)/'runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views'
 SCENES=('practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban')
@@ -24,7 +24,9 @@ def write(path,value):
 
 
 def original():
-    if (WORKER_ROOT/'release_commit.txt').read_text().strip()!=WORKER_COMMIT:raise ValueError('Original worker release mismatch')
+    global WORKER_COMMIT
+    WORKER_COMMIT=(Path(__file__).resolve().parents[2]/'release_commit.txt').read_text().strip()
+    if (WORKER_ROOT/'release_commit.txt').read_text().strip()!=WORKER_COMMIT:raise ValueError('Worker release mismatch')
     sys.path[:0]=[str(WORKER_ROOT),str(WORKER_ROOT/'code')]
     from experiments.cvs_phase1_stack import dispatch as d
     if d.ROOT!=WORKER_ROOT:raise ValueError('Wrong scientific code import')
@@ -71,7 +73,7 @@ def predict(rid):
     torch.set_num_threads(2);device=torch.device('cuda:0')
     with numerical_context(d.FULL_FP32_POLICY),installed(c) as native:
         ck=torch.load(source/'final_ssdg.pth',map_location=device,weights_only=False)
-        if ck['epoch']!=200 or ck['candidate_id']!=rid or ck['run_id']!=d.RUN or ck['checkpoint_selection']!='final_only' or ck['args']['baseline_ckpt'] or ck['args']['teacher_ckpt'] or not ck['args']['from_scratch']:raise ValueError('Checkpoint contents differ')
+        if ck['epoch']!=200 or ck['candidate_id']!=rid or ck['run_id']!=c['run_id'] or ck['checkpoint_selection']!='final_only' or ck['args']['baseline_ckpt'] or ck['args']['teacher_ckpt'] or not ck['args']['from_scratch']:raise ValueError('Checkpoint contents differ')
         from scripts.train_daot_rc4_baseline import resolved_config
         if clean(resolved_config(SimpleNamespace(**ck['args'])))!=d.read(source/'resolved_native_args.json'):raise ValueError('Checkpoint args differ')
         model=native.build_baseline_model(SimpleNamespace(**ck['baseline_args']),device);model.load_state_dict(ck['model'],strict=True);model.eval()
@@ -83,7 +85,7 @@ def predict(rid):
             if len(ids)!=168000 or len(set(ids.tolist()))!=168000 or not np.array_equal(ids,ix['ids']):raise ValueError('Sixscene physical IDs differ')
         out=BASE/rid/'prediction';out.mkdir(parents=True,exist_ok=False)
         write(out/'provenance.json',dict(status='VERIFIED',checkpoint=str(source/'final_ssdg.pth'),scratch_sources=[],source_roles='EXACT_MATCH',own_E200=True,query_fit=False,truth_read=False))
-        write(out/'resolved_config.json',dict(row_id=rid,pid=os.getpid(),cwd=os.getcwd(),python=sys.executable,worker_commit=WORKER_COMMIT,evaluation_commit=(Path(__file__).parent/'release_commit.txt').read_text().strip(),views=list(VIEWS),views_root=str(VIEWS_ROOT),backend_flags=actual_flags(),parameters=sum(p.numel() for p in model.parameters()),trainable_parameters=0,hardware=torch.cuda.get_device_name(device),torch_version=torch.__version__,batch_size=256))
+        write(out/'resolved_config.json',dict(row_id=rid,pid=os.getpid(),cwd=os.getcwd(),python=sys.executable,worker_commit=WORKER_COMMIT,checkpoint_source_run=c['run_id'],evaluation_commit=WORKER_COMMIT,views=list(VIEWS),views_root=str(VIEWS_ROOT),backend_flags=actual_flags(),parameters=sum(p.numel() for p in model.parameters()),trainable_parameters=0,hardware=torch.cuda.get_device_name(device),torch_version=torch.__version__,batch_size=256))
         predictions={};timings={};torch.cuda.reset_peak_memory_stats()
         with torch.no_grad():
             for view in VIEWS:
@@ -164,7 +166,8 @@ def score():
 
 def dispatch():
     d=original();BASE.mkdir(parents=True,exist_ok=False);logs=Path(PROJECT)/'logs'/RUN;logs.mkdir(parents=True,exist_ok=False)
-    write(BASE/'dispatcher.json',dict(pid=os.getpid(),cwd=os.getcwd(),argv=[sys.executable,*sys.argv],owner='codex/root/reference-stack-sixscene-20261004',evaluation_commit=(Path(__file__).parent/'release_commit.txt').read_text().strip(),parent_run=d.RUN))
+    from experiments.cvs_phase1_stack.capacity16 import proc
+    write(BASE/'dispatcher.json',dict(**proc(os.getpid()),owner='codex/root/reference-stack-sixscene-20261006',evaluation_commit=WORKER_COMMIT,parent_run=d.RUN))
     try:
         manifest(d)
         while not parent_ready(d):
