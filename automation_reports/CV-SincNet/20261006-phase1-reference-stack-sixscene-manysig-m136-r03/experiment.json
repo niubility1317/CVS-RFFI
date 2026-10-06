@@ -6766,5 +6766,20 @@
     "code_commit": "d2a1ef36b41827d151e9f7c6927cc3ef9b8e9cb2",
     "evaluation_commit": "3b5a73a6930cbdfa5db0ddd11ab49326256904ec"
   },
-  "latest_status_evidence": "evidence/status_20261006_pm/summary.json"
+  "latest_status_evidence": "evidence/status_20261006_pm/summary.json",
+  "immediate_completed_test": {
+    "verified_at": "2026-10-06T18:15:10.394812+08:00",
+    "training_complete": 32,
+    "training_total": 136,
+    "training_active": 12,
+    "training_stage": "r3",
+    "tested_complete": 32,
+    "test_run": "20261006-phase1-reference-completed-sixscene-manysig-m32-r01",
+    "test_status": "ANALYZED",
+    "test_views": 7,
+    "prediction_count": 37632000,
+    "metric_records": 3136,
+    "independent_recount": "VERIFIED",
+    "training_controller_unchanged": true
+  }
 }

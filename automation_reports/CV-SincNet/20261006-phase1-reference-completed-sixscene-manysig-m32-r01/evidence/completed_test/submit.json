@@ -1,0 +1,16 @@
+{
+  "status": "SUBMITTED",
+  "pid": 160441,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.cvs_phase1_stack.completed_eval",
+    "--mode",
+    "dispatch"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01/dispatcher.stdout.log",
+  "commit": "3fba3eb9eb6fcfba27cd4529526213285c70820b",
+  "run_id": "20261006-phase1-reference-completed-sixscene-manysig-m32-r01"
+}

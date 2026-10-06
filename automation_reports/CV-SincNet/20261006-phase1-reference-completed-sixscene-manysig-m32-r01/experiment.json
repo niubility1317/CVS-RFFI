@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-06：实验进度如何？给出已完成实验详细的测试结果，如果还没有跑测试，那就突然进程限制，跑测试。按立即测试已完成模型执行，调整全136行等待时序；允许额外测试进程，不干预健康训练。",
   "code": {
-    "commit": null,
+    "commit": "3fba3eb9eb6fcfba27cd4529526213285c70820b",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01"
@@ -355,11 +355,18 @@
     "launch_owner": "codex/root/reference-completed-sixscene-20261006",
     "launch_command": "python -m experiments.cvs_phase1_stack.publish_completed --output local_artifacts/cvs_reference_completed_sixscene_20261006_r01",
     "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
-    "actual_pid": null,
-    "startup_verdict": "NOT_LAUNCHED",
-    "actual_cwd": null,
-    "actual_argv": null,
-    "startup_evidence": null
+    "actual_pid": 160441,
+    "startup_verdict": "VERIFIED",
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_stack.completed_eval",
+      "--mode",
+      "dispatch"
+    ],
+    "startup_evidence": "evidence/completed_test/verification.json"
   },
   "expected_artifacts": [
     "dispatcher.json",
@@ -407,7 +414,7 @@
       "row_id": "r2-bridge-s2026092701",
       "method": "r2-bridge",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-bridge-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-bridge-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092701/source/final_ssdg.pth",
@@ -447,14 +454,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 160457,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-bridge-s2026092701"
+      ]
     },
     {
       "row_id": "r2-bridge-s2026092702",
       "method": "r2-bridge",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-bridge-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-bridge-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092702/source/final_ssdg.pth",
@@ -494,14 +513,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 160466,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-bridge-s2026092702"
+      ]
     },
     {
       "row_id": "r2-bridge-s2026092703",
       "method": "r2-bridge",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-bridge-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-bridge-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092703/source/final_ssdg.pth",
@@ -541,14 +572,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 160478,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-bridge-s2026092703"
+      ]
     },
     {
       "row_id": "r2-bridge-s2026092704",
       "method": "r2-bridge",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-bridge-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-bridge-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-bridge-s2026092704/source/final_ssdg.pth",
@@ -588,14 +631,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 160488,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-bridge-s2026092704"
+      ]
     },
     {
       "row_id": "r2-ema-s2026092701",
       "method": "r2-ema",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-ema-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-ema-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092701/source/final_ssdg.pth",
@@ -635,14 +690,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 160832,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-ema-s2026092701"
+      ]
     },
     {
       "row_id": "r2-ema-s2026092702",
       "method": "r2-ema",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-ema-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-ema-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092702/source/final_ssdg.pth",
@@ -682,14 +749,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 160841,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-ema-s2026092702"
+      ]
     },
     {
       "row_id": "r2-ema-s2026092703",
       "method": "r2-ema",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-ema-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-ema-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092703/source/final_ssdg.pth",
@@ -729,14 +808,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 160851,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-ema-s2026092703"
+      ]
     },
     {
       "row_id": "r2-ema-s2026092704",
       "method": "r2-ema",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-ema-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-ema-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-ema-s2026092704/source/final_ssdg.pth",
@@ -776,14 +867,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 160861,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-ema-s2026092704"
+      ]
     },
     {
       "row_id": "r2-pseudo-s2026092701",
       "method": "r2-pseudo",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-pseudo-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-pseudo-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092701/source/final_ssdg.pth",
@@ -823,14 +926,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 161572,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-pseudo-s2026092701"
+      ]
     },
     {
       "row_id": "r2-pseudo-s2026092702",
       "method": "r2-pseudo",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-pseudo-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-pseudo-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092702/source/final_ssdg.pth",
@@ -870,14 +985,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 161581,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-pseudo-s2026092702"
+      ]
     },
     {
       "row_id": "r2-pseudo-s2026092703",
       "method": "r2-pseudo",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-pseudo-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-pseudo-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092703/source/final_ssdg.pth",
@@ -917,14 +1044,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 161591,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-pseudo-s2026092703"
+      ]
     },
     {
       "row_id": "r2-pseudo-s2026092704",
       "method": "r2-pseudo",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-pseudo-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-pseudo-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-pseudo-s2026092704/source/final_ssdg.pth",
@@ -964,14 +1103,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 161806,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-pseudo-s2026092704"
+      ]
     },
     {
       "row_id": "r2-twostage-s2026092701",
       "method": "r2-twostage",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-twostage-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-twostage-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092701/source/final_ssdg.pth",
@@ -1011,14 +1162,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 162302,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-twostage-s2026092701"
+      ]
     },
     {
       "row_id": "r2-twostage-s2026092702",
       "method": "r2-twostage",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-twostage-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-twostage-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092702/source/final_ssdg.pth",
@@ -1058,14 +1221,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 162311,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-twostage-s2026092702"
+      ]
     },
     {
       "row_id": "r2-twostage-s2026092703",
       "method": "r2-twostage",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-twostage-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-twostage-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092703/source/final_ssdg.pth",
@@ -1105,14 +1280,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 162511,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-twostage-s2026092703"
+      ]
     },
     {
       "row_id": "r2-twostage-s2026092704",
       "method": "r2-twostage",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r2-twostage-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r2-twostage-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261004-phase1-reference-stack-manysig-m136-r01/r2-twostage-s2026092704/source/final_ssdg.pth",
@@ -1152,14 +1339,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 162520,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r2-twostage-s2026092704"
+      ]
     },
     {
       "row_id": "r3-all_dg-s2026092701",
       "method": "r3-all_dg",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-all_dg-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-all_dg-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-all_dg-s2026092701/source/final_ssdg.pth",
@@ -1199,14 +1398,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 162677,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-all_dg-s2026092701"
+      ]
     },
     {
       "row_id": "r3-all_dg-s2026092702",
       "method": "r3-all_dg",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-all_dg-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-all_dg-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-all_dg-s2026092702/source/final_ssdg.pth",
@@ -1246,14 +1457,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 162686,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-all_dg-s2026092702"
+      ]
     },
     {
       "row_id": "r3-base-s2026092701",
       "method": "r3-base",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-base-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-base-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-base-s2026092701/source/final_ssdg.pth",
@@ -1293,14 +1516,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 163243,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-base-s2026092701"
+      ]
     },
     {
       "row_id": "r3-base-s2026092702",
       "method": "r3-base",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-base-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-base-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-base-s2026092702/source/final_ssdg.pth",
@@ -1340,14 +1575,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 163323,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-base-s2026092702"
+      ]
     },
     {
       "row_id": "r3-base-s2026092703",
       "method": "r3-base",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-base-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-base-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-base-s2026092703/source/final_ssdg.pth",
@@ -1387,14 +1634,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 163407,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-base-s2026092703"
+      ]
     },
     {
       "row_id": "r3-cons-s2026092701",
       "method": "r3-cons",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-cons-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-cons-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-cons-s2026092701/source/final_ssdg.pth",
@@ -1434,14 +1693,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 163416,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-cons-s2026092701"
+      ]
     },
     {
       "row_id": "r3-cons-s2026092702",
       "method": "r3-cons",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-cons-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-cons-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-cons-s2026092702/source/final_ssdg.pth",
@@ -1481,14 +1752,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 164026,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-cons-s2026092702"
+      ]
     },
     {
       "row_id": "r3-domain-s2026092701",
       "method": "r3-domain",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-domain-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-domain-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-domain-s2026092701/source/final_ssdg.pth",
@@ -1528,14 +1811,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 164039,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-domain-s2026092701"
+      ]
     },
     {
       "row_id": "r3-domain-s2026092702",
       "method": "r3-domain",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-domain-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-domain-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-domain-s2026092702/source/final_ssdg.pth",
@@ -1575,14 +1870,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 164190,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-domain-s2026092702"
+      ]
     },
     {
       "row_id": "r3-domain-s2026092703",
       "method": "r3-domain",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-domain-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-domain-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-domain-s2026092703/source/final_ssdg.pth",
@@ -1622,14 +1929,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 164199,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-domain-s2026092703"
+      ]
     },
     {
       "row_id": "r3-fishr-s2026092701",
       "method": "r3-fishr",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-fishr-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-fishr-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-fishr-s2026092701/source/final_ssdg.pth",
@@ -1669,14 +1988,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 164351,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-fishr-s2026092701"
+      ]
     },
     {
       "row_id": "r3-fishr-s2026092702",
       "method": "r3-fishr",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-fishr-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-fishr-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-fishr-s2026092702/source/final_ssdg.pth",
@@ -1716,14 +2047,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 164432,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-fishr-s2026092702"
+      ]
     },
     {
       "row_id": "r3-group_ce-s2026092701",
       "method": "r3-group_ce",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-group_ce-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-group_ce-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-group_ce-s2026092701/source/final_ssdg.pth",
@@ -1763,14 +2106,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 164920,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-group_ce-s2026092701"
+      ]
     },
     {
       "row_id": "r3-group_ce-s2026092702",
       "method": "r3-group_ce",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-group_ce-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-group_ce-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-group_ce-s2026092702/source/final_ssdg.pth",
@@ -1810,14 +2165,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 164929,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-group_ce-s2026092702"
+      ]
     },
     {
       "row_id": "r3-orth-s2026092701",
       "method": "r3-orth",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-orth-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-orth-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-orth-s2026092701/source/final_ssdg.pth",
@@ -1857,14 +2224,26 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 165133,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-orth-s2026092701"
+      ]
     },
     {
       "row_id": "r3-orth-s2026092702",
       "method": "r3-orth",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot.json#r3-orth-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/r3-orth-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-orth-s2026092702/source/final_ssdg.pth",
@@ -1904,8 +2283,20 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "NOT_STARTED",
+      "actual_pid": 165217,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261006_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-orth-s2026092702"
+      ]
     }
   ],
   "notes": [
@@ -1914,7 +2305,7 @@
     "Each view168000 identical physical IDs; all32x7 predictions fixed before independenttruth-last scoring and bincount recount.",
     "Later original136-row tests stay preregistered; this snapshot is identified separately, never used to rank or retune future rows."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "views": [
       "clean",
@@ -1938,5 +2329,15 @@
     "source_selection": "unchanged in existing training controller"
   },
   "latest_status_evidence": "evidence/status_20261006_pm/summary.json",
-  "registered_at": "2026-10-06T10:05:12+00:00"
+  "registered_at": "2026-10-06T10:05:12+00:00",
+  "latest_verified_status": {
+    "verified_at": "2026-10-06T18:15:10.394812+08:00",
+    "models": 32,
+    "views": 7,
+    "prediction_count": 37632000,
+    "metric_records": 3136,
+    "independent_recount": "VERIFIED",
+    "local_confusion_recount": "VERIFIED",
+    "training_completed": 32
+  }
 }
