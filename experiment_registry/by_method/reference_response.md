@@ -9,3 +9,4 @@
 - [reference_response原Phase1剩余机制：R2至R6共136行：故障恢复r02](../../automation_reports/CV-SincNet/20261006-phase1-reference-stack-manysig-m136-r02/report.md)
 - [reference_response剩余136行：clean及完整六residual环境自动测试：故障恢复r02](../../automation_reports/CV-SincNet/20261006-phase1-reference-stack-sixscene-manysig-m136-r02/report.md)
 - [reference_response136行独立测试修复：原混合视图及clean+六完整residual](../../automation_reports/CV-SincNet/20261006-phase1-reference-stack-sixscene-manysig-m136-r03/report.md)
+- [reference_response已完成32行立即测试：clean及六完整residual](../../automation_reports/CV-SincNet/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/report.md)
