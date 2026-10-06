@@ -6423,7 +6423,7 @@
     "Wait process checks every60seconds withoutGPU; failedparent stops evaluation with retainedfailureevidence. Noautomatic retries; at most16 predictors and2/GPU.",
     "Existing threepartition test stays intact; this companion executes afterward and is required finalclean+sixscene delivery. Inference timing and CUDAallocatedpeak measured; unmeasuredcostsN/A."
   ],
-  "status": "WAITING_PARENT_COMPLETION",
+  "status": "FAILED",
   "test_completion_plan": {
     "views": [
       "clean",
@@ -6470,5 +6470,28 @@
     "selection": "none; everyfixedrow",
     "target_feedback": false
   },
-  "registered_at": "2026-10-04T14:48:49+00:00"
+  "registered_at": "2026-10-04T14:48:49+00:00",
+  "latest_verified_status": {
+    "checked_at": "2026-10-06T10:56:27.391072+08:00",
+    "failure_at": "2026-10-05T00:26:03.368742+08:00",
+    "last_r2_complete": "2026-10-05T01:05:25.966541+08:00",
+    "training_completed": 16,
+    "total_training_rows": 136,
+    "tested_rows": 0,
+    "pending_training_rows": 120,
+    "controller_status": "FAILED",
+    "gpu_training_processes": 0,
+    "scenes_evaluation_status": "FAILED_PARENT_DEPENDENCY",
+    "r1_tested_rows": 16,
+    "r1_recount": {
+      "status": "VERIFIED",
+      "records": 640,
+      "rows": 16,
+      "query_per_row": 168000,
+      "physical_ids": "EXACT_MATCH",
+      "method": "numpy.bincount independent confusion/accuracy/F1",
+      "target_feedback_forbidden": true
+    },
+    "scope": "read-only status and completed scored results"
+  }
 }

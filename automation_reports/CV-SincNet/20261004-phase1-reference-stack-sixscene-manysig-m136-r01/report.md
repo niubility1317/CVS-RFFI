@@ -44,3 +44,7 @@
 2026-10-04T22:50:33.493780+08:00独立读回VERIFIED。等待进程PID 3219697，精确CWD/argv与发布凭据一致；state=WAITING_PARENT_COMPLETION，没有GPU占用、预测文件或故障。父队列仍16并发，训练未受干预。发布commit：`f85907dc3cc1e7589da0fdfc5acfc83a040c2d51`，发布前Git远端OID已核实。
 
 本任务已真实排队：父run全部完成后自动执行clean和六个完整residual环境预测、truth-last评分、第二实现复算及同row报告。无需用户再次确认或手动启动。最终本地登记与Git结果收尾仍应在结果产生后同步，不把当前等待状态写成测试完成。
+
+## 2026-10-06实时状态更正
+
+2026-10-06T10:56:27.391072+08:00：FAILED。R2全部16行训练完成，但controller在2026-10-05T00:26:03.368742+08:00报Adopted process identity changed并退出；R3至R6共120行未启动，本批预测/评分均为0。六场景等待器因父任务技术失败退出。当前没有活动训练进程。R1已有16行真实测试结果与完整状态见[evidence/status_20261006/report.md](evidence/status_20261006/report.md)。此次仅只读核查，未重启/重训。
