@@ -1,0 +1,59 @@
+{
+  "read_at": 1791257026.1112266,
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 4176081,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_evaluation_repair_20261006_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_stack.evaluation_recovery"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_evaluation_repair_20261006_r01/dispatcher.stdout.log",
+    "commit": "3b5a73a6930cbdfa5db0ddd11ab49326256904ec",
+    "run_id": "20261006-phase1-reference-stack-sixscene-manysig-m136-r03"
+  },
+  "process": {
+    "pid": 4176081,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_evaluation_repair_20261006_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_stack.evaluation_recovery"
+    ]
+  },
+  "preflight": {
+    "status": "VERIFIED",
+    "rows": 16,
+    "target_read": false
+  },
+  "state": {
+    "status": "WAITING_PARENT_SCHEMA_FAILURE",
+    "parent_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+    "updated_at": 1791257015.9455736,
+    "target_read": false,
+    "gpu_reserved": false
+  },
+  "failure": null,
+  "dispatcher": {
+    "pid": 4176081,
+    "start_ticks": 50471903,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_evaluation_repair_20261006_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_stack.evaluation_recovery"
+    ],
+    "run_id": "20261006-phase1-reference-stack-sixscene-manysig-m136-r03",
+    "owner": "codex/root/reference-stack-evaluation-recovery-20261006",
+    "release": "cvs_reference_stack_evaluation_repair_20261006_r01",
+    "commit": "3b5a73a6930cbdfa5db0ddd11ab49326256904ec",
+    "parent_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+  },
+  "log": "",
+  "mixed_exists": false,
+  "seven_views_exists": false
+}

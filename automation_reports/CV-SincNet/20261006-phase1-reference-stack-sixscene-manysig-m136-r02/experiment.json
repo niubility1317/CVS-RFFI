@@ -23,10 +23,10 @@
   "replaces_run_id": "20261004-phase1-reference-stack-sixscene-manysig-m136-r01",
   "authorization": "用户2026-10-06：然后修复问题，继续跑实验。保留每卡两个实验及训练后clean与六residual自动测试授权。",
   "code": {
-    "commit": null,
+    "commit": "d2a1ef36b41827d151e9f7c6927cc3ef9b8e9cb2",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r02"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
@@ -106,10 +106,20 @@
     "local_artifact_root": "automation_reports/CV-SincNet/20261006-phase1-reference-stack-sixscene-manysig-m136-r02",
     "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention.",
     "launch_owner": "codex/root/reference-stack-recovery-20261006",
-    "launch_command": "python -m experiments.cvs_phase1_stack.publish_recovery --output local_artifacts/cvs_reference_stack_recovery_20261006_r02",
-    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r02",
-    "actual_pid": null,
-    "startup_verdict": "NOT_LAUNCHED"
+    "launch_command": "python -m experiments.cvs_phase1_stack.publish_recovery --output local_artifacts/cvs_reference_stack_recovery_20261006_r03",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+    "actual_pid": 4170279,
+    "startup_verdict": "VERIFIED",
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_stack.sixscene_after",
+      "--mode",
+      "dispatch"
+    ],
+    "startup_evidence": "evidence/recovery_20261006/summary.json"
   },
   "expected_artifacts": [
     "dispatcher.json",
@@ -6552,7 +6562,7 @@
     "R2 source-only checkpoint reuse is for source selection and fixed evaluation only; R3–R6 never inherit these weights.",
     "Execution acceleration: gradient snapshot, source validation reuse, same-dtype scalar readback and incremental native telemetry; full FP32 and original budget preserved."
   ],
-  "status": "PLANNED",
+  "status": "QUEUED",
   "test_completion_plan": {
     "views": [
       "clean",
@@ -6599,5 +6609,23 @@
     "selection": "none; everyfixedrow",
     "target_feedback": false
   },
-  "registered_at": "2026-10-06T03:12:52+00:00"
+  "registered_at": "2026-10-06T03:12:52+00:00",
+  "latest_verified_status": {
+    "verified_at": "2026-10-06T11:23:46.162959+08:00",
+    "training_status": "VERIFIED_RUNNING",
+    "reused_r2": 16,
+    "active_r3": 16,
+    "pending_r3": 12,
+    "pending_r4_r5_r6": 92,
+    "epochs_min": 8,
+    "epochs_max": 11,
+    "controller_pid": 4170278,
+    "test_repair_pid": 4176081,
+    "test_repair_status": "WAITING_PARENT_SCHEMA_FAILURE",
+    "target_tested_rows": 0,
+    "per_gpu_limit": 2,
+    "code_commit": "d2a1ef36b41827d151e9f7c6927cc3ef9b8e9cb2",
+    "evaluation_commit": "3b5a73a6930cbdfa5db0ddd11ab49326256904ec"
+  },
+  "test_recovery_run": "20261006-phase1-reference-stack-sixscene-manysig-m136-r03"
 }
