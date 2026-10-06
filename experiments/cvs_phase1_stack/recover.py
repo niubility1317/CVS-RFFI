@@ -22,8 +22,7 @@ def reused_r2(configs):
         if done['config']!=c or done['status']!='SOURCE_TRAINED' or done['epoch']!=200 or done['target_access'] or done['target_evaluated']:raise ValueError('Incomplete or contacted R2 source')
         d.require_budget(done['logged_steps'],done['optimizer_steps'])
         if not init['scratch_only'] or init['checkpoint_sources'] or init['ancestors'] or init['target_contact'] or init['source_roles']!='EXACT_MATCH':raise ValueError('Checkpoint ancestry invalid')
-        for key in ['role_ids','classes','source_rxs','source_days','ratios','split_seed','equalized','out_len','normalize']:
-            if contract[key]!=expected[key]:raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH '+key)
+        verify_contract(contract,expected)
         # Training model imports contain no target data reads. Only source-owned
         # checkpoints and metadata are inspected here, before any query contact.
         with installed(c):
@@ -33,6 +32,12 @@ def reused_r2(configs):
             if clean(resolved_config(SimpleNamespace(**ck['args'])))!=d.read(p/'resolved_native_args.json'):raise ValueError('R2 actual args mismatch')
         records.append(dict(row_id=c['row_id'],source_run=c['run_id'],source_output=str(p),checkpoint=str(p/'final_ssdg.pth'),status='REUSED_COMPLETE_SOURCE_ONLY',contract='EXACT_MATCH',ancestors=[],training_initialization_reused=False,logged_steps=44400,optimizer_steps=44400))
     return records
+
+
+def verify_contract(actual,expected):
+    for key,value in expected.items():
+        if key not in actual or actual[key]!=value:raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH '+key)
+    if actual.get('native_role_comparison')!='EXACT_MATCH':raise ValueError('Native physical role comparison missing')
 
 
 def dispatch():

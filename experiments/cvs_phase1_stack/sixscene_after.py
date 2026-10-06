@@ -8,7 +8,7 @@ import sys
 import time
 
 RUN='20261006-phase1-reference-stack-sixscene-manysig-m136-r02'
-RELEASE='cvs_reference_stack_recovery_20261006_r02'
+RELEASE='cvs_reference_stack_recovery_20261006_r03'
 PROJECT='/home/szu2070436088/2510044040/CV-SincNet'
 WORKER_ROOT=Path(PROJECT)/'releases'/RELEASE
 WORKER_COMMIT=None  # Resolved from this same immutable release in original().

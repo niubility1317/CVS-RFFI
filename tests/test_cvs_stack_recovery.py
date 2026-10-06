@@ -6,6 +6,15 @@ import pytest
 from experiments.cvs_phase1_stack import design as d, capacity16 as q
 
 
+def test_existing_source_contract_schema_is_compared_completely():
+    from experiments.cvs_phase1_stack.recover import verify_contract
+    expected=dict(schema='core90_game_source_roles_v1',num_classes=6,source_rxs=[1,3,4,6,8],role_ids={'L_s':['physical-1']},checkpoint_init='scratch_only',target_access_before_freeze=False)
+    actual=dict(expected,native_role_comparison='EXACT_MATCH')
+    verify_contract(actual,expected)
+    actual['role_ids']={'L_s':['different-physical']}
+    with pytest.raises(ValueError,match='role_ids'):verify_contract(actual,expected)
+
+
 def test_recovery_rows_have_separate_training_origins():
     rows=d.rows()
     assert len(rows)==136

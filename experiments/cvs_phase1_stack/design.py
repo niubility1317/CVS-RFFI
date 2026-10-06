@@ -3,7 +3,7 @@ from pathlib import Path
 from experiments.cvs_phase1_overlay.contract import PROJECT,SOURCE,CAPSULE,TRUTH,SEEDS,CLASSES,SCENES,read,write,FULL_FP32_POLICY
 ROOT=Path(__file__).resolve().parents[2]
 RUN='20261006-phase1-reference-stack-manysig-m136-r02'
-RELEASE='cvs_reference_stack_recovery_20261006_r02'
+RELEASE='cvs_reference_stack_recovery_20261006_r03'
 REUSED_R2_RUN='20261004-phase1-reference-stack-manysig-m136-r01'
 PARENT_RUN='20261004-phase1-reference-overlay-r1-manysig-m16-r01'
 BASE=PROJECT+'/runs/'+RUN
