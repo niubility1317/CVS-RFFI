@@ -7,12 +7,12 @@ import subprocess
 import sys
 import time
 
-RUN='20261006-phase1-reference-stack-sixscene-manysig-m136-r02'
-RELEASE='cvs_reference_stack_recovery_20261006_r03'
+RUN='20261006-phase1-reference-stack-sixscene-manysig-m136-r03'
+RELEASE='cvs_reference_stack_evaluation_repair_20261006_r01'
 PROJECT='/home/szu2070436088/2510044040/CV-SincNet'
 WORKER_ROOT=Path(PROJECT)/'releases'/RELEASE
 WORKER_COMMIT=None  # Resolved from this same immutable release in original().
-BASE=Path(PROJECT)/'runs'/RUN
+BASE=Path(PROJECT)/'runs'/RUN/'seven_views'
 VIEWS_ROOT=Path(PROJECT)/'runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views'
 SCENES=('practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban')
 VIEWS=('clean',*SCENES)
@@ -35,9 +35,10 @@ def original():
 
 def parent_ready(d):
     p=Path(d.BASE)
-    if (p/'failure.json').exists():raise RuntimeError('Parent technical failure; preserve all outputs, no automatic retry')
-    if not (p/'completion.json').exists():return False
-    done=d.read(p/'completion.json')
+    mixed=BASE.parent/'mixed'
+    if (mixed/'failure.json').exists():raise RuntimeError('Parent technical failure; preserve all outputs, no automatic retry')
+    if not (mixed/'completion.json').exists():return False
+    done=d.read(mixed/'completion.json')
     if done!=dict(status='ANALYZED',rows=136,independent_recount='VERIFIED',target_feedback_forbidden=True):raise ValueError('Unexpected parent completion')
     if d.read(p/'all_sources_frozen.json')!=dict(status='ALL_SOURCE_FROZEN',run_id=d.RUN,rows=[r['row_id'] for r in d.rows()],stages=list(d.STAGES),target_access=False):raise ValueError('All-source freeze missing')
     for stage in d.STAGES:d.validate_freeze(d.read(p/(stage+'_source_frozen.json')),stage)
@@ -68,8 +69,8 @@ def predict(rid):
     d.require_budget(done['logged_steps'],done['optimizer_steps'])
     if done['status']!='SOURCE_TRAINED' or done['config']!=c or done['epoch']!=200 or done['target_access'] or done['target_evaluated'] or not init['scratch_only'] or init['ancestors'] or init['checkpoint_sources'] or init['target_contact'] or init['source_roles']!='EXACT_MATCH':raise ValueError('Checkpoint provenance mismatch')
     contract=d.read(source/'source_contract.json');expected=d.read(d.SOURCE)
-    for key in ['role_ids','classes','source_rxs','source_days','ratios','split_seed','equalized','out_len','normalize']:
-        if contract[key]!=expected[key]:raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH '+key)
+    from experiments.cvs_phase1_stack.recover import verify_contract
+    verify_contract(contract,expected)
     torch.set_num_threads(2);device=torch.device('cuda:0')
     with numerical_context(d.FULL_FP32_POLICY),installed(c) as native:
         ck=torch.load(source/'final_ssdg.pth',map_location=device,weights_only=False)
@@ -165,7 +166,7 @@ def score():
 
 
 def dispatch():
-    d=original();BASE.mkdir(parents=True,exist_ok=False);logs=Path(PROJECT)/'logs'/RUN;logs.mkdir(parents=True,exist_ok=False)
+    d=original();BASE.mkdir(parents=True,exist_ok=False);logs=Path(PROJECT)/'logs'/RUN;logs.mkdir(parents=True,exist_ok=True)
     from experiments.cvs_phase1_stack.capacity16 import proc
     write(BASE/'dispatcher.json',dict(**proc(os.getpid()),owner='codex/root/reference-stack-sixscene-20261006',evaluation_commit=WORKER_COMMIT,parent_run=d.RUN))
     try:

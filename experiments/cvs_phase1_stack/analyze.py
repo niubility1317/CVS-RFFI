@@ -4,11 +4,12 @@ from collections import defaultdict
 import numpy as np
 from experiments.cvs_phase1_stack.design import *
 from experiments.cvs_phase1_overlay.analyze import recount_metrics
+from experiments.cvs_phase1_stack.predict import EVALUATION_RUN,PREDICTION_BASE
 
 
 def analyze(spec):
-    if spec['run_id']!=RUN or spec['runtime_root']!=BASE or spec['p1_truth']!=TRUTH or {r['row_id'] for r in spec['rows']}!={r['row_id'] for r in rows()} or len(spec['rows'])!=136:raise ValueError('Scoring matrix mismatch')
-    root=Path(BASE)
+    if spec['run_id']!=EVALUATION_RUN or spec['runtime_root']!=PREDICTION_BASE or spec['p1_truth']!=TRUTH or {r['row_id'] for r in spec['rows']}!={r['row_id'] for r in rows()} or len(spec['rows'])!=136:raise ValueError('Scoring matrix mismatch')
+    root=Path(PREDICTION_BASE)
     if read(root/'scoring_p1_complete.json')['status']!='SCORED_COMPLETE':raise ValueError('Scoring incomplete')
     data=read(root/'phase1_scored_results.json')['results']
     truth=read(TRUTH)

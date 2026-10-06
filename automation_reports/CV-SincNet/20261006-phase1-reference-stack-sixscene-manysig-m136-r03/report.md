@@ -1,0 +1,33 @@
+# reference_response136行独立测试修复：原混合视图及clean+六完整residual
+
+- run_id：`20261006-phase1-reference-stack-sixscene-manysig-m136-r03`
+- group_id：`cvs-reference-phase1-stack-sixscene-evaluation`；类别：`cvs`；阶段：`Phase1`
+- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
+- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+
+## 目的与对照
+
+保持训练进程和不可变release不变；等待全部source冻结及旧预测入口因已知契约schema缺陷自然失败退出，在新目录执行原混合测试及七完整视图测试，独立truth-last评分与复算。
+
+## 数据、seed与模型来源
+
+实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
+逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+
+## 执行与存储
+
+命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
+实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+
+## 结果与覆盖
+
+尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+
+## 交接
+
+记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 独立测试接续
+
+R3已有16行健康训练，不停止、重启或热修改。已定位两条旧预测入口读取不存在的契约字段，必在目标query读取前失败。此独立任务等待全部136行合法源域冻结、旧控制器自然退出，并严格核实该故障与无旧预测产物后，才使用修复后的入口在新目录执行原混合测试，再完成clean及六个完整residual视图。任何其他故障都停止并保留产物。训练权重、矩阵、预算、源域选择规则、数据和全部测试分层不变。

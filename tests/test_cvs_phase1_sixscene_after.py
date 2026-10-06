@@ -12,10 +12,12 @@ def test_query_cannot_start_before_parent_completion(monkeypatch):
     with pytest.raises(RuntimeError,match='query remains closed'):s.predict('anything')
 
 
-def test_waiting_parent_and_failure_are_distinct(tmp_path):
+def test_waiting_parent_and_failure_are_distinct(tmp_path,monkeypatch):
+    monkeypatch.setattr(s,'BASE',tmp_path/'seven_views')
+    (tmp_path/'mixed').mkdir()
     d=SimpleNamespace(BASE=str(tmp_path))
     assert s.parent_ready(d) is False
-    (tmp_path/'failure.json').write_text('{}')
+    (tmp_path/'mixed/failure.json').write_text('{}')
     with pytest.raises(RuntimeError,match='Parent technical failure'):s.parent_ready(d)
 
 

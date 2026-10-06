@@ -10,12 +10,16 @@ from experiments.cvs_phase1_stack.design import *
 from experiments.cvs_phase1_stack.runtime import installed
 from experiments.cvs_phase1_stack.dispatch import validate_freeze
 from experiments.cvs_equivariant_identity.precision import numerical_context
+from experiments.cvs_phase1_stack.recover import verify_contract
+
+EVALUATION_RUN='20261006-phase1-reference-stack-sixscene-manysig-m136-r03'
+PREDICTION_BASE=PROJECT+'/runs/'+EVALUATION_RUN+'/mixed'
 
 
 def predict(p):
     rid=p['row_id'];row=next(r for r in rows() if r['row_id']==rid)
     c=read(Path(BASE)/'configs'/('source-'+rid+'.json'));validate(c)
-    expected=dict(row_id=rid,source_config=BASE+'/configs/source-'+rid+'.json',source_output=c['output_root'],output_root=BASE+'/'+rid+'/prediction',p1_capsule=CAPSULE)
+    expected=dict(row_id=rid,source_config=BASE+'/configs/source-'+rid+'.json',source_output=c['output_root'],output_root=PREDICTION_BASE+'/'+rid+'/prediction',p1_capsule=CAPSULE)
     if p!=expected:raise ValueError('Unregistered prediction input')
     whole=read(Path(BASE)/'all_sources_frozen.json')
     if whole!=dict(status='ALL_SOURCE_FROZEN',run_id=RUN,rows=[r['row_id'] for r in rows()],stages=list(STAGES),target_access=False):raise ValueError('Source selection incomplete')
@@ -25,8 +29,7 @@ def predict(p):
     if next(r['config'] for r in f['rows'] if r['row_id']==rid)!=c:raise ValueError('Frozen config mismatch')
     init=read(source/'initialization.json');done=read(source/'completion.json');contract=read(source/'source_contract.json');expected_contract=read(SOURCE)
     if not init['scratch_only'] or init['checkpoint_sources'] or init['ancestors'] or init['target_contact'] or init['source_roles']!='EXACT_MATCH' or done['config']!=c or done['epoch']!=200 or done['target_access'] or done['target_evaluated']:raise ValueError('Checkpoint provenance invalid')
-    for k in ['role_ids','classes','source_rxs','source_days','ratios','split_seed','equalized','out_len','normalize']:
-        if contract[k]!=expected_contract[k]:raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH '+k)
+    verify_contract(contract,expected_contract)
     torch.set_num_threads(2);device=torch.device('cuda:0')
     with numerical_context(FULL_FP32_POLICY),installed(c) as n:
         ck=torch.load(source/'final_ssdg.pth',map_location=device,weights_only=False)
