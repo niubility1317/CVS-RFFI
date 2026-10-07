@@ -31,3 +31,11 @@
 ## 补测范围
 
 新增48行与已评分32行逐row互斥：R3剩余12、R4全部32、R5 rc4全部4。均使用各自固定E200/44400步的合规从零训练模型。clean及六完整residual，每视图168000相同物理query；全部48×7预测固定后独立truth-last评分。最多4个测试worker，按GPU空余名额自动补位，每GPU总进程最多2，不影响健康训练。R5 base尚未完成，暂不能将rc4结果解释为相对base的机制增益。
+
+## 测试完成
+
+2026-10-07T23:26:45.254153+08:00：新增48行全部ANALYZED，共56448000次预测、4704条分层评分。远端独立truth-last复算及本地混淆矩阵复算均VERIFIED。25项定向测试通过，限定P0/P1审查通过。与前批32行合并为80行、20组各4seed。详见[80行详细结果](evidence/combined80/detailed_results_zh.md)。实际release commit=fadf4be41eb60e956d18530bd291c69ca435facc。
+
+发布时GitHub多次HTTP500，远端分支仍为68c8e8d54b2f50908b1e019b51a61e7948299b55；保留固定本地提交，以同一git archive传输N607并核实运行。传输与运行VERIFIED，Git交付状态另行读回登记。
+
+GitHub恢复后已正常push，并独立读回远端OID与源代码提交fadf4be41eb60e956d18530bd291c69ca435facc一致，Git代码交付VERIFIED。

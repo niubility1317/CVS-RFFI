@@ -2390,10 +2390,10 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
-      "verified_epoch": 142,
+      "verified_epoch": 200,
       "actual_pid": 85880,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
       "actual_argv": [
@@ -2403,7 +2403,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r3-orth-s2026092703.json"
-      ]
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r3-cons-s2026092703",
@@ -2461,10 +2462,10 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
-      "verified_epoch": 131,
+      "verified_epoch": 200,
       "actual_pid": 86821,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
       "actual_argv": [
@@ -2474,7 +2475,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r3-cons-s2026092703.json"
-      ]
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r3-group_ce-s2026092703",
@@ -2532,10 +2534,10 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
-      "verified_epoch": 135,
+      "verified_epoch": 200,
       "actual_pid": 87779,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
       "actual_argv": [
@@ -2545,7 +2547,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r3-group_ce-s2026092703.json"
-      ]
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r3-fishr-s2026092703",
@@ -2603,10 +2606,10 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
-      "verified_epoch": 122,
+      "verified_epoch": 200,
       "actual_pid": 97394,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
       "actual_argv": [
@@ -2616,7 +2619,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r3-fishr-s2026092703.json"
-      ]
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r3-all_dg-s2026092703",
@@ -2674,10 +2678,10 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
-      "verified_epoch": 108,
+      "verified_epoch": 200,
       "actual_pid": 99622,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
       "actual_argv": [
@@ -2687,7 +2691,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r3-all_dg-s2026092703.json"
-      ]
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r3-base-s2026092704",
@@ -2745,10 +2750,10 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
-      "verified_epoch": 134,
+      "verified_epoch": 200,
       "actual_pid": 100138,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
       "actual_argv": [
@@ -2758,7 +2763,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r3-base-s2026092704.json"
-      ]
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r3-domain-s2026092704",
@@ -2816,10 +2822,10 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
-      "verified_epoch": 119,
+      "verified_epoch": 200,
       "actual_pid": 100230,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
       "actual_argv": [
@@ -2829,7 +2835,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r3-domain-s2026092704.json"
-      ]
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r3-orth-s2026092704",
@@ -2887,10 +2894,10 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
-      "verified_epoch": 125,
+      "verified_epoch": 200,
       "actual_pid": 100312,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
       "actual_argv": [
@@ -2900,7 +2907,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r3-orth-s2026092704.json"
-      ]
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r3-cons-s2026092704",
@@ -2958,10 +2966,10 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
-      "verified_epoch": 114,
+      "verified_epoch": 200,
       "actual_pid": 101688,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
       "actual_argv": [
@@ -2971,7 +2979,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r3-cons-s2026092704.json"
-      ]
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r3-group_ce-s2026092704",
@@ -3029,10 +3038,10 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
-      "verified_epoch": 118,
+      "verified_epoch": 200,
       "actual_pid": 102646,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
       "actual_argv": [
@@ -3042,7 +3051,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r3-group_ce-s2026092704.json"
-      ]
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r3-fishr-s2026092704",
@@ -3100,10 +3110,10 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
-      "verified_epoch": 117,
+      "verified_epoch": 200,
       "actual_pid": 104440,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
       "actual_argv": [
@@ -3113,7 +3123,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r3-fishr-s2026092704.json"
-      ]
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r3-all_dg-s2026092704",
@@ -3171,10 +3182,10 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
-      "verified_epoch": 105,
+      "verified_epoch": 200,
       "actual_pid": 105407,
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
       "actual_argv": [
@@ -3184,7 +3195,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r3-all_dg-s2026092704.json"
-      ]
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-base-s2026092701",
@@ -3242,9 +3254,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-proto-s2026092701",
@@ -3302,9 +3316,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-compact-s2026092701",
@@ -3362,9 +3378,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-owfeat-s2026092701",
@@ -3422,9 +3440,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-proxy-s2026092701",
@@ -3482,9 +3502,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-softmix-s2026092701",
@@ -3542,9 +3564,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-episode-s2026092701",
@@ -3602,9 +3626,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-all_open-s2026092701",
@@ -3662,9 +3688,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-base-s2026092702",
@@ -3722,9 +3750,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-proto-s2026092702",
@@ -3782,9 +3812,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-compact-s2026092702",
@@ -3842,9 +3874,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-owfeat-s2026092702",
@@ -3902,9 +3936,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-proxy-s2026092702",
@@ -3962,9 +3998,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-softmix-s2026092702",
@@ -4022,9 +4060,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-episode-s2026092702",
@@ -4082,9 +4122,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-all_open-s2026092702",
@@ -4142,9 +4184,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-base-s2026092703",
@@ -4202,9 +4246,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-proto-s2026092703",
@@ -4262,9 +4308,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-compact-s2026092703",
@@ -4322,9 +4370,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-owfeat-s2026092703",
@@ -4382,9 +4432,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-proxy-s2026092703",
@@ -4442,9 +4494,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-softmix-s2026092703",
@@ -4502,9 +4556,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-episode-s2026092703",
@@ -4562,9 +4618,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-all_open-s2026092703",
@@ -4622,9 +4680,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-base-s2026092704",
@@ -4682,9 +4742,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-proto-s2026092704",
@@ -4742,9 +4804,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-compact-s2026092704",
@@ -4802,9 +4866,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-owfeat-s2026092704",
@@ -4862,9 +4928,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-proxy-s2026092704",
@@ -4922,9 +4990,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-softmix-s2026092704",
@@ -4982,9 +5052,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-episode-s2026092704",
@@ -5042,9 +5114,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r4-all_open-s2026092704",
@@ -5102,15 +5176,17 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r5-base-s2026092701",
       "method": "r5-base",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-base-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -5162,15 +5238,26 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 138,
+      "actual_pid": 724051,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092701.json"
+      ]
     },
     {
       "row_id": "r5-daot-s2026092701",
       "method": "r5-daot",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-daot-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -5222,15 +5309,26 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 91,
+      "actual_pid": 724060,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092701.json"
+      ]
     },
     {
       "row_id": "r5-rc4-s2026092701",
       "method": "r5-rc4",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-rc4-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-rc4-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -5282,15 +5380,27 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "actual_pid": 724070,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-rc4-s2026092701.json"
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r5-both-s2026092701",
       "method": "r5-both",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-both-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -5342,15 +5452,26 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 124,
+      "actual_pid": 724143,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092701.json"
+      ]
     },
     {
       "row_id": "r5-base-s2026092702",
       "method": "r5-base",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-base-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -5402,15 +5523,26 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 138,
+      "actual_pid": 724285,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092702.json"
+      ]
     },
     {
       "row_id": "r5-daot-s2026092702",
       "method": "r5-daot",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-daot-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -5462,15 +5594,26 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 90,
+      "actual_pid": 724368,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092702.json"
+      ]
     },
     {
       "row_id": "r5-rc4-s2026092702",
       "method": "r5-rc4",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-rc4-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-rc4-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -5522,15 +5665,27 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "actual_pid": 724443,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-rc4-s2026092702.json"
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r5-both-s2026092702",
       "method": "r5-both",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-both-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -5582,15 +5737,26 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 120,
+      "actual_pid": 724458,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092702.json"
+      ]
     },
     {
       "row_id": "r5-base-s2026092703",
       "method": "r5-base",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-base-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -5642,15 +5808,26 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 136,
+      "actual_pid": 724605,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092703.json"
+      ]
     },
     {
       "row_id": "r5-daot-s2026092703",
       "method": "r5-daot",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-daot-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -5702,15 +5879,26 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 91,
+      "actual_pid": 724689,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092703.json"
+      ]
     },
     {
       "row_id": "r5-rc4-s2026092703",
       "method": "r5-rc4",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-rc4-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-rc4-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -5762,15 +5950,27 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "actual_pid": 724701,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-rc4-s2026092703.json"
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r5-both-s2026092703",
       "method": "r5-both",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-both-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -5822,15 +6022,26 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 121,
+      "actual_pid": 724778,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092703.json"
+      ]
     },
     {
       "row_id": "r5-base-s2026092704",
       "method": "r5-base",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-base-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -5882,15 +6093,26 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 141,
+      "actual_pid": 724852,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092704.json"
+      ]
     },
     {
       "row_id": "r5-daot-s2026092704",
       "method": "r5-daot",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-daot-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -5942,15 +6164,26 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 90,
+      "actual_pid": 724933,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092704.json"
+      ]
     },
     {
       "row_id": "r5-rc4-s2026092704",
       "method": "r5-rc4",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-rc4-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-rc4-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -6002,15 +6235,27 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 200,
+      "actual_pid": 725010,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-rc4-s2026092704.json"
+      ],
+      "target_test_run": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
     },
     {
       "row_id": "r5-both-s2026092704",
       "method": "r5-both",
       "purpose": "source_selected_mechanism_comparison",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-both-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -6062,9 +6307,20 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "verified_epoch": 125,
+      "actual_pid": 725086,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092704.json"
+      ]
     },
     {
       "row_id": "r6-selected-s2026092701",
@@ -8814,34 +9070,56 @@
   },
   "registered_at": "2026-10-06T03:12:50+00:00",
   "latest_verified_status": {
-    "verified_at": "2026-10-06T18:15:10.394812+08:00",
-    "training_complete": 32,
+    "verified_at": "2026-10-07T23:26:45.254153+08:00",
+    "training_complete": 80,
     "training_total": 136,
     "training_active": 12,
-    "training_stage": "r3",
-    "tested_complete": 32,
-    "test_run": "20261006-phase1-reference-completed-sixscene-manysig-m32-r01",
+    "training_stage": "r5",
+    "stage_completed": {
+      "r2": 16,
+      "r3": 28,
+      "r4": 32,
+      "r5": 4,
+      "r6": 0
+    },
+    "tested_complete": 80,
+    "newly_tested": 48,
+    "test_runs": [
+      "20261006-phase1-reference-completed-sixscene-manysig-m32-r01",
+      "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
+    ],
     "test_status": "ANALYZED",
     "test_views": 7,
-    "prediction_count": 37632000,
-    "metric_records": 3136,
+    "prediction_count": 94080000,
+    "metric_records": 7840,
     "independent_recount": "VERIFIED",
     "training_controller_unchanged": true
   },
   "test_recovery_run": "20261006-phase1-reference-stack-sixscene-manysig-m136-r03",
   "latest_status_evidence": "evidence/status_20261006_pm/summary.json",
   "immediate_completed_test": {
-    "verified_at": "2026-10-06T18:15:10.394812+08:00",
-    "training_complete": 32,
+    "verified_at": "2026-10-07T23:26:45.254153+08:00",
+    "training_complete": 80,
     "training_total": 136,
     "training_active": 12,
-    "training_stage": "r3",
-    "tested_complete": 32,
-    "test_run": "20261006-phase1-reference-completed-sixscene-manysig-m32-r01",
+    "training_stage": "r5",
+    "stage_completed": {
+      "r2": 16,
+      "r3": 28,
+      "r4": 32,
+      "r5": 4,
+      "r6": 0
+    },
+    "tested_complete": 80,
+    "newly_tested": 48,
+    "test_runs": [
+      "20261006-phase1-reference-completed-sixscene-manysig-m32-r01",
+      "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
+    ],
     "test_status": "ANALYZED",
     "test_views": 7,
-    "prediction_count": 37632000,
-    "metric_records": 3136,
+    "prediction_count": 94080000,
+    "metric_records": 7840,
     "independent_recount": "VERIFIED",
     "training_controller_unchanged": true
   }

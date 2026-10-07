@@ -47,3 +47,7 @@ R3已有16行健康训练，不停止、重启或热修改。已定位两条旧�
 ## 2026-10-06即时测试已完成
 
 2026-10-06T18:15:10.394812+08:00：当前训练完成32/136（R2为16/16，R3为16/28），R3另外12行继续运行，无故障。用户明确要求立即测试已完成模型，已把快照全部32个固定E200模型以独立run `20261006-phase1-reference-completed-sixscene-manysig-m32-r01` 在clean与六完整residual环境测试完毕。37632000次预测、3136条评分、独立truth-last复算和本地混淆矩阵再核验均VERIFIED。仅使用4个空余测试名额，未停止、重启或热修改训练。原136行后续测试任务保持不变；本快照结果不反馈源域选择。详见[全部新测试结果](../20261006-phase1-reference-completed-sixscene-manysig-m32-r01/evidence/completed_test/detailed_results_zh.md)。
+
+## 2026-10-07新增48行补测完成
+
+2026-10-07T23:26:45.254153+08:00：训练完成80/136，当前r5共12行继续训练，无故障。R2完成16、R3完成28、R4完成32、R5 rc4完成4。本次新增48行与昨天32行互斥，共80行全部完成clean及六完整residual测试。合计94080000次预测、7840条评分，truth-last独立复算及本地混淆矩阵复核VERIFIED。20组均为4seed，R5 base尚未完成，rc4暂不作配对增益解释。训练控制器及后续136行原定测试队列保持不变。详见[80行详细结果](../20261007-phase1-reference-completed-sixscene-manysig-m48-r01/evidence/combined80/detailed_results_zh.md)。

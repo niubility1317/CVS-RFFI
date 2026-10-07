@@ -6768,17 +6768,28 @@
   },
   "latest_status_evidence": "evidence/status_20261006_pm/summary.json",
   "immediate_completed_test": {
-    "verified_at": "2026-10-06T18:15:10.394812+08:00",
-    "training_complete": 32,
+    "verified_at": "2026-10-07T23:26:45.254153+08:00",
+    "training_complete": 80,
     "training_total": 136,
     "training_active": 12,
-    "training_stage": "r3",
-    "tested_complete": 32,
-    "test_run": "20261006-phase1-reference-completed-sixscene-manysig-m32-r01",
+    "training_stage": "r5",
+    "stage_completed": {
+      "r2": 16,
+      "r3": 28,
+      "r4": 32,
+      "r5": 4,
+      "r6": 0
+    },
+    "tested_complete": 80,
+    "newly_tested": 48,
+    "test_runs": [
+      "20261006-phase1-reference-completed-sixscene-manysig-m32-r01",
+      "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
+    ],
     "test_status": "ANALYZED",
     "test_views": 7,
-    "prediction_count": 37632000,
-    "metric_records": 3136,
+    "prediction_count": 94080000,
+    "metric_records": 7840,
     "independent_recount": "VERIFIED",
     "training_controller_unchanged": true
   }

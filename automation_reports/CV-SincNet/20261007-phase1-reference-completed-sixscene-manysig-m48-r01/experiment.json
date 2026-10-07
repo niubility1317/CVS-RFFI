@@ -14,7 +14,7 @@
     "sixscene",
     "residual",
     "evaluation_only",
-    "auto_after_parent"
+    "completed_snapshot"
   ],
   "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
   "parent_run_ids": [
@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-07明确要求报告进度和详细测试结果，未测试则立即跑测试。",
   "code": {
-    "commit": null,
+    "commit": "fadf4be41eb60e956d18530bd291c69ca435facc",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01"
@@ -34,7 +34,7 @@
     "representation": "existing VALIDATED_ONCE residual/post_sync/noeq,25MHz,2x256; eachview168000 exactpairedphysicalIDs",
     "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/index.npz",
-    "label_map_ref": "each row/source_contract.json#classes",
+    "label_map_ref": "experiments/cvs_phase1_stack/design.py#CLASSES; source role contract has num_classes=6",
     "source_receivers": [
       1,
       3,
@@ -481,13 +481,20 @@
     "local_artifact_root": "automation_reports/CV-SincNet/20261007-phase1-reference-completed-sixscene-manysig-m48-r01",
     "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention.",
     "launch_owner": "codex/root/reference-completed-sixscene-20261007",
-    "launch_command": "python -m experiments.cvs_phase1_stack.publish_completed_20261007 --output local_artifacts/cvs_reference_completed_sixscene_20261007_r01",
+    "launch_command": "python -X utf8 E:/type10-7/.codex_tmp/publish_committed_during_github_failure.py (fixed git archive; original publisher REMOTE unchanged)",
     "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
-    "actual_pid": null,
-    "startup_verdict": "NOT_LAUNCHED",
-    "actual_cwd": null,
-    "actual_argv": null,
-    "startup_evidence": null
+    "actual_pid": 930742,
+    "startup_verdict": "VERIFIED",
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_stack.completed_eval_20261007",
+      "--mode",
+      "dispatch"
+    ],
+    "startup_evidence": "evidence/startup/verification.json"
   },
   "expected_artifacts": [
     "dispatcher.json",
@@ -533,9 +540,9 @@
   "rows": [
     {
       "row_id": "r3-all_dg-s2026092703",
-      "method": "r2-bridge",
+      "method": "r3-all_dg",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r3-all_dg-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-all_dg-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-all_dg-s2026092703/source/final_ssdg.pth",
@@ -544,9 +551,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -575,14 +582,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 930761,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-all_dg-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r3-all_dg-s2026092704",
-      "method": "r2-bridge",
+      "method": "r3-all_dg",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r3-all_dg-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-all_dg-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-all_dg-s2026092704/source/final_ssdg.pth",
@@ -591,9 +618,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -622,14 +649,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 930770,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-all_dg-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r3-base-s2026092704",
-      "method": "r2-bridge",
+      "method": "r3-base",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r3-base-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-base-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-base-s2026092704/source/final_ssdg.pth",
@@ -638,9 +685,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -669,14 +716,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 930779,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-base-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r3-cons-s2026092703",
-      "method": "r2-bridge",
+      "method": "r3-cons",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r3-cons-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-cons-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-cons-s2026092703/source/final_ssdg.pth",
@@ -685,9 +752,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -716,14 +783,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 930788,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-cons-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r3-cons-s2026092704",
-      "method": "r2-bridge",
+      "method": "r3-cons",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r3-cons-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-cons-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-cons-s2026092704/source/final_ssdg.pth",
@@ -732,9 +819,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -763,14 +850,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 931542,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-cons-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r3-domain-s2026092704",
-      "method": "r2-bridge",
+      "method": "r3-domain",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r3-domain-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-domain-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-domain-s2026092704/source/final_ssdg.pth",
@@ -779,9 +886,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -810,14 +917,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 931553,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-domain-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r3-fishr-s2026092703",
-      "method": "r2-bridge",
+      "method": "r3-fishr",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r3-fishr-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-fishr-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-fishr-s2026092703/source/final_ssdg.pth",
@@ -826,9 +953,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -857,14 +984,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 931563,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-fishr-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r3-fishr-s2026092704",
-      "method": "r2-bridge",
+      "method": "r3-fishr",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r3-fishr-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-fishr-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-fishr-s2026092704/source/final_ssdg.pth",
@@ -873,9 +1020,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -904,14 +1051,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 931575,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-fishr-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r3-group_ce-s2026092703",
-      "method": "r2-bridge",
+      "method": "r3-group_ce",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r3-group_ce-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-group_ce-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-group_ce-s2026092703/source/final_ssdg.pth",
@@ -920,9 +1087,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -951,14 +1118,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 932286,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-group_ce-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r3-group_ce-s2026092704",
-      "method": "r2-bridge",
+      "method": "r3-group_ce",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r3-group_ce-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-group_ce-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-group_ce-s2026092704/source/final_ssdg.pth",
@@ -967,9 +1154,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -998,14 +1185,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 932295,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-group_ce-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r3-orth-s2026092703",
-      "method": "r2-bridge",
+      "method": "r3-orth",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r3-orth-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-orth-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-orth-s2026092703/source/final_ssdg.pth",
@@ -1014,9 +1221,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1045,14 +1252,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 932305,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-orth-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r3-orth-s2026092704",
-      "method": "r2-bridge",
+      "method": "r3-orth",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r3-orth-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-orth-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-orth-s2026092704/source/final_ssdg.pth",
@@ -1061,9 +1288,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1092,14 +1319,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 932518,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-orth-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-all_open-s2026092701",
-      "method": "r2-bridge",
+      "method": "r4-all_open",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-all_open-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-all_open-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-all_open-s2026092701/source/final_ssdg.pth",
@@ -1108,9 +1355,9 @@
         "model": 2026092701,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092701,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1139,14 +1386,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 932606,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-all_open-s2026092701"
+      ],
+      "source_training_seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-all_open-s2026092702",
-      "method": "r2-bridge",
+      "method": "r4-all_open",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-all_open-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-all_open-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-all_open-s2026092702/source/final_ssdg.pth",
@@ -1155,9 +1422,9 @@
         "model": 2026092702,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092702,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1186,14 +1453,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 932615,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-all_open-s2026092702"
+      ],
+      "source_training_seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-all_open-s2026092703",
-      "method": "r2-bridge",
+      "method": "r4-all_open",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-all_open-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-all_open-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-all_open-s2026092703/source/final_ssdg.pth",
@@ -1202,9 +1489,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1233,14 +1520,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 932762,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-all_open-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-all_open-s2026092704",
-      "method": "r2-bridge",
+      "method": "r4-all_open",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-all_open-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-all_open-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-all_open-s2026092704/source/final_ssdg.pth",
@@ -1249,9 +1556,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1280,14 +1587,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 932771,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-all_open-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-base-s2026092701",
-      "method": "r2-bridge",
+      "method": "r4-base",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-base-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-base-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-base-s2026092701/source/final_ssdg.pth",
@@ -1296,9 +1623,9 @@
         "model": 2026092701,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092701,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1327,14 +1654,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 933393,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-base-s2026092701"
+      ],
+      "source_training_seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-base-s2026092702",
-      "method": "r2-bridge",
+      "method": "r4-base",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-base-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-base-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-base-s2026092702/source/final_ssdg.pth",
@@ -1343,9 +1690,9 @@
         "model": 2026092702,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092702,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1374,14 +1721,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 933404,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-base-s2026092702"
+      ],
+      "source_training_seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-base-s2026092703",
-      "method": "r2-bridge",
+      "method": "r4-base",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-base-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-base-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-base-s2026092703/source/final_ssdg.pth",
@@ -1390,9 +1757,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1421,14 +1788,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 933551,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-base-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-base-s2026092704",
-      "method": "r2-bridge",
+      "method": "r4-base",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-base-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-base-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-base-s2026092704/source/final_ssdg.pth",
@@ -1437,9 +1824,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1468,14 +1855,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 933560,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-base-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-compact-s2026092701",
-      "method": "r2-bridge",
+      "method": "r4-compact",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-compact-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-compact-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-compact-s2026092701/source/final_ssdg.pth",
@@ -1484,9 +1891,9 @@
         "model": 2026092701,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092701,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1515,14 +1922,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 934120,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-compact-s2026092701"
+      ],
+      "source_training_seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-compact-s2026092702",
-      "method": "r2-bridge",
+      "method": "r4-compact",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-compact-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-compact-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-compact-s2026092702/source/final_ssdg.pth",
@@ -1531,9 +1958,9 @@
         "model": 2026092702,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092702,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1562,14 +1989,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 934129,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-compact-s2026092702"
+      ],
+      "source_training_seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-compact-s2026092703",
-      "method": "r2-bridge",
+      "method": "r4-compact",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-compact-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-compact-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-compact-s2026092703/source/final_ssdg.pth",
@@ -1578,9 +2025,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1609,14 +2056,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 934277,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-compact-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-compact-s2026092704",
-      "method": "r2-bridge",
+      "method": "r4-compact",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-compact-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-compact-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-compact-s2026092704/source/final_ssdg.pth",
@@ -1625,9 +2092,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1656,14 +2123,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 934286,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-compact-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-episode-s2026092701",
-      "method": "r2-bridge",
+      "method": "r4-episode",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-episode-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-episode-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-episode-s2026092701/source/final_ssdg.pth",
@@ -1672,9 +2159,9 @@
         "model": 2026092701,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092701,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1703,14 +2190,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 934496,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-episode-s2026092701"
+      ],
+      "source_training_seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-episode-s2026092702",
-      "method": "r2-bridge",
+      "method": "r4-episode",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-episode-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-episode-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-episode-s2026092702/source/final_ssdg.pth",
@@ -1719,9 +2226,9 @@
         "model": 2026092702,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092702,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1750,14 +2257,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 934505,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-episode-s2026092702"
+      ],
+      "source_training_seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-episode-s2026092703",
-      "method": "r2-bridge",
+      "method": "r4-episode",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-episode-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-episode-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-episode-s2026092703/source/final_ssdg.pth",
@@ -1766,9 +2293,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1797,14 +2324,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 935064,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-episode-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-episode-s2026092704",
-      "method": "r2-bridge",
+      "method": "r4-episode",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-episode-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-episode-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-episode-s2026092704/source/final_ssdg.pth",
@@ -1813,9 +2360,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1844,14 +2391,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 935073,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-episode-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-owfeat-s2026092701",
-      "method": "r2-bridge",
+      "method": "r4-owfeat",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-owfeat-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-owfeat-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-owfeat-s2026092701/source/final_ssdg.pth",
@@ -1860,9 +2427,9 @@
         "model": 2026092701,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092701,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1891,14 +2458,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 935228,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-owfeat-s2026092701"
+      ],
+      "source_training_seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-owfeat-s2026092702",
-      "method": "r2-bridge",
+      "method": "r4-owfeat",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-owfeat-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-owfeat-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-owfeat-s2026092702/source/final_ssdg.pth",
@@ -1907,9 +2494,9 @@
         "model": 2026092702,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092702,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1938,14 +2525,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 935362,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-owfeat-s2026092702"
+      ],
+      "source_training_seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-owfeat-s2026092703",
-      "method": "r2-bridge",
+      "method": "r4-owfeat",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-owfeat-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-owfeat-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-owfeat-s2026092703/source/final_ssdg.pth",
@@ -1954,9 +2561,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -1985,14 +2592,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 935377,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-owfeat-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-owfeat-s2026092704",
-      "method": "r2-bridge",
+      "method": "r4-owfeat",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-owfeat-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-owfeat-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-owfeat-s2026092704/source/final_ssdg.pth",
@@ -2001,9 +2628,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2032,14 +2659,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 935387,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-owfeat-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-proto-s2026092701",
-      "method": "r2-bridge",
+      "method": "r4-proto",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-proto-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-proto-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proto-s2026092701/source/final_ssdg.pth",
@@ -2048,9 +2695,9 @@
         "model": 2026092701,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092701,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2079,14 +2726,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 936010,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-proto-s2026092701"
+      ],
+      "source_training_seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-proto-s2026092702",
-      "method": "r2-bridge",
+      "method": "r4-proto",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-proto-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-proto-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proto-s2026092702/source/final_ssdg.pth",
@@ -2095,9 +2762,9 @@
         "model": 2026092702,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092702,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2126,14 +2793,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 936090,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-proto-s2026092702"
+      ],
+      "source_training_seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-proto-s2026092703",
-      "method": "r2-bridge",
+      "method": "r4-proto",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-proto-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-proto-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proto-s2026092703/source/final_ssdg.pth",
@@ -2142,9 +2829,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2173,14 +2860,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 936099,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-proto-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-proto-s2026092704",
-      "method": "r2-bridge",
+      "method": "r4-proto",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-proto-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-proto-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proto-s2026092704/source/final_ssdg.pth",
@@ -2189,9 +2896,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2220,14 +2927,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 936247,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-proto-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-proxy-s2026092701",
-      "method": "r2-bridge",
+      "method": "r4-proxy",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-proxy-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-proxy-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proxy-s2026092701/source/final_ssdg.pth",
@@ -2236,9 +2963,9 @@
         "model": 2026092701,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092701,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2267,14 +2994,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 936386,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-proxy-s2026092701"
+      ],
+      "source_training_seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-proxy-s2026092702",
-      "method": "r2-bridge",
+      "method": "r4-proxy",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-proxy-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-proxy-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proxy-s2026092702/source/final_ssdg.pth",
@@ -2283,9 +3030,9 @@
         "model": 2026092702,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092702,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2314,14 +3061,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 936873,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-proxy-s2026092702"
+      ],
+      "source_training_seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-proxy-s2026092703",
-      "method": "r2-bridge",
+      "method": "r4-proxy",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-proxy-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-proxy-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proxy-s2026092703/source/final_ssdg.pth",
@@ -2330,9 +3097,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2361,14 +3128,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 937004,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-proxy-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-proxy-s2026092704",
-      "method": "r2-bridge",
+      "method": "r4-proxy",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-proxy-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-proxy-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proxy-s2026092704/source/final_ssdg.pth",
@@ -2377,9 +3164,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2408,14 +3195,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 937013,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-proxy-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-softmix-s2026092701",
-      "method": "r2-bridge",
+      "method": "r4-softmix",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-softmix-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-softmix-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-softmix-s2026092701/source/final_ssdg.pth",
@@ -2424,9 +3231,9 @@
         "model": 2026092701,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092701,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2455,14 +3262,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 937164,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-softmix-s2026092701"
+      ],
+      "source_training_seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-softmix-s2026092702",
-      "method": "r2-bridge",
+      "method": "r4-softmix",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-softmix-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-softmix-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-softmix-s2026092702/source/final_ssdg.pth",
@@ -2471,9 +3298,9 @@
         "model": 2026092702,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092702,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2502,14 +3329,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 937248,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-softmix-s2026092702"
+      ],
+      "source_training_seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-softmix-s2026092703",
-      "method": "r2-bridge",
+      "method": "r4-softmix",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-softmix-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-softmix-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-softmix-s2026092703/source/final_ssdg.pth",
@@ -2518,9 +3365,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2549,14 +3396,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 937259,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-softmix-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r4-softmix-s2026092704",
-      "method": "r2-bridge",
+      "method": "r4-softmix",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r4-softmix-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r4-softmix-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-softmix-s2026092704/source/final_ssdg.pth",
@@ -2565,9 +3432,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2596,14 +3463,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 937670,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r4-softmix-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r5-rc4-s2026092701",
-      "method": "r2-bridge",
+      "method": "r5-rc4",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r5-rc4-s2026092701",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r5-rc4-s2026092701/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-rc4-s2026092701/source/final_ssdg.pth",
@@ -2612,9 +3499,9 @@
         "model": 2026092701,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092701,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2643,14 +3530,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 937942,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r5-rc4-s2026092701"
+      ],
+      "source_training_seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r5-rc4-s2026092702",
-      "method": "r2-bridge",
+      "method": "r5-rc4",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r5-rc4-s2026092702",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r5-rc4-s2026092702/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-rc4-s2026092702/source/final_ssdg.pth",
@@ -2659,9 +3566,9 @@
         "model": 2026092702,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092702,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2690,14 +3597,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 938027,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r5-rc4-s2026092702"
+      ],
+      "source_training_seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r5-rc4-s2026092703",
-      "method": "r2-bridge",
+      "method": "r5-rc4",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r5-rc4-s2026092703",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r5-rc4-s2026092703/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-rc4-s2026092703/source/final_ssdg.pth",
@@ -2706,9 +3633,9 @@
         "model": 2026092703,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092703,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2737,14 +3664,34 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 938036,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r5-rc4-s2026092703"
+      ],
+      "source_training_seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      }
     },
     {
       "row_id": "r5-rc4-s2026092704",
-      "method": "r2-bridge",
+      "method": "r5-rc4",
       "purpose": "frozen_full_sixscene_test",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_phase1_stack/completed_snapshot_20261007.json#r5-rc4-s2026092704",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r5-rc4-s2026092704/prediction/resolved_config.json",
       "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-rc4-s2026092704/source/final_ssdg.pth",
@@ -2753,9 +3700,9 @@
         "model": 2026092704,
         "split": 392005,
         "data": null,
-        "augmentation": 2026092704,
+        "augmentation": null,
         "support": null,
-        "evaluation": null
+        "evaluation": 392005
       },
       "seed_notes": "Existing fixedchannel realization evaluation392005,receiver2027; model is parentseed; no stochastic adaptation.",
       "k": null,
@@ -2784,8 +3731,28 @@
         "scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "target_test_status": "NOT_STARTED"
+      "status": "ANALYZED",
+      "target_test_status": "ANALYZED",
+      "actual_pid": 938183,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r5-rc4-s2026092704"
+      ],
+      "source_training_seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      }
     }
   ],
   "notes": [
@@ -2794,7 +3761,7 @@
     "R5 base uncompleted at snapshot: no paired R5 causal comparison yet.",
     "All48x7 predictions fixed before independent truth-last scoring and recount."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "views": [
       "clean",
@@ -2819,5 +3786,24 @@
   },
   "latest_status_evidence": "evidence/status_20261006_pm/summary.json",
   "previous_eval_run": "20261006-phase1-reference-completed-sixscene-manysig-m32-r01",
-  "registered_at": "2026-10-07T15:13:37+00:00"
+  "registered_at": "2026-10-07T15:13:37+00:00",
+  "latest_verified_status": {
+    "verified_at": "2026-10-07T23:26:45.254153+08:00",
+    "models": 48,
+    "views": 7,
+    "prediction_count": 56448000,
+    "metric_records": 4704,
+    "independent_recount": "VERIFIED",
+    "local_confusion_recount": "VERIFIED",
+    "combined_models": 80,
+    "combined_metric_records": 7840,
+    "training_completed": 80
+  },
+  "git_delivery": {
+    "status": "VERIFIED",
+    "source_commit": "fadf4be41eb60e956d18530bd291c69ca435facc",
+    "remote_oid": "fadf4be41eb60e956d18530bd291c69ca435facc",
+    "initial_attempts": "FAILED GitHub HTTP500; recovered later",
+    "verified_at": "2026-10-07T15:29:12.252765+00:00"
+  }
 }

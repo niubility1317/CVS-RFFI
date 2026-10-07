@@ -1,0 +1,2405 @@
+{
+  "snapshot": {
+    "run_id": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01",
+    "rows": [
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r3",
+        "arm": "all_dg",
+        "model_seed": 2026092703,
+        "row_id": "r3-all_dg-s2026092703",
+        "features": [
+          "cons",
+          "domain",
+          "ema",
+          "fishr",
+          "group_ce",
+          "leo",
+          "orth",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-all_dg-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r3",
+        "arm": "all_dg",
+        "model_seed": 2026092704,
+        "row_id": "r3-all_dg-s2026092704",
+        "features": [
+          "cons",
+          "domain",
+          "ema",
+          "fishr",
+          "group_ce",
+          "leo",
+          "orth",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-all_dg-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r3",
+        "arm": "base",
+        "model_seed": 2026092704,
+        "row_id": "r3-base-s2026092704",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-base-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r3",
+        "arm": "cons",
+        "model_seed": 2026092703,
+        "row_id": "r3-cons-s2026092703",
+        "features": [
+          "cons",
+          "domain",
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-cons-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r3",
+        "arm": "cons",
+        "model_seed": 2026092704,
+        "row_id": "r3-cons-s2026092704",
+        "features": [
+          "cons",
+          "domain",
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-cons-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r3",
+        "arm": "domain",
+        "model_seed": 2026092704,
+        "row_id": "r3-domain-s2026092704",
+        "features": [
+          "domain",
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-domain-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r3",
+        "arm": "fishr",
+        "model_seed": 2026092703,
+        "row_id": "r3-fishr-s2026092703",
+        "features": [
+          "domain",
+          "ema",
+          "fishr",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-fishr-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r3",
+        "arm": "fishr",
+        "model_seed": 2026092704,
+        "row_id": "r3-fishr-s2026092704",
+        "features": [
+          "domain",
+          "ema",
+          "fishr",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-fishr-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r3",
+        "arm": "group_ce",
+        "model_seed": 2026092703,
+        "row_id": "r3-group_ce-s2026092703",
+        "features": [
+          "domain",
+          "ema",
+          "group_ce",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-group_ce-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r3",
+        "arm": "group_ce",
+        "model_seed": 2026092704,
+        "row_id": "r3-group_ce-s2026092704",
+        "features": [
+          "domain",
+          "ema",
+          "group_ce",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-group_ce-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r3",
+        "arm": "orth",
+        "model_seed": 2026092703,
+        "row_id": "r3-orth-s2026092703",
+        "features": [
+          "domain",
+          "ema",
+          "leo",
+          "orth",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-orth-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r3",
+        "arm": "orth",
+        "model_seed": 2026092704,
+        "row_id": "r3-orth-s2026092704",
+        "features": [
+          "domain",
+          "ema",
+          "leo",
+          "orth",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r3-orth-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "all_open",
+        "model_seed": 2026092701,
+        "row_id": "r4-all_open-s2026092701",
+        "features": [
+          "compact",
+          "ema",
+          "episode",
+          "leo",
+          "owfeat",
+          "proto",
+          "proxy",
+          "pseudo",
+          "softmix",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-all_open-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "all_open",
+        "model_seed": 2026092702,
+        "row_id": "r4-all_open-s2026092702",
+        "features": [
+          "compact",
+          "ema",
+          "episode",
+          "leo",
+          "owfeat",
+          "proto",
+          "proxy",
+          "pseudo",
+          "softmix",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-all_open-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "all_open",
+        "model_seed": 2026092703,
+        "row_id": "r4-all_open-s2026092703",
+        "features": [
+          "compact",
+          "ema",
+          "episode",
+          "leo",
+          "owfeat",
+          "proto",
+          "proxy",
+          "pseudo",
+          "softmix",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-all_open-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "all_open",
+        "model_seed": 2026092704,
+        "row_id": "r4-all_open-s2026092704",
+        "features": [
+          "compact",
+          "ema",
+          "episode",
+          "leo",
+          "owfeat",
+          "proto",
+          "proxy",
+          "pseudo",
+          "softmix",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-all_open-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "base",
+        "model_seed": 2026092701,
+        "row_id": "r4-base-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-base-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "base",
+        "model_seed": 2026092702,
+        "row_id": "r4-base-s2026092702",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-base-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "base",
+        "model_seed": 2026092703,
+        "row_id": "r4-base-s2026092703",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-base-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "base",
+        "model_seed": 2026092704,
+        "row_id": "r4-base-s2026092704",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-base-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "compact",
+        "model_seed": 2026092701,
+        "row_id": "r4-compact-s2026092701",
+        "features": [
+          "compact",
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-compact-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "compact",
+        "model_seed": 2026092702,
+        "row_id": "r4-compact-s2026092702",
+        "features": [
+          "compact",
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-compact-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "compact",
+        "model_seed": 2026092703,
+        "row_id": "r4-compact-s2026092703",
+        "features": [
+          "compact",
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-compact-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "compact",
+        "model_seed": 2026092704,
+        "row_id": "r4-compact-s2026092704",
+        "features": [
+          "compact",
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-compact-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "episode",
+        "model_seed": 2026092701,
+        "row_id": "r4-episode-s2026092701",
+        "features": [
+          "ema",
+          "episode",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-episode-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "episode",
+        "model_seed": 2026092702,
+        "row_id": "r4-episode-s2026092702",
+        "features": [
+          "ema",
+          "episode",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-episode-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "episode",
+        "model_seed": 2026092703,
+        "row_id": "r4-episode-s2026092703",
+        "features": [
+          "ema",
+          "episode",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-episode-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "episode",
+        "model_seed": 2026092704,
+        "row_id": "r4-episode-s2026092704",
+        "features": [
+          "ema",
+          "episode",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-episode-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "owfeat",
+        "model_seed": 2026092701,
+        "row_id": "r4-owfeat-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "owfeat",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-owfeat-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "owfeat",
+        "model_seed": 2026092702,
+        "row_id": "r4-owfeat-s2026092702",
+        "features": [
+          "ema",
+          "leo",
+          "owfeat",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-owfeat-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "owfeat",
+        "model_seed": 2026092703,
+        "row_id": "r4-owfeat-s2026092703",
+        "features": [
+          "ema",
+          "leo",
+          "owfeat",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-owfeat-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "owfeat",
+        "model_seed": 2026092704,
+        "row_id": "r4-owfeat-s2026092704",
+        "features": [
+          "ema",
+          "leo",
+          "owfeat",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-owfeat-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "proto",
+        "model_seed": 2026092701,
+        "row_id": "r4-proto-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "proto",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proto-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "proto",
+        "model_seed": 2026092702,
+        "row_id": "r4-proto-s2026092702",
+        "features": [
+          "ema",
+          "leo",
+          "proto",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proto-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "proto",
+        "model_seed": 2026092703,
+        "row_id": "r4-proto-s2026092703",
+        "features": [
+          "ema",
+          "leo",
+          "proto",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proto-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "proto",
+        "model_seed": 2026092704,
+        "row_id": "r4-proto-s2026092704",
+        "features": [
+          "ema",
+          "leo",
+          "proto",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proto-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "proxy",
+        "model_seed": 2026092701,
+        "row_id": "r4-proxy-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "proxy",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proxy-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "proxy",
+        "model_seed": 2026092702,
+        "row_id": "r4-proxy-s2026092702",
+        "features": [
+          "ema",
+          "leo",
+          "proxy",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proxy-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "proxy",
+        "model_seed": 2026092703,
+        "row_id": "r4-proxy-s2026092703",
+        "features": [
+          "ema",
+          "leo",
+          "proxy",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proxy-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "proxy",
+        "model_seed": 2026092704,
+        "row_id": "r4-proxy-s2026092704",
+        "features": [
+          "ema",
+          "leo",
+          "proxy",
+          "pseudo",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-proxy-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "softmix",
+        "model_seed": 2026092701,
+        "row_id": "r4-softmix-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "softmix",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-softmix-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "softmix",
+        "model_seed": 2026092702,
+        "row_id": "r4-softmix-s2026092702",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "softmix",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-softmix-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "softmix",
+        "model_seed": 2026092703,
+        "row_id": "r4-softmix-s2026092703",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "softmix",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-softmix-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r4",
+        "arm": "softmix",
+        "model_seed": 2026092704,
+        "row_id": "r4-softmix-s2026092704",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "softmix",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r4-softmix-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r5",
+        "arm": "rc4",
+        "model_seed": 2026092701,
+        "row_id": "r5-rc4-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "muse",
+          "proto",
+          "pseudo",
+          "rc4",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "proto",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-rc4-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r5",
+        "arm": "rc4",
+        "model_seed": 2026092702,
+        "row_id": "r5-rc4-s2026092702",
+        "features": [
+          "ema",
+          "leo",
+          "muse",
+          "proto",
+          "pseudo",
+          "rc4",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "proto",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-rc4-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r5",
+        "arm": "rc4",
+        "model_seed": 2026092703,
+        "row_id": "r5-rc4-s2026092703",
+        "features": [
+          "ema",
+          "leo",
+          "muse",
+          "proto",
+          "pseudo",
+          "rc4",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "proto",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-rc4-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      },
+      {
+        "schema": "reference_stack_v1",
+        "run_id": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "stage": "r5",
+        "arm": "rc4",
+        "model_seed": 2026092704,
+        "row_id": "r5-rc4-s2026092704",
+        "features": [
+          "ema",
+          "leo",
+          "muse",
+          "proto",
+          "pseudo",
+          "rc4",
+          "twostage"
+        ],
+        "parent_features": [
+          "ema",
+          "leo",
+          "proto",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/r5-rc4-s2026092704/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_stack",
+        "target_access": false
+      }
+    ],
+    "status": "FROZEN_COMPLETED_ROWS",
+    "selection": "ALL_COMPLETED_UNTESTED_AT_SNAPSHOT",
+    "target_feedback_forbidden": true,
+    "snapshot_at": 1791385588.4127727,
+    "parent_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+    "previous_eval_run": "20261006-phase1-reference-completed-sixscene-manysig-m32-r01",
+    "previously_scored_rows": [
+      "r2-bridge-s2026092701",
+      "r2-bridge-s2026092702",
+      "r2-bridge-s2026092703",
+      "r2-bridge-s2026092704",
+      "r2-ema-s2026092701",
+      "r2-ema-s2026092702",
+      "r2-ema-s2026092703",
+      "r2-ema-s2026092704",
+      "r2-pseudo-s2026092701",
+      "r2-pseudo-s2026092702",
+      "r2-pseudo-s2026092703",
+      "r2-pseudo-s2026092704",
+      "r2-twostage-s2026092701",
+      "r2-twostage-s2026092702",
+      "r2-twostage-s2026092703",
+      "r2-twostage-s2026092704",
+      "r3-all_dg-s2026092701",
+      "r3-all_dg-s2026092702",
+      "r3-base-s2026092701",
+      "r3-base-s2026092702",
+      "r3-base-s2026092703",
+      "r3-cons-s2026092701",
+      "r3-cons-s2026092702",
+      "r3-domain-s2026092701",
+      "r3-domain-s2026092702",
+      "r3-domain-s2026092703",
+      "r3-fishr-s2026092701",
+      "r3-fishr-s2026092702",
+      "r3-group_ce-s2026092701",
+      "r3-group_ce-s2026092702",
+      "r3-orth-s2026092701",
+      "r3-orth-s2026092702"
+    ],
+    "authorization": "User2026-10-07 asks to test completed experiments immediately",
+    "checkpoint_selection": "own fixed E200",
+    "parent_source_selection": "Unchanged automated source-only; target scores never feed training or selection"
+  },
+  "progress": [
+    {
+      "row_id": "r2-bridge-s2026092701",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-bridge-s2026092702",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-bridge-s2026092703",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-bridge-s2026092704",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-ema-s2026092701",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-ema-s2026092702",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-ema-s2026092703",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-ema-s2026092704",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-pseudo-s2026092701",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-pseudo-s2026092702",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-pseudo-s2026092703",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-pseudo-s2026092704",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-twostage-s2026092701",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-twostage-s2026092702",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-twostage-s2026092703",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r2-twostage-s2026092704",
+      "stage": "r2",
+      "complete": true
+    },
+    {
+      "row_id": "r3-all_dg-s2026092701",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-all_dg-s2026092702",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-all_dg-s2026092703",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-all_dg-s2026092704",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-base-s2026092701",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-base-s2026092702",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-base-s2026092703",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-base-s2026092704",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-cons-s2026092701",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-cons-s2026092702",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-cons-s2026092703",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-cons-s2026092704",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-domain-s2026092701",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-domain-s2026092702",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-domain-s2026092703",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-domain-s2026092704",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-fishr-s2026092701",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-fishr-s2026092702",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-fishr-s2026092703",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-fishr-s2026092704",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-group_ce-s2026092701",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-group_ce-s2026092702",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-group_ce-s2026092703",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-group_ce-s2026092704",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-orth-s2026092701",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-orth-s2026092702",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-orth-s2026092703",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r3-orth-s2026092704",
+      "stage": "r3",
+      "complete": true
+    },
+    {
+      "row_id": "r4-all_open-s2026092701",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-all_open-s2026092702",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-all_open-s2026092703",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-all_open-s2026092704",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-base-s2026092701",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-base-s2026092702",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-base-s2026092703",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-base-s2026092704",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-compact-s2026092701",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-compact-s2026092702",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-compact-s2026092703",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-compact-s2026092704",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-episode-s2026092701",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-episode-s2026092702",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-episode-s2026092703",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-episode-s2026092704",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-owfeat-s2026092701",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-owfeat-s2026092702",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-owfeat-s2026092703",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-owfeat-s2026092704",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-proto-s2026092701",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-proto-s2026092702",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-proto-s2026092703",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-proto-s2026092704",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-proxy-s2026092701",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-proxy-s2026092702",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-proxy-s2026092703",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-proxy-s2026092704",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-softmix-s2026092701",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-softmix-s2026092702",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-softmix-s2026092703",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r4-softmix-s2026092704",
+      "stage": "r4",
+      "complete": true
+    },
+    {
+      "row_id": "r5-base-s2026092701",
+      "stage": "r5",
+      "complete": false
+    },
+    {
+      "row_id": "r5-base-s2026092702",
+      "stage": "r5",
+      "complete": false
+    },
+    {
+      "row_id": "r5-base-s2026092703",
+      "stage": "r5",
+      "complete": false
+    },
+    {
+      "row_id": "r5-base-s2026092704",
+      "stage": "r5",
+      "complete": false
+    },
+    {
+      "row_id": "r5-both-s2026092701",
+      "stage": "r5",
+      "complete": false
+    },
+    {
+      "row_id": "r5-both-s2026092702",
+      "stage": "r5",
+      "complete": false
+    },
+    {
+      "row_id": "r5-both-s2026092703",
+      "stage": "r5",
+      "complete": false
+    },
+    {
+      "row_id": "r5-both-s2026092704",
+      "stage": "r5",
+      "complete": false
+    },
+    {
+      "row_id": "r5-daot-s2026092701",
+      "stage": "r5",
+      "complete": false
+    },
+    {
+      "row_id": "r5-daot-s2026092702",
+      "stage": "r5",
+      "complete": false
+    },
+    {
+      "row_id": "r5-daot-s2026092703",
+      "stage": "r5",
+      "complete": false
+    },
+    {
+      "row_id": "r5-daot-s2026092704",
+      "stage": "r5",
+      "complete": false
+    },
+    {
+      "row_id": "r5-rc4-s2026092701",
+      "stage": "r5",
+      "complete": true
+    },
+    {
+      "row_id": "r5-rc4-s2026092702",
+      "stage": "r5",
+      "complete": true
+    },
+    {
+      "row_id": "r5-rc4-s2026092703",
+      "stage": "r5",
+      "complete": true
+    },
+    {
+      "row_id": "r5-rc4-s2026092704",
+      "stage": "r5",
+      "complete": true
+    }
+  ],
+  "parent_queue": {
+    "phase": "r5",
+    "kind": "source",
+    "active": [
+      "r5-base-s2026092701",
+      "r5-daot-s2026092701",
+      "r5-both-s2026092701",
+      "r5-base-s2026092702",
+      "r5-daot-s2026092702",
+      "r5-both-s2026092702",
+      "r5-base-s2026092703",
+      "r5-daot-s2026092703",
+      "r5-both-s2026092703",
+      "r5-base-s2026092704",
+      "r5-daot-s2026092704",
+      "r5-both-s2026092704"
+    ],
+    "pending": [],
+    "failures": [],
+    "updated_at": 1791385587.0073435,
+    "max_active": 16,
+    "per_gpu_limit": 2,
+    "controller_pid": 4170278,
+    "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+  },
+  "parent_failure": null
+}

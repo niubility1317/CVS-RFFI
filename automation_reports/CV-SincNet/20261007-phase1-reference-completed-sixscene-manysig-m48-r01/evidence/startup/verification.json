@@ -1,0 +1,1376 @@
+{
+  "read_at": 1791386177.4053915,
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 930742,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_stack.completed_eval_20261007",
+      "--mode",
+      "dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01/dispatcher.stdout.log",
+    "commit": "fadf4be41eb60e956d18530bd291c69ca435facc",
+    "run_id": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01"
+  },
+  "process": {
+    "pid": 930742,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_stack.completed_eval_20261007",
+      "--mode",
+      "dispatch"
+    ]
+  },
+  "preflight": {
+    "status": "VERIFIED",
+    "models": 48,
+    "target_read": false,
+    "rows": [
+      "r3-all_dg-s2026092703",
+      "r3-all_dg-s2026092704",
+      "r3-base-s2026092704",
+      "r3-cons-s2026092703",
+      "r3-cons-s2026092704",
+      "r3-domain-s2026092704",
+      "r3-fishr-s2026092703",
+      "r3-fishr-s2026092704",
+      "r3-group_ce-s2026092703",
+      "r3-group_ce-s2026092704",
+      "r3-orth-s2026092703",
+      "r3-orth-s2026092704",
+      "r4-all_open-s2026092701",
+      "r4-all_open-s2026092702",
+      "r4-all_open-s2026092703",
+      "r4-all_open-s2026092704",
+      "r4-base-s2026092701",
+      "r4-base-s2026092702",
+      "r4-base-s2026092703",
+      "r4-base-s2026092704",
+      "r4-compact-s2026092701",
+      "r4-compact-s2026092702",
+      "r4-compact-s2026092703",
+      "r4-compact-s2026092704",
+      "r4-episode-s2026092701",
+      "r4-episode-s2026092702",
+      "r4-episode-s2026092703",
+      "r4-episode-s2026092704",
+      "r4-owfeat-s2026092701",
+      "r4-owfeat-s2026092702",
+      "r4-owfeat-s2026092703",
+      "r4-owfeat-s2026092704",
+      "r4-proto-s2026092701",
+      "r4-proto-s2026092702",
+      "r4-proto-s2026092703",
+      "r4-proto-s2026092704",
+      "r4-proxy-s2026092701",
+      "r4-proxy-s2026092702",
+      "r4-proxy-s2026092703",
+      "r4-proxy-s2026092704",
+      "r4-softmix-s2026092701",
+      "r4-softmix-s2026092702",
+      "r4-softmix-s2026092703",
+      "r4-softmix-s2026092704",
+      "r5-rc4-s2026092701",
+      "r5-rc4-s2026092702",
+      "r5-rc4-s2026092703",
+      "r5-rc4-s2026092704"
+    ],
+    "selection": "ALL_COMPLETED_UNTESTED_AT_SNAPSHOT"
+  },
+  "dispatcher": {
+    "pid": 930742,
+    "start_ticks": 63386251,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_stack.completed_eval_20261007",
+      "--mode",
+      "dispatch"
+    ],
+    "run_id": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01",
+    "release": "cvs_reference_completed_sixscene_20261007_r01",
+    "commit": "fadf4be41eb60e956d18530bd291c69ca435facc",
+    "max_active": 4,
+    "per_gpu_limit": 2
+  },
+  "state": {
+    "status": "PREDICTING",
+    "active": [
+      "r3-all_dg-s2026092703",
+      "r3-all_dg-s2026092704",
+      "r3-base-s2026092704",
+      "r3-cons-s2026092703"
+    ],
+    "pending": [
+      "r3-cons-s2026092704",
+      "r3-domain-s2026092704",
+      "r3-fishr-s2026092703",
+      "r3-fishr-s2026092704",
+      "r3-group_ce-s2026092703",
+      "r3-group_ce-s2026092704",
+      "r3-orth-s2026092703",
+      "r3-orth-s2026092704",
+      "r4-all_open-s2026092701",
+      "r4-all_open-s2026092702",
+      "r4-all_open-s2026092703",
+      "r4-all_open-s2026092704",
+      "r4-base-s2026092701",
+      "r4-base-s2026092702",
+      "r4-base-s2026092703",
+      "r4-base-s2026092704",
+      "r4-compact-s2026092701",
+      "r4-compact-s2026092702",
+      "r4-compact-s2026092703",
+      "r4-compact-s2026092704",
+      "r4-episode-s2026092701",
+      "r4-episode-s2026092702",
+      "r4-episode-s2026092703",
+      "r4-episode-s2026092704",
+      "r4-owfeat-s2026092701",
+      "r4-owfeat-s2026092702",
+      "r4-owfeat-s2026092703",
+      "r4-owfeat-s2026092704",
+      "r4-proto-s2026092701",
+      "r4-proto-s2026092702",
+      "r4-proto-s2026092703",
+      "r4-proto-s2026092704",
+      "r4-proxy-s2026092701",
+      "r4-proxy-s2026092702",
+      "r4-proxy-s2026092703",
+      "r4-proxy-s2026092704",
+      "r4-softmix-s2026092701",
+      "r4-softmix-s2026092702",
+      "r4-softmix-s2026092703",
+      "r4-softmix-s2026092704",
+      "r5-rc4-s2026092701",
+      "r5-rc4-s2026092702",
+      "r5-rc4-s2026092703",
+      "r5-rc4-s2026092704"
+    ],
+    "failures": [],
+    "updated_at": 1791386170.9864852,
+    "max_active": 4,
+    "per_gpu_limit": 2
+  },
+  "failure": null,
+  "completion": null,
+  "scoring": null,
+  "workers": [
+    {
+      "row_id": "r3-all_dg-s2026092703",
+      "pid": 930761,
+      "gpu": 6,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-all_dg-s2026092703"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-all_dg-s2026092703.log",
+      "process": {
+        "pid": 930761,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.completed_eval_20261007",
+          "--mode",
+          "predict",
+          "--row",
+          "r3-all_dg-s2026092703"
+        ]
+      },
+      "done": null,
+      "resolved": {
+        "row_id": "r3-all_dg-s2026092703",
+        "run_id": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01",
+        "pid": 930761,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "evaluation_commit": "fadf4be41eb60e956d18530bd291c69ca435facc",
+        "source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "batch_size": 256,
+        "parameters": 844754,
+        "trainable_parameters": 0,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121"
+      },
+      "log_size": 380,
+      "log_tail": [
+        "{\"row_id\": \"r3-all_dg-s2026092703\", \"view\": \"clean\", \"count\": 168000, \"seconds\": 4.609721586108208, \"truth_read\": false}",
+        "{\"row_id\": \"r3-all_dg-s2026092703\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 4.549124476034194, \"truth_read\": false}",
+        "{\"row_id\": \"r3-all_dg-s2026092703\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 4.560485281050205, \"truth_read\": false}"
+      ]
+    },
+    {
+      "row_id": "r3-all_dg-s2026092704",
+      "pid": 930770,
+      "gpu": 0,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-all_dg-s2026092704"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-all_dg-s2026092704.log",
+      "process": {
+        "pid": 930770,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.completed_eval_20261007",
+          "--mode",
+          "predict",
+          "--row",
+          "r3-all_dg-s2026092704"
+        ]
+      },
+      "done": null,
+      "resolved": {
+        "row_id": "r3-all_dg-s2026092704",
+        "run_id": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01",
+        "pid": 930770,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "evaluation_commit": "fadf4be41eb60e956d18530bd291c69ca435facc",
+        "source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "batch_size": 256,
+        "parameters": 844754,
+        "trainable_parameters": 0,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121"
+      },
+      "log_size": 250,
+      "log_tail": [
+        "{\"row_id\": \"r3-all_dg-s2026092704\", \"view\": \"clean\", \"count\": 168000, \"seconds\": 5.24853882798925, \"truth_read\": false}",
+        "{\"row_id\": \"r3-all_dg-s2026092704\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 5.589071330963634, \"truth_read\": false}"
+      ]
+    },
+    {
+      "row_id": "r3-base-s2026092704",
+      "pid": 930779,
+      "gpu": 4,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-base-s2026092704"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-base-s2026092704.log",
+      "process": {
+        "pid": 930779,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.completed_eval_20261007",
+          "--mode",
+          "predict",
+          "--row",
+          "r3-base-s2026092704"
+        ]
+      },
+      "done": null,
+      "resolved": {
+        "row_id": "r3-base-s2026092704",
+        "run_id": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01",
+        "pid": 930779,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "evaluation_commit": "fadf4be41eb60e956d18530bd291c69ca435facc",
+        "source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "batch_size": 256,
+        "parameters": 844754,
+        "trainable_parameters": 0,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121"
+      },
+      "log_size": 247,
+      "log_tail": [
+        "{\"row_id\": \"r3-base-s2026092704\", \"view\": \"clean\", \"count\": 168000, \"seconds\": 4.780647285981104, \"truth_read\": false}",
+        "{\"row_id\": \"r3-base-s2026092704\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 4.691198681946844, \"truth_read\": false}"
+      ]
+    },
+    {
+      "row_id": "r3-cons-s2026092703",
+      "pid": 930788,
+      "gpu": 2,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.completed_eval_20261007",
+        "--mode",
+        "predict",
+        "--row",
+        "r3-cons-s2026092703"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/r3-cons-s2026092703.log",
+      "process": {
+        "pid": 930788,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.completed_eval_20261007",
+          "--mode",
+          "predict",
+          "--row",
+          "r3-cons-s2026092703"
+        ]
+      },
+      "done": null,
+      "resolved": {
+        "row_id": "r3-cons-s2026092703",
+        "run_id": "20261007-phase1-reference-completed-sixscene-manysig-m48-r01",
+        "pid": 930788,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_completed_sixscene_20261007_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "evaluation_commit": "fadf4be41eb60e956d18530bd291c69ca435facc",
+        "source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "batch_size": 256,
+        "parameters": 844754,
+        "trainable_parameters": 0,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121"
+      },
+      "log_size": 247,
+      "log_tail": [
+        "{\"row_id\": \"r3-cons-s2026092703\", \"view\": \"clean\", \"count\": 168000, \"seconds\": 4.830625636037439, \"truth_read\": false}",
+        "{\"row_id\": \"r3-cons-s2026092703\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 4.618646863033064, \"truth_read\": false}"
+      ]
+    }
+  ],
+  "parent_queue": {
+    "phase": "r5",
+    "kind": "source",
+    "active": [
+      "r5-base-s2026092701",
+      "r5-daot-s2026092701",
+      "r5-both-s2026092701",
+      "r5-base-s2026092702",
+      "r5-daot-s2026092702",
+      "r5-both-s2026092702",
+      "r5-base-s2026092703",
+      "r5-daot-s2026092703",
+      "r5-both-s2026092703",
+      "r5-base-s2026092704",
+      "r5-daot-s2026092704",
+      "r5-both-s2026092704"
+    ],
+    "pending": [],
+    "failures": [],
+    "updated_at": 1791386167.6184673,
+    "max_active": 16,
+    "per_gpu_limit": 2,
+    "controller_pid": 4170278,
+    "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+  },
+  "parent_failure": null,
+  "parent_launches": {
+    "rows": [
+      {
+        "row_id": "r5-base-s2026092701",
+        "pid": 724051,
+        "gpu": 0,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-base-s2026092701.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-daot-s2026092701",
+        "pid": 724060,
+        "gpu": 1,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-daot-s2026092701.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-rc4-s2026092701",
+        "pid": 724070,
+        "gpu": 2,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-rc4-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-rc4-s2026092701.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-both-s2026092701",
+        "pid": 724143,
+        "gpu": 3,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-both-s2026092701.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-base-s2026092702",
+        "pid": 724285,
+        "gpu": 4,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-base-s2026092702.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-daot-s2026092702",
+        "pid": 724368,
+        "gpu": 5,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-daot-s2026092702.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-rc4-s2026092702",
+        "pid": 724443,
+        "gpu": 6,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-rc4-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-rc4-s2026092702.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-both-s2026092702",
+        "pid": 724458,
+        "gpu": 7,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-both-s2026092702.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-base-s2026092703",
+        "pid": 724605,
+        "gpu": 5,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-base-s2026092703.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-daot-s2026092703",
+        "pid": 724689,
+        "gpu": 7,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-daot-s2026092703.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-rc4-s2026092703",
+        "pid": 724701,
+        "gpu": 4,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-rc4-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-rc4-s2026092703.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-both-s2026092703",
+        "pid": 724778,
+        "gpu": 6,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-both-s2026092703.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-base-s2026092704",
+        "pid": 724852,
+        "gpu": 3,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-base-s2026092704.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-daot-s2026092704",
+        "pid": 724933,
+        "gpu": 2,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-daot-s2026092704.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-rc4-s2026092704",
+        "pid": 725010,
+        "gpu": 0,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-rc4-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-rc4-s2026092704.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      },
+      {
+        "row_id": "r5-both-s2026092704",
+        "pid": 725086,
+        "gpu": 1,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261006-phase1-reference-stack-manysig-m136-r02/source-r5-both-s2026092704.log",
+        "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+      }
+    ]
+  },
+  "source_rows": [
+    {
+      "row_id": "r2-bridge-s2026092701",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 76.58849000930786
+    },
+    {
+      "row_id": "r2-bridge-s2026092702",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 78.55173182487488
+    },
+    {
+      "row_id": "r2-bridge-s2026092703",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 68.99561595916748
+    },
+    {
+      "row_id": "r2-bridge-s2026092704",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 69.37217545509338
+    },
+    {
+      "row_id": "r2-ema-s2026092701",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 82.56076288223267
+    },
+    {
+      "row_id": "r2-ema-s2026092702",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 84.4226291179657
+    },
+    {
+      "row_id": "r2-ema-s2026092703",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 71.49146795272827
+    },
+    {
+      "row_id": "r2-ema-s2026092704",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 69.67483162879944
+    },
+    {
+      "row_id": "r2-pseudo-s2026092701",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 91.30041551589966
+    },
+    {
+      "row_id": "r2-pseudo-s2026092702",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 99.41834020614624
+    },
+    {
+      "row_id": "r2-pseudo-s2026092703",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 93.28881216049194
+    },
+    {
+      "row_id": "r2-pseudo-s2026092704",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 90.61919498443604
+    },
+    {
+      "row_id": "r2-twostage-s2026092701",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 75.20959877967834
+    },
+    {
+      "row_id": "r2-twostage-s2026092702",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 76.34055995941162
+    },
+    {
+      "row_id": "r2-twostage-s2026092703",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 71.2806978225708
+    },
+    {
+      "row_id": "r2-twostage-s2026092704",
+      "stage": "r2",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 75.01924467086792
+    },
+    {
+      "row_id": "r3-all_dg-s2026092701",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 118.55170702934265
+    },
+    {
+      "row_id": "r3-all_dg-s2026092702",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 119.07058048248291
+    },
+    {
+      "row_id": "r3-all_dg-s2026092703",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 102.39238095283508
+    },
+    {
+      "row_id": "r3-all_dg-s2026092704",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 106.10623455047607
+    },
+    {
+      "row_id": "r3-base-s2026092701",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 94.18759250640869
+    },
+    {
+      "row_id": "r3-base-s2026092702",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 94.88226294517517
+    },
+    {
+      "row_id": "r3-base-s2026092703",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 96.54083395004272
+    },
+    {
+      "row_id": "r3-base-s2026092704",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 94.5299551486969
+    },
+    {
+      "row_id": "r3-cons-s2026092701",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 113.41692113876343
+    },
+    {
+      "row_id": "r3-cons-s2026092702",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 115.55092167854309
+    },
+    {
+      "row_id": "r3-cons-s2026092703",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 110.2364068031311
+    },
+    {
+      "row_id": "r3-cons-s2026092704",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 99.95973563194275
+    },
+    {
+      "row_id": "r3-domain-s2026092701",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 102.9459273815155
+    },
+    {
+      "row_id": "r3-domain-s2026092702",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 102.63095283508301
+    },
+    {
+      "row_id": "r3-domain-s2026092703",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 100.4131395816803
+    },
+    {
+      "row_id": "r3-domain-s2026092704",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 97.5713243484497
+    },
+    {
+      "row_id": "r3-fishr-s2026092701",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 103.01768398284912
+    },
+    {
+      "row_id": "r3-fishr-s2026092702",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 102.06863284111023
+    },
+    {
+      "row_id": "r3-fishr-s2026092703",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 97.13356184959412
+    },
+    {
+      "row_id": "r3-fishr-s2026092704",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 95.28218054771423
+    },
+    {
+      "row_id": "r3-group_ce-s2026092701",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 107.68317556381226
+    },
+    {
+      "row_id": "r3-group_ce-s2026092702",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 118.47931098937988
+    },
+    {
+      "row_id": "r3-group_ce-s2026092703",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 104.86276912689209
+    },
+    {
+      "row_id": "r3-group_ce-s2026092704",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 94.90554118156433
+    },
+    {
+      "row_id": "r3-orth-s2026092701",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 102.61058950424194
+    },
+    {
+      "row_id": "r3-orth-s2026092702",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 103.24575352668762
+    },
+    {
+      "row_id": "r3-orth-s2026092703",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 102.02982950210571
+    },
+    {
+      "row_id": "r3-orth-s2026092704",
+      "stage": "r3",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 96.18984627723694
+    },
+    {
+      "row_id": "r4-all_open-s2026092701",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 204.0902693271637
+    },
+    {
+      "row_id": "r4-all_open-s2026092702",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 231.38898396492004
+    },
+    {
+      "row_id": "r4-all_open-s2026092703",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 200.24253177642822
+    },
+    {
+      "row_id": "r4-all_open-s2026092704",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 230.01342749595642
+    },
+    {
+      "row_id": "r4-base-s2026092701",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 96.84652376174927
+    },
+    {
+      "row_id": "r4-base-s2026092702",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 93.7942247390747
+    },
+    {
+      "row_id": "r4-base-s2026092703",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 93.4417016506195
+    },
+    {
+      "row_id": "r4-base-s2026092704",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 95.39855885505676
+    },
+    {
+      "row_id": "r4-compact-s2026092701",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 100.01615715026855
+    },
+    {
+      "row_id": "r4-compact-s2026092702",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 100.76990532875061
+    },
+    {
+      "row_id": "r4-compact-s2026092703",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 96.67113947868347
+    },
+    {
+      "row_id": "r4-compact-s2026092704",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 91.19690322875977
+    },
+    {
+      "row_id": "r4-episode-s2026092701",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 179.1645107269287
+    },
+    {
+      "row_id": "r4-episode-s2026092702",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 177.45615482330322
+    },
+    {
+      "row_id": "r4-episode-s2026092703",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 149.24406147003174
+    },
+    {
+      "row_id": "r4-episode-s2026092704",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 160.29115796089172
+    },
+    {
+      "row_id": "r4-owfeat-s2026092701",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 110.93507647514343
+    },
+    {
+      "row_id": "r4-owfeat-s2026092702",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 113.99604034423828
+    },
+    {
+      "row_id": "r4-owfeat-s2026092703",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 115.82283353805542
+    },
+    {
+      "row_id": "r4-owfeat-s2026092704",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 115.89900279045105
+    },
+    {
+      "row_id": "r4-proto-s2026092701",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 112.01302218437195
+    },
+    {
+      "row_id": "r4-proto-s2026092702",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 118.47724938392639
+    },
+    {
+      "row_id": "r4-proto-s2026092703",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 111.72352385520935
+    },
+    {
+      "row_id": "r4-proto-s2026092704",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 116.67893147468567
+    },
+    {
+      "row_id": "r4-proxy-s2026092701",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 112.42044687271118
+    },
+    {
+      "row_id": "r4-proxy-s2026092702",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 111.18076992034912
+    },
+    {
+      "row_id": "r4-proxy-s2026092703",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 112.77901434898376
+    },
+    {
+      "row_id": "r4-proxy-s2026092704",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 109.410236120224
+    },
+    {
+      "row_id": "r4-softmix-s2026092701",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 101.50122046470642
+    },
+    {
+      "row_id": "r4-softmix-s2026092702",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 101.66537356376648
+    },
+    {
+      "row_id": "r4-softmix-s2026092703",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 100.12987351417542
+    },
+    {
+      "row_id": "r4-softmix-s2026092704",
+      "stage": "r4",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 93.86400008201599
+    },
+    {
+      "row_id": "r5-base-s2026092701",
+      "stage": "r5",
+      "completed": false,
+      "epoch": 135,
+      "epoch_seconds": 208.1277961730957
+    },
+    {
+      "row_id": "r5-base-s2026092702",
+      "stage": "r5",
+      "completed": false,
+      "epoch": 135,
+      "epoch_seconds": 207.32280445098877
+    },
+    {
+      "row_id": "r5-base-s2026092703",
+      "stage": "r5",
+      "completed": false,
+      "epoch": 133,
+      "epoch_seconds": 212.3687834739685
+    },
+    {
+      "row_id": "r5-base-s2026092704",
+      "stage": "r5",
+      "completed": false,
+      "epoch": 138,
+      "epoch_seconds": 214.7671856880188
+    },
+    {
+      "row_id": "r5-both-s2026092701",
+      "stage": "r5",
+      "completed": false,
+      "epoch": 121,
+      "epoch_seconds": 267.32242798805237
+    },
+    {
+      "row_id": "r5-both-s2026092702",
+      "stage": "r5",
+      "completed": false,
+      "epoch": 118,
+      "epoch_seconds": 268.0630280971527
+    },
+    {
+      "row_id": "r5-both-s2026092703",
+      "stage": "r5",
+      "completed": false,
+      "epoch": 119,
+      "epoch_seconds": 257.2672758102417
+    },
+    {
+      "row_id": "r5-both-s2026092704",
+      "stage": "r5",
+      "completed": false,
+      "epoch": 123,
+      "epoch_seconds": 263.20423102378845
+    },
+    {
+      "row_id": "r5-daot-s2026092701",
+      "stage": "r5",
+      "completed": false,
+      "epoch": 89,
+      "epoch_seconds": 359.02441143989563
+    },
+    {
+      "row_id": "r5-daot-s2026092702",
+      "stage": "r5",
+      "completed": false,
+      "epoch": 88,
+      "epoch_seconds": 368.1769320964813
+    },
+    {
+      "row_id": "r5-daot-s2026092703",
+      "stage": "r5",
+      "completed": false,
+      "epoch": 89,
+      "epoch_seconds": 359.7346570491791
+    },
+    {
+      "row_id": "r5-daot-s2026092704",
+      "stage": "r5",
+      "completed": false,
+      "epoch": 88,
+      "epoch_seconds": 349.0324492454529
+    },
+    {
+      "row_id": "r5-rc4-s2026092701",
+      "stage": "r5",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 117.36984920501709
+    },
+    {
+      "row_id": "r5-rc4-s2026092702",
+      "stage": "r5",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 116.94874048233032
+    },
+    {
+      "row_id": "r5-rc4-s2026092703",
+      "stage": "r5",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 119.00300550460815
+    },
+    {
+      "row_id": "r5-rc4-s2026092704",
+      "stage": "r5",
+      "completed": true,
+      "epoch": 200,
+      "epoch_seconds": 118.47826027870178
+    }
+  ],
+  "gpu": "0, 4479 MiB, 38 %\n1, 7721 MiB, 0 %\n2, 4523 MiB, 70 %\n3, 7677 MiB, 8 %\n4, 4475 MiB, 56 %\n5, 8083 MiB, 22 %\n6, 4121 MiB, 95 %\n7, 7725 MiB, 1 %\n",
+  "dispatcher_log": ""
+}
