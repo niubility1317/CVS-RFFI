@@ -12,3 +12,4 @@
 - [reference_response已完成32行立即测试：clean及六完整residual](../../automation_reports/CV-SincNet/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/report.md)
 - [reference_response新增完成48行补测：clean及六完整residual](../../automation_reports/CV-SincNet/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/report.md)
 - [更新CVS网络的Phase1修复：时序门控与学习率固定对照32行](../../automation_reports/CV-SincNet/20261008-phase1-reference-repair-manysig-m32-r01/report.md)
+- [简洁星地增强：单视图替换与拼接的本地合成计算成本诊断](../../automation_reports/CV-SincNet/20261008-diagnostic-cvs-singleview-synthetic-m3-r01/report.md)

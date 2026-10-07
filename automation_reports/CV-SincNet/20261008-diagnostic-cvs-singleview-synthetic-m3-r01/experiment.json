@@ -1,0 +1,205 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261008-diagnostic-cvs-singleview-synthetic-m3-r01",
+  "group_id": "cvs-single-view-channel-efficiency",
+  "display_name": "简洁星地增强：单视图替换与拼接的本地合成计算成本诊断",
+  "description": "仅测本地CPU计算成本与执行正确性，不读真实source/target数据，不测识别性能；CE/原concat/单视图三组，在E1与E100路径测量。",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "reference_response",
+    "single_view",
+    "synthetic",
+    "cpu",
+    "efficiency"
+  ],
+  "comparison_group_id": "local-cpu-synthetic-b128-fp32",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-08要求追求更高效简洁的星地信道增强；本次局部原型与合成计算验证。",
+  "code": {
+    "commit": "ef2ea41bb6bbb3e64e402f6c15633db81d58702d",
+    "commit_role": "baseline before local diagnostic commit; actual commit recorded at execution",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe"
+  },
+  "data": {
+    "dataset": "synthetic Gaussian IQ generated in memory",
+    "version": null,
+    "representation": "FP32 (128,2,256)",
+    "contract_ref": "experiments/cvs_phase1_repair/benchmark_single_view.py",
+    "physical_ids_ref": "synthetic:0..127; no real physical samples",
+    "label_map_ref": null,
+    "source_receivers": null,
+    "target_receivers": null,
+    "source_days": null,
+    "target_days": null,
+    "tx_sets_ref": null,
+    "roles": {
+      "synthetic": 128
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "existing practical residual schedule; explicit diagnostic; not changing LEO_WEAK protocol default"
+  },
+  "permissions": {
+    "regime": "synthetic_compute_diagnostic",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "CPU execution cost only; no model accuracy or deployment claim"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "selection_rule": "none; no trained checkpoint selection",
+    "provenance_verdict": "OWN_RANDOM_SCRATCH_SMOKE_ONLY",
+    "contract_check_ref": "no dataset access"
+  },
+  "execution": {
+    "host": "local Windows",
+    "gpu_policy": "CPU only,2 PyTorch threads; no N607 intervention",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261008-diagnostic-cvs-singleview-synthetic-m3-r01",
+    "stop_rule": "nonfinite loss or exception preserves artifacts; no auto retry",
+    "launch_owner": "codex/root/singleview-prototype",
+    "launch_command": "python -m experiments.cvs_phase1_repair.benchmark_single_view --output local_artifacts/20261008-diagnostic-cvs-singleview-synthetic-m3-r01"
+  },
+  "expected_artifacts": [
+    "results.json",
+    "stdout.log",
+    "report.md"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "median_step_seconds",
+      "min_step_seconds",
+      "max_step_seconds",
+      "model_input_samples",
+      "rendered_samples",
+      "parameter_count"
+    ],
+    "dimensions": [
+      "mode",
+      "epoch_path"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null,
+    "limitations": "No real training/accuracy/GPU timing/memory evidence; 5 measured steps per path"
+  },
+  "rows": [
+    {
+      "row_id": "ce_baseline",
+      "method": "ce",
+      "purpose": "synthetic_compute_comparison",
+      "gpu": null,
+      "config_ref": "experiments/cvs_phase1_repair/benchmark_single_view.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261008-diagnostic-cvs-singleview-synthetic-m3-r01\\results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 20261008,
+        "split": null,
+        "data": 20261008,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "All initial model states same seed; synthetic input fixed; existing renderer owns seed2027; single-view Bernoulli uses20261008; no dataset split/support/eval",
+      "k": null,
+      "scenario": "E1/E100 existing practical residual schedule",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2warmup+5measured steps for each of E1/E100; synthetic only",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261008-diagnostic-cvs-singleview-synthetic-m3-r01\\ce",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261008-diagnostic-cvs-singleview-synthetic-m3-r01.stdout.log",
+      "command": "python -m experiments.cvs_phase1_repair.benchmark_single_view --output local_artifacts/20261008-diagnostic-cvs-singleview-synthetic-m3-r01",
+      "expected_artifacts": [
+        "results.json",
+        "own-scratch checkpoint"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "concat",
+      "method": "concat",
+      "purpose": "synthetic_compute_comparison",
+      "gpu": null,
+      "config_ref": "experiments/cvs_phase1_repair/benchmark_single_view.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261008-diagnostic-cvs-singleview-synthetic-m3-r01\\results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 20261008,
+        "split": null,
+        "data": 20261008,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "All initial model states same seed; synthetic input fixed; existing renderer owns seed2027; single-view Bernoulli uses20261008; no dataset split/support/eval",
+      "k": null,
+      "scenario": "E1/E100 existing practical residual schedule",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2warmup+5measured steps for each of E1/E100; synthetic only",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261008-diagnostic-cvs-singleview-synthetic-m3-r01\\concat",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261008-diagnostic-cvs-singleview-synthetic-m3-r01.stdout.log",
+      "command": "python -m experiments.cvs_phase1_repair.benchmark_single_view --output local_artifacts/20261008-diagnostic-cvs-singleview-synthetic-m3-r01",
+      "expected_artifacts": [
+        "results.json",
+        "own-scratch checkpoint"
+      ],
+      "status": "PLANNED"
+    },
+    {
+      "row_id": "single_view",
+      "method": "single_view",
+      "purpose": "synthetic_compute_comparison",
+      "gpu": null,
+      "config_ref": "experiments/cvs_phase1_repair/benchmark_single_view.py",
+      "resolved_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261008-diagnostic-cvs-singleview-synthetic-m3-r01\\results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 20261008,
+        "split": null,
+        "data": 20261008,
+        "augmentation": 20261008,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "All initial model states same seed; synthetic input fixed; existing renderer owns seed2027; single-view Bernoulli uses20261008; no dataset split/support/eval",
+      "k": null,
+      "scenario": "E1/E100 existing practical residual schedule",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2warmup+5measured steps for each of E1/E100; synthetic only",
+      "output_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261008-diagnostic-cvs-singleview-synthetic-m3-r01\\single_view",
+      "log_path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\20261008-diagnostic-cvs-singleview-synthetic-m3-r01.stdout.log",
+      "command": "python -m experiments.cvs_phase1_repair.benchmark_single_view --output local_artifacts/20261008-diagnostic-cvs-singleview-synthetic-m3-r01",
+      "expected_artifacts": [
+        "results.json",
+        "own-scratch checkpoint"
+      ],
+      "status": "PLANNED"
+    }
+  ],
+  "notes": [
+    "Source and target dataset reads=0. No experiment restart/stop.",
+    "Single-view .68/1.68 probability with 1.68 CE scaling is a stochastic objective estimator; BN/dropout and sample exposure prevent claiming identical training.",
+    "Native FAST TRUST+RC4 cost not remeasured; compare CE and original channel concat directly.",
+    "Tests do not change the previously released repair32 queue."
+  ],
+  "status": "PLANNED",
+  "registered_at": "2026-10-07T16:52:56+00:00"
+}
