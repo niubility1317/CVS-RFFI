@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "pytest_count": 29,
+  "command": "python -m pytest -q tests/test_cvs_phase1_repair.py tests/test_cvs_stack_completed_eval_20261007.py",
+  "compileall": "PASS",
+  "local_smoke": "8 arms x 5 synthetic key epochs; own scratch checkpoint reload; actual LR verified",
+  "independent_review": "PASS"
+}

@@ -22,11 +22,11 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-08：修复优化方案，适配现在的更新的网络，跑实验验证。",
   "code": {
-    "commit": "9e6a7d2ad00e6a6e8186d1cb9a5b12fadcd9cf48",
+    "commit": "ae783c81cd4949f93a80dbd2e80c4b2568eb99ea",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_20261008_r01",
-    "commit_role": "BASELINE_ONLY; actual release commit recorded by publisher before launch"
+    "commit_role": "ACTUAL_REMOTE_RELEASE"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -98,11 +98,16 @@
     "launch_owner": "codex/root/reference-repair-20261008",
     "launch_command": "python -m experiments.cvs_phase1_repair.publish --output local_artifacts/cvs_reference_repair_20261008_r01",
     "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_20261008_r01",
-    "actual_pid": null,
-    "startup_verdict": "NOT_LAUNCHED",
-    "actual_cwd": null,
-    "actual_argv": null,
-    "startup_evidence": null
+    "actual_pid": 975107,
+    "startup_verdict": "VERIFIED_CONTROLLER_QUEUED",
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_20261008_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_phase1_repair.dispatch"
+    ],
+    "startup_evidence": "evidence/remote_readback.json"
   },
   "expected_artifacts": [
     "source_matrix_frozen.json",
@@ -187,7 +192,7 @@
       "row_id": "ce_cosine-s2026092701",
       "stage": "repair",
       "arm": "ce_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -257,7 +262,7 @@
       "row_id": "leo_cosine-s2026092701",
       "stage": "repair",
       "arm": "leo_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: leo_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -329,7 +334,7 @@
       "row_id": "pseudo_batch_constant-s2026092701",
       "stage": "repair",
       "arm": "pseudo_batch_constant",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_batch_constant",
       "config": {
         "schema": "reference_repair_v1",
@@ -404,7 +409,7 @@
       "row_id": "pseudo_bank_constant-s2026092701",
       "stage": "repair",
       "arm": "pseudo_bank_constant",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_bank_constant",
       "config": {
         "schema": "reference_repair_v1",
@@ -479,7 +484,7 @@
       "row_id": "pseudo_batch_cosine-s2026092701",
       "stage": "repair",
       "arm": "pseudo_batch_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_batch_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -554,7 +559,7 @@
       "row_id": "pseudo_bank_cosine-s2026092701",
       "stage": "repair",
       "arm": "pseudo_bank_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_bank_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -629,7 +634,7 @@
       "row_id": "bank_cosine_domain-s2026092701",
       "stage": "repair",
       "arm": "bank_cosine_domain",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: bank_cosine_domain",
       "config": {
         "schema": "reference_repair_v1",
@@ -705,7 +710,7 @@
       "row_id": "bank_cosine_mixstyle-s2026092701",
       "stage": "repair",
       "arm": "bank_cosine_mixstyle",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: bank_cosine_mixstyle",
       "config": {
         "schema": "reference_repair_v1",
@@ -781,7 +786,7 @@
       "row_id": "ce_cosine-s2026092702",
       "stage": "repair",
       "arm": "ce_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -851,7 +856,7 @@
       "row_id": "leo_cosine-s2026092702",
       "stage": "repair",
       "arm": "leo_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: leo_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -923,7 +928,7 @@
       "row_id": "pseudo_batch_constant-s2026092702",
       "stage": "repair",
       "arm": "pseudo_batch_constant",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_batch_constant",
       "config": {
         "schema": "reference_repair_v1",
@@ -998,7 +1003,7 @@
       "row_id": "pseudo_bank_constant-s2026092702",
       "stage": "repair",
       "arm": "pseudo_bank_constant",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_bank_constant",
       "config": {
         "schema": "reference_repair_v1",
@@ -1073,7 +1078,7 @@
       "row_id": "pseudo_batch_cosine-s2026092702",
       "stage": "repair",
       "arm": "pseudo_batch_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_batch_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -1148,7 +1153,7 @@
       "row_id": "pseudo_bank_cosine-s2026092702",
       "stage": "repair",
       "arm": "pseudo_bank_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_bank_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -1223,7 +1228,7 @@
       "row_id": "bank_cosine_domain-s2026092702",
       "stage": "repair",
       "arm": "bank_cosine_domain",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: bank_cosine_domain",
       "config": {
         "schema": "reference_repair_v1",
@@ -1299,7 +1304,7 @@
       "row_id": "bank_cosine_mixstyle-s2026092702",
       "stage": "repair",
       "arm": "bank_cosine_mixstyle",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: bank_cosine_mixstyle",
       "config": {
         "schema": "reference_repair_v1",
@@ -1375,7 +1380,7 @@
       "row_id": "ce_cosine-s2026092703",
       "stage": "repair",
       "arm": "ce_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -1445,7 +1450,7 @@
       "row_id": "leo_cosine-s2026092703",
       "stage": "repair",
       "arm": "leo_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: leo_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -1517,7 +1522,7 @@
       "row_id": "pseudo_batch_constant-s2026092703",
       "stage": "repair",
       "arm": "pseudo_batch_constant",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_batch_constant",
       "config": {
         "schema": "reference_repair_v1",
@@ -1592,7 +1597,7 @@
       "row_id": "pseudo_bank_constant-s2026092703",
       "stage": "repair",
       "arm": "pseudo_bank_constant",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_bank_constant",
       "config": {
         "schema": "reference_repair_v1",
@@ -1667,7 +1672,7 @@
       "row_id": "pseudo_batch_cosine-s2026092703",
       "stage": "repair",
       "arm": "pseudo_batch_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_batch_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -1742,7 +1747,7 @@
       "row_id": "pseudo_bank_cosine-s2026092703",
       "stage": "repair",
       "arm": "pseudo_bank_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_bank_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -1817,7 +1822,7 @@
       "row_id": "bank_cosine_domain-s2026092703",
       "stage": "repair",
       "arm": "bank_cosine_domain",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: bank_cosine_domain",
       "config": {
         "schema": "reference_repair_v1",
@@ -1893,7 +1898,7 @@
       "row_id": "bank_cosine_mixstyle-s2026092703",
       "stage": "repair",
       "arm": "bank_cosine_mixstyle",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: bank_cosine_mixstyle",
       "config": {
         "schema": "reference_repair_v1",
@@ -1969,7 +1974,7 @@
       "row_id": "ce_cosine-s2026092704",
       "stage": "repair",
       "arm": "ce_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -2039,7 +2044,7 @@
       "row_id": "leo_cosine-s2026092704",
       "stage": "repair",
       "arm": "leo_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: leo_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -2111,7 +2116,7 @@
       "row_id": "pseudo_batch_constant-s2026092704",
       "stage": "repair",
       "arm": "pseudo_batch_constant",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_batch_constant",
       "config": {
         "schema": "reference_repair_v1",
@@ -2186,7 +2191,7 @@
       "row_id": "pseudo_bank_constant-s2026092704",
       "stage": "repair",
       "arm": "pseudo_bank_constant",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_bank_constant",
       "config": {
         "schema": "reference_repair_v1",
@@ -2261,7 +2266,7 @@
       "row_id": "pseudo_batch_cosine-s2026092704",
       "stage": "repair",
       "arm": "pseudo_batch_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_batch_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -2336,7 +2341,7 @@
       "row_id": "pseudo_bank_cosine-s2026092704",
       "stage": "repair",
       "arm": "pseudo_bank_cosine",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: pseudo_bank_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -2411,7 +2416,7 @@
       "row_id": "bank_cosine_domain-s2026092704",
       "stage": "repair",
       "arm": "bank_cosine_domain",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: bank_cosine_domain",
       "config": {
         "schema": "reference_repair_v1",
@@ -2487,7 +2492,7 @@
       "row_id": "bank_cosine_mixstyle-s2026092704",
       "stage": "repair",
       "arm": "bank_cosine_mixstyle",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed code/source-grounded control: bank_cosine_mixstyle",
       "config": {
         "schema": "reference_repair_v1",
@@ -2579,5 +2584,19 @@
     "bank": "same U physical ID consistent across >=2 consecutive high-confidence epochs; no U truth; no target bank",
     "domain": "legacy lambda_domain=1 lambda_adv=.35; pseudo_domain_gate false in every row",
     "mixstyle": "existing reference adapter time_down,t1; unchanged .18/.1/.7; response branch bypass is retained and documented"
+  },
+  "latest_verified_status": {
+    "status": "QUEUED",
+    "phase": "WAITING_PRIOR_OWNERS",
+    "checked_at": 1791391524.9516435,
+    "source_rows_running": 0,
+    "source_rows_pending": 32,
+    "remote_synthetic_smoke": "PASS_ALL_8",
+    "existing_owner_pids": [
+      4170278,
+      4170279,
+      4176081
+    ],
+    "performance_verdict": "NOT_YET_MEASURED"
   }
 }

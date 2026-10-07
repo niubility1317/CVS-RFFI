@@ -58,3 +58,11 @@ PLANNED。性能提升尚待实际完整测试证明。已有实验不停止、�
 ## 资源排队修复
 
 独立审查指出旧控制器不共享原子GPU预约，R5切R6时可能与新owner补位竞争。新owner发布后先记录WAITING_PRIOR_OWNERS，按/proc核实旧recover、sixscene_after及evaluation_recovery等真实owner退出，再开始训练；每次补位仍检查旧owner。新训练/预测入口分别命名train_repair.py、predict_repair.py，可被原有预约扫描识别。排队不等于模型训练开始，启动证据分别记录。
+
+## 发布核验与交接
+
+核验时间：2026-10-08T00:45:24.951643+08:00。发布状态VERIFIED；实际代码commit：`ae783c81cd4949f93a80dbd2e80c4b2568eb99ea`；控制器PID：975107。本地29项相关测试通过，本地和N607各8组×5个关键epoch合成数据真实训练循环冒烟通过，均保存并重载自身scratch checkpoint；不把冒烟当成正式性能结果。
+
+当前QUEUED/WAITING_PRIOR_OWNERS，0/32正式训练开始，0/32正式测试完成。正在等待原recover PID4170278、sixscene_after PID4170279和evaluation_recovery PID4176081真实退出。旧12个R5训练worker保留。控制器每30秒检查旧owner，后续最多4个新worker，并持续执行每GPU总进程最多2限制；完成后自动固定32行、生成224个预测视图、独立truth-last评分及成对对照报告。
+
+最新真实状态读取脚本：`evidence/inspect_remote.py`，当前证据：`evidence/remote_readback.json`。不得重新发布或重复启动此run。正式源worker启动后的实际参数、scratch来源、PID/cwd、完整日志由source包装器写入各row/source；当前尚无这些正式训练产物。后续应核实各阶段产物，再回收scores/summary/paired_results/resources/analysis并更新原登记、镜像Git、提交推送。性能是否改善尚未证明。
