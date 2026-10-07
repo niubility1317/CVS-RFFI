@@ -20,8 +20,8 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-08要求追求更高效简洁的星地信道增强；本次局部原型与合成计算验证。",
   "code": {
-    "commit": "ef2ea41bb6bbb3e64e402f6c15633db81d58702d",
-    "commit_role": "baseline before local diagnostic commit; actual commit recorded at execution",
+    "commit": "2d9c3427506c2f340b5ad90631d66f5e89f3183c",
+    "commit_role": "ACTUAL_LOCAL_DIAGNOSTIC_COMMIT",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe"
@@ -125,7 +125,7 @@
         "results.json",
         "own-scratch checkpoint"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED"
     },
     {
       "row_id": "concat",
@@ -158,7 +158,7 @@
         "results.json",
         "own-scratch checkpoint"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED"
     },
     {
       "row_id": "single_view",
@@ -191,7 +191,7 @@
         "results.json",
         "own-scratch checkpoint"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED"
     }
   ],
   "notes": [
@@ -201,5 +201,14 @@
     "Tests do not change the previously released repair32 queue."
   ],
   "status": "PLANNED",
-  "registered_at": "2026-10-07T16:52:56+00:00"
+  "registered_at": "2026-10-07T16:52:56+00:00",
+  "latest_verified_status": {
+    "status": "ANALYZED",
+    "scope": "SYNTHETIC_CPU_COST_ONLY",
+    "rows": 3,
+    "measured_paths": 6,
+    "timing_samples": 30,
+    "formal_accuracy_test": "NOT_RUN",
+    "gpu_training_timing": "NOT_MEASURED"
+  }
 }

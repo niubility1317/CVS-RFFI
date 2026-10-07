@@ -1,29 +1,44 @@
-# 简洁星地增强：单视图替换与拼接的本地合成计算成本诊断
+# 简洁星地信道增强：单视图原型与计算诊断
 
-- run_id：`20261008-diagnostic-cvs-singleview-synthetic-m3-r01`
-- group_id：`cvs-single-view-channel-efficiency`；类别：`diagnostic`；阶段：`diagnostic`
-- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+结论：优先把增强收缩为“已有物理信道＋单视图输入替换＋一个CE”，将FAST TRUST/RC4与信道增强解耦。已实现并测得本地CPU计算节省，识别精度和正式GPU收益待验证。此次没有停止、热改、重启原R5/R6或已发布的32行修复队列。
 
-## 目的与对照
+## 为什么改变路线
 
-仅测本地CPU计算成本与执行正确性，不读真实source/target数据，不测识别性能；CE/原concat/单视图三组，在E1与E100路径测量。
+FAST TRUST/RC4包含无标签筛选、teacher/多视图、信任划分等学习机制，不是生成星地信道视图所必需的模块。已有代码还叠加了三类独立成本：原生每轮222步对比简单监督每轮50步；clean+satellite固定把B扩成2B；practical参考模拟器在CPU按样本处理并发生设备/数据转换。只降低一项loss权重不会减少这些执行成本。
+前次完整日志报告确认R2至R4每模型44400次更新，R1为10000次，更新数比为4.44。这个比值不是实测耗时比；模型、验证、增强与U前向都影响总时间。旧R5/RC4已完成组平均总耗时约6.265小时，仅是历史并发环境记录，不是本次方法速度的匹配基准。
 
-## 数据、seed与模型来源
+## 原型定义
 
-实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
-逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+适配对象为177025参数的reference_response身份模型。对L_s保持原物理信道生成器与原场景日程，每个样本只选clean或一个satellite分支，输出形状始终B×2×256，网络仅前向一次。分支选择不读取TX标签，物理ID/RX/day随样本索引一致子集化，y和domain仍保持原顺序。模型两条身份路径同时看到同一份增强IQ。
+原式为L=CE(x,y)+λCE(A(x),y)，λ=0.68。取q=λ/(1+λ)=0.4047619，随机选择x或A(x)，使用L_sample=(1+λ)CE(x_sample,y)。对于固定逐样本损失，其抽样期望等于原式。实际网络若含batch统计、dropout或其他随机性，训练轨迹不等价；删除成对clean视图也可能增加梯度方差，这必须由源域/冻结测试验证。
+q是选择卫星分支的概率，并非最终信道改变概率。沿用原p(e)后，预期实际改变比例为q×p(e)：E80至90约24.29%，E91至200约32.38%。E1至79由于原卫星CE权重为零，原型直接只算clean；这是本次受控计算原型的历史日程保持策略，不是认定E80是未来最优启动点。
+原型不含EMA、伪标签、域判别器、RC4和一致性loss。不增加可训练参数；完整模型仍177025参数。U_s没有被使用，因此这是有标签信道增强原型，不应把它写成已经完成的半监督Phase1主方法。
 
-## 执行与存储
+## 本次计算实测
 
-命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+硬件：AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD；Windows-10-10.0.26200-SP0；PyTorch2.10.0+cu128；CPU两线程；B=128，IQ长度256；每条路径预热2步、测量5步。测量包含物理视图生成、模型前后向及AdamW更新，不含真实数据loader和全V评估。合成随机IQ/随机初始化，不读取真实source或target数据。
 
-## 结果与覆盖
+|路径|纯CE中位耗时|原concat中位耗时|单视图中位耗时|相对concat耗时下降|
+|---|---:|---:|---:|---:|
+|E1：卫星CE未启用|168.0ms|357.1ms|173.6ms|51.4%|
+|E100：卫星CE启用|173.4ms|491.2ms|221.8ms|54.8%|
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+E100原拼接每步输入模型256条，单视图128条；本次5个计时步的实际信道渲染量分别为128/128/128/128/128与45/43/50/47/42条。单视图相对原拼接约2.21倍吞吐，相对纯CE仍有约27.9%时间开销。
+本结果只说明小样本CPU微基准。五步中位数不是稳定性统计；场景随机性和主机负载会影响时间。没有测N607 GPU正式训练，不能外推“FAST TRUST/RC4整轮加速2.2倍”、显存下降幅度或识别精度。内存项为N/A。
 
-## 交接
+## 最小正式验证设计（尚未启动）
 
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+下一次正式方法验证只需要三个匹配组：CE、现有物理concat、单视图物理增强。先固定同一新网络、同一L/U/V契约、同一标注样本曝光量、同一优化器/LR、同一信道日程与模型seed。不要再次按U长度给不用U的监督组重复L；若采用200轮×50步，三组统一10000步，并与已登记44400步系列明确区分，不能把不同预算的差值都归因于增强。
+评价同时看clean、各卫星场景、最差RX/逐TX、四seed成对差值以及完整wall time。效率指标至少拆分训练、模拟器、数据加载、V评估、teacher/U开销和峰值内存。先验证同一步数性能，再比较达到同一源域性能所需时间，不只报每步速度。参数轻量是次要因素；保留身份性能是主目标。
+如果单视图降低clean或难类性能，首先报告clean/satellite抽样方差与源域身份margin，不立刻加回RC4或一整套多loss；也不拿已经暴露的target分数调比例、日程或选择性重跑。若未来需要用U_s，单独加入有明确计算预算的U模块并作增量对照，信道增强不再与之硬绑定。
+正式启用单视图是相对项目默认concat的显式方法对照，需要在该新实验预登记中注明；本次没有更改项目默认协议。正式默认LEO_WEAK三场景保持不变；现有practical/residual只能按显式对照登记，不能用它冒充LEO_WEAK。
+
+## 实现与证据
+
+- `experiments/cvs_phase1_repair/single_view.py`：可插入监督训练loop的单视图增强与loss。
+- `tests/test_cvs_single_view.py`：早期跳过、单次前向/标签/物理metadata对齐、期望权重与seed复现，共3项通过。
+- `experiments/cvs_phase1_repair/benchmark_single_view.py`：合成CPU计算诊断。
+- `evidence/results.json`：全部30个计时样本与实测配置；`benchmark.stdout.log`：完整stdout；`review.md`：独立P0/P1审查。
+- 原始scratch权重及模拟元数据位于本机local_artifacts/20261008-diagnostic-cvs-singleview-synthetic-m3-r01，未作为正式基座。
+
+外部依据：[PyTorch计时工具](https://docs.pytorch.org/docs/stable/benchmark_utils)强调预热、固定线程与加速器同步；本次限定CPU，未来GPU测量需同步。增强对无线指纹的作用不能等同于无损身份保持，相关一手研究可见[LoRa信道鲁棒射频指纹研究](https://arxiv.org/abs/2107.02867)，其LoRa结论不直接证明本项目WiSig方案有效。
