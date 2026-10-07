@@ -8859,6 +8859,12 @@ def train(args) -> int:
             torch.cuda.reset_peak_memory_stats(device)
         if _fasttrust_lr_enabled(args):
             _apply_fasttrust_lr(optimizer, base_lr=float(args.lr), epoch=reference_epoch(args, epoch), tail_mode=args.a1_tail_lr)
+        elif getattr(args, "phase1_lr_schedule", "constant") == "cosine":
+            # Independent of MUSE: all parameter groups follow the same E1-E200
+            # schedule. No optimizer regrouping or other FastTrust behavior.
+            from experiments.cvs_phase1_repair.design import cosine_lr
+            for group in optimizer.param_groups:
+                group["lr"] = cosine_lr(float(args.lr), epoch, total_epochs, float(args.phase1_lr_min))
         if muse_state is not None:
             _configure_muse_epoch_state(muse_state, int(epoch))
             if bool(muse_state.get("fasttrust_rc4", False)):

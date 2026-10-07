@@ -70,6 +70,11 @@ def validate(c):
 
 def make_args(c,device='cuda:0'):
     validate(c)
+    return args_from_validated_config(c,device)
+
+
+def args_from_validated_config(c,device='cuda:0'):
+    """Shared native recipe; callers must enforce their own immutable matrix."""
     from experiments.cvs_phase1_overlay.model import native_modules
     native=native_modules()
     recipe=read(ROOT/'experiments/adv3b02_xuc/configs/matched_20260927/cvs-daot-rc4-s2026092701.json')['options']

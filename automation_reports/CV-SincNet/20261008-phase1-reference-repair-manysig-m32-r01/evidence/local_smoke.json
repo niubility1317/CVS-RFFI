@@ -1,0 +1,112 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "rows": [
+    {
+      "stage": "repair",
+      "arm": "ce_cosine",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "repair",
+      "arm": "leo_cosine",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_constant",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_bank_constant",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_cosine",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_bank_cosine",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "repair",
+      "arm": "bank_cosine_domain",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "repair",
+      "arm": "bank_cosine_mixstyle",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    }
+  ],
+  "target_access": false,
+  "formal_weights": false
+}
