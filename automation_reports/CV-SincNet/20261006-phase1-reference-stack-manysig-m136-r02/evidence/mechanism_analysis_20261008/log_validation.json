@@ -1,0 +1,16 @@
+{
+  "status": "VERIFIED",
+  "completed_models": 96,
+  "completed_epochs": 19200,
+  "completed_steps": 3712000,
+  "live_additional_epochs": 1508,
+  "r1_stdout_complete": 16,
+  "stack_stdout_complete": 92,
+  "r1_stdout_errors": 0,
+  "stack_stdout_errors": 0,
+  "completed_step_scope": "all 80 completed stack rows and all 16 R1 rows; complete JSON records parsed; scalar losses/gradient/pseudo statistics aggregated",
+  "live_step_scope": "live step gzip not read; epoch snapshot only",
+  "raw_evidence_root": "E:\\type10-7\\local_artifacts\\phase1_transfer_analysis_20261008",
+  "target_reprediction": false,
+  "remote_modifications": false
+}
