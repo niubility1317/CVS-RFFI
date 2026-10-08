@@ -1,0 +1,86 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "rows": [
+    {
+      "stage": "urban_ce",
+      "arm": "ce",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "urban_ce",
+      "arm": "legacy_leo",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "urban_ce",
+      "arm": "urban",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "urban_ce",
+      "arm": "receiver_dg",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "urban_ce",
+      "arm": "urban_dg",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "urban_ce",
+      "arm": "urban_dg_thin",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    }
+  ],
+  "target_access": false,
+  "formal_weights": false
+}

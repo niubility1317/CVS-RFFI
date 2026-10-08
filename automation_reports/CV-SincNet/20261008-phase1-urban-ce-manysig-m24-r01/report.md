@@ -62,3 +62,11 @@ PLANNED，正式性能尚未测量。新run独占输出，唯一owner为codex/ro
 ## 本地验证
 
 6组各经过E1/80/131/132/200关键epoch真实原生循环的合成数据冒烟，保存/重载自身scratch checkpoint，无query访问。5项聚焦测试通过，覆盖配置越界拒绝、CE-only无隐藏loss/teacher、DG确定性/能量/梯度/扰动上界、thin保留及跳过、固定成对评分。独立代码审查P0=0、P1=0；审查范围为运行代码、资源隔离和truth-last边界。登记字段验证VALID，非性能证据。
+
+## 实际发布状态
+
+2026-10-08T08:21:14.171225+08:00独立核验：VERIFIED。控制器PID1173940，release commit `889d1c11fdc740b124dcdaa51d0ec741d9e1195d`，远端路径`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_urban_ce_20261008_r01`。本地30项相关测试通过；本地和N607各6组×5关键epoch自身scratch无query冒烟通过。24行配置逐项一致，无failure。
+
+当前QUEUED/WAITING_PRIOR_OWNERS，正式训练0/24、正式测试0/24。等待实际旧owner 1170536, 4170278, 4170279, 4176081 退出，包含repair direct_controller接管路径。旧健康训练保持运行；本run不干预。正式worker启动后自动写resolved配置、PID/GPU/log和完整epoch/step证据。全行固定后自动完成168个模型×视图预测、独立truth-last评分、urban_generalization.json和成对对照。尚不能宣称星地/泛化/速度有正收益。
+
+只读状态脚本为`evidence/inspect_remote.py`。恢复工作先核实已有queue/worker/产物，不重复启动；完成后回收scores/summary/paired_results/urban_generalization/resources/analysis，按原登记记录和Git交付。

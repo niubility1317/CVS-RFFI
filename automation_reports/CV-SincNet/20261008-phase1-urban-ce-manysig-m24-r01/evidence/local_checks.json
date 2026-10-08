@@ -1,9 +1,8 @@
 {
   "status": "PASS",
-  "pytest_count": 5,
-  "command": "python -m pytest -q tests/test_cvs_urban_ce.py",
-  "smoke": "6 arms x5 epochs; own scratch checkpoint reload; source-only synthetic",
-  "independent_code_review": "P0=0 P1=0",
-  "reviewer": "urban_review",
+  "pytest_count": 30,
+  "command": "python -m pytest -q tests/test_cvs_urban_ce.py tests/test_cvs_stack_completed_eval_20261007.py",
+  "local_and_remote_smoke": "6 arms x5 key epochs; own scratch checkpoint save/reload; no query",
+  "independent_code_review": "P0=0 P1=0; targeted direct-owner followup PASS",
   "performance": "NOT_MEASURED"
 }

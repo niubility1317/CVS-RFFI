@@ -21,11 +21,11 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-08：要发布实验验证；以CE+星地增强组合为实验方案；主要urban中低仰角，并增强泛化。",
   "code": {
-    "commit": "f519f9baaa61b18e03804b7b67eaf542481e706e",
+    "commit": "889d1c11fdc740b124dcdaa51d0ec741d9e1195d",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_urban_ce_20261008_r01",
-    "commit_role": "BASELINE_ONLY; actual release recorded before launch"
+    "commit_role": "ACTUAL_REMOTE_RELEASE"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -97,11 +97,16 @@
     "launch_owner": "codex/root/urban-ce-20261008",
     "launch_command": "python -m experiments.cvs_urban_ce.publish --output local_artifacts/cvs_urban_ce_20261008_r01/publish",
     "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_urban_ce_20261008_r01",
-    "actual_pid": null,
-    "startup_verdict": "NOT_LAUNCHED",
-    "actual_cwd": null,
-    "actual_argv": null,
-    "startup_evidence": null,
+    "actual_pid": 1173940,
+    "startup_verdict": "VERIFIED_CONTROLLER_QUEUED",
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_urban_ce_20261008_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_urban_ce.dispatch"
+    ],
+    "startup_evidence": "evidence/remote_readback.json",
     "controller_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_direct_20261008_r01",
     "controller_launch_command": "python -m experiments.cvs_phase1_repair.publish_direct",
     "worker_release_unchanged": true,
@@ -200,7 +205,7 @@
       "row_id": "ce-s2026092701",
       "stage": "urban_ce",
       "arm": "ce",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: ce",
       "config": {
         "schema": "urban_ce_v1",
@@ -282,7 +287,7 @@
       "row_id": "legacy_leo-s2026092701",
       "stage": "urban_ce",
       "arm": "legacy_leo",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: legacy_leo",
       "config": {
         "schema": "urban_ce_v1",
@@ -366,7 +371,7 @@
       "row_id": "urban-s2026092701",
       "stage": "urban_ce",
       "arm": "urban",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: urban",
       "config": {
         "schema": "urban_ce_v1",
@@ -450,7 +455,7 @@
       "row_id": "receiver_dg-s2026092701",
       "stage": "urban_ce",
       "arm": "receiver_dg",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: receiver_dg",
       "config": {
         "schema": "urban_ce_v1",
@@ -532,7 +537,7 @@
       "row_id": "urban_dg-s2026092701",
       "stage": "urban_ce",
       "arm": "urban_dg",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: urban_dg",
       "config": {
         "schema": "urban_ce_v1",
@@ -616,7 +621,7 @@
       "row_id": "urban_dg_thin-s2026092701",
       "stage": "urban_ce",
       "arm": "urban_dg_thin",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: urban_dg_thin",
       "config": {
         "schema": "urban_ce_v1",
@@ -700,7 +705,7 @@
       "row_id": "ce-s2026092702",
       "stage": "urban_ce",
       "arm": "ce",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: ce",
       "config": {
         "schema": "urban_ce_v1",
@@ -782,7 +787,7 @@
       "row_id": "legacy_leo-s2026092702",
       "stage": "urban_ce",
       "arm": "legacy_leo",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: legacy_leo",
       "config": {
         "schema": "urban_ce_v1",
@@ -866,7 +871,7 @@
       "row_id": "urban-s2026092702",
       "stage": "urban_ce",
       "arm": "urban",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: urban",
       "config": {
         "schema": "urban_ce_v1",
@@ -950,7 +955,7 @@
       "row_id": "receiver_dg-s2026092702",
       "stage": "urban_ce",
       "arm": "receiver_dg",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: receiver_dg",
       "config": {
         "schema": "urban_ce_v1",
@@ -1032,7 +1037,7 @@
       "row_id": "urban_dg-s2026092702",
       "stage": "urban_ce",
       "arm": "urban_dg",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: urban_dg",
       "config": {
         "schema": "urban_ce_v1",
@@ -1116,7 +1121,7 @@
       "row_id": "urban_dg_thin-s2026092702",
       "stage": "urban_ce",
       "arm": "urban_dg_thin",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: urban_dg_thin",
       "config": {
         "schema": "urban_ce_v1",
@@ -1200,7 +1205,7 @@
       "row_id": "ce-s2026092703",
       "stage": "urban_ce",
       "arm": "ce",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: ce",
       "config": {
         "schema": "urban_ce_v1",
@@ -1282,7 +1287,7 @@
       "row_id": "legacy_leo-s2026092703",
       "stage": "urban_ce",
       "arm": "legacy_leo",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: legacy_leo",
       "config": {
         "schema": "urban_ce_v1",
@@ -1366,7 +1371,7 @@
       "row_id": "urban-s2026092703",
       "stage": "urban_ce",
       "arm": "urban",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: urban",
       "config": {
         "schema": "urban_ce_v1",
@@ -1450,7 +1455,7 @@
       "row_id": "receiver_dg-s2026092703",
       "stage": "urban_ce",
       "arm": "receiver_dg",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: receiver_dg",
       "config": {
         "schema": "urban_ce_v1",
@@ -1532,7 +1537,7 @@
       "row_id": "urban_dg-s2026092703",
       "stage": "urban_ce",
       "arm": "urban_dg",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: urban_dg",
       "config": {
         "schema": "urban_ce_v1",
@@ -1616,7 +1621,7 @@
       "row_id": "urban_dg_thin-s2026092703",
       "stage": "urban_ce",
       "arm": "urban_dg_thin",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: urban_dg_thin",
       "config": {
         "schema": "urban_ce_v1",
@@ -1700,7 +1705,7 @@
       "row_id": "ce-s2026092704",
       "stage": "urban_ce",
       "arm": "ce",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: ce",
       "config": {
         "schema": "urban_ce_v1",
@@ -1782,7 +1787,7 @@
       "row_id": "legacy_leo-s2026092704",
       "stage": "urban_ce",
       "arm": "legacy_leo",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: legacy_leo",
       "config": {
         "schema": "urban_ce_v1",
@@ -1866,7 +1871,7 @@
       "row_id": "urban-s2026092704",
       "stage": "urban_ce",
       "arm": "urban",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: urban",
       "config": {
         "schema": "urban_ce_v1",
@@ -1950,7 +1955,7 @@
       "row_id": "receiver_dg-s2026092704",
       "stage": "urban_ce",
       "arm": "receiver_dg",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: receiver_dg",
       "config": {
         "schema": "urban_ce_v1",
@@ -2032,7 +2037,7 @@
       "row_id": "urban_dg-s2026092704",
       "stage": "urban_ce",
       "arm": "urban_dg",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: urban_dg",
       "config": {
         "schema": "urban_ce_v1",
@@ -2116,7 +2121,7 @@
       "row_id": "urban_dg_thin-s2026092704",
       "stage": "urban_ce",
       "arm": "urban_dg_thin",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "description": "Fixed CE channel contrast: urban_dg_thin",
       "config": {
         "schema": "urban_ce_v1",
@@ -2216,5 +2221,20 @@
     "thinning": "q=.5 independent satellite batch selection; importance2 retained CE; skip unused E1-79 branch. Actual reference model has no BatchNorm; stochastic trajectory changes, performance must be measured.",
     "provenance": "Scratch physical L/U/V exact6300/56700/27000; U unused by CE; V read-only; no Vcal/Vselect; no target-driven tuning"
   },
-  "registered_at": "2026-10-08T00:16:24+00:00"
+  "registered_at": "2026-10-08T00:16:24+00:00",
+  "latest_verified_status": {
+    "status": "QUEUED",
+    "phase": "WAITING_PRIOR_OWNERS",
+    "checked_at": 1791418874.1712253,
+    "source_rows_running": 0,
+    "source_rows_pending": 24,
+    "remote_synthetic_smoke": "PASS_ALL_6",
+    "existing_owner_pids": [
+      1170536,
+      4170278,
+      4170279,
+      4176081
+    ],
+    "performance_verdict": "NOT_YET_MEASURED"
+  }
 }

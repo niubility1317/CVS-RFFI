@@ -1,0 +1,1359 @@
+{
+  "read_at": 1791418874.1712253,
+  "receipt": {
+    "status": "SUBMITTED",
+    "pid": 1173940,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_urban_ce_20261008_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_urban_ce.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_urban_ce_20261008_r01/dispatcher.stdout.log",
+    "commit": "889d1c11fdc740b124dcdaa51d0ec741d9e1195d",
+    "run_id": "20261008-phase1-urban-ce-manysig-m24-r01"
+  },
+  "controller_process": {
+    "pid": 1173940,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_urban_ce_20261008_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_urban_ce.dispatch"
+    ]
+  },
+  "dispatcher": {
+    "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+    "owner": "codex/root/urban-ce-20261008",
+    "pid": 1173940,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_urban_ce_20261008_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_urban_ce_20261008_r01/experiments/cvs_urban_ce/dispatch.py"
+    ],
+    "commit": "889d1c11fdc740b124dcdaa51d0ec741d9e1195d"
+  },
+  "queue": {
+    "phase": "WAITING_PRIOR_OWNERS",
+    "active": [],
+    "pending": [
+      "ce-s2026092701",
+      "legacy_leo-s2026092701",
+      "urban-s2026092701",
+      "receiver_dg-s2026092701",
+      "urban_dg-s2026092701",
+      "urban_dg_thin-s2026092701",
+      "ce-s2026092702",
+      "legacy_leo-s2026092702",
+      "urban-s2026092702",
+      "receiver_dg-s2026092702",
+      "urban_dg-s2026092702",
+      "urban_dg_thin-s2026092702",
+      "ce-s2026092703",
+      "legacy_leo-s2026092703",
+      "urban-s2026092703",
+      "receiver_dg-s2026092703",
+      "urban_dg-s2026092703",
+      "urban_dg_thin-s2026092703",
+      "ce-s2026092704",
+      "legacy_leo-s2026092704",
+      "urban-s2026092704",
+      "receiver_dg-s2026092704",
+      "urban_dg-s2026092704",
+      "urban_dg_thin-s2026092704"
+    ],
+    "owners": [
+      {
+        "pid": 1170536,
+        "start_ticks": 66622045,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_direct_20261008_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_direct_20261008_r01/direct_controller.py",
+          "--worker-root",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_20261008_r01"
+        ]
+      },
+      {
+        "pid": 4170278,
+        "start_ticks": 50415368,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.recover"
+        ]
+      },
+      {
+        "pid": 4170279,
+        "start_ticks": 50415368,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.sixscene_after",
+          "--mode",
+          "dispatch"
+        ]
+      },
+      {
+        "pid": 4176081,
+        "start_ticks": 50471903,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_evaluation_repair_20261006_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_phase1_stack.evaluation_recovery"
+        ]
+      }
+    ],
+    "updated_at": 1791418859.1752396,
+    "reason": "Existing launchers do not share an atomic GPU reservation; preserve healthy work"
+  },
+  "failure": null,
+  "completion": null,
+  "smoke": {
+    "status": "PASS",
+    "device": "cpu",
+    "rows": [
+      {
+        "stage": "urban_ce",
+        "arm": "ce",
+        "epochs": [
+          1,
+          80,
+          131,
+          132,
+          200
+        ],
+        "source": "synthetic",
+        "status": "PASS"
+      },
+      {
+        "stage": "urban_ce",
+        "arm": "legacy_leo",
+        "epochs": [
+          1,
+          80,
+          131,
+          132,
+          200
+        ],
+        "source": "synthetic",
+        "status": "PASS"
+      },
+      {
+        "stage": "urban_ce",
+        "arm": "urban",
+        "epochs": [
+          1,
+          80,
+          131,
+          132,
+          200
+        ],
+        "source": "synthetic",
+        "status": "PASS"
+      },
+      {
+        "stage": "urban_ce",
+        "arm": "receiver_dg",
+        "epochs": [
+          1,
+          80,
+          131,
+          132,
+          200
+        ],
+        "source": "synthetic",
+        "status": "PASS"
+      },
+      {
+        "stage": "urban_ce",
+        "arm": "urban_dg",
+        "epochs": [
+          1,
+          80,
+          131,
+          132,
+          200
+        ],
+        "source": "synthetic",
+        "status": "PASS"
+      },
+      {
+        "stage": "urban_ce",
+        "arm": "urban_dg_thin",
+        "epochs": [
+          1,
+          80,
+          131,
+          132,
+          200
+        ],
+        "source": "synthetic",
+        "status": "PASS"
+      }
+    ],
+    "target_access": false,
+    "formal_weights": false
+  },
+  "scoring": null,
+  "configs": [
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "ce",
+      "model_seed": 2026092701,
+      "row_id": "ce-s2026092701",
+      "features": [],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/ce-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": false,
+      "receiver_dg": false,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109702,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "ce",
+      "model_seed": 2026092702,
+      "row_id": "ce-s2026092702",
+      "features": [],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/ce-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": false,
+      "receiver_dg": false,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109703,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "ce",
+      "model_seed": 2026092703,
+      "row_id": "ce-s2026092703",
+      "features": [],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/ce-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": false,
+      "receiver_dg": false,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109704,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "ce",
+      "model_seed": 2026092704,
+      "row_id": "ce-s2026092704",
+      "features": [],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/ce-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": false,
+      "receiver_dg": false,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109705,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "legacy_leo",
+      "model_seed": 2026092701,
+      "row_id": "legacy_leo-s2026092701",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/legacy_leo-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": false,
+      "receiver_dg": false,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109702,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "legacy_leo",
+      "model_seed": 2026092702,
+      "row_id": "legacy_leo-s2026092702",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/legacy_leo-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": false,
+      "receiver_dg": false,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109703,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "legacy_leo",
+      "model_seed": 2026092703,
+      "row_id": "legacy_leo-s2026092703",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/legacy_leo-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": false,
+      "receiver_dg": false,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109704,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "legacy_leo",
+      "model_seed": 2026092704,
+      "row_id": "legacy_leo-s2026092704",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/legacy_leo-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": false,
+      "receiver_dg": false,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109705,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "receiver_dg",
+      "model_seed": 2026092701,
+      "row_id": "receiver_dg-s2026092701",
+      "features": [],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/receiver_dg-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": false,
+      "receiver_dg": true,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109702,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "receiver_dg",
+      "model_seed": 2026092702,
+      "row_id": "receiver_dg-s2026092702",
+      "features": [],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/receiver_dg-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": false,
+      "receiver_dg": true,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109703,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "receiver_dg",
+      "model_seed": 2026092703,
+      "row_id": "receiver_dg-s2026092703",
+      "features": [],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/receiver_dg-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": false,
+      "receiver_dg": true,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109704,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "receiver_dg",
+      "model_seed": 2026092704,
+      "row_id": "receiver_dg-s2026092704",
+      "features": [],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/receiver_dg-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": false,
+      "receiver_dg": true,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109705,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "urban",
+      "model_seed": 2026092701,
+      "row_id": "urban-s2026092701",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/urban-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": true,
+      "receiver_dg": false,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109702,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "urban",
+      "model_seed": 2026092702,
+      "row_id": "urban-s2026092702",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/urban-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": true,
+      "receiver_dg": false,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109703,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "urban",
+      "model_seed": 2026092703,
+      "row_id": "urban-s2026092703",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/urban-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": true,
+      "receiver_dg": false,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109704,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "urban",
+      "model_seed": 2026092704,
+      "row_id": "urban-s2026092704",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/urban-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": true,
+      "receiver_dg": false,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109705,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "urban_dg",
+      "model_seed": 2026092701,
+      "row_id": "urban_dg-s2026092701",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/urban_dg-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": true,
+      "receiver_dg": true,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109702,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "urban_dg",
+      "model_seed": 2026092702,
+      "row_id": "urban_dg-s2026092702",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/urban_dg-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": true,
+      "receiver_dg": true,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109703,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "urban_dg",
+      "model_seed": 2026092703,
+      "row_id": "urban_dg-s2026092703",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/urban_dg-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": true,
+      "receiver_dg": true,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109704,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "urban_dg",
+      "model_seed": 2026092704,
+      "row_id": "urban_dg-s2026092704",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/urban_dg-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": true,
+      "receiver_dg": true,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 1.0,
+      "augmentation_seed": 2026109705,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "urban_dg_thin",
+      "model_seed": 2026092701,
+      "row_id": "urban_dg_thin-s2026092701",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/urban_dg_thin-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": true,
+      "receiver_dg": true,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 0.5,
+      "augmentation_seed": 2026109702,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "urban_dg_thin",
+      "model_seed": 2026092702,
+      "row_id": "urban_dg_thin-s2026092702",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/urban_dg_thin-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": true,
+      "receiver_dg": true,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 0.5,
+      "augmentation_seed": 2026109703,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "urban_dg_thin",
+      "model_seed": 2026092703,
+      "row_id": "urban_dg_thin-s2026092703",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/urban_dg_thin-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": true,
+      "receiver_dg": true,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 0.5,
+      "augmentation_seed": 2026109704,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    },
+    {
+      "schema": "urban_ce_v1",
+      "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+      "stage": "urban_ce",
+      "arm": "urban_dg_thin",
+      "model_seed": 2026092704,
+      "row_id": "urban_dg_thin-s2026092704",
+      "features": [
+        "leo"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/urban_dg_thin-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_urban_ce",
+      "target_access": false,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "urban": true,
+      "receiver_dg": true,
+      "echo_l1_max": 0.15,
+      "echo_delays": [
+        1,
+        2,
+        4
+      ],
+      "dg_probability": 0.5,
+      "dg_ramp_epochs": 40,
+      "satellite_compute_probability": 0.5,
+      "augmentation_seed": 2026109705,
+      "channel_seed": 2027,
+      "extra_losses": [],
+      "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+    }
+  ],
+  "workers": [],
+  "older_stack_processes": [
+    {
+      "pid": 724060,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092701.json"
+      ]
+    },
+    {
+      "pid": 724368,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092702.json"
+      ]
+    },
+    {
+      "pid": 724689,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092703.json"
+      ]
+    },
+    {
+      "pid": 724933,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092704.json"
+      ]
+    },
+    {
+      "pid": 4170278,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.recover"
+      ]
+    },
+    {
+      "pid": 4170279,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_recovery_20261006_r03",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.sixscene_after",
+        "--mode",
+        "dispatch"
+      ]
+    },
+    {
+      "pid": 4176081,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_stack_evaluation_repair_20261006_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_phase1_stack.evaluation_recovery"
+      ]
+    }
+  ],
+  "gpu": "1170554, GPU-56adac86-77cd-36c9-8770-dbf002650461, 3348 MiB\n724060, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 4056 MiB\n724933, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 4056 MiB\n1170563, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 3600 MiB\n1170572, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 3602 MiB\n724368, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 4056 MiB\n1170581, GPU-5463e082-259e-537b-603a-01575d45801c, 3602 MiB\n724689, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 4056 MiB\n",
+  "release_log": "",
+  "preflight_log": "hes\": 0, \"model_input_samples\": 24}\n[CHANNEL] {\"epoch\": 200, \"steps\": 1, \"dg_selected\": 11, \"source_samples\": 24, \"satellite_branches\": 1, \"model_input_samples\": 48}\n[CHANNEL] {\"epoch\": 200, \"steps\": 1, \"dg_selected\": 11, \"source_samples\": 24, \"satellite_branches\": 1, \"model_input_samples\": 48}\n[{\"stage\": \"urban_ce\", \"arm\": \"ce\", \"epochs\": [1, 80, 131, 132, 200], \"source\": \"synthetic\", \"status\": \"PASS\"}, {\"stage\": \"urban_ce\", \"arm\": \"legacy_leo\", \"epochs\": [1, 80, 131, 132, 200], \"source\": \"synthetic\", \"status\": \"PASS\"}, {\"stage\": \"urban_ce\", \"arm\": \"urban\", \"epochs\": [1, 80, 131, 132, 200], \"source\": \"synthetic\", \"status\": \"PASS\"}, {\"stage\": \"urban_ce\", \"arm\": \"receiver_dg\", \"epochs\": [1, 80, 131, 132, 200], \"source\": \"synthetic\", \"status\": \"PASS\"}, {\"stage\": \"urban_ce\", \"arm\": \"urban_dg\", \"epochs\": [1, 80, 131, 132, 200], \"source\": \"synthetic\", \"status\": \"PASS\"}, {\"stage\": \"urban_ce\", \"arm\": \"urban_dg_thin\", \"epochs\": [1, 80, 131, 132, 200], \"source\": \"synthetic\", \"status\": \"PASS\"}]\n"
+}
