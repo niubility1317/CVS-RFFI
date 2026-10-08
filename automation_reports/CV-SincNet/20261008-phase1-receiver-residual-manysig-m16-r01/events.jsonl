@@ -1,2 +1,3 @@
 {"at": "2026-10-08T13:55:10+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-08T13:59:37+00:00", "status": "LOCAL_VERIFIED", "note": "Four-arm numerical/concat smoke PASS; fixed matrix/config checks PASS; independent P0/P1 review PASS; explicit CVS-RFFI remote interpreter VERIFIED", "evidence": ["local_artifacts/receiver_residual/local_smoke.json"], "row_id": null}
+{"at": "2026-10-08T14:18:47+00:00", "status": "RUNNING", "note": "VERIFIED launched once commit3712e8e4f; retain as DIAGNOSTIC_RNG_CONFOUNDED, healthy workers unchanged; formal R2 scratch matrix fixed before any R1 target access", "evidence": ["local_artifacts/cvs_receiver_residual_20261008_r01/readback.json"], "row_id": null}

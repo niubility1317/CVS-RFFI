@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |reference_response：跨TX共同位移补偿×分支贡献预测，CE拼接四seed消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-receiver-residual-manysig-m16-r01/report.md)|
+|reference_response：跨TX共同位移补偿×分支贡献预测，CE拼接四seed消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-receiver-residual-manysig-m16-r02/report.md)|

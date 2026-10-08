@@ -7,8 +7,8 @@ import torch
 import torch.nn.functional as F
 from experiments.cvs_reference_identity.model import build
 from experiments.cvs_equivariant_identity.precision import numerical_context
-from experiments.cvs_receiver_residual import design as d
-from experiments.cvs_receiver_residual.objectives import leave_tx_targets, auxiliary_losses
+from experiments.cvs_receiver_residual_v2 import design as d
+from experiments.cvs_receiver_residual_v2.objectives import leave_tx_targets, auxiliary_losses
 
 
 def smoke(device='cpu'):

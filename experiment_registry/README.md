@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-08T13:59:38+00:00
+更新：2026-10-08T14:18:49+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|116|
+|managed_run|117|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,9 +21,9 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|260|
+|[cvs](by_method/cvs.md)|261|
 |[adv3b02](by_method/adv3b02.md)|146|
-|[phase1](by_method/phase1.md)|124|
+|[phase1](by_method/phase1.md)|125|
 |[phase2](by_method/phase2.md)|118|
 |[stage2](by_method/stage2.md)|67|
 |[clean_only](by_method/clean_only.md)|59|
@@ -38,19 +38,19 @@
 |[source_selected](by_method/source_selected.md)|18|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|17|
 |[source_only](by_method/source_only.md)|16|
+|[reference_response](by_method/reference_response.md)|16|
 |[d92](by_method/d92.md)|15|
 |[diagnostic](by_method/diagnostic.md)|15|
-|[reference_response](by_method/reference_response.md)|15|
 |[residual](by_method/residual.md)|13|
 |[response](by_method/response.md)|13|
 |[daot](by_method/daot.md)|12|
 |[rc4](by_method/rc4.md)|11|
 |[drift](by_method/drift.md)|11|
+|[scratch](by_method/scratch.md)|10|
 |[comparison](by_method/comparison.md)|10|
 |[riei](by_method/riei.md)|10|
 |[sixscene](by_method/sixscene.md)|9|
 |[truth_last](by_method/truth_last.md)|9|
-|[scratch](by_method/scratch.md)|9|
 |[no_training](by_method/no_training.md)|9|
 |[practical](by_method/practical.md)|8|
 |[residual_noeq](by_method/residual_noeq.md)|8|
@@ -83,6 +83,7 @@
 |[valid_history](by_method/valid_history.md)|3|
 |[mechanism](by_method/mechanism.md)|3|
 |[packet_compensation](by_method/packet_compensation.md)|3|
+|[factorial](by_method/factorial.md)|3|
 |[smoke](by_method/smoke.md)|3|
 |[evaluation](by_method/evaluation.md)|2|
 |[true256](by_method/true256.md)|2|
@@ -105,9 +106,12 @@
 |[independent_test](by_method/independent_test.md)|2|
 |[dual_path](by_method/dual_path.md)|2|
 |[synthetic](by_method/synthetic.md)|2|
-|[factorial](by_method/factorial.md)|2|
 |[sequential_source_selection](by_method/sequential_source_selection.md)|2|
 |[completed_snapshot](by_method/completed_snapshot.md)|2|
+|[ce_concat](by_method/ce_concat.md)|2|
+|[displacement](by_method/displacement.md)|2|
+|[contribution](by_method/contribution.md)|2|
+|[benchmark_exposed](by_method/benchmark_exposed.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[nm fdu](by_method/nm_fdu.md)|2|
 |[protonet](by_method/protonet.md)|2|
@@ -184,10 +188,6 @@
 |[four_seed](by_method/four_seed.md)|1|
 |[fixed_completed5](by_method/fixed_completed5.md)|1|
 |[single_seed](by_method/single_seed.md)|1|
-|[ce_concat](by_method/ce_concat.md)|1|
-|[displacement](by_method/displacement.md)|1|
-|[contribution](by_method/contribution.md)|1|
-|[benchmark_exposed](by_method/benchmark_exposed.md)|1|
 |[temporal_bank](by_method/temporal_bank.md)|1|
 |[cosine](by_method/cosine.md)|1|
 |[fixed_controls](by_method/fixed_controls.md)|1|
@@ -311,6 +311,7 @@
 |R5新增完成12行立即补测：base、DAOT、DAOT＋RC4四seed|managed_run|[打开](../automation_reports/CV-SincNet/20261008-evaluation-reference-r5-completed-manysig-m12-r01/report.md)|
 |修复后首批5个E200模型：立即执行clean及六星地场景独立测试|managed_run|[打开](../automation_reports/CV-SincNet/20261008-evaluation-reference-repair-completed5-manysig-m5-r01/report.md)|
 |reference_response：跨TX共同位移补偿×分支贡献预测，CE拼接四seed消融|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-receiver-residual-manysig-m16-r01/report.md)|
+|reference_response：跨TX共同位移补偿×分支贡献预测，CE拼接四seed消融|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-receiver-residual-manysig-m16-r02/report.md)|
 |reference_response新增12行R5补测：clean及六residual|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-reference-completed-sixscene-manysig-m12-r01/report.md)|
 |更新CVS网络的Phase1修复：时序门控与学习率固定对照32行|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-reference-repair-manysig-m32-r01/report.md)|
 |CE＋urban中低仰角星地增强与信道泛化固定24行|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-urban-ce-manysig-m24-r01/report.md)|
@@ -320,4 +321,3 @@
 |补偿响应融合：阻断分类无关方向的归一化捷径|legacy_evidence_group|[打开](../docs/CVS_RESPONSE_FUSION_DESIGN_20261003.md)|
 |cvs_response_geometry_source_20261003_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_response_geometry_source_20261003_r01)|
 |显式补偿响应：下一轮Phase1架构|legacy_evidence_group|[打开](../docs/CVS_CHANNEL_RESPONSE_DESIGN_20261003.md)|
-|Phase1补偿响应架构：创新边界与证据缺口|legacy_evidence_group|[打开](../docs/CVS_CHANNEL_RESPONSE_NOVELTY_20261003.md)|

@@ -27,9 +27,17 @@ CPU数值验证通过：初始骨干权重/RNG及logits逐位一致；三个实�
 
 按项目最小流程完成一次独立P0/P1审查，当前无未解决阻断项。发布解释器问题已修复：控制载荷显式使用CVS-RFFI Python，只读probe核实Torch2.1.0+cu121。审查提醒：batch零均值惩罚含单元采样噪声，不证明物理可辨识性。
 
+## 发布与初始化问题
+
+远端独立读回VERIFIED：执行commit为`3712e8e4f004f21b8ffdc74ce0459ad8a2020f3d`，dispatcher PID1598058；首批四行在GPU4/5/6/7正常运行，sourcecounts6300/56700/27000、每epoch50步。远端CPU smoke通过。发布客户端因远端smoke和submit均打印JSON而解析失败，但远端已经提交；独立核实后未重复启动，本地修复stdout处理。
+
+后续发现R1新增头初始化的`torch.manual_seed`会重置CUDA dropout RNG，四组并非完全配对的随机性控制。R1保留为`DIAGNOSTIC_RNG_CONFOUNDED`，不能据此单独宣称新增机制收益。数据角色、scratch来源及truth-last边界未改变。健康任务不停止、不热改。
+
+正式修复矩阵另登记为`20261008-phase1-receiver-residual-manysig-m16-r02`，使用独立release和输出。只改CPU私有生成器，从零执行同一16行设计，不继承R1权重，设计在R1任何target读取前固定。CPU/CUDA RNG检查与CUDA全机制smoke通过。
+
 ## 结果与覆盖
 
-当前尚未启动、无识别收益结论。固定全部16源模型冻结后，自动预测clean及六个完整practical视图，每视图168000相同物理ID。所有预测完成后独立scorer读truth并重算混淆矩阵/Accuracy/F1。Phase2、K、新类和H均不适用。历史benchmark已暴露，不作新盲测或正式LEO分层声明。所有负结果保留，无目标反馈调参或选择性重跑。
+R1已启动，完整训练和测试仍未完成；无识别收益结论。原自动收尾保持，结果需带随机性混杂声明。固定全部16源模型冻结后，自动预测clean及六个完整practical视图，每视图168000相同物理ID。所有预测完成后独立scorer读truth并重算混淆矩阵/Accuracy/F1。Phase2、K、新类和H均不适用。历史benchmark已暴露，不作新盲测或正式LEO分层声明。所有负结果保留，无目标反馈调参或选择性重跑。
 
 ## 交接
 

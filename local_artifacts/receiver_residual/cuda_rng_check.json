@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "arm": "baseline",
+      "cpu_rng_preserved": true,
+      "cuda_rng_preserved": true
+    },
+    {
+      "arm": "displacement",
+      "cpu_rng_preserved": true,
+      "cuda_rng_preserved": true
+    },
+    {
+      "arm": "contribution",
+      "cpu_rng_preserved": true,
+      "cuda_rng_preserved": true
+    },
+    {
+      "arm": "combined",
+      "cpu_rng_preserved": true,
+      "cuda_rng_preserved": true
+    }
+  ],
+  "real_dataset_read": false,
+  "query_read": false
+}

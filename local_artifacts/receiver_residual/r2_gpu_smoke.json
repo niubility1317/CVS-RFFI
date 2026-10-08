@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "rows": [
+    {
+      "arm": "baseline",
+      "baseline_bitwise_equivalence": true,
+      "checkpoint_roundtrip": true,
+      "samplewise_inference": true,
+      "gradient_norm": {},
+      "correction_norm_ratio": 0.0,
+      "gate_abs_delta": 0.0,
+      "added_parameters": 0,
+      "cross_tx_pairs": 0
+    },
+    {
+      "arm": "displacement",
+      "baseline_bitwise_equivalence": true,
+      "checkpoint_roundtrip": true,
+      "samplewise_inference": true,
+      "gradient_norm": {
+        "displacement": 0.24825619161128998
+      },
+      "correction_norm_ratio": 0.00012863505980931222,
+      "gate_abs_delta": 0.0,
+      "added_parameters": 5578,
+      "cross_tx_pairs": 120
+    },
+    {
+      "arm": "contribution",
+      "baseline_bitwise_equivalence": true,
+      "checkpoint_roundtrip": true,
+      "samplewise_inference": true,
+      "gradient_norm": {
+        "contribution": 0.12495750933885574
+      },
+      "correction_norm_ratio": 0.0,
+      "gate_abs_delta": 0.0001651313650654629,
+      "added_parameters": 2173,
+      "cross_tx_pairs": 0
+    },
+    {
+      "arm": "combined",
+      "baseline_bitwise_equivalence": true,
+      "checkpoint_roundtrip": true,
+      "samplewise_inference": true,
+      "gradient_norm": {
+        "displacement": 0.24825619161128998,
+        "contribution": 0.12495750933885574
+      },
+      "correction_norm_ratio": 0.00012863505980931222,
+      "gate_abs_delta": 0.0001651313650654629,
+      "added_parameters": 7751,
+      "cross_tx_pairs": 120
+    }
+  ],
+  "leave_tx_exclusion": true,
+  "target_input_rejection": true,
+  "native_concat_sampler": true,
+  "real_dataset_read": false,
+  "query_read": false
+}

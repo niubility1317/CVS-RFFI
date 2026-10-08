@@ -6,10 +6,10 @@ import json
 from pathlib import Path
 import subprocess
 import tarfile
-from experiments.cvs_receiver_residual import design as d
+from experiments.cvs_receiver_residual_v2 import design as d
 from experiments.cvs_phase1_overlay.publish import CONNECTION
 
-PACKAGES=('cvs_receiver_residual','cvs_phase1_overlay','cvs_selected_concat','cvs_energy_identity',
+PACKAGES=('cvs_receiver_residual_v2','cvs_phase1_overlay','cvs_selected_concat','cvs_energy_identity',
     'cvs_equivariant_identity','cvs_coordinate_identity','cvs_synchronized_identity','cvs_gauge_identity',
     'cvs_rff_physics','cvs_reference_identity','cvs_residual_identity','cvs_clean_design','cvs_identity_ce')
 PREFIXES=['experiments/'+p+'/' for p in PACKAGES]+['experiments/adv3b02_xuc/code/',
@@ -44,24 +44,24 @@ with tarfile.open(archive) as tar:
 python='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'
 env=dict(os.environ,PYTHONPATH=str(release)+os.pathsep+str(release/'code'),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
 subprocess.run([python,'-m','compileall','-q',str(release/'experiments'),str(release/'baselines'),str(release/'code')],cwd=release,env=env,check=True)
-subprocess.run([python,'-m','experiments.cvs_receiver_residual.smoke','--device','cpu','--output',str(release/'remote_smoke.json')],cwd=release,env=env,stdout=subprocess.DEVNULL,check=True)
+subprocess.run([python,'-m','experiments.cvs_receiver_residual_v2.smoke','--device','cpu','--output',str(release/'remote_smoke.json')],cwd=release,env=env,stdout=subprocess.DEVNULL,check=True)
 sys.path[:0]=[str(release),str(release/'code')]
-from experiments.cvs_receiver_residual import design as d
-from experiments.cvs_receiver_residual.dispatch import validate_matrix
-spec=release/'experiments/cvs_receiver_residual/configs/launch_spec.json'
+from experiments.cvs_receiver_residual_v2 import design as d
+from experiments.cvs_receiver_residual_v2.dispatch import validate_matrix
+spec=release/'experiments/cvs_receiver_residual_v2/configs/launch_spec.json'
 value=json.loads(spec.read_text());validate_matrix(value)
 for row in value['rows']:
     cfg=row['config'];d.validate_config(cfg)
-    if json.loads((release/'experiments/cvs_receiver_residual/configs'/(row['row_id']+'.json')).read_text())!=cfg: raise ValueError('Entity config differs')
+    if json.loads((release/'experiments/cvs_receiver_residual_v2/configs'/(row['row_id']+'.json')).read_text())!=cfg: raise ValueError('Entity config differs')
     for k in ('dataset','source_contract'):
         if not Path(cfg[k]).is_file(): raise FileNotFoundError(cfg[k])
 for p in (Path(d.VIEWS_ROOT)/'manifest.json',Path(d.VIEWS_ROOT)/'index.npz',Path(d.CAPSULE)/'clean.npy',Path(d.TRUTH)):
     if not p.is_file(): raise FileNotFoundError(p)
 # Existing manifest reused, no data builder/revalidation or query/truth content read.
-from experiments.cvs_receiver_residual.evaluate import manifest
+from experiments.cvs_receiver_residual_v2.evaluate import manifest
 manifest()
 if shutil.disk_usage(project).free<20*1024**3: raise RuntimeError('Insufficient output space')
-command=[python,'-u','-m','experiments.cvs_receiver_residual.dispatch','--spec',str(spec)]
+command=[python,'-u','-m','experiments.cvs_receiver_residual_v2.dispatch','--spec',str(spec)]
 logpath=release/'dispatcher.stdout.log'
 with logpath.open('x') as log:
     child=subprocess.Popen(command,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)

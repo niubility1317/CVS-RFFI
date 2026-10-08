@@ -2,7 +2,7 @@
 import torch
 from torch import nn
 from experiments.cvs_reference_identity.model import build
-from experiments.cvs_receiver_residual.design import ARMS, RECIPE
+from experiments.cvs_receiver_residual_v2.design import ARMS, RECIPE
 
 
 class ReceiverResidualCVS(nn.Module):
