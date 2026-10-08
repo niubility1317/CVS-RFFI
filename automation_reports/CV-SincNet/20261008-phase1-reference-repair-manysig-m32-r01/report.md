@@ -87,3 +87,25 @@ PLANNED。性能提升尚待实际完整测试证明。已有实验不停止、�
 控制器commit：`f519f9baaa61b18e03804b7b67eaf542481e706e`；训练worker仍为`ae783c81cd4949f93a80dbd2e80c4b2568eb99ea`。容量修复3项测试通过，独立P0/P1复核PASS。真实进程、CUDA占用、生效参数和逐epoch日志已交叉确认，证据见[evidence/direct_start_readback.json](evidence/direct_start_readback.json)，后续只读检查入口为[evidence/inspect_remote_direct.py](evidence/inspect_remote_direct.py)。旧等待状态记录保留为历史。
 
 尚无本修复矩阵的测试成绩。队列继续完成32行固定E200训练，全部冻结后自动执行clean及6个星地场景预测，再独立truth-last评分；测试结果不回流选模或调参。
+
+## 2026-10-08 15:13结果核查
+
+VERIFIED：5/32行完成E200与44400次更新，0行正在训练，27行排队，0/32行完成测试。控制器存活，无failure产物；截至15:14，旧R6任务共16个CUDA进程，每GPU两个。当前控制器仅向完全空闲GPU补位，本次只读核查未改调度或停止其他任务。
+
+下表仅为源域V结果，27000个样本；全部为model seed 2026092701，固定E200。不能解释为跨接收机目标测试或四seed结论。训练耗时为各run实测墙钟时间，受共享GPU影响，不是独占硬件速度对照。
+
+| 方法 | 源V准确率 | 最差源RX准确率 | 训练耗时(h) |
+|---|---:|---:|---:|
+| ce_cosine | 98.515% | 96.148% | 1.82 |
+| leo_cosine | 98.611% | 96.278% | 3.43 |
+| pseudo_bank_constant | 98.696% | 96.519% | 3.83 |
+| pseudo_batch_constant | 98.696% | 96.352% | 3.87 |
+| pseudo_batch_cosine | 98.600% | 96.259% | 4.11 |
+
+跨轮门控修复已实际生效：E132至E200，恒定LR下伪标签平均采用率由batch的1.695%升至bank的97.393%；U真值不可用，因此这是采用率，不是伪标签正确率。两者最终源V准确率均98.696%，最差源RX由96.352%升至96.519%（+0.167个百分点）。只能证明门控覆盖恢复，尚不能证明目标泛化改善。
+
+LEO＋cosine相对CE＋cosine源V提高0.096个百分点，最差源RX提高0.130个百分点；实测训练墙钟时间3.43h对1.82h。pseudo_batch_cosine最终源V为98.600%，比恒定LR的98.696%低0.096个百分点；均为单seed描述，不据此选模或调参。
+
+已解析5行各完整200条epoch记录（1000条），并扫描5行全文训练stdout异常标记；无Traceback/OOM/RuntimeError/FloatingPointError命中，所有epoch的非有限loss/grad跳步均为0。未对逐step压缩日志做全面诊断。
+
+source_matrix_frozen、prediction/complete、scoring_complete、scores、summary均未生成。按原预登记须32行全部完成源训练与冻结，再执行7视图预测和独立truth-last评分。本次没有提前测试、修改模型/参数或重排队列。证据：[progress_20261008_1513.json](evidence/progress_20261008_1513.json)。

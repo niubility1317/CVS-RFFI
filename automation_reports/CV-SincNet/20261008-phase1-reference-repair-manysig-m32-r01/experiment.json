@@ -199,7 +199,7 @@
       "row_id": "ce_cosine-s2026092701",
       "stage": "repair",
       "arm": "ce_cosine",
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -254,8 +254,22 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-reference-repair-manysig-m32-r01/configs/ce_cosine-s2026092701.json"
       ],
-      "verified_epoch": 3,
-      "checked_at": "2026-10-08T08:17:29.908425+08:00"
+      "verified_epoch": 200,
+      "checked_at": "2026-10-08T15:13:26.467502+08:00",
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9851481481481481,
+        "source_val_rx_accuracy": {
+          "1": 0.9955555555555555,
+          "3": 0.9614814814814815,
+          "4": 0.987037037037037,
+          "6": 0.9966666666666667,
+          "8": 0.985
+        },
+        "source_val_worst_rx": 0.9614814814814815
+      },
+      "elapsed_seconds": 6549.818052530289,
+      "test_status": "NOT_STARTED"
     },
     {
       "method": "reference_response-leo_cosine",
@@ -280,7 +294,7 @@
       "row_id": "leo_cosine-s2026092701",
       "stage": "repair",
       "arm": "leo_cosine",
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "description": "Fixed code/source-grounded control: leo_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -337,8 +351,22 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-reference-repair-manysig-m32-r01/configs/leo_cosine-s2026092701.json"
       ],
-      "verified_epoch": 2,
-      "checked_at": "2026-10-08T08:17:29.908425+08:00"
+      "verified_epoch": 200,
+      "checked_at": "2026-10-08T15:13:26.467502+08:00",
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9861111111111112,
+        "source_val_rx_accuracy": {
+          "1": 0.9962962962962963,
+          "3": 0.9627777777777777,
+          "4": 0.987037037037037,
+          "6": 0.997037037037037,
+          "8": 0.9874074074074074
+        },
+        "source_val_worst_rx": 0.9627777777777777
+      },
+      "elapsed_seconds": 12332.29237484932,
+      "test_status": "NOT_STARTED"
     },
     {
       "method": "reference_response-pseudo_batch_constant",
@@ -363,7 +391,7 @@
       "row_id": "pseudo_batch_constant-s2026092701",
       "stage": "repair",
       "arm": "pseudo_batch_constant",
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "description": "Fixed code/source-grounded control: pseudo_batch_constant",
       "config": {
         "schema": "reference_repair_v1",
@@ -423,8 +451,22 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-reference-repair-manysig-m32-r01/configs/pseudo_batch_constant-s2026092701.json"
       ],
-      "verified_epoch": 2,
-      "checked_at": "2026-10-08T08:17:29.908425+08:00"
+      "verified_epoch": 200,
+      "checked_at": "2026-10-08T15:13:26.467502+08:00",
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9869629629629629,
+        "source_val_rx_accuracy": {
+          "1": 0.9953703703703703,
+          "3": 0.9635185185185186,
+          "4": 0.9912962962962963,
+          "6": 0.9955555555555555,
+          "8": 0.9890740740740741
+        },
+        "source_val_worst_rx": 0.9635185185185186
+      },
+      "elapsed_seconds": 13924.419382333755,
+      "test_status": "NOT_STARTED"
     },
     {
       "method": "reference_response-pseudo_bank_constant",
@@ -449,7 +491,7 @@
       "row_id": "pseudo_bank_constant-s2026092701",
       "stage": "repair",
       "arm": "pseudo_bank_constant",
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "description": "Fixed code/source-grounded control: pseudo_bank_constant",
       "config": {
         "schema": "reference_repair_v1",
@@ -509,8 +551,22 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-reference-repair-manysig-m32-r01/configs/pseudo_bank_constant-s2026092701.json"
       ],
-      "verified_epoch": 2,
-      "checked_at": "2026-10-08T08:17:29.908425+08:00"
+      "verified_epoch": 200,
+      "checked_at": "2026-10-08T15:13:26.467502+08:00",
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9869629629629629,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.9651851851851851,
+          "4": 0.992037037037037,
+          "6": 0.9951851851851852,
+          "8": 0.9872222222222222
+        },
+        "source_val_worst_rx": 0.9651851851851851
+      },
+      "elapsed_seconds": 13783.253645420074,
+      "test_status": "NOT_STARTED"
     },
     {
       "method": "reference_response-pseudo_batch_cosine",
@@ -535,7 +591,7 @@
       "row_id": "pseudo_batch_cosine-s2026092701",
       "stage": "repair",
       "arm": "pseudo_batch_cosine",
-      "status": "QUEUED",
+      "status": "SOURCE_TRAINED",
       "description": "Fixed code/source-grounded control: pseudo_batch_cosine",
       "config": {
         "schema": "reference_repair_v1",
@@ -585,7 +641,23 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00",
+      "verified_epoch": 200,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.986,
+        "source_val_rx_accuracy": {
+          "1": 0.9966666666666667,
+          "3": 0.9625925925925926,
+          "4": 0.9861111111111112,
+          "6": 0.9966666666666667,
+          "8": 0.9879629629629629
+        },
+        "source_val_worst_rx": 0.9625925925925926
+      },
+      "elapsed_seconds": 14806.522492170334,
+      "test_status": "NOT_STARTED"
     },
     {
       "method": "reference_response-pseudo_bank_cosine",
@@ -660,7 +732,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-bank_cosine_domain",
@@ -736,7 +809,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-bank_cosine_mixstyle",
@@ -812,7 +886,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-ce_cosine",
@@ -882,7 +957,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-leo_cosine",
@@ -954,7 +1030,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-pseudo_batch_constant",
@@ -1029,7 +1106,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-pseudo_bank_constant",
@@ -1104,7 +1182,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-pseudo_batch_cosine",
@@ -1179,7 +1258,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-pseudo_bank_cosine",
@@ -1254,7 +1334,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-bank_cosine_domain",
@@ -1330,7 +1411,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-bank_cosine_mixstyle",
@@ -1406,7 +1488,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-ce_cosine",
@@ -1476,7 +1559,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-leo_cosine",
@@ -1548,7 +1632,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-pseudo_batch_constant",
@@ -1623,7 +1708,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-pseudo_bank_constant",
@@ -1698,7 +1784,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-pseudo_batch_cosine",
@@ -1773,7 +1860,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-pseudo_bank_cosine",
@@ -1848,7 +1936,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-bank_cosine_domain",
@@ -1924,7 +2013,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-bank_cosine_mixstyle",
@@ -2000,7 +2090,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-ce_cosine",
@@ -2070,7 +2161,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-leo_cosine",
@@ -2142,7 +2234,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-pseudo_batch_constant",
@@ -2217,7 +2310,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-pseudo_bank_constant",
@@ -2292,7 +2386,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-pseudo_batch_cosine",
@@ -2367,7 +2462,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-pseudo_bank_cosine",
@@ -2442,7 +2538,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-bank_cosine_domain",
@@ -2518,7 +2615,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     },
     {
       "method": "reference_response-bank_cosine_mixstyle",
@@ -2594,7 +2692,8 @@
         "source/completion.json",
         "prediction/predictions.npz",
         "prediction/complete.json"
-      ]
+      ],
+      "checked_at": "2026-10-08T15:13:26.467502+08:00"
     }
   ],
   "notes": [
@@ -2638,20 +2737,21 @@
   },
   "latest_verified_status": {
     "status": "RUNNING",
-    "phase": "source",
-    "checked_at": "2026-10-08T08:17:29.908425+08:00",
-    "source_rows_running": 4,
-    "source_rows_pending": 28,
+    "phase": "source_WAITING_GPU",
+    "checked_at": "2026-10-08T15:13:26.467502+08:00",
+    "source_rows_running": 0,
+    "source_rows_pending": 27,
     "remote_synthetic_smoke": "PASS_ALL_8",
     "existing_owner_pids": [
       4170278,
       4170279,
       4176081
     ],
-    "performance_verdict": "NOT_YET_MEASURED",
-    "source_rows_complete": 0,
+    "performance_verdict": "SOURCE_ONLY_SINGLE_SEED_TARGET_NOT_MEASURED",
+    "source_rows_complete": 5,
     "test_rows_complete": 0,
     "old_controllers_alive": 3,
-    "old_r5_workers_alive": 4
+    "old_r5_workers_alive": 4,
+    "capacity_reason": "R6 occupies16 total training slots across8 GPUs"
   }
 }
