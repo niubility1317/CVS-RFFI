@@ -54,11 +54,18 @@ def main():
         (p/'stat').write_text('31 (worker with spaces) '+' '.join(fields))
         (p/'environ').write_bytes(b'CUDA_VISIBLE_DEVICES=2\0');(p/'cmdline').write_bytes(b'python\0worker\0')
         assert process(31,Path(folder))['start_ticks']==77
+        original=Path.read_bytes
+        def restricted(path):
+            if path.name=='environ':raise PermissionError('transient /proc exit read restriction')
+            return original(path)
+        with patch.object(Path,'read_bytes',restricted):
+            assert control.running(31,Path(folder)) is True
+            assert process(31,Path(folder))['start_ticks']==77
         (p/'stat').write_text('31 (worker) Z '+' '.join(fields[1:]))
         assert process(31,Path(folder)) is None
         dest=Path(folder)/'atomic.json';write(dest,dict(test='中文',limit=4));assert read(dest)['limit']==4
     queue_recovery()
-    print(json.dumps(dict(status='PASS',checks=['global_capacity4','memory_floor','worker_identity','proc_start_ticks','zombie_exclusion','atomic_json','adopt_without_replay','failed_row_no_retry'])))
+    print(json.dumps(dict(status='PASS',checks=['global_capacity4','memory_floor','worker_identity','proc_start_ticks','zombie_exclusion','proc_exit_read_race','atomic_json','adopt_without_replay','failed_row_no_retry'])))
 
 
 if __name__=='__main__':main()

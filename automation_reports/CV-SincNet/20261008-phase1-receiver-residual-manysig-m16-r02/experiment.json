@@ -108,10 +108,11 @@
       "authorization": "用户：每张卡4个实验进程",
       "at": "2026-10-08T15:04:58.159141+00:00",
       "per_gpu_limit": 4,
-      "controller_release": "cvs_receiver_residual_capacity4_20261008_r01",
+      "controller_release": "cvs_receiver_residual_capacity4_20261008_r02",
       "handoff": "replace only owned dispatcher parent; adopt exact PID/start_ticks/cwd/argv; do not signal training workers",
       "worker_release_immutable": true,
-      "algorithm_or_budget_change": false
+      "algorithm_or_budget_change": false,
+      "previous_controller_release": "cvs_receiver_residual_capacity4_20261008_r01"
     }
   },
   "expected_artifacts": [

@@ -94,7 +94,7 @@ if ownerproc and (ownerproc.get('cwd')!=owner['cwd'] or ownerproc.get('argv')!=o
 result=dict(read_at=time.time(),run_id=RUN,release_exists=release.exists(),run_exists=run.exists(),
     submit=submit,dispatcher=active or read(run/'dispatcher.json'),dispatcher_original=read(run/'dispatcher.json'),
     dispatcher_process=ownerproc,
-    capacity4_handoff=read(run/'capacity4_handoff.json'),capacity4_adopted=read(run/'capacity4_adopted.json'),
+    capacity4_handoff=read(run/'capacity4_handoff_v2.json') or read(run/'capacity4_handoff.json'),capacity4_adopted=read(run/'capacity4_adopted.json'),
     remote_smoke=read(release/'remote_smoke.json'),queue=read(run/'queue_state.json'),
     completion=read(run/'completion.json'),failure=read(run/'failure.json'),
     scoring=read(run/'scoring_complete.json'),source_freeze=read(run/'source_matrix_frozen.json'),rows=[])

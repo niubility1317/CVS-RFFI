@@ -29,11 +29,25 @@ def process(pid, proc=Path('/proc')):
     try:
         stat = (p/'stat').read_text().rsplit(')', 1)[1].split()
         if stat[0] in ('Z', 'X', 'x'): return None
-        env = dict(x.split('=', 1) for x in (p/'environ').read_bytes().decode().split('\0') if '=' in x)
-        return dict(pid=int(pid), start_ticks=int(stat[19]), state=stat[0],
-            cwd=str((p/'cwd').resolve()), argv=[x for x in (p/'cmdline').read_bytes().decode().split('\0') if x],
+        try: env = dict(x.split('=', 1) for x in (p/'environ').read_bytes().decode().split('\0') if '=' in x)
+        except PermissionError: env = {}
+        value = dict(pid=int(pid), start_ticks=int(stat[19]), state=stat[0],
+            cwd=str((p/'cwd').resolve(strict=True)), argv=[x for x in (p/'cmdline').read_bytes().decode().split('\0') if x],
             gpu=env.get('CUDA_VISIBLE_DEVICES'))
+        after = (p/'stat').read_text().rsplit(')', 1)[1].split()
+        if after[0] in ('Z', 'X', 'x'): return None
+        if after[19] != stat[19]: raise RuntimeError('PID reused during read')
+        return value
     except (FileNotFoundError, ProcessLookupError): return None
+    except PermissionError:
+        if not running(pid, proc): return None
+        raise
+
+
+def running(pid, proc=Path('/proc')):
+    """Post-signal liveness uses stat only; exiting /proc/environ may be denied."""
+    try: return (proc/str(pid)/'stat').read_text().rsplit(')', 1)[1].split()[0] not in ('Z', 'X', 'x')
+    except (FileNotFoundError, ProcessLookupError): return False
 
 
 def alive(receipt):
