@@ -20,7 +20,7 @@
   "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
   "parent_run_ids": [],
   "replaces_run_id": null,
-  "authorization": "用户2026-10-08：修复优化方案，适配现在的更新的网络，跑实验验证。",
+  "authorization": "用户2026-10-08：修复优化方案，适配现在的更新的网络，跑实验验证。 用户2026-10-08 08时明确追加：直接启动。允许接管本run尚未启动worker的等待控制器，使用空闲GPU立即开跑；原R5/R6健康任务不动。",
   "code": {
     "commit": "ae783c81cd4949f93a80dbd2e80c4b2568eb99ea",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
@@ -90,7 +90,7 @@
   },
   "execution": {
     "host": "N607",
-    "gpu_policy": "Wait for existing stack launch owners to exit before training; at most4 new workers, total<=2/GPU and >=12GB free. Named train/predict entries reserve pre-CUDA processes.",
+    "gpu_policy": "Direct start on wholly idle GPU; max4 new workers; count all pre-CUDA reservations; preserve total<=2/GPU and existing healthy workers",
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-reference-repair-manysig-m32-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-reference-repair-manysig-m32-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261008-phase1-reference-repair-manysig-m32-r01",
@@ -107,7 +107,11 @@
       "-m",
       "experiments.cvs_phase1_repair.dispatch"
     ],
-    "startup_evidence": "evidence/remote_readback.json"
+    "startup_evidence": "evidence/remote_readback.json",
+    "controller_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_direct_20261008_r01",
+    "controller_launch_command": "python -m experiments.cvs_phase1_repair.publish_direct",
+    "worker_release_unchanged": true,
+    "worker_commit": "ae783c81cd4949f93a80dbd2e80c4b2568eb99ea"
   },
   "expected_artifacts": [
     "source_matrix_frozen.json",
@@ -2548,13 +2552,13 @@
   ],
   "notes": [
     "Diagnostic repair is not an established performance gain. All negatives retained.",
-    "Controller safely waits for existing stack launch owners to exit; no concurrent GPU slot race with legacy R5/R6 owners.",
     "LEO source mechanism is retained from original SOURCE-only continuation choice; no prior target ranking used.",
     "No V updates or Vcal/Vselect split. Original L/U/V physical roles reused.",
     "Architecture remains reference_response; no legacy checkpoint or source-domain inherited model states.",
     "Historical benchmark exposed: descriptive repeated benchmark validation, not untouched blind confirmation.",
     "Phase2 adaptation/K/new classes N/A; this is Phase1 only.",
-    "Old healthy R5/R6 and evaluators are not stopped or modified."
+    "Old healthy R5/R6 and evaluators are not stopped or modified.",
+    "Direct-start handoff supersedes WAITING_PRIOR_OWNERS. Only own idle repair owner is replaced after exact identity/artifact checks; no scientific config/weight/seed changes."
   ],
   "status": "PLANNED",
   "test_completion_plan": {
