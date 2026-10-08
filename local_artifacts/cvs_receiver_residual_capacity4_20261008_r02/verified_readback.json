@@ -1,0 +1,788 @@
+{
+  "status": "VERIFIED",
+  "read_at": 1791472557.0615814,
+  "gpu": {
+    "0": {
+      "cuda_pids": [
+        1624233,
+        1637323,
+        1642041
+      ],
+      "reserved_pids": [
+        1624233,
+        1637323,
+        1642041
+      ],
+      "memory_used_mb": 5024,
+      "memory_free_mb": 19101,
+      "utilization_pct": 45,
+      "total_pids": [
+        1624233,
+        1637323,
+        1642041
+      ],
+      "count": 3
+    },
+    "1": {
+      "cuda_pids": [
+        1476582,
+        1637310,
+        1642027
+      ],
+      "reserved_pids": [
+        1476582,
+        1637310,
+        1642027
+      ],
+      "memory_used_mb": 4550,
+      "memory_free_mb": 19575,
+      "utilization_pct": 51,
+      "total_pids": [
+        1476582,
+        1637310,
+        1642027
+      ],
+      "count": 3
+    },
+    "2": {
+      "cuda_pids": [
+        1476593,
+        1637336,
+        1642052
+      ],
+      "reserved_pids": [
+        1476593,
+        1637336,
+        1642052
+      ],
+      "memory_used_mb": 5048,
+      "memory_free_mb": 19077,
+      "utilization_pct": 19,
+      "total_pids": [
+        1476593,
+        1637336,
+        1642052
+      ],
+      "count": 3
+    },
+    "3": {
+      "cuda_pids": [
+        1555762,
+        1637316,
+        1642033
+      ],
+      "reserved_pids": [
+        1555762,
+        1637316,
+        1642033
+      ],
+      "memory_used_mb": 5024,
+      "memory_free_mb": 19101,
+      "utilization_pct": 36,
+      "total_pids": [
+        1555762,
+        1637316,
+        1642033
+      ],
+      "count": 3
+    },
+    "4": {
+      "cuda_pids": [
+        1637285,
+        1637437,
+        1642003,
+        1642069
+      ],
+      "reserved_pids": [
+        1637285,
+        1637437,
+        1642003,
+        1642069
+      ],
+      "memory_used_mb": 2828,
+      "memory_free_mb": 21298,
+      "utilization_pct": 36,
+      "total_pids": [
+        1637285,
+        1637437,
+        1642003,
+        1642069
+      ],
+      "count": 4
+    },
+    "5": {
+      "cuda_pids": [
+        1637290,
+        1637353,
+        1642008,
+        1642087
+      ],
+      "reserved_pids": [
+        1637290,
+        1637353,
+        1642008,
+        1642087
+      ],
+      "memory_used_mb": 2832,
+      "memory_free_mb": 21294,
+      "utilization_pct": 47,
+      "total_pids": [
+        1637290,
+        1637353,
+        1642008,
+        1642087
+      ],
+      "count": 4
+    },
+    "6": {
+      "cuda_pids": [
+        1637295,
+        1637373,
+        1642015,
+        1642387
+      ],
+      "reserved_pids": [
+        1637295,
+        1637373,
+        1642015,
+        1642387
+      ],
+      "memory_used_mb": 2828,
+      "memory_free_mb": 21298,
+      "utilization_pct": 46,
+      "total_pids": [
+        1637295,
+        1637373,
+        1642015,
+        1642387
+      ],
+      "count": 4
+    },
+    "7": {
+      "cuda_pids": [
+        1637305,
+        1637401,
+        1642021,
+        1642553
+      ],
+      "reserved_pids": [
+        1637305,
+        1637401,
+        1642021,
+        1642553
+      ],
+      "memory_used_mb": 2832,
+      "memory_free_mb": 21294,
+      "utilization_pct": 50,
+      "total_pids": [
+        1637305,
+        1637401,
+        1642021,
+        1642553
+      ],
+      "count": 4
+    }
+  },
+  "runs": [
+    {
+      "run_id": "20261008-phase1-receiver-residual-manysig-m16-r01",
+      "owner": {
+        "status": "SUBMITTED",
+        "pid": 1641984,
+        "start_ticks": 72013944,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "--package",
+          "cvs_receiver_residual"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/20261008-phase1-receiver-residual-manysig-m16-r01.dispatcher.stdout.log",
+        "control_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02",
+        "control_commit": "42c657c3757b61e7a9fb8c71ccd8d9e8c433c9d7",
+        "worker_release_commit": "3712e8e4f004f21b8ffdc74ce0459ad8a2020f3d",
+        "run_id": "20261008-phase1-receiver-residual-manysig-m16-r01",
+        "launch_owner": "codex/root/receiver-residual-20261008",
+        "per_gpu_limit": 4,
+        "max_active": 16,
+        "at": 1791472435.0238223
+      },
+      "owner_actual": {
+        "pid": 1641984,
+        "start_ticks": 72013944,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "--package",
+          "cvs_receiver_residual"
+        ]
+      },
+      "queue": {
+        "kind": "source",
+        "active": [
+          "baseline-s2026092702",
+          "displacement-s2026092702",
+          "contribution-s2026092702",
+          "combined-s2026092702",
+          "baseline-s2026092703",
+          "displacement-s2026092703",
+          "contribution-s2026092703",
+          "combined-s2026092703",
+          "baseline-s2026092704",
+          "displacement-s2026092704",
+          "contribution-s2026092704",
+          "combined-s2026092704"
+        ],
+        "pending": [],
+        "completed": [
+          "baseline-s2026092701",
+          "displacement-s2026092701",
+          "contribution-s2026092701",
+          "combined-s2026092701"
+        ],
+        "failures": [],
+        "updated_at": 1791472556.6413062,
+        "max_active": 16,
+        "per_gpu_limit": 4,
+        "policy": "user override 4 total experiment processes/GPU; global CUDA and pre-CUDA reservations; >=12GB free"
+      },
+      "preserved_workers": [
+        {
+          "pid": 1637285,
+          "start_ticks": 71973950,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_receiver_residual.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01/experiments/cvs_receiver_residual/configs/baseline-s2026092702.json"
+          ]
+        },
+        {
+          "pid": 1637290,
+          "start_ticks": 71973975,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_receiver_residual.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01/experiments/cvs_receiver_residual/configs/displacement-s2026092702.json"
+          ]
+        },
+        {
+          "pid": 1637295,
+          "start_ticks": 71973998,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_receiver_residual.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01/experiments/cvs_receiver_residual/configs/contribution-s2026092702.json"
+          ]
+        },
+        {
+          "pid": 1637305,
+          "start_ticks": 71974019,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_receiver_residual.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01/experiments/cvs_receiver_residual/configs/combined-s2026092702.json"
+          ]
+        },
+        {
+          "pid": 1637310,
+          "start_ticks": 71974039,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_receiver_residual.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01/experiments/cvs_receiver_residual/configs/baseline-s2026092703.json"
+          ]
+        },
+        {
+          "pid": 1637316,
+          "start_ticks": 71974059,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_receiver_residual.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01/experiments/cvs_receiver_residual/configs/displacement-s2026092703.json"
+          ]
+        },
+        {
+          "pid": 1637323,
+          "start_ticks": 71974083,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_receiver_residual.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01/experiments/cvs_receiver_residual/configs/contribution-s2026092703.json"
+          ]
+        },
+        {
+          "pid": 1637336,
+          "start_ticks": 71974132,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_receiver_residual.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01/experiments/cvs_receiver_residual/configs/combined-s2026092703.json"
+          ]
+        },
+        {
+          "pid": 1637353,
+          "start_ticks": 71974197,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_receiver_residual.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01/experiments/cvs_receiver_residual/configs/baseline-s2026092704.json"
+          ]
+        },
+        {
+          "pid": 1637373,
+          "start_ticks": 71974296,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_receiver_residual.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01/experiments/cvs_receiver_residual/configs/displacement-s2026092704.json"
+          ]
+        },
+        {
+          "pid": 1637401,
+          "start_ticks": 71974433,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_receiver_residual.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01/experiments/cvs_receiver_residual/configs/contribution-s2026092704.json"
+          ]
+        },
+        {
+          "pid": 1637437,
+          "start_ticks": 71974598,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_receiver_residual.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_20261008_r01/experiments/cvs_receiver_residual/configs/combined-s2026092704.json"
+          ]
+        }
+      ],
+      "source_complete": 4,
+      "source_active": 12,
+      "rows": [
+        {
+          "row_id": "baseline-s2026092701",
+          "pid": 1598074,
+          "gpu": 4,
+          "alive": false,
+          "epoch": 200,
+          "source_complete": true,
+          "log_bytes": 1492050
+        },
+        {
+          "row_id": "displacement-s2026092701",
+          "pid": 1598081,
+          "gpu": 5,
+          "alive": false,
+          "epoch": 200,
+          "source_complete": true,
+          "log_bytes": 1571727
+        },
+        {
+          "row_id": "contribution-s2026092701",
+          "pid": 1598088,
+          "gpu": 6,
+          "alive": false,
+          "epoch": 200,
+          "source_complete": true,
+          "log_bytes": 1604624
+        },
+        {
+          "row_id": "combined-s2026092701",
+          "pid": 1598094,
+          "gpu": 7,
+          "alive": false,
+          "epoch": 200,
+          "source_complete": true,
+          "log_bytes": 1674730
+        },
+        {
+          "row_id": "baseline-s2026092702",
+          "pid": 1637285,
+          "gpu": 4,
+          "alive": true,
+          "epoch": 49,
+          "source_complete": null,
+          "log_bytes": 368368
+        },
+        {
+          "row_id": "displacement-s2026092702",
+          "pid": 1637290,
+          "gpu": 5,
+          "alive": true,
+          "epoch": 49,
+          "source_complete": null,
+          "log_bytes": 373927
+        },
+        {
+          "row_id": "contribution-s2026092702",
+          "pid": 1637295,
+          "gpu": 6,
+          "alive": true,
+          "epoch": 50,
+          "source_complete": null,
+          "log_bytes": 382834
+        },
+        {
+          "row_id": "combined-s2026092702",
+          "pid": 1637305,
+          "gpu": 7,
+          "alive": true,
+          "epoch": 49,
+          "source_complete": null,
+          "log_bytes": 377192
+        },
+        {
+          "row_id": "baseline-s2026092703",
+          "pid": 1637310,
+          "gpu": 1,
+          "alive": true,
+          "epoch": 50,
+          "source_complete": null,
+          "log_bytes": 375764
+        },
+        {
+          "row_id": "displacement-s2026092703",
+          "pid": 1637316,
+          "gpu": 3,
+          "alive": true,
+          "epoch": 49,
+          "source_complete": null,
+          "log_bytes": 373938
+        },
+        {
+          "row_id": "contribution-s2026092703",
+          "pid": 1637323,
+          "gpu": 0,
+          "alive": true,
+          "epoch": 50,
+          "source_complete": null,
+          "log_bytes": 380872
+        },
+        {
+          "row_id": "combined-s2026092703",
+          "pid": 1637336,
+          "gpu": 2,
+          "alive": true,
+          "epoch": 48,
+          "source_complete": null,
+          "log_bytes": 371053
+        },
+        {
+          "row_id": "baseline-s2026092704",
+          "pid": 1637353,
+          "gpu": 5,
+          "alive": true,
+          "epoch": 50,
+          "source_complete": null,
+          "log_bytes": 375870
+        },
+        {
+          "row_id": "displacement-s2026092704",
+          "pid": 1637373,
+          "gpu": 6,
+          "alive": true,
+          "epoch": 49,
+          "source_complete": null,
+          "log_bytes": 374912
+        },
+        {
+          "row_id": "contribution-s2026092704",
+          "pid": 1637401,
+          "gpu": 7,
+          "alive": true,
+          "epoch": 50,
+          "source_complete": null,
+          "log_bytes": 379827
+        },
+        {
+          "row_id": "combined-s2026092704",
+          "pid": 1637437,
+          "gpu": 4,
+          "alive": true,
+          "epoch": 49,
+          "source_complete": null,
+          "log_bytes": 375177
+        }
+      ],
+      "source_frozen": false,
+      "scored": false
+    },
+    {
+      "run_id": "20261008-phase1-receiver-residual-manysig-m16-r02",
+      "owner": {
+        "status": "SUBMITTED",
+        "pid": 1641985,
+        "start_ticks": 72013945,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
+          "--package",
+          "cvs_receiver_residual_v2"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/20261008-phase1-receiver-residual-manysig-m16-r02.dispatcher.stdout.log",
+        "control_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02",
+        "control_commit": "42c657c3757b61e7a9fb8c71ccd8d9e8c433c9d7",
+        "worker_release_commit": "8a88b3a2e369644ea1d746c5e02006218ee00df6",
+        "run_id": "20261008-phase1-receiver-residual-manysig-m16-r02",
+        "launch_owner": "codex/root/receiver-residual-20261008-r02",
+        "per_gpu_limit": 4,
+        "max_active": 16,
+        "at": 1791472435.0258875
+      },
+      "owner_actual": {
+        "pid": 1641985,
+        "start_ticks": 72013945,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
+          "--package",
+          "cvs_receiver_residual_v2"
+        ]
+      },
+      "queue": {
+        "kind": "source",
+        "active": [
+          "baseline-s2026092702",
+          "displacement-s2026092702",
+          "contribution-s2026092702",
+          "combined-s2026092702",
+          "baseline-s2026092703",
+          "displacement-s2026092703",
+          "contribution-s2026092703",
+          "combined-s2026092703",
+          "baseline-s2026092704",
+          "displacement-s2026092704",
+          "contribution-s2026092704",
+          "combined-s2026092704"
+        ],
+        "pending": [],
+        "completed": [
+          "baseline-s2026092701",
+          "displacement-s2026092701",
+          "contribution-s2026092701",
+          "combined-s2026092701"
+        ],
+        "failures": [],
+        "updated_at": 1791472553.6140034,
+        "max_active": 16,
+        "per_gpu_limit": 4,
+        "policy": "user override 4 total experiment processes/GPU; global CUDA and pre-CUDA reservations; >=12GB free"
+      },
+      "preserved_workers": [],
+      "source_complete": 4,
+      "source_active": 12,
+      "rows": [
+        {
+          "row_id": "baseline-s2026092701",
+          "pid": 1610259,
+          "gpu": 4,
+          "alive": false,
+          "epoch": 200,
+          "source_complete": true,
+          "log_bytes": 1492461
+        },
+        {
+          "row_id": "displacement-s2026092701",
+          "pid": 1610264,
+          "gpu": 5,
+          "alive": false,
+          "epoch": 200,
+          "source_complete": true,
+          "log_bytes": 1571743
+        },
+        {
+          "row_id": "contribution-s2026092701",
+          "pid": 1610269,
+          "gpu": 6,
+          "alive": false,
+          "epoch": 200,
+          "source_complete": true,
+          "log_bytes": 1605356
+        },
+        {
+          "row_id": "combined-s2026092701",
+          "pid": 1610275,
+          "gpu": 7,
+          "alive": false,
+          "epoch": 200,
+          "source_complete": true,
+          "log_bytes": 1674832
+        },
+        {
+          "row_id": "baseline-s2026092702",
+          "pid": 1642003,
+          "gpu": 4,
+          "alive": true,
+          "epoch": 11,
+          "source_complete": null,
+          "log_bytes": 90756
+        },
+        {
+          "row_id": "displacement-s2026092702",
+          "pid": 1642008,
+          "gpu": 5,
+          "alive": true,
+          "epoch": 10,
+          "source_complete": null,
+          "log_bytes": 83721
+        },
+        {
+          "row_id": "contribution-s2026092702",
+          "pid": 1642015,
+          "gpu": 6,
+          "alive": true,
+          "epoch": 11,
+          "source_complete": null,
+          "log_bytes": 86213
+        },
+        {
+          "row_id": "combined-s2026092702",
+          "pid": 1642021,
+          "gpu": 7,
+          "alive": true,
+          "epoch": 10,
+          "source_complete": null,
+          "log_bytes": 83350
+        },
+        {
+          "row_id": "baseline-s2026092703",
+          "pid": 1642027,
+          "gpu": 1,
+          "alive": true,
+          "epoch": 11,
+          "source_complete": null,
+          "log_bytes": 87843
+        },
+        {
+          "row_id": "displacement-s2026092703",
+          "pid": 1642033,
+          "gpu": 3,
+          "alive": true,
+          "epoch": 11,
+          "source_complete": null,
+          "log_bytes": 87166
+        },
+        {
+          "row_id": "contribution-s2026092703",
+          "pid": 1642041,
+          "gpu": 0,
+          "alive": true,
+          "epoch": 11,
+          "source_complete": null,
+          "log_bytes": 86131
+        },
+        {
+          "row_id": "combined-s2026092703",
+          "pid": 1642052,
+          "gpu": 2,
+          "alive": true,
+          "epoch": 11,
+          "source_complete": null,
+          "log_bytes": 86817
+        },
+        {
+          "row_id": "baseline-s2026092704",
+          "pid": 1642069,
+          "gpu": 4,
+          "alive": true,
+          "epoch": 10,
+          "source_complete": null,
+          "log_bytes": 83422
+        },
+        {
+          "row_id": "displacement-s2026092704",
+          "pid": 1642087,
+          "gpu": 5,
+          "alive": true,
+          "epoch": 10,
+          "source_complete": null,
+          "log_bytes": 83689
+        },
+        {
+          "row_id": "contribution-s2026092704",
+          "pid": 1642387,
+          "gpu": 6,
+          "alive": true,
+          "epoch": 10,
+          "source_complete": null,
+          "log_bytes": 83680
+        },
+        {
+          "row_id": "combined-s2026092704",
+          "pid": 1642553,
+          "gpu": 7,
+          "alive": true,
+          "epoch": 10,
+          "source_complete": null,
+          "log_bytes": 83281
+        }
+      ],
+      "source_frozen": false,
+      "scored": false
+    }
+  ],
+  "evidence": "independent /proc PID-start-cwd-argv + nvidia-smi + completion artifacts; scheduling only"
+}

@@ -3,7 +3,7 @@
 - run_id：`20261008-phase1-receiver-residual-manysig-m16-r01`
 - group_id：`cvs-cross-tx-displacement-branch-contribution`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -49,3 +49,12 @@ R1已启动，完整训练和测试仍未完成；无识别收益结论。原自
 
 
 首次容量发布部分完成：R1已接管并启动12行；R2旧dispatcher精确SIGTERM后已独立absent，但/proc退出瞬间environ权限读取竞态导致发布器中断。训练worker未signal。恢复先核实已完成部分，控制release r02修复退出检查并接管剩余状态，不重发原提交、不重跑训练。
+
+
+## 容量接管VERIFIED
+
+独立/proc身份与nvidia-smi、完成产物核实：新dispatcher PID1641984，控制commit`42c657c3757b61e7a9fb8c71ccd8d9e8c433c9d7`；模型运行commit仍为`3712e8e4f004f21b8ffdc74ce0459ad8a2020f3d`。保留12个活跃训练PID/start_ticks/CWD/argv；首seed4行已自然完成E200，未重跑。目前12行在训、0行排队，无失败。
+
+GPU0至3各3个总实验进程，GPU4至7各4个；其中本轮R1/R2共24个，另4个既有任务。每卡已设最多4个，含预CUDA预约；显存余量约19至21GB。固定矩阵剩余任务已全部启动，因此不补开额外实验。证据：[capacity4_verified.json](evidence/capacity4_verified.json)。
+
+新调度器使用专用handoff锁及全生命周期owner锁；跨run共享GPU预约锁。原训练PID不signal，不热改模型，不改变预算/损失/数据角色。完成16源模型后继续原冻结→112预测→独立truth-last评分。当前未完成目标测试，尚无新增机制收益结论。

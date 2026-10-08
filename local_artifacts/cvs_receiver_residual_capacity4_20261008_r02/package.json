@@ -1,0 +1,21 @@
+{
+  "project": "/home/szu2070436088/2510044040/CV-SincNet",
+  "release": "cvs_receiver_residual_capacity4_20261008_r02",
+  "runs": [
+    {
+      "run": "20261008-phase1-receiver-residual-manysig-m16-r01",
+      "package": "cvs_receiver_residual",
+      "release": "cvs_receiver_residual_20261008_r01",
+      "commit": "3712e8e4f004f21b8ffdc74ce0459ad8a2020f3d"
+    },
+    {
+      "run": "20261008-phase1-receiver-residual-manysig-m16-r02",
+      "package": "cvs_receiver_residual_v2",
+      "release": "cvs_receiver_residual_v2_20261008_r02",
+      "commit": "8a88b3a2e369644ea1d746c5e02006218ee00df6"
+    }
+  ],
+  "commit": "42c657c3757b61e7a9fb8c71ccd8d9e8c433c9d7",
+  "archive": "cvs_receiver_residual_capacity4_20261008_r02.tar.gz",
+  "sha256": "33620dc8f0774b72ccd4f4211256c9d368f7add99d6bff170090f59db9dfac57"
+}
