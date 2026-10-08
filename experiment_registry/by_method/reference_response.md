@@ -14,3 +14,4 @@
 - [更新CVS网络的Phase1修复：时序门控与学习率固定对照32行](../../automation_reports/CV-SincNet/20261008-phase1-reference-repair-manysig-m32-r01/report.md)
 - [简洁星地增强：单视图替换与拼接的本地合成计算成本诊断](../../automation_reports/CV-SincNet/20261008-diagnostic-cvs-singleview-synthetic-m3-r01/report.md)
 - [CE＋urban中低仰角星地增强与信道泛化固定24行](../../automation_reports/CV-SincNet/20261008-phase1-urban-ce-manysig-m24-r01/report.md)
+- [reference_response新增12行R5补测：clean及六residual](../../automation_reports/CV-SincNet/20261008-phase1-reference-completed-sixscene-manysig-m12-r01/report.md)

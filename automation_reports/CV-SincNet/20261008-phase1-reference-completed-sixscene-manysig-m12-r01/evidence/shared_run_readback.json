@@ -1,0 +1,100 @@
+{
+  "read_at": 1791454369.135995,
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 1466353,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_r5_completed12_eval_20261008_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_r5_completed12_eval_20261008_r01/evaluate_r5_completed12.py",
+      "--mode",
+      "dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_r5_completed12_eval_20261008_r01/controller.log",
+    "commit": "cbc1fadab057be8620163d94cf2b8c7fabf289e8",
+    "run_id": "20261008-evaluation-reference-r5-completed-manysig-m12-r01"
+  },
+  "process": {
+    "pid": 1466353,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_r5_completed12_eval_20261008_r01/evaluate_r5_completed12.py",
+      "--mode",
+      "dispatch",
+      ""
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_r5_completed12_eval_20261008_r01"
+  },
+  "ours_exists": false,
+  "our_release_exists": false,
+  "state": null,
+  "completion": null,
+  "scoring": null,
+  "failure": null,
+  "launch": null,
+  "completed_rows": [
+    "r5-base-s2026092701"
+  ],
+  "parent_queue": {
+    "phase": "r6",
+    "kind": "source",
+    "active": [
+      "r6-selected-s2026092701",
+      "r6-full-s2026092701",
+      "r6-native_full-s2026092701",
+      "r6-no_leo-s2026092701",
+      "r6-no_mixstyle-s2026092701",
+      "r6-no_pseudo-s2026092701",
+      "r6-no_dg-s2026092701",
+      "r6-no_proto_compact-s2026092701",
+      "r6-no_open_boundary-s2026092701",
+      "r6-no_daot-s2026092701",
+      "r6-no_rc4-s2026092701",
+      "r6-selected-s2026092702",
+      "r6-full-s2026092702",
+      "r6-native_full-s2026092702",
+      "r6-no_leo-s2026092702",
+      "r6-no_mixstyle-s2026092702"
+    ],
+    "pending": [
+      "r6-no_pseudo-s2026092702",
+      "r6-no_dg-s2026092702",
+      "r6-no_proto_compact-s2026092702",
+      "r6-no_open_boundary-s2026092702",
+      "r6-no_daot-s2026092702",
+      "r6-no_rc4-s2026092702",
+      "r6-selected-s2026092703",
+      "r6-full-s2026092703",
+      "r6-native_full-s2026092703",
+      "r6-no_leo-s2026092703",
+      "r6-no_mixstyle-s2026092703",
+      "r6-no_pseudo-s2026092703",
+      "r6-no_dg-s2026092703",
+      "r6-no_proto_compact-s2026092703",
+      "r6-no_open_boundary-s2026092703",
+      "r6-no_daot-s2026092703",
+      "r6-no_rc4-s2026092703",
+      "r6-selected-s2026092704",
+      "r6-full-s2026092704",
+      "r6-native_full-s2026092704",
+      "r6-no_leo-s2026092704",
+      "r6-no_mixstyle-s2026092704",
+      "r6-no_pseudo-s2026092704",
+      "r6-no_dg-s2026092704",
+      "r6-no_proto_compact-s2026092704",
+      "r6-no_open_boundary-s2026092704",
+      "r6-no_daot-s2026092704",
+      "r6-no_rc4-s2026092704"
+    ],
+    "failures": [],
+    "updated_at": 1791454363.975384,
+    "max_active": 16,
+    "per_gpu_limit": 2,
+    "controller_pid": 4170278,
+    "controller_release": "cvs_reference_stack_recovery_20261006_r03"
+  },
+  "parent_failure": null,
+  "log": ""
+}
