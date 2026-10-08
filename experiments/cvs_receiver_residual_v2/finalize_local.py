@@ -113,7 +113,7 @@ def git_delivery():
         if any(not n.startswith(('automation_reports/CV-SincNet/'+d.RUN+'/',
             'experiment_registry/','local_artifacts/'+d.RELEASE+'/readback.json')) for n in names):
             raise ValueError('Unrelated staged edits; preserve, do not commit them')
-        command(['git','commit','-m','Record receiver residual R2 final independent results'])
+        command(['git','commit','-m','Record receiver residual R2 final status and artifacts'])
     command(['git','-c','http.sslBackend=openssl','-c','http.version=HTTP/1.1','push','origin','HEAD'])
     head=command(['git','rev-parse','HEAD']).strip()
     remote=command(['git','-c','http.sslBackend=openssl','-c','http.version=HTTP/1.1','ls-remote','origin','refs/heads/'+BRANCH]).split()[0]
@@ -161,7 +161,12 @@ def watch():
             data=inspect(ARTIFACT);errors=0
             if data['failure']:
                 pull();record('FAILED','Remote technical failure; artifacts retained; no retry or training intervention')
-                mirror_root();return
+                path=REPORT/'report.md'
+                with path.open('a',encoding='utf-8') as f:
+                    f.write('\n## 远端技术失败\n\nFAILED：'+json.dumps(data['failure'],ensure_ascii=False)+
+                        '\n\n产物保留，未自动重跑或干预健康任务；完整训练/测试收尾尚未完成，不能宣称收益。\n')
+                command([sys.executable,'-X','utf8',str(REGISTRY),'--root',str(d.ROOT),'build','--managed-only'])
+                mirror_root();git_delivery();return
             if data['completion']:
                 finalize(data);return
             if data['submit'] and not data['dispatcher_process']:

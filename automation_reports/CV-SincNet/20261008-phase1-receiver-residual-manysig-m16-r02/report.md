@@ -35,3 +35,11 @@ R1发布后发现新增头初始化重置CUDA dropout RNG，保留为含随机�
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 远端启动VERIFIED
+
+正式R2执行commit为`8a88b3a2e369644ea1d746c5e02006218ee00df6`，独立读回的dispatcher PID1609832，cwd为`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02`。远端CPU smoke PASS。首批baseline/displacement/contribution/combined的PID分别为1610259/1610264/1610269/1610275，GPU4/5/6/7，日志增长、源训练epoch及resolved_config均已核实；12行排队。每GPU不超过2个总任务，不停止或热改其他健康任务。
+
+当前尚无冻结后独立测试结果，不能宣称收益。远端单owner自动完成全部16源训练、源冻结、112个完整视图预测、truth-last评分与重算。Windows本地一次性收尾同步器负责回收结果、更新本报告/登记/索引、Git提交push并独立核对远端OID；技术失败保留产物并记录准确状态，不自动重跑训练。
+
+[草稿PR #8](https://github.com/niubility1317/CVS-RFFI/pull/8)仅包含本轮实现与修复，未合并。独立PR读回确认head/base均为已核实开发分支。恢复优先读取`local_artifacts/cvs_receiver_residual_v2_20261008_r02/readback.json`和`completion_sync_owner.json`，不得重复发布或启动第二个owner。
