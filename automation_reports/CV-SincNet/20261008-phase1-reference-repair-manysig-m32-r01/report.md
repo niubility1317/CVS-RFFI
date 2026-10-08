@@ -72,3 +72,18 @@ PLANNED。性能提升尚待实际完整测试证明。已有实验不停止、�
 2026-10-08用户明确要求“直接启动”。解除此前等待旧启动者全部退出的排队条件；仅替换本run从未启动worker的等待owner，既有32行配置、数据/seed/E200/44400预算与worker release ae783c81保持不变。原R5/R6健康进程不停止、不热改。新控制器最多4个worker，仅向完全空闲GPU提交，读取所有/proc显式CUDA_VISIBLE_DEVICES预约（含旧-m source），新train/predict入口仍可被旧owner识别。不占用已有1个进程的GPU最后名额，以降低同时补位的竞争风险。预测与评分继续沿用原先的完整源冻结和truth-last链路。
 
 实际handoff前须核对旧owner的PID/cwd/argv/start_ticks、WAITING状态、无launch/row产物及全部32个配置，再向该唯一等待PID发送SIGTERM；核实退出后以独占direct_owner文件启动新控制器。2项预约/僵尸进程测试已通过。
+
+## 直接启动结果：VERIFIED
+
+截至2026-10-08T08:17:29.908425+08:00，新控制器1170536实际运行，原本run等待控制器975107已退出。4行训练、28行待调度；无failure产物。原3个控制器及4个R5训练进程均存活，8张GPU实际各1个CUDA计算进程。新worker与原32行科学配置一致，均scratch初始化；没有访问target。
+
+| 行 | GPU | PID | 已完成epoch |
+|---|---:|---:|---:|
+| ce_cosine-s2026092701 | 0 | 1170554 | 3 / 200 |
+| leo_cosine-s2026092701 | 3 | 1170563 | 2 / 200 |
+| pseudo_batch_constant-s2026092701 | 4 | 1170572 | 2 / 200 |
+| pseudo_bank_constant-s2026092701 | 6 | 1170581 | 2 / 200 |
+
+控制器commit：`f519f9baaa61b18e03804b7b67eaf542481e706e`；训练worker仍为`ae783c81cd4949f93a80dbd2e80c4b2568eb99ea`。容量修复3项测试通过，独立P0/P1复核PASS。真实进程、CUDA占用、生效参数和逐epoch日志已交叉确认，证据见[evidence/direct_start_readback.json](evidence/direct_start_readback.json)，后续只读检查入口为[evidence/inspect_remote_direct.py](evidence/inspect_remote_direct.py)。旧等待状态记录保留为历史。
+
+尚无本修复矩阵的测试成绩。队列继续完成32行固定E200训练，全部冻结后自动执行clean及6个星地场景预测，再独立truth-last评分；测试结果不回流选模或调参。
