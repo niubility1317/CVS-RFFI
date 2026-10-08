@@ -1,0 +1,636 @@
+{
+  "results": [
+    {
+      "stage": "repair",
+      "arm": "ce_cosine",
+      "view": "clean",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "ce_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.7856904761904762,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7784079228042838,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6239166666666667,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "ce_cosine",
+      "view": "practical_high",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "ce_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.686952380952381,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.6829626391811278,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.5959166666666667,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "ce_cosine",
+      "view": "practical_mid",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "ce_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.6551785714285714,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.6511076120378105,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.5779583333333334,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "ce_cosine",
+      "view": "practical_low_suburban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "ce_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.6221785714285715,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.6176011101627457,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.5544583333333334,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "ce_cosine",
+      "view": "practical_high_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "ce_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.6546488095238095,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.6499961227982048,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.5679166666666666,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "ce_cosine",
+      "view": "practical_mid_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "ce_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.517095238095238,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.5110666653799436,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.45245833333333335,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "ce_cosine",
+      "view": "practical_low_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "ce_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.4165059523809524,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.4070601925813555,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.368125,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "leo_cosine",
+      "view": "clean",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "leo_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.8193333333333334,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.8148605756078591,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.7400416666666667,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "leo_cosine",
+      "view": "practical_high",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "leo_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.7839464285714286,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7801927008368574,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6904583333333333,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "leo_cosine",
+      "view": "practical_mid",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "leo_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.7644821428571429,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.760266343958197,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6707916666666667,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "leo_cosine",
+      "view": "practical_low_suburban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "leo_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.7422261904761904,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.737234248447857,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6505833333333333,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "leo_cosine",
+      "view": "practical_high_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "leo_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.7542321428571429,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7499295728498371,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.668125,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "leo_cosine",
+      "view": "practical_mid_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "leo_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.6336547619047619,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.6260406977794347,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.5749166666666666,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "leo_cosine",
+      "view": "practical_low_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "leo_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.5329226190476191,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.5225315735018895,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.48733333333333334,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_constant",
+      "view": "clean",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.7857559523809524,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7703113595202987,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6782083333333333,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_constant",
+      "view": "practical_high",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.7641785714285714,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7543009129348297,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.694625,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_constant",
+      "view": "practical_mid",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.7490119047619047,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7389427689362374,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6797916666666667,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_constant",
+      "view": "practical_low_suburban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.7303869047619047,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7201249470850236,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6599166666666667,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_constant",
+      "view": "practical_high_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.7434880952380952,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7336756965683806,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6775833333333333,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_constant",
+      "view": "practical_mid_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.643,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.6321262777480628,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.595125,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_constant",
+      "view": "practical_low_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.5527202380952381,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.5395853835717374,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.518875,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_bank_constant",
+      "view": "clean",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_bank_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.7904345238095238,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7722782221338377,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6957916666666667,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_bank_constant",
+      "view": "practical_high",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_bank_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.7654821428571429,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7513877968112519,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6964166666666667,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_bank_constant",
+      "view": "practical_mid",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_bank_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.749375,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7355178612659675,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6824583333333333,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_bank_constant",
+      "view": "practical_low_suburban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_bank_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.7303214285714286,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7167269061731116,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6625,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_bank_constant",
+      "view": "practical_high_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_bank_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.7440357142857142,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.730265807873902,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6787916666666667,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_bank_constant",
+      "view": "practical_mid_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_bank_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.645375,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.6316393936939687,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.5967083333333333,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_bank_constant",
+      "view": "practical_low_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_bank_constant-s2026092701"
+      ],
+      "accuracy_mean": 0.5555714285714286,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.5408026087638359,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.5197083333333333,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_cosine",
+      "view": "clean",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.8208095238095238,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.8164941417677744,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.7429583333333334,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_cosine",
+      "view": "practical_high",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.789345238095238,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7855268708594574,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6975416666666666,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_cosine",
+      "view": "practical_mid",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.7681309523809524,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7637745505432657,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.678125,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_cosine",
+      "view": "practical_low_suburban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.7450892857142857,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7400754690000263,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.657125,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_cosine",
+      "view": "practical_high_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.7602380952380953,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7559216760959596,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6735833333333333,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_cosine",
+      "view": "practical_mid_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.6367083333333333,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.6292977514010261,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.5805416666666666,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "repair",
+      "arm": "pseudo_batch_cosine",
+      "view": "practical_low_urban",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "pseudo_batch_cosine-s2026092701"
+      ],
+      "accuracy_mean": 0.533375,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.5231383155503782,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.48975,
+      "worst_rx_sd": null
+    }
+  ],
+  "seed_count": 1,
+  "interpretation": "Fixed completed subset; no four-seed claim"
+}

@@ -1,0 +1,77 @@
+[
+  {
+    "arm": "ce_cosine",
+    "accuracy": {
+      "clean": 78.56904761904761,
+      "practical_high": 68.6952380952381,
+      "practical_mid": 65.51785714285714,
+      "practical_low_suburban": 62.21785714285715,
+      "practical_high_urban": 65.46488095238095,
+      "practical_mid_urban": 51.7095238095238,
+      "practical_low_urban": 41.65059523809524
+    },
+    "satellite_mean": 59.2093253968254,
+    "satellite_macro_f1": 58.66323903568646,
+    "minimum_target_rx": 36.8125
+  },
+  {
+    "arm": "leo_cosine",
+    "accuracy": {
+      "clean": 81.93333333333334,
+      "practical_high": 78.39464285714286,
+      "practical_mid": 76.44821428571429,
+      "practical_low_suburban": 74.22261904761905,
+      "practical_high_urban": 75.4232142857143,
+      "practical_mid_urban": 63.36547619047619,
+      "practical_low_urban": 53.29226190476191
+    },
+    "satellite_mean": 70.19107142857143,
+    "satellite_macro_f1": 69.60325228956788,
+    "minimum_target_rx": 48.733333333333334
+  },
+  {
+    "arm": "pseudo_batch_constant",
+    "accuracy": {
+      "clean": 78.57559523809525,
+      "practical_high": 76.41785714285714,
+      "practical_mid": 74.90119047619046,
+      "practical_low_suburban": 73.03869047619047,
+      "practical_high_urban": 74.34880952380952,
+      "practical_mid_urban": 64.3,
+      "practical_low_urban": 55.27202380952381
+    },
+    "satellite_mean": 69.71309523809524,
+    "satellite_macro_f1": 68.6459331140712,
+    "minimum_target_rx": 51.887499999999996
+  },
+  {
+    "arm": "pseudo_bank_constant",
+    "accuracy": {
+      "clean": 79.04345238095239,
+      "practical_high": 76.5482142857143,
+      "practical_mid": 74.9375,
+      "practical_low_suburban": 73.03214285714286,
+      "practical_high_urban": 74.40357142857142,
+      "practical_mid_urban": 64.53750000000001,
+      "practical_low_urban": 55.557142857142864
+    },
+    "satellite_mean": 69.8360119047619,
+    "satellite_macro_f1": 68.43900624303396,
+    "minimum_target_rx": 51.97083333333333
+  },
+  {
+    "arm": "pseudo_batch_cosine",
+    "accuracy": {
+      "clean": 82.08095238095238,
+      "practical_high": 78.93452380952381,
+      "practical_mid": 76.81309523809524,
+      "practical_low_suburban": 74.50892857142857,
+      "practical_high_urban": 76.02380952380953,
+      "practical_mid_urban": 63.670833333333334,
+      "practical_low_urban": 53.337500000000006
+    },
+    "satellite_mean": 70.54811507936509,
+    "satellite_macro_f1": 69.96224389083523,
+    "minimum_target_rx": 48.975
+  }
+]

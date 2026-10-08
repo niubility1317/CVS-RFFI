@@ -1,0 +1,20 @@
+{
+  "status": "ANALYZED",
+  "rows": [
+    "ce_cosine-s2026092701",
+    "leo_cosine-s2026092701",
+    "pseudo_batch_constant-s2026092701",
+    "pseudo_bank_constant-s2026092701",
+    "pseudo_batch_cosine-s2026092701"
+  ],
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "target_feedback_forbidden": true
+}

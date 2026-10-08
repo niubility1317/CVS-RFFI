@@ -1,0 +1,170 @@
+{
+  "rows": [
+    {
+      "row_id": "ce_cosine-s2026092701",
+      "stage": "repair",
+      "arm": "ce_cosine",
+      "model_seed": 2026092701,
+      "status": "PREDICTIONS_COMPLETE",
+      "count": 168000,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "truth_read": false,
+      "query_fit": false,
+      "inference_seconds": {
+        "clean": 4.730636776075698,
+        "practical_high": 4.692378945066594,
+        "practical_mid": 4.6819405250716954,
+        "practical_low_suburban": 4.684627754963003,
+        "practical_high_urban": 4.65222684899345,
+        "practical_mid_urban": 4.642318962025456,
+        "practical_low_urban": 4.676755249965936
+      },
+      "wall_seconds": 33.99741898092907,
+      "peak_cuda_allocated_bytes": 91524096,
+      "peak_cuda_reserved_bytes": 130023424,
+      "peak_process_rss_bytes": 1533120512,
+      "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+    },
+    {
+      "row_id": "leo_cosine-s2026092701",
+      "stage": "repair",
+      "arm": "leo_cosine",
+      "model_seed": 2026092701,
+      "status": "PREDICTIONS_COMPLETE",
+      "count": 168000,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "truth_read": false,
+      "query_fit": false,
+      "inference_seconds": {
+        "clean": 4.691154287895188,
+        "practical_high": 4.670810585026629,
+        "practical_mid": 4.631060437997803,
+        "practical_low_suburban": 4.61939377291128,
+        "practical_high_urban": 4.623816070961766,
+        "practical_mid_urban": 4.634623332996853,
+        "practical_low_urban": 4.641041769995354
+      },
+      "wall_seconds": 33.720343261025846,
+      "peak_cuda_allocated_bytes": 91524096,
+      "peak_cuda_reserved_bytes": 130023424,
+      "peak_process_rss_bytes": 1532497920,
+      "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+    },
+    {
+      "row_id": "pseudo_batch_constant-s2026092701",
+      "stage": "repair",
+      "arm": "pseudo_batch_constant",
+      "model_seed": 2026092701,
+      "status": "PREDICTIONS_COMPLETE",
+      "count": 168000,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "truth_read": false,
+      "query_fit": false,
+      "inference_seconds": {
+        "clean": 4.699575261911377,
+        "practical_high": 4.650502905016765,
+        "practical_mid": 4.675078534986824,
+        "practical_low_suburban": 4.650385319022462,
+        "practical_high_urban": 4.640825498965569,
+        "practical_mid_urban": 4.651672636042349,
+        "practical_low_urban": 4.634075484005734
+      },
+      "wall_seconds": 33.91505508800037,
+      "peak_cuda_allocated_bytes": 91524096,
+      "peak_cuda_reserved_bytes": 130023424,
+      "peak_process_rss_bytes": 1535459328,
+      "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+    },
+    {
+      "row_id": "pseudo_bank_constant-s2026092701",
+      "stage": "repair",
+      "arm": "pseudo_bank_constant",
+      "model_seed": 2026092701,
+      "status": "PREDICTIONS_COMPLETE",
+      "count": 168000,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "truth_read": false,
+      "query_fit": false,
+      "inference_seconds": {
+        "clean": 4.732907711993903,
+        "practical_high": 4.641893754014745,
+        "practical_mid": 4.648961050901562,
+        "practical_low_suburban": 4.63279151392635,
+        "practical_high_urban": 4.6618924040813,
+        "practical_mid_urban": 4.645434562000446,
+        "practical_low_urban": 4.658742628060281
+      },
+      "wall_seconds": 33.80223501008004,
+      "peak_cuda_allocated_bytes": 91524096,
+      "peak_cuda_reserved_bytes": 130023424,
+      "peak_process_rss_bytes": 1535021056,
+      "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+    },
+    {
+      "row_id": "pseudo_batch_cosine-s2026092701",
+      "stage": "repair",
+      "arm": "pseudo_batch_cosine",
+      "model_seed": 2026092701,
+      "status": "PREDICTIONS_COMPLETE",
+      "count": 168000,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "truth_read": false,
+      "query_fit": false,
+      "inference_seconds": {
+        "clean": 4.7161277499981225,
+        "practical_high": 4.685908221057616,
+        "practical_mid": 4.651191916898824,
+        "practical_low_suburban": 4.65483132796362,
+        "practical_high_urban": 4.67963576305192,
+        "practical_mid_urban": 4.651585352024995,
+        "practical_low_urban": 4.66858873993624
+      },
+      "wall_seconds": 33.97849964897614,
+      "peak_cuda_allocated_bytes": 91524096,
+      "peak_cuda_reserved_bytes": 130023424,
+      "peak_process_rss_bytes": 1533755392,
+      "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+    }
+  ],
+  "measurement": "Inference concurrent with unrelated source training"
+}
