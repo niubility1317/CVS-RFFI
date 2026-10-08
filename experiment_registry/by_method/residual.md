@@ -13,3 +13,9 @@
 |practical四组最新保存权重测试r02|managed_run|[打开](../../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r02/report.md)|
 |DAOT＋FastTrust-RC4 residual环境比例六组|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/report.md)|
 |旧Practical四组checkpoint统一六环境测试|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-practical4-sixscene-eval-s392005-r01/report.md)|
+|reference_response剩余136行：clean及完整六residual环境自动测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261004-phase1-reference-stack-sixscene-manysig-m136-r01/report.md)|
+|reference_response已完成32行立即测试：clean及六完整residual|managed_run|[打开](../../automation_reports/CV-SincNet/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/report.md)|
+|reference_response剩余136行：clean及完整六residual环境自动测试：故障恢复r02|managed_run|[打开](../../automation_reports/CV-SincNet/20261006-phase1-reference-stack-sixscene-manysig-m136-r02/report.md)|
+|reference_response136行独立测试修复：原混合视图及clean+六完整residual|managed_run|[打开](../../automation_reports/CV-SincNet/20261006-phase1-reference-stack-sixscene-manysig-m136-r03/report.md)|
+|reference_response新增完成48行补测：clean及六完整residual|managed_run|[打开](../../automation_reports/CV-SincNet/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/report.md)|
+|reference_response新增12行R5补测：clean及六residual|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-reference-completed-sixscene-manysig-m12-r01/report.md)|

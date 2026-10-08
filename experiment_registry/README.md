@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-03T14:18:38+00:00
+更新：2026-10-08T13:59:38+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|100|
+|managed_run|116|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,10 +21,10 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|245|
+|[cvs](by_method/cvs.md)|260|
 |[adv3b02](by_method/adv3b02.md)|146|
+|[phase1](by_method/phase1.md)|124|
 |[phase2](by_method/phase2.md)|118|
-|[phase1](by_method/phase1.md)|113|
 |[stage2](by_method/stage2.md)|67|
 |[clean_only](by_method/clean_only.md)|59|
 |[ce_only](by_method/ce_only.md)|58|
@@ -39,37 +39,41 @@
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|17|
 |[source_only](by_method/source_only.md)|16|
 |[d92](by_method/d92.md)|15|
-|[diagnostic](by_method/diagnostic.md)|14|
+|[diagnostic](by_method/diagnostic.md)|15|
+|[reference_response](by_method/reference_response.md)|15|
+|[residual](by_method/residual.md)|13|
 |[response](by_method/response.md)|13|
-|[daot](by_method/daot.md)|11|
+|[daot](by_method/daot.md)|12|
+|[rc4](by_method/rc4.md)|11|
 |[drift](by_method/drift.md)|11|
-|[rc4](by_method/rc4.md)|10|
 |[comparison](by_method/comparison.md)|10|
 |[riei](by_method/riei.md)|10|
+|[sixscene](by_method/sixscene.md)|9|
+|[truth_last](by_method/truth_last.md)|9|
+|[scratch](by_method/scratch.md)|9|
 |[no_training](by_method/no_training.md)|9|
 |[practical](by_method/practical.md)|8|
 |[residual_noeq](by_method/residual_noeq.md)|8|
+|[evaluation_only](by_method/evaluation_only.md)|8|
 |[mopc](by_method/mopc.md)|8|
 |[csil](by_method/csil.md)|8|
 |[concat](by_method/concat.md)|7|
-|[residual](by_method/residual.md)|7|
-|[truth_last](by_method/truth_last.md)|7|
+|[benchmark_informed](by_method/benchmark_informed.md)|7|
 |[lightweight](by_method/lightweight.md)|6|
 |[core90](by_method/core90.md)|6|
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
 |[relative_cfo](by_method/relative_cfo.md)|5|
+|[repair](by_method/repair.md)|5|
 |[final200](by_method/final200.md)|4|
 |[mirror_relation](by_method/mirror_relation.md)|4|
 |[fixed_comparison](by_method/fixed_comparison.md)|4|
+|[auto_after_parent](by_method/auto_after_parent.md)|4|
 |[receiver_agnostic](by_method/receiver_agnostic.md)|4|
-|[repair](by_method/repair.md)|4|
 |[shot](by_method/shot.md)|4|
-|[sixscene](by_method/sixscene.md)|3|
 |[architecture](by_method/architecture.md)|3|
 |[identity_only](by_method/identity_only.md)|3|
-|[scratch](by_method/scratch.md)|3|
 |[no_target_access](by_method/no_target_access.md)|3|
 |[frozen_weights](by_method/frozen_weights.md)|3|
 |[packet_synchronization](by_method/packet_synchronization.md)|3|
@@ -77,6 +81,7 @@
 |[public_only](by_method/public_only.md)|3|
 |[reference_residual](by_method/reference_residual.md)|3|
 |[valid_history](by_method/valid_history.md)|3|
+|[mechanism](by_method/mechanism.md)|3|
 |[packet_compensation](by_method/packet_compensation.md)|3|
 |[smoke](by_method/smoke.md)|3|
 |[evaluation](by_method/evaluation.md)|2|
@@ -96,10 +101,13 @@
 |[two_extra_parameters](by_method/two_extra_parameters.md)|2|
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
-|[benchmark_informed](by_method/benchmark_informed.md)|2|
 |[public_signals](by_method/public_signals.md)|2|
 |[independent_test](by_method/independent_test.md)|2|
 |[dual_path](by_method/dual_path.md)|2|
+|[synthetic](by_method/synthetic.md)|2|
+|[factorial](by_method/factorial.md)|2|
+|[sequential_source_selection](by_method/sequential_source_selection.md)|2|
+|[completed_snapshot](by_method/completed_snapshot.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[nm fdu](by_method/nm_fdu.md)|2|
 |[protonet](by_method/protonet.md)|2|
@@ -154,7 +162,6 @@
 |[relation_attribution](by_method/relation_attribution.md)|1|
 |[response_attribution](by_method/response_attribution.md)|1|
 |[response_geometry](by_method/response_geometry.md)|1|
-|[mechanism](by_method/mechanism.md)|1|
 |[backfill](by_method/backfill.md)|1|
 |[all_frozen](by_method/all_frozen.md)|1|
 |[channel_order](by_method/channel_order.md)|1|
@@ -165,10 +172,30 @@
 |[context_attention](by_method/context_attention.md)|1|
 |[response_fusion](by_method/response_fusion.md)|1|
 |[spectral_relation](by_method/spectral_relation.md)|1|
+|[runtime](by_method/runtime.md)|1|
+|[no_target](by_method/no_target.md)|1|
+|[equivalence](by_method/equivalence.md)|1|
+|[leo](by_method/leo.md)|1|
+|[mixstyle](by_method/mixstyle.md)|1|
+|[single_view](by_method/single_view.md)|1|
+|[cpu](by_method/cpu.md)|1|
+|[efficiency](by_method/efficiency.md)|1|
+|[r5](by_method/r5.md)|1|
+|[four_seed](by_method/four_seed.md)|1|
+|[fixed_completed5](by_method/fixed_completed5.md)|1|
+|[single_seed](by_method/single_seed.md)|1|
+|[ce_concat](by_method/ce_concat.md)|1|
+|[displacement](by_method/displacement.md)|1|
+|[contribution](by_method/contribution.md)|1|
+|[benchmark_exposed](by_method/benchmark_exposed.md)|1|
+|[temporal_bank](by_method/temporal_bank.md)|1|
+|[cosine](by_method/cosine.md)|1|
+|[fixed_controls](by_method/fixed_controls.md)|1|
+|[CE](by_method/CE.md)|1|
+|[urban](by_method/urban.md)|1|
+|[channel_DG](by_method/channel_DG.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
 |[fedcvs](by_method/fedcvs.md)|1|
-
-- [reference_response原Phase1机制叠加第一轮](by_method/reference_response.md)
 
 ## 最近记录入口
 
@@ -271,6 +298,22 @@
 |CVS频点内可学习时间关系：整包与逐频能量归一化×四seed|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/report.md)|
 |有效历史双路径：完整测试结果|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-validdual-clean-manysig-m8-r01/report.md)|
 |有效历史滤波与原始指纹双路径|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/report.md)|
+|R2耗时分析与后续执行加速|managed_run|[打开](../automation_reports/CV-SincNet/20261004-diagnostic-reference-stack-speed-synthetic-m12-r01/report.md)|
+|reference_response 原 Phase1 机制叠加：LEO×MixStyle 四 seed 消融|managed_run|[打开](../automation_reports/CV-SincNet/20261004-phase1-reference-overlay-r1-manysig-m16-r01/report.md)|
+|reference_response原Phase1剩余机制：R2至R6共136行|managed_run|[打开](../automation_reports/CV-SincNet/20261004-phase1-reference-stack-manysig-m136-r01/report.md)|
+|reference_response剩余136行：clean及完整六residual环境自动测试|managed_run|[打开](../automation_reports/CV-SincNet/20261004-phase1-reference-stack-sixscene-manysig-m136-r01/report.md)|
+|reference_response已完成32行立即测试：clean及六完整residual|managed_run|[打开](../automation_reports/CV-SincNet/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/report.md)|
+|reference_response原Phase1剩余机制：R2至R6共136行：故障恢复r02|managed_run|[打开](../automation_reports/CV-SincNet/20261006-phase1-reference-stack-manysig-m136-r02/report.md)|
+|reference_response剩余136行：clean及完整六residual环境自动测试：故障恢复r02|managed_run|[打开](../automation_reports/CV-SincNet/20261006-phase1-reference-stack-sixscene-manysig-m136-r02/report.md)|
+|reference_response136行独立测试修复：原混合视图及clean+六完整residual|managed_run|[打开](../automation_reports/CV-SincNet/20261006-phase1-reference-stack-sixscene-manysig-m136-r03/report.md)|
+|reference_response新增完成48行补测：clean及六完整residual|managed_run|[打开](../automation_reports/CV-SincNet/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/report.md)|
+|简洁星地信道增强：单视图原型与计算诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261008-diagnostic-cvs-singleview-synthetic-m3-r01/report.md)|
+|R5新增完成12行立即补测：base、DAOT、DAOT＋RC4四seed|managed_run|[打开](../automation_reports/CV-SincNet/20261008-evaluation-reference-r5-completed-manysig-m12-r01/report.md)|
+|修复后首批5个E200模型：立即执行clean及六星地场景独立测试|managed_run|[打开](../automation_reports/CV-SincNet/20261008-evaluation-reference-repair-completed5-manysig-m5-r01/report.md)|
+|reference_response：跨TX共同位移补偿×分支贡献预测，CE拼接四seed消融|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-receiver-residual-manysig-m16-r01/report.md)|
+|reference_response新增12行R5补测：clean及六residual|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-reference-completed-sixscene-manysig-m12-r01/report.md)|
+|更新CVS网络的Phase1修复：时序门控与学习率固定对照32行|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-reference-repair-manysig-m32-r01/report.md)|
+|CE＋urban中低仰角星地增强与信道泛化固定24行|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-urban-ce-manysig-m24-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|
@@ -278,19 +321,3 @@
 |cvs_response_geometry_source_20261003_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_response_geometry_source_20261003_r01)|
 |显式补偿响应：下一轮Phase1架构|legacy_evidence_group|[打开](../docs/CVS_CHANNEL_RESPONSE_DESIGN_20261003.md)|
 |Phase1补偿响应架构：创新边界与证据缺口|legacy_evidence_group|[打开](../docs/CVS_CHANNEL_RESPONSE_NOVELTY_20261003.md)|
-|cvs_response_attribution_source_20261003_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_response_attribution_source_20261003_r01)|
-|cvs_channel_response_identity_20261003_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_channel_response_identity_20261003_r01)|
-|clean_eval_protocol_fixtures|legacy_evidence_group|[打开](../local_artifacts/clean_eval_protocol_fixtures)|
-|cvs_channel_response_identity_cpu_smoke|legacy_evidence_group|[打开](../local_artifacts/cvs_channel_response_identity_cpu_smoke.json)|
-|cvs_channel_attribution_source_20261003_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_channel_attribution_source_20261003_r01)|
-|Phase1架构研究：信道鲁棒性与射频指纹保留|legacy_evidence_group|[打开](../docs/CVS_PHASE1_CHANNEL_ROBUST_ARCHITECTURE_20261003.md)|
-|CVS信道补偿与非线性交互：Phase1结构实验|legacy_evidence_group|[打开](../docs/CVS_CHANNEL_ORDER_EXPERIMENT_20261003.md)|
-|cvs_channel_order_clean_eval_20261003_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_channel_order_clean_eval_20261003_r01)|
-|cvs_channel_order_identity_20261003_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_channel_order_identity_20261003_r01)|
-|cvs_channel_order_source_validation_20261003_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_channel_order_source_validation_20261003_r01.json)|
-|CVS纯神经网络读出优化|legacy_evidence_group|[打开](../docs/CVS_NEURAL_READOUT_20261003.md)|
-|cvs_neural_readout_identity_20261003_model_cpu_smoke_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_neural_readout_identity_20261003_model_cpu_smoke_r01.json)|
-|CVS基础网络优化诊断|legacy_evidence_group|[打开](../docs/CVS_NETWORK_DIAGNOSIS_20261002.md)|
-|CVS可学习复卷积残差结构实验|legacy_evidence_group|[打开](../docs/CVS_NEURAL_RESIDUAL_20261002.md)|
-|cvs_neural_residual_clean_eval_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_neural_residual_clean_eval_20261002_r01)|
-|cvs_neural_residual_identity_20261002_r01|legacy_evidence_group|[打开](../local_artifacts/cvs_neural_residual_identity_20261002_r01)|
