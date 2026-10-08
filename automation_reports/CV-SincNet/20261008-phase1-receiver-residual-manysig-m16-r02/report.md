@@ -61,3 +61,9 @@ GPU0至3各3个总实验进程，GPU4至7各4个；其中本轮R1/R2共24个，�
 新调度器使用专用handoff锁及全生命周期owner锁；跨run共享GPU预约锁。原训练PID不signal，不热改模型，不改变预算/损失/数据角色。完成16源模型后继续原冻结→112预测→独立truth-last评分。当前未完成目标测试，尚无新增机制收益结论。
 
 本地旧observer PID62900退出已独立核实；唯一新observer PID60084已读回正确的新dispatcher，日志增长且stderr为空。其任务仍为结果回收、报告/登记/索引更新及Git交付，不调参、不重跑。
+
+## 远端技术失败
+
+FAILED：{"status": "FAILED", "error": "KeyError('classes')", "no_retry": true}
+
+产物保留，未自动重跑或干预健康任务；完整训练/测试收尾尚未完成，不能宣称收益。

@@ -1,5 +1,5 @@
 {
-  "read_at": 1791472779.874227,
+  "read_at": 1791475442.1222425,
   "run_id": "20261008-phase1-receiver-residual-manysig-m16-r02",
   "release_exists": true,
   "run_exists": true,
@@ -55,21 +55,7 @@
     "launch_owner": "codex/root/receiver-residual-20261008-r02",
     "commit": "8a88b3a2e369644ea1d746c5e02006218ee00df6"
   },
-  "dispatcher_process": {
-    "pid": 1641985,
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-    "argv": [
-      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-      "-u",
-      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py",
-      "--release",
-      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-      "--package",
-      "cvs_receiver_residual_v2"
-    ],
-    "state": "S",
-    "start_ticks": 72013945
-  },
+  "dispatcher_process": null,
   "capacity4_handoff": {
     "status": "OLD_DISPATCHER_EXIT_VERIFIED",
     "authorization": "用户：每张卡4个实验进程",
@@ -190,35 +176,38 @@
   },
   "queue": {
     "kind": "source",
-    "active": [
-      "baseline-s2026092702",
-      "displacement-s2026092702",
-      "contribution-s2026092702",
-      "combined-s2026092702",
-      "baseline-s2026092703",
-      "displacement-s2026092703",
-      "contribution-s2026092703",
-      "combined-s2026092703",
-      "baseline-s2026092704",
-      "displacement-s2026092704",
-      "contribution-s2026092704",
-      "combined-s2026092704"
-    ],
+    "active": [],
     "pending": [],
     "completed": [
       "baseline-s2026092701",
       "displacement-s2026092701",
       "contribution-s2026092701",
-      "combined-s2026092701"
+      "combined-s2026092701",
+      "baseline-s2026092703",
+      "baseline-s2026092702",
+      "contribution-s2026092702",
+      "contribution-s2026092703",
+      "contribution-s2026092704",
+      "baseline-s2026092704",
+      "combined-s2026092704",
+      "combined-s2026092703",
+      "displacement-s2026092704",
+      "displacement-s2026092703",
+      "combined-s2026092702",
+      "displacement-s2026092702"
     ],
     "failures": [],
-    "updated_at": 1791472773.9525344,
+    "updated_at": 1791475398.1089938,
     "max_active": 16,
     "per_gpu_limit": 4,
     "policy": "user override 4 total experiment processes/GPU; global CUDA and pre-CUDA reservations; >=12GB free"
   },
   "completion": null,
-  "failure": null,
+  "failure": {
+    "status": "FAILED",
+    "error": "KeyError('classes')",
+    "no_retry": true
+  },
   "scoring": null,
   "source_freeze": null,
   "rows": [
@@ -1440,20 +1429,7 @@
       ],
       "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-baseline-s2026092702.log",
       "capacity_override": 4,
-      "process": {
-        "pid": 1642003,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_receiver_residual_v2.source",
-          "--config",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/baseline-s2026092702.json"
-        ],
-        "state": "R",
-        "start_ticks": 72014110
-      },
+      "process": null,
       "initialization": {
         "status": "SCRATCH",
         "scratch_only": true,
@@ -1625,62 +1601,92 @@
         "cuda_rng_policy": "model_seed preserved; additional head uses CPU-only private generator"
       },
       "epoch": {
-        "epoch": 35,
+        "epoch": 200,
         "arm": "baseline",
         "optimizer_steps": 50,
-        "optimizer_steps_total": 1750,
+        "optimizer_steps_total": 10000,
         "source_sample_exposure": 6300,
         "concat_sample_exposure": 6300,
-        "satellite_ce_sample_exposure": 0,
-        "channel_changed_sample_exposure": 2688,
-        "centroid_readonly_L_exposure": 0,
-        "centroid_pass_seconds": 0.0,
+        "satellite_ce_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 5660,
+        "centroid_readonly_L_exposure": 6300,
+        "centroid_pass_seconds": 1.0161640930455178,
         "cross_tx_pair_count": 0,
-        "total_loss": 0.11749850146472454,
-        "clean_ce": 0.11749850146472454,
-        "satellite_ce": null,
+        "total_loss": 0.3054650874435902,
+        "clean_ce": 0.02703525419346988,
+        "satellite_ce": 0.4094556342065334,
         "displacement_loss": 0.0,
         "gauge_loss": 0.0,
         "contribution_loss": 0.0,
-        "gradient_norm": 2.207917503118515,
+        "gradient_norm": 2.307844762802124,
         "correction_norm_ratio": 0.0,
         "gate_abs_delta": 0.0,
-        "learning_rate": 0.00018614383168689242,
-        "residual_strength": 0.0,
+        "learning_rate": 1.0122750680747714e-06,
+        "residual_strength": 1.0,
         "displacement_weight": 0.0,
         "gauge_weight": 0.0,
         "contribution_weight": 0.0,
-        "satellite_weight": 0.0,
+        "satellite_weight": 0.68,
         "clean_weight": 1.0,
         "scene_batch_counts": {
-          "clean_duplicate": 29,
-          "practical_high": 21
+          "practical_low_urban": 11,
+          "practical_mid": 23,
+          "clean_duplicate": 5,
+          "practical_high": 11
         },
         "gradient_used_parameters": 177025,
-        "response_gain_abs_mean": 0.07161978632211685,
+        "response_gain_abs_mean": 0.07509801536798477,
         "displacement_gradient_norm": null,
         "contribution_gradient_norm": null,
         "source_val_count": 27000,
-        "source_val_accuracy": 0.966925925925926,
-        "source_val_ce": 0.11702102982741511,
+        "source_val_accuracy": 0.9816666666666667,
+        "source_val_ce": 0.06832807165963031,
         "source_val_rx_accuracy": {
-          "1": 0.9868518518518519,
-          "3": 0.9137037037037037,
-          "4": 0.9825925925925926,
-          "6": 0.9944444444444445,
-          "8": 0.957037037037037
+          "1": 0.9974074074074074,
+          "3": 0.9477777777777778,
+          "4": 0.9855555555555555,
+          "6": 0.9957407407407407,
+          "8": 0.9818518518518519
         },
-        "source_val_worst_rx": 0.9137037037037037,
-        "elapsed_seconds": 10.479781138943508,
-        "peak_cuda_allocated_bytes": 329455616,
-        "cross_tx_relative_prediction_error": null,
-        "cross_tx_direction_cosine": null,
+        "source_val_worst_rx": 0.9477777777777778,
+        "elapsed_seconds": 15.413396977004595,
+        "peak_cuda_allocated_bytes": 329456128,
+        "cross_tx_relative_prediction_error": 1.0381299257278442,
+        "cross_tx_direction_cosine": 0.10412097722291946,
         "domain_backbone_active": false,
         "pseudo_labels_active": false,
         "ema_active": false,
         "auxiliary_active": false
       },
-      "source_completion": null,
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-receiver-residual-manysig-m16-r02/baseline-s2026092702/source/last.pt",
+        "elapsed_seconds": 2694.6052008729894,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9816666666666667,
+          "source_val_ce": 0.06832807165963031,
+          "source_val_rx_accuracy": {
+            "1": 0.9974074074074074,
+            "3": 0.9477777777777778,
+            "4": 0.9855555555555555,
+            "6": 0.9957407407407407,
+            "8": 0.9818518518518519
+          },
+          "source_val_worst_rx": 0.9477777777777778
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
       "prediction_complete": null,
       "lease": {
         "pid": 1642003,
@@ -1697,10 +1703,10 @@
         "cuda_initialized": false,
         "updated_at": 1791472442.9453602
       },
-      "log_bytes": 264684,
+      "log_bytes": 1492315,
       "log_tail": [
-        "TRAIN {\"epoch\": 36, \"step\": 1780, \"arm\": \"baseline\", \"total_loss\": 0.11269571632146835, \"clean_ce\": 0.11269571632146835, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 1.7087807655334473, \"displacement_gradient_norm\": null, \"contribution_gradient_norm\": null, \"response_gain_gradient_norm\": 0.05036110430955887, \"gradient_used_parameters\": 177025, \"learning_rate\": 0.0001853376963532322, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}",
-        "TRAIN {\"epoch\": 36, \"step\": 1790, \"arm\": \"baseline\", \"total_loss\": 0.08394553512334824, \"clean_ce\": 0.08394553512334824, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 1.3011853694915771, \"displacement_gradient_norm\": null, \"contribution_gradient_norm\": null, \"response_gain_gradient_norm\": 0.04467146843671799, \"gradient_used_parameters\": 177025, \"learning_rate\": 0.0001853376963532322, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": true, \"view\": \"practical_high\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}"
+        "STAGE:2026-10-08 23:59:01 1642003:1642003 ActivityProfilerController.cpp:318] Completed Stage: Collection",
+        "STAGE:2026-10-08 23:59:01 1642003:1642003 ActivityProfilerController.cpp:322] Completed Stage: Post Processing"
       ]
     },
     {
@@ -1728,20 +1734,7 @@
       ],
       "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-displacement-s2026092702.log",
       "capacity_override": 4,
-      "process": {
-        "pid": 1642008,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_receiver_residual_v2.source",
-          "--config",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/displacement-s2026092702.json"
-        ],
-        "state": "S",
-        "start_ticks": 72014135
-      },
+      "process": null,
       "initialization": {
         "status": "SCRATCH",
         "scratch_only": true,
@@ -1916,62 +1909,92 @@
         "cuda_rng_policy": "model_seed preserved; additional head uses CPU-only private generator"
       },
       "epoch": {
-        "epoch": 33,
+        "epoch": 200,
         "arm": "displacement",
         "optimizer_steps": 50,
-        "optimizer_steps_total": 1650,
+        "optimizer_steps_total": 10000,
         "source_sample_exposure": 6300,
         "concat_sample_exposure": 6300,
-        "satellite_ce_sample_exposure": 0,
-        "channel_changed_sample_exposure": 2048,
-        "centroid_readonly_L_exposure": 0,
-        "centroid_pass_seconds": 0.0,
-        "cross_tx_pair_count": 0,
-        "total_loss": 0.12124075934290886,
-        "clean_ce": 0.12124075934290886,
-        "satellite_ce": null,
-        "displacement_loss": 0.0,
-        "gauge_loss": 0.0,
+        "satellite_ce_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 5660,
+        "centroid_readonly_L_exposure": 6300,
+        "centroid_pass_seconds": 1.0357768499525264,
+        "cross_tx_pair_count": 5768,
+        "total_loss": 0.3026411323994398,
+        "clean_ce": 0.02416608958505094,
+        "satellite_ce": 0.402282386533916,
+        "displacement_loss": 0.004757309854030609,
+        "gauge_loss": 0.0016570781986229122,
         "contribution_loss": 0.0,
-        "gradient_norm": 2.1528487634658813,
-        "correction_norm_ratio": 0.0,
+        "gradient_norm": 2.2819739961624146,
+        "correction_norm_ratio": 0.10377751439809799,
         "gate_abs_delta": 0.0,
-        "learning_rate": 0.00018769251466436442,
-        "residual_strength": 0.0,
-        "displacement_weight": 0.0,
-        "gauge_weight": 0.0,
+        "learning_rate": 1.0122750680747714e-06,
+        "residual_strength": 1.0,
+        "displacement_weight": 1.0,
+        "gauge_weight": 0.1,
         "contribution_weight": 0.0,
-        "satellite_weight": 0.0,
+        "satellite_weight": 0.68,
         "clean_weight": 1.0,
         "scene_batch_counts": {
-          "practical_high": 16,
-          "clean_duplicate": 34
+          "practical_low_urban": 11,
+          "practical_mid": 23,
+          "clean_duplicate": 5,
+          "practical_high": 11
         },
         "gradient_used_parameters": 182603,
-        "response_gain_abs_mean": 0.0702252984046936,
-        "displacement_gradient_norm": 0.0,
+        "response_gain_abs_mean": 0.0761055126786232,
+        "displacement_gradient_norm": 0.6436807513237,
         "contribution_gradient_norm": null,
         "source_val_count": 27000,
-        "source_val_accuracy": 0.963925925925926,
-        "source_val_ce": 0.12740934691279998,
+        "source_val_accuracy": 0.9817777777777777,
+        "source_val_ce": 0.06679311298654748,
         "source_val_rx_accuracy": {
-          "1": 0.9761111111111112,
-          "3": 0.904074074074074,
-          "4": 0.9811111111111112,
-          "6": 0.9933333333333333,
-          "8": 0.965
+          "1": 0.9975925925925926,
+          "3": 0.947962962962963,
+          "4": 0.985,
+          "6": 0.9961111111111111,
+          "8": 0.9822222222222222
         },
-        "source_val_worst_rx": 0.904074074074074,
-        "elapsed_seconds": 10.439603807055391,
-        "peak_cuda_allocated_bytes": 330026496,
-        "cross_tx_relative_prediction_error": null,
-        "cross_tx_direction_cosine": null,
+        "source_val_worst_rx": 0.947962962962963,
+        "elapsed_seconds": 16.690642628003843,
+        "peak_cuda_allocated_bytes": 330104320,
+        "cross_tx_relative_prediction_error": 0.9738795757293701,
+        "cross_tx_direction_cosine": 0.17156001925468445,
         "domain_backbone_active": false,
         "pseudo_labels_active": false,
         "ema_active": false,
-        "auxiliary_active": false
+        "auxiliary_active": true
       },
-      "source_completion": null,
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-receiver-residual-manysig-m16-r02/displacement-s2026092702/source/last.pt",
+        "elapsed_seconds": 2936.3263494679704,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9817777777777777,
+          "source_val_ce": 0.06679311298654748,
+          "source_val_rx_accuracy": {
+            "1": 0.9975925925925926,
+            "3": 0.947962962962963,
+            "4": 0.985,
+            "6": 0.9961111111111111,
+            "8": 0.9822222222222222
+          },
+          "source_val_worst_rx": 0.947962962962963
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
       "prediction_complete": null,
       "lease": {
         "pid": 1642008,
@@ -1988,10 +2011,10 @@
         "cuda_initialized": false,
         "updated_at": 1791472443.9062023
       },
-      "log_bytes": 249976,
+      "log_bytes": 1571534,
       "log_tail": [
-        "TRAIN {\"epoch\": 34, \"step\": 1670, \"arm\": \"displacement\", \"total_loss\": 0.09059149026870728, \"clean_ce\": 0.09059149026870728, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 2.4542148113250732, \"displacement_gradient_norm\": 0.0, \"contribution_gradient_norm\": null, \"response_gain_gradient_norm\": 0.05203833803534508, \"gradient_used_parameters\": 182603, \"learning_rate\": 0.00018692883568660005, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}",
-        "TRAIN {\"epoch\": 34, \"step\": 1680, \"arm\": \"displacement\", \"total_loss\": 0.14877095818519592, \"clean_ce\": 0.14877095818519592, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 2.730846405029297, \"displacement_gradient_norm\": 0.0, \"contribution_gradient_norm\": null, \"response_gain_gradient_norm\": 0.06723421812057495, \"gradient_used_parameters\": 182603, \"learning_rate\": 0.00018692883568660005, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}"
+        "STAGE:2026-10-09 00:03:04 1642008:1642008 ActivityProfilerController.cpp:318] Completed Stage: Collection",
+        "STAGE:2026-10-09 00:03:04 1642008:1642008 ActivityProfilerController.cpp:322] Completed Stage: Post Processing"
       ]
     },
     {
@@ -2019,20 +2042,7 @@
       ],
       "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-contribution-s2026092702.log",
       "capacity_override": 4,
-      "process": {
-        "pid": 1642015,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_receiver_residual_v2.source",
-          "--config",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/contribution-s2026092702.json"
-        ],
-        "state": "R",
-        "start_ticks": 72014160
-      },
+      "process": null,
       "initialization": {
         "status": "SCRATCH",
         "scratch_only": true,
@@ -2206,62 +2216,92 @@
         "cuda_rng_policy": "model_seed preserved; additional head uses CPU-only private generator"
       },
       "epoch": {
-        "epoch": 34,
+        "epoch": 200,
         "arm": "contribution",
         "optimizer_steps": 50,
-        "optimizer_steps_total": 1700,
+        "optimizer_steps_total": 10000,
         "source_sample_exposure": 6300,
         "concat_sample_exposure": 6300,
-        "satellite_ce_sample_exposure": 0,
-        "channel_changed_sample_exposure": 1792,
-        "centroid_readonly_L_exposure": 0,
-        "centroid_pass_seconds": 0.0,
+        "satellite_ce_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 5660,
+        "centroid_readonly_L_exposure": 6300,
+        "centroid_pass_seconds": 1.0240913369925693,
         "cross_tx_pair_count": 0,
-        "total_loss": 0.11663262523710728,
-        "clean_ce": 0.11663262523710728,
-        "satellite_ce": null,
+        "total_loss": 0.3305354101955891,
+        "clean_ce": 0.02628921715542674,
+        "satellite_ce": 0.41020061541348696,
         "displacement_loss": 0.0,
         "gauge_loss": 0.0,
-        "contribution_loss": 0.0,
-        "gradient_norm": 2.1615946650505067,
+        "contribution_loss": 0.1265488848090172,
+        "gradient_norm": 2.331193578243256,
         "correction_norm_ratio": 0.0,
-        "gate_abs_delta": 0.0,
-        "learning_rate": 0.00018692883568660005,
-        "residual_strength": 0.0,
+        "gate_abs_delta": 0.07082809627056122,
+        "learning_rate": 1.0122750680747714e-06,
+        "residual_strength": 1.0,
         "displacement_weight": 0.0,
         "gauge_weight": 0.0,
-        "contribution_weight": 0.0,
-        "satellite_weight": 0.0,
+        "contribution_weight": 0.2,
+        "satellite_weight": 0.68,
         "clean_weight": 1.0,
         "scene_batch_counts": {
-          "practical_high": 14,
-          "clean_duplicate": 36
+          "practical_low_urban": 11,
+          "practical_mid": 23,
+          "clean_duplicate": 5,
+          "practical_high": 11
         },
         "gradient_used_parameters": 179198,
-        "response_gain_abs_mean": 0.071265310049057,
+        "response_gain_abs_mean": 0.07858418673276901,
         "displacement_gradient_norm": null,
-        "contribution_gradient_norm": 0.0,
+        "contribution_gradient_norm": 0.15080834925174713,
         "source_val_count": 27000,
-        "source_val_accuracy": 0.9657777777777777,
-        "source_val_ce": 0.12998622056332695,
+        "source_val_accuracy": 0.9813703703703703,
+        "source_val_ce": 0.0686338034667827,
         "source_val_rx_accuracy": {
-          "1": 0.98,
-          "3": 0.9122222222222223,
-          "4": 0.9805555555555555,
-          "6": 0.9922222222222222,
-          "8": 0.9638888888888889
+          "1": 0.9972222222222222,
+          "3": 0.947962962962963,
+          "4": 0.9853703703703703,
+          "6": 0.9957407407407407,
+          "8": 0.9805555555555555
         },
-        "source_val_worst_rx": 0.9122222222222223,
-        "elapsed_seconds": 9.43349110300187,
-        "peak_cuda_allocated_bytes": 329337856,
-        "cross_tx_relative_prediction_error": null,
-        "cross_tx_direction_cosine": null,
+        "source_val_worst_rx": 0.947962962962963,
+        "elapsed_seconds": 15.659568803966977,
+        "peak_cuda_allocated_bytes": 329339904,
+        "cross_tx_relative_prediction_error": 1.0456942319869995,
+        "cross_tx_direction_cosine": 0.09892149269580841,
         "domain_backbone_active": false,
         "pseudo_labels_active": false,
         "ema_active": false,
-        "auxiliary_active": false
+        "auxiliary_active": true
       },
-      "source_completion": null,
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-receiver-residual-manysig-m16-r02/contribution-s2026092702/source/last.pt",
+        "elapsed_seconds": 2714.5330400780076,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9813703703703703,
+          "source_val_ce": 0.0686338034667827,
+          "source_val_rx_accuracy": {
+            "1": 0.9972222222222222,
+            "3": 0.947962962962963,
+            "4": 0.9853703703703703,
+            "6": 0.9957407407407407,
+            "8": 0.9805555555555555
+          },
+          "source_val_worst_rx": 0.947962962962963
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
       "prediction_complete": null,
       "lease": {
         "pid": 1642015,
@@ -2278,10 +2318,10 @@
         "cuda_initialized": false,
         "updated_at": 1791472444.397952
       },
-      "log_bytes": 257244,
+      "log_bytes": 1604987,
       "log_tail": [
-        "TRAIN {\"epoch\": 35, \"step\": 1720, \"arm\": \"contribution\", \"total_loss\": 0.09603257477283478, \"clean_ce\": 0.09603257477283478, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 1.2517527341842651, \"displacement_gradient_norm\": null, \"contribution_gradient_norm\": 0.0, \"response_gain_gradient_norm\": 0.05653027072548866, \"gradient_used_parameters\": 179198, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}",
-        "TRAIN {\"epoch\": 35, \"step\": 1730, \"arm\": \"contribution\", \"total_loss\": 0.07660683989524841, \"clean_ce\": 0.07660683989524841, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 1.7202253341674805, \"displacement_gradient_norm\": null, \"contribution_gradient_norm\": 0.0, \"response_gain_gradient_norm\": 0.043298546224832535, \"gradient_used_parameters\": 179198, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}"
+        "STAGE:2026-10-08 23:59:23 1642015:1642015 ActivityProfilerController.cpp:318] Completed Stage: Collection",
+        "STAGE:2026-10-08 23:59:23 1642015:1642015 ActivityProfilerController.cpp:322] Completed Stage: Post Processing"
       ]
     },
     {
@@ -2309,20 +2349,7 @@
       ],
       "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-combined-s2026092702.log",
       "capacity_override": 4,
-      "process": {
-        "pid": 1642021,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_receiver_residual_v2.source",
-          "--config",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/combined-s2026092702.json"
-        ],
-        "state": "R",
-        "start_ticks": 72014184
-      },
+      "process": null,
       "initialization": {
         "status": "SCRATCH",
         "scratch_only": true,
@@ -2498,62 +2525,92 @@
         "cuda_rng_policy": "model_seed preserved; additional head uses CPU-only private generator"
       },
       "epoch": {
-        "epoch": 34,
+        "epoch": 200,
         "arm": "combined",
         "optimizer_steps": 50,
-        "optimizer_steps_total": 1700,
+        "optimizer_steps_total": 10000,
         "source_sample_exposure": 6300,
         "concat_sample_exposure": 6300,
-        "satellite_ce_sample_exposure": 0,
-        "channel_changed_sample_exposure": 1792,
-        "centroid_readonly_L_exposure": 0,
-        "centroid_pass_seconds": 0.0,
-        "cross_tx_pair_count": 0,
-        "total_loss": 0.11574883423745633,
-        "clean_ce": 0.11574883423745633,
-        "satellite_ce": null,
-        "displacement_loss": 0.0,
-        "gauge_loss": 0.0,
-        "contribution_loss": 0.0,
-        "gradient_norm": 2.106535464525223,
-        "correction_norm_ratio": 0.0,
-        "gate_abs_delta": 0.0,
-        "learning_rate": 0.00018692883568660005,
-        "residual_strength": 0.0,
-        "displacement_weight": 0.0,
-        "gauge_weight": 0.0,
-        "contribution_weight": 0.0,
-        "satellite_weight": 0.0,
+        "satellite_ce_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 5660,
+        "centroid_readonly_L_exposure": 6300,
+        "centroid_pass_seconds": 1.0152154279639944,
+        "cross_tx_pair_count": 5768,
+        "total_loss": 0.3239143307507038,
+        "clean_ce": 0.024246706180274486,
+        "satellite_ce": 0.39927833642810584,
+        "displacement_loss": 0.005157970767468214,
+        "gauge_loss": 0.0019165222626179458,
+        "contribution_loss": 0.11404365867376327,
+        "gradient_norm": 2.207948191165924,
+        "correction_norm_ratio": 0.10496594369411469,
+        "gate_abs_delta": 0.06246488213539123,
+        "learning_rate": 1.0122750680747714e-06,
+        "residual_strength": 1.0,
+        "displacement_weight": 1.0,
+        "gauge_weight": 0.1,
+        "contribution_weight": 0.2,
+        "satellite_weight": 0.68,
         "clean_weight": 1.0,
         "scene_batch_counts": {
-          "practical_high": 14,
-          "clean_duplicate": 36
+          "practical_low_urban": 11,
+          "practical_mid": 23,
+          "clean_duplicate": 5,
+          "practical_high": 11
         },
         "gradient_used_parameters": 184776,
-        "response_gain_abs_mean": 0.0710013136267662,
-        "displacement_gradient_norm": 0.0,
-        "contribution_gradient_norm": 0.0,
+        "response_gain_abs_mean": 0.07918394356966019,
+        "displacement_gradient_norm": 0.552061915397644,
+        "contribution_gradient_norm": 0.1639697551727295,
         "source_val_count": 27000,
-        "source_val_accuracy": 0.9651481481481482,
-        "source_val_ce": 0.13180255474157027,
+        "source_val_accuracy": 0.9825925925925926,
+        "source_val_ce": 0.06474236493215015,
         "source_val_rx_accuracy": {
-          "1": 0.9774074074074074,
-          "3": 0.9101851851851852,
-          "4": 0.9798148148148148,
-          "6": 0.9922222222222222,
-          "8": 0.9661111111111111
+          "1": 0.9974074074074074,
+          "3": 0.9516666666666667,
+          "4": 0.9853703703703703,
+          "6": 0.9959259259259259,
+          "8": 0.9825925925925926
         },
-        "source_val_worst_rx": 0.9101851851851852,
-        "elapsed_seconds": 9.190962816006504,
-        "peak_cuda_allocated_bytes": 329744384,
-        "cross_tx_relative_prediction_error": null,
-        "cross_tx_direction_cosine": null,
+        "source_val_worst_rx": 0.9516666666666667,
+        "elapsed_seconds": 16.70519427896943,
+        "peak_cuda_allocated_bytes": 329823232,
+        "cross_tx_relative_prediction_error": 0.9803386330604553,
+        "cross_tx_direction_cosine": 0.17059913277626038,
         "domain_backbone_active": false,
         "pseudo_labels_active": false,
         "ema_active": false,
-        "auxiliary_active": false
+        "auxiliary_active": true
       },
-      "source_completion": null,
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-receiver-residual-manysig-m16-r02/combined-s2026092702/source/last.pt",
+        "elapsed_seconds": 2903.6968111690367,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9825925925925926,
+          "source_val_ce": 0.06474236493215015,
+          "source_val_rx_accuracy": {
+            "1": 0.9974074074074074,
+            "3": 0.9516666666666667,
+            "4": 0.9853703703703703,
+            "6": 0.9959259259259259,
+            "8": 0.9825925925925926
+          },
+          "source_val_worst_rx": 0.9516666666666667
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
       "prediction_complete": null,
       "lease": {
         "pid": 1642021,
@@ -2570,10 +2627,10 @@
         "cuda_initialized": false,
         "updated_at": 1791472445.006801
       },
-      "log_bytes": 256018,
+      "log_bytes": 1674214,
       "log_tail": [
-        "TRAIN {\"epoch\": 35, \"step\": 1720, \"arm\": \"combined\", \"total_loss\": 0.09535375982522964, \"clean_ce\": 0.09535375982522964, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 1.3375438451766968, \"displacement_gradient_norm\": 0.0, \"contribution_gradient_norm\": 0.0, \"response_gain_gradient_norm\": 0.057555392384529114, \"gradient_used_parameters\": 184776, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}",
-        "TRAIN {\"epoch\": 35, \"step\": 1730, \"arm\": \"combined\", \"total_loss\": 0.08566722273826599, \"clean_ce\": 0.08566722273826599, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 1.955556035041809, \"displacement_gradient_norm\": 0.0, \"contribution_gradient_norm\": 0.0, \"response_gain_gradient_norm\": 0.048009131103754044, \"gradient_used_parameters\": 184776, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}"
+        "STAGE:2026-10-09 00:02:33 1642021:1642021 ActivityProfilerController.cpp:318] Completed Stage: Collection",
+        "STAGE:2026-10-09 00:02:33 1642021:1642021 ActivityProfilerController.cpp:322] Completed Stage: Post Processing"
       ]
     },
     {
@@ -2601,20 +2658,7 @@
       ],
       "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-baseline-s2026092703.log",
       "capacity_override": 4,
-      "process": {
-        "pid": 1642027,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_receiver_residual_v2.source",
-          "--config",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/baseline-s2026092703.json"
-        ],
-        "state": "R",
-        "start_ticks": 72014208
-      },
+      "process": null,
       "initialization": {
         "status": "SCRATCH",
         "scratch_only": true,
@@ -2786,62 +2830,92 @@
         "cuda_rng_policy": "model_seed preserved; additional head uses CPU-only private generator"
       },
       "epoch": {
-        "epoch": 35,
+        "epoch": 200,
         "arm": "baseline",
         "optimizer_steps": 50,
-        "optimizer_steps_total": 1750,
+        "optimizer_steps_total": 10000,
         "source_sample_exposure": 6300,
         "concat_sample_exposure": 6300,
-        "satellite_ce_sample_exposure": 0,
-        "channel_changed_sample_exposure": 2688,
-        "centroid_readonly_L_exposure": 0,
-        "centroid_pass_seconds": 0.0,
+        "satellite_ce_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 5660,
+        "centroid_readonly_L_exposure": 6300,
+        "centroid_pass_seconds": 0.998449909966439,
         "cross_tx_pair_count": 0,
-        "total_loss": 0.10603847272694111,
-        "clean_ce": 0.10603847272694111,
-        "satellite_ce": null,
+        "total_loss": 0.3040825591236353,
+        "clean_ce": 0.034012264590710405,
+        "satellite_ce": 0.3971621926873922,
         "displacement_loss": 0.0,
         "gauge_loss": 0.0,
         "contribution_loss": 0.0,
-        "gradient_norm": 2.2240414953231813,
+        "gradient_norm": 2.3358489274978638,
         "correction_norm_ratio": 0.0,
         "gate_abs_delta": 0.0,
-        "learning_rate": 0.00018614383168689242,
-        "residual_strength": 0.0,
+        "learning_rate": 1.0122750680747714e-06,
+        "residual_strength": 1.0,
         "displacement_weight": 0.0,
         "gauge_weight": 0.0,
         "contribution_weight": 0.0,
-        "satellite_weight": 0.0,
+        "satellite_weight": 0.68,
         "clean_weight": 1.0,
         "scene_batch_counts": {
-          "clean_duplicate": 29,
-          "practical_high": 21
+          "practical_low_urban": 11,
+          "practical_mid": 23,
+          "clean_duplicate": 5,
+          "practical_high": 11
         },
         "gradient_used_parameters": 177025,
-        "response_gain_abs_mean": 0.07339692115783691,
+        "response_gain_abs_mean": 0.07231657952070236,
         "displacement_gradient_norm": null,
         "contribution_gradient_norm": null,
         "source_val_count": 27000,
-        "source_val_accuracy": 0.9671481481481482,
-        "source_val_ce": 0.12257735716435612,
+        "source_val_accuracy": 0.9796296296296296,
+        "source_val_ce": 0.0774607990193369,
         "source_val_rx_accuracy": {
-          "1": 0.9864814814814815,
-          "3": 0.9155555555555556,
-          "4": 0.9814814814814815,
-          "6": 0.9953703703703703,
-          "8": 0.9568518518518518
+          "1": 0.9955555555555555,
+          "3": 0.9442592592592592,
+          "4": 0.9835185185185186,
+          "6": 0.9966666666666667,
+          "8": 0.9781481481481481
         },
-        "source_val_worst_rx": 0.9155555555555556,
-        "elapsed_seconds": 10.557499112910591,
-        "peak_cuda_allocated_bytes": 329455616,
-        "cross_tx_relative_prediction_error": null,
-        "cross_tx_direction_cosine": null,
+        "source_val_worst_rx": 0.9442592592592592,
+        "elapsed_seconds": 15.369076394010335,
+        "peak_cuda_allocated_bytes": 329456128,
+        "cross_tx_relative_prediction_error": 0.9993457198143005,
+        "cross_tx_direction_cosine": 0.19351448118686676,
         "domain_backbone_active": false,
         "pseudo_labels_active": false,
         "ema_active": false,
         "auxiliary_active": false
       },
-      "source_completion": null,
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-receiver-residual-manysig-m16-r02/baseline-s2026092703/source/last.pt",
+        "elapsed_seconds": 2679.6992564139655,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9796296296296296,
+          "source_val_ce": 0.0774607990193369,
+          "source_val_rx_accuracy": {
+            "1": 0.9955555555555555,
+            "3": 0.9442592592592592,
+            "4": 0.9835185185185186,
+            "6": 0.9966666666666667,
+            "8": 0.9781481481481481
+          },
+          "source_val_worst_rx": 0.9442592592592592
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
       "prediction_complete": null,
       "lease": {
         "pid": 1642027,
@@ -2857,10 +2931,10 @@
         "cuda_initialized": false,
         "updated_at": 1791472445.5642433
       },
-      "log_bytes": 261844,
+      "log_bytes": 1492132,
       "log_tail": [
-        "TRAIN {\"epoch\": 36, \"step\": 1751, \"arm\": \"baseline\", \"total_loss\": 0.09399037808179855, \"clean_ce\": 0.09399037808179855, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 1.2718331813812256, \"displacement_gradient_norm\": null, \"contribution_gradient_norm\": null, \"response_gain_gradient_norm\": 0.0550413616001606, \"gradient_used_parameters\": 177025, \"learning_rate\": 0.0001853376963532322, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}",
-        "TRAIN {\"epoch\": 36, \"step\": 1760, \"arm\": \"baseline\", \"total_loss\": 0.09645386040210724, \"clean_ce\": 0.09645386040210724, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 1.10332190990448, \"displacement_gradient_norm\": null, \"contribution_gradient_norm\": null, \"response_gain_gradient_norm\": 0.05412983521819115, \"gradient_used_parameters\": 177025, \"learning_rate\": 0.0001853376963532322, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}"
+        "STAGE:2026-10-08 23:58:49 1642027:1642027 ActivityProfilerController.cpp:318] Completed Stage: Collection",
+        "STAGE:2026-10-08 23:58:49 1642027:1642027 ActivityProfilerController.cpp:322] Completed Stage: Post Processing"
       ]
     },
     {
@@ -2888,20 +2962,7 @@
       ],
       "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-displacement-s2026092703.log",
       "capacity_override": 4,
-      "process": {
-        "pid": 1642033,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_receiver_residual_v2.source",
-          "--config",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/displacement-s2026092703.json"
-        ],
-        "state": "R",
-        "start_ticks": 72014232
-      },
+      "process": null,
       "initialization": {
         "status": "SCRATCH",
         "scratch_only": true,
@@ -3076,62 +3137,92 @@
         "cuda_rng_policy": "model_seed preserved; additional head uses CPU-only private generator"
       },
       "epoch": {
-        "epoch": 34,
+        "epoch": 200,
         "arm": "displacement",
         "optimizer_steps": 50,
-        "optimizer_steps_total": 1700,
+        "optimizer_steps_total": 10000,
         "source_sample_exposure": 6300,
         "concat_sample_exposure": 6300,
-        "satellite_ce_sample_exposure": 0,
-        "channel_changed_sample_exposure": 1792,
-        "centroid_readonly_L_exposure": 0,
-        "centroid_pass_seconds": 0.0,
-        "cross_tx_pair_count": 0,
-        "total_loss": 0.1107498499751091,
-        "clean_ce": 0.1107498499751091,
-        "satellite_ce": null,
-        "displacement_loss": 0.0,
-        "gauge_loss": 0.0,
+        "satellite_ce_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 5660,
+        "centroid_readonly_L_exposure": 6300,
+        "centroid_pass_seconds": 1.0390124389668927,
+        "cross_tx_pair_count": 5812,
+        "total_loss": 0.30336852692067623,
+        "clean_ce": 0.031449828082695606,
+        "satellite_ce": 0.39252750407904385,
+        "displacement_loss": 0.004841835349798203,
+        "gauge_loss": 0.0015815687272697687,
         "contribution_loss": 0.0,
-        "gradient_norm": 1.9632901954650879,
-        "correction_norm_ratio": 0.0,
+        "gradient_norm": 2.3071373653411866,
+        "correction_norm_ratio": 0.14041382685303688,
         "gate_abs_delta": 0.0,
-        "learning_rate": 0.00018692883568660005,
-        "residual_strength": 0.0,
-        "displacement_weight": 0.0,
-        "gauge_weight": 0.0,
+        "learning_rate": 1.0122750680747714e-06,
+        "residual_strength": 1.0,
+        "displacement_weight": 1.0,
+        "gauge_weight": 0.1,
         "contribution_weight": 0.0,
-        "satellite_weight": 0.0,
+        "satellite_weight": 0.68,
         "clean_weight": 1.0,
         "scene_batch_counts": {
-          "practical_high": 14,
-          "clean_duplicate": 36
+          "practical_low_urban": 11,
+          "practical_mid": 23,
+          "clean_duplicate": 5,
+          "practical_high": 11
         },
         "gradient_used_parameters": 182603,
-        "response_gain_abs_mean": 0.0727057158946991,
-        "displacement_gradient_norm": 0.0,
+        "response_gain_abs_mean": 0.07243948429822922,
+        "displacement_gradient_norm": 0.5836339592933655,
         "contribution_gradient_norm": null,
         "source_val_count": 27000,
-        "source_val_accuracy": 0.9651851851851851,
-        "source_val_ce": 0.12262985265217678,
+        "source_val_accuracy": 0.9797777777777777,
+        "source_val_ce": 0.07638386584590895,
         "source_val_rx_accuracy": {
-          "1": 0.977037037037037,
-          "3": 0.9174074074074074,
-          "4": 0.9811111111111112,
-          "6": 0.9940740740740741,
-          "8": 0.9562962962962963
+          "1": 0.9959259259259259,
+          "3": 0.9431481481481482,
+          "4": 0.9838888888888889,
+          "6": 0.997037037037037,
+          "8": 0.9788888888888889
         },
-        "source_val_worst_rx": 0.9174074074074074,
-        "elapsed_seconds": 9.417732918052934,
-        "peak_cuda_allocated_bytes": 330026496,
-        "cross_tx_relative_prediction_error": null,
-        "cross_tx_direction_cosine": null,
+        "source_val_worst_rx": 0.9431481481481482,
+        "elapsed_seconds": 16.67662983306218,
+        "peak_cuda_allocated_bytes": 330104320,
+        "cross_tx_relative_prediction_error": 0.8330620527267456,
+        "cross_tx_direction_cosine": 0.3192322552204132,
         "domain_backbone_active": false,
         "pseudo_labels_active": false,
         "ema_active": false,
-        "auxiliary_active": false
+        "auxiliary_active": true
       },
-      "source_completion": null,
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-receiver-residual-manysig-m16-r02/displacement-s2026092703/source/last.pt",
+        "elapsed_seconds": 2873.4840290349675,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9797777777777777,
+          "source_val_ce": 0.07638386584590895,
+          "source_val_rx_accuracy": {
+            "1": 0.9959259259259259,
+            "3": 0.9431481481481482,
+            "4": 0.9838888888888889,
+            "6": 0.997037037037037,
+            "8": 0.9788888888888889
+          },
+          "source_val_worst_rx": 0.9431481481481482
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
       "prediction_complete": null,
       "lease": {
         "pid": 1642033,
@@ -3147,10 +3238,10 @@
         "cuda_initialized": false,
         "updated_at": 1791472445.8658264
       },
-      "log_bytes": 259111,
+      "log_bytes": 1571303,
       "log_tail": [
-        "TRAIN {\"epoch\": 35, \"step\": 1740, \"arm\": \"displacement\", \"total_loss\": 0.08466896414756775, \"clean_ce\": 0.08466896414756775, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 1.9247891902923584, \"displacement_gradient_norm\": 0.0, \"contribution_gradient_norm\": null, \"response_gain_gradient_norm\": 0.0572916641831398, \"gradient_used_parameters\": 182603, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": true, \"view\": \"practical_high\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}",
-        "TRAIN {\"epoch\": 35, \"step\": 1750, \"arm\": \"displacement\", \"total_loss\": 0.15891297161579132, \"clean_ce\": 0.15891297161579132, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 4.873753070831299, \"displacement_gradient_norm\": 0.0, \"contribution_gradient_norm\": null, \"response_gain_gradient_norm\": 0.1381980925798416, \"gradient_used_parameters\": 182603, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 28, \"concat_samples\": 28, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}"
+        "STAGE:2026-10-09 00:02:04 1642033:1642033 ActivityProfilerController.cpp:318] Completed Stage: Collection",
+        "STAGE:2026-10-09 00:02:04 1642033:1642033 ActivityProfilerController.cpp:322] Completed Stage: Post Processing"
       ]
     },
     {
@@ -3178,20 +3269,7 @@
       ],
       "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-contribution-s2026092703.log",
       "capacity_override": 4,
-      "process": {
-        "pid": 1642041,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_receiver_residual_v2.source",
-          "--config",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/contribution-s2026092703.json"
-        ],
-        "state": "R",
-        "start_ticks": 72014257
-      },
+      "process": null,
       "initialization": {
         "status": "SCRATCH",
         "scratch_only": true,
@@ -3365,62 +3443,92 @@
         "cuda_rng_policy": "model_seed preserved; additional head uses CPU-only private generator"
       },
       "epoch": {
-        "epoch": 34,
+        "epoch": 200,
         "arm": "contribution",
         "optimizer_steps": 50,
-        "optimizer_steps_total": 1700,
+        "optimizer_steps_total": 10000,
         "source_sample_exposure": 6300,
         "concat_sample_exposure": 6300,
-        "satellite_ce_sample_exposure": 0,
-        "channel_changed_sample_exposure": 1792,
-        "centroid_readonly_L_exposure": 0,
-        "centroid_pass_seconds": 0.0,
+        "satellite_ce_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 5660,
+        "centroid_readonly_L_exposure": 6300,
+        "centroid_pass_seconds": 1.2141433849465102,
         "cross_tx_pair_count": 0,
-        "total_loss": 0.11068145759403705,
-        "clean_ce": 0.11068145759403705,
-        "satellite_ce": null,
+        "total_loss": 0.3276750999689102,
+        "clean_ce": 0.033015451477840546,
+        "satellite_ce": 0.39821763124316933,
         "displacement_loss": 0.0,
         "gauge_loss": 0.0,
-        "contribution_loss": 0.0,
-        "gradient_norm": 1.9614331138134002,
+        "contribution_loss": 0.11935827061533928,
+        "gradient_norm": 2.3292717599868773,
         "correction_norm_ratio": 0.0,
-        "gate_abs_delta": 0.0,
-        "learning_rate": 0.00018692883568660005,
-        "residual_strength": 0.0,
+        "gate_abs_delta": 0.07467710293829441,
+        "learning_rate": 1.0122750680747714e-06,
+        "residual_strength": 1.0,
         "displacement_weight": 0.0,
         "gauge_weight": 0.0,
-        "contribution_weight": 0.0,
-        "satellite_weight": 0.0,
+        "contribution_weight": 0.2,
+        "satellite_weight": 0.68,
         "clean_weight": 1.0,
         "scene_batch_counts": {
-          "practical_high": 14,
-          "clean_duplicate": 36
+          "practical_low_urban": 11,
+          "practical_mid": 23,
+          "clean_duplicate": 5,
+          "practical_high": 11
         },
         "gradient_used_parameters": 179198,
-        "response_gain_abs_mean": 0.07244815677404404,
+        "response_gain_abs_mean": 0.07650873810052872,
         "displacement_gradient_norm": null,
-        "contribution_gradient_norm": 0.0,
+        "contribution_gradient_norm": 0.20168538391590118,
         "source_val_count": 27000,
-        "source_val_accuracy": 0.9650740740740741,
-        "source_val_ce": 0.11928367377777263,
+        "source_val_accuracy": 0.9796296296296296,
+        "source_val_ce": 0.07781191116413484,
         "source_val_rx_accuracy": {
-          "1": 0.9768518518518519,
-          "3": 0.9187037037037037,
-          "4": 0.982037037037037,
-          "6": 0.9942592592592593,
-          "8": 0.9535185185185185
+          "1": 0.9953703703703703,
+          "3": 0.9451851851851852,
+          "4": 0.9840740740740741,
+          "6": 0.9966666666666667,
+          "8": 0.9768518518518519
         },
-        "source_val_worst_rx": 0.9187037037037037,
-        "elapsed_seconds": 9.282912639086135,
-        "peak_cuda_allocated_bytes": 329337856,
-        "cross_tx_relative_prediction_error": null,
-        "cross_tx_direction_cosine": null,
+        "source_val_worst_rx": 0.9451851851851852,
+        "elapsed_seconds": 16.055717539973557,
+        "peak_cuda_allocated_bytes": 329339904,
+        "cross_tx_relative_prediction_error": 0.9952920079231262,
+        "cross_tx_direction_cosine": 0.1966107189655304,
         "domain_backbone_active": false,
         "pseudo_labels_active": false,
         "ema_active": false,
-        "auxiliary_active": false
+        "auxiliary_active": true
       },
-      "source_completion": null,
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-receiver-residual-manysig-m16-r02/contribution-s2026092703/source/last.pt",
+        "elapsed_seconds": 2716.059143651044,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9796296296296296,
+          "source_val_ce": 0.07781191116413484,
+          "source_val_rx_accuracy": {
+            "1": 0.9953703703703703,
+            "3": 0.9451851851851852,
+            "4": 0.9840740740740741,
+            "6": 0.9966666666666667,
+            "8": 0.9768518518518519
+          },
+          "source_val_worst_rx": 0.9451851851851852
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
       "prediction_complete": null,
       "lease": {
         "pid": 1642041,
@@ -3436,10 +3544,10 @@
         "cuda_initialized": false,
         "updated_at": 1791472446.431303
       },
-      "log_bytes": 259117,
+      "log_bytes": 1605249,
       "log_tail": [
-        "TRAIN {\"epoch\": 35, \"step\": 1740, \"arm\": \"contribution\", \"total_loss\": 0.09101283550262451, \"clean_ce\": 0.09101283550262451, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 2.0270557403564453, \"displacement_gradient_norm\": null, \"contribution_gradient_norm\": 0.0, \"response_gain_gradient_norm\": 0.055890005081892014, \"gradient_used_parameters\": 179198, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": true, \"view\": \"practical_high\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}",
-        "TRAIN {\"epoch\": 35, \"step\": 1750, \"arm\": \"contribution\", \"total_loss\": 0.1422591656446457, \"clean_ce\": 0.1422591656446457, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 4.446260452270508, \"displacement_gradient_norm\": null, \"contribution_gradient_norm\": 0.0, \"response_gain_gradient_norm\": 0.12058187276124954, \"gradient_used_parameters\": 179198, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 28, \"concat_samples\": 28, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}"
+        "STAGE:2026-10-08 23:59:26 1642041:1642041 ActivityProfilerController.cpp:318] Completed Stage: Collection",
+        "STAGE:2026-10-08 23:59:26 1642041:1642041 ActivityProfilerController.cpp:322] Completed Stage: Post Processing"
       ]
     },
     {
@@ -3467,20 +3575,7 @@
       ],
       "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-combined-s2026092703.log",
       "capacity_override": 4,
-      "process": {
-        "pid": 1642052,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_receiver_residual_v2.source",
-          "--config",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/combined-s2026092703.json"
-        ],
-        "state": "R",
-        "start_ticks": 72014307
-      },
+      "process": null,
       "initialization": {
         "status": "SCRATCH",
         "scratch_only": true,
@@ -3656,62 +3751,92 @@
         "cuda_rng_policy": "model_seed preserved; additional head uses CPU-only private generator"
       },
       "epoch": {
-        "epoch": 34,
+        "epoch": 200,
         "arm": "combined",
         "optimizer_steps": 50,
-        "optimizer_steps_total": 1700,
+        "optimizer_steps_total": 10000,
         "source_sample_exposure": 6300,
         "concat_sample_exposure": 6300,
-        "satellite_ce_sample_exposure": 0,
-        "channel_changed_sample_exposure": 1792,
-        "centroid_readonly_L_exposure": 0,
-        "centroid_pass_seconds": 0.0,
-        "cross_tx_pair_count": 0,
-        "total_loss": 0.11241169475018978,
-        "clean_ce": 0.11241169475018978,
-        "satellite_ce": null,
-        "displacement_loss": 0.0,
-        "gauge_loss": 0.0,
-        "contribution_loss": 0.0,
-        "gradient_norm": 2.0181944715976714,
-        "correction_norm_ratio": 0.0,
-        "gate_abs_delta": 0.0,
-        "learning_rate": 0.00018692883568660005,
-        "residual_strength": 0.0,
-        "displacement_weight": 0.0,
-        "gauge_weight": 0.0,
-        "contribution_weight": 0.0,
-        "satellite_weight": 0.0,
+        "satellite_ce_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 5660,
+        "centroid_readonly_L_exposure": 6300,
+        "centroid_pass_seconds": 0.9834137780126184,
+        "cross_tx_pair_count": 5812,
+        "total_loss": 0.326231881082058,
+        "clean_ce": 0.030945304287597536,
+        "satellite_ce": 0.39105842225253584,
+        "displacement_loss": 0.005098583912476897,
+        "gauge_loss": 0.0016564522171393036,
+        "contribution_loss": 0.12051308080554009,
+        "gradient_norm": 2.306828558444977,
+        "correction_norm_ratio": 0.12367253854870797,
+        "gate_abs_delta": 0.0744694110751152,
+        "learning_rate": 1.0122750680747714e-06,
+        "residual_strength": 1.0,
+        "displacement_weight": 1.0,
+        "gauge_weight": 0.1,
+        "contribution_weight": 0.2,
+        "satellite_weight": 0.68,
         "clean_weight": 1.0,
         "scene_batch_counts": {
-          "practical_high": 14,
-          "clean_duplicate": 36
+          "practical_low_urban": 11,
+          "practical_mid": 23,
+          "clean_duplicate": 5,
+          "practical_high": 11
         },
         "gradient_used_parameters": 184776,
-        "response_gain_abs_mean": 0.07252857834100723,
-        "displacement_gradient_norm": 0.0,
-        "contribution_gradient_norm": 0.0,
+        "response_gain_abs_mean": 0.07590098679065704,
+        "displacement_gradient_norm": 0.5203753113746643,
+        "contribution_gradient_norm": 0.1508813202381134,
         "source_val_count": 27000,
-        "source_val_accuracy": 0.9652962962962963,
-        "source_val_ce": 0.11940015889803127,
+        "source_val_accuracy": 0.9801481481481481,
+        "source_val_ce": 0.07589364638558026,
         "source_val_rx_accuracy": {
-          "1": 0.9774074074074074,
-          "3": 0.9172222222222223,
-          "4": 0.9816666666666667,
-          "6": 0.9944444444444445,
-          "8": 0.9557407407407408
+          "1": 0.9959259259259259,
+          "3": 0.9448148148148148,
+          "4": 0.9846296296296296,
+          "6": 0.9968518518518519,
+          "8": 0.9785185185185186
         },
-        "source_val_worst_rx": 0.9172222222222223,
-        "elapsed_seconds": 9.438251093029976,
-        "peak_cuda_allocated_bytes": 329744384,
-        "cross_tx_relative_prediction_error": null,
-        "cross_tx_direction_cosine": null,
+        "source_val_worst_rx": 0.9448148148148148,
+        "elapsed_seconds": 16.22889834002126,
+        "peak_cuda_allocated_bytes": 329823232,
+        "cross_tx_relative_prediction_error": 0.8893002867698669,
+        "cross_tx_direction_cosine": 0.28733059763908386,
         "domain_backbone_active": false,
         "pseudo_labels_active": false,
         "ema_active": false,
-        "auxiliary_active": false
+        "auxiliary_active": true
       },
-      "source_completion": null,
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-receiver-residual-manysig-m16-r02/combined-s2026092703/source/last.pt",
+        "elapsed_seconds": 2865.369368072017,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9801481481481481,
+          "source_val_ce": 0.07589364638558026,
+          "source_val_rx_accuracy": {
+            "1": 0.9959259259259259,
+            "3": 0.9448148148148148,
+            "4": 0.9846296296296296,
+            "6": 0.9968518518518519,
+            "8": 0.9785185185185186
+          },
+          "source_val_worst_rx": 0.9448148148148148
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
       "prediction_complete": null,
       "lease": {
         "pid": 1642052,
@@ -3727,10 +3852,10 @@
         "cuda_initialized": false,
         "updated_at": 1791472447.0111308
       },
-      "log_bytes": 256099,
+      "log_bytes": 1674492,
       "log_tail": [
-        "TRAIN {\"epoch\": 35, \"step\": 1720, \"arm\": \"combined\", \"total_loss\": 0.07910552620887756, \"clean_ce\": 0.07910552620887756, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 1.5415570735931396, \"displacement_gradient_norm\": 0.0, \"contribution_gradient_norm\": 0.0, \"response_gain_gradient_norm\": 0.043116919696331024, \"gradient_used_parameters\": 184776, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}",
-        "TRAIN {\"epoch\": 35, \"step\": 1730, \"arm\": \"combined\", \"total_loss\": 0.07586285471916199, \"clean_ce\": 0.07586285471916199, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 1.3789377212524414, \"displacement_gradient_norm\": 0.0, \"contribution_gradient_norm\": 0.0, \"response_gain_gradient_norm\": 0.04501732066273689, \"gradient_used_parameters\": 184776, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}"
+        "STAGE:2026-10-09 00:01:56 1642052:1642052 ActivityProfilerController.cpp:318] Completed Stage: Collection",
+        "STAGE:2026-10-09 00:01:56 1642052:1642052 ActivityProfilerController.cpp:322] Completed Stage: Post Processing"
       ]
     },
     {
@@ -3758,20 +3883,7 @@
       ],
       "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-baseline-s2026092704.log",
       "capacity_override": 4,
-      "process": {
-        "pid": 1642069,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_receiver_residual_v2.source",
-          "--config",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/baseline-s2026092704.json"
-        ],
-        "state": "S",
-        "start_ticks": 72014381
-      },
+      "process": null,
       "initialization": {
         "status": "SCRATCH",
         "scratch_only": true,
@@ -3943,62 +4055,92 @@
         "cuda_rng_policy": "model_seed preserved; additional head uses CPU-only private generator"
       },
       "epoch": {
-        "epoch": 34,
+        "epoch": 200,
         "arm": "baseline",
         "optimizer_steps": 50,
-        "optimizer_steps_total": 1700,
+        "optimizer_steps_total": 10000,
         "source_sample_exposure": 6300,
         "concat_sample_exposure": 6300,
-        "satellite_ce_sample_exposure": 0,
-        "channel_changed_sample_exposure": 1792,
-        "centroid_readonly_L_exposure": 0,
-        "centroid_pass_seconds": 0.0,
+        "satellite_ce_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 5660,
+        "centroid_readonly_L_exposure": 6300,
+        "centroid_pass_seconds": 1.0162984119961038,
         "cross_tx_pair_count": 0,
-        "total_loss": 0.11368994861841202,
-        "clean_ce": 0.11368994861841202,
-        "satellite_ce": null,
+        "total_loss": 0.3059441928565502,
+        "clean_ce": 0.03166576199233532,
+        "satellite_ce": 0.40335063077509403,
         "displacement_loss": 0.0,
         "gauge_loss": 0.0,
         "contribution_loss": 0.0,
-        "gradient_norm": 2.2264860916137694,
+        "gradient_norm": 2.457028157711029,
         "correction_norm_ratio": 0.0,
         "gate_abs_delta": 0.0,
-        "learning_rate": 0.00018692883568660005,
-        "residual_strength": 0.0,
+        "learning_rate": 1.0122750680747714e-06,
+        "residual_strength": 1.0,
         "displacement_weight": 0.0,
         "gauge_weight": 0.0,
         "contribution_weight": 0.0,
-        "satellite_weight": 0.0,
+        "satellite_weight": 0.68,
         "clean_weight": 1.0,
         "scene_batch_counts": {
-          "practical_high": 14,
-          "clean_duplicate": 36
+          "practical_low_urban": 11,
+          "practical_mid": 23,
+          "clean_duplicate": 5,
+          "practical_high": 11
         },
         "gradient_used_parameters": 177025,
-        "response_gain_abs_mean": 0.07339444011449814,
+        "response_gain_abs_mean": 0.07815251499414444,
         "displacement_gradient_norm": null,
         "contribution_gradient_norm": null,
         "source_val_count": 27000,
-        "source_val_accuracy": 0.9648148148148148,
-        "source_val_ce": 0.12942646184602657,
+        "source_val_accuracy": 0.9808148148148148,
+        "source_val_ce": 0.07382559180349547,
         "source_val_rx_accuracy": {
-          "1": 0.9855555555555555,
-          "3": 0.9064814814814814,
-          "4": 0.9805555555555555,
-          "6": 0.9940740740740741,
-          "8": 0.9574074074074074
+          "1": 0.9955555555555555,
+          "3": 0.9462962962962963,
+          "4": 0.9851851851851852,
+          "6": 0.9964814814814815,
+          "8": 0.9805555555555555
         },
-        "source_val_worst_rx": 0.9064814814814814,
-        "elapsed_seconds": 9.270939392969012,
-        "peak_cuda_allocated_bytes": 329455616,
-        "cross_tx_relative_prediction_error": null,
-        "cross_tx_direction_cosine": null,
+        "source_val_worst_rx": 0.9462962962962963,
+        "elapsed_seconds": 15.55728435900528,
+        "peak_cuda_allocated_bytes": 329456128,
+        "cross_tx_relative_prediction_error": 1.0503020286560059,
+        "cross_tx_direction_cosine": 0.11954166740179062,
         "domain_backbone_active": false,
         "pseudo_labels_active": false,
         "ema_active": false,
         "auxiliary_active": false
       },
-      "source_completion": null,
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-receiver-residual-manysig-m16-r02/baseline-s2026092704/source/last.pt",
+        "elapsed_seconds": 2724.740359127987,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9808148148148148,
+          "source_val_ce": 0.07382559180349547,
+          "source_val_rx_accuracy": {
+            "1": 0.9955555555555555,
+            "3": 0.9462962962962963,
+            "4": 0.9851851851851852,
+            "6": 0.9964814814814815,
+            "8": 0.9805555555555555
+          },
+          "source_val_worst_rx": 0.9462962962962963
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
       "prediction_complete": null,
       "lease": {
         "pid": 1642069,
@@ -4015,10 +4157,10 @@
         "cuda_initialized": false,
         "updated_at": 1791472447.612989
       },
-      "log_bytes": 257463,
+      "log_bytes": 1491978,
       "log_tail": [
-        "TRAIN {\"epoch\": 35, \"step\": 1730, \"arm\": \"baseline\", \"total_loss\": 0.12749460339546204, \"clean_ce\": 0.12749460339546204, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 2.547787666320801, \"displacement_gradient_norm\": null, \"contribution_gradient_norm\": null, \"response_gain_gradient_norm\": 0.06136208400130272, \"gradient_used_parameters\": 177025, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}",
-        "TRAIN {\"epoch\": 35, \"step\": 1740, \"arm\": \"baseline\", \"total_loss\": 0.12260065972805023, \"clean_ce\": 0.12260065972805023, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 3.3844826221466064, \"displacement_gradient_norm\": null, \"contribution_gradient_norm\": null, \"response_gain_gradient_norm\": 0.09883781522512436, \"gradient_used_parameters\": 177025, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": true, \"view\": \"practical_high\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}"
+        "STAGE:2026-10-08 23:59:36 1642069:1642069 ActivityProfilerController.cpp:318] Completed Stage: Collection",
+        "STAGE:2026-10-08 23:59:36 1642069:1642069 ActivityProfilerController.cpp:322] Completed Stage: Post Processing"
       ]
     },
     {
@@ -4046,20 +4188,7 @@
       ],
       "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-displacement-s2026092704.log",
       "capacity_override": 4,
-      "process": {
-        "pid": 1642087,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_receiver_residual_v2.source",
-          "--config",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/displacement-s2026092704.json"
-        ],
-        "state": "S",
-        "start_ticks": 72014477
-      },
+      "process": null,
       "initialization": {
         "status": "SCRATCH",
         "scratch_only": true,
@@ -4234,62 +4363,92 @@
         "cuda_rng_policy": "model_seed preserved; additional head uses CPU-only private generator"
       },
       "epoch": {
-        "epoch": 34,
+        "epoch": 200,
         "arm": "displacement",
         "optimizer_steps": 50,
-        "optimizer_steps_total": 1700,
+        "optimizer_steps_total": 10000,
         "source_sample_exposure": 6300,
         "concat_sample_exposure": 6300,
-        "satellite_ce_sample_exposure": 0,
-        "channel_changed_sample_exposure": 1792,
-        "centroid_readonly_L_exposure": 0,
-        "centroid_pass_seconds": 0.0,
-        "cross_tx_pair_count": 0,
-        "total_loss": 0.1161722133308649,
-        "clean_ce": 0.1161722133308649,
-        "satellite_ce": null,
-        "displacement_loss": 0.0,
-        "gauge_loss": 0.0,
+        "satellite_ce_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 5660,
+        "centroid_readonly_L_exposure": 6300,
+        "centroid_pass_seconds": 1.0357528139138594,
+        "cross_tx_pair_count": 5746,
+        "total_loss": 0.30273068279027937,
+        "clean_ce": 0.029055549595505,
+        "satellite_ce": 0.3936918043717742,
+        "displacement_loss": 0.00572609874419868,
+        "gauge_loss": 0.0023860470158979298,
         "contribution_loss": 0.0,
-        "gradient_norm": 2.435404381752014,
-        "correction_norm_ratio": 0.0,
+        "gradient_norm": 2.362921640872955,
+        "correction_norm_ratio": 0.1051620128750801,
         "gate_abs_delta": 0.0,
-        "learning_rate": 0.00018692883568660005,
-        "residual_strength": 0.0,
-        "displacement_weight": 0.0,
-        "gauge_weight": 0.0,
+        "learning_rate": 1.0122750680747714e-06,
+        "residual_strength": 1.0,
+        "displacement_weight": 1.0,
+        "gauge_weight": 0.1,
         "contribution_weight": 0.0,
-        "satellite_weight": 0.0,
+        "satellite_weight": 0.68,
         "clean_weight": 1.0,
         "scene_batch_counts": {
-          "practical_high": 14,
-          "clean_duplicate": 36
+          "practical_low_urban": 11,
+          "practical_mid": 23,
+          "clean_duplicate": 5,
+          "practical_high": 11
         },
         "gradient_used_parameters": 182603,
-        "response_gain_abs_mean": 0.073440320789814,
-        "displacement_gradient_norm": 0.0,
+        "response_gain_abs_mean": 0.07872798293828964,
+        "displacement_gradient_norm": 0.6149631142616272,
         "contribution_gradient_norm": null,
         "source_val_count": 27000,
-        "source_val_accuracy": 0.9645185185185186,
-        "source_val_ce": 0.13283571840673405,
+        "source_val_accuracy": 0.9809629629629629,
+        "source_val_ce": 0.07361147076802173,
         "source_val_rx_accuracy": {
-          "1": 0.9824074074074074,
-          "3": 0.9070370370370371,
-          "4": 0.9796296296296296,
-          "6": 0.9929629629629629,
-          "8": 0.9605555555555556
+          "1": 0.9959259259259259,
+          "3": 0.945,
+          "4": 0.9859259259259259,
+          "6": 0.9968518518518519,
+          "8": 0.9811111111111112
         },
-        "source_val_worst_rx": 0.9070370370370371,
-        "elapsed_seconds": 9.975993733038194,
-        "peak_cuda_allocated_bytes": 330026496,
-        "cross_tx_relative_prediction_error": null,
-        "cross_tx_direction_cosine": null,
+        "source_val_worst_rx": 0.945,
+        "elapsed_seconds": 16.58906341600232,
+        "peak_cuda_allocated_bytes": 330104320,
+        "cross_tx_relative_prediction_error": 1.0140185356140137,
+        "cross_tx_direction_cosine": 0.16688595712184906,
         "domain_backbone_active": false,
         "pseudo_labels_active": false,
         "ema_active": false,
-        "auxiliary_active": false
+        "auxiliary_active": true
       },
-      "source_completion": null,
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-receiver-residual-manysig-m16-r02/displacement-s2026092704/source/last.pt",
+        "elapsed_seconds": 2868.1134934950387,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9809629629629629,
+          "source_val_ce": 0.07361147076802173,
+          "source_val_rx_accuracy": {
+            "1": 0.9959259259259259,
+            "3": 0.945,
+            "4": 0.9859259259259259,
+            "6": 0.9968518518518519,
+            "8": 0.9811111111111112
+          },
+          "source_val_worst_rx": 0.945
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
       "prediction_complete": null,
       "lease": {
         "pid": 1642087,
@@ -4306,10 +4465,10 @@
         "cuda_initialized": false,
         "updated_at": 1791472447.947619
       },
-      "log_bytes": 258225,
+      "log_bytes": 1571222,
       "log_tail": [
-        "TRAIN {\"epoch\": 35, \"step\": 1730, \"arm\": \"displacement\", \"total_loss\": 0.13477084040641785, \"clean_ce\": 0.13477084040641785, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 3.042874336242676, \"displacement_gradient_norm\": 0.0, \"contribution_gradient_norm\": null, \"response_gain_gradient_norm\": 0.06736248731613159, \"gradient_used_parameters\": 182603, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}",
-        "TRAIN {\"epoch\": 35, \"step\": 1740, \"arm\": \"displacement\", \"total_loss\": 0.12142502516508102, \"clean_ce\": 0.12142502516508102, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 3.330033302307129, \"displacement_gradient_norm\": 0.0, \"contribution_gradient_norm\": null, \"response_gain_gradient_norm\": 0.09822250157594681, \"gradient_used_parameters\": 182603, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": true, \"view\": \"practical_high\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}"
+        "STAGE:2026-10-09 00:02:00 1642087:1642087 ActivityProfilerController.cpp:318] Completed Stage: Collection",
+        "STAGE:2026-10-09 00:02:00 1642087:1642087 ActivityProfilerController.cpp:322] Completed Stage: Post Processing"
       ]
     },
     {
@@ -4337,20 +4496,7 @@
       ],
       "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-contribution-s2026092704.log",
       "capacity_override": 4,
-      "process": {
-        "pid": 1642387,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_receiver_residual_v2.source",
-          "--config",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/contribution-s2026092704.json"
-        ],
-        "state": "R",
-        "start_ticks": 72014622
-      },
+      "process": null,
       "initialization": {
         "status": "SCRATCH",
         "scratch_only": true,
@@ -4524,62 +4670,92 @@
         "cuda_rng_policy": "model_seed preserved; additional head uses CPU-only private generator"
       },
       "epoch": {
-        "epoch": 34,
+        "epoch": 200,
         "arm": "contribution",
         "optimizer_steps": 50,
-        "optimizer_steps_total": 1700,
+        "optimizer_steps_total": 10000,
         "source_sample_exposure": 6300,
         "concat_sample_exposure": 6300,
-        "satellite_ce_sample_exposure": 0,
-        "channel_changed_sample_exposure": 1792,
-        "centroid_readonly_L_exposure": 0,
-        "centroid_pass_seconds": 0.0,
+        "satellite_ce_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 5660,
+        "centroid_readonly_L_exposure": 6300,
+        "centroid_pass_seconds": 1.038212823914364,
         "cross_tx_pair_count": 0,
-        "total_loss": 0.11403248369693757,
-        "clean_ce": 0.11403248369693757,
-        "satellite_ce": null,
+        "total_loss": 0.32082405149936677,
+        "clean_ce": 0.030123564377427102,
+        "satellite_ce": 0.4003592763841152,
         "displacement_loss": 0.0,
         "gauge_loss": 0.0,
-        "contribution_loss": 0.0,
-        "gradient_norm": 2.29459996342659,
+        "contribution_loss": 0.09228085830807686,
+        "gradient_norm": 2.4206039404869077,
         "correction_norm_ratio": 0.0,
-        "gate_abs_delta": 0.0,
-        "learning_rate": 0.00018692883568660005,
-        "residual_strength": 0.0,
+        "gate_abs_delta": 0.06474768333137035,
+        "learning_rate": 1.0122750680747714e-06,
+        "residual_strength": 1.0,
         "displacement_weight": 0.0,
         "gauge_weight": 0.0,
-        "contribution_weight": 0.0,
-        "satellite_weight": 0.0,
+        "contribution_weight": 0.2,
+        "satellite_weight": 0.68,
         "clean_weight": 1.0,
         "scene_batch_counts": {
-          "practical_high": 14,
-          "clean_duplicate": 36
+          "practical_low_urban": 11,
+          "practical_mid": 23,
+          "clean_duplicate": 5,
+          "practical_high": 11
         },
         "gradient_used_parameters": 179198,
-        "response_gain_abs_mean": 0.07323499023914337,
+        "response_gain_abs_mean": 0.08144646137952805,
         "displacement_gradient_norm": null,
-        "contribution_gradient_norm": 0.0,
+        "contribution_gradient_norm": 0.16388343274593353,
         "source_val_count": 27000,
-        "source_val_accuracy": 0.9644074074074074,
-        "source_val_ce": 0.13112406873753774,
+        "source_val_accuracy": 0.9808888888888889,
+        "source_val_ce": 0.07415094859835622,
         "source_val_rx_accuracy": {
-          "1": 0.982037037037037,
-          "3": 0.9055555555555556,
-          "4": 0.9807407407407407,
-          "6": 0.9944444444444445,
-          "8": 0.9592592592592593
+          "1": 0.9957407407407407,
+          "3": 0.9448148148148148,
+          "4": 0.9859259259259259,
+          "6": 0.9964814814814815,
+          "8": 0.9814814814814815
         },
-        "source_val_worst_rx": 0.9055555555555556,
-        "elapsed_seconds": 8.953401399077848,
-        "peak_cuda_allocated_bytes": 329337856,
-        "cross_tx_relative_prediction_error": null,
-        "cross_tx_direction_cosine": null,
+        "source_val_worst_rx": 0.9448148148148148,
+        "elapsed_seconds": 15.752521069953218,
+        "peak_cuda_allocated_bytes": 329339904,
+        "cross_tx_relative_prediction_error": 1.0533335208892822,
+        "cross_tx_direction_cosine": 0.10999742895364761,
         "domain_backbone_active": false,
         "pseudo_labels_active": false,
         "ema_active": false,
-        "auxiliary_active": false
+        "auxiliary_active": true
       },
-      "source_completion": null,
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-receiver-residual-manysig-m16-r02/contribution-s2026092704/source/last.pt",
+        "elapsed_seconds": 2716.2537917270092,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9808888888888889,
+          "source_val_ce": 0.07415094859835622,
+          "source_val_rx_accuracy": {
+            "1": 0.9957407407407407,
+            "3": 0.9448148148148148,
+            "4": 0.9859259259259259,
+            "6": 0.9964814814814815,
+            "8": 0.9814814814814815
+          },
+          "source_val_worst_rx": 0.9448148148148148
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
       "prediction_complete": null,
       "lease": {
         "pid": 1642387,
@@ -4596,10 +4772,10 @@
         "cuda_initialized": false,
         "updated_at": 1791472448.553802
       },
-      "log_bytes": 258136,
+      "log_bytes": 1605472,
       "log_tail": [
-        "TRAIN {\"epoch\": 35, \"step\": 1730, \"arm\": \"contribution\", \"total_loss\": 0.13813941180706024, \"clean_ce\": 0.13813941180706024, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 3.3173611164093018, \"displacement_gradient_norm\": null, \"contribution_gradient_norm\": 0.0, \"response_gain_gradient_norm\": 0.06493803858757019, \"gradient_used_parameters\": 179198, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}",
-        "TRAIN {\"epoch\": 35, \"step\": 1740, \"arm\": \"contribution\", \"total_loss\": 0.12301556766033173, \"clean_ce\": 0.12301556766033173, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 3.219299077987671, \"displacement_gradient_norm\": null, \"contribution_gradient_norm\": 0.0, \"response_gain_gradient_norm\": 0.09179128706455231, \"gradient_used_parameters\": 179198, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": true, \"view\": \"practical_high\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}"
+        "STAGE:2026-10-08 23:59:29 1642387:1642387 ActivityProfilerController.cpp:318] Completed Stage: Collection",
+        "STAGE:2026-10-08 23:59:29 1642387:1642387 ActivityProfilerController.cpp:322] Completed Stage: Post Processing"
       ]
     },
     {
@@ -4627,20 +4803,7 @@
       ],
       "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-combined-s2026092704.log",
       "capacity_override": 4,
-      "process": {
-        "pid": 1642553,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_receiver_residual_v2.source",
-          "--config",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/combined-s2026092704.json"
-        ],
-        "state": "R",
-        "start_ticks": 72014787
-      },
+      "process": null,
       "initialization": {
         "status": "SCRATCH",
         "scratch_only": true,
@@ -4816,62 +4979,92 @@
         "cuda_rng_policy": "model_seed preserved; additional head uses CPU-only private generator"
       },
       "epoch": {
-        "epoch": 34,
+        "epoch": 200,
         "arm": "combined",
         "optimizer_steps": 50,
-        "optimizer_steps_total": 1700,
+        "optimizer_steps_total": 10000,
         "source_sample_exposure": 6300,
         "concat_sample_exposure": 6300,
-        "satellite_ce_sample_exposure": 0,
-        "channel_changed_sample_exposure": 1792,
-        "centroid_readonly_L_exposure": 0,
-        "centroid_pass_seconds": 0.0,
-        "cross_tx_pair_count": 0,
-        "total_loss": 0.11762780845165252,
-        "clean_ce": 0.11762780845165252,
-        "satellite_ce": null,
-        "displacement_loss": 0.0,
-        "gauge_loss": 0.0,
-        "contribution_loss": 0.0,
-        "gradient_norm": 2.417835966348648,
-        "correction_norm_ratio": 0.0,
-        "gate_abs_delta": 0.0,
-        "learning_rate": 0.00018692883568660005,
-        "residual_strength": 0.0,
-        "displacement_weight": 0.0,
-        "gauge_weight": 0.0,
-        "contribution_weight": 0.0,
-        "satellite_weight": 0.0,
+        "satellite_ce_sample_exposure": 6300,
+        "channel_changed_sample_exposure": 5660,
+        "centroid_readonly_L_exposure": 6300,
+        "centroid_pass_seconds": 0.9959167380584404,
+        "cross_tx_pair_count": 5746,
+        "total_loss": 0.32403396129608153,
+        "clean_ce": 0.029432121198624372,
+        "satellite_ce": 0.39391226150095465,
+        "displacement_loss": 0.005734558682888746,
+        "gauge_loss": 0.002657398278824985,
+        "contribution_loss": 0.10370601013302803,
+        "gradient_norm": 2.4084939670562746,
+        "correction_norm_ratio": 0.10507873237133027,
+        "gate_abs_delta": 0.06428026288747787,
+        "learning_rate": 1.0122750680747714e-06,
+        "residual_strength": 1.0,
+        "displacement_weight": 1.0,
+        "gauge_weight": 0.1,
+        "contribution_weight": 0.2,
+        "satellite_weight": 0.68,
         "clean_weight": 1.0,
         "scene_batch_counts": {
-          "practical_high": 14,
-          "clean_duplicate": 36
+          "practical_low_urban": 11,
+          "practical_mid": 23,
+          "clean_duplicate": 5,
+          "practical_high": 11
         },
         "gradient_used_parameters": 184776,
-        "response_gain_abs_mean": 0.07332359254360199,
-        "displacement_gradient_norm": 0.0,
-        "contribution_gradient_norm": 0.0,
+        "response_gain_abs_mean": 0.0815746858716011,
+        "displacement_gradient_norm": 0.5597192645072937,
+        "contribution_gradient_norm": 0.18035651743412018,
         "source_val_count": 27000,
-        "source_val_accuracy": 0.9648518518518518,
-        "source_val_ce": 0.13151041389766463,
+        "source_val_accuracy": 0.9812962962962963,
+        "source_val_ce": 0.07304454369626771,
         "source_val_rx_accuracy": {
-          "1": 0.9879629629629629,
-          "3": 0.904074074074074,
-          "4": 0.980925925925926,
-          "6": 0.9940740740740741,
-          "8": 0.9572222222222222
+          "1": 0.9959259259259259,
+          "3": 0.9455555555555556,
+          "4": 0.9862962962962963,
+          "6": 0.9968518518518519,
+          "8": 0.9818518518518519
         },
-        "source_val_worst_rx": 0.904074074074074,
-        "elapsed_seconds": 9.377736764959991,
-        "peak_cuda_allocated_bytes": 329744384,
-        "cross_tx_relative_prediction_error": null,
-        "cross_tx_direction_cosine": null,
+        "source_val_worst_rx": 0.9455555555555556,
+        "elapsed_seconds": 16.56275049399119,
+        "peak_cuda_allocated_bytes": 329823232,
+        "cross_tx_relative_prediction_error": 1.0251765251159668,
+        "cross_tx_direction_cosine": 0.16241447627544403,
         "domain_backbone_active": false,
         "pseudo_labels_active": false,
         "ema_active": false,
-        "auxiliary_active": false
+        "auxiliary_active": true
       },
-      "source_completion": null,
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-receiver-residual-manysig-m16-r02/combined-s2026092704/source/last.pt",
+        "elapsed_seconds": 2854.5989198550815,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9812962962962963,
+          "source_val_ce": 0.07304454369626771,
+          "source_val_rx_accuracy": {
+            "1": 0.9959259259259259,
+            "3": 0.9455555555555556,
+            "4": 0.9862962962962963,
+            "6": 0.9968518518518519,
+            "8": 0.9818518518518519
+          },
+          "source_val_worst_rx": 0.9455555555555556
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
       "prediction_complete": null,
       "lease": {
         "pid": 1642553,
@@ -4888,22 +5081,22 @@
         "cuda_initialized": false,
         "updated_at": 1791472449.5361178
       },
-      "log_bytes": 257822,
+      "log_bytes": 1674357,
       "log_tail": [
-        "TRAIN {\"epoch\": 35, \"step\": 1740, \"arm\": \"combined\", \"total_loss\": 0.1214708611369133, \"clean_ce\": 0.1214708611369133, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 3.432767391204834, \"displacement_gradient_norm\": 0.0, \"contribution_gradient_norm\": 0.0, \"response_gain_gradient_norm\": 0.09735265374183655, \"gradient_used_parameters\": 184776, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 128, \"concat_samples\": 128, \"channel_applied\": true, \"view\": \"practical_high\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}",
-        "TRAIN {\"epoch\": 35, \"step\": 1750, \"arm\": \"combined\", \"total_loss\": 0.27144089341163635, \"clean_ce\": 0.27144089341163635, \"satellite_ce\": null, \"displacement_loss\": -0.0, \"gauge_loss\": -0.0, \"contribution_loss\": -0.0, \"cross_tx_pair_count\": 0, \"branch_deletion_ce_delta_mean\": null, \"clean_weight\": 1.0, \"satellite_weight\": 0.0, \"displacement_weight\": 0.0, \"gauge_weight\": 0.0, \"contribution_weight\": 0.0, \"residual_strength\": 0.0, \"correction_norm_ratio\": 0.0, \"gate_abs_delta\": 0.0, \"gradient_norm\": 5.2510986328125, \"displacement_gradient_norm\": 0.0, \"contribution_gradient_norm\": 0.0, \"response_gain_gradient_norm\": 0.2225063145160675, \"gradient_used_parameters\": 184776, \"learning_rate\": 0.00018614383168689242, \"source_samples\": 28, \"concat_samples\": 28, \"channel_applied\": false, \"view\": \"clean_duplicate\", \"view_probability\": 0.3, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"ema_active\": false, \"auxiliary_active\": false}"
+        "STAGE:2026-10-09 00:01:48 1642553:1642553 ActivityProfilerController.cpp:318] Completed Stage: Collection",
+        "STAGE:2026-10-09 00:01:48 1642553:1642553 ActivityProfilerController.cpp:322] Completed Stage: Post Processing"
       ]
     }
   ],
-  "gpu": "1624233, GPU-56adac86-77cd-36c9-8770-dbf002650461, 3604 MiB\n1637323, GPU-56adac86-77cd-36c9-8770-dbf002650461, 700 MiB\n1642041, GPU-56adac86-77cd-36c9-8770-dbf002650461, 700 MiB\n1476582, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 3130 MiB\n1637310, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 700 MiB\n1642027, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 700 MiB\n1476593, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 3624 MiB\n1637336, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 702 MiB\n1642052, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 702 MiB\n1555762, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 3600 MiB\n1637316, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 702 MiB\n1642033, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 702 MiB\n1637285, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 700 MiB\n1637437, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 702 MiB\n1642003, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 700 MiB\n1642069, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 700 MiB\n1637290, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 702 MiB\n1637353, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 700 MiB\n1642008, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 702 MiB\n1642087, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 702 MiB\n1637295, GPU-5463e082-259e-537b-603a-01575d45801c, 700 MiB\n1637373, GPU-5463e082-259e-537b-603a-01575d45801c, 702 MiB\n1642015, GPU-5463e082-259e-537b-603a-01575d45801c, 700 MiB\n1642387, GPU-5463e082-259e-537b-603a-01575d45801c, 700 MiB\n1637305, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 702 MiB\n1637401, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 700 MiB\n1642021, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 702 MiB\n1642553, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 702 MiB\n",
+  "gpu": "1624233, GPU-56adac86-77cd-36c9-8770-dbf002650461, 3604 MiB\n1671168, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 3602 MiB\n1555762, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 3600 MiB\n1671796, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 3602 MiB\n",
   "dispatcher_log_tail": [
-    "LAUNCH {\"row_id\": \"baseline-s2026092703\", \"kind\": \"source\", \"pid\": 1642027, \"start_ticks\": 72014208, \"gpu\": 1, \"cwd\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"argv\": [\"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"-u\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py\", \"--worker\", \"--release\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"--package\", \"cvs_receiver_residual_v2\", \"--kind\", \"source\", \"--config\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/baseline-s2026092703.json\", \"--row\", \"baseline-s2026092703\"], \"log\": \"/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-baseline-s2026092703.log\", \"capacity_override\": 4}",
-    "LAUNCH {\"row_id\": \"displacement-s2026092703\", \"kind\": \"source\", \"pid\": 1642033, \"start_ticks\": 72014232, \"gpu\": 3, \"cwd\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"argv\": [\"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"-u\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py\", \"--worker\", \"--release\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"--package\", \"cvs_receiver_residual_v2\", \"--kind\", \"source\", \"--config\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/displacement-s2026092703.json\", \"--row\", \"displacement-s2026092703\"], \"log\": \"/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-displacement-s2026092703.log\", \"capacity_override\": 4}",
-    "LAUNCH {\"row_id\": \"contribution-s2026092703\", \"kind\": \"source\", \"pid\": 1642041, \"start_ticks\": 72014257, \"gpu\": 0, \"cwd\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"argv\": [\"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"-u\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py\", \"--worker\", \"--release\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"--package\", \"cvs_receiver_residual_v2\", \"--kind\", \"source\", \"--config\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/contribution-s2026092703.json\", \"--row\", \"contribution-s2026092703\"], \"log\": \"/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-contribution-s2026092703.log\", \"capacity_override\": 4}",
-    "LAUNCH {\"row_id\": \"combined-s2026092703\", \"kind\": \"source\", \"pid\": 1642052, \"start_ticks\": 72014307, \"gpu\": 2, \"cwd\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"argv\": [\"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"-u\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py\", \"--worker\", \"--release\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"--package\", \"cvs_receiver_residual_v2\", \"--kind\", \"source\", \"--config\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/combined-s2026092703.json\", \"--row\", \"combined-s2026092703\"], \"log\": \"/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-combined-s2026092703.log\", \"capacity_override\": 4}",
-    "LAUNCH {\"row_id\": \"baseline-s2026092704\", \"kind\": \"source\", \"pid\": 1642069, \"start_ticks\": 72014381, \"gpu\": 4, \"cwd\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"argv\": [\"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"-u\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py\", \"--worker\", \"--release\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"--package\", \"cvs_receiver_residual_v2\", \"--kind\", \"source\", \"--config\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/baseline-s2026092704.json\", \"--row\", \"baseline-s2026092704\"], \"log\": \"/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-baseline-s2026092704.log\", \"capacity_override\": 4}",
-    "LAUNCH {\"row_id\": \"displacement-s2026092704\", \"kind\": \"source\", \"pid\": 1642087, \"start_ticks\": 72014477, \"gpu\": 5, \"cwd\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"argv\": [\"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"-u\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py\", \"--worker\", \"--release\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"--package\", \"cvs_receiver_residual_v2\", \"--kind\", \"source\", \"--config\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/displacement-s2026092704.json\", \"--row\", \"displacement-s2026092704\"], \"log\": \"/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-displacement-s2026092704.log\", \"capacity_override\": 4}",
-    "LAUNCH {\"row_id\": \"contribution-s2026092704\", \"kind\": \"source\", \"pid\": 1642387, \"start_ticks\": 72014622, \"gpu\": 6, \"cwd\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"argv\": [\"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"-u\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py\", \"--worker\", \"--release\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"--package\", \"cvs_receiver_residual_v2\", \"--kind\", \"source\", \"--config\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/contribution-s2026092704.json\", \"--row\", \"contribution-s2026092704\"], \"log\": \"/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-contribution-s2026092704.log\", \"capacity_override\": 4}",
-    "LAUNCH {\"row_id\": \"combined-s2026092704\", \"kind\": \"source\", \"pid\": 1642553, \"start_ticks\": 72014787, \"gpu\": 7, \"cwd\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"argv\": [\"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"-u\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py\", \"--worker\", \"--release\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02\", \"--package\", \"cvs_receiver_residual_v2\", \"--kind\", \"source\", \"--config\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/configs/combined-s2026092704.json\", \"--row\", \"combined-s2026092704\"], \"log\": \"/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02/source-combined-s2026092704.log\", \"capacity_override\": 4}"
+    "    worker(args) if args.worker else dispatch(args)",
+    "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_capacity4_20261008_r02/experiments/cvs_receiver_residual_capacity4/control.py\", line 244, in dispatch",
+    "    if not (base/'source_matrix_frozen.json').exists(): legacy.freeze()",
+    "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/dispatch.py\", line 91, in freeze",
+    "    source,done,*_=source_provenance(c)",
+    "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_v2_20261008_r02/experiments/cvs_receiver_residual_v2/evaluate.py\", line 25, in source_provenance",
+    "    if contract[k]!=expected[k]: raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH: '+k)",
+    "KeyError: 'classes'"
   ]
 }
