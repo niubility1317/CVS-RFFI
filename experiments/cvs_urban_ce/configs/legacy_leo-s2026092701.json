@@ -1,0 +1,45 @@
+{
+  "schema": "urban_ce_v1",
+  "run_id": "20261008-phase1-urban-ce-manysig-m24-r01",
+  "stage": "urban_ce",
+  "arm": "legacy_leo",
+  "model_seed": 2026092701,
+  "row_id": "legacy_leo-s2026092701",
+  "features": [
+    "leo"
+  ],
+  "variant": "reference_response",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-urban-ce-manysig-m24-r01/legacy_leo-s2026092701/source",
+  "epochs": 200,
+  "steps_per_epoch": 222,
+  "model_initialization": "scratch",
+  "checkpoint_sources": [],
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "method": "cvs_urban_ce",
+  "target_access": false,
+  "lr_schedule": "cosine",
+  "lr_min": 1e-06,
+  "urban": false,
+  "receiver_dg": false,
+  "echo_l1_max": 0.15,
+  "echo_delays": [
+    1,
+    2,
+    4
+  ],
+  "dg_probability": 0.5,
+  "dg_ramp_epochs": 40,
+  "satellite_compute_probability": 1.0,
+  "augmentation_seed": 2026109702,
+  "channel_seed": 2027,
+  "extra_losses": [],
+  "selection": "ALL_PREREGISTERED_FIXED_CONTROLS"
+}
