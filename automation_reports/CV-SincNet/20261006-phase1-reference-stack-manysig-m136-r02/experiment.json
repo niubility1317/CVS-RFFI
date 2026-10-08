@@ -5238,8 +5238,8 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
       "verified_epoch": 138,
       "actual_pid": 724051,
@@ -5251,7 +5251,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092701.json"
-      ]
+      ],
+      "target_test_run": "20261008-evaluation-reference-r5-completed-manysig-m12-r01"
     },
     {
       "row_id": "r5-daot-s2026092701",
@@ -5309,8 +5310,8 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
       "verified_epoch": 91,
       "actual_pid": 724060,
@@ -5322,7 +5323,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092701.json"
-      ]
+      ],
+      "target_test_run": "20261008-evaluation-reference-r5-completed-manysig-m12-r01"
     },
     {
       "row_id": "r5-rc4-s2026092701",
@@ -5452,8 +5454,8 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
       "verified_epoch": 124,
       "actual_pid": 724143,
@@ -5465,7 +5467,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092701.json"
-      ]
+      ],
+      "target_test_run": "20261008-evaluation-reference-r5-completed-manysig-m12-r01"
     },
     {
       "row_id": "r5-base-s2026092702",
@@ -5523,8 +5526,8 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
       "verified_epoch": 138,
       "actual_pid": 724285,
@@ -5536,7 +5539,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092702.json"
-      ]
+      ],
+      "target_test_run": "20261008-evaluation-reference-r5-completed-manysig-m12-r01"
     },
     {
       "row_id": "r5-daot-s2026092702",
@@ -5594,8 +5598,8 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
       "verified_epoch": 90,
       "actual_pid": 724368,
@@ -5607,7 +5611,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092702.json"
-      ]
+      ],
+      "target_test_run": "20261008-evaluation-reference-r5-completed-manysig-m12-r01"
     },
     {
       "row_id": "r5-rc4-s2026092702",
@@ -5737,8 +5742,8 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
       "verified_epoch": 120,
       "actual_pid": 724458,
@@ -5750,7 +5755,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092702.json"
-      ]
+      ],
+      "target_test_run": "20261008-evaluation-reference-r5-completed-manysig-m12-r01"
     },
     {
       "row_id": "r5-base-s2026092703",
@@ -5808,8 +5814,8 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
       "verified_epoch": 136,
       "actual_pid": 724605,
@@ -5821,7 +5827,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092703.json"
-      ]
+      ],
+      "target_test_run": "20261008-evaluation-reference-r5-completed-manysig-m12-r01"
     },
     {
       "row_id": "r5-daot-s2026092703",
@@ -5879,8 +5886,8 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
       "verified_epoch": 91,
       "actual_pid": 724689,
@@ -5892,7 +5899,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092703.json"
-      ]
+      ],
+      "target_test_run": "20261008-evaluation-reference-r5-completed-manysig-m12-r01"
     },
     {
       "row_id": "r5-rc4-s2026092703",
@@ -6022,8 +6030,8 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
       "verified_epoch": 121,
       "actual_pid": 724778,
@@ -6035,7 +6043,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092703.json"
-      ]
+      ],
+      "target_test_run": "20261008-evaluation-reference-r5-completed-manysig-m12-r01"
     },
     {
       "row_id": "r5-base-s2026092704",
@@ -6093,8 +6102,8 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
       "verified_epoch": 141,
       "actual_pid": 724852,
@@ -6106,7 +6115,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-base-s2026092704.json"
-      ]
+      ],
+      "target_test_run": "20261008-evaluation-reference-r5-completed-manysig-m12-r01"
     },
     {
       "row_id": "r5-daot-s2026092704",
@@ -6164,8 +6174,8 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
       "verified_epoch": 90,
       "actual_pid": 724933,
@@ -6177,7 +6187,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-daot-s2026092704.json"
-      ]
+      ],
+      "target_test_run": "20261008-evaluation-reference-r5-completed-manysig-m12-r01"
     },
     {
       "row_id": "r5-rc4-s2026092704",
@@ -6307,8 +6318,8 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "RUNNING",
-      "target_test_status": "NOT_STARTED",
+      "status": "TRAINING_COMPLETE",
+      "target_test_status": "ANALYZED_COMPLETED_SNAPSHOT",
       "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
       "verified_epoch": 125,
       "actual_pid": 725086,
@@ -6320,7 +6331,8 @@
         "experiments.cvs_phase1_stack.source",
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261006-phase1-reference-stack-manysig-m136-r02/configs/source-r5-both-s2026092704.json"
-      ]
+      ],
+      "target_test_run": "20261008-evaluation-reference-r5-completed-manysig-m12-r01"
     },
     {
       "row_id": "r6-selected-s2026092701",
@@ -6378,9 +6390,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-full-s2026092701",
@@ -6438,9 +6452,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-native_full-s2026092701",
@@ -6498,9 +6514,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-no_leo-s2026092701",
@@ -6558,9 +6576,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-no_mixstyle-s2026092701",
@@ -6618,9 +6638,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-no_pseudo-s2026092701",
@@ -6678,9 +6700,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-no_dg-s2026092701",
@@ -6738,9 +6762,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-no_proto_compact-s2026092701",
@@ -6798,9 +6824,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-no_open_boundary-s2026092701",
@@ -6858,9 +6886,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-no_daot-s2026092701",
@@ -6918,9 +6948,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-no_rc4-s2026092701",
@@ -6978,9 +7010,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-selected-s2026092702",
@@ -7038,9 +7072,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-full-s2026092702",
@@ -7098,9 +7134,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-native_full-s2026092702",
@@ -7158,9 +7196,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-no_leo-s2026092702",
@@ -7218,9 +7258,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-no_mixstyle-s2026092702",
@@ -7278,9 +7320,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "PARTIAL_PRESERVED"
     },
     {
       "row_id": "r6-no_pseudo-s2026092702",
@@ -7338,9 +7382,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_dg-s2026092702",
@@ -7398,9 +7444,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_proto_compact-s2026092702",
@@ -7458,9 +7506,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_open_boundary-s2026092702",
@@ -7518,9 +7568,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_daot-s2026092702",
@@ -7578,9 +7630,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_rc4-s2026092702",
@@ -7638,9 +7692,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-selected-s2026092703",
@@ -7698,9 +7754,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-full-s2026092703",
@@ -7758,9 +7816,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-native_full-s2026092703",
@@ -7818,9 +7878,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_leo-s2026092703",
@@ -7878,9 +7940,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_mixstyle-s2026092703",
@@ -7938,9 +8002,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_pseudo-s2026092703",
@@ -7998,9 +8064,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_dg-s2026092703",
@@ -8058,9 +8126,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_proto_compact-s2026092703",
@@ -8118,9 +8188,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_open_boundary-s2026092703",
@@ -8178,9 +8250,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_daot-s2026092703",
@@ -8238,9 +8312,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_rc4-s2026092703",
@@ -8298,9 +8374,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-selected-s2026092704",
@@ -8358,9 +8436,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-full-s2026092704",
@@ -8418,9 +8498,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-native_full-s2026092704",
@@ -8478,9 +8560,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_leo-s2026092704",
@@ -8538,9 +8622,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_mixstyle-s2026092704",
@@ -8598,9 +8684,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_pseudo-s2026092704",
@@ -8658,9 +8746,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_dg-s2026092704",
@@ -8718,9 +8808,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_proto_compact-s2026092704",
@@ -8778,9 +8870,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_open_boundary-s2026092704",
@@ -8838,9 +8932,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_daot-s2026092704",
@@ -8898,9 +8994,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     },
     {
       "row_id": "r6-no_rc4-s2026092704",
@@ -8958,9 +9056,11 @@
         "analysis.md",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "STOPPED",
       "target_test_status": "NOT_STARTED",
-      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02"
+      "checkpoint_source_run": "20261006-phase1-reference-stack-manysig-m136-r02",
+      "stop_reason": "USER_REQUEST",
+      "execution_disposition": "NOT_STARTED_CANCELLED"
     }
   ],
   "notes": [
@@ -8969,7 +9069,7 @@
     "R2 source-only checkpoint reuse is for source selection and fixed evaluation only; R3–R6 never inherit these weights.",
     "Execution acceleration: gradient snapshot, source validation reuse, same-dtype scalar readback and incremental native telemetry; full FP32 and original budget preserved."
   ],
-  "status": "RUNNING",
+  "status": "STOPPED",
   "test_completion_plan": {
     "views": [
       "clean",
@@ -9122,5 +9222,17 @@
     "metric_records": 7840,
     "independent_recount": "VERIFIED",
     "training_controller_unchanged": true
+  },
+  "user_stop": {
+    "verified_at": "2026-10-08T18:26:57.910565+08:00",
+    "authorization": "停止原来的后续实验，正在进行的也停止",
+    "verdict": "VERIFIED",
+    "training_completed": 92,
+    "training_processes_stopped": 16,
+    "pending_rows_cancelled": 28,
+    "associated_waiters_stopped": 2,
+    "preserve_artifacts": true,
+    "automatic_restart_authorized": false,
+    "evidence": "evidence/user_stop_20261008/verification.json"
   }
 }
