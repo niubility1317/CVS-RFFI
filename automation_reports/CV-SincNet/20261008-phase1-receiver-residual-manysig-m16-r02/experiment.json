@@ -97,12 +97,22 @@
   "execution": {
     "host": "N607",
     "launch_owner": "codex/root/receiver-residual-20261008-r02",
-    "gpu_policy": "max4 own workers; remaining legal slot, pre-CUDA visible reservation, <=2 total/GPU, >=12GB free; preserve healthy jobs",
+    "gpu_policy": "user override: <=4 total experiment processes/GPU including CUDA and pre-CUDA reservations; max16 own active rows; >=12GB free; preserve live training workers",
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261008-phase1-receiver-residual-manysig-m16-r02",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261008-phase1-receiver-residual-manysig-m16-r02",
     "local_artifact_root": "automation_reports/CV-SincNet/20261008-phase1-receiver-residual-manysig-m16-r02",
     "launch_command": "python -m experiments.cvs_receiver_residual_v2.publish --output local_artifacts/cvs_receiver_residual_v2_20261008_r02",
-    "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention."
+    "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention.",
+    "gpu_policy_original": "max4 own workers; remaining legal slot, pre-CUDA visible reservation, <=2 total/GPU, >=12GB free; preserve healthy jobs",
+    "capacity_override": {
+      "authorization": "用户：每张卡4个实验进程",
+      "at": "2026-10-08T15:04:58.159141+00:00",
+      "per_gpu_limit": 4,
+      "controller_release": "cvs_receiver_residual_capacity4_20261008_r01",
+      "handoff": "replace only owned dispatcher parent; adopt exact PID/start_ticks/cwd/argv; do not signal training workers",
+      "worker_release_immutable": true,
+      "algorithm_or_budget_change": false
+    }
   },
   "expected_artifacts": [
     "initial_smoke.pt",

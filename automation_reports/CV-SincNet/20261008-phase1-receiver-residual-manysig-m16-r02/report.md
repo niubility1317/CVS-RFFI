@@ -43,3 +43,7 @@ R1发布后发现新增头初始化重置CUDA dropout RNG，保留为含随机�
 当前尚无冻结后独立测试结果，不能宣称收益。远端单owner自动完成全部16源训练、源冻结、112个完整视图预测、truth-last评分与重算。Windows本地一次性收尾同步器负责回收结果、更新本报告/登记/索引、Git提交push并独立核对远端OID；技术失败保留产物并记录准确状态，不自动重跑训练。
 
 [草稿PR #8](https://github.com/niubility1317/CVS-RFFI/pull/8)仅包含本轮实现与修复，未合并。独立PR读回确认head/base均为已核实开发分支。恢复优先读取`local_artifacts/cvs_receiver_residual_v2_20261008_r02/readback.json`和`completion_sync_owner.json`，不得重复发布或启动第二个owner。
+
+## 每卡4进程调度覆盖
+
+用户新增指示“每张卡4个实验进程”，将本轮R1/R2总任务上限从每卡2个覆盖为每卡4个，包括预CUDA预约。原启动记录和策略保留为历史。新控制release只替换本轮调度父进程，按PID/start_ticks/CWD/argv接管训练子进程；已完成行跳过，失败行保留且不自动重跑。每run单launch owner，两个调度器共享GPU预约锁。训练模型/config及预算继续使用原不可变release。source矩阵全部冻结后再预测，全部预测完成后truth-last独立评分。此处为预登记，实际接管和占用须由独立读回确认。

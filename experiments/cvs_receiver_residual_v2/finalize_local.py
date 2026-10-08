@@ -151,9 +151,9 @@ def finalize(data):
     mirror_root();git_delivery()
 
 
-def watch():
+def watch(owner_suffix=''):
     ARTIFACT.mkdir(exist_ok=True)
-    with (ARTIFACT/'completion_sync_owner.json').open('x',encoding='utf-8') as f:
+    with (ARTIFACT/('completion_sync_owner'+owner_suffix+'.json')).open('x',encoding='utf-8') as f:
         json.dump(dict(pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,run_id=d.RUN,started=time.time()),f)
     errors=0
     while True:
@@ -181,7 +181,8 @@ def watch():
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--watch',action='store_true');p.add_argument('--mirror',action='store_true');a=p.parse_args()
-    if a.watch: watch()
+    p=argparse.ArgumentParser();p.add_argument('--watch',action='store_true');p.add_argument('--mirror',action='store_true')
+    p.add_argument('--owner-suffix',choices=['','_capacity4'],default='');a=p.parse_args()
+    if a.watch: watch(a.owner_suffix)
     elif a.mirror: mirror_root()
     else: finalize(inspect(ARTIFACT))

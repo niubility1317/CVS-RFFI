@@ -81,11 +81,20 @@ def read(path):
 def process(pid):
     path=Path('/proc')/str(pid)
     if not path.exists():return None
-    try:return dict(pid=pid,cwd=str((path/'cwd').resolve()),argv=(path/'cmdline').read_bytes().decode().split('\0'),state=(path/'stat').read_text().rsplit(')',1)[1].split()[0])
+    try:
+        stat=(path/'stat').read_text().rsplit(')',1)[1].split()
+        if stat[0] in ('Z','X','x'):return None
+        return dict(pid=pid,cwd=str((path/'cwd').resolve()),argv=[x for x in (path/'cmdline').read_bytes().decode().split('\0') if x],state=stat[0],start_ticks=int(stat[19]))
     except (OSError,UnicodeError):return dict(pid=pid,state='UNKNOWN')
 submit=read(release/'submit.json')
+active=read(run/'dispatcher_active.json')
+owner=active or submit
+ownerproc=process(owner['pid']) if owner else None
+if ownerproc and (ownerproc.get('cwd')!=owner['cwd'] or ownerproc.get('argv')!=owner['argv'] or (active and ownerproc.get('start_ticks')!=active['start_ticks'])):ownerproc=None
 result=dict(read_at=time.time(),run_id=RUN,release_exists=release.exists(),run_exists=run.exists(),
-    submit=submit,dispatcher=read(run/'dispatcher.json'),dispatcher_process=process(submit['pid']) if submit else None,
+    submit=submit,dispatcher=active or read(run/'dispatcher.json'),dispatcher_original=read(run/'dispatcher.json'),
+    dispatcher_process=ownerproc,
+    capacity4_handoff=read(run/'capacity4_handoff.json'),capacity4_adopted=read(run/'capacity4_adopted.json'),
     remote_smoke=read(release/'remote_smoke.json'),queue=read(run/'queue_state.json'),
     completion=read(run/'completion.json'),failure=read(run/'failure.json'),
     scoring=read(run/'scoring_complete.json'),source_freeze=read(run/'source_matrix_frozen.json'),rows=[])
@@ -105,7 +114,8 @@ for kind in ('source','predict'):
             log_bytes=log.stat().st_size if log.exists() else 0,
             log_tail=log.read_text(errors='replace').splitlines()[-2:] if log.exists() else []))
 result['gpu']=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid,gpu_uuid,used_memory','--format=csv,noheader'],text=True)
-result['dispatcher_log_tail']=(release/'dispatcher.stdout.log').read_text(errors='replace').splitlines()[-8:] if (release/'dispatcher.stdout.log').exists() else []
+ownerlog=Path(active['log']) if active else release/'dispatcher.stdout.log'
+result['dispatcher_log_tail']=ownerlog.read_text(errors='replace').splitlines()[-8:] if ownerlog.exists() else []
 print(json.dumps(result))
 '''
 
