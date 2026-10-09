@@ -1,0 +1,30 @@
+{
+  "checked_at": "2026-10-09T10:55:03.496486+08:00",
+  "receipt": {
+    "status": "SUBMITTED",
+    "pid": 2059965,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r01/evaluate.py",
+      "--mode",
+      "dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r01/controller.log",
+    "commit": "d85466e21b9e37dcf46faf91361ccdd4d27c1320",
+    "run_id": "20261009-phase1-ce-singlepass-batch-manysig-m4-r01"
+  },
+  "controller": null,
+  "rows": [],
+  "artifacts": {
+    "failure.json": null,
+    "completion.json": null,
+    "source_matrix_frozen.json": null,
+    "scores.json": null,
+    "summary.json": null,
+    "resources.json": null,
+    "scoring_complete.json": null
+  },
+  "controller_log": "Traceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r01/evaluate.py\", line 13, in <module>\n    ROW_IDS=tuple(newdesign.config(b)['row_id'] for b in newdesign.BATCHES)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r01/evaluate.py\", line 13, in <genexpr>\n    ROW_IDS=tuple(newdesign.config(b)['row_id'] for b in newdesign.BATCHES)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r01/design.py\", line 11, in config\n    from experiments.cvs_phase1_repair import design as d\nModuleNotFoundError: No module named 'experiments'\n"
+}
