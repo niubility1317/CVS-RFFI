@@ -1,0 +1,850 @@
+{
+  "at": 1791559496.8242676,
+  "receipt": {
+    "status": "SUBMITTED",
+    "pid": 2534798,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_multi_state_action.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/dispatcher.stdout.log",
+    "commit": "18e6b72d95acf67fcd5268edc0c1749c17b5eeee",
+    "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02"
+  },
+  "controller": {
+    "pid": 2534798,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_multi_state_action.dispatch",
+      ""
+    ],
+    "state": "S"
+  },
+  "preflight": {
+    "status": "VERIFIED",
+    "rows": [
+      {
+        "status": "VERIFIED",
+        "row_id": "audit-s2026092701",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092701/source/final_ssdg.pth",
+        "target_read": false
+      },
+      {
+        "status": "VERIFIED",
+        "row_id": "audit-s2026092702",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092702/source/final_ssdg.pth",
+        "target_read": false
+      },
+      {
+        "status": "VERIFIED",
+        "row_id": "audit-s2026092703",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092703/source/final_ssdg.pth",
+        "target_read": false
+      },
+      {
+        "status": "VERIFIED",
+        "row_id": "audit-s2026092704",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092704/source/final_ssdg.pth",
+        "target_read": false
+      }
+    ],
+    "checks": {
+      "status": "PASS",
+      "registered_rows": 36,
+      "audit_rows": 4,
+      "source_contract_preserved": true,
+      "role_preserving_views": true,
+      "weak_views": [
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "no_query": true
+    },
+    "target_access": false
+  },
+  "queue": {
+    "kind": "audit",
+    "active": [
+      "audit-s2026092701",
+      "audit-s2026092702",
+      "audit-s2026092703",
+      "audit-s2026092704"
+    ],
+    "pending": [],
+    "completed": [],
+    "failures": [],
+    "per_gpu_limit": 4,
+    "updated_at": 1791559493.3203309
+  },
+  "failure": null,
+  "completion": null,
+  "rows": [
+    {
+      "row_id": "audit-s2026092701",
+      "kind": "audit",
+      "pid": 2534814,
+      "start_ticks": 80708675,
+      "gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py",
+        "--kind",
+        "audit",
+        "--row",
+        "audit-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-audit-s2026092701.log",
+      "process": {
+        "pid": 2534814,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py",
+          "--kind",
+          "audit",
+          "--row",
+          "audit-s2026092701",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 19851,
+      "tail": [
+        "ACTION {\"kind\": \"linear\", \"mode\": \"neural_hs_second_exact\", \"step\": 150, \"loss\": 0.5295823812484741, \"feature\": 0.4967251420021057, \"normalized_z\": 2.8189930162625387e-05, \"margins\": 0.17321614921092987, \"parameter\": 0.015507478266954422, \"gradient_norm\": 1.541561484336853, \"samples\": 32, \"cross_samples\": 16, \"learning_rate\": 0.0002, \"seconds\": 0.036897851969115436}",
+        "ACTION {\"kind\": \"linear\", \"mode\": \"neural_hs_second_exact\", \"step\": 175, \"loss\": 0.48545604944229126, \"feature\": 0.45705705881118774, \"normalized_z\": 2.4274249881273136e-05, \"margins\": 0.06515789031982422, \"parameter\": 0.021858904510736465, \"gradient_norm\": 1.514662265777588, \"samples\": 32, \"cross_samples\": 16, \"learning_rate\": 0.0002, \"seconds\": 0.03677613602485508}",
+        "ACTION {\"kind\": \"linear\", \"mode\": \"neural_hs_second_exact\", \"step\": 200, \"loss\": 0.6609389185905457, \"feature\": 0.6272515654563904, \"normalized_z\": 2.5119796191575006e-05, \"margins\": 0.13681580126285553, \"parameter\": 0.01998067833483219, \"gradient_norm\": 2.810312271118164, \"samples\": 32, \"cross_samples\": 16, \"learning_rate\": 0.0002, \"seconds\": 0.03687439393252134}"
+      ],
+      "resolved": {
+        "schema": "multi_state_action_audit_v1",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+        "row_id": "audit-s2026092701",
+        "model_seed": 2026092701,
+        "kind": "audit",
+        "recipe": {
+          "steps": 200,
+          "batch_size": 32,
+          "interventions": 3,
+          "learning_rate": 0.0002,
+          "fit_per_tx_rx": 64,
+          "audit_per_tx_rx": 32,
+          "physical_split_seed": 20261009,
+          "augmentation_seed": 2026100901,
+          "evaluation_seed": 2026100911,
+          "exposures": [
+            "clean",
+            "source_practical_mid"
+          ],
+          "modes": [
+            "p_h_first_all",
+            "p_hs_first_all",
+            "p_hs_second_all",
+            "p_hs_second_exact",
+            "analytic_hs_second_exact",
+            "neural_hs_second_exact"
+          ],
+          "heldout_tx": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "heldout_modes": [
+            "p_hs_second_exact",
+            "neural_hs_second_exact"
+          ],
+          "source_admission": "Report every branch/condition vs zero and directedRXmean; efficacy never implied by positive hskill alone. Online independent calibration gates actual virtual loss; no target access.",
+          "no_early_stopping": true
+        },
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092701/source/final_ssdg.pth",
+        "parent_config": {
+          "schema": "multi_disentangle_v1",
+          "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+          "stage": "multi_disentangle",
+          "arm": "multi",
+          "model_seed": 2026092701,
+          "row_id": "multi-s2026092701",
+          "features": [
+            "ema",
+            "leo",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_multi_disentangle",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06,
+          "multi_recipe": {
+            "warmup_epochs": 20,
+            "auxiliary_every_steps": 4,
+            "auxiliary_batch_size": 32,
+            "rank": 8,
+            "code_dim": 8,
+            "auxiliary_lr": 0.0002,
+            "auxiliary_lr_min": 1e-06,
+            "identity_aux_weight": 0.05,
+            "paired_consistency_weight": 0.03,
+            "receiver_identity_weight": 0.01,
+            "residual_bound": 0.25,
+            "receiver_min_group_count": 2,
+            "receiver_max_age_steps": 888,
+            "receiver_relations_max": 8,
+            "receiver_quality_thresholds": [
+              0.25,
+              0.75
+            ],
+            "receiver_response_rms_threshold": 1.0,
+            "receiver_abs_cfo_threshold": 0.1,
+            "auxiliary_data": "labeled_source_train_only",
+            "deployment": "identity_only",
+            "resume": false,
+            "source_selection": "fixed_E200_all_controls",
+            "interactions": "explicit_L_then_T_factorial",
+            "interventions": {
+              "scope": "Known mild post-receive interventions only",
+              "shape": [
+                2,
+                256
+              ],
+              "linear_delays": [
+                1,
+                3
+              ],
+              "linear_tap_scale": 0.06,
+              "linear_parameters": 4,
+              "temporal_parameters": 3,
+              "temporal_basis": [
+                "constant",
+                "linear",
+                "quadratic"
+              ],
+              "temporal_scales": [
+                0.08,
+                0.1,
+                0.06
+              ],
+              "parameter_distribution": "independent uniform [-1,1]",
+              "boundary": "causal zero padding",
+              "order": "temporal(linear(x))",
+              "rms_renormalization": false,
+              "rng": "explicit private CPU generator",
+              "exact_physical_factor_identification": false
+            },
+            "randomness": "private_generator_no_native_RNG_draws",
+            "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+          },
+          "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+        },
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092701",
+        "target_access": false,
+        "pid": 2534814,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "gpu": "0",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "commit": "18e6b72d95acf67fcd5268edc0c1749c17b5eeee"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "audit-s2026092702",
+      "kind": "audit",
+      "pid": 2534821,
+      "start_ticks": 80708704,
+      "gpu": 2,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py",
+        "--kind",
+        "audit",
+        "--row",
+        "audit-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-audit-s2026092702.log",
+      "process": {
+        "pid": 2534821,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py",
+          "--kind",
+          "audit",
+          "--row",
+          "audit-s2026092702",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 21222,
+      "tail": [
+        "ACTION {\"kind\": \"temporal\", \"mode\": \"p_h_first_all\", \"step\": 25, \"loss\": 0.622706949710846, \"feature\": 0.60249263048172, \"normalized_z\": 7.411447586491704e-05, \"margins\": 0.20140211284160614, \"parameter\": 0.0, \"gradient_norm\": 3.734576940536499, \"samples\": 32, \"cross_samples\": 16, \"learning_rate\": 0.0002, \"seconds\": 0.009750845027156174}",
+        "ACTION {\"kind\": \"temporal\", \"mode\": \"p_h_first_all\", \"step\": 50, \"loss\": 0.3877054750919342, \"feature\": 0.3771499693393707, \"normalized_z\": 8.043043635552749e-05, \"margins\": 0.10475076735019684, \"parameter\": 0.0, \"gradient_norm\": 2.225867509841919, \"samples\": 32, \"cross_samples\": 16, \"learning_rate\": 0.0002, \"seconds\": 0.01197424705605954}",
+        "ACTION {\"kind\": \"temporal\", \"mode\": \"p_h_first_all\", \"step\": 75, \"loss\": 0.4091782867908478, \"feature\": 0.38561245799064636, \"normalized_z\": 0.00012486090417951345, \"margins\": 0.23440967500209808, \"parameter\": 0.0, \"gradient_norm\": 3.245197057723999, \"samples\": 32, \"cross_samples\": 16, \"learning_rate\": 0.0002, \"seconds\": 0.012569998973049223}"
+      ],
+      "resolved": {
+        "schema": "multi_state_action_audit_v1",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+        "row_id": "audit-s2026092702",
+        "model_seed": 2026092702,
+        "kind": "audit",
+        "recipe": {
+          "steps": 200,
+          "batch_size": 32,
+          "interventions": 3,
+          "learning_rate": 0.0002,
+          "fit_per_tx_rx": 64,
+          "audit_per_tx_rx": 32,
+          "physical_split_seed": 20261009,
+          "augmentation_seed": 2026100901,
+          "evaluation_seed": 2026100911,
+          "exposures": [
+            "clean",
+            "source_practical_mid"
+          ],
+          "modes": [
+            "p_h_first_all",
+            "p_hs_first_all",
+            "p_hs_second_all",
+            "p_hs_second_exact",
+            "analytic_hs_second_exact",
+            "neural_hs_second_exact"
+          ],
+          "heldout_tx": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "heldout_modes": [
+            "p_hs_second_exact",
+            "neural_hs_second_exact"
+          ],
+          "source_admission": "Report every branch/condition vs zero and directedRXmean; efficacy never implied by positive hskill alone. Online independent calibration gates actual virtual loss; no target access.",
+          "no_early_stopping": true
+        },
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092702/source/final_ssdg.pth",
+        "parent_config": {
+          "schema": "multi_disentangle_v1",
+          "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+          "stage": "multi_disentangle",
+          "arm": "multi",
+          "model_seed": 2026092702,
+          "row_id": "multi-s2026092702",
+          "features": [
+            "ema",
+            "leo",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092702/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_multi_disentangle",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06,
+          "multi_recipe": {
+            "warmup_epochs": 20,
+            "auxiliary_every_steps": 4,
+            "auxiliary_batch_size": 32,
+            "rank": 8,
+            "code_dim": 8,
+            "auxiliary_lr": 0.0002,
+            "auxiliary_lr_min": 1e-06,
+            "identity_aux_weight": 0.05,
+            "paired_consistency_weight": 0.03,
+            "receiver_identity_weight": 0.01,
+            "residual_bound": 0.25,
+            "receiver_min_group_count": 2,
+            "receiver_max_age_steps": 888,
+            "receiver_relations_max": 8,
+            "receiver_quality_thresholds": [
+              0.25,
+              0.75
+            ],
+            "receiver_response_rms_threshold": 1.0,
+            "receiver_abs_cfo_threshold": 0.1,
+            "auxiliary_data": "labeled_source_train_only",
+            "deployment": "identity_only",
+            "resume": false,
+            "source_selection": "fixed_E200_all_controls",
+            "interactions": "explicit_L_then_T_factorial",
+            "interventions": {
+              "scope": "Known mild post-receive interventions only",
+              "shape": [
+                2,
+                256
+              ],
+              "linear_delays": [
+                1,
+                3
+              ],
+              "linear_tap_scale": 0.06,
+              "linear_parameters": 4,
+              "temporal_parameters": 3,
+              "temporal_basis": [
+                "constant",
+                "linear",
+                "quadratic"
+              ],
+              "temporal_scales": [
+                0.08,
+                0.1,
+                0.06
+              ],
+              "parameter_distribution": "independent uniform [-1,1]",
+              "boundary": "causal zero padding",
+              "order": "temporal(linear(x))",
+              "rms_renormalization": false,
+              "rng": "explicit private CPU generator",
+              "exact_physical_factor_identification": false
+            },
+            "randomness": "private_generator_no_native_RNG_draws",
+            "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+          },
+          "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+        },
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092702",
+        "target_access": false,
+        "pid": 2534821,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "gpu": "2",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "commit": "18e6b72d95acf67fcd5268edc0c1749c17b5eeee"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "audit-s2026092703",
+      "kind": "audit",
+      "pid": 2534827,
+      "start_ticks": 80708736,
+      "gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py",
+        "--kind",
+        "audit",
+        "--row",
+        "audit-s2026092703"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-audit-s2026092703.log",
+      "process": {
+        "pid": 2534827,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py",
+          "--kind",
+          "audit",
+          "--row",
+          "audit-s2026092703",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 20888,
+      "tail": [
+        "ACTION {\"kind\": \"temporal\", \"mode\": \"p_h_first_all\", \"step\": 1, \"loss\": 0.9254807829856873, \"feature\": 0.8784090280532837, \"normalized_z\": 9.231280273525044e-05, \"margins\": 0.46979451179504395, \"parameter\": 0.0, \"gradient_norm\": 3.578731060028076, \"samples\": 32, \"cross_samples\": 16, \"learning_rate\": 0.0002, \"seconds\": 0.009416982997208834}",
+        "ACTION {\"kind\": \"temporal\", \"mode\": \"p_h_first_all\", \"step\": 25, \"loss\": 0.5722312331199646, \"feature\": 0.554532527923584, \"normalized_z\": 9.14462361834012e-05, \"margins\": 0.17607298493385315, \"parameter\": 0.0, \"gradient_norm\": 2.5868396759033203, \"samples\": 32, \"cross_samples\": 16, \"learning_rate\": 0.0002, \"seconds\": 0.009935713023878634}",
+        "ACTION {\"kind\": \"temporal\", \"mode\": \"p_h_first_all\", \"step\": 50, \"loss\": 0.3469100296497345, \"feature\": 0.3316446840763092, \"normalized_z\": 8.347480616066605e-05, \"margins\": 0.15181861817836761, \"parameter\": 0.0, \"gradient_norm\": 2.9269514083862305, \"samples\": 32, \"cross_samples\": 16, \"learning_rate\": 0.0002, \"seconds\": 0.011996345012448728}"
+      ],
+      "resolved": {
+        "schema": "multi_state_action_audit_v1",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+        "row_id": "audit-s2026092703",
+        "model_seed": 2026092703,
+        "kind": "audit",
+        "recipe": {
+          "steps": 200,
+          "batch_size": 32,
+          "interventions": 3,
+          "learning_rate": 0.0002,
+          "fit_per_tx_rx": 64,
+          "audit_per_tx_rx": 32,
+          "physical_split_seed": 20261009,
+          "augmentation_seed": 2026100901,
+          "evaluation_seed": 2026100911,
+          "exposures": [
+            "clean",
+            "source_practical_mid"
+          ],
+          "modes": [
+            "p_h_first_all",
+            "p_hs_first_all",
+            "p_hs_second_all",
+            "p_hs_second_exact",
+            "analytic_hs_second_exact",
+            "neural_hs_second_exact"
+          ],
+          "heldout_tx": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "heldout_modes": [
+            "p_hs_second_exact",
+            "neural_hs_second_exact"
+          ],
+          "source_admission": "Report every branch/condition vs zero and directedRXmean; efficacy never implied by positive hskill alone. Online independent calibration gates actual virtual loss; no target access.",
+          "no_early_stopping": true
+        },
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092703/source/final_ssdg.pth",
+        "parent_config": {
+          "schema": "multi_disentangle_v1",
+          "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+          "stage": "multi_disentangle",
+          "arm": "multi",
+          "model_seed": 2026092703,
+          "row_id": "multi-s2026092703",
+          "features": [
+            "ema",
+            "leo",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092703/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_multi_disentangle",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06,
+          "multi_recipe": {
+            "warmup_epochs": 20,
+            "auxiliary_every_steps": 4,
+            "auxiliary_batch_size": 32,
+            "rank": 8,
+            "code_dim": 8,
+            "auxiliary_lr": 0.0002,
+            "auxiliary_lr_min": 1e-06,
+            "identity_aux_weight": 0.05,
+            "paired_consistency_weight": 0.03,
+            "receiver_identity_weight": 0.01,
+            "residual_bound": 0.25,
+            "receiver_min_group_count": 2,
+            "receiver_max_age_steps": 888,
+            "receiver_relations_max": 8,
+            "receiver_quality_thresholds": [
+              0.25,
+              0.75
+            ],
+            "receiver_response_rms_threshold": 1.0,
+            "receiver_abs_cfo_threshold": 0.1,
+            "auxiliary_data": "labeled_source_train_only",
+            "deployment": "identity_only",
+            "resume": false,
+            "source_selection": "fixed_E200_all_controls",
+            "interactions": "explicit_L_then_T_factorial",
+            "interventions": {
+              "scope": "Known mild post-receive interventions only",
+              "shape": [
+                2,
+                256
+              ],
+              "linear_delays": [
+                1,
+                3
+              ],
+              "linear_tap_scale": 0.06,
+              "linear_parameters": 4,
+              "temporal_parameters": 3,
+              "temporal_basis": [
+                "constant",
+                "linear",
+                "quadratic"
+              ],
+              "temporal_scales": [
+                0.08,
+                0.1,
+                0.06
+              ],
+              "parameter_distribution": "independent uniform [-1,1]",
+              "boundary": "causal zero padding",
+              "order": "temporal(linear(x))",
+              "rms_renormalization": false,
+              "rng": "explicit private CPU generator",
+              "exact_physical_factor_identification": false
+            },
+            "randomness": "private_generator_no_native_RNG_draws",
+            "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+          },
+          "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+        },
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092703",
+        "target_access": false,
+        "pid": 2534827,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "gpu": "3",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "commit": "18e6b72d95acf67fcd5268edc0c1749c17b5eeee"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "audit-s2026092704",
+      "kind": "audit",
+      "pid": 2534834,
+      "start_ticks": 80708762,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py",
+        "--kind",
+        "audit",
+        "--row",
+        "audit-s2026092704"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-audit-s2026092704.log",
+      "process": {
+        "pid": 2534834,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py",
+          "--kind",
+          "audit",
+          "--row",
+          "audit-s2026092704",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 19869,
+      "tail": [
+        "ACTION {\"kind\": \"linear\", \"mode\": \"neural_hs_second_exact\", \"step\": 150, \"loss\": 0.48791447281837463, \"feature\": 0.454219251871109, \"normalized_z\": 3.2432159059681e-05, \"margins\": 0.17802934348583221, \"parameter\": 0.015859873965382576, \"gradient_norm\": 1.3853000402450562, \"samples\": 32, \"cross_samples\": 16, \"learning_rate\": 0.0002, \"seconds\": 0.045728176017291844}",
+        "ACTION {\"kind\": \"linear\", \"mode\": \"neural_hs_second_exact\", \"step\": 175, \"loss\": 0.5340473055839539, \"feature\": 0.5026711225509644, \"normalized_z\": 3.2425570680061355e-05, \"margins\": 0.08877353370189667, \"parameter\": 0.02246640995144844, \"gradient_norm\": 1.6555278301239014, \"samples\": 32, \"cross_samples\": 16, \"learning_rate\": 0.0002, \"seconds\": 0.04573199909646064}",
+        "ACTION {\"kind\": \"linear\", \"mode\": \"neural_hs_second_exact\", \"step\": 200, \"loss\": 0.6171672344207764, \"feature\": 0.5853246450424194, \"normalized_z\": 2.440767093503382e-05, \"margins\": 0.10913576185703278, \"parameter\": 0.020904676988720894, \"gradient_norm\": 2.0068700313568115, \"samples\": 32, \"cross_samples\": 16, \"learning_rate\": 0.0002, \"seconds\": 0.04557159706018865}"
+      ],
+      "resolved": {
+        "schema": "multi_state_action_audit_v1",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+        "row_id": "audit-s2026092704",
+        "model_seed": 2026092704,
+        "kind": "audit",
+        "recipe": {
+          "steps": 200,
+          "batch_size": 32,
+          "interventions": 3,
+          "learning_rate": 0.0002,
+          "fit_per_tx_rx": 64,
+          "audit_per_tx_rx": 32,
+          "physical_split_seed": 20261009,
+          "augmentation_seed": 2026100901,
+          "evaluation_seed": 2026100911,
+          "exposures": [
+            "clean",
+            "source_practical_mid"
+          ],
+          "modes": [
+            "p_h_first_all",
+            "p_hs_first_all",
+            "p_hs_second_all",
+            "p_hs_second_exact",
+            "analytic_hs_second_exact",
+            "neural_hs_second_exact"
+          ],
+          "heldout_tx": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "heldout_modes": [
+            "p_hs_second_exact",
+            "neural_hs_second_exact"
+          ],
+          "source_admission": "Report every branch/condition vs zero and directedRXmean; efficacy never implied by positive hskill alone. Online independent calibration gates actual virtual loss; no target access.",
+          "no_early_stopping": true
+        },
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092704/source/final_ssdg.pth",
+        "parent_config": {
+          "schema": "multi_disentangle_v1",
+          "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+          "stage": "multi_disentangle",
+          "arm": "multi",
+          "model_seed": 2026092704,
+          "row_id": "multi-s2026092704",
+          "features": [
+            "ema",
+            "leo",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092704/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_multi_disentangle",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06,
+          "multi_recipe": {
+            "warmup_epochs": 20,
+            "auxiliary_every_steps": 4,
+            "auxiliary_batch_size": 32,
+            "rank": 8,
+            "code_dim": 8,
+            "auxiliary_lr": 0.0002,
+            "auxiliary_lr_min": 1e-06,
+            "identity_aux_weight": 0.05,
+            "paired_consistency_weight": 0.03,
+            "receiver_identity_weight": 0.01,
+            "residual_bound": 0.25,
+            "receiver_min_group_count": 2,
+            "receiver_max_age_steps": 888,
+            "receiver_relations_max": 8,
+            "receiver_quality_thresholds": [
+              0.25,
+              0.75
+            ],
+            "receiver_response_rms_threshold": 1.0,
+            "receiver_abs_cfo_threshold": 0.1,
+            "auxiliary_data": "labeled_source_train_only",
+            "deployment": "identity_only",
+            "resume": false,
+            "source_selection": "fixed_E200_all_controls",
+            "interactions": "explicit_L_then_T_factorial",
+            "interventions": {
+              "scope": "Known mild post-receive interventions only",
+              "shape": [
+                2,
+                256
+              ],
+              "linear_delays": [
+                1,
+                3
+              ],
+              "linear_tap_scale": 0.06,
+              "linear_parameters": 4,
+              "temporal_parameters": 3,
+              "temporal_basis": [
+                "constant",
+                "linear",
+                "quadratic"
+              ],
+              "temporal_scales": [
+                0.08,
+                0.1,
+                0.06
+              ],
+              "parameter_distribution": "independent uniform [-1,1]",
+              "boundary": "causal zero padding",
+              "order": "temporal(linear(x))",
+              "rms_renormalization": false,
+              "rng": "explicit private CPU generator",
+              "exact_physical_factor_identification": false
+            },
+            "randomness": "private_generator_no_native_RNG_draws",
+            "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+          },
+          "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+        },
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092704",
+        "target_access": false,
+        "pid": 2534834,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "gpu": "7",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "commit": "18e6b72d95acf67fcd5268edc0c1749c17b5eeee"
+      },
+      "completion": null
+    }
+  ]
+}

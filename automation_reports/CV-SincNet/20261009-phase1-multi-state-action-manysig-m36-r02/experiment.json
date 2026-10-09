@@ -24,7 +24,7 @@
   "replaces_run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
   "authorization": "用户2026-10-09：根据设计报告继续完成下一步优化探索，不能遗漏，要一一完成。沿用每卡4个实验进程；全三阶段及冻结后的独立测试均在本次范围。",
   "code": {
-    "commit": "Actual committed/pushed release_commit.txt",
+    "commit": "18e6b72d95acf67fcd5268edc0c1749c17b5eeee",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02"
@@ -103,7 +103,9 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02",
     "local_artifact_root": "automation_reports/CV-SincNet/20261009-phase1-multi-state-action-manysig-m36-r02",
     "launch_command": "python -m experiments.cvs_multi_state_action.publish --output local_artifacts/cvs_multi_state_action_20261009_r02",
-    "stop_rule": "Only affected technical failure; retain artifacts, no automatic retry, fallback or low-performance stop. No interventions on healthy existing jobs."
+    "stop_rule": "Only affected technical failure; retain artifacts, no automatic retry, fallback or low-performance stop. No interventions on healthy existing jobs.",
+    "dispatcher_pid": 2534798,
+    "launch_verified": "VERIFIED"
   },
   "expected_artifacts": [
     "source/initial_smoke.pt",
@@ -321,7 +323,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "real_views-s2026092701",
@@ -471,7 +474,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "unified-s2026092701",
@@ -621,7 +625,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "L-s2026092701",
@@ -771,7 +776,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LT-s2026092701",
@@ -921,7 +927,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LTR-s2026092701",
@@ -1071,7 +1078,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "L_EG-s2026092701",
@@ -1221,7 +1229,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LT_EG-s2026092701",
@@ -1371,7 +1380,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LTR_EG-s2026092701",
@@ -1521,7 +1531,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "native-s2026092702",
@@ -1671,7 +1682,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "real_views-s2026092702",
@@ -1821,7 +1833,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "unified-s2026092702",
@@ -1971,7 +1984,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "L-s2026092702",
@@ -2121,7 +2135,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LT-s2026092702",
@@ -2271,7 +2286,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LTR-s2026092702",
@@ -2421,7 +2437,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "L_EG-s2026092702",
@@ -2571,7 +2588,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LT_EG-s2026092702",
@@ -2721,7 +2739,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LTR_EG-s2026092702",
@@ -2871,7 +2890,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "native-s2026092703",
@@ -3021,7 +3041,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "real_views-s2026092703",
@@ -3171,7 +3192,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "unified-s2026092703",
@@ -3321,7 +3343,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "L-s2026092703",
@@ -3471,7 +3494,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LT-s2026092703",
@@ -3621,7 +3645,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LTR-s2026092703",
@@ -3771,7 +3796,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "L_EG-s2026092703",
@@ -3921,7 +3947,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LT_EG-s2026092703",
@@ -4071,7 +4098,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LTR_EG-s2026092703",
@@ -4221,7 +4249,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "native-s2026092704",
@@ -4371,7 +4400,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "real_views-s2026092704",
@@ -4521,7 +4551,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "unified-s2026092704",
@@ -4671,7 +4702,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "L-s2026092704",
@@ -4821,7 +4853,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LT-s2026092704",
@@ -4971,7 +5004,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LTR-s2026092704",
@@ -5121,7 +5155,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "L_EG-s2026092704",
@@ -5271,7 +5306,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LT_EG-s2026092704",
@@ -5421,7 +5457,8 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "LTR_EG-s2026092704",
@@ -5571,13 +5608,14 @@
         "analysis.md",
         "scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "status": "QUEUED_AFTER_SOURCE_AUDITS"
     },
     {
       "row_id": "audit-s2026092701",
       "method": "source_action_audit",
       "purpose": "source_diagnostic",
-      "gpu": null,
+      "gpu": 0,
       "config": {
         "schema": "multi_state_action_audit_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -5755,13 +5793,15 @@
         "*_receiver.json",
         "*_composition.json",
         "completion.json"
-      ]
+      ],
+      "pid": 2534814,
+      "status": "RUNNING"
     },
     {
       "row_id": "audit-s2026092702",
       "method": "source_action_audit",
       "purpose": "source_diagnostic",
-      "gpu": null,
+      "gpu": 2,
       "config": {
         "schema": "multi_state_action_audit_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -5939,13 +5979,15 @@
         "*_receiver.json",
         "*_composition.json",
         "completion.json"
-      ]
+      ],
+      "pid": 2534821,
+      "status": "RUNNING"
     },
     {
       "row_id": "audit-s2026092703",
       "method": "source_action_audit",
       "purpose": "source_diagnostic",
-      "gpu": null,
+      "gpu": 3,
       "config": {
         "schema": "multi_state_action_audit_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -6123,13 +6165,15 @@
         "*_receiver.json",
         "*_composition.json",
         "completion.json"
-      ]
+      ],
+      "pid": 2534827,
+      "status": "RUNNING"
     },
     {
       "row_id": "audit-s2026092704",
       "method": "source_action_audit",
       "purpose": "source_diagnostic",
-      "gpu": null,
+      "gpu": 7,
       "config": {
         "schema": "multi_state_action_audit_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -6307,7 +6351,9 @@
         "*_receiver.json",
         "*_composition.json",
         "completion.json"
-      ]
+      ],
+      "pid": 2534834,
+      "status": "RUNNING"
     }
   ],
   "notes": [
@@ -6320,7 +6366,7 @@
     "K、适应前后、新类注册、H为N/A；本次是Phase1身份域泛化，无目标适应。",
     "sharedGPU耗时仅共享负载实测，不声称隔离加速；未测FLOPs记N/A。"
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "test_completion_plan": {
     "rows": 36,
     "views": [
