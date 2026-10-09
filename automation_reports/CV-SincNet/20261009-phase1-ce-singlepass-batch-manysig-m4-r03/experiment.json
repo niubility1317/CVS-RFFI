@@ -158,7 +158,7 @@
       "row_id": "ce_b256-s2026092701",
       "stage": "ce_batch",
       "arm": "ce_b256",
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b256-s2026092701.json",
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b256-s2026092701.json",
@@ -191,8 +191,22 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b256-s2026092701.json"
       ],
-      "verified_epoch": 1,
-      "checked_at": "2026-10-09T10:59:58.779939+08:00"
+      "verified_epoch": 200,
+      "checked_at": "2026-10-09T15:17:54.354014+08:00",
+      "test_status": "FAILED_BEFORE_PREDICTION",
+      "elapsed_seconds": 4001.537774324417,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9689629629629629,
+        "source_val_rx_accuracy": {
+          "1": 0.9875925925925926,
+          "3": 0.9194444444444444,
+          "4": 0.980925925925926,
+          "6": 0.9957407407407407,
+          "8": 0.9611111111111111
+        },
+        "source_val_worst_rx": 0.9194444444444444
+      }
     },
     {
       "method": "reference_response-ce_cosine",
@@ -217,7 +231,7 @@
       "row_id": "ce_b512-s2026092701",
       "stage": "ce_batch",
       "arm": "ce_b512",
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b512-s2026092701.json",
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b512-s2026092701.json",
@@ -250,8 +264,22 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b512-s2026092701.json"
       ],
-      "verified_epoch": 2,
-      "checked_at": "2026-10-09T10:59:58.779939+08:00"
+      "verified_epoch": 200,
+      "checked_at": "2026-10-09T15:17:54.354014+08:00",
+      "test_status": "FAILED_BEFORE_PREDICTION",
+      "elapsed_seconds": 3837.3525021076202,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9531851851851851,
+        "source_val_rx_accuracy": {
+          "1": 0.977037037037037,
+          "3": 0.8881481481481481,
+          "4": 0.980925925925926,
+          "6": 0.9940740740740741,
+          "8": 0.9257407407407408
+        },
+        "source_val_worst_rx": 0.8881481481481481
+      }
     },
     {
       "method": "reference_response-ce_cosine",
@@ -276,7 +304,7 @@
       "row_id": "ce_b1024-s2026092701",
       "stage": "ce_batch",
       "arm": "ce_b1024",
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b1024-s2026092701.json",
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b1024-s2026092701.json",
@@ -309,8 +337,22 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b1024-s2026092701.json"
       ],
-      "verified_epoch": 2,
-      "checked_at": "2026-10-09T10:59:58.779939+08:00"
+      "verified_epoch": 200,
+      "checked_at": "2026-10-09T15:17:54.354014+08:00",
+      "test_status": "FAILED_BEFORE_PREDICTION",
+      "elapsed_seconds": 3741.2307000160217,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9352222222222222,
+        "source_val_rx_accuracy": {
+          "1": 0.9637037037037037,
+          "3": 0.8562962962962963,
+          "4": 0.9774074074074074,
+          "6": 0.9903703703703703,
+          "8": 0.8883333333333333
+        },
+        "source_val_worst_rx": 0.8562962962962963
+      }
     },
     {
       "method": "reference_response-ce_cosine",
@@ -335,7 +377,7 @@
       "row_id": "ce_b2048-s2026092701",
       "stage": "ce_batch",
       "arm": "ce_b2048",
-      "status": "RUNNING",
+      "status": "SOURCE_TRAINED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b2048-s2026092701.json",
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b2048-s2026092701.json",
@@ -368,8 +410,22 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b2048-s2026092701.json"
       ],
-      "verified_epoch": 1,
-      "checked_at": "2026-10-09T10:59:58.779939+08:00"
+      "verified_epoch": 200,
+      "checked_at": "2026-10-09T15:17:54.354014+08:00",
+      "test_status": "FAILED_BEFORE_PREDICTION",
+      "elapsed_seconds": 3404.3527188301086,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9142222222222223,
+        "source_val_rx_accuracy": {
+          "1": 0.9287037037037037,
+          "3": 0.8296296296296296,
+          "4": 0.970925925925926,
+          "6": 0.9859259259259259,
+          "8": 0.855925925925926
+        },
+        "source_val_worst_rx": 0.8296296296296296
+      }
     }
   ],
   "notes": [
@@ -383,7 +439,7 @@
     "Phase2 support/new class/K metrics N/A.",
     "Independent subagent review unavailable under explicit side-conversation prohibition; preserve inherited loop review and record scoped owner checks, no false independent PASS claim."
   ],
-  "status": "RUNNING",
+  "status": "FAILED",
   "test_completion_plan": {
     "views": [
       "clean",
@@ -405,89 +461,17 @@
   },
   "registered_at": "2026-10-09T02:59:50+00:00",
   "latest_verified_status": {
-    "status": "RUNNING",
-    "checked_at": "2026-10-09T10:59:58.779939+08:00",
-    "rows": [
-      {
-        "row_id": "ce_b256-s2026092701",
-        "gpu": 4,
-        "pid": 2063305,
-        "epoch": 1,
-        "batch_size": 256,
-        "steps_per_epoch": 25,
-        "actual_samples_per_epoch": 6300,
-        "epoch_seconds": 17.169968605041504,
-        "source_validation_count": 27000,
-        "target_test_count": 0,
-        "LEO": false,
-        "EMA": false,
-        "pseudo": false,
-        "entropy": false,
-        "provenance": "9a4c41b846dfe2af8681fdfcbf98e40292869027"
-      },
-      {
-        "row_id": "ce_b512-s2026092701",
-        "gpu": 5,
-        "pid": 2063306,
-        "epoch": 2,
-        "batch_size": 512,
-        "steps_per_epoch": 13,
-        "actual_samples_per_epoch": 6300,
-        "epoch_seconds": 15.235393762588501,
-        "source_validation_count": 27000,
-        "target_test_count": 0,
-        "LEO": false,
-        "EMA": false,
-        "pseudo": false,
-        "entropy": false,
-        "provenance": "9a4c41b846dfe2af8681fdfcbf98e40292869027"
-      },
-      {
-        "row_id": "ce_b1024-s2026092701",
-        "gpu": 6,
-        "pid": 2063307,
-        "epoch": 2,
-        "batch_size": 1024,
-        "steps_per_epoch": 7,
-        "actual_samples_per_epoch": 6300,
-        "epoch_seconds": 14.710208415985107,
-        "source_validation_count": 27000,
-        "target_test_count": 0,
-        "LEO": false,
-        "EMA": false,
-        "pseudo": false,
-        "entropy": false,
-        "provenance": "9a4c41b846dfe2af8681fdfcbf98e40292869027"
-      },
-      {
-        "row_id": "ce_b2048-s2026092701",
-        "gpu": 7,
-        "pid": 2063308,
-        "epoch": 1,
-        "batch_size": 2048,
-        "steps_per_epoch": 4,
-        "actual_samples_per_epoch": 6300,
-        "epoch_seconds": 16.944841623306274,
-        "source_validation_count": 27000,
-        "target_test_count": 0,
-        "LEO": false,
-        "EMA": false,
-        "pseudo": false,
-        "entropy": false,
-        "provenance": "9a4c41b846dfe2af8681fdfcbf98e40292869027"
-      }
-    ],
-    "controller": {
-      "pid": 2063288,
-      "argv": [
-        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-        "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r03/evaluate.py",
-        "--mode",
-        "dispatch"
-      ],
-      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r03"
+    "checked_at": "2026-10-09T15:17:54.354014+08:00",
+    "source_completed": 4,
+    "epochs": 200,
+    "prediction_completed": 0,
+    "scored": 0,
+    "controller_alive": false,
+    "failure": {
+      "status": "FAILED",
+      "error": "ValueError('Incomplete update budget: logged=5000, successful=5000, expected=44400')",
+      "no_retry": true
     },
-    "controller_healthy": true
+    "failure_layer": "evaluation preflight budget contract; training completed to registered per-row budgets"
   }
 }
