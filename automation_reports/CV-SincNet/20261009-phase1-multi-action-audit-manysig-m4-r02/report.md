@@ -11,3 +11,7 @@ L/T依次比较原拟合、分块定标+G后误差、再加入跨TX作用迁移�
 这次源端审查不生成新的目标测试成绩。没有新的身份模型，因此不重复测试旧checkpoint。下一阶段如发布身份训练，仍须预登记完整冻结后预测与独立truth-last评分。
 
 当前状态以experiment.json、events.jsonl及独立远端读回为准。完整设计追溯见[traceability](../../../analysis/multi_action_audit_traceability.md)。实际脚本和配置见[新包](../../../experiments/cvs_multi_action_audit/)。
+
+## 发布核验
+
+VERIFIED。代码提交`a22123e6b3f1c534146a9794eed8d797458858fd`；4个worker实际运行，GPU分配[0, 2, 3, 7]。实际checkpoint来源、无query前向、两包信道桥接和逐行配置均通过。原r01失败保留；r02没有改变科学矩阵和预算。
