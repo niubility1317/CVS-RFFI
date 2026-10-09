@@ -1,4 +1,4 @@
-# multi_disentanglement实验与历史证据
+# heldout_physical_packets实验与历史证据
 
 [返回总索引](../README.md)
 
@@ -7,4 +7,3 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |多解耦源端作用验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-multi-action-audit-manysig-m4-r01/report.md)|
-|旧门控＋cosine：独立线性、时间、接收机残差与交互多解耦四seed对照|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-multi-disentangle-manysig-m32-r01/report.md)|

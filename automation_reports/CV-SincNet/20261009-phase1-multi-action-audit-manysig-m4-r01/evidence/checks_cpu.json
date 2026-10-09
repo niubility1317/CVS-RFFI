@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "physical_roles_disjoint": true,
+  "negative_roles_rejected": true,
+  "actual_CVS_fit_and_audit": true,
+  "composition": true,
+  "gradient_audit": true,
+  "identity_unchanged": true,
+  "source_LEO_deterministic": true,
+  "target_read": false
+}
