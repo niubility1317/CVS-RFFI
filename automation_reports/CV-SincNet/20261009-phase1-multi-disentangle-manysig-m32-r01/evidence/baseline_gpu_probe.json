@@ -1,0 +1,96 @@
+{
+  "device": "cuda:0",
+  "initial_weights_bitwise_equal": true,
+  "all_step_native_rng_bitwise_equal": true,
+  "comparisons": [
+    {
+      "left": 0,
+      "right": 1,
+      "bitwise": false,
+      "max_parameter_difference": 1.1920928955078125e-07,
+      "differing_tensors": 51,
+      "largest": [
+        [
+          "id_backbone.encoder.core.id_backbone.f1.pw.weight",
+          1.1920928955078125e-07
+        ],
+        [
+          "id_backbone.encoder.core.id_backbone.t2.norm.weight",
+          5.960464477539063e-08
+        ],
+        [
+          "id_backbone.encoder.core.id_backbone.f3.pw.weight",
+          5.960464477539063e-08
+        ],
+        [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          2.9802322387695312e-08
+        ],
+        [
+          "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+          2.9802322387695312e-08
+        ]
+      ]
+    },
+    {
+      "left": 0,
+      "right": 2,
+      "bitwise": false,
+      "max_parameter_difference": 2.9802322387695312e-08,
+      "differing_tensors": 49,
+      "largest": [
+        [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          2.9802322387695312e-08
+        ],
+        [
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          2.9802322387695312e-08
+        ],
+        [
+          "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          2.9802322387695312e-08
+        ],
+        [
+          "id_backbone.encoder.core.id_backbone.f3.pw.weight",
+          2.9802322387695312e-08
+        ],
+        [
+          "id_backbone.encoder.core.id_backbone.f_proj.weight",
+          2.9802322387695312e-08
+        ]
+      ]
+    },
+    {
+      "left": 1,
+      "right": 2,
+      "bitwise": false,
+      "max_parameter_difference": 1.1920928955078125e-07,
+      "differing_tensors": 49,
+      "largest": [
+        [
+          "id_backbone.encoder.core.id_backbone.f1.pw.weight",
+          1.1920928955078125e-07
+        ],
+        [
+          "id_backbone.encoder.core.id_backbone.t2.norm.weight",
+          5.960464477539063e-08
+        ],
+        [
+          "id_backbone.encoder.core.id_backbone.f3.pw.weight",
+          5.960464477539063e-08
+        ],
+        [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          2.9802322387695312e-08
+        ],
+        [
+          "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+          2.9802322387695312e-08
+        ]
+      ]
+    }
+  ],
+  "target_access": false,
+  "formal_weights": false
+}

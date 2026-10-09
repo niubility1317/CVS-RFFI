@@ -1,0 +1,149 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "rows": [
+    {
+      "arm": "legacy_cosine",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "metrics": "local_artifacts\\cvs_multi_disentangle_20261009_r01\\native_smoke_gpu_final\\legacy_cosine\\metrics_epoch.jsonl"
+    },
+    {
+      "arm": "fixed_interventions",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "metrics": "local_artifacts\\cvs_multi_disentangle_20261009_r01\\native_smoke_gpu_final\\fixed_interventions\\metrics_epoch.jsonl"
+    },
+    {
+      "arm": "unified",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "metrics": "local_artifacts\\cvs_multi_disentangle_20261009_r01\\native_smoke_gpu_final\\unified\\metrics_epoch.jsonl"
+    },
+    {
+      "arm": "linear",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "metrics": "local_artifacts\\cvs_multi_disentangle_20261009_r01\\native_smoke_gpu_final\\linear\\metrics_epoch.jsonl"
+    },
+    {
+      "arm": "temporal",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "metrics": "local_artifacts\\cvs_multi_disentangle_20261009_r01\\native_smoke_gpu_final\\temporal\\metrics_epoch.jsonl"
+    },
+    {
+      "arm": "receiver",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "metrics": "local_artifacts\\cvs_multi_disentangle_20261009_r01\\native_smoke_gpu_final\\receiver\\metrics_epoch.jsonl"
+    },
+    {
+      "arm": "multi",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "metrics": "local_artifacts\\cvs_multi_disentangle_20261009_r01\\native_smoke_gpu_final\\multi\\metrics_epoch.jsonl"
+    },
+    {
+      "arm": "multi_interaction",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "metrics": "local_artifacts\\cvs_multi_disentangle_20261009_r01\\native_smoke_gpu_final\\multi_interaction\\metrics_epoch.jsonl"
+    }
+  ],
+  "mechanism_integration": "VERIFIED",
+  "original_run_status": "FAILED_GPU_BITWISE_BASELINE_ASSERTION",
+  "original_run_preserved": "local_artifacts\\cvs_multi_disentangle_20261009_r01\\native_smoke_gpu_final",
+  "baseline_training_bitwise_equivalent": false,
+  "cpu_baseline_training_bitwise_equivalent": true,
+  "initial_weights_bitwise_equal": true,
+  "all_step_native_rng_bitwise_equal": true,
+  "gpu_old_old_max_difference": 1.1920928955078125e-07,
+  "gpu_old_new_max_difference": 2.9802322387695312e-08,
+  "gpu_baseline_numerical_equivalence": "Within observed original-native-repeat variation; no fixed tolerance relaxed",
+  "baseline_probe": "local_artifacts\\cvs_multi_disentangle_20261009_r01\\baseline_gpu_probe\\completion.json",
+  "cpu_smoke": "local_artifacts\\cvs_multi_disentangle_20261009_r01\\native_smoke_cpu_r04\\completion.json",
+  "target_access": false,
+  "formal_weights": false,
+  "full_budget_verified": false
+}

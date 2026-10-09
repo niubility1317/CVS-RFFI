@@ -1,0 +1,207 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "rows": [
+    {
+      "arm": "legacy_cosine",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "actual_auxiliary_epochs": [],
+      "validation_readonly": true,
+      "hidden_U": true,
+      "production_writer": true,
+      "native_updates": 9,
+      "synthetic": true
+    },
+    {
+      "arm": "fixed_interventions",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "actual_auxiliary_epochs": [
+        24,
+        200
+      ],
+      "validation_readonly": true,
+      "hidden_U": true,
+      "production_writer": true,
+      "native_updates": 9,
+      "synthetic": true
+    },
+    {
+      "arm": "unified",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "actual_auxiliary_epochs": [
+        24,
+        200
+      ],
+      "validation_readonly": true,
+      "hidden_U": true,
+      "production_writer": true,
+      "native_updates": 9,
+      "synthetic": true
+    },
+    {
+      "arm": "linear",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "actual_auxiliary_epochs": [
+        24,
+        200
+      ],
+      "validation_readonly": true,
+      "hidden_U": true,
+      "production_writer": true,
+      "native_updates": 9,
+      "synthetic": true
+    },
+    {
+      "arm": "temporal",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "actual_auxiliary_epochs": [
+        24,
+        200
+      ],
+      "validation_readonly": true,
+      "hidden_U": true,
+      "production_writer": true,
+      "native_updates": 9,
+      "synthetic": true
+    },
+    {
+      "arm": "receiver",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "actual_auxiliary_epochs": [
+        24,
+        200
+      ],
+      "validation_readonly": true,
+      "hidden_U": true,
+      "production_writer": true,
+      "native_updates": 9,
+      "synthetic": true
+    },
+    {
+      "arm": "multi",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "actual_auxiliary_epochs": [
+        24,
+        200
+      ],
+      "validation_readonly": true,
+      "hidden_U": true,
+      "production_writer": true,
+      "native_updates": 9,
+      "synthetic": true
+    },
+    {
+      "arm": "multi_interaction",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        80,
+        131,
+        132,
+        200
+      ],
+      "actual_auxiliary_epochs": [
+        24,
+        200
+      ],
+      "validation_readonly": true,
+      "hidden_U": true,
+      "production_writer": true,
+      "native_updates": 9,
+      "synthetic": true
+    }
+  ],
+  "baseline_training_bitwise_equivalent": true,
+  "target_access": false,
+  "formal_weights": false,
+  "full_budget_verified": false,
+  "synthetic_override": "synthetic L/U/V and local output only; real production objective/writer chain",
+  "backend_flags": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  }
+}

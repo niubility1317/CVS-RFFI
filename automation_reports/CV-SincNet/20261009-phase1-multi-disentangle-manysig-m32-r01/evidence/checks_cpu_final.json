@@ -1,0 +1,153 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "backend_flags": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "physical": {
+    "private_physical_rng": true,
+    "zero_interventions_exact": true,
+    "ordered_factorial": true,
+    "order_difference_max": 0.0005660057067871094
+  },
+  "components": {
+    "native_intermediate_exact": true,
+    "auxiliary_components": [
+      {
+        "branch": "linear",
+        "encoder_gradient": true,
+        "operator_gradient": true,
+        "independent": true,
+        "zero_state_exact_identity": true,
+        "learned_code_used": true,
+        "bounded": true
+      },
+      {
+        "branch": "temporal",
+        "encoder_gradient": true,
+        "operator_gradient": true,
+        "independent": true,
+        "zero_state_exact_identity": true,
+        "learned_code_used": true,
+        "bounded": true
+      },
+      {
+        "branch": "receiver",
+        "encoder_gradient": true,
+        "operator_gradient": true,
+        "independent": true,
+        "zero_state_exact_identity": true,
+        "learned_code_used": true,
+        "bounded": true
+      },
+      {
+        "branch": "interaction",
+        "encoder_gradient": true,
+        "operator_gradient": true,
+        "independent": true,
+        "zero_state_exact_identity": true,
+        "learned_code_used": true,
+        "bounded": true
+      }
+    ],
+    "isolated_aux_fit": true,
+    "isolated_identity_constraint": true
+  },
+  "inference": {
+    "identity_only_stateless": true,
+    "batch_independence_max_difference": 2.7418136596679688e-06,
+    "strict_checkpoint_roundtrip": true
+  },
+  "runtime": {
+    "rows": [
+      {
+        "arm": "legacy_cosine",
+        "status": "PASS",
+        "auxiliary_updates": 0,
+        "native_rng_preserved": true,
+        "aux_fit_identity_gradient": false,
+        "identity_auxiliary_gradient": false,
+        "identity_only_inference": true,
+        "receiver_relations": null
+      },
+      {
+        "arm": "fixed_interventions",
+        "status": "PASS",
+        "auxiliary_updates": 0,
+        "native_rng_preserved": true,
+        "aux_fit_identity_gradient": false,
+        "identity_auxiliary_gradient": false,
+        "identity_only_inference": true,
+        "receiver_relations": null
+      },
+      {
+        "arm": "unified",
+        "status": "PASS",
+        "auxiliary_updates": 2,
+        "native_rng_preserved": true,
+        "aux_fit_identity_gradient": false,
+        "identity_auxiliary_gradient": false,
+        "identity_only_inference": true,
+        "receiver_relations": 8.0
+      },
+      {
+        "arm": "linear",
+        "status": "PASS",
+        "auxiliary_updates": 1,
+        "native_rng_preserved": true,
+        "aux_fit_identity_gradient": false,
+        "identity_auxiliary_gradient": false,
+        "identity_only_inference": true,
+        "receiver_relations": null
+      },
+      {
+        "arm": "temporal",
+        "status": "PASS",
+        "auxiliary_updates": 1,
+        "native_rng_preserved": true,
+        "aux_fit_identity_gradient": false,
+        "identity_auxiliary_gradient": false,
+        "identity_only_inference": true,
+        "receiver_relations": null
+      },
+      {
+        "arm": "receiver",
+        "status": "PASS",
+        "auxiliary_updates": 2,
+        "native_rng_preserved": true,
+        "aux_fit_identity_gradient": false,
+        "identity_auxiliary_gradient": false,
+        "identity_only_inference": true,
+        "receiver_relations": 8.0
+      },
+      {
+        "arm": "multi",
+        "status": "PASS",
+        "auxiliary_updates": 2,
+        "native_rng_preserved": true,
+        "aux_fit_identity_gradient": false,
+        "identity_auxiliary_gradient": false,
+        "identity_only_inference": true,
+        "receiver_relations": 8.0
+      },
+      {
+        "arm": "multi_interaction",
+        "status": "PASS",
+        "auxiliary_updates": 2,
+        "native_rng_preserved": true,
+        "aux_fit_identity_gradient": false,
+        "identity_auxiliary_gradient": false,
+        "identity_only_inference": true,
+        "receiver_relations": 8.0
+      }
+    ],
+    "group_statistics_order_invariant": true,
+    "hidden_U_rejected": true
+  },
+  "target_read": false,
+  "formal_weights": false
+}

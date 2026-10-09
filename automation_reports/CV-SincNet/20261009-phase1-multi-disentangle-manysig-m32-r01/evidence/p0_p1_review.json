@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "reviewer": "/root/p0_p1_review",
+  "remaining_P0": 0,
+  "remaining_P1": 0,
+  "scope": "Independent model/runtime/physics/native production chain/publication capacity/source freeze/prediction/truth-last scoring review",
+  "fixed_findings": ["Missing output_dir in model-only args", "Duplicate epoch keyword in telemetry dictionary"],
+  "evidence": ["checks_cpu_final.json", "checks_gpu_final.json", "native_smoke_cpu_r04/completion.json", "native_gpu_verified/completion.json", "baseline_gpu_probe/completion.json"],
+  "cpu_baseline_bitwise_equal": true,
+  "gpu_baseline_bitwise_equal": false,
+  "gpu_initial_weights_and_all_native_step_rng_equal": true,
+  "gpu_original_repeat_max_difference": 1.1920928955078125e-7,
+  "gpu_original_new_max_difference": 2.9802322387695312e-8,
+  "gpu_limit": "Numerical difference within observed original-repeat variation; not a proof of bitwise CUDA reproducibility",
+  "formal_training_complete": false,
+  "formal_tests_complete": false
+}

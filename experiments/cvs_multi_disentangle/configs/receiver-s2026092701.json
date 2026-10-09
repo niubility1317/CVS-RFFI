@@ -1,0 +1,96 @@
+{
+  "schema": "multi_disentangle_v1",
+  "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+  "stage": "multi_disentangle",
+  "arm": "receiver",
+  "model_seed": 2026092701,
+  "row_id": "receiver-s2026092701",
+  "features": [
+    "ema",
+    "leo",
+    "pseudo",
+    "twostage"
+  ],
+  "variant": "reference_response",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/receiver-s2026092701/source",
+  "epochs": 200,
+  "steps_per_epoch": 222,
+  "model_initialization": "scratch",
+  "checkpoint_sources": [],
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "method": "cvs_multi_disentangle",
+  "target_access": false,
+  "pseudo_domain_gate": false,
+  "temporal_mode": "batch_neighbor",
+  "temporal_min_streak": 2,
+  "lr_schedule": "cosine",
+  "lr_min": 1e-06,
+  "multi_recipe": {
+    "warmup_epochs": 20,
+    "auxiliary_every_steps": 4,
+    "auxiliary_batch_size": 32,
+    "rank": 8,
+    "code_dim": 8,
+    "auxiliary_lr": 0.0002,
+    "auxiliary_lr_min": 1e-06,
+    "identity_aux_weight": 0.05,
+    "paired_consistency_weight": 0.03,
+    "receiver_identity_weight": 0.01,
+    "residual_bound": 0.25,
+    "receiver_min_group_count": 2,
+    "receiver_max_age_steps": 888,
+    "receiver_relations_max": 8,
+    "receiver_quality_thresholds": [
+      0.25,
+      0.75
+    ],
+    "receiver_response_rms_threshold": 1.0,
+    "receiver_abs_cfo_threshold": 0.1,
+    "auxiliary_data": "labeled_source_train_only",
+    "deployment": "identity_only",
+    "resume": false,
+    "source_selection": "fixed_E200_all_controls",
+    "interactions": "explicit_L_then_T_factorial",
+    "interventions": {
+      "scope": "Known mild post-receive interventions only",
+      "shape": [
+        2,
+        256
+      ],
+      "linear_delays": [
+        1,
+        3
+      ],
+      "linear_tap_scale": 0.06,
+      "linear_parameters": 4,
+      "temporal_parameters": 3,
+      "temporal_basis": [
+        "constant",
+        "linear",
+        "quadratic"
+      ],
+      "temporal_scales": [
+        0.08,
+        0.1,
+        0.06
+      ],
+      "parameter_distribution": "independent uniform [-1,1]",
+      "boundary": "causal zero padding",
+      "order": "temporal(linear(x))",
+      "rms_renormalization": false,
+      "rng": "explicit private CPU generator",
+      "exact_physical_factor_identification": false
+    },
+    "randomness": "private_generator_no_native_RNG_draws",
+    "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+  },
+  "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+}
