@@ -2090,7 +2090,7 @@
     "Curve invariance limited to ideal global complex gain/phase/constant CFO in evidence input. No arbitrary channel cancellation or transmitter-factor identifiability claim.",
     "Design and literature: experiments/cvs_dual_evidence/DESIGN.md. Actual clean/6view gains unknown until scoring."
   ],
-  "status": "QUEUED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "rows": 16,
     "views": [
@@ -2167,5 +2167,6 @@
     "new_objective_weights": {},
     "source_selection": "fixed_E200_all_controls"
   },
-  "registered_at": "2026-10-09T03:11:50+00:00"
+  "registered_at": "2026-10-09T03:11:50+00:00",
+  "results_ref": "../20261009-phase1-dual-evidence-test-now-manysig-m16-r02/results/complete_summary.md"
 }

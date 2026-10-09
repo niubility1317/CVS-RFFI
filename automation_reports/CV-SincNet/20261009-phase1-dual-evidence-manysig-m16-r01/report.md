@@ -3,7 +3,7 @@
 - run_id：`20261009-phase1-dual-evidence-manysig-m16-r01`
 - group_id：`cvs-dual-complementary-evidence`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：QUEUED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -59,3 +59,7 @@ SOURCE COMPLETE / TEST QUEUED / VERIFIED。16 行均完成 E200 和 44400 次成
 ## 立即测试交接
 
 用户随后要求“直接启动”，测试由独立run `20261009-phase1-dual-evidence-test-now-manysig-m16-r02`接管并已运行。原空闲调度器已安全退出，源训练与权重不变。8个预测进程正在执行、8行待第二批；本次临时每卡最多1额外推理、总数5。最终完整结果见[立即测试报告](../20261009-phase1-dual-evidence-test-now-manysig-m16-r02/report.md)。原队列快照为历史状态，不代表仍等待容量。
+
+## 测试已完成
+
+ANALYZED / VERIFIED：独立测试run完成全部112组预测、1568条总体/RX/TX指标及448条日期指标，并完成独立复算。[完整结果](../20261009-phase1-dual-evidence-test-now-manysig-m16-r02/results/complete_summary.md)。之前的QUEUED/RUNNING记录属于历史状态。

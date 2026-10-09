@@ -3,7 +3,7 @@
 - run_id：`20261009-phase1-dual-evidence-test-now-manysig-m16-r02`
 - group_id：`cvs-dual-complementary-evidence`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -45,3 +45,7 @@ RUNNING / VERIFIED。控制器PID2293080；8个实际GPU预测进程已启动，
 ## 完整测试交付
 
 ANALYZED / VERIFIED。完整结果见[结果表](results/full_results.md)、[逐RX/TX](results/scores.csv)、[逐日期](results/day_scores.csv)。所有负结果完整保留。
+
+## 完整结果解释
+
+完整测试及独立复算通过。新增[完整汇总](results/complete_summary.md)，包括全部7视图准确率、Macro-F1、最差RX、全部16行逐seed结果与资源口径。本轮双骨干总体未带来收益，负结果完整保留。
