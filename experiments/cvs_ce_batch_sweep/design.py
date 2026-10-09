@@ -1,9 +1,11 @@
 import math
+import sys
 from pathlib import Path
 PROJECT=Path('/home/szu2070436088/2510044040/CV-SincNet')
 WORKER=PROJECT/'releases/cvs_reference_repair_20261008_r01'
+sys.path[:0]=[str(WORKER),str(WORKER/'code')]
 WORKER_COMMIT='ae783c81cd4949f93a80dbd2e80c4b2568eb99ea'
-RUN='20261009-phase1-ce-singlepass-batch-manysig-m4-r01'
+RUN='20261009-phase1-ce-singlepass-batch-manysig-m4-r02'
 BASE=PROJECT/'runs'/RUN
 BATCHES=(256,512,1024,2048)
 SEED=2026092701

@@ -3,7 +3,7 @@ import hashlib,io,json,subprocess,tarfile
 from pathlib import Path
 from experiments.cvs_phase1_stack.publish import ROOT,CONNECTION,ssh
 from experiments.cvs_ce_batch_sweep.design import PROJECT,RUN
-RELEASE='cvs_ce_singlepass_batch_20261009_r01'
+RELEASE='cvs_ce_singlepass_batch_20261009_r02'
 REMOTE=r'''
 from pathlib import Path
 import os,json,subprocess,hashlib,tarfile,shutil
@@ -21,6 +21,7 @@ with tarfile.open(archive) as tar:
 python='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'
 env=dict(os.environ,OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONUNBUFFERED='1')
 subprocess.run([python,'-m','py_compile',*[str(release/n) for n in ('design.py','source.py','evaluate.py')]],check=True,env=env)
+subprocess.run([python,'-c',"import sys;sys.path.insert(0,"+repr(str(release))+");import design as d;assert (d.WORKER/'release_commit.txt').read_text().strip()==d.WORKER_COMMIT;cs=[d.config(b) for b in d.BATCHES];assert len(cs)==4;[d.validate(c) for c in cs];[d.make_args(c) for c in cs]"],check=True,env=env,cwd=release)
 cmd=[python,'-u',str(release/'evaluate.py'),'--mode','dispatch'];logpath=release/'controller.log'
 with logpath.open('x') as log:child=subprocess.Popen(cmd,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
 receipt=dict(status='SUBMITTED',pid=child.pid,cwd=str(release),argv=cmd,log=str(logpath),commit=c['commit'],run_id=c['run'])
