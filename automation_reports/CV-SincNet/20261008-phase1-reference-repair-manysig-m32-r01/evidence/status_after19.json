@@ -1,0 +1,39 @@
+{
+  "checked_at": "2026-10-09T09:39:17.606358+08:00",
+  "source_completed": 19,
+  "tested": 19,
+  "active": [
+    "pseudo_bank_constant-s2026092703",
+    "pseudo_batch_cosine-s2026092703",
+    "pseudo_bank_cosine-s2026092703",
+    "bank_cosine_domain-s2026092703"
+  ],
+  "pending": [
+    "bank_cosine_mixstyle-s2026092703",
+    "ce_cosine-s2026092704",
+    "leo_cosine-s2026092704",
+    "pseudo_batch_constant-s2026092704",
+    "pseudo_bank_constant-s2026092704",
+    "pseudo_batch_cosine-s2026092704",
+    "pseudo_bank_cosine-s2026092704",
+    "bank_cosine_domain-s2026092704",
+    "bank_cosine_mixstyle-s2026092704"
+  ],
+  "failures": [],
+  "controller": {
+    "pid": 1170536,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_direct_20261008_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_direct_20261008_r01/direct_controller.py",
+      "--worker-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_20261008_r01",
+      ""
+    ]
+  },
+  "early_evaluation_runs": [
+    "20261008-evaluation-reference-repair-completed5-manysig-m5-r01",
+    "20261009-evaluation-reference-repair-completed14-manysig-m14-r01"
+  ]
+}

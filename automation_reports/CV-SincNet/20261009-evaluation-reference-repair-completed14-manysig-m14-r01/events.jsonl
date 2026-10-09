@@ -1,1 +1,3 @@
 {"at": "2026-10-09T01:31:10+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-09T01:32:35+00:00", "status": "RUNNING", "note": "VERIFIED fourteen checkpoint preflight, controller and inference worker; original32 training untouched.", "evidence": ["evidence/startup_readback.json"], "row_id": null}
+{"at": "2026-10-09T01:40:34+00:00", "status": "ANALYZED", "note": "VERIFIED14 new models98 views scored; combined19 models1862 records independently recounted; fair8arm comparison on common2 seeds; original32 training unchanged.", "evidence": ["evidence/final_readback.json"], "row_id": null}

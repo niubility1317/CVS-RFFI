@@ -109,3 +109,7 @@ LEO＋cosine相对CE＋cosine源V提高0.096个百分点，最差源RX提高0.13
 已解析5行各完整200条epoch记录（1000条），并扫描5行全文训练stdout异常标记；无Traceback/OOM/RuntimeError/FloatingPointError命中，所有epoch的非有限loss/grad跳步均为0。未对逐step压缩日志做全面诊断。
 
 source_matrix_frozen、prediction/complete、scoring_complete、scores、summary均未生成。按原预登记须32行全部完成源训练与冻结，再执行7视图预测和独立truth-last评分。本次没有提前测试、修改模型/参数或重排队列。证据：[progress_20261008_1513.json](evidence/progress_20261008_1513.json)。
+
+## 2026-10-09完成19行测试
+
+截至2026-10-09T09:39:17.606358+08:00，训练完成19/32行、4行运行、9行等待。已完成19行均有clean与六星地测试成绩；本次独立补测14行，加上此前5行。主比较为八方法共同前两个seed。测试结果仅报告，不回流原32行训练、选模或重排；未干预健康进程。详见[19行测试报告](../20261009-evaluation-reference-repair-completed14-manysig-m14-r01/evidence/results19_zh.md)。

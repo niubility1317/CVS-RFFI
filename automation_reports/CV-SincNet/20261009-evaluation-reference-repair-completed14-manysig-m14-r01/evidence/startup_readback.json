@@ -1,0 +1,204 @@
+{
+  "checked_at": "2026-10-09T09:31:18.617114+08:00",
+  "receipt": {
+    "status": "SUBMITTED",
+    "pid": 2008585,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_completed14_eval_20261009_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_completed14_eval_20261009_r01/evaluate_completed14.py",
+      "--mode",
+      "dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_completed14_eval_20261009_r01/controller.log",
+    "commit": "241c471ff4799a79874b2456866838ae2a0f033e",
+    "run_id": "20261009-evaluation-reference-repair-completed14-manysig-m14-r01"
+  },
+  "controller": {
+    "pid": 2008585,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_completed14_eval_20261009_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_completed14_eval_20261009_r01/evaluate_completed14.py",
+      "--mode",
+      "dispatch"
+    ]
+  },
+  "active": {
+    "row_id": "bank_cosine_domain-s2026092701",
+    "gpu": 7,
+    "pid": 2008606,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_completed14_eval_20261009_r01/evaluate_completed14.py",
+      "--mode",
+      "predict",
+      "--row",
+      "bank_cosine_domain-s2026092701"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-evaluation-reference-repair-completed14-manysig-m14-r01/bank_cosine_domain-s2026092701.log"
+  },
+  "worker": {
+    "pid": 2008606,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_completed14_eval_20261009_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_completed14_eval_20261009_r01/evaluate_completed14.py",
+      "--mode",
+      "predict",
+      "--row",
+      "bank_cosine_domain-s2026092701"
+    ]
+  },
+  "files": {
+    "completion.json": null,
+    "failure.json": null,
+    "preflight.json": {
+      "status": "VERIFIED",
+      "models": 14,
+      "target_read": false,
+      "rows": [
+        "bank_cosine_domain-s2026092701",
+        "bank_cosine_domain-s2026092702",
+        "bank_cosine_mixstyle-s2026092701",
+        "bank_cosine_mixstyle-s2026092702",
+        "ce_cosine-s2026092702",
+        "ce_cosine-s2026092703",
+        "leo_cosine-s2026092702",
+        "leo_cosine-s2026092703",
+        "pseudo_bank_constant-s2026092702",
+        "pseudo_bank_cosine-s2026092701",
+        "pseudo_bank_cosine-s2026092702",
+        "pseudo_batch_constant-s2026092702",
+        "pseudo_batch_constant-s2026092703",
+        "pseudo_batch_cosine-s2026092702"
+      ],
+      "selection": "ALL_COMPLETED_UNTESTED_AT_SNAPSHOT"
+    },
+    "scoring_complete.json": null,
+    "summary.json": null,
+    "scores.json": null,
+    "resources.json": null
+  },
+  "rows": [
+    {
+      "row_id": "bank_cosine_domain-s2026092701",
+      "complete": null,
+      "resolved": {
+        "row_id": "bank_cosine_domain-s2026092701",
+        "run_id": "20261009-evaluation-reference-repair-completed14-manysig-m14-r01",
+        "pid": 2008606,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_completed14_eval_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "evaluation_commit": "241c471ff4799a79874b2456866838ae2a0f033e",
+        "source_run": "20261008-phase1-reference-repair-manysig-m32-r01",
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "batch_size": 256,
+        "parameters": 844754,
+        "trainable_parameters": 0,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121"
+      },
+      "log": ""
+    },
+    {
+      "row_id": "bank_cosine_domain-s2026092702",
+      "complete": null,
+      "resolved": null,
+      "log": null
+    },
+    {
+      "row_id": "bank_cosine_mixstyle-s2026092701",
+      "complete": null,
+      "resolved": null,
+      "log": null
+    },
+    {
+      "row_id": "bank_cosine_mixstyle-s2026092702",
+      "complete": null,
+      "resolved": null,
+      "log": null
+    },
+    {
+      "row_id": "ce_cosine-s2026092702",
+      "complete": null,
+      "resolved": null,
+      "log": null
+    },
+    {
+      "row_id": "ce_cosine-s2026092703",
+      "complete": null,
+      "resolved": null,
+      "log": null
+    },
+    {
+      "row_id": "leo_cosine-s2026092702",
+      "complete": null,
+      "resolved": null,
+      "log": null
+    },
+    {
+      "row_id": "leo_cosine-s2026092703",
+      "complete": null,
+      "resolved": null,
+      "log": null
+    },
+    {
+      "row_id": "pseudo_bank_constant-s2026092702",
+      "complete": null,
+      "resolved": null,
+      "log": null
+    },
+    {
+      "row_id": "pseudo_bank_cosine-s2026092701",
+      "complete": null,
+      "resolved": null,
+      "log": null
+    },
+    {
+      "row_id": "pseudo_bank_cosine-s2026092702",
+      "complete": null,
+      "resolved": null,
+      "log": null
+    },
+    {
+      "row_id": "pseudo_batch_constant-s2026092702",
+      "complete": null,
+      "resolved": null,
+      "log": null
+    },
+    {
+      "row_id": "pseudo_batch_constant-s2026092703",
+      "complete": null,
+      "resolved": null,
+      "log": null
+    },
+    {
+      "row_id": "pseudo_batch_cosine-s2026092702",
+      "complete": null,
+      "resolved": null,
+      "log": null
+    }
+  ],
+  "controller_log": ""
+}

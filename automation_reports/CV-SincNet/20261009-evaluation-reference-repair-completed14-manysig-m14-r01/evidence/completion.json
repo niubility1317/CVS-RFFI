@@ -1,0 +1,29 @@
+{
+  "status": "ANALYZED",
+  "rows": [
+    "bank_cosine_domain-s2026092701",
+    "bank_cosine_domain-s2026092702",
+    "bank_cosine_mixstyle-s2026092701",
+    "bank_cosine_mixstyle-s2026092702",
+    "ce_cosine-s2026092702",
+    "ce_cosine-s2026092703",
+    "leo_cosine-s2026092702",
+    "leo_cosine-s2026092703",
+    "pseudo_bank_constant-s2026092702",
+    "pseudo_bank_cosine-s2026092701",
+    "pseudo_bank_cosine-s2026092702",
+    "pseudo_batch_constant-s2026092702",
+    "pseudo_batch_constant-s2026092703",
+    "pseudo_batch_cosine-s2026092702"
+  ],
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "target_feedback_forbidden": true
+}
