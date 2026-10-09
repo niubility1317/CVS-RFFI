@@ -13,3 +13,9 @@ RUNS=[dict(run_id='20261009-phase1-receiver-residual-test-manysig-m16-r03',
     source_release='cvs_receiver_residual_v2_20261008_r02',source_commit='8a88b3a2e369644ea1d746c5e02006218ee00df6',
     disposition='FORMAL_R2_FIXED_RNG_BENCHMARK_EXPOSED')]
 OWNER='codex/root/receiver-residual-test-recovery-20261009'
+SCORE_RELEASE='cvs_receiver_residual_score_recovery_20261009_r01'
+SCORE_RUNS=[dict(r,run_id='20261009-phase1-receiver-residual-score-manysig-m16-r0'+str(i+5),
+    prediction_run_id=r['run_id']) for i,r in enumerate(RUNS)]
+# Fixed dataset metadata, not inferred from prediction values or performance.
+HELDOUT_RX={0:'1-1',2:'14-7',5:'2-1',7:'20-1',9:'7-14',10:'7-7',11:'8-8'}
+TARGET_DAYS=('2021_03_01','2021_03_08','2021_03_15','2021_03_23')

@@ -8,21 +8,22 @@ import sys
 import time
 import importlib
 from experiments.cvs_receiver_residual_test_recovery.contract import validate_source_contract
-from experiments.cvs_receiver_residual_test_recovery.design import PROJECT, RUNS
+from experiments.cvs_receiver_residual_test_recovery.design import PROJECT, RUNS, SCORE_RUNS, HELDOUT_RX, TARGET_DAYS
 
 d=None
 TEST_RUN=None
+SCORE_RUN=None
 
 def configure(run_id):
-    global d,TEST_RUN
-    selected=[r for r in RUNS if r["run_id"]==run_id]
+    global d,TEST_RUN,SCORE_RUN
+    selected=[r for r in RUNS+SCORE_RUNS if r["run_id"]==run_id]
     if len(selected)!=1:raise ValueError("Unregistered evaluation run")
     r=selected[0];release=Path(PROJECT)/"releases"/r["source_release"]
     if (release/"release_commit.txt").read_text().strip()!=r["source_commit"]:raise ValueError("Source release changed")
     sys.path[:0]=[str(release),str(release/"code")]
     d=importlib.import_module("experiments."+r["package"]+".design")
     if d.ROOT!=release or d.RUN!=r["parent_run_id"]:raise ValueError("Wrong source release imported")
-    TEST_RUN=run_id
+    TEST_RUN=r.get('prediction_run_id',run_id);SCORE_RUN=run_id
     return r
 
 def prediction_root(c):
@@ -78,6 +79,7 @@ def physical_ids():
 
 
 def predict(rid):
+    if SCORE_RUN!=TEST_RUN:raise ValueError('Score-only recovery cannot create predictions')
     import numpy as np
     import torch
     from experiments.cvs_equivariant_identity.precision import numerical_context,actual_flags
@@ -156,23 +158,40 @@ def validate_predictions():
     return rows,ids,base
 
 
+def truth_arrays(truth,ids):
+    import numpy as np
+    if set(truth)!=set(ids.tolist()):raise ValueError('Truth physical IDs differ')
+    y=np.asarray([truth[s]['label'] for s in ids]);rx=np.asarray([str(truth[s]['receiver']) for s in ids])
+    days=np.asarray([str(truth[s]['day']) for s in ids])
+    if (y.dtype.kind not in 'iu' or set(y)!=set(range(6)) or set(rx)!=set(HELDOUT_RX.values())
+        or set(days)!=set(TARGET_DAYS)):raise ValueError('Truth label/physical RX/day coverage differs')
+    if len(ids)!=168000:raise ValueError('Truth count differs')
+    for label in range(6):
+        for receiver in HELDOUT_RX.values():
+            for day in TARGET_DAYS:
+                if int(((y==label)&(rx==receiver)&(days==day)).sum())!=1000:
+                    raise ValueError('Registered label/RX/day balanced coverage differs')
+    return y,rx,days
+
+
 def score():
     import numpy as np
     from comparison_suite.score import metrics
-    rows,ids,base=validate_predictions()
+    rows,ids,prediction_base=validate_predictions()
+    base=Path(d.PROJECT)/'runs'/SCORE_RUN
+    if SCORE_RUN!=TEST_RUN and not base.is_dir():raise ValueError('Score-only controller must reserve output')
     truth=d.read(d.TRUTH)
-    y=np.asarray([truth[s]['label'] for s in ids]);rx=np.asarray([str(truth[s]['receiver']) for s in ids])
-    if set(y)!=set(range(6)) or set(rx)!=set(map(str,[0,2,5,7,9,10,11])): raise ValueError('Truth coverage differs')
-    results=[];resources=[]
+    y,rx,days=truth_arrays(truth,ids)
+    results=[];day_results=[];resources=[]
     for c in rows:
         rid=d.row_id(c['arm'],c['model_seed']);row=dict(row_id=rid,arm=c['arm'],model_seed=c['model_seed'])
         source=Path(c['output_root']);out=prediction_root(c)
         resources.append(dict(**row,source=d.read(source/'resource_profile.json'),prediction=d.read(out/'complete.json')))
         with np.load(out/'predictions.npz',allow_pickle=False) as p:
             for view in d.VIEWS:
-                for dim,strata in [('overall',['ALL']),('receiver',sorted(set(rx))),('transmitter',d.CLASSES)]:
+                for dim,strata in [('overall',['ALL']),('receiver',list(HELDOUT_RX.values())),('transmitter',d.CLASSES),('day',list(TARGET_DAYS))]:
                     for stratum in strata:
-                        mask=np.ones(len(ids),bool) if dim=='overall' else rx==stratum if dim=='receiver' else y==d.CLASSES.index(stratum)
+                        mask=np.ones(len(ids),bool) if dim=='overall' else rx==stratum if dim=='receiver' else days==stratum if dim=='day' else y==d.CLASSES.index(stratum)
                         r=metrics(y[mask],p[view][mask],6)
                         cm=np.bincount(6*y[mask]+p[view][mask],minlength=36).reshape(6,6)
                         den=cm.sum(0)+cm.sum(1)
@@ -180,7 +199,8 @@ def score():
                         if (r['confusion']!=cm.tolist() or r['query_count']!=int(cm.sum())
                             or abs(r['accuracy']-float(np.trace(cm)/cm.sum()))>1e-12 or abs(r['macro_f1']-f1)>1e-12):
                             raise ValueError('Independent confusion/accuracy/F1 recount differs')
-                        results.append(dict(**row,view=view,dimension=dim,stratum=stratum,**r))
+                        item=dict(**row,view=view,dimension=dim,stratum=stratum,**r)
+                        (day_results if dim=='day' else results).append(item)
     summary=[];paired=[]
     overall={(r['arm'],r['model_seed'],r['view']):r for r in results if r['dimension']=='overall'}
     for view in d.VIEWS:
@@ -202,6 +222,22 @@ def score():
     d.write(base/'summary.json',dict(results=summary));csvwrite(base/'summary.csv',summary)
     d.write(base/'paired_results.json',dict(comparisons=paired,interpretation='paired model seeds; four-seed descriptive evidence'))
     d.write(base/'resources.json',dict(rows=resources))
+    d.write(base/'day_scores.json',dict(results=day_results,interpretation='Supplemental complete fixed physical-day partitions; no selection'))
+    csvwrite(base/'day_scores.csv',[{k:v for k,v in r.items() if k!='confusion'} for r in day_results])
+    d.write(base/'receiver_map.json',dict(index_to_physical_receiver=HELDOUT_RX,
+        provenance='Original ManySig rx_list metadata; exact heldout indices0,2,5,7,9,10,11',prediction_run_id=TEST_RUN))
+    for c in rows:
+        rid=d.row_id(c['arm'],c['model_seed']);row_base=base/rid;row_base.mkdir(exist_ok=False)
+        rs=[r for r in results if r['row_id']==rid];ds=[r for r in day_results if r['row_id']==rid]
+        d.write(row_base/'scores.json',dict(results=rs))
+        csvwrite(row_base/'scores.csv',[{k:v for k,v in r.items() if k!='confusion'} for r in rs])
+        d.write(row_base/'day_scores.json',dict(results=ds))
+        csvwrite(row_base/'day_scores.csv',[{k:v for k,v in r.items() if k!='confusion'} for r in ds])
+        d.write(row_base/'resources.json',next(r for r in resources if r['row_id']==rid))
+        d.write(row_base/'receiver_map.json',dict(index_to_physical_receiver=HELDOUT_RX))
+        d.write(row_base/'summary.json',dict(results=[r for r in summary if r['arm']==c['arm']]))
+        d.write(row_base/'paired_results.json',dict(comparisons=[r for r in paired]))
+        d.write(row_base/'scoring_complete.json',dict(status='SCORED_COMPLETE',views=7,result_rows=len(rs),day_result_rows=len(ds)))
     lines=['# Receiver residual: fixed 2×2 comparison','',
         'All 16 scratch E200 rows were frozen before query access. Truth opened only after all 16×7 predictions.',
         'Exposed benchmark; six complete practical residual views share physical IDs. Phase2/K/new TX/H: N/A.',
@@ -210,7 +246,8 @@ def score():
     lines += [f"|{r['arm']}|{r['view']}|{100*r['accuracy_mean']:.3f} ± {100*r['accuracy_sd']:.3f}%|{100*r['worst_rx_mean']:.3f}%|" for r in summary]
     (base/'analysis.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
     d.write(base/'scoring_complete.json',dict(status='SCORED_COMPLETE',rows=16,views=7,
-        result_rows=len(results),independent_recount='VERIFIED',truth_last=True,target_feedback_forbidden=True))
+        result_rows=len(results),day_result_rows=len(day_results),independent_recount='VERIFIED',truth_last=True,
+        prediction_run_id=TEST_RUN,predictions_reused=True,target_feedback_forbidden=True))
 
 
 if __name__=='__main__':

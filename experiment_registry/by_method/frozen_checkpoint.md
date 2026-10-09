@@ -6,5 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|完整冻结预测独立评分：R1混杂诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r05/report.md)|
+|完整冻结预测独立评分：R2四seed正式消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r06/report.md)|
 |冻结E200独立测试：R1随机混杂诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r03/report.md)|
 |冻结E200独立测试：R2修复后四seed正式消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r04/report.md)|
