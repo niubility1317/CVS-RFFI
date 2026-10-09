@@ -27,7 +27,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-09：根据以上实现，分配子agent，快速完成，按照设计，不能偏移偏差。沿用旧门控＋cosine及每卡4进程授权。",
   "code": {
-    "commit": "release_commit.txt records actual committed/pushed execution version",
+    "commit": "c037af5a19d5973486942a090bced9cbae070d38",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01"
@@ -4881,7 +4881,7 @@
     "Previously exposed proxy benchmark; Phase2/adaptation/K/new classes/H N/A. Negative results retained.",
     "Design parity tracked in analysis/multi_disentangle_traceability.md and this run design.md."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "test_completion_plan": {
     "rows": 32,
     "views": [

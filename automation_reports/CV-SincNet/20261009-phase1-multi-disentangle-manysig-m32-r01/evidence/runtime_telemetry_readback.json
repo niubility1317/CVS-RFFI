@@ -1,0 +1,235 @@
+{
+  "rows": [],
+  "capacity": {
+    "0": {
+      "pids": [
+        2050331,
+        2074154,
+        2074865,
+        2129534
+      ],
+      "free_mb": 11590
+    },
+    "1": {
+      "pids": [
+        2002696,
+        2074130,
+        2074216,
+        2129071
+      ],
+      "free_mb": 12064
+    },
+    "2": {
+      "pids": [
+        2072691,
+        2074135,
+        2074244,
+        2128878
+      ],
+      "free_mb": 14494
+    },
+    "3": {
+      "pids": [
+        2073206,
+        2074148,
+        2074702,
+        2128908
+      ],
+      "free_mb": 14242
+    },
+    "4": {
+      "pids": [
+        2074140,
+        2074408,
+        2128731,
+        2128755
+      ],
+      "free_mb": 15346
+    },
+    "5": {
+      "pids": [
+        2074161,
+        2074960,
+        2128736,
+        2128761
+      ],
+      "free_mb": 15348
+    },
+    "6": {
+      "pids": [
+        2074173,
+        2074976,
+        2128743,
+        2128826
+      ],
+      "free_mb": 16140
+    },
+    "7": {
+      "pids": [
+        2074190,
+        2075066,
+        2128749,
+        2128852
+      ],
+      "free_mb": 16140
+    }
+  },
+  "leases": {
+    "source-unified-s2026092701": {
+      "pid": 2128743,
+      "gpu": 6,
+      "observed_pids": [
+        2074173,
+        2074976,
+        2128743,
+        2128826
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-fixed_interventions-s2026092702": {
+      "pid": 2128908,
+      "gpu": 3,
+      "observed_pids": [
+        2073206,
+        2074148,
+        2074702,
+        2128908
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-fixed_interventions-s2026092701": {
+      "pid": 2128736,
+      "gpu": 5,
+      "observed_pids": [
+        2074161,
+        2074960,
+        2128736,
+        2128761
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-legacy_cosine-s2026092702": {
+      "pid": 2128878,
+      "gpu": 2,
+      "observed_pids": [
+        2072691,
+        2074135,
+        2074244,
+        2128878
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-unified-s2026092702": {
+      "pid": 2129071,
+      "gpu": 1,
+      "observed_pids": [
+        2002696,
+        2074130,
+        2074216,
+        2129071
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-multi_interaction-s2026092701": {
+      "pid": 2128852,
+      "gpu": 7,
+      "observed_pids": [
+        2074190,
+        2075066,
+        2128749,
+        2128852
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-multi-s2026092701": {
+      "pid": 2128826,
+      "gpu": 6,
+      "observed_pids": [
+        2074173,
+        2074976,
+        2128743,
+        2128826
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-linear-s2026092701": {
+      "pid": 2128749,
+      "gpu": 7,
+      "observed_pids": [
+        2074190,
+        2075066,
+        2128749,
+        2128852
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-receiver-s2026092701": {
+      "pid": 2128761,
+      "gpu": 5,
+      "observed_pids": [
+        2074161,
+        2074960,
+        2128736,
+        2128761
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-temporal-s2026092701": {
+      "pid": 2128755,
+      "gpu": 4,
+      "observed_pids": [
+        2074140,
+        2074408,
+        2128731,
+        2128755
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-legacy_cosine-s2026092701": {
+      "pid": 2128731,
+      "gpu": 4,
+      "observed_pids": [
+        2074140,
+        2074408,
+        2128731,
+        2128755
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-linear-s2026092702": {
+      "pid": 2129534,
+      "gpu": 0,
+      "observed_pids": [
+        2050331,
+        2074154,
+        2074865,
+        2129534
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    }
+  }
+}

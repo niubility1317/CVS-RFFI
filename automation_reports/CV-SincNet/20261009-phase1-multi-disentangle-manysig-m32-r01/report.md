@@ -3,7 +3,7 @@
 - run_id：`20261009-phase1-multi-disentangle-manysig-m32-r01`
 - group_id：`cvs-multi-disentanglement`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：LOCAL_VERIFIED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -68,3 +68,11 @@ R 仅使用 source L 中 TX/RX/接收质量分层的聚合充分统计，跨 RX 
 实际执行命令为 `python -m experiments.cvs_multi_disentangle.checks --device cpu/cuda:0 --output ...`、`python -m experiments.cvs_multi_disentangle.smoke --device cpu/cuda:0 --output ...`、`smoke --baseline-probe`、`smoke --summarize-gpu`，以及 `python -m experiments.cvs_multi_disentangle.evaluation_checks --output ...` 和交付器的独立重算。解释器为 `C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8`。小体积验证证据收录在 [evidence/local_verified.json](evidence/local_verified.json)。完整矩阵合成评分和交付复算通过，没有读取真实 target。
 
 主体架构及训练职责按批准设计实现。统一对照容量为近似匹配；R 为统计残差而非可辨识的纯硬件成分；额外同因子双路径属于设计中的可选后续扩展，未加入首轮。正式训练完成、机制持续执行及测试性能仍待远端产物验证。
+
+## 发布读回
+
+VERIFIED。代码提交：`c037af5a19d5973486942a090bced9cbae070d38`；控制器 PID：2128714。登记 32 行，已启动 12 行，实际配置已读回 12 行，容量等待 0 行，尚在队列 20 行。全部 GPU 总实验进程数不超过 4。证据见 [launch_verified.json](evidence/launch_verified.json)。这是发布时快照；20 epoch 预热尚不能证明正式辅助机制已执行。
+
+完整训练和测试尚未完成，性能提升未知。控制器自动执行固定 E200 冻结、全部 224 组预测和独立 truth-last 评分；本地只读观察器收取并独立复算产物后交付报告。
+
+观察器 PID 68664 已通过独立 Win32_Process 与启动产物读回验证，见 [observer_verified.json](evidence/observer_verified.json)。N607 提交版本的 CPU 检查与八臂原生训练链预检均 PASS，见 [remote_preflight_verified.json](evidence/remote_preflight_verified.json)。代码推送 OID 证据见 [code_git_verified.json](evidence/code_git_verified.json)，草稿 [PR #8](https://github.com/niubility1317/CVS-RFFI/pull/8) 已更新，未合并。

@@ -1,0 +1,135 @@
+{
+  "status": "VERIFIED",
+  "source_commit": "c037af5a19d5973486942a090bced9cbae070d38",
+  "controller": {
+    "pid": 2128714,
+    "state": "S",
+    "start_ticks": 76866325,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_multi_disentangle.dispatch"
+    ]
+  },
+  "preregistered": 32,
+  "launched": 12,
+  "resolved_rows": [
+    "legacy_cosine-s2026092701",
+    "fixed_interventions-s2026092701",
+    "unified-s2026092701",
+    "linear-s2026092701",
+    "temporal-s2026092701",
+    "receiver-s2026092701",
+    "multi-s2026092701",
+    "multi_interaction-s2026092701",
+    "legacy_cosine-s2026092702",
+    "fixed_interventions-s2026092702",
+    "unified-s2026092702",
+    "linear-s2026092702"
+  ],
+  "waiting_capacity_rows": [],
+  "queued_rows": [
+    "temporal-s2026092702",
+    "receiver-s2026092702",
+    "multi-s2026092702",
+    "multi_interaction-s2026092702",
+    "legacy_cosine-s2026092703",
+    "fixed_interventions-s2026092703",
+    "unified-s2026092703",
+    "linear-s2026092703",
+    "temporal-s2026092703",
+    "receiver-s2026092703",
+    "multi-s2026092703",
+    "multi_interaction-s2026092703",
+    "legacy_cosine-s2026092704",
+    "fixed_interventions-s2026092704",
+    "unified-s2026092704",
+    "linear-s2026092704",
+    "temporal-s2026092704",
+    "receiver-s2026092704",
+    "multi-s2026092704",
+    "multi_interaction-s2026092704"
+  ],
+  "completed_rows": [],
+  "epoch_telemetry_rows": 0,
+  "capacity": {
+    "0": {
+      "pids": [
+        2050331,
+        2074154,
+        2074865,
+        2129534
+      ],
+      "free_mb": 11590
+    },
+    "1": {
+      "pids": [
+        2002696,
+        2074130,
+        2074216,
+        2129071
+      ],
+      "free_mb": 12064
+    },
+    "2": {
+      "pids": [
+        2072691,
+        2074135,
+        2074244,
+        2128878
+      ],
+      "free_mb": 14494
+    },
+    "3": {
+      "pids": [
+        2073206,
+        2074148,
+        2074702,
+        2128908
+      ],
+      "free_mb": 14242
+    },
+    "4": {
+      "pids": [
+        2074140,
+        2074408,
+        2128731,
+        2128755
+      ],
+      "free_mb": 15346
+    },
+    "5": {
+      "pids": [
+        2074161,
+        2074960,
+        2128736,
+        2128761
+      ],
+      "free_mb": 15348
+    },
+    "6": {
+      "pids": [
+        2074173,
+        2074976,
+        2128743,
+        2128826
+      ],
+      "free_mb": 16140
+    },
+    "7": {
+      "pids": [
+        2074190,
+        2075066,
+        2128749,
+        2128852
+      ],
+      "free_mb": 16140
+    }
+  },
+  "source_training_complete": false,
+  "test_complete": false,
+  "performance_gain": null,
+  "auxiliary_mechanism_note": "Warmup20; initial launch does not claim post-warmup mechanism execution."
+}

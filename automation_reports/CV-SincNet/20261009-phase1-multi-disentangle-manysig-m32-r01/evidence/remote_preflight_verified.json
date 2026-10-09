@@ -1,0 +1,384 @@
+{
+  "status": "VERIFIED",
+  "artifacts": {
+    "checks-remote.json": {
+      "status": "PASS",
+      "device": "cpu",
+      "backend_flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "physical": {
+        "private_physical_rng": true,
+        "zero_interventions_exact": true,
+        "ordered_factorial": true,
+        "order_difference_max": 0.0005660057067871094
+      },
+      "components": {
+        "native_intermediate_exact": true,
+        "auxiliary_components": [
+          {
+            "branch": "linear",
+            "encoder_gradient": true,
+            "operator_gradient": true,
+            "independent": true,
+            "zero_state_exact_identity": true,
+            "learned_code_used": true,
+            "bounded": true
+          },
+          {
+            "branch": "temporal",
+            "encoder_gradient": true,
+            "operator_gradient": true,
+            "independent": true,
+            "zero_state_exact_identity": true,
+            "learned_code_used": true,
+            "bounded": true
+          },
+          {
+            "branch": "receiver",
+            "encoder_gradient": true,
+            "operator_gradient": true,
+            "independent": true,
+            "zero_state_exact_identity": true,
+            "learned_code_used": true,
+            "bounded": true
+          },
+          {
+            "branch": "interaction",
+            "encoder_gradient": true,
+            "operator_gradient": true,
+            "independent": true,
+            "zero_state_exact_identity": true,
+            "learned_code_used": true,
+            "bounded": true
+          }
+        ],
+        "isolated_aux_fit": true,
+        "isolated_identity_constraint": true
+      },
+      "inference": {
+        "identity_only_stateless": true,
+        "batch_independence_max_difference": 3.0994415283203125e-06,
+        "strict_checkpoint_roundtrip": true
+      },
+      "runtime": {
+        "rows": [
+          {
+            "arm": "legacy_cosine",
+            "status": "PASS",
+            "auxiliary_updates": 0,
+            "native_rng_preserved": true,
+            "aux_fit_identity_gradient": false,
+            "identity_auxiliary_gradient": false,
+            "identity_only_inference": true,
+            "receiver_relations": null
+          },
+          {
+            "arm": "fixed_interventions",
+            "status": "PASS",
+            "auxiliary_updates": 0,
+            "native_rng_preserved": true,
+            "aux_fit_identity_gradient": false,
+            "identity_auxiliary_gradient": false,
+            "identity_only_inference": true,
+            "receiver_relations": null
+          },
+          {
+            "arm": "unified",
+            "status": "PASS",
+            "auxiliary_updates": 2,
+            "native_rng_preserved": true,
+            "aux_fit_identity_gradient": false,
+            "identity_auxiliary_gradient": false,
+            "identity_only_inference": true,
+            "receiver_relations": 8.0
+          },
+          {
+            "arm": "linear",
+            "status": "PASS",
+            "auxiliary_updates": 1,
+            "native_rng_preserved": true,
+            "aux_fit_identity_gradient": false,
+            "identity_auxiliary_gradient": false,
+            "identity_only_inference": true,
+            "receiver_relations": null
+          },
+          {
+            "arm": "temporal",
+            "status": "PASS",
+            "auxiliary_updates": 1,
+            "native_rng_preserved": true,
+            "aux_fit_identity_gradient": false,
+            "identity_auxiliary_gradient": false,
+            "identity_only_inference": true,
+            "receiver_relations": null
+          },
+          {
+            "arm": "receiver",
+            "status": "PASS",
+            "auxiliary_updates": 2,
+            "native_rng_preserved": true,
+            "aux_fit_identity_gradient": false,
+            "identity_auxiliary_gradient": false,
+            "identity_only_inference": true,
+            "receiver_relations": 8.0
+          },
+          {
+            "arm": "multi",
+            "status": "PASS",
+            "auxiliary_updates": 2,
+            "native_rng_preserved": true,
+            "aux_fit_identity_gradient": false,
+            "identity_auxiliary_gradient": false,
+            "identity_only_inference": true,
+            "receiver_relations": 8.0
+          },
+          {
+            "arm": "multi_interaction",
+            "status": "PASS",
+            "auxiliary_updates": 2,
+            "native_rng_preserved": true,
+            "aux_fit_identity_gradient": false,
+            "identity_auxiliary_gradient": false,
+            "identity_only_inference": true,
+            "receiver_relations": 8.0
+          }
+        ],
+        "group_statistics_order_invariant": true,
+        "hidden_U_rejected": true
+      },
+      "target_read": false,
+      "formal_weights": false
+    },
+    "smoke-remote/completion.json": {
+      "status": "PASS",
+      "device": "cpu",
+      "rows": [
+        {
+          "arm": "legacy_cosine",
+          "status": "PASS",
+          "epochs": [
+            1,
+            21,
+            22,
+            23,
+            24,
+            80,
+            131,
+            132,
+            200
+          ],
+          "actual_auxiliary_epochs": [],
+          "validation_readonly": true,
+          "hidden_U": true,
+          "production_writer": true,
+          "native_updates": 9,
+          "synthetic": true
+        },
+        {
+          "arm": "fixed_interventions",
+          "status": "PASS",
+          "epochs": [
+            1,
+            21,
+            22,
+            23,
+            24,
+            80,
+            131,
+            132,
+            200
+          ],
+          "actual_auxiliary_epochs": [
+            24,
+            200
+          ],
+          "validation_readonly": true,
+          "hidden_U": true,
+          "production_writer": true,
+          "native_updates": 9,
+          "synthetic": true
+        },
+        {
+          "arm": "unified",
+          "status": "PASS",
+          "epochs": [
+            1,
+            21,
+            22,
+            23,
+            24,
+            80,
+            131,
+            132,
+            200
+          ],
+          "actual_auxiliary_epochs": [
+            24,
+            200
+          ],
+          "validation_readonly": true,
+          "hidden_U": true,
+          "production_writer": true,
+          "native_updates": 9,
+          "synthetic": true
+        },
+        {
+          "arm": "linear",
+          "status": "PASS",
+          "epochs": [
+            1,
+            21,
+            22,
+            23,
+            24,
+            80,
+            131,
+            132,
+            200
+          ],
+          "actual_auxiliary_epochs": [
+            24,
+            200
+          ],
+          "validation_readonly": true,
+          "hidden_U": true,
+          "production_writer": true,
+          "native_updates": 9,
+          "synthetic": true
+        },
+        {
+          "arm": "temporal",
+          "status": "PASS",
+          "epochs": [
+            1,
+            21,
+            22,
+            23,
+            24,
+            80,
+            131,
+            132,
+            200
+          ],
+          "actual_auxiliary_epochs": [
+            24,
+            200
+          ],
+          "validation_readonly": true,
+          "hidden_U": true,
+          "production_writer": true,
+          "native_updates": 9,
+          "synthetic": true
+        },
+        {
+          "arm": "receiver",
+          "status": "PASS",
+          "epochs": [
+            1,
+            21,
+            22,
+            23,
+            24,
+            80,
+            131,
+            132,
+            200
+          ],
+          "actual_auxiliary_epochs": [
+            24,
+            200
+          ],
+          "validation_readonly": true,
+          "hidden_U": true,
+          "production_writer": true,
+          "native_updates": 9,
+          "synthetic": true
+        },
+        {
+          "arm": "multi",
+          "status": "PASS",
+          "epochs": [
+            1,
+            21,
+            22,
+            23,
+            24,
+            80,
+            131,
+            132,
+            200
+          ],
+          "actual_auxiliary_epochs": [
+            24,
+            200
+          ],
+          "validation_readonly": true,
+          "hidden_U": true,
+          "production_writer": true,
+          "native_updates": 9,
+          "synthetic": true
+        },
+        {
+          "arm": "multi_interaction",
+          "status": "PASS",
+          "epochs": [
+            1,
+            21,
+            22,
+            23,
+            24,
+            80,
+            131,
+            132,
+            200
+          ],
+          "actual_auxiliary_epochs": [
+            24,
+            200
+          ],
+          "validation_readonly": true,
+          "hidden_U": true,
+          "production_writer": true,
+          "native_updates": 9,
+          "synthetic": true
+        }
+      ],
+      "baseline_training_bitwise_equivalent": true,
+      "baseline_initial_weights_bitwise_equal": true,
+      "baseline_all_step_native_rng_bitwise_equal": true,
+      "gpu_native_repeat_max_difference": null,
+      "gpu_baseline_max_difference": null,
+      "gpu_comparison_rule": "Measured native-repeat variation under unchanged registered backend; no relaxed fixed tolerance",
+      "target_access": false,
+      "formal_weights": false,
+      "full_budget_verified": false,
+      "synthetic_override": "synthetic L/U/V and local output only; real production objective/writer chain",
+      "backend_flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      }
+    },
+    "submit.json": {
+      "status": "SUBMITTED",
+      "pid": 2128714,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_multi_disentangle.dispatch"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/dispatcher.stdout.log",
+      "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01"
+    }
+  }
+}

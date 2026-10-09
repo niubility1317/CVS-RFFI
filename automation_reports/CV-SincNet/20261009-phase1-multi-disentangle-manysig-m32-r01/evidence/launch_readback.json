@@ -1,0 +1,1948 @@
+{
+  "at": 1791521006.8922014,
+  "receipt": {
+    "status": "SUBMITTED",
+    "pid": 2128714,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_multi_disentangle.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/dispatcher.stdout.log",
+    "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+    "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01"
+  },
+  "controller": {
+    "pid": 2128714,
+    "state": "S",
+    "start_ticks": 76866325,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_multi_disentangle.dispatch"
+    ]
+  },
+  "queue": {
+    "kind": "source",
+    "active": [
+      "legacy_cosine-s2026092701",
+      "fixed_interventions-s2026092701",
+      "unified-s2026092701",
+      "linear-s2026092701",
+      "temporal-s2026092701",
+      "receiver-s2026092701",
+      "multi-s2026092701",
+      "multi_interaction-s2026092701",
+      "legacy_cosine-s2026092702",
+      "fixed_interventions-s2026092702",
+      "unified-s2026092702",
+      "linear-s2026092702"
+    ],
+    "pending": [
+      "temporal-s2026092702",
+      "receiver-s2026092702",
+      "multi-s2026092702",
+      "multi_interaction-s2026092702",
+      "legacy_cosine-s2026092703",
+      "fixed_interventions-s2026092703",
+      "unified-s2026092703",
+      "linear-s2026092703",
+      "temporal-s2026092703",
+      "receiver-s2026092703",
+      "multi-s2026092703",
+      "multi_interaction-s2026092703",
+      "legacy_cosine-s2026092704",
+      "fixed_interventions-s2026092704",
+      "unified-s2026092704",
+      "linear-s2026092704",
+      "temporal-s2026092704",
+      "receiver-s2026092704",
+      "multi-s2026092704",
+      "multi_interaction-s2026092704"
+    ],
+    "completed": [],
+    "failures": [],
+    "per_gpu_limit": 4,
+    "updated_at": 1791521004.6300128
+  },
+  "failure": null,
+  "completion": null,
+  "rows": [
+    {
+      "row_id": "legacy_cosine-s2026092701",
+      "kind": "source",
+      "pid": 2128731,
+      "start_ticks": 76866486,
+      "gpu": 4,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+        "--kind",
+        "source",
+        "--row",
+        "legacy_cosine-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-disentangle-manysig-m32-r01/source-legacy_cosine-s2026092701.log",
+      "actual": {
+        "pid": 2128731,
+        "state": "S",
+        "start_ticks": 76866486,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+          "--kind",
+          "source",
+          "--row",
+          "legacy_cosine-s2026092701"
+        ]
+      },
+      "log_bytes": 8106,
+      "epoch": null,
+      "resolved": {
+        "schema": "multi_disentangle_v1",
+        "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "stage": "multi_disentangle",
+        "arm": "legacy_cosine",
+        "model_seed": 2026092701,
+        "row_id": "legacy_cosine-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/legacy_cosine-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_multi_disentangle",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "multi_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "rank": 8,
+          "code_dim": 8,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "identity_aux_weight": 0.05,
+          "paired_consistency_weight": 0.03,
+          "receiver_identity_weight": 0.01,
+          "residual_bound": 0.25,
+          "receiver_min_group_count": 2,
+          "receiver_max_age_steps": 888,
+          "receiver_relations_max": 8,
+          "receiver_quality_thresholds": [
+            0.25,
+            0.75
+          ],
+          "receiver_response_rms_threshold": 1.0,
+          "receiver_abs_cfo_threshold": 0.1,
+          "auxiliary_data": "labeled_source_train_only",
+          "deployment": "identity_only",
+          "resume": false,
+          "source_selection": "fixed_E200_all_controls",
+          "interactions": "explicit_L_then_T_factorial",
+          "interventions": {
+            "scope": "Known mild post-receive interventions only",
+            "shape": [
+              2,
+              256
+            ],
+            "linear_delays": [
+              1,
+              3
+            ],
+            "linear_tap_scale": 0.06,
+            "linear_parameters": 4,
+            "temporal_parameters": 3,
+            "temporal_basis": [
+              "constant",
+              "linear",
+              "quadratic"
+            ],
+            "temporal_scales": [
+              0.08,
+              0.1,
+              0.06
+            ],
+            "parameter_distribution": "independent uniform [-1,1]",
+            "boundary": "causal zero padding",
+            "order": "temporal(linear(x))",
+            "rms_renormalization": false,
+            "rng": "explicit private CPU generator",
+            "exact_physical_factor_identification": false
+          },
+          "randomness": "private_generator_no_native_RNG_draws",
+          "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+        },
+        "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+        "pid": 2128731,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "4",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/legacy_cosine-s2026092701/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "completion": null
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "kind": "source",
+      "pid": 2128736,
+      "start_ticks": 76866517,
+      "gpu": 5,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+        "--kind",
+        "source",
+        "--row",
+        "fixed_interventions-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-disentangle-manysig-m32-r01/source-fixed_interventions-s2026092701.log",
+      "actual": {
+        "pid": 2128736,
+        "state": "S",
+        "start_ticks": 76866517,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+          "--kind",
+          "source",
+          "--row",
+          "fixed_interventions-s2026092701"
+        ]
+      },
+      "log_bytes": 8174,
+      "epoch": null,
+      "resolved": {
+        "schema": "multi_disentangle_v1",
+        "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "stage": "multi_disentangle",
+        "arm": "fixed_interventions",
+        "model_seed": 2026092701,
+        "row_id": "fixed_interventions-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/fixed_interventions-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_multi_disentangle",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "multi_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "rank": 8,
+          "code_dim": 8,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "identity_aux_weight": 0.05,
+          "paired_consistency_weight": 0.03,
+          "receiver_identity_weight": 0.01,
+          "residual_bound": 0.25,
+          "receiver_min_group_count": 2,
+          "receiver_max_age_steps": 888,
+          "receiver_relations_max": 8,
+          "receiver_quality_thresholds": [
+            0.25,
+            0.75
+          ],
+          "receiver_response_rms_threshold": 1.0,
+          "receiver_abs_cfo_threshold": 0.1,
+          "auxiliary_data": "labeled_source_train_only",
+          "deployment": "identity_only",
+          "resume": false,
+          "source_selection": "fixed_E200_all_controls",
+          "interactions": "explicit_L_then_T_factorial",
+          "interventions": {
+            "scope": "Known mild post-receive interventions only",
+            "shape": [
+              2,
+              256
+            ],
+            "linear_delays": [
+              1,
+              3
+            ],
+            "linear_tap_scale": 0.06,
+            "linear_parameters": 4,
+            "temporal_parameters": 3,
+            "temporal_basis": [
+              "constant",
+              "linear",
+              "quadratic"
+            ],
+            "temporal_scales": [
+              0.08,
+              0.1,
+              0.06
+            ],
+            "parameter_distribution": "independent uniform [-1,1]",
+            "boundary": "causal zero padding",
+            "order": "temporal(linear(x))",
+            "rms_renormalization": false,
+            "rng": "explicit private CPU generator",
+            "exact_physical_factor_identification": false
+          },
+          "randomness": "private_generator_no_native_RNG_draws",
+          "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+        },
+        "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+        "pid": 2128736,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "5",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/fixed_interventions-s2026092701/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "completion": null
+    },
+    {
+      "row_id": "unified-s2026092701",
+      "kind": "source",
+      "pid": 2128743,
+      "start_ticks": 76866545,
+      "gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+        "--kind",
+        "source",
+        "--row",
+        "unified-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-disentangle-manysig-m32-r01/source-unified-s2026092701.log",
+      "actual": {
+        "pid": 2128743,
+        "state": "R",
+        "start_ticks": 76866545,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+          "--kind",
+          "source",
+          "--row",
+          "unified-s2026092701"
+        ]
+      },
+      "log_bytes": 8094,
+      "epoch": null,
+      "resolved": {
+        "schema": "multi_disentangle_v1",
+        "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "stage": "multi_disentangle",
+        "arm": "unified",
+        "model_seed": 2026092701,
+        "row_id": "unified-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/unified-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_multi_disentangle",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "multi_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "rank": 8,
+          "code_dim": 8,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "identity_aux_weight": 0.05,
+          "paired_consistency_weight": 0.03,
+          "receiver_identity_weight": 0.01,
+          "residual_bound": 0.25,
+          "receiver_min_group_count": 2,
+          "receiver_max_age_steps": 888,
+          "receiver_relations_max": 8,
+          "receiver_quality_thresholds": [
+            0.25,
+            0.75
+          ],
+          "receiver_response_rms_threshold": 1.0,
+          "receiver_abs_cfo_threshold": 0.1,
+          "auxiliary_data": "labeled_source_train_only",
+          "deployment": "identity_only",
+          "resume": false,
+          "source_selection": "fixed_E200_all_controls",
+          "interactions": "explicit_L_then_T_factorial",
+          "interventions": {
+            "scope": "Known mild post-receive interventions only",
+            "shape": [
+              2,
+              256
+            ],
+            "linear_delays": [
+              1,
+              3
+            ],
+            "linear_tap_scale": 0.06,
+            "linear_parameters": 4,
+            "temporal_parameters": 3,
+            "temporal_basis": [
+              "constant",
+              "linear",
+              "quadratic"
+            ],
+            "temporal_scales": [
+              0.08,
+              0.1,
+              0.06
+            ],
+            "parameter_distribution": "independent uniform [-1,1]",
+            "boundary": "causal zero padding",
+            "order": "temporal(linear(x))",
+            "rms_renormalization": false,
+            "rng": "explicit private CPU generator",
+            "exact_physical_factor_identification": false
+          },
+          "randomness": "private_generator_no_native_RNG_draws",
+          "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+        },
+        "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+        "pid": 2128743,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "6",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/unified-s2026092701/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "completion": null
+    },
+    {
+      "row_id": "linear-s2026092701",
+      "kind": "source",
+      "pid": 2128749,
+      "start_ticks": 76866574,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+        "--kind",
+        "source",
+        "--row",
+        "linear-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-disentangle-manysig-m32-r01/source-linear-s2026092701.log",
+      "actual": {
+        "pid": 2128749,
+        "state": "R",
+        "start_ticks": 76866574,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+          "--kind",
+          "source",
+          "--row",
+          "linear-s2026092701"
+        ]
+      },
+      "log_bytes": 8062,
+      "epoch": null,
+      "resolved": {
+        "schema": "multi_disentangle_v1",
+        "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "stage": "multi_disentangle",
+        "arm": "linear",
+        "model_seed": 2026092701,
+        "row_id": "linear-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/linear-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_multi_disentangle",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "multi_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "rank": 8,
+          "code_dim": 8,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "identity_aux_weight": 0.05,
+          "paired_consistency_weight": 0.03,
+          "receiver_identity_weight": 0.01,
+          "residual_bound": 0.25,
+          "receiver_min_group_count": 2,
+          "receiver_max_age_steps": 888,
+          "receiver_relations_max": 8,
+          "receiver_quality_thresholds": [
+            0.25,
+            0.75
+          ],
+          "receiver_response_rms_threshold": 1.0,
+          "receiver_abs_cfo_threshold": 0.1,
+          "auxiliary_data": "labeled_source_train_only",
+          "deployment": "identity_only",
+          "resume": false,
+          "source_selection": "fixed_E200_all_controls",
+          "interactions": "explicit_L_then_T_factorial",
+          "interventions": {
+            "scope": "Known mild post-receive interventions only",
+            "shape": [
+              2,
+              256
+            ],
+            "linear_delays": [
+              1,
+              3
+            ],
+            "linear_tap_scale": 0.06,
+            "linear_parameters": 4,
+            "temporal_parameters": 3,
+            "temporal_basis": [
+              "constant",
+              "linear",
+              "quadratic"
+            ],
+            "temporal_scales": [
+              0.08,
+              0.1,
+              0.06
+            ],
+            "parameter_distribution": "independent uniform [-1,1]",
+            "boundary": "causal zero padding",
+            "order": "temporal(linear(x))",
+            "rms_renormalization": false,
+            "rng": "explicit private CPU generator",
+            "exact_physical_factor_identification": false
+          },
+          "randomness": "private_generator_no_native_RNG_draws",
+          "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+        },
+        "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+        "pid": 2128749,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "7",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/linear-s2026092701/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "completion": null
+    },
+    {
+      "row_id": "temporal-s2026092701",
+      "kind": "source",
+      "pid": 2128755,
+      "start_ticks": 76866603,
+      "gpu": 4,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+        "--kind",
+        "source",
+        "--row",
+        "temporal-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-disentangle-manysig-m32-r01/source-temporal-s2026092701.log",
+      "actual": {
+        "pid": 2128755,
+        "state": "S",
+        "start_ticks": 76866603,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+          "--kind",
+          "source",
+          "--row",
+          "temporal-s2026092701"
+        ]
+      },
+      "log_bytes": 8080,
+      "epoch": null,
+      "resolved": {
+        "schema": "multi_disentangle_v1",
+        "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "stage": "multi_disentangle",
+        "arm": "temporal",
+        "model_seed": 2026092701,
+        "row_id": "temporal-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/temporal-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_multi_disentangle",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "multi_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "rank": 8,
+          "code_dim": 8,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "identity_aux_weight": 0.05,
+          "paired_consistency_weight": 0.03,
+          "receiver_identity_weight": 0.01,
+          "residual_bound": 0.25,
+          "receiver_min_group_count": 2,
+          "receiver_max_age_steps": 888,
+          "receiver_relations_max": 8,
+          "receiver_quality_thresholds": [
+            0.25,
+            0.75
+          ],
+          "receiver_response_rms_threshold": 1.0,
+          "receiver_abs_cfo_threshold": 0.1,
+          "auxiliary_data": "labeled_source_train_only",
+          "deployment": "identity_only",
+          "resume": false,
+          "source_selection": "fixed_E200_all_controls",
+          "interactions": "explicit_L_then_T_factorial",
+          "interventions": {
+            "scope": "Known mild post-receive interventions only",
+            "shape": [
+              2,
+              256
+            ],
+            "linear_delays": [
+              1,
+              3
+            ],
+            "linear_tap_scale": 0.06,
+            "linear_parameters": 4,
+            "temporal_parameters": 3,
+            "temporal_basis": [
+              "constant",
+              "linear",
+              "quadratic"
+            ],
+            "temporal_scales": [
+              0.08,
+              0.1,
+              0.06
+            ],
+            "parameter_distribution": "independent uniform [-1,1]",
+            "boundary": "causal zero padding",
+            "order": "temporal(linear(x))",
+            "rms_renormalization": false,
+            "rng": "explicit private CPU generator",
+            "exact_physical_factor_identification": false
+          },
+          "randomness": "private_generator_no_native_RNG_draws",
+          "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+        },
+        "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+        "pid": 2128755,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "4",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/temporal-s2026092701/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "completion": null
+    },
+    {
+      "row_id": "receiver-s2026092701",
+      "kind": "source",
+      "pid": 2128761,
+      "start_ticks": 76866631,
+      "gpu": 5,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+        "--kind",
+        "source",
+        "--row",
+        "receiver-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-disentangle-manysig-m32-r01/source-receiver-s2026092701.log",
+      "actual": {
+        "pid": 2128761,
+        "state": "R",
+        "start_ticks": 76866631,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+          "--kind",
+          "source",
+          "--row",
+          "receiver-s2026092701"
+        ]
+      },
+      "log_bytes": 8080,
+      "epoch": null,
+      "resolved": {
+        "schema": "multi_disentangle_v1",
+        "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "stage": "multi_disentangle",
+        "arm": "receiver",
+        "model_seed": 2026092701,
+        "row_id": "receiver-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/receiver-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_multi_disentangle",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "multi_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "rank": 8,
+          "code_dim": 8,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "identity_aux_weight": 0.05,
+          "paired_consistency_weight": 0.03,
+          "receiver_identity_weight": 0.01,
+          "residual_bound": 0.25,
+          "receiver_min_group_count": 2,
+          "receiver_max_age_steps": 888,
+          "receiver_relations_max": 8,
+          "receiver_quality_thresholds": [
+            0.25,
+            0.75
+          ],
+          "receiver_response_rms_threshold": 1.0,
+          "receiver_abs_cfo_threshold": 0.1,
+          "auxiliary_data": "labeled_source_train_only",
+          "deployment": "identity_only",
+          "resume": false,
+          "source_selection": "fixed_E200_all_controls",
+          "interactions": "explicit_L_then_T_factorial",
+          "interventions": {
+            "scope": "Known mild post-receive interventions only",
+            "shape": [
+              2,
+              256
+            ],
+            "linear_delays": [
+              1,
+              3
+            ],
+            "linear_tap_scale": 0.06,
+            "linear_parameters": 4,
+            "temporal_parameters": 3,
+            "temporal_basis": [
+              "constant",
+              "linear",
+              "quadratic"
+            ],
+            "temporal_scales": [
+              0.08,
+              0.1,
+              0.06
+            ],
+            "parameter_distribution": "independent uniform [-1,1]",
+            "boundary": "causal zero padding",
+            "order": "temporal(linear(x))",
+            "rms_renormalization": false,
+            "rng": "explicit private CPU generator",
+            "exact_physical_factor_identification": false
+          },
+          "randomness": "private_generator_no_native_RNG_draws",
+          "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+        },
+        "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+        "pid": 2128761,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "5",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/receiver-s2026092701/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "completion": null
+    },
+    {
+      "row_id": "multi-s2026092701",
+      "kind": "source",
+      "pid": 2128826,
+      "start_ticks": 76866692,
+      "gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+        "--kind",
+        "source",
+        "--row",
+        "multi-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-disentangle-manysig-m32-r01/source-multi-s2026092701.log",
+      "actual": {
+        "pid": 2128826,
+        "state": "R",
+        "start_ticks": 76866692,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+          "--kind",
+          "source",
+          "--row",
+          "multi-s2026092701"
+        ]
+      },
+      "log_bytes": 8078,
+      "epoch": null,
+      "resolved": {
+        "schema": "multi_disentangle_v1",
+        "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "stage": "multi_disentangle",
+        "arm": "multi",
+        "model_seed": 2026092701,
+        "row_id": "multi-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_multi_disentangle",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "multi_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "rank": 8,
+          "code_dim": 8,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "identity_aux_weight": 0.05,
+          "paired_consistency_weight": 0.03,
+          "receiver_identity_weight": 0.01,
+          "residual_bound": 0.25,
+          "receiver_min_group_count": 2,
+          "receiver_max_age_steps": 888,
+          "receiver_relations_max": 8,
+          "receiver_quality_thresholds": [
+            0.25,
+            0.75
+          ],
+          "receiver_response_rms_threshold": 1.0,
+          "receiver_abs_cfo_threshold": 0.1,
+          "auxiliary_data": "labeled_source_train_only",
+          "deployment": "identity_only",
+          "resume": false,
+          "source_selection": "fixed_E200_all_controls",
+          "interactions": "explicit_L_then_T_factorial",
+          "interventions": {
+            "scope": "Known mild post-receive interventions only",
+            "shape": [
+              2,
+              256
+            ],
+            "linear_delays": [
+              1,
+              3
+            ],
+            "linear_tap_scale": 0.06,
+            "linear_parameters": 4,
+            "temporal_parameters": 3,
+            "temporal_basis": [
+              "constant",
+              "linear",
+              "quadratic"
+            ],
+            "temporal_scales": [
+              0.08,
+              0.1,
+              0.06
+            ],
+            "parameter_distribution": "independent uniform [-1,1]",
+            "boundary": "causal zero padding",
+            "order": "temporal(linear(x))",
+            "rms_renormalization": false,
+            "rng": "explicit private CPU generator",
+            "exact_physical_factor_identification": false
+          },
+          "randomness": "private_generator_no_native_RNG_draws",
+          "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+        },
+        "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+        "pid": 2128826,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "6",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092701/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "completion": null
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "kind": "source",
+      "pid": 2128852,
+      "start_ticks": 76866786,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+        "--kind",
+        "source",
+        "--row",
+        "multi_interaction-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-disentangle-manysig-m32-r01/source-multi_interaction-s2026092701.log",
+      "actual": {
+        "pid": 2128852,
+        "state": "R",
+        "start_ticks": 76866786,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+          "--kind",
+          "source",
+          "--row",
+          "multi_interaction-s2026092701"
+        ]
+      },
+      "log_bytes": 8189,
+      "epoch": null,
+      "resolved": {
+        "schema": "multi_disentangle_v1",
+        "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "stage": "multi_disentangle",
+        "arm": "multi_interaction",
+        "model_seed": 2026092701,
+        "row_id": "multi_interaction-s2026092701",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi_interaction-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_multi_disentangle",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "multi_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "rank": 8,
+          "code_dim": 8,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "identity_aux_weight": 0.05,
+          "paired_consistency_weight": 0.03,
+          "receiver_identity_weight": 0.01,
+          "residual_bound": 0.25,
+          "receiver_min_group_count": 2,
+          "receiver_max_age_steps": 888,
+          "receiver_relations_max": 8,
+          "receiver_quality_thresholds": [
+            0.25,
+            0.75
+          ],
+          "receiver_response_rms_threshold": 1.0,
+          "receiver_abs_cfo_threshold": 0.1,
+          "auxiliary_data": "labeled_source_train_only",
+          "deployment": "identity_only",
+          "resume": false,
+          "source_selection": "fixed_E200_all_controls",
+          "interactions": "explicit_L_then_T_factorial",
+          "interventions": {
+            "scope": "Known mild post-receive interventions only",
+            "shape": [
+              2,
+              256
+            ],
+            "linear_delays": [
+              1,
+              3
+            ],
+            "linear_tap_scale": 0.06,
+            "linear_parameters": 4,
+            "temporal_parameters": 3,
+            "temporal_basis": [
+              "constant",
+              "linear",
+              "quadratic"
+            ],
+            "temporal_scales": [
+              0.08,
+              0.1,
+              0.06
+            ],
+            "parameter_distribution": "independent uniform [-1,1]",
+            "boundary": "causal zero padding",
+            "order": "temporal(linear(x))",
+            "rms_renormalization": false,
+            "rng": "explicit private CPU generator",
+            "exact_physical_factor_identification": false
+          },
+          "randomness": "private_generator_no_native_RNG_draws",
+          "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+        },
+        "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+        "pid": 2128852,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "7",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi_interaction-s2026092701/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "completion": null
+    },
+    {
+      "row_id": "legacy_cosine-s2026092702",
+      "kind": "source",
+      "pid": 2128878,
+      "start_ticks": 76866937,
+      "gpu": 2,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+        "--kind",
+        "source",
+        "--row",
+        "legacy_cosine-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-disentangle-manysig-m32-r01/source-legacy_cosine-s2026092702.log",
+      "actual": {
+        "pid": 2128878,
+        "state": "S",
+        "start_ticks": 76866937,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+          "--kind",
+          "source",
+          "--row",
+          "legacy_cosine-s2026092702"
+        ]
+      },
+      "log_bytes": 8106,
+      "epoch": null,
+      "resolved": {
+        "schema": "multi_disentangle_v1",
+        "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "stage": "multi_disentangle",
+        "arm": "legacy_cosine",
+        "model_seed": 2026092702,
+        "row_id": "legacy_cosine-s2026092702",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/legacy_cosine-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_multi_disentangle",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "multi_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "rank": 8,
+          "code_dim": 8,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "identity_aux_weight": 0.05,
+          "paired_consistency_weight": 0.03,
+          "receiver_identity_weight": 0.01,
+          "residual_bound": 0.25,
+          "receiver_min_group_count": 2,
+          "receiver_max_age_steps": 888,
+          "receiver_relations_max": 8,
+          "receiver_quality_thresholds": [
+            0.25,
+            0.75
+          ],
+          "receiver_response_rms_threshold": 1.0,
+          "receiver_abs_cfo_threshold": 0.1,
+          "auxiliary_data": "labeled_source_train_only",
+          "deployment": "identity_only",
+          "resume": false,
+          "source_selection": "fixed_E200_all_controls",
+          "interactions": "explicit_L_then_T_factorial",
+          "interventions": {
+            "scope": "Known mild post-receive interventions only",
+            "shape": [
+              2,
+              256
+            ],
+            "linear_delays": [
+              1,
+              3
+            ],
+            "linear_tap_scale": 0.06,
+            "linear_parameters": 4,
+            "temporal_parameters": 3,
+            "temporal_basis": [
+              "constant",
+              "linear",
+              "quadratic"
+            ],
+            "temporal_scales": [
+              0.08,
+              0.1,
+              0.06
+            ],
+            "parameter_distribution": "independent uniform [-1,1]",
+            "boundary": "causal zero padding",
+            "order": "temporal(linear(x))",
+            "rms_renormalization": false,
+            "rng": "explicit private CPU generator",
+            "exact_physical_factor_identification": false
+          },
+          "randomness": "private_generator_no_native_RNG_draws",
+          "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+        },
+        "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+        "pid": 2128878,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "2",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/legacy_cosine-s2026092702/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "completion": null
+    },
+    {
+      "row_id": "fixed_interventions-s2026092702",
+      "kind": "source",
+      "pid": 2128908,
+      "start_ticks": 76867122,
+      "gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+        "--kind",
+        "source",
+        "--row",
+        "fixed_interventions-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-disentangle-manysig-m32-r01/source-fixed_interventions-s2026092702.log",
+      "actual": {
+        "pid": 2128908,
+        "state": "R",
+        "start_ticks": 76867122,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+          "--kind",
+          "source",
+          "--row",
+          "fixed_interventions-s2026092702"
+        ]
+      },
+      "log_bytes": 8174,
+      "epoch": null,
+      "resolved": {
+        "schema": "multi_disentangle_v1",
+        "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "stage": "multi_disentangle",
+        "arm": "fixed_interventions",
+        "model_seed": 2026092702,
+        "row_id": "fixed_interventions-s2026092702",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/fixed_interventions-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_multi_disentangle",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "multi_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "rank": 8,
+          "code_dim": 8,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "identity_aux_weight": 0.05,
+          "paired_consistency_weight": 0.03,
+          "receiver_identity_weight": 0.01,
+          "residual_bound": 0.25,
+          "receiver_min_group_count": 2,
+          "receiver_max_age_steps": 888,
+          "receiver_relations_max": 8,
+          "receiver_quality_thresholds": [
+            0.25,
+            0.75
+          ],
+          "receiver_response_rms_threshold": 1.0,
+          "receiver_abs_cfo_threshold": 0.1,
+          "auxiliary_data": "labeled_source_train_only",
+          "deployment": "identity_only",
+          "resume": false,
+          "source_selection": "fixed_E200_all_controls",
+          "interactions": "explicit_L_then_T_factorial",
+          "interventions": {
+            "scope": "Known mild post-receive interventions only",
+            "shape": [
+              2,
+              256
+            ],
+            "linear_delays": [
+              1,
+              3
+            ],
+            "linear_tap_scale": 0.06,
+            "linear_parameters": 4,
+            "temporal_parameters": 3,
+            "temporal_basis": [
+              "constant",
+              "linear",
+              "quadratic"
+            ],
+            "temporal_scales": [
+              0.08,
+              0.1,
+              0.06
+            ],
+            "parameter_distribution": "independent uniform [-1,1]",
+            "boundary": "causal zero padding",
+            "order": "temporal(linear(x))",
+            "rms_renormalization": false,
+            "rng": "explicit private CPU generator",
+            "exact_physical_factor_identification": false
+          },
+          "randomness": "private_generator_no_native_RNG_draws",
+          "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+        },
+        "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+        "pid": 2128908,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "3",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/fixed_interventions-s2026092702/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "completion": null
+    },
+    {
+      "row_id": "unified-s2026092702",
+      "kind": "source",
+      "pid": 2129071,
+      "start_ticks": 76867336,
+      "gpu": 1,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+        "--kind",
+        "source",
+        "--row",
+        "unified-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-disentangle-manysig-m32-r01/source-unified-s2026092702.log",
+      "actual": {
+        "pid": 2129071,
+        "state": "R",
+        "start_ticks": 76867336,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+          "--kind",
+          "source",
+          "--row",
+          "unified-s2026092702"
+        ]
+      },
+      "log_bytes": 8094,
+      "epoch": null,
+      "resolved": {
+        "schema": "multi_disentangle_v1",
+        "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "stage": "multi_disentangle",
+        "arm": "unified",
+        "model_seed": 2026092702,
+        "row_id": "unified-s2026092702",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/unified-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_multi_disentangle",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "multi_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "rank": 8,
+          "code_dim": 8,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "identity_aux_weight": 0.05,
+          "paired_consistency_weight": 0.03,
+          "receiver_identity_weight": 0.01,
+          "residual_bound": 0.25,
+          "receiver_min_group_count": 2,
+          "receiver_max_age_steps": 888,
+          "receiver_relations_max": 8,
+          "receiver_quality_thresholds": [
+            0.25,
+            0.75
+          ],
+          "receiver_response_rms_threshold": 1.0,
+          "receiver_abs_cfo_threshold": 0.1,
+          "auxiliary_data": "labeled_source_train_only",
+          "deployment": "identity_only",
+          "resume": false,
+          "source_selection": "fixed_E200_all_controls",
+          "interactions": "explicit_L_then_T_factorial",
+          "interventions": {
+            "scope": "Known mild post-receive interventions only",
+            "shape": [
+              2,
+              256
+            ],
+            "linear_delays": [
+              1,
+              3
+            ],
+            "linear_tap_scale": 0.06,
+            "linear_parameters": 4,
+            "temporal_parameters": 3,
+            "temporal_basis": [
+              "constant",
+              "linear",
+              "quadratic"
+            ],
+            "temporal_scales": [
+              0.08,
+              0.1,
+              0.06
+            ],
+            "parameter_distribution": "independent uniform [-1,1]",
+            "boundary": "causal zero padding",
+            "order": "temporal(linear(x))",
+            "rms_renormalization": false,
+            "rng": "explicit private CPU generator",
+            "exact_physical_factor_identification": false
+          },
+          "randomness": "private_generator_no_native_RNG_draws",
+          "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+        },
+        "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+        "pid": 2129071,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "1",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/unified-s2026092702/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "completion": null
+    },
+    {
+      "row_id": "linear-s2026092702",
+      "kind": "source",
+      "pid": 2129534,
+      "start_ticks": 76867577,
+      "gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+        "--kind",
+        "source",
+        "--row",
+        "linear-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-disentangle-manysig-m32-r01/source-linear-s2026092702.log",
+      "actual": {
+        "pid": 2129534,
+        "state": "R",
+        "start_ticks": 76867577,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01/experiments/cvs_multi_disentangle/train_worker.py",
+          "--kind",
+          "source",
+          "--row",
+          "linear-s2026092702"
+        ]
+      },
+      "log_bytes": 8062,
+      "epoch": null,
+      "resolved": {
+        "schema": "multi_disentangle_v1",
+        "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "stage": "multi_disentangle",
+        "arm": "linear",
+        "model_seed": 2026092702,
+        "row_id": "linear-s2026092702",
+        "features": [
+          "ema",
+          "leo",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/linear-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_multi_disentangle",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "multi_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "rank": 8,
+          "code_dim": 8,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "identity_aux_weight": 0.05,
+          "paired_consistency_weight": 0.03,
+          "receiver_identity_weight": 0.01,
+          "residual_bound": 0.25,
+          "receiver_min_group_count": 2,
+          "receiver_max_age_steps": 888,
+          "receiver_relations_max": 8,
+          "receiver_quality_thresholds": [
+            0.25,
+            0.75
+          ],
+          "receiver_response_rms_threshold": 1.0,
+          "receiver_abs_cfo_threshold": 0.1,
+          "auxiliary_data": "labeled_source_train_only",
+          "deployment": "identity_only",
+          "resume": false,
+          "source_selection": "fixed_E200_all_controls",
+          "interactions": "explicit_L_then_T_factorial",
+          "interventions": {
+            "scope": "Known mild post-receive interventions only",
+            "shape": [
+              2,
+              256
+            ],
+            "linear_delays": [
+              1,
+              3
+            ],
+            "linear_tap_scale": 0.06,
+            "linear_parameters": 4,
+            "temporal_parameters": 3,
+            "temporal_basis": [
+              "constant",
+              "linear",
+              "quadratic"
+            ],
+            "temporal_scales": [
+              0.08,
+              0.1,
+              0.06
+            ],
+            "parameter_distribution": "independent uniform [-1,1]",
+            "boundary": "causal zero padding",
+            "order": "temporal(linear(x))",
+            "rms_renormalization": false,
+            "rng": "explicit private CPU generator",
+            "exact_physical_factor_identification": false
+          },
+          "randomness": "private_generator_no_native_RNG_draws",
+          "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+        },
+        "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+        "pid": 2129534,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "c037af5a19d5973486942a090bced9cbae070d38",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "0",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/linear-s2026092702/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "completion": null
+    }
+  ]
+}
