@@ -23,3 +23,4 @@
 |CVS补偿响应：完整源V判别几何|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|
 |双路径冻结机制诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01/report.md)|
 |多解耦源端作用验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-multi-action-audit-manysig-m4-r01/report.md)|
+|多解耦源端作用验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-multi-action-audit-manysig-m4-r02/report.md)|

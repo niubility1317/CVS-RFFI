@@ -22,7 +22,7 @@ with tarfile.open(archive) as t:
 python='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'
 env=dict(os.environ,PYTHONPATH=str(release)+os.pathsep+str(release/'code'),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONUNBUFFERED='1')
 subprocess.run([python,'-m','compileall','-q',str(release)],env=env,check=True)
-check="from experiments.cvs_multi_action_audit.runner import run; from experiments.cvs_multi_action_audit import design as d; d.write('checkpoint_preflight.json',dict(status='VERIFIED',rows=[run(d.config(r),smoke=True) for r in d.rows()],target_access=False))"
+check="from experiments.cvs_multi_action_audit.runner import run; from experiments.cvs_multi_action_audit.checks import channel_bridge_check; from experiments.cvs_multi_action_audit import design as d; d.write('checkpoint_preflight.json',dict(status='VERIFIED',channel_bridge=channel_bridge_check(),rows=[run(d.config(r),smoke=True) for r in d.rows()],target_access=False))"
 with (release/'preflight.log').open('x') as log:
     subprocess.run([python,'-c',check],cwd=release,env=dict(env,CUDA_VISIBLE_DEVICES=''),stdout=log,stderr=subprocess.STDOUT,check=True)
 cmd=[python,'-u','-m','experiments.cvs_multi_action_audit.dispatch'];logpath=release/'dispatcher.stdout.log'

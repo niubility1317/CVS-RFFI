@@ -5,8 +5,10 @@ from experiments.cvs_phase1_overlay.contract import read, write
 
 ROOT = Path(__file__).resolve().parents[2]
 PROJECT = parent.PROJECT
-RUN = '20261009-phase1-multi-action-audit-manysig-m4-r01'
-RELEASE = 'cvs_multi_action_audit_20261009_r01'
+RUN = '20261009-phase1-multi-action-audit-manysig-m4-r02'
+RELEASE = 'cvs_multi_action_audit_20261009_r02'
+REPLACES = '20261009-phase1-multi-action-audit-manysig-m4-r01'
+CHANNEL_NAMESPACE = REPLACES+':source_audit'
 BASE = Path(PROJECT)/'runs'/RUN
 OWNER = 'codex/root/multi-action-audit-20261009'
 SOURCE = parent.SOURCE
@@ -29,8 +31,8 @@ def parent_config(seed):
 def config(row):
     p=parent_config(row['model_seed'])
     return dict(schema='multi_action_audit_v1',run_id=RUN,**row,recipe=RECIPE,
-        checkpoint=str(Path(p['output_root'])/'final_ssdg.pth'),parent_config=p,
-        source_contract=SOURCE,output_root=str(BASE/row['row_id']),
+        checkpoint=(Path(p['output_root'])/'final_ssdg.pth').as_posix(),parent_config=p,
+        source_contract=SOURCE,output_root=(BASE/row['row_id']).as_posix(),
         method='source_action_audit',target_access=False)
 
 def validate(c):

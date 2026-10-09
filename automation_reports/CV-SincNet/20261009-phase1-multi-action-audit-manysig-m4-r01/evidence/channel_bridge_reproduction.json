@@ -1,0 +1,13 @@
+{
+  "status": "VERIFIED",
+  "returncode": -11,
+  "torch_version": "2.1.0+cu121",
+  "numpy_version": "2.2.5",
+  "input": "2 synthetic IQ packets; no source/query data",
+  "native_frame": "code/leo_practical/batch.py:50",
+  "faulthandler": "Segmentation fault within channel_view Torch-to-NumPy adapter",
+  "from_numpy_probe": "TypeError: expected np.ndarray (got numpy.ndarray)",
+  "local_regression": "mock Tensor.numpy/from_numpy unavailable; copied scalar/byte bridge survives",
+  "other_jobs_changed": false,
+  "old_workers_all_exited": true
+}

@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-09T14:15:53.300975+00:00
+更新：2026-10-09T14:21:55.307106+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|125|
+|managed_run|126|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -36,8 +36,8 @@
 |[source](by_method/source.md)|23|
 |[rff_physics](by_method/rff_physics.md)|20|
 |[reference_response](by_method/reference_response.md)|20|
+|[source_only](by_method/source_only.md)|18|
 |[source_selected](by_method/source_selected.md)|18|
-|[source_only](by_method/source_only.md)|17|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|17|
 |[scratch](by_method/scratch.md)|17|
 |[d92](by_method/d92.md)|15|
@@ -93,6 +93,7 @@
 |[mechanism](by_method/mechanism.md)|3|
 |[packet_compensation](by_method/packet_compensation.md)|3|
 |[legacy_pseudo](by_method/legacy_pseudo.md)|3|
+|[multi_disentanglement](by_method/multi_disentanglement.md)|3|
 |[smoke](by_method/smoke.md)|3|
 |[evaluation](by_method/evaluation.md)|2|
 |[true256](by_method/true256.md)|2|
@@ -120,7 +121,8 @@
 |[dual_backbone](by_method/dual_backbone.md)|2|
 |[curvature](by_method/curvature.md)|2|
 |[conditional_interaction](by_method/conditional_interaction.md)|2|
-|[multi_disentanglement](by_method/multi_disentanglement.md)|2|
+|[heldout_physical_packets](by_method/heldout_physical_packets.md)|2|
+|[cross_tx_action](by_method/cross_tx_action.md)|2|
 |[score_only](by_method/score_only.md)|2|
 |[physical_receiver_metadata_repair](by_method/physical_receiver_metadata_repair.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
@@ -204,8 +206,6 @@
 |[CE](by_method/CE.md)|1|
 |[urban](by_method/urban.md)|1|
 |[channel_DG](by_method/channel_DG.md)|1|
-|[heldout_physical_packets](by_method/heldout_physical_packets.md)|1|
-|[cross_tx_action](by_method/cross_tx_action.md)|1|
 |[factorial_interaction](by_method/factorial_interaction.md)|1|
 |[independent_auxiliary_networks](by_method/independent_auxiliary_networks.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
@@ -332,6 +332,6 @@
 |旧门控＋cosine：保真与曲率双骨干、条件交互四seed研发|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-dual-evidence-manysig-m16-r01/report.md)|
 |双骨干互补证据：冻结16模型立即全量测试|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/report.md)|
 |多解耦源端作用验证|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-multi-action-audit-manysig-m4-r01/report.md)|
+|多解耦源端作用验证|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-multi-action-audit-manysig-m4-r02/report.md)|
 |旧门控＋cosine：独立线性、时间、接收机残差与交互多解耦四seed对照|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-multi-disentangle-manysig-m32-r01/report.md)|
 |完整冻结预测独立评分：R1混杂诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r05/report.md)|
-|完整冻结预测独立评分：R2四seed正式消融|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r06/report.md)|

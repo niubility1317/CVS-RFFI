@@ -5,6 +5,17 @@ import torch
 from experiments.cvs_multi_action_audit import design as d
 from experiments.cvs_multi_action_audit.runner import role_split,gradient_audit,gradient_indices,channel_view
 
+def channel_bridge_check(device='cpu'):
+    from unittest.mock import patch
+    data=dict(x=torch.randn(2,2,256,device=device),rx=torch.tensor([1,3],device=device),ids=['fit0','audit0'])
+    expected=channel_view(data)
+    with patch.object(torch.Tensor,'numpy',side_effect=RuntimeError('unsafe numpy bridge')),\
+         patch.object(torch,'from_numpy',side_effect=RuntimeError('unsafe numpy bridge')):
+        actual=channel_view(data)
+    assert torch.equal(expected['x'],actual['x']) and not torch.equal(actual['x'],data['x'])
+    assert all('\\' not in d.config(r)['checkpoint'] and '\\' not in d.config(r)['output_root'] for r in d.rows())
+    return dict(status='PASS',unsafe_tensor_numpy_bridge_absent=True,output_deterministic=True,remote_paths_posix=True)
+
 def checks(device='cpu'):
     torch.set_num_threads(2)
     records=[dict(id=str(i),y=i//6,rx=i%2,role='L_s') for i in range(12)]
@@ -34,9 +45,7 @@ def checks(device='cpu'):
     g=gradient_audit(m,x[:6],y[:6],torch.Generator().manual_seed(3))
     assert len(g['rows'])==20 and not g['actual_identity_update']
     assert all(torch.equal(v,m.state_dict()[k]) for k,v in saved.items())
-    data=dict(x=x[:2],rx=torch.tensor([1,3],device=device),ids=['fit0','audit0'])
-    v=channel_view(data);v2=channel_view(data)
-    assert torch.equal(v['x'],v2['x']) and not torch.equal(v['x'],data['x'])
+    channel_bridge_check(device)
     return dict(status='PASS',device=device,physical_roles_disjoint=True,negative_roles_rejected=True,
         actual_CVS_fit_and_audit=True,composition=True,gradient_audit=True,identity_unchanged=True,
         source_LEO_deterministic=True,target_read=False)

@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |多解耦源端作用验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-multi-action-audit-manysig-m4-r01/report.md)|
+|多解耦源端作用验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-multi-action-audit-manysig-m4-r02/report.md)|

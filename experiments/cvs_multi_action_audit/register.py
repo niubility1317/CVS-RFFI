@@ -46,7 +46,7 @@ def register():
         description='按用户报告第1步执行。固定4个multi E200身份骨干，在L_s独立物理包上比较辅助拟合目标和跨TX迁移，修正R统计并审查类别锚定。身份不更新；无新目标域评分。',
         aliases=['multi_action_audit','多解耦源端作用诊断'],tags=['source_only','multi_disentanglement','heldout_physical_packets','cross_tx_action'],
         comparison_group_id='manysig-fixed-multi-E200-source-action-audit-v1',
-        parent_run_ids=[d.parent.RUN],replaces_run_id=None,
+        parent_run_ids=[d.parent.RUN],replaces_run_id=d.REPLACES,
         authorization='用户2026-10-09：按照报告进行下一步优化验证，发布实验验证。报告第10节先源端诊断，再开展身份训练；沿用每GPU最多4进程授权。',
         code=dict(commit='Recorded from release_commit.txt after code commit',checkout=str(d.ROOT),
             environment='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python',cwd=d.PROJECT+'/releases/'+d.RELEASE),
@@ -57,7 +57,7 @@ def register():
             provenance_verdict='Parent scratch EXACT_MATCH evidence verified; runtime rechecks each actual checkpoint before use',
             contract_check_ref=d.SOURCE,selection_rule='All four registered multi rows at E200; no ranking or target metric consumption'),
         execution=dict(host='N607',launch_owner=d.OWNER,gpu_policy='<=4 total processes/GPU including reservations; existing shared lock; >=12GB free',
-            remote_run_root=str(d.BASE),remote_log_root=d.PROJECT+'/logs/'+d.RUN,
+            remote_run_root=d.BASE.as_posix(),remote_log_root=d.PROJECT+'/logs/'+d.RUN,
             local_artifact_root='automation_reports/CV-SincNet/'+d.RUN,
             launch_command='python -m experiments.cvs_multi_action_audit.publish --output local_artifacts/'+d.RELEASE,
             stop_rule='Technical failure only; retain outputs, no automatic retry or low-skill stop; preserve unrelated healthy tasks'),
@@ -86,6 +86,7 @@ def register():
         support_query_ref=None,leo_config_ref='source practical_mid residual/post_sync fs25MHz fc2.462GHz; deterministic physical IDs',
         roles=dict(original_L_s=.07,original_U_s=.63,original_V=.30,access='Only L_s sampled; U/V not consumed',
             fit_per_TX_RX=64,audit_per_TX_RX=32,physical_partition_seed=20261009))
+    spec['notes'].append('r02 repairs the reproduced N607 PyTorch/NumPy channel-bridge SIGSEGV and Windows POSIX path serialization; same physical split/seeds/budget/channel namespace; old partial outputs retained.')
     for row in d.rows():
         c=d.config(row);root=c['output_root']
         spec['rows'].append(dict(row_id=row['row_id'],method='source_action_audit',purpose='fixed_source_diagnostic',gpu=None,

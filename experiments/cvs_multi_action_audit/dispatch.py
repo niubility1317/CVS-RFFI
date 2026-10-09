@@ -23,7 +23,8 @@ def dispatch():
                     if rc is None:continue
                     path=d.BASE/rid/'completion.json'
                     valid=path.is_file() and d.read(path)['status']=='SOURCE_AUDIT_COMPLETE'
-                    (complete if rc==0 and valid else failures).append(rid)
+                    if rc==0 and valid:complete.append(rid)
+                    else:failures.append(dict(row_id=rid,exit_code=rc,artifact_valid=valid))
                     del active[rid]
                 while pending and not failures:
                     with lock(Path(d.PROJECT)/'runs/receiver_residual_capacity4.lock'):

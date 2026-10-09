@@ -27,7 +27,7 @@ for r in (read(b/'launch.json') or dict(rows=[]))['rows']:
 print(json.dumps(dict(at=time.time(),receipt=receipt,controller=proc(receipt['pid']) if receipt else None,
  preflight=read(release/'checkpoint_preflight.json'),queue=read(b/'queue_state.json'),
  failure=read(b/'failure.json'),completion=read(b/'completion.json'),rows=rows)))
-'''.replace('BASE',repr(str(d.BASE))).replace('RELEASE',repr(d.PROJECT+'/releases/'+d.RELEASE))
+'''.replace('BASE',repr(d.BASE.as_posix())).replace('RELEASE',repr(d.PROJECT+'/releases/'+d.RELEASE))
     value=json.loads(ssh(script));d.write(ART/'readback.json',value)
     return value
 
@@ -40,7 +40,7 @@ with tarfile.open(fileobj=sys.stdout.buffer,mode='w|gz') as t:
  for p in b.rglob('*'):
   if p.is_file() and p.suffix in ('.json','.jsonl','.csv','.md'):
    t.add(p,arcname=p.relative_to(b).as_posix(),recursive=False)
-'''.replace('BASE',repr(str(d.BASE)))
+'''.replace('BASE',repr(d.BASE.as_posix()))
     blob=ssh(script);ART.mkdir(parents=True,exist_ok=True)
     (ART/'results.tar.gz').write_bytes(blob)
     out=ART/'results';out.mkdir(exist_ok=True)

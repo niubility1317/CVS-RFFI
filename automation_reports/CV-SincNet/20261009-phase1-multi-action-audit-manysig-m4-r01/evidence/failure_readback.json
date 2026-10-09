@@ -1,154 +1,128 @@
 {
-  "schema": "experiment_record_v1",
-  "group_id": "cvs-multi-disentanglement",
-  "kind": "cvs",
-  "stage": "Phase1",
-  "data": {
-    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-    "version": "existing_N607_ManySig_6tx_12rx_4day",
-    "representation": "equalized=1; center256; unit packet RMS; fs=25000000Hz",
-    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids.L_s; each row physical_roles.json",
-    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#class_txs",
-    "source_receivers": [
-      1,
-      3,
-      4,
-      6,
-      8
+  "at": 1791555510.6797082,
+  "receipt": {
+    "status": "SUBMITTED",
+    "pid": 2494575,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_multi_action_audit.dispatch"
     ],
-    "target_receivers": [],
-    "source_days": [
-      1,
-      2,
-      3
-    ],
-    "target_days": [],
-    "tx_sets_ref": "ManySig.tx_list: all6; actual physical class strings exported at runtime",
-    "roles": {
-      "original_L_s": 0.07,
-      "original_U_s": 0.63,
-      "original_V": 0.3,
-      "access": "Only L_s sampled; U/V not consumed",
-      "fit_per_TX_RX": 64,
-      "audit_per_TX_RX": 32,
-      "physical_partition_seed": 20261009
-    },
-    "train_ratio": 0.1,
-    "capsule_id": null,
-    "split_id": null,
-    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-    "support_query_ref": null,
-    "leo_config_ref": "source practical_mid residual/post_sync fs25MHz fc2.462GHz; deterministic physical IDs"
-  },
-  "run_id": "20261009-phase1-multi-action-audit-manysig-m4-r01",
-  "display_name": "多解耦下一步：留出源包作用迁移、G后误差与R统计/锚定诊断",
-  "description": "按用户报告第1步执行。固定4个multi E200身份骨干，在L_s独立物理包上比较辅助拟合目标和跨TX迁移，修正R统计并审查类别锚定。身份不更新；无新目标域评分。",
-  "aliases": [
-    "multi_action_audit",
-    "多解耦源端作用诊断"
-  ],
-  "tags": [
-    "source_only",
-    "multi_disentanglement",
-    "heldout_physical_packets",
-    "cross_tx_action"
-  ],
-  "comparison_group_id": "manysig-fixed-multi-E200-source-action-audit-v1",
-  "parent_run_ids": [
-    "20261009-phase1-multi-disentangle-manysig-m32-r01"
-  ],
-  "replaces_run_id": null,
-  "authorization": "用户2026-10-09：按照报告进行下一步优化验证，发布实验验证。报告第10节先源端诊断，再开展身份训练；沿用每GPU最多4进程授权。",
-  "code": {
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01/dispatcher.stdout.log",
     "commit": "c37a3363aab04b27db1de3b58110dfeb24881e1a",
-    "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
-    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01"
+    "run_id": "20261009-phase1-multi-action-audit-manysig-m4-r01"
   },
-  "permissions": {
-    "regime": "source_only_diagnostic",
-    "query_use": "NONE; no target prediction or truth reads",
-    "external_method_exception": null,
-    "claim_scope": "Auxiliary action generalization to held-out source-L packets only; identity has seen all L_s originally."
-  },
-  "checkpoint": {
-    "initialization": "fixed own-parent multi E200 student; fresh auxiliary models",
-    "sources": [
-      "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-disentangle-manysig-m32-r01\\multi-s2026092701\\source\\final_ssdg.pth",
-      "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-disentangle-manysig-m32-r01\\multi-s2026092702\\source\\final_ssdg.pth",
-      "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-disentangle-manysig-m32-r01\\multi-s2026092703\\source\\final_ssdg.pth",
-      "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-disentangle-manysig-m32-r01\\multi-s2026092704\\source\\final_ssdg.pth"
+  "controller": null,
+  "preflight": {
+    "status": "VERIFIED",
+    "rows": [
+      {
+        "status": "VERIFIED",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092701/source/final_ssdg.pth",
+        "parent_run": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "parent_arm": "multi",
+        "selection": "ALL_FOUR_FIXED_E200_MULTI_ROWS_NO_RANKING",
+        "parent_initialization": "scratch; no ancestors; exact source physical roles",
+        "parent_training_target_access": false,
+        "prior_target_scores_consumed": false,
+        "teacher_state": "final student model, fixed for diagnostic",
+        "audit_scope": "unseen by newly fitted auxiliaries; seen by original identity training",
+        "identity_training": false,
+        "target_access": false,
+        "checkpoint_smoke": "PASS"
+      },
+      {
+        "status": "VERIFIED",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092702/source/final_ssdg.pth",
+        "parent_run": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "parent_arm": "multi",
+        "selection": "ALL_FOUR_FIXED_E200_MULTI_ROWS_NO_RANKING",
+        "parent_initialization": "scratch; no ancestors; exact source physical roles",
+        "parent_training_target_access": false,
+        "prior_target_scores_consumed": false,
+        "teacher_state": "final student model, fixed for diagnostic",
+        "audit_scope": "unseen by newly fitted auxiliaries; seen by original identity training",
+        "identity_training": false,
+        "target_access": false,
+        "checkpoint_smoke": "PASS"
+      },
+      {
+        "status": "VERIFIED",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092703/source/final_ssdg.pth",
+        "parent_run": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "parent_arm": "multi",
+        "selection": "ALL_FOUR_FIXED_E200_MULTI_ROWS_NO_RANKING",
+        "parent_initialization": "scratch; no ancestors; exact source physical roles",
+        "parent_training_target_access": false,
+        "prior_target_scores_consumed": false,
+        "teacher_state": "final student model, fixed for diagnostic",
+        "audit_scope": "unseen by newly fitted auxiliaries; seen by original identity training",
+        "identity_training": false,
+        "target_access": false,
+        "checkpoint_smoke": "PASS"
+      },
+      {
+        "status": "VERIFIED",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092704/source/final_ssdg.pth",
+        "parent_run": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+        "parent_arm": "multi",
+        "selection": "ALL_FOUR_FIXED_E200_MULTI_ROWS_NO_RANKING",
+        "parent_initialization": "scratch; no ancestors; exact source physical roles",
+        "parent_training_target_access": false,
+        "prior_target_scores_consumed": false,
+        "teacher_state": "final student model, fixed for diagnostic",
+        "audit_scope": "unseen by newly fitted auxiliaries; seen by original identity training",
+        "identity_training": false,
+        "target_access": false,
+        "checkpoint_smoke": "PASS"
+      }
     ],
-    "provenance_verdict": "Parent scratch EXACT_MATCH evidence verified; runtime rechecks each actual checkpoint before use",
-    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-    "selection_rule": "All four registered multi rows at E200; no ranking or target metric consumption"
+    "target_access": false
   },
-  "execution": {
-    "host": "N607",
-    "launch_owner": "codex/root/multi-action-audit-20261009",
-    "gpu_policy": "<=4 total processes/GPU including reservations; existing shared lock; >=12GB free",
-    "remote_run_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-action-audit-manysig-m4-r01",
-    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-action-audit-manysig-m4-r01",
-    "local_artifact_root": "automation_reports/CV-SincNet/20261009-phase1-multi-action-audit-manysig-m4-r01",
-    "launch_command": "python -m experiments.cvs_multi_action_audit.publish --output local_artifacts/cvs_multi_action_audit_20261009_r01",
-    "stop_rule": "Technical failure only; retain outputs, no automatic retry or low-skill stop; preserve unrelated healthy tasks"
-  },
-  "expected_artifacts": [
-    "physical_roles.json",
-    "provenance.json",
-    "resolved_config.json",
-    "*_actions.json",
-    "*_actions_state_dicts.pth",
-    "*_actions_steps.jsonl",
-    "*_actions_steps.csv",
-    "*_receiver.json",
-    "*_receiver_state_dict.pth",
-    "*_receiver_steps.jsonl",
-    "*_receiver_steps.csv",
-    "*_composition.json",
-    "*_gradients.json",
-    "completion.json"
-  ],
-  "metrics_plan": {
-    "metric_names": [
-      "heldout_zero_skill",
-      "heldout_training_mean_skill",
-      "G_mse",
-      "margin_delta_error",
-      "action_energy",
-      "cross_TX_transfer",
-      "shuffled_q",
-      "oracle_parameters",
-      "route_changed_error",
-      "singular_spectrum",
-      "RX_group_coverage",
-      "contribution_age",
-      "relation_vs_anchor",
-      "gradient_norm_ratio",
-      "gradient_cosine",
-      "elapsed_seconds",
-      "peak_cuda_bytes"
+  "queue": {
+    "active": [],
+    "pending": [],
+    "completed": [],
+    "failures": [
+      "audit-s2026092701",
+      "audit-s2026092702",
+      "audit-s2026092703",
+      "audit-s2026092704"
     ],
-    "dimensions": [
-      "model_seed",
-      "source_exposure",
-      "branch",
-      "fit_mode",
-      "action_code_source"
-    ],
-    "prediction_ref": "Heldout source action estimates evaluated after each fixed auxiliary fit; no target artifacts",
-    "scorer_ref": "actions.py / receiver.py source-only diagnostics",
-    "primary": "All four seeds and both exposures reported. No early stopping; zero/mean skill and G/margin errors jointly assessed.",
-    "decision": "Source evidence will inform a separately registered E200 study; no automatic target-driven candidate or weight selection."
+    "updated_at": 1791555365.2428467,
+    "per_gpu_limit": 4
   },
+  "failure": {
+    "status": "FAILED",
+    "error": "RuntimeError(\"Rows failed; artifacts retained, no automatic retry: ['audit-s2026092701', 'audit-s2026092702', 'audit-s2026092703', 'audit-s2026092704']\")",
+    "no_automatic_retry": true
+  },
+  "completion": null,
   "rows": [
     {
       "row_id": "audit-s2026092701",
-      "method": "source_action_audit",
-      "purpose": "fixed_source_diagnostic",
-      "gpu": null,
-      "config": {
+      "pid": 2494592,
+      "start_ticks": 80302868,
+      "gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01/experiments/cvs_multi_action_audit/train_worker.py",
+        "--row",
+        "audit-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-action-audit-manysig-m4-r01/audit-s2026092701.log",
+      "process": null,
+      "log_bytes": 25799,
+      "tail": [
+        "ACTION {\"exposure\": \"clean\", \"kind\": \"temporal\", \"step\": 200, \"mode\": \"oracle_parameters\", \"loss\": 2.3872323036193848, \"global_h\": 1.0153802633285522, \"block_h\": 1.4430807828903198, \"z\": 0.9441515803337097, \"parameter\": 0.0, \"gradient_norm\": 53.00095748901367, \"learning_rate\": 0.0002, \"samples\": 32, \"seconds\": 0.008499699062667787}",
+        "EXPOSURE_COMPLETE clean",
+        "AUDIT_CONFIG {\"exposure\": \"source_practical_mid\", \"recipe\": {\"steps\": 200, \"batch_size\": 32, \"learning_rate\": 0.0002, \"rank\": 8, \"code_dim\": 8, \"fit_per_tx_rx\": 64, \"audit_per_tx_rx\": 32, \"physical_split_seed\": 20261009, \"augmentation_seed\": 2026100901, \"evaluation_seed\": 2026100902, \"source_receivers\": [1, 3, 4, 6, 8], \"source_classes\": 6, \"exposures\": [\"clean\", \"source_practical_mid\"], \"fit_modes\": [\"legacy_self\", \"block_z_self\", \"block_z_cross\"], \"identity_update\": false, \"target_access\": false, \"early_stopping\": false, \"teacher\": \"fixed_parent_multi_E200_student\", \"parameter_weight\": 1.0, \"alpha_z\": 1.0}, \"fit\": 1920, \"audit\": 960}"
+      ],
+      "resolved": {
         "schema": "multi_action_audit_v1",
         "run_id": "20261009-phase1-multi-action-audit-manysig-m4-r01",
         "row_id": "audit-s2026092701",
@@ -188,7 +162,7 @@
           "parameter_weight": 1.0,
           "alpha_z": 1.0
         },
-        "checkpoint": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-disentangle-manysig-m32-r01\\multi-s2026092701\\source\\final_ssdg.pth",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092701/source/final_ssdg.pth",
         "parent_config": {
           "schema": "multi_disentangle_v1",
           "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
@@ -286,56 +260,40 @@
           "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
         },
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-        "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-action-audit-manysig-m4-r01\\audit-s2026092701",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-action-audit-manysig-m4-r01/audit-s2026092701",
         "method": "source_action_audit",
-        "target_access": false
+        "target_access": false,
+        "pid": 2494592,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "gpu": "0",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "commit": "c37a3363aab04b27db1de3b58110dfeb24881e1a"
       },
-      "config_ref": "experiments/cvs_multi_action_audit/configs/audit-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-action-audit-manysig-m4-r01\\audit-s2026092701/resolved_config.json",
-      "data_overrides": {},
-      "seeds": {
-        "model": 2026092701,
-        "split": 20261009,
-        "data": null,
-        "augmentation": 2026100901,
-        "support": null,
-        "evaluation": 2026100902
-      },
-      "seed_notes": "Original source roles fixed at392005. Auxiliary partition20261009. Model is parent seed; auxiliary init/sample schedule derived from evaluation generator. Support N/A.",
-      "k": null,
-      "scenario": "clean,source_practical_mid",
-      "optimizer": "auxiliary AdamW only; fixed reference identity",
-      "lr": 0.0002,
-      "epochs": null,
-      "fl_rounds": null,
-      "budget_ref": "200 optimizer steps per L/T fit mode and R; <=32 samples/step; no identity updates",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-action-audit-manysig-m4-r01\\audit-s2026092701",
-      "prediction_root": null,
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-action-audit-manysig-m4-r01/audit-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01/experiments/cvs_multi_action_audit/train_worker.py --row audit-s2026092701",
-      "expected_artifacts": [
-        "physical_roles.json",
-        "provenance.json",
-        "resolved_config.json",
-        "*_actions.json",
-        "*_actions_state_dicts.pth",
-        "*_actions_steps.jsonl",
-        "*_actions_steps.csv",
-        "*_receiver.json",
-        "*_receiver_state_dict.pth",
-        "*_receiver_steps.jsonl",
-        "*_receiver_steps.csv",
-        "*_composition.json",
-        "*_gradients.json",
-        "completion.json"
-      ]
+      "completion": null
     },
     {
       "row_id": "audit-s2026092702",
-      "method": "source_action_audit",
-      "purpose": "fixed_source_diagnostic",
-      "gpu": null,
-      "config": {
+      "pid": 2494599,
+      "start_ticks": 80302900,
+      "gpu": 2,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01/experiments/cvs_multi_action_audit/train_worker.py",
+        "--row",
+        "audit-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-action-audit-manysig-m4-r01/audit-s2026092702.log",
+      "process": null,
+      "log_bytes": 25821,
+      "tail": [
+        "ACTION {\"exposure\": \"clean\", \"kind\": \"temporal\", \"step\": 200, \"mode\": \"oracle_parameters\", \"loss\": 2.805360794067383, \"global_h\": 1.06257164478302, \"block_h\": 1.6383217573165894, \"z\": 1.167039155960083, \"parameter\": 0.0, \"gradient_norm\": 51.951416015625, \"learning_rate\": 0.0002, \"samples\": 32, \"seconds\": 0.008395978948101401}",
+        "EXPOSURE_COMPLETE clean",
+        "AUDIT_CONFIG {\"exposure\": \"source_practical_mid\", \"recipe\": {\"steps\": 200, \"batch_size\": 32, \"learning_rate\": 0.0002, \"rank\": 8, \"code_dim\": 8, \"fit_per_tx_rx\": 64, \"audit_per_tx_rx\": 32, \"physical_split_seed\": 20261009, \"augmentation_seed\": 2026100901, \"evaluation_seed\": 2026100902, \"source_receivers\": [1, 3, 4, 6, 8], \"source_classes\": 6, \"exposures\": [\"clean\", \"source_practical_mid\"], \"fit_modes\": [\"legacy_self\", \"block_z_self\", \"block_z_cross\"], \"identity_update\": false, \"target_access\": false, \"early_stopping\": false, \"teacher\": \"fixed_parent_multi_E200_student\", \"parameter_weight\": 1.0, \"alpha_z\": 1.0}, \"fit\": 1920, \"audit\": 960}"
+      ],
+      "resolved": {
         "schema": "multi_action_audit_v1",
         "run_id": "20261009-phase1-multi-action-audit-manysig-m4-r01",
         "row_id": "audit-s2026092702",
@@ -375,7 +333,7 @@
           "parameter_weight": 1.0,
           "alpha_z": 1.0
         },
-        "checkpoint": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-disentangle-manysig-m32-r01\\multi-s2026092702\\source\\final_ssdg.pth",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092702/source/final_ssdg.pth",
         "parent_config": {
           "schema": "multi_disentangle_v1",
           "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
@@ -473,56 +431,40 @@
           "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
         },
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-        "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-action-audit-manysig-m4-r01\\audit-s2026092702",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-action-audit-manysig-m4-r01/audit-s2026092702",
         "method": "source_action_audit",
-        "target_access": false
+        "target_access": false,
+        "pid": 2494599,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "gpu": "2",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "commit": "c37a3363aab04b27db1de3b58110dfeb24881e1a"
       },
-      "config_ref": "experiments/cvs_multi_action_audit/configs/audit-s2026092702.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-action-audit-manysig-m4-r01\\audit-s2026092702/resolved_config.json",
-      "data_overrides": {},
-      "seeds": {
-        "model": 2026092702,
-        "split": 20261009,
-        "data": null,
-        "augmentation": 2026100901,
-        "support": null,
-        "evaluation": 2026100902
-      },
-      "seed_notes": "Original source roles fixed at392005. Auxiliary partition20261009. Model is parent seed; auxiliary init/sample schedule derived from evaluation generator. Support N/A.",
-      "k": null,
-      "scenario": "clean,source_practical_mid",
-      "optimizer": "auxiliary AdamW only; fixed reference identity",
-      "lr": 0.0002,
-      "epochs": null,
-      "fl_rounds": null,
-      "budget_ref": "200 optimizer steps per L/T fit mode and R; <=32 samples/step; no identity updates",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-action-audit-manysig-m4-r01\\audit-s2026092702",
-      "prediction_root": null,
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-action-audit-manysig-m4-r01/audit-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01/experiments/cvs_multi_action_audit/train_worker.py --row audit-s2026092702",
-      "expected_artifacts": [
-        "physical_roles.json",
-        "provenance.json",
-        "resolved_config.json",
-        "*_actions.json",
-        "*_actions_state_dicts.pth",
-        "*_actions_steps.jsonl",
-        "*_actions_steps.csv",
-        "*_receiver.json",
-        "*_receiver_state_dict.pth",
-        "*_receiver_steps.jsonl",
-        "*_receiver_steps.csv",
-        "*_composition.json",
-        "*_gradients.json",
-        "completion.json"
-      ]
+      "completion": null
     },
     {
       "row_id": "audit-s2026092703",
-      "method": "source_action_audit",
-      "purpose": "fixed_source_diagnostic",
-      "gpu": null,
-      "config": {
+      "pid": 2494605,
+      "start_ticks": 80302931,
+      "gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01/experiments/cvs_multi_action_audit/train_worker.py",
+        "--row",
+        "audit-s2026092703"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-action-audit-manysig-m4-r01/audit-s2026092703.log",
+      "process": null,
+      "log_bytes": 25819,
+      "tail": [
+        "ACTION {\"exposure\": \"clean\", \"kind\": \"temporal\", \"step\": 200, \"mode\": \"oracle_parameters\", \"loss\": 2.3600006103515625, \"global_h\": 1.07034170627594, \"block_h\": 1.4840126037597656, \"z\": 0.8759880065917969, \"parameter\": 0.0, \"gradient_norm\": 56.931129455566406, \"learning_rate\": 0.0002, \"samples\": 32, \"seconds\": 0.005811639013700187}",
+        "EXPOSURE_COMPLETE clean",
+        "AUDIT_CONFIG {\"exposure\": \"source_practical_mid\", \"recipe\": {\"steps\": 200, \"batch_size\": 32, \"learning_rate\": 0.0002, \"rank\": 8, \"code_dim\": 8, \"fit_per_tx_rx\": 64, \"audit_per_tx_rx\": 32, \"physical_split_seed\": 20261009, \"augmentation_seed\": 2026100901, \"evaluation_seed\": 2026100902, \"source_receivers\": [1, 3, 4, 6, 8], \"source_classes\": 6, \"exposures\": [\"clean\", \"source_practical_mid\"], \"fit_modes\": [\"legacy_self\", \"block_z_self\", \"block_z_cross\"], \"identity_update\": false, \"target_access\": false, \"early_stopping\": false, \"teacher\": \"fixed_parent_multi_E200_student\", \"parameter_weight\": 1.0, \"alpha_z\": 1.0}, \"fit\": 1920, \"audit\": 960}"
+      ],
+      "resolved": {
         "schema": "multi_action_audit_v1",
         "run_id": "20261009-phase1-multi-action-audit-manysig-m4-r01",
         "row_id": "audit-s2026092703",
@@ -562,7 +504,7 @@
           "parameter_weight": 1.0,
           "alpha_z": 1.0
         },
-        "checkpoint": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-disentangle-manysig-m32-r01\\multi-s2026092703\\source\\final_ssdg.pth",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092703/source/final_ssdg.pth",
         "parent_config": {
           "schema": "multi_disentangle_v1",
           "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
@@ -660,56 +602,40 @@
           "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
         },
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-        "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-action-audit-manysig-m4-r01\\audit-s2026092703",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-action-audit-manysig-m4-r01/audit-s2026092703",
         "method": "source_action_audit",
-        "target_access": false
+        "target_access": false,
+        "pid": 2494605,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "gpu": "3",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "commit": "c37a3363aab04b27db1de3b58110dfeb24881e1a"
       },
-      "config_ref": "experiments/cvs_multi_action_audit/configs/audit-s2026092703.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-action-audit-manysig-m4-r01\\audit-s2026092703/resolved_config.json",
-      "data_overrides": {},
-      "seeds": {
-        "model": 2026092703,
-        "split": 20261009,
-        "data": null,
-        "augmentation": 2026100901,
-        "support": null,
-        "evaluation": 2026100902
-      },
-      "seed_notes": "Original source roles fixed at392005. Auxiliary partition20261009. Model is parent seed; auxiliary init/sample schedule derived from evaluation generator. Support N/A.",
-      "k": null,
-      "scenario": "clean,source_practical_mid",
-      "optimizer": "auxiliary AdamW only; fixed reference identity",
-      "lr": 0.0002,
-      "epochs": null,
-      "fl_rounds": null,
-      "budget_ref": "200 optimizer steps per L/T fit mode and R; <=32 samples/step; no identity updates",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-action-audit-manysig-m4-r01\\audit-s2026092703",
-      "prediction_root": null,
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-action-audit-manysig-m4-r01/audit-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01/experiments/cvs_multi_action_audit/train_worker.py --row audit-s2026092703",
-      "expected_artifacts": [
-        "physical_roles.json",
-        "provenance.json",
-        "resolved_config.json",
-        "*_actions.json",
-        "*_actions_state_dicts.pth",
-        "*_actions_steps.jsonl",
-        "*_actions_steps.csv",
-        "*_receiver.json",
-        "*_receiver_state_dict.pth",
-        "*_receiver_steps.jsonl",
-        "*_receiver_steps.csv",
-        "*_composition.json",
-        "*_gradients.json",
-        "completion.json"
-      ]
+      "completion": null
     },
     {
       "row_id": "audit-s2026092704",
-      "method": "source_action_audit",
-      "purpose": "fixed_source_diagnostic",
-      "gpu": null,
-      "config": {
+      "pid": 2494611,
+      "start_ticks": 80302963,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01/experiments/cvs_multi_action_audit/train_worker.py",
+        "--row",
+        "audit-s2026092704"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-action-audit-manysig-m4-r01/audit-s2026092704.log",
+      "process": null,
+      "log_bytes": 25824,
+      "tail": [
+        "ACTION {\"exposure\": \"clean\", \"kind\": \"temporal\", \"step\": 200, \"mode\": \"oracle_parameters\", \"loss\": 2.6285579204559326, \"global_h\": 1.0585525035858154, \"block_h\": 1.6907129287719727, \"z\": 0.9378449320793152, \"parameter\": 0.0, \"gradient_norm\": 56.431663513183594, \"learning_rate\": 0.0002, \"samples\": 32, \"seconds\": 0.00846367806661874}",
+        "EXPOSURE_COMPLETE clean",
+        "AUDIT_CONFIG {\"exposure\": \"source_practical_mid\", \"recipe\": {\"steps\": 200, \"batch_size\": 32, \"learning_rate\": 0.0002, \"rank\": 8, \"code_dim\": 8, \"fit_per_tx_rx\": 64, \"audit_per_tx_rx\": 32, \"physical_split_seed\": 20261009, \"augmentation_seed\": 2026100901, \"evaluation_seed\": 2026100902, \"source_receivers\": [1, 3, 4, 6, 8], \"source_classes\": 6, \"exposures\": [\"clean\", \"source_practical_mid\"], \"fit_modes\": [\"legacy_self\", \"block_z_self\", \"block_z_cross\"], \"identity_update\": false, \"target_access\": false, \"early_stopping\": false, \"teacher\": \"fixed_parent_multi_E200_student\", \"parameter_weight\": 1.0, \"alpha_z\": 1.0}, \"fit\": 1920, \"audit\": 960}"
+      ],
+      "resolved": {
         "schema": "multi_action_audit_v1",
         "run_id": "20261009-phase1-multi-action-audit-manysig-m4-r01",
         "row_id": "audit-s2026092704",
@@ -749,7 +675,7 @@
           "parameter_weight": 1.0,
           "alpha_z": 1.0
         },
-        "checkpoint": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-disentangle-manysig-m32-r01\\multi-s2026092704\\source\\final_ssdg.pth",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092704/source/final_ssdg.pth",
         "parent_config": {
           "schema": "multi_disentangle_v1",
           "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
@@ -847,98 +773,17 @@
           "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
         },
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-        "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-action-audit-manysig-m4-r01\\audit-s2026092704",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-action-audit-manysig-m4-r01/audit-s2026092704",
         "method": "source_action_audit",
-        "target_access": false
+        "target_access": false,
+        "pid": 2494611,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "gpu": "7",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "commit": "c37a3363aab04b27db1de3b58110dfeb24881e1a"
       },
-      "config_ref": "experiments/cvs_multi_action_audit/configs/audit-s2026092704.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-action-audit-manysig-m4-r01\\audit-s2026092704/resolved_config.json",
-      "data_overrides": {},
-      "seeds": {
-        "model": 2026092704,
-        "split": 20261009,
-        "data": null,
-        "augmentation": 2026100901,
-        "support": null,
-        "evaluation": 2026100902
-      },
-      "seed_notes": "Original source roles fixed at392005. Auxiliary partition20261009. Model is parent seed; auxiliary init/sample schedule derived from evaluation generator. Support N/A.",
-      "k": null,
-      "scenario": "clean,source_practical_mid",
-      "optimizer": "auxiliary AdamW only; fixed reference identity",
-      "lr": 0.0002,
-      "epochs": null,
-      "fl_rounds": null,
-      "budget_ref": "200 optimizer steps per L/T fit mode and R; <=32 samples/step; no identity updates",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261009-phase1-multi-action-audit-manysig-m4-r01\\audit-s2026092704",
-      "prediction_root": null,
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-action-audit-manysig-m4-r01/audit-s2026092704.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r01/experiments/cvs_multi_action_audit/train_worker.py --row audit-s2026092704",
-      "expected_artifacts": [
-        "physical_roles.json",
-        "provenance.json",
-        "resolved_config.json",
-        "*_actions.json",
-        "*_actions_state_dicts.pth",
-        "*_actions_steps.jsonl",
-        "*_actions_steps.csv",
-        "*_receiver.json",
-        "*_receiver_state_dict.pth",
-        "*_receiver_steps.jsonl",
-        "*_receiver_steps.csv",
-        "*_composition.json",
-        "*_gradients.json",
-        "completion.json"
-      ]
+      "completion": null
     }
-  ],
-  "notes": [
-    "This is report step1 and bounded step2 source comparisons, not a new identity-training efficacy experiment.",
-    "Fresh auxiliary audit packets were excluded from auxiliary fit, but not from parent identity training.",
-    "No stronger identity weights, larger rank or learned LT in this first diagnostic.",
-    "Gradient reference is clean labeled CE; full native pseudo/LEO gradient is N/A in this frozen-model diagnostic.",
-    "All four source clean diagnostics completed; source LEO channel adapter triggered reproduced SIGSEGV. Partial outputs retained. Superseded by 20261009-phase1-multi-action-audit-manysig-m4-r02"
-  ],
-  "status": "FAILED",
-  "mechanism_recipe": {
-    "steps": 200,
-    "batch_size": 32,
-    "learning_rate": 0.0002,
-    "rank": 8,
-    "code_dim": 8,
-    "fit_per_tx_rx": 64,
-    "audit_per_tx_rx": 32,
-    "physical_split_seed": 20261009,
-    "augmentation_seed": 2026100901,
-    "evaluation_seed": 2026100902,
-    "source_receivers": [
-      1,
-      3,
-      4,
-      6,
-      8
-    ],
-    "source_classes": 6,
-    "exposures": [
-      "clean",
-      "source_practical_mid"
-    ],
-    "fit_modes": [
-      "legacy_self",
-      "block_z_self",
-      "block_z_cross"
-    ],
-    "identity_update": false,
-    "target_access": false,
-    "early_stopping": false,
-    "teacher": "fixed_parent_multi_E200_student",
-    "parameter_weight": 1.0,
-    "alpha_z": 1.0
-  },
-  "test_completion_plan": {
-    "scope": "Explicit source diagnostic prescribed by report step1",
-    "test": "Disjoint physical source-L audit packets, clean and source practical_mid; not R_t",
-    "target_testing": "No new identity exists; preserve historical tests and do not rerun unchanged checkpoints",
-    "subsequent_identity_training": "Separately register source-selected design and full truth-last tests after source evidence"
-  }
+  ]
 }

@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "reviewer": "audit_p0_p1",
+  "original_findings": [
+    "R Jensen aggregation semantics",
+    "Gradient first-stratum sampling"
+  ],
+  "fixed": true,
+  "focused_rereview": "PASS",
+  "outstanding_p0_p1": 0,
+  "technical_recovery_review": "PASS: copied scalar/byte bridge, unchanged matrix/seeds/channel namespace, new immutable r02"
+}

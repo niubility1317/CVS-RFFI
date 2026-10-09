@@ -11,7 +11,3 @@ L/T依次比较原拟合、分块定标+G后误差、再加入跨TX作用迁移�
 这次源端审查不生成新的目标测试成绩。没有新的身份模型，因此不重复测试旧checkpoint。下一阶段如发布身份训练，仍须预登记完整冻结后预测与独立truth-last评分。
 
 当前状态以experiment.json、events.jsonl及独立远端读回为准。完整设计追溯见[traceability](../../../analysis/multi_action_audit_traceability.md)。实际脚本和配置见[新包](../../../experiments/cvs_multi_action_audit/)。
-
-## 技术失败与替代
-
-FAILED / VERIFIED。四行clean诊断已保存，源LEO转换发生SIGSEGV；两包复现定位至N607的Torch/NumPy桥接。所有worker已退出，未干预其他任务。新r02使用相同数据、预算、seed与信道namespace，改用显式标量/字节复制并保留本run全部产物。

@@ -77,13 +77,20 @@ def source_packets(native,c,device):
 
 
 def channel_view(data):
+    import numpy as np
     from leo_practical.channel import Config
     from leo_practical.batch import apply_leo_practical_channel_batch
     cfg=Config(fs_hz=25000000.,fc_hz=2462000000.,scenario='practical_mid',
                processing_route='residual',mode='post_sync')
-    x,_,_=apply_leo_practical_channel_batch(data['x'],cfg,seed=d.RECIPE['augmentation_seed'],
+    # N607 torch2.1/NumPy2.2 has an unsafe ndarray bridge (SIGSEGV). Use the
+    # unchanged NumPy channel core with explicit copied scalar/byte transfers.
+    source=data['x']
+    array=np.asarray(source.detach().cpu().tolist(),dtype=np.float64)
+    x,_,_=apply_leo_practical_channel_batch(array,cfg,seed=d.RECIPE['augmentation_seed'],
         receiver_seed=2027,sample_ids=data['ids'],session_ids=['source-rx:'+str(r) for r in data['rx'].tolist()],
-        realization_namespace=d.RUN+':source_audit',return_meta=False)
+        realization_namespace=d.CHANNEL_NAMESPACE,return_meta=False)
+    raw=np.ascontiguousarray(x,dtype=np.float32)
+    x=torch.frombuffer(bytearray(raw.tobytes()),dtype=torch.float32).reshape(raw.shape).to(source)
     return dict(data,x=x)
 
 
