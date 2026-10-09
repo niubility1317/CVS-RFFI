@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-09T14:26:32.075700+00:00
+更新：2026-10-09T15:19:25.710209+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|126|
+|managed_run|127|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -23,7 +23,7 @@
 |---|---:|
 |[cvs](by_method/cvs.md)|268|
 |[adv3b02](by_method/adv3b02.md)|146|
-|[phase1](by_method/phase1.md)|132|
+|[phase1](by_method/phase1.md)|133|
 |[phase2](by_method/phase2.md)|118|
 |[stage2](by_method/stage2.md)|67|
 |[clean_only](by_method/clean_only.md)|59|
@@ -38,8 +38,8 @@
 |[reference_response](by_method/reference_response.md)|20|
 |[source_only](by_method/source_only.md)|18|
 |[source_selected](by_method/source_selected.md)|18|
+|[scratch](by_method/scratch.md)|18|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|17|
-|[scratch](by_method/scratch.md)|17|
 |[d92](by_method/d92.md)|15|
 |[diagnostic](by_method/diagnostic.md)|15|
 |[residual](by_method/residual.md)|13|
@@ -208,6 +208,9 @@
 |[channel_DG](by_method/channel_DG.md)|1|
 |[factorial_interaction](by_method/factorial_interaction.md)|1|
 |[independent_auxiliary_networks](by_method/independent_auxiliary_networks.md)|1|
+|[multi_state_action](by_method/multi_state_action.md)|1|
+|[source_diagnostic](by_method/source_diagnostic.md)|1|
+|[legacy_cosine](by_method/legacy_cosine.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
 |[fedcvs](by_method/fedcvs.md)|1|
 
@@ -334,4 +337,4 @@
 |多解耦源端作用验证|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-multi-action-audit-manysig-m4-r01/report.md)|
 |多解耦源端作用验证|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-multi-action-audit-manysig-m4-r02/report.md)|
 |旧门控＋cosine：独立线性、时间、接收机残差与交互多解耦四seed对照|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-multi-disentangle-manysig-m32-r01/report.md)|
-|完整冻结预测独立评分：R1混杂诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r05/report.md)|
+|多解耦状态条件作用：三阶段完整验证|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-multi-state-action-manysig-m36-r01/report.md)|

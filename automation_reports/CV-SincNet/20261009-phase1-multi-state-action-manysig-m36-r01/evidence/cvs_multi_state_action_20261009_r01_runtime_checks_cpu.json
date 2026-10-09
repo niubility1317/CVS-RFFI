@@ -1,0 +1,211 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "arms": [
+    {
+      "arm": "native",
+      "status": "PASS",
+      "updates": 0,
+      "fit_steps": {},
+      "cost": {
+        "identity_parameters": 177025,
+        "native_model_parameters": 844754,
+        "native_trainable_parameters": 844754,
+        "auxiliary_parameters": 0,
+        "inference_auxiliary_parameters": 0,
+        "identity_forward_unchanged": true,
+        "auxiliary_data": "visible_source_L_only",
+        "native_optimizer_excludes_auxiliaries": true,
+        "virtual_updates": "G+C",
+        "target_access": false
+      },
+      "source_only": true,
+      "native_rng_preserved": true
+    },
+    {
+      "arm": "real_views",
+      "status": "PASS",
+      "updates": 0,
+      "fit_steps": {},
+      "cost": {
+        "identity_parameters": 177025,
+        "native_model_parameters": 844754,
+        "native_trainable_parameters": 844754,
+        "auxiliary_parameters": 0,
+        "inference_auxiliary_parameters": 0,
+        "identity_forward_unchanged": true,
+        "auxiliary_data": "visible_source_L_only",
+        "native_optimizer_excludes_auxiliaries": true,
+        "virtual_updates": "G+C",
+        "target_access": false
+      },
+      "source_only": true,
+      "native_rng_preserved": true
+    },
+    {
+      "arm": "unified",
+      "status": "PASS",
+      "updates": 2,
+      "fit_steps": {
+        "linear": 4,
+        "temporal": 4
+      },
+      "cost": {
+        "identity_parameters": 177025,
+        "native_model_parameters": 844754,
+        "native_trainable_parameters": 844754,
+        "auxiliary_parameters": 457969,
+        "inference_auxiliary_parameters": 0,
+        "identity_forward_unchanged": true,
+        "auxiliary_data": "visible_source_L_only",
+        "native_optimizer_excludes_auxiliaries": true,
+        "virtual_updates": "G+C",
+        "target_access": false
+      },
+      "source_only": true,
+      "native_rng_preserved": true
+    },
+    {
+      "arm": "L",
+      "status": "PASS",
+      "updates": 2,
+      "fit_steps": {
+        "linear": 4
+      },
+      "cost": {
+        "identity_parameters": 177025,
+        "native_model_parameters": 844754,
+        "native_trainable_parameters": 844754,
+        "auxiliary_parameters": 241370,
+        "inference_auxiliary_parameters": 0,
+        "identity_forward_unchanged": true,
+        "auxiliary_data": "visible_source_L_only",
+        "native_optimizer_excludes_auxiliaries": true,
+        "virtual_updates": "G+C",
+        "target_access": false
+      },
+      "source_only": true,
+      "native_rng_preserved": true
+    },
+    {
+      "arm": "LT",
+      "status": "PASS",
+      "updates": 2,
+      "fit_steps": {
+        "linear": 4,
+        "temporal": 4
+      },
+      "cost": {
+        "identity_parameters": 177025,
+        "native_model_parameters": 844754,
+        "native_trainable_parameters": 844754,
+        "auxiliary_parameters": 404340,
+        "inference_auxiliary_parameters": 0,
+        "identity_forward_unchanged": true,
+        "auxiliary_data": "visible_source_L_only",
+        "native_optimizer_excludes_auxiliaries": true,
+        "virtual_updates": "G+C",
+        "target_access": false
+      },
+      "source_only": true,
+      "native_rng_preserved": true
+    },
+    {
+      "arm": "LTR",
+      "status": "PASS",
+      "updates": 2,
+      "fit_steps": {
+        "linear": 4,
+        "temporal": 4
+      },
+      "cost": {
+        "identity_parameters": 177025,
+        "native_model_parameters": 844754,
+        "native_trainable_parameters": 844754,
+        "auxiliary_parameters": 458515,
+        "inference_auxiliary_parameters": 0,
+        "identity_forward_unchanged": true,
+        "auxiliary_data": "visible_source_L_only",
+        "native_optimizer_excludes_auxiliaries": true,
+        "virtual_updates": "G+C",
+        "target_access": false
+      },
+      "source_only": true,
+      "native_rng_preserved": true
+    },
+    {
+      "arm": "L_EG",
+      "status": "PASS",
+      "updates": 2,
+      "fit_steps": {
+        "linear": 4
+      },
+      "cost": {
+        "identity_parameters": 177025,
+        "native_model_parameters": 844754,
+        "native_trainable_parameters": 844754,
+        "auxiliary_parameters": 241370,
+        "inference_auxiliary_parameters": 0,
+        "identity_forward_unchanged": true,
+        "auxiliary_data": "visible_source_L_only",
+        "native_optimizer_excludes_auxiliaries": true,
+        "virtual_updates": "E+G+C",
+        "target_access": false
+      },
+      "source_only": true,
+      "native_rng_preserved": true
+    },
+    {
+      "arm": "LT_EG",
+      "status": "PASS",
+      "updates": 2,
+      "fit_steps": {
+        "linear": 4,
+        "temporal": 4
+      },
+      "cost": {
+        "identity_parameters": 177025,
+        "native_model_parameters": 844754,
+        "native_trainable_parameters": 844754,
+        "auxiliary_parameters": 404340,
+        "inference_auxiliary_parameters": 0,
+        "identity_forward_unchanged": true,
+        "auxiliary_data": "visible_source_L_only",
+        "native_optimizer_excludes_auxiliaries": true,
+        "virtual_updates": "E+G+C",
+        "target_access": false
+      },
+      "source_only": true,
+      "native_rng_preserved": true
+    },
+    {
+      "arm": "LTR_EG",
+      "status": "PASS",
+      "updates": 2,
+      "fit_steps": {
+        "linear": 4,
+        "temporal": 4
+      },
+      "cost": {
+        "identity_parameters": 177025,
+        "native_model_parameters": 844754,
+        "native_trainable_parameters": 844754,
+        "auxiliary_parameters": 458515,
+        "inference_auxiliary_parameters": 0,
+        "identity_forward_unchanged": true,
+        "auxiliary_data": "visible_source_L_only",
+        "native_optimizer_excludes_auxiliaries": true,
+        "virtual_updates": "E+G+C",
+        "target_access": false
+      },
+      "source_only": true,
+      "native_rng_preserved": true
+    }
+  ],
+  "virtual_G_only_boundary": true,
+  "virtual_EG_boundary": true,
+  "hidden_U_mask": true,
+  "production_hook_compiles": true,
+  "native_reference": "actual clean+LEO+source pseudo scalar",
+  "target_access": false
+}

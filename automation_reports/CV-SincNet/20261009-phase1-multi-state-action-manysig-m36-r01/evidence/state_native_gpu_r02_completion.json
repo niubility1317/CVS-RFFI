@@ -1,0 +1,122 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "rows": [
+    {
+      "arm": "unified",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "execution": {
+        "fit_steps": {
+          "linear": 18,
+          "temporal": 18,
+          "receiver": 9
+        },
+        "identity_steps": {
+          "linear": 18,
+          "temporal": 2,
+          "receiver": 2
+        },
+        "attempted_identity_steps": {
+          "linear": 18,
+          "temporal": 18,
+          "receiver": 18
+        },
+        "receiver_relations_total": 130,
+        "exposure_totals": {
+          "source_L_physical_packets": 288,
+          "extra_real_IQ_views": 1728,
+          "exact_reference_calls": 36
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source-L auxiliary holdout",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LTR",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "execution": {
+        "fit_steps": {
+          "linear": 18,
+          "temporal": 18,
+          "receiver": 9
+        },
+        "identity_steps": {
+          "linear": 6,
+          "temporal": 0,
+          "receiver": 3
+        },
+        "attempted_identity_steps": {
+          "linear": 18,
+          "temporal": 18,
+          "receiver": 18
+        },
+        "receiver_relations_total": 130,
+        "exposure_totals": {
+          "source_L_physical_packets": 288,
+          "extra_real_IQ_views": 1728,
+          "exact_reference_calls": 36
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source-L auxiliary holdout",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LTR_EG",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "execution": {
+        "fit_steps": {
+          "linear": 18,
+          "temporal": 18,
+          "receiver": 9
+        },
+        "identity_steps": {
+          "linear": 6,
+          "temporal": 0,
+          "receiver": 3
+        },
+        "attempted_identity_steps": {
+          "linear": 18,
+          "temporal": 18,
+          "receiver": 18
+        },
+        "receiver_relations_total": 130,
+        "exposure_totals": {
+          "source_L_physical_packets": 288,
+          "extra_real_IQ_views": 1728,
+          "exact_reference_calls": 36
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source-L auxiliary holdout",
+        "gated_off_is_valid_negative": true
+      }
+    }
+  ],
+  "synthetic": true,
+  "target_access": false,
+  "full_budget_verified": false,
+  "production_native_hook": true,
+  "production_writer": true
+}

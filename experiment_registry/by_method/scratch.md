@@ -19,6 +19,7 @@
 |旧门控＋cosine：保真与曲率双骨干、条件交互四seed研发|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-dual-evidence-manysig-m16-r01/report.md)|
 |双骨干互补证据：冻结16模型立即全量测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/report.md)|
 |旧门控＋cosine：独立线性、时间、接收机残差与交互多解耦四seed对照|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-multi-disentangle-manysig-m32-r01/report.md)|
+|多解耦状态条件作用：三阶段完整验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-multi-state-action-manysig-m36-r01/report.md)|
 |完整冻结预测独立评分：R1混杂诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r05/report.md)|
 |完整冻结预测独立评分：R2四seed正式消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r06/report.md)|
 |冻结E200独立测试：R1随机混杂诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r03/report.md)|
