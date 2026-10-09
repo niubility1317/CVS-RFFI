@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |旧门控＋cosine：保真与曲率双骨干、条件交互四seed研发|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-dual-evidence-manysig-m16-r01/report.md)|
+|双骨干互补证据：冻结16模型立即全量测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/report.md)|

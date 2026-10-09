@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-09T08:29:29+00:00
+更新：2026-10-09T08:43:35+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|123|
+|managed_run|124|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,9 +21,9 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|267|
+|[cvs](by_method/cvs.md)|268|
 |[adv3b02](by_method/adv3b02.md)|146|
-|[phase1](by_method/phase1.md)|131|
+|[phase1](by_method/phase1.md)|132|
 |[phase2](by_method/phase2.md)|118|
 |[stage2](by_method/stage2.md)|67|
 |[clean_only](by_method/clean_only.md)|59|
@@ -38,8 +38,8 @@
 |[reference_response](by_method/reference_response.md)|20|
 |[source_selected](by_method/source_selected.md)|18|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|17|
+|[scratch](by_method/scratch.md)|17|
 |[source_only](by_method/source_only.md)|16|
-|[scratch](by_method/scratch.md)|16|
 |[d92](by_method/d92.md)|15|
 |[diagnostic](by_method/diagnostic.md)|15|
 |[residual](by_method/residual.md)|13|
@@ -52,10 +52,10 @@
 |[sixscene](by_method/sixscene.md)|9|
 |[truth_last](by_method/truth_last.md)|9|
 |[no_training](by_method/no_training.md)|9|
+|[benchmark_exposed](by_method/benchmark_exposed.md)|9|
 |[practical](by_method/practical.md)|8|
 |[residual_noeq](by_method/residual_noeq.md)|8|
 |[evaluation_only](by_method/evaluation_only.md)|8|
-|[benchmark_exposed](by_method/benchmark_exposed.md)|8|
 |[mopc](by_method/mopc.md)|8|
 |[csil](by_method/csil.md)|8|
 |[concat](by_method/concat.md)|7|
@@ -75,6 +75,7 @@
 |[mirror_relation](by_method/mirror_relation.md)|4|
 |[fixed_comparison](by_method/fixed_comparison.md)|4|
 |[auto_after_parent](by_method/auto_after_parent.md)|4|
+|[cosine](by_method/cosine.md)|4|
 |[test_completion](by_method/test_completion.md)|4|
 |[frozen_checkpoint](by_method/frozen_checkpoint.md)|4|
 |[schema_repair](by_method/schema_repair.md)|4|
@@ -91,7 +92,7 @@
 |[valid_history](by_method/valid_history.md)|3|
 |[mechanism](by_method/mechanism.md)|3|
 |[packet_compensation](by_method/packet_compensation.md)|3|
-|[cosine](by_method/cosine.md)|3|
+|[legacy_pseudo](by_method/legacy_pseudo.md)|3|
 |[smoke](by_method/smoke.md)|3|
 |[evaluation](by_method/evaluation.md)|2|
 |[true256](by_method/true256.md)|2|
@@ -116,7 +117,9 @@
 |[synthetic](by_method/synthetic.md)|2|
 |[sequential_source_selection](by_method/sequential_source_selection.md)|2|
 |[completed_snapshot](by_method/completed_snapshot.md)|2|
-|[legacy_pseudo](by_method/legacy_pseudo.md)|2|
+|[dual_backbone](by_method/dual_backbone.md)|2|
+|[curvature](by_method/curvature.md)|2|
+|[conditional_interaction](by_method/conditional_interaction.md)|2|
 |[score_only](by_method/score_only.md)|2|
 |[physical_receiver_metadata_repair](by_method/physical_receiver_metadata_repair.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
@@ -200,9 +203,6 @@
 |[CE](by_method/CE.md)|1|
 |[urban](by_method/urban.md)|1|
 |[channel_DG](by_method/channel_DG.md)|1|
-|[dual_backbone](by_method/dual_backbone.md)|1|
-|[curvature](by_method/curvature.md)|1|
-|[conditional_interaction](by_method/conditional_interaction.md)|1|
 |[multi_disentanglement](by_method/multi_disentanglement.md)|1|
 |[factorial_interaction](by_method/factorial_interaction.md)|1|
 |[independent_auxiliary_networks](by_method/independent_auxiliary_networks.md)|1|
@@ -328,8 +328,8 @@
 |更新CVS网络的Phase1修复：时序门控与学习率固定对照32行|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-reference-repair-manysig-m32-r01/report.md)|
 |CE＋urban中低仰角星地增强与信道泛化固定24行|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-urban-ce-manysig-m24-r01/report.md)|
 |旧门控＋cosine：保真与曲率双骨干、条件交互四seed研发|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-dual-evidence-manysig-m16-r01/report.md)|
+|双骨干互补证据：冻结16模型立即全量测试|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/report.md)|
 |旧门控＋cosine：独立线性、时间、接收机残差与交互多解耦四seed对照|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-multi-disentangle-manysig-m32-r01/report.md)|
 |完整冻结预测独立评分：R1混杂诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r05/report.md)|
 |完整冻结预测独立评分：R2四seed正式消融|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r06/report.md)|
 |冻结E200独立测试：R1随机混杂诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r03/report.md)|
-|冻结E200独立测试：R2修复后四seed正式消融|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r04/report.md)|
