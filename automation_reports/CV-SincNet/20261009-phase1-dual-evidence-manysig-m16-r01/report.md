@@ -3,7 +3,7 @@
 - run_id：`20261009-phase1-dual-evidence-manysig-m16-r01`
 - group_id：`cvs-dual-complementary-evidence`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：QUEUED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -45,3 +45,13 @@ RUNNING / VERIFIED：N607控制器PID2074109，正式训练代码提交a759963aa
 本地只读观测与结果交付进程PID20076已启动；原PID68880仅因Windows远端路径分隔符问题被替换并核实退出。修正仅涉及本地观测与登记路径，远端发布代码、训练进程和参数均未改变。
 
 后续自动执行：完成16行源训练→全矩阵源侧冻结→112组完整预测→独立truth-last评分→本地逐指标重算与完整报告→登记/Git交付。新机制性能仍未知，未宣称训练或测试完成。恢复时先读本run证据和实时进程，禁止重复启动。
+
+## 2026-10-09 完整测试请求核实
+
+SOURCE COMPLETE / TEST QUEUED / VERIFIED。16 行均完成 E200 和 44400 次成功更新，`source_matrix_frozen.json` 已固定全部对照；16 个 checkpoint 的实际配置、scratch 来源和数据契约预检 VERIFIED，预检未读取 query。原控制器 PID2074109 健康，已经从 source 队列进入 predict 队列，当前 16 行等待、0 行预测完成，无失败。
+
+2026-10-09 16:27 香港时间独立读回：8 张 GPU 每张有 4 个多解耦训练进程，显存空余约 9.5 GB。当前没有低于 4 进程且满足原调度器 12 GB 空余条件的卡，因此测试尚未启动。保持已授权并发限制和健康训练，未重复提交、停止或热修改任何远端任务。
+
+固定测试范围为 4 组×4 seed×7 视图，共 112 组预测，每视图 168000 个固定 query；包括 clean 和六种已登记 practical 代理视图。全部预测完成后，独立 CPU scorer 才连接 truth，输出 1568 条总体/RX/TX 指标及 448 条日期指标，并保留四 seed 统计和同 row 差值。不是仅测源域验证集，也不新增场景或更换 checkpoint。
+
+本地观察器 PID20076 的实际命令行与原 observer.json 已独立核实，继续自动收取、复算和提交完整结果。本次仅完成训练/冻结/测试队列状态核实；测试和评分未完成，准确率暂无。证据见 [测试队列](evidence/test_queue_verified.json) 与 [冻结及预检读回](evidence/test_freeze_readback.json)。

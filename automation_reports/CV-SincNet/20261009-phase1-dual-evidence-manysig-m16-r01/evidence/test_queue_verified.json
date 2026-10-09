@@ -1,0 +1,54 @@
+{
+  "status": "VERIFIED",
+  "at": 1791534453.0992427,
+  "source_rows_complete": 16,
+  "source_epochs": 200,
+  "updates_per_row": 44400,
+  "source_freeze": "ALL_SOURCE_FROZEN",
+  "checkpoint_preflight": "VERIFIED",
+  "controller": {
+    "pid": 2074109,
+    "state": "S",
+    "start_ticks": 76356526,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_20261009_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_dual_evidence.dispatch"
+    ]
+  },
+  "queue": {
+    "kind": "predict",
+    "active": [],
+    "pending": [
+      "legacy_cosine-s2026092701",
+      "raw_dual-s2026092701",
+      "curvature_dual-s2026092701",
+      "curvature_interaction-s2026092701",
+      "legacy_cosine-s2026092702",
+      "raw_dual-s2026092702",
+      "curvature_dual-s2026092702",
+      "curvature_interaction-s2026092702",
+      "legacy_cosine-s2026092703",
+      "raw_dual-s2026092703",
+      "curvature_dual-s2026092703",
+      "curvature_interaction-s2026092703",
+      "legacy_cosine-s2026092704",
+      "raw_dual-s2026092704",
+      "curvature_dual-s2026092704",
+      "curvature_interaction-s2026092704"
+    ],
+    "completed": [],
+    "failures": [],
+    "per_gpu_limit": 4,
+    "updated_at": 1791534447.137904
+  },
+  "predictions_complete": 0,
+  "registered_row_views": 112,
+  "scoring": null,
+  "test_complete": false,
+  "capacity_gpu_csv": "0, GPU-56adac86-77cd-36c9-8770-dbf002650461, 9570\n1, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 9620\n2, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 9574\n3, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 9558\n4, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 9592\n5, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 9580\n6, GPU-5463e082-259e-537b-603a-01575d45801c, 9540\n7, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 9554\n",
+  "capacity_process_csv": "2129534, GPU-56adac86-77cd-36c9-8770-dbf002650461\n2217180, GPU-56adac86-77cd-36c9-8770-dbf002650461\n2251833, GPU-56adac86-77cd-36c9-8770-dbf002650461\n2256449, GPU-56adac86-77cd-36c9-8770-dbf002650461\n2129071, GPU-a2d039ff-1792-4222-2b47-140429e10f94\n2178327, GPU-a2d039ff-1792-4222-2b47-140429e10f94\n2252721, GPU-a2d039ff-1792-4222-2b47-140429e10f94\n2254773, GPU-a2d039ff-1792-4222-2b47-140429e10f94\n2128878, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562\n2159333, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562\n2249689, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562\n2251951, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562\n2128908, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97\n2226817, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97\n2248976, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97\n2249694, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97\n2128731, GPU-95d925a1-7218-ca7b-adef-164241f4f491\n2128755, GPU-95d925a1-7218-ca7b-adef-164241f4f491\n2245687, GPU-95d925a1-7218-ca7b-adef-164241f4f491\n2246480, GPU-95d925a1-7218-ca7b-adef-164241f4f491\n2128736, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331\n2128761, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331\n2244718, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331\n2245692, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331\n2128743, GPU-5463e082-259e-537b-603a-01575d45801c\n2128826, GPU-5463e082-259e-537b-603a-01575d45801c\n2248221, GPU-5463e082-259e-537b-603a-01575d45801c\n2251276, GPU-5463e082-259e-537b-603a-01575d45801c\n2128749, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9\n2128852, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9\n2247496, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9\n2278754, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9\n",
+  "no_worker_mutation": true
+}

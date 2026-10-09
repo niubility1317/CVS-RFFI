@@ -306,7 +306,7 @@
         "--row",
         "legacy_cosine-s2026092701"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "raw_dual-s2026092701",
@@ -424,7 +424,7 @@
         "--row",
         "raw_dual-s2026092701"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "curvature_dual-s2026092701",
@@ -542,7 +542,7 @@
         "--row",
         "curvature_dual-s2026092701"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "curvature_interaction-s2026092701",
@@ -660,7 +660,7 @@
         "--row",
         "curvature_interaction-s2026092701"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "legacy_cosine-s2026092702",
@@ -778,7 +778,7 @@
         "--row",
         "legacy_cosine-s2026092702"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "raw_dual-s2026092702",
@@ -896,7 +896,7 @@
         "--row",
         "raw_dual-s2026092702"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "curvature_dual-s2026092702",
@@ -1014,7 +1014,7 @@
         "--row",
         "curvature_dual-s2026092702"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "curvature_interaction-s2026092702",
@@ -1132,7 +1132,7 @@
         "--row",
         "curvature_interaction-s2026092702"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "legacy_cosine-s2026092703",
@@ -1250,7 +1250,7 @@
         "--row",
         "legacy_cosine-s2026092703"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "raw_dual-s2026092703",
@@ -1368,7 +1368,7 @@
         "--row",
         "raw_dual-s2026092703"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "curvature_dual-s2026092703",
@@ -1486,7 +1486,7 @@
         "--row",
         "curvature_dual-s2026092703"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "curvature_interaction-s2026092703",
@@ -1604,7 +1604,7 @@
         "--row",
         "curvature_interaction-s2026092703"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "legacy_cosine-s2026092704",
@@ -1722,7 +1722,7 @@
         "--row",
         "legacy_cosine-s2026092704"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "raw_dual-s2026092704",
@@ -1840,7 +1840,7 @@
         "--row",
         "raw_dual-s2026092704"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "curvature_dual-s2026092704",
@@ -1958,7 +1958,7 @@
         "--row",
         "curvature_dual-s2026092704"
       ],
-      "verified_epoch": 3
+      "verified_epoch": 200
     },
     {
       "row_id": "curvature_interaction-s2026092704",
@@ -2076,7 +2076,7 @@
         "--row",
         "curvature_interaction-s2026092704"
       ],
-      "verified_epoch": null
+      "verified_epoch": 200
     }
   ],
   "notes": [
@@ -2090,7 +2090,7 @@
     "Curve invariance limited to ideal global complex gain/phase/constant CFO in evidence input. No arbitrary channel cancellation or transmitter-factor identifiability claim.",
     "Design and literature: experiments/cvs_dual_evidence/DESIGN.md. Actual clean/6view gains unknown until scoring."
   ],
-  "status": "RUNNING",
+  "status": "QUEUED",
   "test_completion_plan": {
     "rows": 16,
     "views": [
