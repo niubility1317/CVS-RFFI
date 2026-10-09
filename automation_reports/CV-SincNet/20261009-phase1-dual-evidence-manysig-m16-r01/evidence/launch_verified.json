@@ -1,0 +1,107 @@
+{
+  "status": "VERIFIED",
+  "source_commit": "a759963aa77150da25bd91fd8c031f7d06120cf4",
+  "controller": {
+    "pid": 2074109,
+    "state": "S",
+    "start_ticks": 76356526,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_20261009_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_dual_evidence.dispatch"
+    ]
+  },
+  "launched": 16,
+  "resolved_rows": [
+    "legacy_cosine-s2026092701",
+    "raw_dual-s2026092701",
+    "curvature_dual-s2026092701",
+    "curvature_interaction-s2026092701",
+    "legacy_cosine-s2026092702",
+    "raw_dual-s2026092702",
+    "curvature_dual-s2026092702",
+    "curvature_interaction-s2026092702",
+    "legacy_cosine-s2026092703",
+    "raw_dual-s2026092703",
+    "curvature_dual-s2026092703",
+    "curvature_interaction-s2026092703",
+    "legacy_cosine-s2026092704",
+    "raw_dual-s2026092704",
+    "curvature_dual-s2026092704"
+  ],
+  "waiting_capacity_rows": [
+    "curvature_interaction-s2026092704"
+  ],
+  "epoch_telemetry_rows": 15,
+  "capacity": {
+    "0": {
+      "pids": [
+        2050331,
+        2074154,
+        2074865
+      ],
+      "free_mb": 13299
+    },
+    "1": {
+      "pids": [
+        2002696,
+        2074130,
+        2074216
+      ],
+      "free_mb": 13805
+    },
+    "2": {
+      "pids": [
+        2072691,
+        2074135,
+        2074244
+      ],
+      "free_mb": 16197
+    },
+    "3": {
+      "pids": [
+        2073206,
+        2074148,
+        2074702
+      ],
+      "free_mb": 15945
+    },
+    "4": {
+      "pids": [
+        2063305,
+        2074140,
+        2074408
+      ],
+      "free_mb": 16153
+    },
+    "5": {
+      "pids": [
+        2063306,
+        2074161,
+        2074960
+      ],
+      "free_mb": 15451
+    },
+    "6": {
+      "pids": [
+        2063307,
+        2074173,
+        2074976
+      ],
+      "free_mb": 12991
+    },
+    "7": {
+      "pids": [
+        2063308,
+        2074190,
+        2075066
+      ],
+      "free_mb": 10242
+    }
+  },
+  "source_training_complete": false,
+  "test_complete": false,
+  "performance_gain": null
+}

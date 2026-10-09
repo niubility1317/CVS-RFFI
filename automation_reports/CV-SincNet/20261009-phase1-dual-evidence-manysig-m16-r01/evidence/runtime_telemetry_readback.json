@@ -1,0 +1,700 @@
+{
+  "rows": [
+    {
+      "row_id": "curvature_interaction-s2026092702",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092702
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 51.74660348892212,
+        "dual_correction_ratio": 0.2409454584121704,
+        "dual_gate_abs_delta": 0.28358352184295654,
+        "dual_secondary_feature_norm": 12.660256385803223,
+        "dual_main_gradient_norm": 0.31493887305259705,
+        "dual_secondary_gradient_norm": 1.2529605627059937,
+        "dual_fusion_gradient_norm": 0.21739108860492706,
+        "dual_arm": "curvature_interaction",
+        "dual_parameters": 619535,
+        "dual_trainable_parameters": 525025,
+        "dual_gradient_present_parameters": 525025,
+        "dual_parameter_buffer_bytes": 2581288,
+        "dual_cuda_peak_allocated_bytes": 831960576,
+        "dual_cuda_peak_reserved_bytes": 2025848832,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092703
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 54.894951581954956,
+        "dual_arm": "legacy_cosine",
+        "dual_parameters": 844754,
+        "dual_trainable_parameters": 844754,
+        "dual_gradient_present_parameters": 177025,
+        "dual_parameter_buffer_bytes": 3482816,
+        "dual_cuda_peak_allocated_bytes": 2108055040,
+        "dual_cuda_peak_reserved_bytes": 3412066304,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092701
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 54.74339270591736,
+        "dual_correction_ratio": 0.20605610311031342,
+        "dual_gate_abs_delta": 0.33267390727996826,
+        "dual_secondary_feature_norm": 12.650651931762695,
+        "dual_main_gradient_norm": 0.03421635180711746,
+        "dual_secondary_gradient_norm": 0.2253749519586563,
+        "dual_fusion_gradient_norm": 0.0372590608894825,
+        "dual_arm": "curvature_interaction",
+        "dual_parameters": 619535,
+        "dual_trainable_parameters": 525025,
+        "dual_gradient_present_parameters": 525025,
+        "dual_parameter_buffer_bytes": 2581288,
+        "dual_cuda_peak_allocated_bytes": 831960576,
+        "dual_cuda_peak_reserved_bytes": 2025848832,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "curvature_dual-s2026092701",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092701
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 54.688135385513306,
+        "dual_correction_ratio": 0.1699458509683609,
+        "dual_gate_abs_delta": 0.0,
+        "dual_secondary_feature_norm": 12.636595726013184,
+        "dual_main_gradient_norm": 0.031830575317144394,
+        "dual_secondary_gradient_norm": 0.2023850828409195,
+        "dual_fusion_gradient_norm": 0.03820395842194557,
+        "dual_arm": "curvature_dual",
+        "dual_parameters": 619535,
+        "dual_trainable_parameters": 525025,
+        "dual_gradient_present_parameters": 525025,
+        "dual_parameter_buffer_bytes": 2581288,
+        "dual_cuda_peak_allocated_bytes": 831960576,
+        "dual_cuda_peak_reserved_bytes": 2025848832,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "raw_dual-s2026092703",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092703
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 59.14804244041443,
+        "dual_correction_ratio": 0.2670019567012787,
+        "dual_gate_abs_delta": 0.0,
+        "dual_secondary_feature_norm": 12.662837028503418,
+        "dual_main_gradient_norm": 0.09640432894229889,
+        "dual_secondary_gradient_norm": 1.0236626863479614,
+        "dual_fusion_gradient_norm": 0.11168114095926285,
+        "dual_arm": "raw_dual",
+        "dual_parameters": 619535,
+        "dual_trainable_parameters": 525025,
+        "dual_gradient_present_parameters": 525025,
+        "dual_parameter_buffer_bytes": 2581288,
+        "dual_cuda_peak_allocated_bytes": 831960576,
+        "dual_cuda_peak_reserved_bytes": 2025848832,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "curvature_dual-s2026092704",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092704
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 57.608046531677246,
+        "dual_correction_ratio": 0.21257218718528748,
+        "dual_gate_abs_delta": 0.0,
+        "dual_secondary_feature_norm": 12.640864372253418,
+        "dual_main_gradient_norm": 0.8390533328056335,
+        "dual_secondary_gradient_norm": 4.877803802490234,
+        "dual_fusion_gradient_norm": 0.7092349529266357,
+        "dual_arm": "curvature_dual",
+        "dual_parameters": 619535,
+        "dual_trainable_parameters": 525025,
+        "dual_gradient_present_parameters": 525025,
+        "dual_parameter_buffer_bytes": 2581288,
+        "dual_cuda_peak_allocated_bytes": 831960576,
+        "dual_cuda_peak_reserved_bytes": 2025848832,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "raw_dual-s2026092704",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092704
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 56.486570596694946,
+        "dual_correction_ratio": 0.24946510791778564,
+        "dual_gate_abs_delta": 0.0,
+        "dual_secondary_feature_norm": 12.66655158996582,
+        "dual_main_gradient_norm": 0.4494211673736572,
+        "dual_secondary_gradient_norm": 1.8146076202392578,
+        "dual_fusion_gradient_norm": 0.4565642774105072,
+        "dual_arm": "raw_dual",
+        "dual_parameters": 619535,
+        "dual_trainable_parameters": 525025,
+        "dual_gradient_present_parameters": 525025,
+        "dual_parameter_buffer_bytes": 2581288,
+        "dual_cuda_peak_allocated_bytes": 832168448,
+        "dual_cuda_peak_reserved_bytes": 2025848832,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "legacy_cosine-s2026092702",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092702
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 54.73834848403931,
+        "dual_arm": "legacy_cosine",
+        "dual_parameters": 844754,
+        "dual_trainable_parameters": 844754,
+        "dual_gradient_present_parameters": 177025,
+        "dual_parameter_buffer_bytes": 3482816,
+        "dual_cuda_peak_allocated_bytes": 2108055040,
+        "dual_cuda_peak_reserved_bytes": 3412066304,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "raw_dual-s2026092701",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092701
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 60.15323758125305,
+        "dual_correction_ratio": 0.2204805463552475,
+        "dual_gate_abs_delta": 0.0,
+        "dual_secondary_feature_norm": 12.680292129516602,
+        "dual_main_gradient_norm": 0.2067272961139679,
+        "dual_secondary_gradient_norm": 0.8850966095924377,
+        "dual_fusion_gradient_norm": 0.16671250760555267,
+        "dual_arm": "raw_dual",
+        "dual_parameters": 619535,
+        "dual_trainable_parameters": 525025,
+        "dual_gradient_present_parameters": 525025,
+        "dual_parameter_buffer_bytes": 2581288,
+        "dual_cuda_peak_allocated_bytes": 831960576,
+        "dual_cuda_peak_reserved_bytes": 2025848832,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "curvature_dual-s2026092702",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092702
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 57.48830485343933,
+        "dual_correction_ratio": 0.25979045033454895,
+        "dual_gate_abs_delta": 0.0,
+        "dual_secondary_feature_norm": 12.653794288635254,
+        "dual_main_gradient_norm": 0.048234935849905014,
+        "dual_secondary_gradient_norm": 0.23387403786182404,
+        "dual_fusion_gradient_norm": 0.04161365330219269,
+        "dual_arm": "curvature_dual",
+        "dual_parameters": 619535,
+        "dual_trainable_parameters": 525025,
+        "dual_gradient_present_parameters": 525025,
+        "dual_parameter_buffer_bytes": 2581288,
+        "dual_cuda_peak_allocated_bytes": 831960576,
+        "dual_cuda_peak_reserved_bytes": 2025848832,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "legacy_cosine-s2026092704",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092704
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 56.3338885307312,
+        "dual_arm": "legacy_cosine",
+        "dual_parameters": 844754,
+        "dual_trainable_parameters": 844754,
+        "dual_gradient_present_parameters": 177025,
+        "dual_parameter_buffer_bytes": 3482816,
+        "dual_cuda_peak_allocated_bytes": 2108055040,
+        "dual_cuda_peak_reserved_bytes": 3412066304,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "legacy_cosine-s2026092701",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092701
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 53.98342847824097,
+        "dual_arm": "legacy_cosine",
+        "dual_parameters": 844754,
+        "dual_trainable_parameters": 844754,
+        "dual_gradient_present_parameters": 177025,
+        "dual_parameter_buffer_bytes": 3482816,
+        "dual_cuda_peak_allocated_bytes": 2108055040,
+        "dual_cuda_peak_reserved_bytes": 3412066304,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "curvature_dual-s2026092703",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092703
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 56.20085382461548,
+        "dual_correction_ratio": 0.22410692274570465,
+        "dual_gate_abs_delta": 0.0,
+        "dual_secondary_feature_norm": 12.633209228515625,
+        "dual_main_gradient_norm": 0.0947934165596962,
+        "dual_secondary_gradient_norm": 0.5787363052368164,
+        "dual_fusion_gradient_norm": 0.07985067367553711,
+        "dual_arm": "curvature_dual",
+        "dual_parameters": 619535,
+        "dual_trainable_parameters": 525025,
+        "dual_gradient_present_parameters": 525025,
+        "dual_parameter_buffer_bytes": 2581288,
+        "dual_cuda_peak_allocated_bytes": 831960576,
+        "dual_cuda_peak_reserved_bytes": 2025848832,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "curvature_interaction-s2026092703",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092703
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 55.70218539237976,
+        "dual_correction_ratio": 0.26332926750183105,
+        "dual_gate_abs_delta": 0.266611784696579,
+        "dual_secondary_feature_norm": 12.635270118713379,
+        "dual_main_gradient_norm": 0.06535976380109787,
+        "dual_secondary_gradient_norm": 0.4330520033836365,
+        "dual_fusion_gradient_norm": 0.04504651576280594,
+        "dual_arm": "curvature_interaction",
+        "dual_parameters": 619535,
+        "dual_trainable_parameters": 525025,
+        "dual_gradient_present_parameters": 525025,
+        "dual_parameter_buffer_bytes": 2581288,
+        "dual_cuda_peak_allocated_bytes": 831960576,
+        "dual_cuda_peak_reserved_bytes": 2025848832,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    },
+    {
+      "row_id": "raw_dual-s2026092702",
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student only",
+        "seed": 2026092702
+      },
+      "metrics": {
+        "epoch": 3,
+        "lr": 0.0001999504081180543,
+        "epoch_time_s": 54.044673919677734,
+        "dual_correction_ratio": 0.23567447066307068,
+        "dual_gate_abs_delta": 0.0,
+        "dual_secondary_feature_norm": 12.672194480895996,
+        "dual_main_gradient_norm": 0.16527608036994934,
+        "dual_secondary_gradient_norm": 1.7837804555892944,
+        "dual_fusion_gradient_norm": 0.1855698525905609,
+        "dual_arm": "raw_dual",
+        "dual_parameters": 619535,
+        "dual_trainable_parameters": 525025,
+        "dual_gradient_present_parameters": 525025,
+        "dual_parameter_buffer_bytes": 2581288,
+        "dual_cuda_peak_allocated_bytes": 831960576,
+        "dual_cuda_peak_reserved_bytes": 2025848832,
+        "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+      }
+    }
+  ],
+  "capacity": {
+    "0": {
+      "pids": [
+        2050331,
+        2074154,
+        2074865
+      ],
+      "free_mb": 13299
+    },
+    "1": {
+      "pids": [
+        2002696,
+        2074130,
+        2074216
+      ],
+      "free_mb": 13805
+    },
+    "2": {
+      "pids": [
+        2072691,
+        2074135,
+        2074244
+      ],
+      "free_mb": 16197
+    },
+    "3": {
+      "pids": [
+        2073206,
+        2074148,
+        2074702
+      ],
+      "free_mb": 15945
+    },
+    "4": {
+      "pids": [
+        2063305,
+        2074140,
+        2074408
+      ],
+      "free_mb": 16153
+    },
+    "5": {
+      "pids": [
+        2063306,
+        2074161,
+        2074960
+      ],
+      "free_mb": 15451
+    },
+    "6": {
+      "pids": [
+        2063307,
+        2074173,
+        2074976
+      ],
+      "free_mb": 12991
+    },
+    "7": {
+      "pids": [
+        2063308,
+        2074190,
+        2075066
+      ],
+      "free_mb": 10242
+    }
+  },
+  "leases": {
+    "source-raw_dual-s2026092703": {
+      "pid": 2074244,
+      "gpu": 2,
+      "observed_pids": [
+        2072691,
+        2074135,
+        2074244
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-curvature_interaction-s2026092701": {
+      "pid": 2074148,
+      "gpu": 3,
+      "observed_pids": [
+        2073206,
+        2074148
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-legacy_cosine-s2026092704": {
+      "pid": 2074865,
+      "gpu": 0,
+      "observed_pids": [
+        2050331,
+        2074154,
+        2074865
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-curvature_dual-s2026092703": {
+      "pid": 2074408,
+      "gpu": 4,
+      "observed_pids": [
+        2063305,
+        2074140,
+        2074408
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-curvature_dual-s2026092701": {
+      "pid": 2074140,
+      "gpu": 4,
+      "observed_pids": [
+        2063305,
+        2074140,
+        2074408
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-legacy_cosine-s2026092702": {
+      "pid": 2074154,
+      "gpu": 0,
+      "observed_pids": [
+        2050331,
+        2074154
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-curvature_interaction-s2026092703": {
+      "pid": 2074702,
+      "gpu": 3,
+      "observed_pids": [
+        2073206,
+        2074148,
+        2074702
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-raw_dual-s2026092702": {
+      "pid": 2074161,
+      "gpu": 5,
+      "observed_pids": [
+        2063306,
+        2074161
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-raw_dual-s2026092704": {
+      "pid": 2074960,
+      "gpu": 5,
+      "observed_pids": [
+        2063306,
+        2074161,
+        2074960
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-legacy_cosine-s2026092703": {
+      "pid": 2074216,
+      "gpu": 1,
+      "observed_pids": [
+        2002696,
+        2074130,
+        2074216
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-raw_dual-s2026092701": {
+      "pid": 2074135,
+      "gpu": 2,
+      "observed_pids": [
+        2072691,
+        2074135,
+        2074244
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-curvature_interaction-s2026092704": {
+      "pid": 2075066,
+      "gpu": 7,
+      "observed_pids": [
+        2063308,
+        2074190,
+        2075066
+      ],
+      "stable_checks": 0,
+      "per_gpu_limit": 4,
+      "status": "WAITING_CAPACITY"
+    },
+    "source-curvature_dual-s2026092702": {
+      "pid": 2074173,
+      "gpu": 6,
+      "observed_pids": [
+        2063307,
+        2074173
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-curvature_interaction-s2026092702": {
+      "pid": 2074190,
+      "gpu": 7,
+      "observed_pids": [
+        2063308,
+        2074190
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-curvature_dual-s2026092704": {
+      "pid": 2074976,
+      "gpu": 6,
+      "observed_pids": [
+        2063307,
+        2074173,
+        2074976
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    },
+    "source-legacy_cosine-s2026092701": {
+      "pid": 2074130,
+      "gpu": 1,
+      "observed_pids": [
+        2002696,
+        2074130,
+        2074216
+      ],
+      "stable_checks": 3,
+      "per_gpu_limit": 4,
+      "status": "CAPACITY_READY"
+    }
+  }
+}

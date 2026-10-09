@@ -47,7 +47,7 @@ for kind in ('source','predict'):
             completion=read(root/('source/completion.json' if kind=='source' else 'prediction/complete.json'))))
 print(json.dumps(dict(at=time.time(),receipt=receipt,controller=proc(receipt['pid']) if receipt else None,
     queue=read(p/'queue_state.json'),failure=read(p/'failure.json'),completion=read(p/'completion.json'),rows=rows)))
-'''.replace('BASE',repr(str(d.BASE))).replace('RELEASE',repr(d.PROJECT+'/releases/'+d.RELEASE))
+'''.replace('BASE',repr(d.BASE.as_posix())).replace('RELEASE',repr(d.PROJECT+'/releases/'+d.RELEASE))
     state=json.loads(ssh(script));d.write(ARTIFACT/'readback.json',state);return state
 
 
@@ -60,7 +60,7 @@ def pull():
         names += [rid+'/source/'+n for n in ('completion.json','initialization.json','resolved_config.json','resolved_native_args.json','epoch_metrics.jsonl')]
         names += [rid+'/prediction/'+n for n in ('provenance.json','resolved_config.json','complete.json')]
         names += [rid+'/'+n for n in ('scores.json','scores.csv','day_scores.json','resources.json')]
-    script="import sys,tarfile;from pathlib import Path\nbase=Path("+repr(str(d.BASE))+')\nnames='+repr(names)+"\nwith tarfile.open(fileobj=sys.stdout.buffer,mode='w|gz') as t:\n for n in names:\n  p=base/n\n  if p.is_file():t.add(p,arcname=n,recursive=False)\n"
+    script="import sys,tarfile;from pathlib import Path\nbase=Path("+repr(d.BASE.as_posix())+')\nnames='+repr(names)+"\nwith tarfile.open(fileobj=sys.stdout.buffer,mode='w|gz') as t:\n for n in names:\n  p=base/n\n  if p.is_file():t.add(p,arcname=n,recursive=False)\n"
     blob=ssh(script);(ARTIFACT/'results.tar.gz').write_bytes(blob)
     folder=ARTIFACT/'results';folder.mkdir(exist_ok=True)
     with tarfile.open(fileobj=io.BytesIO(blob)) as t:
