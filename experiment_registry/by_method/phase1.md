@@ -25,6 +25,8 @@
 |reference_response：跨TX共同位移补偿×分支贡献预测，CE拼接四seed消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-receiver-residual-manysig-m16-r02/report.md)|
 |reference_response新增12行R5补测：clean及六residual|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-reference-completed-sixscene-manysig-m12-r01/report.md)|
 |更新CVS网络的Phase1修复：时序门控与学习率固定对照32行|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-reference-repair-manysig-m32-r01/report.md)|
+|冻结E200独立测试：R1随机混杂诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r03/report.md)|
+|冻结E200独立测试：R2修复后四seed正式消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r04/report.md)|
 |Phase1架构研究：信道鲁棒性与射频指纹保留|legacy_evidence_group|[打开](../../docs/CVS_PHASE1_CHANNEL_ROBUST_ARCHITECTURE_20261003.md)|
 |CVS Phase1目标测试结果（2026-09-28）|legacy_evidence_group|[打开](../../docs/CVS_PHASE1_TARGET_RESULTS_20260928.md)|
 |phase1_dgleo_p0factorial8_matrix_20260714|legacy_evidence_group|[打开](../../local_artifacts/phase1_dgleo_p0factorial8_matrix_20260714.json)|
