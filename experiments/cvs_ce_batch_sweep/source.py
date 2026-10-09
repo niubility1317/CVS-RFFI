@@ -74,10 +74,10 @@ def train(c):
             ctx=build_data(*args,**kw)
             if ctx['named_test_loaders'] or role_ids_from_native(ctx)!=expected['role_ids']:raise ValueError('Physical source roles/target construction mismatch')
             if len(ctx['unlabeled_loader'])!=222:raise ValueError('Unexpected U-based step count')
-            old=ctx['labeled_loader']
+            old=ctx['train_loader']
             if old.batch_sampler.__class__.__name__!='BatchSampler':raise ValueError('Unexpected balanced sampler')
-            ctx['labeled_loader']=DataLoader(old.dataset,batch_size=c['batch_size'],shuffle=True,drop_last=False,num_workers=0,pin_memory=True)
-            if len(old.dataset)!=6300 or len(ctx['labeled_loader'])!=c['steps_per_epoch']:raise ValueError('Single-pass count differs')
+            ctx['train_loader']=DataLoader(old.dataset,batch_size=c['batch_size'],shuffle=True,drop_last=False,num_workers=0,pin_memory=True)
+            if len(old.dataset)!=6300 or len(ctx['train_loader'])!=c['steps_per_epoch']:raise ValueError('Single-pass count differs')
             state['ctx']=ctx
             write(out/'source_contract.json',dict(expected,native_role_comparison='EXACT_MATCH'))
             write(out/'resolved_native_args.json',clean(resolved_config(a)))

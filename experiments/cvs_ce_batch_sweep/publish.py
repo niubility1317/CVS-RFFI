@@ -3,7 +3,7 @@ import hashlib,io,json,subprocess,tarfile
 from pathlib import Path
 from experiments.cvs_phase1_stack.publish import ROOT,CONNECTION,ssh
 from experiments.cvs_ce_batch_sweep.design import PROJECT,RUN
-RELEASE='cvs_ce_singlepass_batch_20261009_r02'
+RELEASE='cvs_ce_singlepass_batch_20261009_r03'
 REMOTE=r'''
 from pathlib import Path
 import os,json,subprocess,hashlib,tarfile,shutil
@@ -22,6 +22,8 @@ python='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'
 env=dict(os.environ,OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONUNBUFFERED='1')
 subprocess.run([python,'-m','py_compile',*[str(release/n) for n in ('design.py','source.py','evaluate.py')]],check=True,env=env)
 subprocess.run([python,'-c',"import sys;sys.path.insert(0,"+repr(str(release))+");import design as d;assert (d.WORKER/'release_commit.txt').read_text().strip()==d.WORKER_COMMIT;cs=[d.config(b) for b in d.BATCHES];assert len(cs)==4;[d.validate(c) for c in cs];[d.make_args(c) for c in cs]"],check=True,env=env,cwd=release)
+check="import sys,json;sys.path.insert(0,"+repr(str(release))+");import design as d;import torch;from experiments.cvs_phase1_overlay.model import native_modules;n=native_modules();from cvsrffi.xuc_fusion.native import role_ids_from_native;from experiments.cvs_phase1_stack.design import SOURCE;a=d.make_args(d.config(256));a.output_dir="+repr(str(release/'preflight'))+";ctx=n._build_ssdg_wisig_data(a,torch.device('cpu'));assert not ctx['named_test_loaders'];assert role_ids_from_native(ctx)==json.load(open(SOURCE))['role_ids'];assert len(ctx['train_loader'].dataset)==6300;from torch.utils.data import DataLoader;assert [len(DataLoader(ctx['train_loader'].dataset,batch_size=b,drop_last=False)) for b in d.BATCHES]==[25,13,7,4];print('ACTUAL_SOURCE_LOADER_PREFLIGHT_PASS')"
+subprocess.run([python,'-c',check],check=True,env=env,cwd=release)
 cmd=[python,'-u',str(release/'evaluate.py'),'--mode','dispatch'];logpath=release/'controller.log'
 with logpath.open('x') as log:child=subprocess.Popen(cmd,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
 receipt=dict(status='SUBMITTED',pid=child.pid,cwd=str(release),argv=cmd,log=str(logpath),commit=c['commit'],run_id=c['run'])

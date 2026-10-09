@@ -23,3 +23,12 @@ def test_normal_pass_covers_each_sample_once_including_tail():
         values=torch.cat([x[0] for x in batches])
         assert len(values)==6300 and len(set(values.tolist()))==6300
         assert len(batches)==__import__('math').ceil(6300/b)
+
+def test_remote_payload_and_nested_preflight_compile():
+    import ast
+    from experiments.cvs_ce_batch_sweep import publish
+    payload=publish.REMOTE.replace('CONFIG','{}')
+    tree=ast.parse(payload)
+    node=next(n for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='check' for t in n.targets))
+    command=eval(compile(ast.Expression(node.value),'<preflight>','eval'),{'release':Path('/tmp/fixed-release')})
+    compile(command,'<actual-loader-preflight>','exec')
