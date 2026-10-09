@@ -45,5 +45,6 @@ def publish():
  c=dict(project=PROJECT.as_posix(),run=RUN,release=RELEASE,commit=commit,archive=archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
  (out/'package.json').write_text(json.dumps(c,indent=2)+'\n',encoding='utf-8')
  subprocess.run(['scp',*CONNECTION,str(archive),'N607:'+PROJECT.as_posix()+'/releases/'+archive.name],check=True)
- receipt=json.loads(ssh(REMOTE.replace('CONFIG',repr(c))));(out/'submit.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8');print(json.dumps(receipt))
+ output=ssh(REMOTE.replace('CONFIG',repr(c)))
+ receipt=json.loads(output.splitlines()[-1]);(out/'submit.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8');print(json.dumps(receipt))
 if __name__=='__main__':publish()
