@@ -110,7 +110,8 @@ def verify(folder):
         confusion_partition_summary_paired_recount='VERIFIED',target_feedback=False)
 
 
-def command(args):return subprocess.check_output(args,cwd=d.ROOT,text=True,encoding='utf-8')
+def command(args):return subprocess.check_output(args,cwd=d.ROOT,text=True,encoding='utf-8',
+    creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
 
 
 def mirror():

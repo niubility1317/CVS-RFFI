@@ -92,7 +92,8 @@ print(json.dumps(result))
 
 def ssh(script):
     compile(script,'remote','exec')
-    result=subprocess.run(['ssh',*CONNECTION,'-T','N607','python3 -'],input=script.encode('utf-8'),capture_output=True)
+    result=subprocess.run(['ssh',*CONNECTION,'-T','N607','python3 -'],input=script.encode('utf-8'),capture_output=True,
+        creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
     if result.returncode: raise RuntimeError(result.stderr.decode('utf-8',errors='replace')+'\n'+result.stdout.decode('utf-8',errors='replace'))
     return result.stdout
 
