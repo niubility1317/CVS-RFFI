@@ -332,7 +332,7 @@
     "Phase2 support/new class/K metrics N/A.",
     "Independent subagent review unavailable under explicit side-conversation prohibition; preserve inherited loop review and record scoped owner checks, no false independent PASS claim."
   ],
-  "status": "PLANNED",
+  "status": "FAILED",
   "test_completion_plan": {
     "views": [
       "clean",
@@ -352,5 +352,14 @@
     "source_freeze": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/source_matrix_frozen.json",
     "all_rows_fixed_before_target": true
   },
-  "registered_at": "2026-10-09T02:57:09+00:00"
+  "registered_at": "2026-10-09T02:57:09+00:00",
+  "latest_verified_status": {
+    "status": "FAILED",
+    "layer": "source_loader_interface_before_optimizer",
+    "checked_at": "2026-10-09T10:56:39.893688+08:00",
+    "optimizer_steps": 0,
+    "target_access": false,
+    "error": "KeyError labeled_loader; native key is train_loader",
+    "replacement_run": "20261009-phase1-ce-singlepass-batch-manysig-m4-r03"
+  }
 }

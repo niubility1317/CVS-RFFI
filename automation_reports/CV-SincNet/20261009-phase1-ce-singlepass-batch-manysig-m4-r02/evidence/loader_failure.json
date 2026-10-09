@@ -1,0 +1,255 @@
+{
+  "checked_at": "2026-10-09T10:56:39.893688+08:00",
+  "receipt": {
+    "status": "SUBMITTED",
+    "pid": 2061221,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/evaluate.py",
+      "--mode",
+      "dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/controller.log",
+    "commit": "40f5770f0ffe6f7c07adf0e10502d9cb8b85ec88",
+    "run_id": "20261009-phase1-ce-singlepass-batch-manysig-m4-r02"
+  },
+  "controller": null,
+  "rows": [
+    {
+      "config": {
+        "schema": "reference_repair_v1",
+        "run_id": "20261009-phase1-ce-singlepass-batch-manysig-m4-r02",
+        "stage": "ce_batch",
+        "arm": "ce_b1024",
+        "model_seed": 2026092701,
+        "row_id": "ce_b1024-s2026092701",
+        "features": [],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/ce_b1024-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 7,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_repair",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "batch_size": 1024,
+        "epoch_mode": "labeled_single_pass",
+        "labeled_drop_last": false
+      },
+      "launch": {
+        "pid": 2061235,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/configs/ce_b1024-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/ce_b1024-s2026092701.train.log"
+      },
+      "process": null,
+      "epoch": null,
+      "source_completion": null,
+      "resolved": null,
+      "native_args": null,
+      "prediction_completion": null,
+      "log_tail": "Traceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py\", line 140, in <module>\n    p=argparse.ArgumentParser();p.add_argument('--config',required=True);a=p.parse_args();train(read(a.config))\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py\", line 123, in train\n    code=n.train(a)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_20261008_r01/experiments/adv3b02_xuc/code/cvsrffi/execution_profile.py\", line 22, in wrapped\n    return function(*args, **kwargs)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_20261008_r01/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py\", line 8411, in train\n    data_ctx = _build_ssdg_wisig_data(args, device)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py\", line 77, in checked_data\n    old=ctx['labeled_loader']\nKeyError: 'labeled_loader'\n"
+    },
+    {
+      "config": {
+        "schema": "reference_repair_v1",
+        "run_id": "20261009-phase1-ce-singlepass-batch-manysig-m4-r02",
+        "stage": "ce_batch",
+        "arm": "ce_b2048",
+        "model_seed": 2026092701,
+        "row_id": "ce_b2048-s2026092701",
+        "features": [],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/ce_b2048-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 4,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_repair",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "batch_size": 2048,
+        "epoch_mode": "labeled_single_pass",
+        "labeled_drop_last": false
+      },
+      "launch": {
+        "pid": 2061236,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/configs/ce_b2048-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/ce_b2048-s2026092701.train.log"
+      },
+      "process": null,
+      "epoch": null,
+      "source_completion": null,
+      "resolved": null,
+      "native_args": null,
+      "prediction_completion": null,
+      "log_tail": "Traceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py\", line 140, in <module>\n    p=argparse.ArgumentParser();p.add_argument('--config',required=True);a=p.parse_args();train(read(a.config))\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py\", line 123, in train\n    code=n.train(a)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_20261008_r01/experiments/adv3b02_xuc/code/cvsrffi/execution_profile.py\", line 22, in wrapped\n    return function(*args, **kwargs)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_20261008_r01/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py\", line 8411, in train\n    data_ctx = _build_ssdg_wisig_data(args, device)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py\", line 77, in checked_data\n    old=ctx['labeled_loader']\nKeyError: 'labeled_loader'\n"
+    },
+    {
+      "config": {
+        "schema": "reference_repair_v1",
+        "run_id": "20261009-phase1-ce-singlepass-batch-manysig-m4-r02",
+        "stage": "ce_batch",
+        "arm": "ce_b256",
+        "model_seed": 2026092701,
+        "row_id": "ce_b256-s2026092701",
+        "features": [],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/ce_b256-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 25,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_repair",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "batch_size": 256,
+        "epoch_mode": "labeled_single_pass",
+        "labeled_drop_last": false
+      },
+      "launch": {
+        "pid": 2061233,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/configs/ce_b256-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/ce_b256-s2026092701.train.log"
+      },
+      "process": null,
+      "epoch": null,
+      "source_completion": null,
+      "resolved": null,
+      "native_args": null,
+      "prediction_completion": null,
+      "log_tail": "Traceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py\", line 140, in <module>\n    p=argparse.ArgumentParser();p.add_argument('--config',required=True);a=p.parse_args();train(read(a.config))\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py\", line 123, in train\n    code=n.train(a)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_20261008_r01/experiments/adv3b02_xuc/code/cvsrffi/execution_profile.py\", line 22, in wrapped\n    return function(*args, **kwargs)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_20261008_r01/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py\", line 8411, in train\n    data_ctx = _build_ssdg_wisig_data(args, device)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py\", line 77, in checked_data\n    old=ctx['labeled_loader']\nKeyError: 'labeled_loader'\n"
+    },
+    {
+      "config": {
+        "schema": "reference_repair_v1",
+        "run_id": "20261009-phase1-ce-singlepass-batch-manysig-m4-r02",
+        "stage": "ce_batch",
+        "arm": "ce_b512",
+        "model_seed": 2026092701,
+        "row_id": "ce_b512-s2026092701",
+        "features": [],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/ce_b512-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 13,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_phase1_repair",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "batch_size": 512,
+        "epoch_mode": "labeled_single_pass",
+        "labeled_drop_last": false
+      },
+      "launch": {
+        "pid": 2061234,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/configs/ce_b512-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/ce_b512-s2026092701.train.log"
+      },
+      "process": null,
+      "epoch": null,
+      "source_completion": null,
+      "resolved": null,
+      "native_args": null,
+      "prediction_completion": null,
+      "log_tail": "Traceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py\", line 140, in <module>\n    p=argparse.ArgumentParser();p.add_argument('--config',required=True);a=p.parse_args();train(read(a.config))\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py\", line 123, in train\n    code=n.train(a)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_20261008_r01/experiments/adv3b02_xuc/code/cvsrffi/execution_profile.py\", line 22, in wrapped\n    return function(*args, **kwargs)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_repair_20261008_r01/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py\", line 8411, in train\n    data_ctx = _build_ssdg_wisig_data(args, device)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/source.py\", line 77, in checked_data\n    old=ctx['labeled_loader']\nKeyError: 'labeled_loader'\n"
+    }
+  ],
+  "artifacts": {
+    "failure.json": {
+      "status": "FAILED",
+      "error": "RuntimeError(\"Failed source rows; retain all artifacts; no retuning/retry: ['ce_b256-s2026092701', 'ce_b512-s2026092701', 'ce_b1024-s2026092701', 'ce_b2048-s2026092701']\")",
+      "no_retry": true
+    },
+    "completion.json": null,
+    "source_matrix_frozen.json": null,
+    "scores.json": null,
+    "summary.json": null,
+    "resources.json": null,
+    "scoring_complete.json": null
+  },
+  "controller_log": "Traceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/evaluate.py\", line 123, in <module>\n    if args.mode == 'dispatch': dispatch()\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_batch_20261009_r02/evaluate.py\", line 104, in dispatch\n    if errors:raise RuntimeError('Failed source rows; retain all artifacts; no retuning/retry: '+repr(errors))\nRuntimeError: Failed source rows; retain all artifacts; no retuning/retry: ['ce_b256-s2026092701', 'ce_b512-s2026092701', 'ce_b1024-s2026092701', 'ce_b2048-s2026092701']\n"
+}
