@@ -1,0 +1,14 @@
+{
+  "run_id": "20261009-phase1-receiver-residual-score-manysig-m16-r05",
+  "parent_run_id": "20261008-phase1-receiver-residual-manysig-m16-r01",
+  "package": "cvs_receiver_residual",
+  "source_release": "cvs_receiver_residual_20261008_r01",
+  "source_commit": "3712e8e4f004f21b8ffdc74ce0459ad8a2020f3d",
+  "disposition": "DIAGNOSTIC_RNG_CONFOUNDED",
+  "prediction_run_id": "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+  "scorer_commit": "927bc9eb799b225d7e40ec14e68a487babf7de6b",
+  "prediction_release": "cvs_receiver_residual_test_recovery_20261009_r01",
+  "training": false,
+  "query_fit": false,
+  "predictions_reused": true
+}

@@ -31,3 +31,11 @@
 ## 评分恢复
 
 原32×7预测全部固定后，评分器把truth中的物理RX名称当作编号而报错；没有写出评分结果。原预测与失败目录保留，本轮只在独占目录完成CPU评分。映射来自原数据集rx_list，不从性能推断。正式结论使用R2，R1为随机混杂诊断；所有负结果保留。
+
+## 最终独立测试结果
+
+ANALYZED / VERIFIED：16模型×7视图，各168000样本。1568条总体/RX/TX主结果+448条完整日期结果。全部混淆矩阵指标、分区与四seed统计经本地独立重算。
+
+[完整本run结果](results/full_results.md)、[逐seed/RX/TX原始CSV](results/scores.csv)、[逐seed/day CSV](results/day_scores.csv)、[混淆矩阵JSON](results/scores.json)。
+
+原r03/r04预测保持固定；无重新训练/预测、适应或目标反馈。R1仅为随机混杂诊断；R2为正式四seed消融，四seed不声明统计显著性。Phase2/K/新增类/H均N/A。

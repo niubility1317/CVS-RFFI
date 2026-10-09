@@ -14,11 +14,12 @@ def verify(folder):
     scoring=json.loads((folder/'scoring_complete.json').read_text(encoding='utf-8'))
     if done['status']!='ANALYZED' or scoring['result_rows']!=1568 or scoring['truth_last'] is not True or scoring['independent_recount']!='VERIFIED':raise ValueError('Terminal coverage differs')
     rows=json.loads((folder/'scores.json').read_text(encoding='utf-8'))['results']
-    keys=set();overall={};sub={};accuracies={}
+    keys=set();overall={};sub={};accuracies={};score_lookup={}
     for r in rows:
         key=(r['row_id'],r['view'],r['dimension'],r['stratum'])
         if key in keys:raise ValueError('Duplicate score row')
         keys.add(key);cm=r['confusion'];n=sum(map(sum,cm));correct=sum(cm[i][i] for i in range(6))
+        score_lookup[key]=r
         f1=sum(2*cm[i][i]/(sum(cm[i])+sum(a[i] for a in cm)) if sum(cm[i])+sum(a[i] for a in cm)>0 else 0. for i in range(6))/6
         if n!=r['query_count'] or abs(correct/n-r['accuracy'])>1e-12 or abs(f1-r['macro_f1'])>1e-12:raise ValueError('Local independent metric recount differs')
         group=(r['row_id'],r['view'])
@@ -47,11 +48,26 @@ def verify(folder):
             raise ValueError('Day partitions differ')
     summary=json.loads((folder/'summary.json').read_text(encoding='utf-8'))['results']
     for r in summary:
-        values=[accuracies[r['arm'],s,r['view']] for s in (2026092701,2026092702,2026092703,2026092704)]
+        for metric in ('accuracy','macro_f1','worst_rx'):
+            values=[]
+            for seed in (2026092701,2026092702,2026092703,2026092704):
+                rid=r['arm']+'-s'+str(seed)
+                value=min(row['accuracy'] for key,row in score_lookup.items() if key[0]==rid and key[1]==r['view'] and key[2]=='receiver') if metric=='worst_rx' else score_lookup[rid,r['view'],'overall','ALL'][metric]
+                values.append(value)
+            mean=sum(values)/4;sd=math.sqrt(sum((x-mean)**2 for x in values)/3)
+            if abs(mean-r[metric+'_mean'])>1e-12 or abs(sd-r[metric+'_sd'])>1e-12:raise ValueError('Full seed summary differs')
+    paired=json.loads((folder/'paired_results.json').read_text(encoding='utf-8'))['comparisons']
+    weights=dict(displacement_vs_baseline={'displacement':1,'baseline':-1},contribution_vs_baseline={'contribution':1,'baseline':-1},
+        combined_vs_baseline={'combined':1,'baseline':-1},interaction={'combined':1,'displacement':-1,'contribution':-1,'baseline':1})
+    if len(paired)!=28:raise ValueError('Paired contrast coverage differs')
+    for r in paired:
+        values=[100*sum(w*accuracies[arm,s,r['view']] for arm,w in weights[r['contrast']].items()) for s in (2026092701,2026092702,2026092703,2026092704)]
         mean=sum(values)/4;sd=math.sqrt(sum((x-mean)**2 for x in values)/3)
-        if abs(mean-r['accuracy_mean'])>1e-12 or abs(sd-r['accuracy_sd'])>1e-12:raise ValueError('Seed summary differs')
+        if any(abs(a-b)>1e-12 for a,b in zip(values,r['seed_differences_pp'])) or abs(mean-r['mean_pp'])>1e-12 or abs(sd-r['sd_pp'])>1e-12:
+            raise ValueError('Paired mean/SD recount differs')
     return dict(status='VERIFIED',score_rows=len(rows),overall_rows=len(overall),fixed_model_seeds=4,views=7,
-        all_confusion_accuracy_f1_recount=True,all_RX_TX_day_partition_recount=True,day_rows=448,seed_mean_sampleSD_recount=True)
+        all_confusion_accuracy_f1_recount=True,all_RX_TX_day_partition_recount=True,day_rows=448,
+        accuracy_F1_worstRX_seed_mean_sampleSD_recount=True,all_paired_contrasts_recount=True)
 
 
 def main():

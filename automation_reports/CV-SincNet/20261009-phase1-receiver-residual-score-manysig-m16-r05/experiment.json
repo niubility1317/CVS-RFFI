@@ -39,7 +39,8 @@
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_score_recovery_20261009_r01",
-    "source_runtime_commit": "3712e8e4f004f21b8ffdc74ce0459ad8a2020f3d"
+    "source_runtime_commit": "3712e8e4f004f21b8ffdc74ce0459ad8a2020f3d",
+    "runtime_commit": "927bc9eb799b225d7e40ec14e68a487babf7de6b"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -288,7 +289,15 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-receiver-residual-score-manysig-m16-r05",
     "local_artifact_root": "automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r05",
     "launch_command": "python -m experiments.cvs_receiver_residual_test_recovery.score_publish",
-    "stop_rule": "Retain score failure artifacts; no train, prediction, tuning or automatic retry"
+    "stop_rule": "Retain score failure artifacts; no train, prediction, tuning or automatic retry",
+    "scorer_pid": 2025375,
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_receiver_residual_test_recovery.score_only"
+    ],
+    "gpu": false
   },
   "expected_artifacts": [
     "lineage.json",
@@ -1058,5 +1067,6 @@
     "auxiliary_views": "clean_only",
     "counterfactual": "single_branch_deletion_at_current_base_head"
   },
-  "registered_at": "2026-10-09T01:50:51+00:00"
+  "registered_at": "2026-10-09T01:50:51+00:00",
+  "results_ref": "results/full_results.md"
 }

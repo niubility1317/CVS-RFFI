@@ -36,3 +36,7 @@
 
 
 完整训练记录核验VERIFIED：两轮32个模型共320000步、6400个epoch，逐条解析step/epoch/CSV/161轮源L统计及完整stdout；全部E200×50=10000步。未发现训练异常或PL/EMA/域骨干意外启用，卫星CE从E80开始，辅助机制从E41开始。源类映射/原角色契约逐字段一致，核验未读取truth。证据见evidence/completed_training_audit.json。
+
+## 固定预测与独立评分交接
+
+PREDICTIONS_COMPLETE：本run的16×7固定数组保留。原评分在物理RX名称/编号检查处失败，未输出指标，旧failure保留。最终评分在独立run `20261009-phase1-receiver-residual-score-manysig-m16-r06` 完成，VERIFIED；无重预测。

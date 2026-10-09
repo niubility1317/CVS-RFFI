@@ -1,0 +1,50 @@
+{
+  "status": "VERIFIED",
+  "scope": "all16 formal model logs E161-200; full logs already audited",
+  "results": [
+    {
+      "arm": "baseline",
+      "epochs": 160,
+      "correction_norm_ratio": 0.0,
+      "gate_abs_delta": 0.0,
+      "cross_tx_relative_prediction_error": 1.0298909462988377,
+      "cross_tx_direction_cosine": 0.14189540506340564,
+      "displacement_gradient_norm": null,
+      "contribution_gradient_norm": null,
+      "peak_cuda_allocated_bytes": 329456128
+    },
+    {
+      "arm": "displacement",
+      "epochs": 160,
+      "correction_norm_ratio": 0.10943975286651403,
+      "gate_abs_delta": 0.0,
+      "cross_tx_relative_prediction_error": 0.9567381195724011,
+      "cross_tx_direction_cosine": 0.20837695244699717,
+      "displacement_gradient_norm": 0.36625601942068897,
+      "contribution_gradient_norm": null,
+      "peak_cuda_allocated_bytes": 330104320
+    },
+    {
+      "arm": "contribution",
+      "epochs": 160,
+      "correction_norm_ratio": 0.0,
+      "gate_abs_delta": 0.06900928135728464,
+      "cross_tx_relative_prediction_error": 1.0313453577458858,
+      "cross_tx_direction_cosine": 0.13991862758994103,
+      "displacement_gradient_norm": null,
+      "contribution_gradient_norm": 0.09766314177541062,
+      "peak_cuda_allocated_bytes": 329339904
+    },
+    {
+      "arm": "combined",
+      "epochs": 160,
+      "correction_norm_ratio": 0.1059612527191639,
+      "gate_abs_delta": 0.06585974224703386,
+      "cross_tx_relative_prediction_error": 0.9727825783193111,
+      "cross_tx_direction_cosine": 0.20226310705766082,
+      "displacement_gradient_norm": 0.3266381178400479,
+      "contribution_gradient_norm": 0.09959617180284112,
+      "peak_cuda_allocated_bytes": 329823232
+    }
+  ]
+}

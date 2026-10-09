@@ -1,0 +1,361 @@
+{
+  "owner": {
+    "pid": 2014643,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01/experiments/cvs_receiver_residual_test_recovery/dispatch.py"
+    ],
+    "launch_owner": "codex/root/receiver-residual-test-recovery-20261009",
+    "commit": "01f3e056f637e0946aaaa58282a1638847b2319e",
+    "started": 1791509938.094875
+  },
+  "failure": null,
+  "completion": false,
+  "runs": [
+    {
+      "run": "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+      "frozen": true,
+      "queue": {
+        "kind": "predict",
+        "active": [
+          "baseline-s2026092701",
+          "displacement-s2026092701",
+          "contribution-s2026092701",
+          "combined-s2026092701",
+          "baseline-s2026092702",
+          "displacement-s2026092702",
+          "contribution-s2026092702",
+          "combined-s2026092702",
+          "baseline-s2026092703",
+          "displacement-s2026092703",
+          "contribution-s2026092703",
+          "combined-s2026092703",
+          "baseline-s2026092704",
+          "displacement-s2026092704",
+          "contribution-s2026092704",
+          "combined-s2026092704"
+        ],
+        "pending": [],
+        "complete": [],
+        "failures": [],
+        "per_gpu_limit": 4,
+        "updated_at": 1791509988.4302657
+      },
+      "rows": [
+        {
+          "row": "baseline-s2026092701",
+          "pid": 2014667,
+          "gpu": 4,
+          "alive": true,
+          "log_bytes": 1018,
+          "tail": [
+            "PREDICT {\"row_id\": \"baseline-s2026092701\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 7.4703522940399125, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "displacement-s2026092701",
+          "pid": 2014672,
+          "gpu": 5,
+          "alive": true,
+          "log_bytes": 897,
+          "tail": [
+            "PREDICT {\"row_id\": \"displacement-s2026092701\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 7.7163508699741215, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "contribution-s2026092701",
+          "pid": 2014677,
+          "gpu": 6,
+          "alive": true,
+          "log_bytes": 899,
+          "tail": [
+            "PREDICT {\"row_id\": \"contribution-s2026092701\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 7.7327341109048575, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "combined-s2026092701",
+          "pid": 2014683,
+          "gpu": 7,
+          "alive": true,
+          "log_bytes": 730,
+          "tail": [
+            "PREDICT {\"row_id\": \"combined-s2026092701\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 8.679905563942157, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "baseline-s2026092702",
+          "pid": 2014692,
+          "gpu": 4,
+          "alive": true,
+          "log_bytes": 871,
+          "tail": [
+            "PREDICT {\"row_id\": \"baseline-s2026092702\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 7.449578921077773, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "displacement-s2026092702",
+          "pid": 2014699,
+          "gpu": 5,
+          "alive": true,
+          "log_bytes": 897,
+          "tail": [
+            "PREDICT {\"row_id\": \"displacement-s2026092702\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 7.7210342769976705, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "contribution-s2026092702",
+          "pid": 2014705,
+          "gpu": 6,
+          "alive": true,
+          "log_bytes": 898,
+          "tail": [
+            "PREDICT {\"row_id\": \"contribution-s2026092702\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 7.760673157055862, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "combined-s2026092702",
+          "pid": 2014716,
+          "gpu": 7,
+          "alive": true,
+          "log_bytes": 731,
+          "tail": [
+            "PREDICT {\"row_id\": \"combined-s2026092702\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 8.684996759984642, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "baseline-s2026092703",
+          "pid": 2014728,
+          "gpu": 1,
+          "alive": true,
+          "log_bytes": 1015,
+          "tail": [
+            "PREDICT {\"row_id\": \"baseline-s2026092703\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 5.9597623880254105, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "displacement-s2026092703",
+          "pid": 2014749,
+          "gpu": 0,
+          "alive": true,
+          "log_bytes": 899,
+          "tail": [
+            "PREDICT {\"row_id\": \"displacement-s2026092703\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 6.885779035044834, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "contribution-s2026092703",
+          "pid": 2014777,
+          "gpu": 2,
+          "alive": true,
+          "log_bytes": 899,
+          "tail": [
+            "PREDICT {\"row_id\": \"contribution-s2026092703\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 6.6472857089247555, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "combined-s2026092703",
+          "pid": 2014855,
+          "gpu": 3,
+          "alive": true,
+          "log_bytes": 872,
+          "tail": [
+            "PREDICT {\"row_id\": \"combined-s2026092703\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 6.467047727899626, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "baseline-s2026092704",
+          "pid": 2015187,
+          "gpu": 7,
+          "alive": true,
+          "log_bytes": 586,
+          "tail": [
+            "PREDICT {\"row_id\": \"baseline-s2026092704\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 8.6675067669712, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "displacement-s2026092704",
+          "pid": 2015491,
+          "gpu": 6,
+          "alive": true,
+          "log_bytes": 604,
+          "tail": [
+            "PREDICT {\"row_id\": \"displacement-s2026092704\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 7.730793091002852, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "contribution-s2026092704",
+          "pid": 2015655,
+          "gpu": 4,
+          "alive": true,
+          "log_bytes": 603,
+          "tail": [
+            "PREDICT {\"row_id\": \"contribution-s2026092704\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 7.463502221973613, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "combined-s2026092704",
+          "pid": 2015741,
+          "gpu": 5,
+          "alive": true,
+          "log_bytes": 587,
+          "tail": [
+            "PREDICT {\"row_id\": \"combined-s2026092704\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 7.72445520805195, \"truth_read\": false}"
+          ]
+        }
+      ]
+    },
+    {
+      "run": "20261009-phase1-receiver-residual-test-manysig-m16-r04",
+      "frozen": true,
+      "queue": {
+        "kind": "predict",
+        "active": [
+          "baseline-s2026092701",
+          "displacement-s2026092701",
+          "contribution-s2026092701",
+          "combined-s2026092701",
+          "baseline-s2026092702",
+          "displacement-s2026092702",
+          "contribution-s2026092702",
+          "combined-s2026092702",
+          "baseline-s2026092703",
+          "displacement-s2026092703",
+          "contribution-s2026092703",
+          "combined-s2026092703"
+        ],
+        "pending": [
+          "baseline-s2026092704",
+          "displacement-s2026092704",
+          "contribution-s2026092704",
+          "combined-s2026092704"
+        ],
+        "complete": [],
+        "failures": [],
+        "per_gpu_limit": 4,
+        "updated_at": 1791509988.4308658
+      },
+      "rows": [
+        {
+          "row": "baseline-s2026092701",
+          "pid": 2015750,
+          "gpu": 1,
+          "alive": true,
+          "log_bytes": 731,
+          "tail": [
+            "PREDICT {\"row_id\": \"baseline-s2026092701\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 5.976019637892023, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "displacement-s2026092701",
+          "pid": 2015833,
+          "gpu": 3,
+          "alive": true,
+          "log_bytes": 604,
+          "tail": [
+            "PREDICT {\"row_id\": \"displacement-s2026092701\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 6.455068456940353, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "contribution-s2026092701",
+          "pid": 2015842,
+          "gpu": 0,
+          "alive": true,
+          "log_bytes": 603,
+          "tail": [
+            "PREDICT {\"row_id\": \"contribution-s2026092701\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 6.911346968030557, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "combined-s2026092701",
+          "pid": 2015971,
+          "gpu": 2,
+          "alive": true,
+          "log_bytes": 587,
+          "tail": [
+            "PREDICT {\"row_id\": \"combined-s2026092701\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 6.645403628936037, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "baseline-s2026092702",
+          "pid": 2016063,
+          "gpu": 4,
+          "alive": true,
+          "log_bytes": 443,
+          "tail": [
+            "PREDICT {\"row_id\": \"baseline-s2026092702\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 7.463565101032145, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "displacement-s2026092702",
+          "pid": 2016087,
+          "gpu": 5,
+          "alive": true,
+          "log_bytes": 454,
+          "tail": [
+            "PREDICT {\"row_id\": \"displacement-s2026092702\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 7.763324500061572, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "contribution-s2026092702",
+          "pid": 2016228,
+          "gpu": 7,
+          "alive": true,
+          "log_bytes": 314,
+          "tail": [
+            "PREDICT {\"row_id\": \"contribution-s2026092702\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 8.67312768404372, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "combined-s2026092702",
+          "pid": 2016390,
+          "gpu": 6,
+          "alive": true,
+          "log_bytes": 443,
+          "tail": [
+            "PREDICT {\"row_id\": \"combined-s2026092702\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 7.766474070958793, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "baseline-s2026092703",
+          "pid": 2016552,
+          "gpu": 1,
+          "alive": true,
+          "log_bytes": 443,
+          "tail": [
+            "PREDICT {\"row_id\": \"baseline-s2026092703\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.965491707087494, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "displacement-s2026092703",
+          "pid": 2016638,
+          "gpu": 2,
+          "alive": true,
+          "log_bytes": 455,
+          "tail": [
+            "PREDICT {\"row_id\": \"displacement-s2026092703\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 6.646692298003472, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "contribution-s2026092703",
+          "pid": 2016720,
+          "gpu": 3,
+          "alive": true,
+          "log_bytes": 455,
+          "tail": [
+            "PREDICT {\"row_id\": \"contribution-s2026092703\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 6.476372909033671, \"truth_read\": false}"
+          ]
+        },
+        {
+          "row": "combined-s2026092703",
+          "pid": 2016806,
+          "gpu": 0,
+          "alive": true,
+          "log_bytes": 444,
+          "tail": [
+            "PREDICT {\"row_id\": \"combined-s2026092703\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 6.905464945011772, \"truth_read\": false}"
+          ]
+        }
+      ]
+    }
+  ]
+}

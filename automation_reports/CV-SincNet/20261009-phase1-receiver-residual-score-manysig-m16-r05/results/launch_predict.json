@@ -1,0 +1,308 @@
+{
+  "rows": [
+    {
+      "row_id": "baseline-s2026092701",
+      "pid": 2014667,
+      "start_ticks": 75764486,
+      "gpu": 4,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "baseline-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/baseline-s2026092701.log"
+    },
+    {
+      "row_id": "displacement-s2026092701",
+      "pid": 2014672,
+      "start_ticks": 75764512,
+      "gpu": 5,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "displacement-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/displacement-s2026092701.log"
+    },
+    {
+      "row_id": "contribution-s2026092701",
+      "pid": 2014677,
+      "start_ticks": 75764533,
+      "gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "contribution-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/contribution-s2026092701.log"
+    },
+    {
+      "row_id": "combined-s2026092701",
+      "pid": 2014683,
+      "start_ticks": 75764559,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "combined-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/combined-s2026092701.log"
+    },
+    {
+      "row_id": "baseline-s2026092702",
+      "pid": 2014692,
+      "start_ticks": 75764580,
+      "gpu": 4,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "baseline-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/baseline-s2026092702.log"
+    },
+    {
+      "row_id": "displacement-s2026092702",
+      "pid": 2014699,
+      "start_ticks": 75764602,
+      "gpu": 5,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "displacement-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/displacement-s2026092702.log"
+    },
+    {
+      "row_id": "contribution-s2026092702",
+      "pid": 2014705,
+      "start_ticks": 75764623,
+      "gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "contribution-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/contribution-s2026092702.log"
+    },
+    {
+      "row_id": "combined-s2026092702",
+      "pid": 2014716,
+      "start_ticks": 75764665,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "combined-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/combined-s2026092702.log"
+    },
+    {
+      "row_id": "baseline-s2026092703",
+      "pid": 2014728,
+      "start_ticks": 75764711,
+      "gpu": 1,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "baseline-s2026092703"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/baseline-s2026092703.log"
+    },
+    {
+      "row_id": "displacement-s2026092703",
+      "pid": 2014749,
+      "start_ticks": 75764801,
+      "gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "displacement-s2026092703"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/displacement-s2026092703.log"
+    },
+    {
+      "row_id": "contribution-s2026092703",
+      "pid": 2014777,
+      "start_ticks": 75764938,
+      "gpu": 2,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "contribution-s2026092703"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/contribution-s2026092703.log"
+    },
+    {
+      "row_id": "combined-s2026092703",
+      "pid": 2014855,
+      "start_ticks": 75765105,
+      "gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "combined-s2026092703"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/combined-s2026092703.log"
+    },
+    {
+      "row_id": "baseline-s2026092704",
+      "pid": 2015187,
+      "start_ticks": 75765390,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "baseline-s2026092704"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/baseline-s2026092704.log"
+    },
+    {
+      "row_id": "displacement-s2026092704",
+      "pid": 2015491,
+      "start_ticks": 75765602,
+      "gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "displacement-s2026092704"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/displacement-s2026092704.log"
+    },
+    {
+      "row_id": "contribution-s2026092704",
+      "pid": 2015655,
+      "start_ticks": 75765738,
+      "gpu": 4,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "contribution-s2026092704"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/contribution-s2026092704.log"
+    },
+    {
+      "row_id": "combined-s2026092704",
+      "pid": 2015741,
+      "start_ticks": 75765846,
+      "gpu": 5,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_residual_test_recovery.dispatch",
+        "--worker",
+        "--run",
+        "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+        "--row",
+        "combined-s2026092704"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-receiver-residual-test-manysig-m16-r03/combined-s2026092704.log"
+    }
+  ]
+}

@@ -55,7 +55,9 @@ def main():
         archive=archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
     (output/'package.json').write_text(json.dumps(config,indent=2)+'\n',encoding='utf-8')
     subprocess.run(['scp',*CONNECTION,str(archive),'N607:'+d.PROJECT+'/releases/'+archive.name],check=True)
-    receipt=json.loads(ssh(REMOTE.replace('CONFIG',repr(config))))
+    response=ssh(REMOTE.replace('CONFIG',repr(config))).decode('utf-8')
+    (output/'submit_stdout.txt').write_text(response,encoding='utf-8')
+    receipt=json.loads(response.strip().splitlines()[-1])
     (output/'submit.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8');print(json.dumps(receipt))
 
 

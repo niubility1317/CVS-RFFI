@@ -1,0 +1,30 @@
+{
+  "row_id": "displacement-s2026092702",
+  "run_id": "20261009-phase1-receiver-residual-test-manysig-m16-r03",
+  "pid": 2014699,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_test_recovery_20261009_r01",
+  "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+  "commit": "3712e8e4f004f21b8ffdc74ce0459ad8a2020f3d",
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+  "backend_flags": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "batch_size": 256,
+  "parameters": 182603,
+  "trainable_parameters": 0,
+  "hardware": "NVIDIA GeForce RTX 3090",
+  "torch_version": "2.1.0+cu121"
+}

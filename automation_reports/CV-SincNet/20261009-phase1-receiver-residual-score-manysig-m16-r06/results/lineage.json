@@ -1,0 +1,14 @@
+{
+  "run_id": "20261009-phase1-receiver-residual-score-manysig-m16-r06",
+  "parent_run_id": "20261008-phase1-receiver-residual-manysig-m16-r02",
+  "package": "cvs_receiver_residual_v2",
+  "source_release": "cvs_receiver_residual_v2_20261008_r02",
+  "source_commit": "8a88b3a2e369644ea1d746c5e02006218ee00df6",
+  "disposition": "FORMAL_R2_FIXED_RNG_BENCHMARK_EXPOSED",
+  "prediction_run_id": "20261009-phase1-receiver-residual-test-manysig-m16-r04",
+  "scorer_commit": "927bc9eb799b225d7e40ec14e68a487babf7de6b",
+  "prediction_release": "cvs_receiver_residual_test_recovery_20261009_r01",
+  "training": false,
+  "query_fit": false,
+  "predictions_reused": true
+}

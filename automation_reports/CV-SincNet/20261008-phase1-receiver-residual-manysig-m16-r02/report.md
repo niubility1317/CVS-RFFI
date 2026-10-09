@@ -67,3 +67,7 @@ GPU0至3各3个总实验进程，GPU4至7各4个；其中本轮R1/R2共24个，�
 FAILED：{"status": "FAILED", "error": "KeyError('classes')", "no_retry": true}
 
 产物保留，未自动重跑或干预健康任务；完整训练/测试收尾尚未完成，不能宣称收益。
+
+## 完整测试已独立交付
+
+原训练控制器FAILED保留，16个ownE200模型源训练完整。其全部固定测试在预测run `20261009-phase1-receiver-residual-test-manysig-m16-r04` 与评分run `20261009-phase1-receiver-residual-score-manysig-m16-r06` 完成，结果VERIFIED。[完整结果](../20261009-phase1-receiver-residual-score-manysig-m16-r06/results/full_results.md)。原R1混杂处置不变。

@@ -1,0 +1,15 @@
+{
+  "status": "SUBMITTED",
+  "pid": 2025375,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_residual_score_recovery_20261009_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.cvs_receiver_residual_test_recovery.score_only"
+  ],
+  "commit": "927bc9eb799b225d7e40ec14e68a487babf7de6b",
+  "training": false,
+  "predictions_reused": true,
+  "gpu": false
+}

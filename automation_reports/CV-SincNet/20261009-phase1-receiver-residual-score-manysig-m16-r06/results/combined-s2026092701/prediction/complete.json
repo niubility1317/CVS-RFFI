@@ -1,0 +1,28 @@
+{
+  "status": "PREDICTIONS_COMPLETE",
+  "count": 168000,
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "truth_read": false,
+  "query_fit": false,
+  "inference_seconds": {
+    "clean": 5.626323345000856,
+    "practical_high": 6.44084886694327,
+    "practical_mid": 6.614737631054595,
+    "practical_low_suburban": 6.645403628936037,
+    "practical_high_urban": 6.724996106000617,
+    "practical_mid_urban": 5.763132944935933,
+    "practical_low_urban": 5.22503464797046
+  },
+  "wall_seconds": 44.322267960058525,
+  "peak_cuda_allocated_bytes": 88861184,
+  "peak_cuda_reserved_bytes": 125829120,
+  "peak_process_rss_bytes": 1530253312
+}
