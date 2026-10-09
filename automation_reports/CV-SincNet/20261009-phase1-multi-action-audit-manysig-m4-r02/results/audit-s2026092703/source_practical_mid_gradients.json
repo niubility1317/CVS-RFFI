@@ -1,0 +1,291 @@
+{
+  "reference": "clean labeled CE, NOT full native clean+LEO+pseudo objective",
+  "actual_identity_update": false,
+  "learned_action_gradient": "deferred until action reliability established",
+  "rows": [
+    {
+      "component": "all",
+      "loss": "clean_CE_reference",
+      "value": 0.501001238822937,
+      "norm": 4.677120208740234,
+      "norm_ratio": 1.0,
+      "cosine": 1.0
+    },
+    {
+      "component": "all",
+      "loss": "real_L_CE",
+      "value": 0.5654979944229126,
+      "norm": 6.788384437561035,
+      "norm_ratio": 1.4514025449752808,
+      "cosine": 0.8781817555427551
+    },
+    {
+      "component": "all",
+      "loss": "real_T_CE",
+      "value": 0.5782331824302673,
+      "norm": 8.278993606567383,
+      "norm_ratio": 1.7701048851013184,
+      "cosine": 0.845101535320282
+    },
+    {
+      "component": "all",
+      "loss": "exact_feature_L_CE",
+      "value": 0.5654979944229126,
+      "norm": 7.508319854736328,
+      "norm_ratio": 1.6053296327590942,
+      "cosine": 0.8499594926834106
+    },
+    {
+      "component": "all",
+      "loss": "exact_feature_T_CE",
+      "value": 0.5782331824302673,
+      "norm": 8.907524108886719,
+      "norm_ratio": 1.9044890403747559,
+      "cosine": 0.8056470155715942
+    },
+    {
+      "component": "base",
+      "loss": "clean_CE_reference",
+      "value": 0.501001238822937,
+      "norm": 2.885929822921753,
+      "norm_ratio": 1.0,
+      "cosine": 0.9999998807907104
+    },
+    {
+      "component": "base",
+      "loss": "real_L_CE",
+      "value": 0.5654979944229126,
+      "norm": 4.127004146575928,
+      "norm_ratio": 1.43004310131073,
+      "cosine": 0.7713825106620789
+    },
+    {
+      "component": "base",
+      "loss": "real_T_CE",
+      "value": 0.5782331824302673,
+      "norm": 4.901873588562012,
+      "norm_ratio": 1.6985422372817993,
+      "cosine": 0.7640952467918396
+    },
+    {
+      "component": "base",
+      "loss": "exact_feature_L_CE",
+      "value": 0.5654979944229126,
+      "norm": 5.049609184265137,
+      "norm_ratio": 1.7497339248657227,
+      "cosine": 0.7343510985374451
+    },
+    {
+      "component": "base",
+      "loss": "exact_feature_T_CE",
+      "value": 0.5782331824302673,
+      "norm": 5.69429349899292,
+      "norm_ratio": 1.9731225967407227,
+      "cosine": 0.6884017586708069
+    },
+    {
+      "component": "pa",
+      "loss": "clean_CE_reference",
+      "value": 0.501001238822937,
+      "norm": 3.154651165008545,
+      "norm_ratio": 1.0,
+      "cosine": 1.0
+    },
+    {
+      "component": "pa",
+      "loss": "real_L_CE",
+      "value": 0.5654979944229126,
+      "norm": 4.742696762084961,
+      "norm_ratio": 1.5033981800079346,
+      "cosine": 0.9482083916664124
+    },
+    {
+      "component": "pa",
+      "loss": "real_T_CE",
+      "value": 0.5782331824302673,
+      "norm": 5.898517608642578,
+      "norm_ratio": 1.8697844743728638,
+      "cosine": 0.9069361686706543
+    },
+    {
+      "component": "pa",
+      "loss": "exact_feature_L_CE",
+      "value": 0.5654979944229126,
+      "norm": 4.931478977203369,
+      "norm_ratio": 1.563240647315979,
+      "cosine": 0.9409470558166504
+    },
+    {
+      "component": "pa",
+      "loss": "exact_feature_T_CE",
+      "value": 0.5782331824302673,
+      "norm": 6.099028587341309,
+      "norm_ratio": 1.933344841003418,
+      "cosine": 0.8946417570114136
+    },
+    {
+      "component": "G",
+      "loss": "clean_CE_reference",
+      "value": 0.501001238822937,
+      "norm": 1.8960590362548828,
+      "norm_ratio": 1.0,
+      "cosine": 1.0
+    },
+    {
+      "component": "G",
+      "loss": "real_L_CE",
+      "value": 0.5654979944229126,
+      "norm": 2.5606305599212646,
+      "norm_ratio": 1.350501537322998,
+      "cosine": 0.9285739064216614
+    },
+    {
+      "component": "G",
+      "loss": "real_T_CE",
+      "value": 0.5782331824302673,
+      "norm": 3.1178295612335205,
+      "norm_ratio": 1.6443736553192139,
+      "cosine": 0.8523250222206116
+    },
+    {
+      "component": "G",
+      "loss": "exact_feature_L_CE",
+      "value": 0.5654979944229126,
+      "norm": 2.5606305599212646,
+      "norm_ratio": 1.350501537322998,
+      "cosine": 0.9285740256309509
+    },
+    {
+      "component": "G",
+      "loss": "exact_feature_T_CE",
+      "value": 0.5782331824302673,
+      "norm": 3.1178295612335205,
+      "norm_ratio": 1.6443736553192139,
+      "cosine": 0.8523250222206116
+    }
+  ],
+  "tx_rx_coverage": [
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      3
+    ],
+    [
+      0,
+      4
+    ],
+    [
+      0,
+      6
+    ],
+    [
+      0,
+      8
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      3
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      1,
+      6
+    ],
+    [
+      1,
+      8
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      2,
+      6
+    ],
+    [
+      2,
+      8
+    ],
+    [
+      3,
+      1
+    ],
+    [
+      3,
+      3
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      3,
+      6
+    ],
+    [
+      3,
+      8
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      4,
+      3
+    ],
+    [
+      4,
+      4
+    ],
+    [
+      4,
+      6
+    ],
+    [
+      4,
+      8
+    ],
+    [
+      5,
+      1
+    ],
+    [
+      5,
+      3
+    ],
+    [
+      5,
+      4
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      5,
+      8
+    ]
+  ],
+  "packets": 30,
+  "selection": "one fixed heldout physical packet per TX/RX"
+}

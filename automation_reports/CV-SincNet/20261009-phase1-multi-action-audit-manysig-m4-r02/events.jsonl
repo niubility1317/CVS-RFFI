@@ -1,3 +1,4 @@
 {"at": "2026-10-09T14:21:30.950088+00:00", "status": "PLANNED", "note": "Report step1 source-only audit"}
 {"at": "2026-10-09T14:21:53.516919+00:00", "status": "LOCAL_VERIFIED", "evidence": ["evidence/checks_cpu.json", "evidence/checks_gpu.json", "evidence/p0_p1_review.json"]}
 {"at": "2026-10-09T14:23:09.402369+00:00", "status": "RUNNING", "evidence": ["evidence/launch_verified.json"], "note": "All4 actual checkpoints, source roles, worker CWD/PID/GPU, resolved config and growing logs independently verified"}
+{"at": "2026-10-09T14:26:29.954365+00:00", "status": "ANALYZED", "evidence": ["evidence/final_verified.json", "results/summary.md"], "note": "All4 source-only diagnostic rows complete; 14400 auxiliary steps; 256 L/T and24 R metric records verified; identity unchanged and no target score"}

@@ -1,0 +1,64 @@
+{
+  "rows": [
+    {
+      "row_id": "audit-s2026092701",
+      "pid": 2499143,
+      "start_ticks": 80338534,
+      "gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r02/experiments/cvs_multi_action_audit/train_worker.py",
+        "--row",
+        "audit-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-action-audit-manysig-m4-r02/audit-s2026092701.log"
+    },
+    {
+      "row_id": "audit-s2026092702",
+      "pid": 2499148,
+      "start_ticks": 80338561,
+      "gpu": 2,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r02/experiments/cvs_multi_action_audit/train_worker.py",
+        "--row",
+        "audit-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-action-audit-manysig-m4-r02/audit-s2026092702.log"
+    },
+    {
+      "row_id": "audit-s2026092703",
+      "pid": 2499155,
+      "start_ticks": 80338588,
+      "gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r02/experiments/cvs_multi_action_audit/train_worker.py",
+        "--row",
+        "audit-s2026092703"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-action-audit-manysig-m4-r02/audit-s2026092703.log"
+    },
+    {
+      "row_id": "audit-s2026092704",
+      "pid": 2499161,
+      "start_ticks": 80338618,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_audit_20261009_r02/experiments/cvs_multi_action_audit/train_worker.py",
+        "--row",
+        "audit-s2026092704"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-action-audit-manysig-m4-r02/audit-s2026092704.log"
+    }
+  ]
+}

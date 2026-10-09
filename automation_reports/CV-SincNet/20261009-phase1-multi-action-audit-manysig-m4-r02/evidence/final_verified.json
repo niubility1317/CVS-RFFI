@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "rows": 4,
+  "exposures": 2,
+  "action_metric_records": 256,
+  "receiver_metric_records": 24,
+  "optimizer_steps": 14400,
+  "physical_split_verified": true,
+  "metric_recount": true,
+  "identity_unchanged": true,
+  "target_access": false,
+  "runtime_completion": {
+    "status": "SOURCE_AUDIT_COMPLETE",
+    "rows": 4,
+    "identity_training": false,
+    "target_access": false,
+    "new_test_score": null,
+    "next_stage": "Review source evidence before new identity training; no target feedback"
+  }
+}

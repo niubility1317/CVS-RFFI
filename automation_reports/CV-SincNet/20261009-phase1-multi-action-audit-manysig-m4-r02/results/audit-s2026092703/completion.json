@@ -1,0 +1,17 @@
+{
+  "status": "SOURCE_AUDIT_COMPLETE",
+  "row_id": "audit-s2026092703",
+  "exposures": [
+    "clean",
+    "source_practical_mid"
+  ],
+  "identity_unchanged": true,
+  "target_access": false,
+  "elapsed_seconds": 50.290905066998675,
+  "peak_cuda_bytes": 177481728,
+  "no_new_target_accuracy": true,
+  "physical_role_counts": {
+    "fit": 1920,
+    "audit": 960
+  }
+}

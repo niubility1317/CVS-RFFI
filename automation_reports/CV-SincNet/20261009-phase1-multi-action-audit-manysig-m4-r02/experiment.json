@@ -140,7 +140,8 @@
     "prediction_ref": "Heldout source action estimates evaluated after each fixed auxiliary fit; no target artifacts",
     "scorer_ref": "actions.py / receiver.py source-only diagnostics",
     "primary": "All four seeds and both exposures reported. No early stopping; zero/mean skill and G/margin errors jointly assessed.",
-    "decision": "Source evidence will inform a separately registered E200 study; no automatic target-driven candidate or weight selection."
+    "decision": "Source evidence will inform a separately registered E200 study; no automatic target-driven candidate or weight selection.",
+    "completion_scope": "SOURCE_ACTION_AUDIT_ONLY; not new identity efficacy or target accuracy"
   },
   "rows": [
     {
@@ -903,7 +904,7 @@
     "Gradient reference is clean labeled CE; full native pseudo/LEO gradient is N/A in this frozen-model diagnostic.",
     "r02 repairs the reproduced N607 PyTorch/NumPy channel-bridge SIGSEGV and Windows POSIX path serialization; same physical split/seeds/budget/channel namespace; old partial outputs retained."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "mechanism_recipe": {
     "steps": 200,
     "batch_size": 32,
@@ -944,5 +945,6 @@
     "test": "Disjoint physical source-L audit packets, clean and source practical_mid; not R_t",
     "target_testing": "No new identity exists; preserve historical tests and do not rerun unchanged checkpoints",
     "subsequent_identity_training": "Separately register source-selected design and full truth-last tests after source evidence"
-  }
+  },
+  "results_ref": "results/summary.md"
 }

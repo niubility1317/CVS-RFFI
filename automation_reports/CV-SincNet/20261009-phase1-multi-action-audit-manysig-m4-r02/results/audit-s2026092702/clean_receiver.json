@@ -1,0 +1,1349 @@
+{
+  "scope": "source_L_only",
+  "target_access": false,
+  "identity_updated": false,
+  "receiver_semantics": "condition-matched total source RX differences, not pure hardware",
+  "subtract_synthetic_LT": false,
+  "fit_physical_packets": 1920,
+  "audit_physical_packets": 960,
+  "fit_audit_physical_disjoint": true,
+  "fit_groups": 43,
+  "audit_groups": 33,
+  "fit_group_relations": 98,
+  "audit_group_relations": 62,
+  "reference_version": "frozen_source_reference_v1",
+  "audit_selection_or_feedback": false,
+  "temporal_repeatability_fit": {
+    "groups": 33,
+    "rows": [
+      {
+        "key": [
+          0,
+          1,
+          2,
+          0,
+          0
+        ],
+        "packets": 64,
+        "half_group_mse": 1.0691703209886327e-05
+      },
+      {
+        "key": [
+          0,
+          3,
+          1,
+          0,
+          0
+        ],
+        "packets": 58,
+        "half_group_mse": 0.00016234800568781793
+      },
+      {
+        "key": [
+          0,
+          3,
+          2,
+          0,
+          0
+        ],
+        "packets": 4,
+        "half_group_mse": 0.0009813548531383276
+      },
+      {
+        "key": [
+          0,
+          4,
+          2,
+          0,
+          0
+        ],
+        "packets": 64,
+        "half_group_mse": 3.5450411814963445e-06
+      },
+      {
+        "key": [
+          0,
+          6,
+          2,
+          0,
+          0
+        ],
+        "packets": 63,
+        "half_group_mse": 0.00014131642819847912
+      },
+      {
+        "key": [
+          0,
+          8,
+          1,
+          0,
+          0
+        ],
+        "packets": 62,
+        "half_group_mse": 8.709978283150122e-05
+      },
+      {
+        "key": [
+          1,
+          1,
+          2,
+          0,
+          0
+        ],
+        "packets": 63,
+        "half_group_mse": 1.4513547284877859e-05
+      },
+      {
+        "key": [
+          1,
+          3,
+          1,
+          0,
+          0
+        ],
+        "packets": 60,
+        "half_group_mse": 0.0003027459024451673
+      },
+      {
+        "key": [
+          1,
+          4,
+          2,
+          0,
+          0
+        ],
+        "packets": 64,
+        "half_group_mse": 1.4670964446850121e-05
+      },
+      {
+        "key": [
+          1,
+          6,
+          2,
+          0,
+          0
+        ],
+        "packets": 64,
+        "half_group_mse": 6.607832619920373e-05
+      },
+      {
+        "key": [
+          1,
+          8,
+          1,
+          0,
+          0
+        ],
+        "packets": 62,
+        "half_group_mse": 4.3639924115268514e-05
+      },
+      {
+        "key": [
+          2,
+          1,
+          2,
+          0,
+          0
+        ],
+        "packets": 64,
+        "half_group_mse": 6.055102858226746e-06
+      },
+      {
+        "key": [
+          2,
+          3,
+          1,
+          0,
+          0
+        ],
+        "packets": 55,
+        "half_group_mse": 0.0003332642372697592
+      },
+      {
+        "key": [
+          2,
+          3,
+          2,
+          0,
+          0
+        ],
+        "packets": 4,
+        "half_group_mse": 0.0005866960855200887
+      },
+      {
+        "key": [
+          2,
+          4,
+          2,
+          0,
+          0
+        ],
+        "packets": 62,
+        "half_group_mse": 2.9793740395689383e-05
+      },
+      {
+        "key": [
+          2,
+          6,
+          2,
+          0,
+          0
+        ],
+        "packets": 64,
+        "half_group_mse": 0.00021438968542497605
+      },
+      {
+        "key": [
+          2,
+          8,
+          1,
+          0,
+          0
+        ],
+        "packets": 62,
+        "half_group_mse": 0.001228952663950622
+      },
+      {
+        "key": [
+          3,
+          1,
+          2,
+          0,
+          0
+        ],
+        "packets": 64,
+        "half_group_mse": 8.424014595220797e-06
+      },
+      {
+        "key": [
+          3,
+          3,
+          1,
+          0,
+          0
+        ],
+        "packets": 62,
+        "half_group_mse": 0.0002942212449852377
+      },
+      {
+        "key": [
+          3,
+          4,
+          2,
+          0,
+          0
+        ],
+        "packets": 64,
+        "half_group_mse": 6.700276571791619e-06
+      },
+      {
+        "key": [
+          3,
+          6,
+          2,
+          0,
+          0
+        ],
+        "packets": 64,
+        "half_group_mse": 5.594504727923777e-06
+      },
+      {
+        "key": [
+          3,
+          8,
+          1,
+          0,
+          0
+        ],
+        "packets": 58,
+        "half_group_mse": 0.0001686347386566922
+      },
+      {
+        "key": [
+          3,
+          8,
+          2,
+          0,
+          0
+        ],
+        "packets": 4,
+        "half_group_mse": 0.0016362265450879931
+      },
+      {
+        "key": [
+          4,
+          1,
+          2,
+          0,
+          0
+        ],
+        "packets": 64,
+        "half_group_mse": 1.0545334134803852e-06
+      },
+      {
+        "key": [
+          4,
+          3,
+          1,
+          0,
+          0
+        ],
+        "packets": 58,
+        "half_group_mse": 0.0005115880630910397
+      },
+      {
+        "key": [
+          4,
+          4,
+          2,
+          0,
+          0
+        ],
+        "packets": 64,
+        "half_group_mse": 1.7753843621903798e-06
+      },
+      {
+        "key": [
+          4,
+          6,
+          2,
+          0,
+          0
+        ],
+        "packets": 61,
+        "half_group_mse": 4.3479070882312953e-05
+      },
+      {
+        "key": [
+          4,
+          8,
+          1,
+          0,
+          0
+        ],
+        "packets": 60,
+        "half_group_mse": 0.0004209790495224297
+      },
+      {
+        "key": [
+          5,
+          1,
+          2,
+          0,
+          0
+        ],
+        "packets": 64,
+        "half_group_mse": 7.321196790144313e-06
+      },
+      {
+        "key": [
+          5,
+          3,
+          1,
+          0,
+          0
+        ],
+        "packets": 61,
+        "half_group_mse": 0.00010693182412069291
+      },
+      {
+        "key": [
+          5,
+          4,
+          2,
+          0,
+          0
+        ],
+        "packets": 63,
+        "half_group_mse": 0.0001277921546716243
+      },
+      {
+        "key": [
+          5,
+          6,
+          2,
+          0,
+          0
+        ],
+        "packets": 64,
+        "half_group_mse": 0.00011122150317532942
+      },
+      {
+        "key": [
+          5,
+          8,
+          1,
+          0,
+          0
+        ],
+        "packets": 62,
+        "half_group_mse": 7.615765207447112e-05
+      }
+    ],
+    "mean_half_group_mse": 0.0002350078106329337,
+    "reason_if_missing": null
+  },
+  "temporal_repeatability_audit": {
+    "groups": 30,
+    "rows": [
+      {
+        "key": [
+          0,
+          1,
+          2,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 5.211062671151012e-06
+      },
+      {
+        "key": [
+          0,
+          3,
+          1,
+          0,
+          0
+        ],
+        "packets": 29,
+        "half_group_mse": 3.0735714972252026e-05
+      },
+      {
+        "key": [
+          0,
+          4,
+          2,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 2.0920037059113383e-05
+      },
+      {
+        "key": [
+          0,
+          6,
+          2,
+          0,
+          0
+        ],
+        "packets": 31,
+        "half_group_mse": 0.00015797889500390738
+      },
+      {
+        "key": [
+          0,
+          8,
+          1,
+          0,
+          0
+        ],
+        "packets": 31,
+        "half_group_mse": 0.0003034476831089705
+      },
+      {
+        "key": [
+          1,
+          1,
+          2,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 3.242561069782823e-05
+      },
+      {
+        "key": [
+          1,
+          3,
+          1,
+          0,
+          0
+        ],
+        "packets": 29,
+        "half_group_mse": 0.00011140566493850201
+      },
+      {
+        "key": [
+          1,
+          4,
+          2,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 4.333815468271496e-06
+      },
+      {
+        "key": [
+          1,
+          6,
+          2,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 8.372796582989395e-05
+      },
+      {
+        "key": [
+          1,
+          8,
+          1,
+          0,
+          0
+        ],
+        "packets": 27,
+        "half_group_mse": 0.0012932824902236462
+      },
+      {
+        "key": [
+          2,
+          1,
+          2,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 9.775944636203349e-05
+      },
+      {
+        "key": [
+          2,
+          3,
+          1,
+          0,
+          0
+        ],
+        "packets": 30,
+        "half_group_mse": 0.0005446286522783339
+      },
+      {
+        "key": [
+          2,
+          4,
+          2,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 8.927445014705881e-05
+      },
+      {
+        "key": [
+          2,
+          6,
+          2,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 0.0001219700716319494
+      },
+      {
+        "key": [
+          2,
+          8,
+          1,
+          0,
+          0
+        ],
+        "packets": 31,
+        "half_group_mse": 0.0004483527736738324
+      },
+      {
+        "key": [
+          3,
+          1,
+          2,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 5.0759258556354325e-06
+      },
+      {
+        "key": [
+          3,
+          3,
+          1,
+          0,
+          0
+        ],
+        "packets": 30,
+        "half_group_mse": 0.0008081145933829248
+      },
+      {
+        "key": [
+          3,
+          4,
+          2,
+          0,
+          0
+        ],
+        "packets": 31,
+        "half_group_mse": 1.9788325516856275e-05
+      },
+      {
+        "key": [
+          3,
+          6,
+          2,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 1.523330865893513e-06
+      },
+      {
+        "key": [
+          3,
+          8,
+          1,
+          0,
+          0
+        ],
+        "packets": 31,
+        "half_group_mse": 0.0006254459731280804
+      },
+      {
+        "key": [
+          4,
+          1,
+          2,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 4.5089151967658836e-07
+      },
+      {
+        "key": [
+          4,
+          3,
+          1,
+          0,
+          0
+        ],
+        "packets": 31,
+        "half_group_mse": 0.00043182875378988683
+      },
+      {
+        "key": [
+          4,
+          4,
+          2,
+          0,
+          0
+        ],
+        "packets": 31,
+        "half_group_mse": 1.3849276001565158e-05
+      },
+      {
+        "key": [
+          4,
+          6,
+          2,
+          0,
+          0
+        ],
+        "packets": 30,
+        "half_group_mse": 9.980369213735685e-05
+      },
+      {
+        "key": [
+          4,
+          8,
+          1,
+          0,
+          0
+        ],
+        "packets": 31,
+        "half_group_mse": 0.004120209254324436
+      },
+      {
+        "key": [
+          5,
+          1,
+          2,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 0.00011261286999797449
+      },
+      {
+        "key": [
+          5,
+          3,
+          1,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 0.00037478189915418625
+      },
+      {
+        "key": [
+          5,
+          4,
+          2,
+          0,
+          0
+        ],
+        "packets": 30,
+        "half_group_mse": 0.0004409921239130199
+      },
+      {
+        "key": [
+          5,
+          6,
+          2,
+          0,
+          0
+        ],
+        "packets": 32,
+        "half_group_mse": 0.00040990248089656234
+      },
+      {
+        "key": [
+          5,
+          8,
+          1,
+          0,
+          0
+        ],
+        "packets": 31,
+        "half_group_mse": 0.0004983168328180909
+      }
+    ],
+    "mean_half_group_mse": 0.00037693835191229634,
+    "reason_if_missing": null
+  },
+  "contribution_statistics": [
+    {
+      "contribution_age_steps": {
+        "0": 1920
+      },
+      "reference_versions": {
+        "frozen_source_reference_v1": 1920
+      },
+      "expired_samples": 0,
+      "refresh_extends_old_age": false,
+      "max_allowed_age_steps": 888
+    },
+    {
+      "contribution_age_steps": {
+        "0": 960
+      },
+      "reference_versions": {
+        "frozen_source_reference_v1": 960
+      },
+      "expired_samples": 0,
+      "refresh_extends_old_age": false,
+      "max_allowed_age_steps": 888
+    }
+  ],
+  "status": "VERIFIED",
+  "steps": 200,
+  "predictive_metrics": {
+    "learned": {
+      "sse": 267.90673828125,
+      "target_energy": 346.2558288574219,
+      "target_rms": 0.12649984657764435,
+      "skill_over_zero": 0.2262751527814244,
+      "low_target_energy": false,
+      "centroid_G_mse": 0.14301826059818268,
+      "centroid_G_actual_change_mse": 0.16092167794704437,
+      "centroid_margin_delta_mae": 0.6964001059532166,
+      "centroid_margin_actual_delta_abs_mean": 0.6718081831932068,
+      "group_mean_G_actual_change_mse": 0.16000792384147644,
+      "group_mean_packet_margin_actual_delta_abs_mean": 0.8203481435775757,
+      "predicted_centroid_vs_destination_mean_G_mse": 0.14796562492847443,
+      "predicted_centroid_delta_vs_group_mean_G_delta_mse": 0.1471204161643982,
+      "predicted_centroid_margin_delta_vs_mean_packet_margin_delta_mae": 1.0173954963684082,
+      "source_centroid_vs_mean_G_gap_mse": 0.021868083626031876,
+      "destination_centroid_vs_mean_G_gap_mse": 0.021868083626031876,
+      "centroid_delta_vs_group_mean_G_delta_gap_mse": 0.020073827356100082,
+      "source_centroid_vs_mean_packet_margin_gap_mae": 0.7266219854354858,
+      "destination_centroid_vs_mean_packet_margin_gap_mae": 0.7266219854354858,
+      "centroid_margin_delta_vs_mean_packet_margin_delta_gap_mae": 0.7554710507392883,
+      "group_comparison_scope": "Predictions act on mean h; group errors include action error and nonlinear centroid approximation; no packet counterfactual",
+      "prediction_norm_mean": 0.6544366478919983,
+      "target_norm_mean": 2.1619462966918945
+    },
+    "zero": {
+      "sse": 346.2558288574219,
+      "target_energy": 346.2558288574219,
+      "target_rms": 0.12649984657764435,
+      "skill_over_zero": 0.0,
+      "low_target_energy": false,
+      "centroid_G_mse": 0.16092167794704437,
+      "centroid_G_actual_change_mse": 0.16092167794704437,
+      "centroid_margin_delta_mae": 0.6718081831932068,
+      "centroid_margin_actual_delta_abs_mean": 0.6718081831932068,
+      "group_mean_G_actual_change_mse": 0.16000792384147644,
+      "group_mean_packet_margin_actual_delta_abs_mean": 0.8203481435775757,
+      "predicted_centroid_vs_destination_mean_G_mse": 0.1722959727048874,
+      "predicted_centroid_delta_vs_group_mean_G_delta_mse": 0.16000792384147644,
+      "predicted_centroid_margin_delta_vs_mean_packet_margin_delta_mae": 0.8203481435775757,
+      "source_centroid_vs_mean_G_gap_mse": 0.021868083626031876,
+      "destination_centroid_vs_mean_G_gap_mse": 0.021868083626031876,
+      "centroid_delta_vs_group_mean_G_delta_gap_mse": 0.020073827356100082,
+      "source_centroid_vs_mean_packet_margin_gap_mae": 0.7266219854354858,
+      "destination_centroid_vs_mean_packet_margin_gap_mae": 0.7266219854354858,
+      "centroid_margin_delta_vs_mean_packet_margin_delta_gap_mae": 0.7554710507392883,
+      "group_comparison_scope": "Predictions act on mean h; group errors include action error and nonlinear centroid approximation; no packet counterfactual",
+      "prediction_norm_mean": 0.0,
+      "target_norm_mean": 2.1619462966918945
+    },
+    "fit_mean": {
+      "sse": 346.2558288574219,
+      "target_energy": 346.2558288574219,
+      "target_rms": 0.12649984657764435,
+      "skill_over_zero": 0.0,
+      "low_target_energy": false,
+      "centroid_G_mse": 0.16092167794704437,
+      "centroid_G_actual_change_mse": 0.16092167794704437,
+      "centroid_margin_delta_mae": 0.6718080639839172,
+      "centroid_margin_actual_delta_abs_mean": 0.6718081831932068,
+      "group_mean_G_actual_change_mse": 0.16000792384147644,
+      "group_mean_packet_margin_actual_delta_abs_mean": 0.8203481435775757,
+      "predicted_centroid_vs_destination_mean_G_mse": 0.1722959727048874,
+      "predicted_centroid_delta_vs_group_mean_G_delta_mse": 0.16000792384147644,
+      "predicted_centroid_margin_delta_vs_mean_packet_margin_delta_mae": 0.8203482031822205,
+      "source_centroid_vs_mean_G_gap_mse": 0.021868083626031876,
+      "destination_centroid_vs_mean_G_gap_mse": 0.021868083626031876,
+      "centroid_delta_vs_group_mean_G_delta_gap_mse": 0.020073827356100082,
+      "source_centroid_vs_mean_packet_margin_gap_mae": 0.7266219854354858,
+      "destination_centroid_vs_mean_packet_margin_gap_mae": 0.7266219854354858,
+      "centroid_margin_delta_vs_mean_packet_margin_delta_gap_mae": 0.7554710507392883,
+      "group_comparison_scope": "Predictions act on mean h; group errors include action error and nonlinear centroid approximation; no packet counterfactual",
+      "prediction_norm_mean": 1.6642399458532964e-08,
+      "target_norm_mean": 2.1619462966918945
+    }
+  },
+  "relation_vs_anchor": [
+    {
+      "source_rx": 1,
+      "destination_source_rx": 4,
+      "condition": [
+        2,
+        0,
+        0
+      ],
+      "classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "original_relation_loss": 0.0019358814461156726,
+      "destination_anchor_classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "anchor_loss": 0.0012695458717644215,
+      "original_input_gradient_norm": 0.20084087550640106,
+      "anchor_input_gradient_norm": 0.03175550326704979,
+      "anchors_frozen": true,
+      "input_gradient_cosine": -0.479308545589447
+    },
+    {
+      "source_rx": 1,
+      "destination_source_rx": 6,
+      "condition": [
+        2,
+        0,
+        0
+      ],
+      "classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "original_relation_loss": 0.0028064907528460026,
+      "destination_anchor_classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "anchor_loss": 0.0026506634894758463,
+      "original_input_gradient_norm": 0.21269406378269196,
+      "anchor_input_gradient_norm": 0.12179818004369736,
+      "anchors_frozen": true,
+      "input_gradient_cosine": 0.793885350227356
+    },
+    {
+      "source_rx": 4,
+      "destination_source_rx": 1,
+      "condition": [
+        2,
+        0,
+        0
+      ],
+      "classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "original_relation_loss": 0.0029444319661706686,
+      "destination_anchor_classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "anchor_loss": 0.0020974252838641405,
+      "original_input_gradient_norm": 0.1719634234905243,
+      "anchor_input_gradient_norm": 0.052635397762060165,
+      "anchors_frozen": true,
+      "input_gradient_cosine": -0.3984537124633789
+    },
+    {
+      "source_rx": 4,
+      "destination_source_rx": 6,
+      "condition": [
+        2,
+        0,
+        0
+      ],
+      "classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "original_relation_loss": 0.003247672924771905,
+      "destination_anchor_classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "anchor_loss": 0.0024344895500689745,
+      "original_input_gradient_norm": 0.16699737310409546,
+      "anchor_input_gradient_norm": 0.08566420525312424,
+      "anchors_frozen": true,
+      "input_gradient_cosine": 0.8919612765312195
+    },
+    {
+      "source_rx": 6,
+      "destination_source_rx": 1,
+      "condition": [
+        2,
+        0,
+        0
+      ],
+      "classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "original_relation_loss": 0.0036809404846280813,
+      "destination_anchor_classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "anchor_loss": 0.0031914610881358385,
+      "original_input_gradient_norm": 0.12371794879436493,
+      "anchor_input_gradient_norm": 0.13439098000526428,
+      "anchors_frozen": true,
+      "input_gradient_cosine": -0.41264426708221436
+    },
+    {
+      "source_rx": 6,
+      "destination_source_rx": 4,
+      "condition": [
+        2,
+        0,
+        0
+      ],
+      "classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "original_relation_loss": 0.002783812815323472,
+      "destination_anchor_classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "anchor_loss": 0.0030214509461075068,
+      "original_input_gradient_norm": 0.1727677434682846,
+      "anchor_input_gradient_norm": 0.15474143624305725,
+      "anchors_frozen": true,
+      "input_gradient_cosine": 0.1266321837902069
+    },
+    {
+      "source_rx": 3,
+      "destination_source_rx": 8,
+      "condition": [
+        1,
+        0,
+        0
+      ],
+      "classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "original_relation_loss": 0.003651059465482831,
+      "destination_anchor_classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "anchor_loss": 0.0027879630215466022,
+      "original_input_gradient_norm": 0.060171063989400864,
+      "anchor_input_gradient_norm": 0.016868535429239273,
+      "anchors_frozen": true,
+      "input_gradient_cosine": 0.7948187589645386
+    },
+    {
+      "source_rx": 8,
+      "destination_source_rx": 3,
+      "condition": [
+        1,
+        0,
+        0
+      ],
+      "classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "original_relation_loss": 0.004224052187055349,
+      "destination_anchor_classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "anchor_loss": 0.0022609452717006207,
+      "original_input_gradient_norm": 0.04544215649366379,
+      "anchor_input_gradient_norm": 0.016409385949373245,
+      "anchors_frozen": true,
+      "input_gradient_cosine": 0.8373525738716125
+    }
+  ],
+  "sampling_coverage": {
+    "unique_tx": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "unique_tx_pairs": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        5
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        3,
+        5
+      ],
+      [
+        4,
+        5
+      ]
+    ],
+    "unique_rx_pairs": [
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        1,
+        6
+      ],
+      [
+        1,
+        8
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        3,
+        6
+      ],
+      [
+        3,
+        8
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        4,
+        8
+      ],
+      [
+        6,
+        1
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        6,
+        4
+      ],
+      [
+        6,
+        8
+      ],
+      [
+        8,
+        1
+      ],
+      [
+        8,
+        3
+      ],
+      [
+        8,
+        4
+      ],
+      [
+        8,
+        6
+      ]
+    ],
+    "unique_condition_strata": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        2,
+        0,
+        0
+      ]
+    ],
+    "unique_group_relations": 98,
+    "uses_by_group_relation": {
+      "((2, 1, 2, 0, 0), (2, 3, 2, 0, 0))": 65,
+      "((4, 8, 1, 0, 0), (4, 6, 1, 0, 0))": 65,
+      "((5, 1, 2, 0, 0), (5, 3, 2, 0, 0))": 65,
+      "((5, 8, 2, 0, 0), (5, 6, 2, 0, 0))": 65,
+      "((0, 4, 2, 0, 0), (0, 6, 2, 0, 0))": 66,
+      "((4, 6, 1, 0, 0), (4, 3, 1, 0, 0))": 65,
+      "((1, 8, 1, 0, 0), (1, 3, 1, 0, 0))": 65,
+      "((1, 6, 2, 0, 0), (1, 4, 2, 0, 0))": 66,
+      "((5, 1, 2, 0, 0), (5, 6, 2, 0, 0))": 66,
+      "((0, 1, 2, 0, 0), (0, 3, 2, 0, 0))": 65,
+      "((5, 6, 2, 0, 0), (5, 1, 2, 0, 0))": 65,
+      "((5, 6, 2, 0, 0), (5, 4, 2, 0, 0))": 65,
+      "((4, 3, 1, 0, 0), (4, 6, 1, 0, 0))": 66,
+      "((5, 3, 2, 0, 0), (5, 1, 2, 0, 0))": 65,
+      "((3, 6, 2, 0, 0), (3, 4, 2, 0, 0))": 65,
+      "((3, 8, 2, 0, 0), (3, 4, 2, 0, 0))": 65,
+      "((3, 6, 2, 0, 0), (3, 8, 2, 0, 0))": 65,
+      "((2, 4, 2, 0, 0), (2, 6, 2, 0, 0))": 65,
+      "((2, 8, 2, 0, 0), (2, 1, 2, 0, 0))": 65,
+      "((3, 4, 2, 0, 0), (3, 1, 2, 0, 0))": 65,
+      "((4, 8, 2, 0, 0), (4, 1, 2, 0, 0))": 66,
+      "((4, 6, 2, 0, 0), (4, 4, 2, 0, 0))": 65,
+      "((1, 1, 2, 0, 0), (1, 6, 2, 0, 0))": 65,
+      "((2, 1, 2, 0, 0), (2, 4, 2, 0, 0))": 65,
+      "((4, 1, 2, 0, 0), (4, 6, 2, 0, 0))": 65,
+      "((0, 4, 2, 0, 0), (0, 3, 2, 0, 0))": 65,
+      "((0, 4, 2, 0, 0), (0, 1, 2, 0, 0))": 66,
+      "((1, 4, 2, 0, 0), (1, 6, 2, 0, 0))": 65,
+      "((0, 6, 2, 0, 0), (0, 3, 2, 0, 0))": 65,
+      "((3, 8, 1, 0, 0), (3, 3, 1, 0, 0))": 65,
+      "((4, 1, 2, 0, 0), (4, 4, 2, 0, 0))": 65,
+      "((1, 6, 2, 0, 0), (1, 1, 2, 0, 0))": 66,
+      "((2, 4, 2, 0, 0), (2, 3, 2, 0, 0))": 66,
+      "((2, 4, 2, 0, 0), (2, 8, 2, 0, 0))": 66,
+      "((2, 3, 2, 0, 0), (2, 1, 2, 0, 0))": 65,
+      "((2, 3, 2, 0, 0), (2, 8, 2, 0, 0))": 65,
+      "((3, 3, 1, 0, 0), (3, 8, 1, 0, 0))": 65,
+      "((0, 3, 1, 0, 0), (0, 8, 1, 0, 0))": 65,
+      "((3, 8, 2, 0, 0), (3, 6, 2, 0, 0))": 65,
+      "((4, 6, 2, 0, 0), (4, 8, 2, 0, 0))": 65,
+      "((5, 6, 2, 0, 0), (5, 3, 2, 0, 0))": 65,
+      "((4, 8, 2, 0, 0), (4, 4, 2, 0, 0))": 66,
+      "((3, 1, 2, 0, 0), (3, 8, 2, 0, 0))": 65,
+      "((3, 4, 2, 0, 0), (3, 6, 2, 0, 0))": 65,
+      "((0, 8, 1, 0, 0), (0, 3, 1, 0, 0))": 65,
+      "((4, 3, 1, 0, 0), (4, 8, 1, 0, 0))": 66,
+      "((3, 6, 2, 0, 0), (3, 1, 2, 0, 0))": 65,
+      "((2, 8, 2, 0, 0), (2, 6, 2, 0, 0))": 66,
+      "((5, 8, 2, 0, 0), (5, 1, 2, 0, 0))": 65,
+      "((3, 1, 2, 0, 0), (3, 6, 2, 0, 0))": 66,
+      "((5, 3, 2, 0, 0), (5, 8, 2, 0, 0))": 66,
+      "((2, 1, 2, 0, 0), (2, 8, 2, 0, 0))": 65,
+      "((0, 6, 2, 0, 0), (0, 4, 2, 0, 0))": 65,
+      "((4, 8, 2, 0, 0), (4, 6, 2, 0, 0))": 65,
+      "((2, 6, 2, 0, 0), (2, 4, 2, 0, 0))": 65,
+      "((2, 6, 2, 0, 0), (2, 3, 2, 0, 0))": 66,
+      "((0, 1, 2, 0, 0), (0, 6, 2, 0, 0))": 65,
+      "((5, 3, 2, 0, 0), (5, 6, 2, 0, 0))": 66,
+      "((5, 6, 2, 0, 0), (5, 8, 2, 0, 0))": 65,
+      "((4, 1, 2, 0, 0), (4, 8, 2, 0, 0))": 65,
+      "((4, 4, 2, 0, 0), (4, 6, 2, 0, 0))": 65,
+      "((0, 6, 2, 0, 0), (0, 1, 2, 0, 0))": 66,
+      "((1, 1, 2, 0, 0), (1, 4, 2, 0, 0))": 66,
+      "((5, 1, 2, 0, 0), (5, 4, 2, 0, 0))": 65,
+      "((4, 8, 1, 0, 0), (4, 3, 1, 0, 0))": 65,
+      "((1, 3, 1, 0, 0), (1, 8, 1, 0, 0))": 65,
+      "((4, 4, 2, 0, 0), (4, 1, 2, 0, 0))": 65,
+      "((3, 1, 2, 0, 0), (3, 4, 2, 0, 0))": 66,
+      "((2, 6, 2, 0, 0), (2, 1, 2, 0, 0))": 65,
+      "((2, 8, 1, 0, 0), (2, 3, 1, 0, 0))": 65,
+      "((5, 8, 1, 0, 0), (5, 3, 1, 0, 0))": 65,
+      "((5, 4, 2, 0, 0), (5, 8, 2, 0, 0))": 65,
+      "((5, 3, 1, 0, 0), (5, 8, 1, 0, 0))": 66,
+      "((1, 4, 2, 0, 0), (1, 1, 2, 0, 0))": 66,
+      "((2, 3, 2, 0, 0), (2, 6, 2, 0, 0))": 66,
+      "((0, 3, 2, 0, 0), (0, 4, 2, 0, 0))": 65,
+      "((5, 1, 2, 0, 0), (5, 8, 2, 0, 0))": 66,
+      "((4, 4, 2, 0, 0), (4, 8, 2, 0, 0))": 66,
+      "((0, 3, 2, 0, 0), (0, 6, 2, 0, 0))": 65,
+      "((2, 6, 2, 0, 0), (2, 8, 2, 0, 0))": 66,
+      "((2, 3, 2, 0, 0), (2, 4, 2, 0, 0))": 65,
+      "((2, 3, 1, 0, 0), (2, 8, 1, 0, 0))": 65,
+      "((2, 1, 2, 0, 0), (2, 6, 2, 0, 0))": 65,
+      "((5, 8, 2, 0, 0), (5, 4, 2, 0, 0))": 66,
+      "((5, 4, 2, 0, 0), (5, 3, 2, 0, 0))": 65,
+      "((0, 1, 2, 0, 0), (0, 4, 2, 0, 0))": 65,
+      "((4, 6, 2, 0, 0), (4, 1, 2, 0, 0))": 65,
+      "((5, 8, 2, 0, 0), (5, 3, 2, 0, 0))": 65,
+      "((2, 8, 2, 0, 0), (2, 3, 2, 0, 0))": 65,
+      "((2, 4, 2, 0, 0), (2, 1, 2, 0, 0))": 66,
+      "((0, 3, 2, 0, 0), (0, 1, 2, 0, 0))": 65,
+      "((5, 4, 2, 0, 0), (5, 6, 2, 0, 0))": 65,
+      "((2, 8, 2, 0, 0), (2, 4, 2, 0, 0))": 65,
+      "((5, 3, 2, 0, 0), (5, 4, 2, 0, 0))": 65,
+      "((4, 6, 1, 0, 0), (4, 8, 1, 0, 0))": 66,
+      "((5, 4, 2, 0, 0), (5, 1, 2, 0, 0))": 65,
+      "((3, 8, 2, 0, 0), (3, 1, 2, 0, 0))": 66,
+      "((3, 4, 2, 0, 0), (3, 8, 2, 0, 0))": 66
+    }
+  },
+  "auxiliary_parameters": 12224,
+  "inference_auxiliary_parameters": 0,
+  "limitations": [
+    "Audit groups estimate distributions, not paired transmissions",
+    "New anchor loss is diagnosed; no identity optimization or performance claim"
+  ]
+}

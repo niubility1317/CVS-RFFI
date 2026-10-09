@@ -1,0 +1,111 @@
+{
+  "scope": "held-out source-L composition diagnostic only",
+  "fitting": false,
+  "pure_lt_norm_mean": 0.16747723519802094,
+  "pure_lt_energy": 0.00011838254431495443,
+  "true_sum_main_norm_mean": 0.893085777759552,
+  "actual_combined_norm_mean": 0.871829628944397,
+  "real_order_h_mse": 2.3798425274890178e-07,
+  "real_order_z_mse": 2.880211923184106e-06,
+  "real_order_margin_mae": 0.0009239725186489522,
+  "interpretation": "Four-corner residual includes operator composition and encoder curvature; not pure physical interaction.",
+  "modes": {
+    "block_z_cross": {
+      "additive": {
+        "h_mse": 0.0027118853759020567,
+        "z_mse": 0.03230655565857887,
+        "margin_delta_mae": 0.7952471375465393,
+        "total_action_norm_mean": 0.15628522634506226,
+        "exceeds_single_branch_radius_rate": 0.0
+      },
+      "sequential_reused_q": {
+        "h_mse": 0.0027118686120957136,
+        "z_mse": 0.032305873930454254,
+        "margin_delta_mae": 0.7952127456665039,
+        "total_action_norm_mean": 0.15628565847873688,
+        "exceeds_single_branch_radius_rate": 0.0
+      },
+      "sequential_reestimated_q": {
+        "h_mse": 0.002712059998884797,
+        "z_mse": 0.03231139853596687,
+        "margin_delta_mae": 0.795433759689331,
+        "total_action_norm_mean": 0.15617753565311432,
+        "exceeds_single_branch_radius_rate": 0.0
+      },
+      "q_state_change_rms": 0.0011798162013292313
+    },
+    "block_z_self": {
+      "additive": {
+        "h_mse": 0.0026991963386535645,
+        "z_mse": 0.03177806735038757,
+        "margin_delta_mae": 0.7877159714698792,
+        "total_action_norm_mean": 0.16825152933597565,
+        "exceeds_single_branch_radius_rate": 0.0
+      },
+      "sequential_reused_q": {
+        "h_mse": 0.0026991439517587423,
+        "z_mse": 0.03177688643336296,
+        "margin_delta_mae": 0.7876096367835999,
+        "total_action_norm_mean": 0.1682552695274353,
+        "exceeds_single_branch_radius_rate": 0.0
+      },
+      "sequential_reestimated_q": {
+        "h_mse": 0.002699344651773572,
+        "z_mse": 0.03178040310740471,
+        "margin_delta_mae": 0.7875208854675293,
+        "total_action_norm_mean": 0.1680692732334137,
+        "exceeds_single_branch_radius_rate": 0.0
+      },
+      "q_state_change_rms": 0.0012903789756819606
+    },
+    "legacy_self": {
+      "additive": {
+        "h_mse": 0.0024897458497434855,
+        "z_mse": 0.03210766240954399,
+        "margin_delta_mae": 0.789919376373291,
+        "total_action_norm_mean": 0.29352596402168274,
+        "exceeds_single_branch_radius_rate": 0.0
+      },
+      "sequential_reused_q": {
+        "h_mse": 0.002489615697413683,
+        "z_mse": 0.03210544213652611,
+        "margin_delta_mae": 0.7900060415267944,
+        "total_action_norm_mean": 0.2935604155063629,
+        "exceeds_single_branch_radius_rate": 0.0
+      },
+      "sequential_reestimated_q": {
+        "h_mse": 0.002490105340257287,
+        "z_mse": 0.032111816108226776,
+        "margin_delta_mae": 0.7897228002548218,
+        "total_action_norm_mean": 0.29334673285484314,
+        "exceeds_single_branch_radius_rate": 0.0
+      },
+      "q_state_change_rms": 0.0065978411585092545
+    },
+    "oracle_parameters": {
+      "additive": {
+        "h_mse": 0.0025646002031862736,
+        "z_mse": 0.0310978926718235,
+        "margin_delta_mae": 0.7814123034477234,
+        "total_action_norm_mean": 0.2864327132701874,
+        "exceeds_single_branch_radius_rate": 0.0
+      },
+      "sequential_reused_q": {
+        "h_mse": 0.0025645666755735874,
+        "z_mse": 0.03109610080718994,
+        "margin_delta_mae": 0.7814232707023621,
+        "total_action_norm_mean": 0.28645560145378113,
+        "exceeds_single_branch_radius_rate": 0.0
+      },
+      "sequential_reestimated_q": {
+        "h_mse": 0.0025645666755735874,
+        "z_mse": 0.03109610080718994,
+        "margin_delta_mae": 0.7814232707023621,
+        "total_action_norm_mean": 0.28645560145378113,
+        "exceeds_single_branch_radius_rate": 0.0
+      },
+      "q_state_change_rms": 0.0
+    }
+  },
+  "clean_margin_mean": 7.5735955238342285
+}

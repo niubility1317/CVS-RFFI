@@ -1,0 +1,14 @@
+{
+  "status": "VERIFIED",
+  "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092702/source/final_ssdg.pth",
+  "parent_run": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+  "parent_arm": "multi",
+  "selection": "ALL_FOUR_FIXED_E200_MULTI_ROWS_NO_RANKING",
+  "parent_initialization": "scratch; no ancestors; exact source physical roles",
+  "parent_training_target_access": false,
+  "prior_target_scores_consumed": false,
+  "teacher_state": "final student model, fixed for diagnostic",
+  "audit_scope": "unseen by newly fitted auxiliaries; seen by original identity training",
+  "identity_training": false,
+  "target_access": false
+}
