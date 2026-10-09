@@ -1,0 +1,83 @@
+{
+  "results": [
+    {
+      "stage": "ce_batch",
+      "arm": "ce_b256",
+      "view": "clean",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "ce_b256-s2026092701"
+      ],
+      "accuracy_mean": 0.7917321428571429,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7855449529022548,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6547083333333333,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "ce_batch",
+      "arm": "ce_b512",
+      "view": "clean",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "ce_b512-s2026092701"
+      ],
+      "accuracy_mean": 0.802875,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.797379290575943,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.7010833333333333,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "ce_batch",
+      "arm": "ce_b1024",
+      "view": "clean",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "ce_b1024-s2026092701"
+      ],
+      "accuracy_mean": 0.7969285714285714,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7921126689847715,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.7205,
+      "worst_rx_sd": null
+    },
+    {
+      "stage": "ce_batch",
+      "arm": "ce_b2048",
+      "view": "clean",
+      "seed_count": 1,
+      "seeds": [
+        2026092701
+      ],
+      "row_ids": [
+        "ce_b2048-s2026092701"
+      ],
+      "accuracy_mean": 0.7808154761904762,
+      "accuracy_sd": null,
+      "macro_f1_mean": 0.7726994058437641,
+      "macro_f1_sd": null,
+      "worst_rx_mean": 0.6928333333333333,
+      "worst_rx_sd": null
+    }
+  ],
+  "seed_count_by_arm": {
+    "ce_b1024": 1,
+    "ce_b2048": 1,
+    "ce_b256": 1,
+    "ce_b512": 1
+  },
+  "interpretation": "Single paired model seed; four batch sizes; clean only"
+}

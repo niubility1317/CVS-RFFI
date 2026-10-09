@@ -16,3 +16,5 @@
 - [reference_response新增12行R5补测：clean及六residual](../../automation_reports/CV-SincNet/20261008-phase1-reference-completed-sixscene-manysig-m12-r01/report.md)
 - [修复后新增14个E200模型：立即执行clean及六星地场景独立测试](../../automation_reports/CV-SincNet/20261009-evaluation-reference-repair-completed14-manysig-m14-r01/report.md)
 - [更新CVS网络的Phase1修复：时序门控与学习率固定对照32行](../../automation_reports/CV-SincNet/20261008-phase1-reference-repair-manysig-m32-r01/report.md)
+- [四种batch已完成E200模型：只测clean独立评分](../../automation_reports/CV-SincNet/20261009-evaluation-ce-singlepass-clean-manysig-m4-r01/report.md)
+- [纯CE正常遍历：batch256/512/1024/2048速度与泛化对照](../../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/report.md)

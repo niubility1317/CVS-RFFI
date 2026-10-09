@@ -1,0 +1,3966 @@
+{
+  "checked_at": "2026-10-09T15:25:34.541877+08:00",
+  "receipt": {
+    "status": "SUBMITTED",
+    "pid": 2235756,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01/evaluate_clean.py",
+      "--mode",
+      "dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01/controller.log",
+    "commit": "8394ec85a14f67d2103a12f856adfcd87b0f652e",
+    "run_id": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01"
+  },
+  "controller": null,
+  "active": {
+    "row_id": "ce_b2048-s2026092701",
+    "gpu": 2,
+    "pid": 2236185,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01/evaluate_clean.py",
+      "--mode",
+      "predict",
+      "--row",
+      "ce_b2048-s2026092701"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-evaluation-ce-singlepass-clean-manysig-m4-r01/ce_b2048-s2026092701.log"
+  },
+  "worker": null,
+  "files": {
+    "completion.json": {
+      "status": "ANALYZED",
+      "rows": [
+        "ce_b256-s2026092701",
+        "ce_b512-s2026092701",
+        "ce_b1024-s2026092701",
+        "ce_b2048-s2026092701"
+      ],
+      "views": [
+        "clean"
+      ],
+      "target_feedback_forbidden": true
+    },
+    "failure.json": null,
+    "preflight.json": {
+      "status": "VERIFIED",
+      "models": 4,
+      "target_read": false,
+      "rows": [
+        "ce_b256-s2026092701",
+        "ce_b512-s2026092701",
+        "ce_b1024-s2026092701",
+        "ce_b2048-s2026092701"
+      ],
+      "selection": "ALL_COMPLETED_UNTESTED_AT_SNAPSHOT"
+    },
+    "scoring_complete.json": {
+      "status": "SCORED_COMPLETE",
+      "models": 4,
+      "views": 1,
+      "query_count_per_view": 168000,
+      "prediction_count": 672000,
+      "metric_records": 56,
+      "truth_last": true,
+      "independent_recount": "VERIFIED"
+    },
+    "summary.json": {
+      "results": [
+        {
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "view": "clean",
+          "seed_count": 1,
+          "seeds": [
+            2026092701
+          ],
+          "row_ids": [
+            "ce_b256-s2026092701"
+          ],
+          "accuracy_mean": 0.7917321428571429,
+          "accuracy_sd": null,
+          "macro_f1_mean": 0.7855449529022548,
+          "macro_f1_sd": null,
+          "worst_rx_mean": 0.6547083333333333,
+          "worst_rx_sd": null
+        },
+        {
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "view": "clean",
+          "seed_count": 1,
+          "seeds": [
+            2026092701
+          ],
+          "row_ids": [
+            "ce_b512-s2026092701"
+          ],
+          "accuracy_mean": 0.802875,
+          "accuracy_sd": null,
+          "macro_f1_mean": 0.797379290575943,
+          "macro_f1_sd": null,
+          "worst_rx_mean": 0.7010833333333333,
+          "worst_rx_sd": null
+        },
+        {
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "view": "clean",
+          "seed_count": 1,
+          "seeds": [
+            2026092701
+          ],
+          "row_ids": [
+            "ce_b1024-s2026092701"
+          ],
+          "accuracy_mean": 0.7969285714285714,
+          "accuracy_sd": null,
+          "macro_f1_mean": 0.7921126689847715,
+          "macro_f1_sd": null,
+          "worst_rx_mean": 0.7205,
+          "worst_rx_sd": null
+        },
+        {
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "view": "clean",
+          "seed_count": 1,
+          "seeds": [
+            2026092701
+          ],
+          "row_ids": [
+            "ce_b2048-s2026092701"
+          ],
+          "accuracy_mean": 0.7808154761904762,
+          "accuracy_sd": null,
+          "macro_f1_mean": 0.7726994058437641,
+          "macro_f1_sd": null,
+          "worst_rx_mean": 0.6928333333333333,
+          "worst_rx_sd": null
+        }
+      ],
+      "seed_count_by_arm": {
+        "ce_b1024": 1,
+        "ce_b2048": 1,
+        "ce_b256": 1,
+        "ce_b512": 1
+      },
+      "interpretation": "Single paired model seed; four batch sizes; clean only"
+    },
+    "scores.json": {
+      "status": "SCORED",
+      "results": [
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "accuracy": 0.7917321428571429,
+          "macro_f1": 0.7855449529022548,
+          "macro_accuracy": 0.791732142857143,
+          "query_count": 168000,
+          "confusion": [
+            [
+              27284,
+              107,
+              216,
+              256,
+              61,
+              76
+            ],
+            [
+              585,
+              11856,
+              80,
+              15383,
+              69,
+              27
+            ],
+            [
+              356,
+              810,
+              23192,
+              90,
+              732,
+              2820
+            ],
+            [
+              3631,
+              6376,
+              687,
+              17282,
+              7,
+              17
+            ],
+            [
+              9,
+              12,
+              29,
+              7,
+              27937,
+              6
+            ],
+            [
+              16,
+              10,
+              1569,
+              4,
+              941,
+              25460
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "1-1",
+          "accuracy": 0.787125,
+          "macro_f1": 0.7719684398304002,
+          "macro_accuracy": 0.787125,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3984,
+              8,
+              3,
+              2,
+              2,
+              1
+            ],
+            [
+              64,
+              1279,
+              4,
+              2651,
+              1,
+              1
+            ],
+            [
+              95,
+              5,
+              3598,
+              0,
+              1,
+              301
+            ],
+            [
+              519,
+              52,
+              0,
+              3429,
+              0,
+              0
+            ],
+            [
+              3,
+              2,
+              7,
+              4,
+              3983,
+              1
+            ],
+            [
+              3,
+              2,
+              1373,
+              2,
+              2,
+              2618
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "14-7",
+          "accuracy": 0.6547083333333333,
+          "macro_f1": 0.6422506768771634,
+          "macro_accuracy": 0.6547083333333333,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3987,
+              0,
+              0,
+              13,
+              0,
+              0
+            ],
+            [
+              5,
+              731,
+              0,
+              3262,
+              2,
+              0
+            ],
+            [
+              5,
+              4,
+              3044,
+              3,
+              2,
+              942
+            ],
+            [
+              11,
+              3277,
+              654,
+              48,
+              1,
+              9
+            ],
+            [
+              0,
+              2,
+              3,
+              1,
+              3993,
+              1
+            ],
+            [
+              0,
+              0,
+              75,
+              2,
+              13,
+              3910
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "2-1",
+          "accuracy": 0.86,
+          "macro_f1": 0.8563584281852608,
+          "macro_accuracy": 0.8599999999999999,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3526,
+              87,
+              191,
+              140,
+              53,
+              3
+            ],
+            [
+              11,
+              1870,
+              42,
+              2021,
+              37,
+              19
+            ],
+            [
+              12,
+              3,
+              3952,
+              13,
+              14,
+              6
+            ],
+            [
+              31,
+              648,
+              5,
+              3312,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              1,
+              1,
+              3997,
+              0
+            ],
+            [
+              0,
+              2,
+              12,
+              0,
+              3,
+              3983
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "20-1",
+          "accuracy": 0.7483333333333333,
+          "macro_f1": 0.7501971013966694,
+          "macro_accuracy": 0.7483333333333334,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3971,
+              2,
+              10,
+              10,
+              3,
+              4
+            ],
+            [
+              28,
+              1904,
+              6,
+              2048,
+              10,
+              4
+            ],
+            [
+              35,
+              301,
+              3059,
+              36,
+              470,
+              99
+            ],
+            [
+              24,
+              2134,
+              17,
+              1819,
+              3,
+              3
+            ],
+            [
+              6,
+              6,
+              17,
+              1,
+              3967,
+              3
+            ],
+            [
+              12,
+              4,
+              100,
+              0,
+              644,
+              3240
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "7-14",
+          "accuracy": 0.85475,
+          "macro_f1": 0.8412928953948281,
+          "macro_accuracy": 0.85475,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3832,
+              1,
+              11,
+              86,
+              2,
+              68
+            ],
+            [
+              12,
+              1292,
+              7,
+              2687,
+              2,
+              0
+            ],
+            [
+              18,
+              3,
+              3729,
+              6,
+              218,
+              26
+            ],
+            [
+              7,
+              40,
+              4,
+              3945,
+              2,
+              2
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              3999,
+              1
+            ],
+            [
+              1,
+              2,
+              4,
+              0,
+              276,
+              3717
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "7-7",
+          "accuracy": 0.7900416666666666,
+          "macro_f1": 0.7719032715060542,
+          "macro_accuracy": 0.7900416666666666,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3998,
+              2,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              464,
+              2236,
+              18,
+              1266,
+              13,
+              3
+            ],
+            [
+              24,
+              3,
+              3972,
+              0,
+              1,
+              0
+            ],
+            [
+              3038,
+              194,
+              5,
+              763,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              3999,
+              0
+            ],
+            [
+              0,
+              0,
+              4,
+              0,
+              3,
+              3993
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "8-8",
+          "accuracy": 0.8471666666666666,
+          "macro_f1": 0.8346359072729307,
+          "macro_accuracy": 0.8471666666666665,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3986,
+              7,
+              1,
+              5,
+              1,
+              0
+            ],
+            [
+              1,
+              2544,
+              3,
+              1448,
+              4,
+              0
+            ],
+            [
+              167,
+              491,
+              1838,
+              32,
+              26,
+              1446
+            ],
+            [
+              1,
+              31,
+              2,
+              3966,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              3999,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              3999
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "14-10",
+          "accuracy": 0.9744285714285714,
+          "macro_f1": 0.164508115669392,
+          "macro_accuracy": 0.9744285714285714,
+          "query_count": 28000,
+          "confusion": [
+            [
+              27284,
+              107,
+              216,
+              256,
+              61,
+              76
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "14-7",
+          "accuracy": 0.42342857142857143,
+          "macro_f1": 0.09915696507426736,
+          "macro_accuracy": 0.42342857142857143,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              585,
+              11856,
+              80,
+              15383,
+              69,
+              27
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "20-15",
+          "accuracy": 0.8282857142857143,
+          "macro_f1": 0.15101317914257437,
+          "macro_accuracy": 0.8282857142857143,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              356,
+              810,
+              23192,
+              90,
+              732,
+              2820
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "20-19",
+          "accuracy": 0.6172142857142857,
+          "macro_f1": 0.1272175846178761,
+          "macro_accuracy": 0.6172142857142857,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              3631,
+              6376,
+              687,
+              17282,
+              7,
+              17
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "6-15",
+          "accuracy": 0.99775,
+          "macro_f1": 0.16647895549159472,
+          "macro_accuracy": 0.99775,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              9,
+              12,
+              29,
+              7,
+              27937,
+              6
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "8-20",
+          "accuracy": 0.9092857142857143,
+          "macro_f1": 0.15874797356278839,
+          "macro_accuracy": 0.9092857142857143,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              16,
+              10,
+              1569,
+              4,
+              941,
+              25460
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "accuracy": 0.802875,
+          "macro_f1": 0.797379290575943,
+          "macro_accuracy": 0.8028750000000001,
+          "query_count": 168000,
+          "confusion": [
+            [
+              26965,
+              203,
+              406,
+              293,
+              71,
+              62
+            ],
+            [
+              652,
+              12702,
+              201,
+              14269,
+              146,
+              30
+            ],
+            [
+              109,
+              996,
+              24860,
+              33,
+              396,
+              1606
+            ],
+            [
+              3810,
+              6145,
+              966,
+              17032,
+              18,
+              29
+            ],
+            [
+              6,
+              16,
+              41,
+              3,
+              27925,
+              9
+            ],
+            [
+              15,
+              9,
+              1820,
+              0,
+              757,
+              25399
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "1-1",
+          "accuracy": 0.7853333333333333,
+          "macro_f1": 0.7706770630194076,
+          "macro_accuracy": 0.7853333333333333,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3951,
+              7,
+              37,
+              3,
+              1,
+              1
+            ],
+            [
+              79,
+              1338,
+              6,
+              2576,
+              1,
+              0
+            ],
+            [
+              30,
+              3,
+              3753,
+              0,
+              1,
+              213
+            ],
+            [
+              616,
+              32,
+              14,
+              3338,
+              0,
+              0
+            ],
+            [
+              2,
+              3,
+              7,
+              2,
+              3982,
+              4
+            ],
+            [
+              2,
+              1,
+              1509,
+              0,
+              2,
+              2486
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "14-7",
+          "accuracy": 0.7010833333333333,
+          "macro_f1": 0.6812862449622371,
+          "macro_accuracy": 0.7010833333333334,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3983,
+              0,
+              0,
+              17,
+              0,
+              0
+            ],
+            [
+              3,
+              1484,
+              0,
+              2511,
+              2,
+              0
+            ],
+            [
+              1,
+              2,
+              3330,
+              1,
+              1,
+              665
+            ],
+            [
+              11,
+              3017,
+              889,
+              65,
+              1,
+              17
+            ],
+            [
+              0,
+              2,
+              4,
+              0,
+              3993,
+              1
+            ],
+            [
+              0,
+              1,
+              11,
+              0,
+              17,
+              3971
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "2-1",
+          "accuracy": 0.8452083333333333,
+          "macro_f1": 0.8409294702956575,
+          "macro_accuracy": 0.8452083333333335,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3224,
+              189,
+              333,
+              184,
+              62,
+              8
+            ],
+            [
+              9,
+              1882,
+              122,
+              1851,
+              110,
+              26
+            ],
+            [
+              9,
+              3,
+              3954,
+              9,
+              13,
+              12
+            ],
+            [
+              36,
+              703,
+              8,
+              3244,
+              4,
+              5
+            ],
+            [
+              0,
+              1,
+              1,
+              1,
+              3997,
+              0
+            ],
+            [
+              2,
+              1,
+              11,
+              0,
+              2,
+              3984
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "20-1",
+          "accuracy": 0.74,
+          "macro_f1": 0.7412688531311925,
+          "macro_accuracy": 0.7399999999999999,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3972,
+              1,
+              14,
+              3,
+              6,
+              4
+            ],
+            [
+              33,
+              1558,
+              13,
+              2382,
+              13,
+              1
+            ],
+            [
+              15,
+              286,
+              3339,
+              20,
+              259,
+              81
+            ],
+            [
+              24,
+              2128,
+              18,
+              1821,
+              5,
+              4
+            ],
+            [
+              4,
+              8,
+              26,
+              0,
+              3959,
+              3
+            ],
+            [
+              10,
+              5,
+              230,
+              0,
+              644,
+              3111
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "7-14",
+          "accuracy": 0.867625,
+          "macro_f1": 0.8540153031333394,
+          "macro_accuracy": 0.867625,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3844,
+              1,
+              21,
+              84,
+              1,
+              49
+            ],
+            [
+              17,
+              1312,
+              22,
+              2645,
+              4,
+              0
+            ],
+            [
+              2,
+              3,
+              3828,
+              1,
+              114,
+              52
+            ],
+            [
+              7,
+              32,
+              6,
+              3945,
+              7,
+              3
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              3999,
+              1
+            ],
+            [
+              1,
+              1,
+              14,
+              0,
+              89,
+              3895
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "7-7",
+          "accuracy": 0.7891666666666667,
+          "macro_f1": 0.7680254335051702,
+          "macro_accuracy": 0.7891666666666666,
+          "query_count": 24000,
+          "confusion": [
+            [
+              4000,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              510,
+              2363,
+              35,
+              1077,
+              12,
+              3
+            ],
+            [
+              20,
+              3,
+              3976,
+              0,
+              1,
+              0
+            ],
+            [
+              3114,
+              207,
+              28,
+              651,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              1,
+              0,
+              3997,
+              0
+            ],
+            [
+              0,
+              0,
+              44,
+              0,
+              3,
+              3953
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "8-8",
+          "accuracy": 0.8917083333333333,
+          "macro_f1": 0.8877691550490376,
+          "macro_accuracy": 0.8917083333333333,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3991,
+              5,
+              1,
+              2,
+              1,
+              0
+            ],
+            [
+              1,
+              2765,
+              3,
+              1227,
+              4,
+              0
+            ],
+            [
+              32,
+              696,
+              2680,
+              2,
+              7,
+              583
+            ],
+            [
+              2,
+              26,
+              3,
+              3968,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              2,
+              0,
+              3998,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              3999
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "14-10",
+          "accuracy": 0.9630357142857143,
+          "macro_f1": 0.163528305891628,
+          "macro_accuracy": 0.9630357142857143,
+          "query_count": 28000,
+          "confusion": [
+            [
+              26965,
+              203,
+              406,
+              293,
+              71,
+              62
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "14-7",
+          "accuracy": 0.4536428571428571,
+          "macro_f1": 0.10402437226671908,
+          "macro_accuracy": 0.4536428571428571,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              652,
+              12702,
+              201,
+              14269,
+              146,
+              30
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "20-15",
+          "accuracy": 0.8878571428571429,
+          "macro_f1": 0.15676630092067095,
+          "macro_accuracy": 0.8878571428571429,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              109,
+              996,
+              24860,
+              33,
+              396,
+              1606
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "20-19",
+          "accuracy": 0.6082857142857143,
+          "macro_f1": 0.1260733108308166,
+          "macro_accuracy": 0.6082857142857143,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              3810,
+              6145,
+              966,
+              17032,
+              18,
+              29
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "6-15",
+          "accuracy": 0.9973214285714286,
+          "macro_f1": 0.16644315303233498,
+          "macro_accuracy": 0.9973214285714286,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              6,
+              16,
+              41,
+              3,
+              27925,
+              9
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "8-20",
+          "accuracy": 0.9071071428571429,
+          "macro_f1": 0.15854853711367878,
+          "macro_accuracy": 0.9071071428571429,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              15,
+              9,
+              1820,
+              0,
+              757,
+              25399
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "accuracy": 0.7969285714285714,
+          "macro_f1": 0.7921126689847715,
+          "macro_accuracy": 0.7969285714285714,
+          "query_count": 168000,
+          "confusion": [
+            [
+              26700,
+              165,
+              638,
+              418,
+              46,
+              33
+            ],
+            [
+              868,
+              13128,
+              292,
+              13606,
+              78,
+              28
+            ],
+            [
+              142,
+              1306,
+              25238,
+              35,
+              220,
+              1059
+            ],
+            [
+              3876,
+              6043,
+              1289,
+              16710,
+              29,
+              53
+            ],
+            [
+              10,
+              10,
+              69,
+              8,
+              27889,
+              14
+            ],
+            [
+              17,
+              229,
+              2870,
+              0,
+              665,
+              24219
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "1-1",
+          "accuracy": 0.7769583333333333,
+          "macro_f1": 0.7597784930205554,
+          "macro_accuracy": 0.7769583333333333,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3917,
+              5,
+              72,
+              6,
+              0,
+              0
+            ],
+            [
+              151,
+              1435,
+              24,
+              2389,
+              1,
+              0
+            ],
+            [
+              30,
+              1,
+              3937,
+              0,
+              0,
+              32
+            ],
+            [
+              551,
+              4,
+              28,
+              3417,
+              0,
+              0
+            ],
+            [
+              4,
+              0,
+              7,
+              5,
+              3980,
+              4
+            ],
+            [
+              2,
+              7,
+              2027,
+              0,
+              3,
+              1961
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "14-7",
+          "accuracy": 0.721375,
+          "macro_f1": 0.6946114275806244,
+          "macro_accuracy": 0.721375,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3929,
+              0,
+              0,
+              71,
+              0,
+              0
+            ],
+            [
+              22,
+              2117,
+              0,
+              1859,
+              2,
+              0
+            ],
+            [
+              0,
+              2,
+              3256,
+              2,
+              2,
+              738
+            ],
+            [
+              14,
+              2648,
+              1191,
+              115,
+              1,
+              31
+            ],
+            [
+              1,
+              1,
+              3,
+              2,
+              3989,
+              4
+            ],
+            [
+              0,
+              2,
+              84,
+              0,
+              7,
+              3907
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "2-1",
+          "accuracy": 0.8222916666666666,
+          "macro_f1": 0.8194635556061346,
+          "macro_accuracy": 0.8222916666666666,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3058,
+              147,
+              498,
+              249,
+              36,
+              12
+            ],
+            [
+              18,
+              1829,
+              134,
+              1950,
+              46,
+              23
+            ],
+            [
+              13,
+              46,
+              3915,
+              11,
+              7,
+              8
+            ],
+            [
+              45,
+              978,
+              13,
+              2952,
+              3,
+              9
+            ],
+            [
+              0,
+              1,
+              2,
+              0,
+              3997,
+              0
+            ],
+            [
+              1,
+              1,
+              12,
+              0,
+              2,
+              3984
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "20-1",
+          "accuracy": 0.7205,
+          "macro_f1": 0.7210540832701883,
+          "macro_accuracy": 0.7205,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3975,
+              0,
+              15,
+              3,
+              3,
+              4
+            ],
+            [
+              104,
+              1344,
+              33,
+              2506,
+              12,
+              1
+            ],
+            [
+              28,
+              255,
+              3517,
+              18,
+              107,
+              75
+            ],
+            [
+              39,
+              2218,
+              13,
+              1710,
+              11,
+              9
+            ],
+            [
+              5,
+              3,
+              55,
+              0,
+              3932,
+              5
+            ],
+            [
+              13,
+              218,
+              340,
+              0,
+              615,
+              2814
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "7-14",
+          "accuracy": 0.871125,
+          "macro_f1": 0.8569245396005051,
+          "macro_accuracy": 0.871125,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3836,
+              9,
+              52,
+              80,
+              6,
+              17
+            ],
+            [
+              24,
+              1290,
+              25,
+              2658,
+              3,
+              0
+            ],
+            [
+              3,
+              8,
+              3865,
+              2,
+              103,
+              19
+            ],
+            [
+              11,
+              9,
+              9,
+              3966,
+              3,
+              2
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              3999,
+              1
+            ],
+            [
+              1,
+              1,
+              12,
+              0,
+              35,
+              3951
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "7-7",
+          "accuracy": 0.774,
+          "macro_f1": 0.7512553903250696,
+          "macro_accuracy": 0.774,
+          "query_count": 24000,
+          "confusion": [
+            [
+              4000,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              541,
+              2451,
+              72,
+              922,
+              11,
+              3
+            ],
+            [
+              48,
+              2,
+              3948,
+              1,
+              1,
+              0
+            ],
+            [
+              3214,
+              176,
+              27,
+              581,
+              0,
+              2
+            ],
+            [
+              0,
+              5,
+              1,
+              1,
+              3993,
+              0
+            ],
+            [
+              0,
+              0,
+              394,
+              0,
+              3,
+              3603
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "8-8",
+          "accuracy": 0.89225,
+          "macro_f1": 0.8897985154744338,
+          "macro_accuracy": 0.8922499999999999,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3985,
+              4,
+              1,
+              9,
+              1,
+              0
+            ],
+            [
+              8,
+              2662,
+              4,
+              1322,
+              3,
+              1
+            ],
+            [
+              20,
+              992,
+              2800,
+              1,
+              0,
+              187
+            ],
+            [
+              2,
+              10,
+              8,
+              3969,
+              11,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              3999,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              3999
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "14-10",
+          "accuracy": 0.9535714285714286,
+          "macro_f1": 0.16270566727605118,
+          "macro_accuracy": 0.9535714285714286,
+          "query_count": 28000,
+          "confusion": [
+            [
+              26700,
+              165,
+              638,
+              418,
+              46,
+              33
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "14-7",
+          "accuracy": 0.46885714285714286,
+          "macro_f1": 0.10639953316475394,
+          "macro_accuracy": 0.46885714285714286,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              868,
+              13128,
+              292,
+              13606,
+              78,
+              28
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "20-15",
+          "accuracy": 0.9013571428571429,
+          "macro_f1": 0.158019960679715,
+          "macro_accuracy": 0.9013571428571429,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              142,
+              1306,
+              25238,
+              35,
+              220,
+              1059
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "20-19",
+          "accuracy": 0.5967857142857143,
+          "macro_f1": 0.12458063073138,
+          "macro_accuracy": 0.5967857142857143,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              3876,
+              6043,
+              1289,
+              16710,
+              29,
+              53
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "6-15",
+          "accuracy": 0.9960357142857142,
+          "macro_f1": 0.16633565340824372,
+          "macro_accuracy": 0.9960357142857142,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              10,
+              10,
+              69,
+              8,
+              27889,
+              14
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "8-20",
+          "accuracy": 0.8649642857142857,
+          "macro_f1": 0.15459890078323982,
+          "macro_accuracy": 0.8649642857142857,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              17,
+              229,
+              2870,
+              0,
+              665,
+              24219
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "accuracy": 0.7808154761904762,
+          "macro_f1": 0.7726994058437641,
+          "macro_accuracy": 0.7808154761904761,
+          "query_count": 168000,
+          "confusion": [
+            [
+              26230,
+              261,
+              984,
+              479,
+              34,
+              12
+            ],
+            [
+              1471,
+              10874,
+              458,
+              15073,
+              95,
+              29
+            ],
+            [
+              133,
+              1074,
+              25136,
+              14,
+              240,
+              1403
+            ],
+            [
+              4346,
+              4951,
+              1849,
+              16704,
+              22,
+              128
+            ],
+            [
+              11,
+              10,
+              55,
+              16,
+              27895,
+              13
+            ],
+            [
+              15,
+              305,
+              2804,
+              0,
+              538,
+              24338
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "1-1",
+          "accuracy": 0.761,
+          "macro_f1": 0.744981765783121,
+          "macro_accuracy": 0.761,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3768,
+              8,
+              216,
+              7,
+              0,
+              1
+            ],
+            [
+              197,
+              1239,
+              31,
+              2532,
+              1,
+              0
+            ],
+            [
+              11,
+              1,
+              3798,
+              1,
+              0,
+              189
+            ],
+            [
+              859,
+              2,
+              27,
+              3112,
+              0,
+              0
+            ],
+            [
+              5,
+              1,
+              7,
+              4,
+              3981,
+              2
+            ],
+            [
+              3,
+              5,
+              1624,
+              0,
+              2,
+              2366
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "14-7",
+          "accuracy": 0.701625,
+          "macro_f1": 0.6751722187599877,
+          "macro_accuracy": 0.7016249999999999,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3872,
+              0,
+              0,
+              128,
+              0,
+              0
+            ],
+            [
+              22,
+              1915,
+              0,
+              2061,
+              2,
+              0
+            ],
+            [
+              0,
+              1,
+              3011,
+              2,
+              2,
+              984
+            ],
+            [
+              44,
+              2018,
+              1714,
+              126,
+              1,
+              97
+            ],
+            [
+              1,
+              1,
+              2,
+              2,
+              3991,
+              3
+            ],
+            [
+              0,
+              0,
+              65,
+              0,
+              11,
+              3924
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "2-1",
+          "accuracy": 0.8147083333333334,
+          "macro_f1": 0.8074148752305645,
+          "macro_accuracy": 0.8147083333333334,
+          "query_count": 24000,
+          "confusion": [
+            [
+              2812,
+              235,
+              660,
+              265,
+              19,
+              9
+            ],
+            [
+              68,
+              1589,
+              198,
+              2066,
+              56,
+              23
+            ],
+            [
+              15,
+              90,
+              3869,
+              6,
+              10,
+              10
+            ],
+            [
+              51,
+              613,
+              17,
+              3302,
+              2,
+              15
+            ],
+            [
+              0,
+              0,
+              2,
+              0,
+              3998,
+              0
+            ],
+            [
+              0,
+              1,
+              13,
+              0,
+              3,
+              3983
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "20-1",
+          "accuracy": 0.6928333333333333,
+          "macro_f1": 0.6864932768324702,
+          "macro_accuracy": 0.6928333333333333,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3970,
+              0,
+              20,
+              8,
+              1,
+              1
+            ],
+            [
+              434,
+              780,
+              81,
+              2691,
+              11,
+              3
+            ],
+            [
+              35,
+              256,
+              3578,
+              4,
+              69,
+              58
+            ],
+            [
+              53,
+              2157,
+              7,
+              1760,
+              11,
+              12
+            ],
+            [
+              5,
+              3,
+              43,
+              0,
+              3943,
+              6
+            ],
+            [
+              12,
+              299,
+              573,
+              0,
+              519,
+              2597
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "7-14",
+          "accuracy": 0.857875,
+          "macro_f1": 0.838099986958651,
+          "macro_accuracy": 0.8578749999999999,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3843,
+              6,
+              87,
+              50,
+              13,
+              1
+            ],
+            [
+              41,
+              1021,
+              29,
+              2907,
+              2,
+              0
+            ],
+            [
+              2,
+              45,
+              3768,
+              1,
+              158,
+              26
+            ],
+            [
+              16,
+              7,
+              8,
+              3966,
+              2,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              3999,
+              1
+            ],
+            [
+              0,
+              0,
+              8,
+              0,
+              0,
+              3992
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "7-7",
+          "accuracy": 0.7565833333333334,
+          "macro_f1": 0.730580629268016,
+          "macro_accuracy": 0.7565833333333334,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3999,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              692,
+              2253,
+              117,
+              922,
+              14,
+              2
+            ],
+            [
+              22,
+              1,
+              3976,
+              0,
+              1,
+              0
+            ],
+            [
+              3320,
+              141,
+              67,
+              469,
+              0,
+              3
+            ],
+            [
+              0,
+              5,
+              0,
+              10,
+              3985,
+              0
+            ],
+            [
+              0,
+              0,
+              521,
+              0,
+              3,
+              3476
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "8-8",
+          "accuracy": 0.8810833333333333,
+          "macro_f1": 0.8768560109082028,
+          "macro_accuracy": 0.8810833333333333,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3966,
+              11,
+              1,
+              21,
+              1,
+              0
+            ],
+            [
+              17,
+              2077,
+              2,
+              1894,
+              9,
+              1
+            ],
+            [
+              48,
+              680,
+              3136,
+              0,
+              0,
+              136
+            ],
+            [
+              3,
+              13,
+              9,
+              3969,
+              6,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              3998,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              4000
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "14-10",
+          "accuracy": 0.9367857142857143,
+          "macro_f1": 0.16122687319441883,
+          "macro_accuracy": 0.9367857142857143,
+          "query_count": 28000,
+          "confusion": [
+            [
+              26230,
+              261,
+              984,
+              479,
+              34,
+              12
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "14-7",
+          "accuracy": 0.38835714285714285,
+          "macro_f1": 0.09324141242647184,
+          "macro_accuracy": 0.38835714285714285,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1471,
+              10874,
+              458,
+              15073,
+              95,
+              29
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "20-15",
+          "accuracy": 0.8977142857142857,
+          "macro_f1": 0.15768342868613872,
+          "macro_accuracy": 0.8977142857142857,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              133,
+              1074,
+              25136,
+              14,
+              240,
+              1403
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "20-19",
+          "accuracy": 0.5965714285714285,
+          "macro_f1": 0.12455261274158912,
+          "macro_accuracy": 0.5965714285714285,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              4346,
+              4951,
+              1849,
+              16704,
+              22,
+              128
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "6-15",
+          "accuracy": 0.99625,
+          "macro_f1": 0.16635357962847006,
+          "macro_accuracy": 0.99625,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              11,
+              10,
+              55,
+              16,
+              27895,
+              13
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "8-20",
+          "accuracy": 0.8692142857142857,
+          "macro_f1": 0.15500528615282713,
+          "macro_accuracy": 0.8692142857142857,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              15,
+              305,
+              2804,
+              0,
+              538,
+              24338
+            ]
+          ]
+        }
+      ],
+      "target_feedback_forbidden": true
+    },
+    "resources.json": {
+      "rows": [
+        {
+          "row_id": "ce_b256-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b256",
+          "model_seed": 2026092701,
+          "status": "PREDICTIONS_COMPLETE",
+          "count": 168000,
+          "views": [
+            "clean"
+          ],
+          "truth_read": false,
+          "query_fit": false,
+          "inference_seconds": {
+            "clean": 5.254453862900846
+          },
+          "wall_seconds": 6.719053638982587,
+          "peak_cuda_allocated_bytes": 91524096,
+          "peak_cuda_reserved_bytes": 130023424,
+          "peak_process_rss_bytes": 1521729536,
+          "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+        },
+        {
+          "row_id": "ce_b512-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b512",
+          "model_seed": 2026092701,
+          "status": "PREDICTIONS_COMPLETE",
+          "count": 168000,
+          "views": [
+            "clean"
+          ],
+          "truth_read": false,
+          "query_fit": false,
+          "inference_seconds": {
+            "clean": 6.586176182958297
+          },
+          "wall_seconds": 8.004453328088857,
+          "peak_cuda_allocated_bytes": 91524096,
+          "peak_cuda_reserved_bytes": 130023424,
+          "peak_process_rss_bytes": 1524547584,
+          "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+        },
+        {
+          "row_id": "ce_b1024-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b1024",
+          "model_seed": 2026092701,
+          "status": "PREDICTIONS_COMPLETE",
+          "count": 168000,
+          "views": [
+            "clean"
+          ],
+          "truth_read": false,
+          "query_fit": false,
+          "inference_seconds": {
+            "clean": 6.461782863014378
+          },
+          "wall_seconds": 7.9775377589976415,
+          "peak_cuda_allocated_bytes": 91524096,
+          "peak_cuda_reserved_bytes": 130023424,
+          "peak_process_rss_bytes": 1524580352,
+          "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+        },
+        {
+          "row_id": "ce_b2048-s2026092701",
+          "stage": "ce_batch",
+          "arm": "ce_b2048",
+          "model_seed": 2026092701,
+          "status": "PREDICTIONS_COMPLETE",
+          "count": 168000,
+          "views": [
+            "clean"
+          ],
+          "truth_read": false,
+          "query_fit": false,
+          "inference_seconds": {
+            "clean": 6.649253276060335
+          },
+          "wall_seconds": 7.9657541119959205,
+          "peak_cuda_allocated_bytes": 91524096,
+          "peak_cuda_reserved_bytes": 130023424,
+          "peak_process_rss_bytes": 1527734272,
+          "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+        }
+      ],
+      "measurement": "Inference concurrent with unrelated source training"
+    }
+  },
+  "rows": [
+    {
+      "row_id": "ce_b256-s2026092701",
+      "complete": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.254453862900846
+        },
+        "wall_seconds": 6.719053638982587,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1521729536,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "resolved": {
+        "row_id": "ce_b256-s2026092701",
+        "run_id": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01",
+        "pid": 2235792,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "evaluation_commit": "8394ec85a14f67d2103a12f856adfcd87b0f652e",
+        "source_run": "20261009-phase1-ce-singlepass-batch-manysig-m4-r03",
+        "views": [
+          "clean"
+        ],
+        "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "batch_size": 256,
+        "parameters": 844754,
+        "trainable_parameters": 0,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121"
+      },
+      "log": "{\"row_id\": \"ce_b256-s2026092701\", \"view\": \"clean\", \"count\": 168000, \"seconds\": 5.254453862900846, \"truth_read\": false}\n"
+    },
+    {
+      "row_id": "ce_b512-s2026092701",
+      "complete": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 6.586176182958297
+        },
+        "wall_seconds": 8.004453328088857,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1524547584,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "resolved": {
+        "row_id": "ce_b512-s2026092701",
+        "run_id": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01",
+        "pid": 2235929,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "evaluation_commit": "8394ec85a14f67d2103a12f856adfcd87b0f652e",
+        "source_run": "20261009-phase1-ce-singlepass-batch-manysig-m4-r03",
+        "views": [
+          "clean"
+        ],
+        "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "batch_size": 256,
+        "parameters": 844754,
+        "trainable_parameters": 0,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121"
+      },
+      "log": "{\"row_id\": \"ce_b512-s2026092701\", \"view\": \"clean\", \"count\": 168000, \"seconds\": 6.586176182958297, \"truth_read\": false}\n"
+    },
+    {
+      "row_id": "ce_b1024-s2026092701",
+      "complete": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 6.461782863014378
+        },
+        "wall_seconds": 7.9775377589976415,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1524580352,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "resolved": {
+        "row_id": "ce_b1024-s2026092701",
+        "run_id": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01",
+        "pid": 2236083,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "evaluation_commit": "8394ec85a14f67d2103a12f856adfcd87b0f652e",
+        "source_run": "20261009-phase1-ce-singlepass-batch-manysig-m4-r03",
+        "views": [
+          "clean"
+        ],
+        "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "batch_size": 256,
+        "parameters": 844754,
+        "trainable_parameters": 0,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121"
+      },
+      "log": "{\"row_id\": \"ce_b1024-s2026092701\", \"view\": \"clean\", \"count\": 168000, \"seconds\": 6.461782863014378, \"truth_read\": false}\n"
+    },
+    {
+      "row_id": "ce_b2048-s2026092701",
+      "complete": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 6.649253276060335
+        },
+        "wall_seconds": 7.9657541119959205,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1527734272,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "resolved": {
+        "row_id": "ce_b2048-s2026092701",
+        "run_id": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01",
+        "pid": 2236185,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "evaluation_commit": "8394ec85a14f67d2103a12f856adfcd87b0f652e",
+        "source_run": "20261009-phase1-ce-singlepass-batch-manysig-m4-r03",
+        "views": [
+          "clean"
+        ],
+        "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "batch_size": 256,
+        "parameters": 844754,
+        "trainable_parameters": 0,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121"
+      },
+      "log": "{\"row_id\": \"ce_b2048-s2026092701\", \"view\": \"clean\", \"count\": 168000, \"seconds\": 6.649253276060335, \"truth_read\": false}\n"
+    }
+  ],
+  "controller_log": ""
+}

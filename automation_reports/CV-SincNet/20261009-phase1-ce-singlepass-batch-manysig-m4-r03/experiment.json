@@ -158,7 +158,7 @@
       "row_id": "ce_b256-s2026092701",
       "stage": "ce_batch",
       "arm": "ce_b256",
-      "status": "SOURCE_TRAINED",
+      "status": "ANALYZED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b256-s2026092701.json",
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b256-s2026092701.json",
@@ -193,7 +193,7 @@
       ],
       "verified_epoch": 200,
       "checked_at": "2026-10-09T15:17:54.354014+08:00",
-      "test_status": "FAILED_BEFORE_PREDICTION",
+      "test_status": "SCORED_COMPLETE_CLEAN_ONLY",
       "elapsed_seconds": 4001.537774324417,
       "final_source_metrics": {
         "source_val_count": 27000,
@@ -206,7 +206,8 @@
           "8": 0.9611111111111111
         },
         "source_val_worst_rx": 0.9194444444444444
-      }
+      },
+      "test_run": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01"
     },
     {
       "method": "reference_response-ce_cosine",
@@ -231,7 +232,7 @@
       "row_id": "ce_b512-s2026092701",
       "stage": "ce_batch",
       "arm": "ce_b512",
-      "status": "SOURCE_TRAINED",
+      "status": "ANALYZED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b512-s2026092701.json",
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b512-s2026092701.json",
@@ -266,7 +267,7 @@
       ],
       "verified_epoch": 200,
       "checked_at": "2026-10-09T15:17:54.354014+08:00",
-      "test_status": "FAILED_BEFORE_PREDICTION",
+      "test_status": "SCORED_COMPLETE_CLEAN_ONLY",
       "elapsed_seconds": 3837.3525021076202,
       "final_source_metrics": {
         "source_val_count": 27000,
@@ -279,7 +280,8 @@
           "8": 0.9257407407407408
         },
         "source_val_worst_rx": 0.8881481481481481
-      }
+      },
+      "test_run": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01"
     },
     {
       "method": "reference_response-ce_cosine",
@@ -304,7 +306,7 @@
       "row_id": "ce_b1024-s2026092701",
       "stage": "ce_batch",
       "arm": "ce_b1024",
-      "status": "SOURCE_TRAINED",
+      "status": "ANALYZED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b1024-s2026092701.json",
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b1024-s2026092701.json",
@@ -339,7 +341,7 @@
       ],
       "verified_epoch": 200,
       "checked_at": "2026-10-09T15:17:54.354014+08:00",
-      "test_status": "FAILED_BEFORE_PREDICTION",
+      "test_status": "SCORED_COMPLETE_CLEAN_ONLY",
       "elapsed_seconds": 3741.2307000160217,
       "final_source_metrics": {
         "source_val_count": 27000,
@@ -352,7 +354,8 @@
           "8": 0.8883333333333333
         },
         "source_val_worst_rx": 0.8562962962962963
-      }
+      },
+      "test_run": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01"
     },
     {
       "method": "reference_response-ce_cosine",
@@ -377,7 +380,7 @@
       "row_id": "ce_b2048-s2026092701",
       "stage": "ce_batch",
       "arm": "ce_b2048",
-      "status": "SOURCE_TRAINED",
+      "status": "ANALYZED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b2048-s2026092701.json",
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b2048-s2026092701.json",
@@ -412,7 +415,7 @@
       ],
       "verified_epoch": 200,
       "checked_at": "2026-10-09T15:17:54.354014+08:00",
-      "test_status": "FAILED_BEFORE_PREDICTION",
+      "test_status": "SCORED_COMPLETE_CLEAN_ONLY",
       "elapsed_seconds": 3404.3527188301086,
       "final_source_metrics": {
         "source_val_count": 27000,
@@ -425,7 +428,8 @@
           "8": 0.855925925925926
         },
         "source_val_worst_rx": 0.8296296296296296
-      }
+      },
+      "test_run": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01"
     }
   ],
   "notes": [
@@ -439,39 +443,30 @@
     "Phase2 support/new class/K metrics N/A.",
     "Independent subagent review unavailable under explicit side-conversation prohibition; preserve inherited loop review and record scoped owner checks, no false independent PASS claim."
   ],
-  "status": "FAILED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "views": [
-      "clean",
-      "practical_high",
-      "practical_mid",
-      "practical_low_suburban",
-      "practical_high_urban",
-      "practical_mid_urban",
-      "practical_low_urban"
+      "clean"
     ],
     "models": 4,
     "query_per_view": 168000,
-    "prediction_count": 4704000,
+    "prediction_count": 672000,
     "truth_last": true,
     "target_feedback_forbidden": true,
     "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
     "source_freeze": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/source_matrix_frozen.json",
-    "all_rows_fixed_before_target": true
+    "all_rows_fixed_before_target": true,
+    "completion_run": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01"
   },
   "registered_at": "2026-10-09T02:59:50+00:00",
   "latest_verified_status": {
-    "checked_at": "2026-10-09T15:17:54.354014+08:00",
+    "checked_at": "2026-10-09T15:25:34.541877+08:00",
     "source_completed": 4,
-    "epochs": 200,
-    "prediction_completed": 0,
-    "scored": 0,
-    "controller_alive": false,
-    "failure": {
-      "status": "FAILED",
-      "error": "ValueError('Incomplete update budget: logged=5000, successful=5000, expected=44400')",
-      "no_retry": true
-    },
-    "failure_layer": "evaluation preflight budget contract; training completed to registered per-row budgets"
-  }
+    "clean_test_completed": 4,
+    "scored": 4,
+    "evaluation_run": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01",
+    "historical_failure_retained": true,
+    "verdict": "VERIFIED"
+  },
+  "completion_scope": "User changed final testing scope to clean only; completed by separate evaluation run; historical failed controller retained"
 }

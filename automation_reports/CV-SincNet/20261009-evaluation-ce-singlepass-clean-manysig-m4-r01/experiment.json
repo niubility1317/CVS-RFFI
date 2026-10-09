@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确：跑测试集clean即可。四个固定batch，独立truth-last评分。",
   "code": {
-    "commit": "PENDING_LOCAL_COMMIT",
+    "commit": "8394ec85a14f67d2103a12f856adfcd87b0f652e",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01",
@@ -122,7 +122,18 @@
     "local_artifact_root": "automation_reports/CV-SincNet/20261009-evaluation-ce-singlepass-clean-manysig-m4-r01",
     "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01",
     "launch_command": "python -m experiments.cvs_ce_batch_sweep.publish_clean",
-    "stop_rule": "Any provenance/prediction/scoring failure stops this evaluation; immutable output, no automatic retry"
+    "stop_rule": "Any provenance/prediction/scoring failure stops this evaluation; immutable output, no automatic retry",
+    "actual_pid": 2235756,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01/evaluate_clean.py",
+      "--mode",
+      "dispatch"
+    ],
+    "checked_at": "2026-10-09T15:25:34.541877+08:00",
+    "completion_verdict": "VERIFIED"
   },
   "expected_artifacts": [
     "source_matrix_frozen.json",
@@ -168,7 +179,7 @@
       "row_id": "ce_b256-s2026092701",
       "stage": "evaluation",
       "arm": "ce_b256",
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b256-s2026092701.json",
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b256-s2026092701.json",
@@ -189,7 +200,34 @@
       "features": [],
       "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/ce_b256-s2026092701/source/final_ssdg.pth",
       "checkpoint_sources": [],
-      "initialization": "scratch"
+      "initialization": "scratch",
+      "test_status": "SCORED_COMPLETE_CLEAN_ONLY",
+      "actual_prediction": {
+        "row_id": "ce_b256-s2026092701",
+        "run_id": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01",
+        "pid": 2235792,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "evaluation_commit": "8394ec85a14f67d2103a12f856adfcd87b0f652e",
+        "source_run": "20261009-phase1-ce-singlepass-batch-manysig-m4-r03",
+        "views": [
+          "clean"
+        ],
+        "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "batch_size": 256,
+        "parameters": 844754,
+        "trainable_parameters": 0,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121"
+      },
+      "checked_at": "2026-10-09T15:25:34.541877+08:00"
     },
     {
       "method": "reference_response-ce_cosine",
@@ -214,7 +252,7 @@
       "row_id": "ce_b512-s2026092701",
       "stage": "evaluation",
       "arm": "ce_b512",
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b512-s2026092701.json",
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b512-s2026092701.json",
@@ -235,7 +273,34 @@
       "features": [],
       "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/ce_b512-s2026092701/source/final_ssdg.pth",
       "checkpoint_sources": [],
-      "initialization": "scratch"
+      "initialization": "scratch",
+      "test_status": "SCORED_COMPLETE_CLEAN_ONLY",
+      "actual_prediction": {
+        "row_id": "ce_b512-s2026092701",
+        "run_id": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01",
+        "pid": 2235929,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "evaluation_commit": "8394ec85a14f67d2103a12f856adfcd87b0f652e",
+        "source_run": "20261009-phase1-ce-singlepass-batch-manysig-m4-r03",
+        "views": [
+          "clean"
+        ],
+        "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "batch_size": 256,
+        "parameters": 844754,
+        "trainable_parameters": 0,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121"
+      },
+      "checked_at": "2026-10-09T15:25:34.541877+08:00"
     },
     {
       "method": "reference_response-ce_cosine",
@@ -260,7 +325,7 @@
       "row_id": "ce_b1024-s2026092701",
       "stage": "evaluation",
       "arm": "ce_b1024",
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b1024-s2026092701.json",
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b1024-s2026092701.json",
@@ -281,7 +346,34 @@
       "features": [],
       "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/ce_b1024-s2026092701/source/final_ssdg.pth",
       "checkpoint_sources": [],
-      "initialization": "scratch"
+      "initialization": "scratch",
+      "test_status": "SCORED_COMPLETE_CLEAN_ONLY",
+      "actual_prediction": {
+        "row_id": "ce_b1024-s2026092701",
+        "run_id": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01",
+        "pid": 2236083,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "evaluation_commit": "8394ec85a14f67d2103a12f856adfcd87b0f652e",
+        "source_run": "20261009-phase1-ce-singlepass-batch-manysig-m4-r03",
+        "views": [
+          "clean"
+        ],
+        "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "batch_size": 256,
+        "parameters": 844754,
+        "trainable_parameters": 0,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121"
+      },
+      "checked_at": "2026-10-09T15:25:34.541877+08:00"
     },
     {
       "method": "reference_response-ce_cosine",
@@ -306,7 +398,7 @@
       "row_id": "ce_b2048-s2026092701",
       "stage": "evaluation",
       "arm": "ce_b2048",
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "description": "Fixed code/source-grounded control: ce_cosine",
       "config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b2048-s2026092701.json",
       "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/configs/ce_b2048-s2026092701.json",
@@ -327,7 +419,34 @@
       "features": [],
       "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/ce_b2048-s2026092701/source/final_ssdg.pth",
       "checkpoint_sources": [],
-      "initialization": "scratch"
+      "initialization": "scratch",
+      "test_status": "SCORED_COMPLETE_CLEAN_ONLY",
+      "actual_prediction": {
+        "row_id": "ce_b2048-s2026092701",
+        "run_id": "20261009-evaluation-ce-singlepass-clean-manysig-m4-r01",
+        "pid": 2236185,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_singlepass_clean_eval_20261009_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "evaluation_commit": "8394ec85a14f67d2103a12f856adfcd87b0f652e",
+        "source_run": "20261009-phase1-ce-singlepass-batch-manysig-m4-r03",
+        "views": [
+          "clean"
+        ],
+        "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "batch_size": 256,
+        "parameters": 844754,
+        "trainable_parameters": 0,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121"
+      },
+      "checked_at": "2026-10-09T15:25:34.541877+08:00"
     }
   ],
   "notes": [
@@ -336,7 +455,7 @@
     "No retraining and no target feedback; failed parent artifacts remain.",
     "Prior no-side-agent boundary preserved; no new subagent spawned. Reuse reviewed immutable prediction/scoring implementation and focused local regression tests; no new independent-review PASS claimed."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "views": [
       "clean"
@@ -350,5 +469,16 @@
     "source_freeze": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-evaluation-ce-singlepass-clean-manysig-m4-r01/source_matrix_frozen.json",
     "all_rows_fixed_before_target": true
   },
-  "registered_at": "2026-10-09T07:24:00+00:00"
+  "registered_at": "2026-10-09T07:24:00+00:00",
+  "latest_verified_status": {
+    "checked_at": "2026-10-09T15:25:34.541877+08:00",
+    "status": "ANALYZED",
+    "models": 4,
+    "views": [
+      "clean"
+    ],
+    "predictions": 672000,
+    "metric_records": 56,
+    "independent_recount": "VERIFIED"
+  }
 }

@@ -1,0 +1,89 @@
+{
+  "rows": [
+    {
+      "row_id": "ce_b256-s2026092701",
+      "stage": "ce_batch",
+      "arm": "ce_b256",
+      "model_seed": 2026092701,
+      "status": "PREDICTIONS_COMPLETE",
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "truth_read": false,
+      "query_fit": false,
+      "inference_seconds": {
+        "clean": 5.254453862900846
+      },
+      "wall_seconds": 6.719053638982587,
+      "peak_cuda_allocated_bytes": 91524096,
+      "peak_cuda_reserved_bytes": 130023424,
+      "peak_process_rss_bytes": 1521729536,
+      "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+    },
+    {
+      "row_id": "ce_b512-s2026092701",
+      "stage": "ce_batch",
+      "arm": "ce_b512",
+      "model_seed": 2026092701,
+      "status": "PREDICTIONS_COMPLETE",
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "truth_read": false,
+      "query_fit": false,
+      "inference_seconds": {
+        "clean": 6.586176182958297
+      },
+      "wall_seconds": 8.004453328088857,
+      "peak_cuda_allocated_bytes": 91524096,
+      "peak_cuda_reserved_bytes": 130023424,
+      "peak_process_rss_bytes": 1524547584,
+      "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+    },
+    {
+      "row_id": "ce_b1024-s2026092701",
+      "stage": "ce_batch",
+      "arm": "ce_b1024",
+      "model_seed": 2026092701,
+      "status": "PREDICTIONS_COMPLETE",
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "truth_read": false,
+      "query_fit": false,
+      "inference_seconds": {
+        "clean": 6.461782863014378
+      },
+      "wall_seconds": 7.9775377589976415,
+      "peak_cuda_allocated_bytes": 91524096,
+      "peak_cuda_reserved_bytes": 130023424,
+      "peak_process_rss_bytes": 1524580352,
+      "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+    },
+    {
+      "row_id": "ce_b2048-s2026092701",
+      "stage": "ce_batch",
+      "arm": "ce_b2048",
+      "model_seed": 2026092701,
+      "status": "PREDICTIONS_COMPLETE",
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "truth_read": false,
+      "query_fit": false,
+      "inference_seconds": {
+        "clean": 6.649253276060335
+      },
+      "wall_seconds": 7.9657541119959205,
+      "peak_cuda_allocated_bytes": 91524096,
+      "peak_cuda_reserved_bytes": 130023424,
+      "peak_process_rss_bytes": 1527734272,
+      "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+    }
+  ],
+  "measurement": "Inference concurrent with unrelated source training"
+}
