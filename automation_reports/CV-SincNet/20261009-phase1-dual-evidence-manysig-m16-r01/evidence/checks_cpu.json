@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "curvature_gain_phase_CFO_max_error": 1.4603137969970703e-06,
+  "rows": [
+    {
+      "arm": "legacy_cosine",
+      "parameters": 844754,
+      "trainable_parameters": 844754,
+      "status": "PASS"
+    },
+    {
+      "arm": "raw_dual",
+      "parameters": 619535,
+      "trainable_parameters": 525025,
+      "status": "PASS"
+    },
+    {
+      "arm": "curvature_dual",
+      "parameters": 619535,
+      "trainable_parameters": 525025,
+      "status": "PASS"
+    },
+    {
+      "arm": "curvature_interaction",
+      "parameters": 619535,
+      "trainable_parameters": 525025,
+      "status": "PASS"
+    }
+  ],
+  "target_read": false,
+  "zero_gradient_finite": true,
+  "private_RNG": true,
+  "initial_main_logit_equivalence": true,
+  "both_backbone_gradients": true,
+  "stateless_batch_independent_inference": true,
+  "EMA_and_checkpoint_roundtrip": true
+}

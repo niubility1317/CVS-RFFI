@@ -1,0 +1,60 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "rows": [
+    {
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "dual_evidence",
+      "arm": "raw_dual",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "dual_evidence",
+      "arm": "curvature_dual",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    },
+    {
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    }
+  ],
+  "target_access": false,
+  "formal_weights": false
+}

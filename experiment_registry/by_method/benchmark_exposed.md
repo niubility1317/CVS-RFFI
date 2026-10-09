@@ -8,6 +8,7 @@
 |---|---|---|
 |reference_response：跨TX共同位移补偿×分支贡献预测，CE拼接四seed消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-receiver-residual-manysig-m16-r01/report.md)|
 |reference_response：跨TX共同位移补偿×分支贡献预测，CE拼接四seed消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-receiver-residual-manysig-m16-r02/report.md)|
+|旧门控＋cosine：保真与曲率双骨干、条件交互四seed研发|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-dual-evidence-manysig-m16-r01/report.md)|
 |完整冻结预测独立评分：R1混杂诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r05/report.md)|
 |完整冻结预测独立评分：R2四seed正式消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r06/report.md)|
 |冻结E200独立测试：R1随机混杂诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r03/report.md)|

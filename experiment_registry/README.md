@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-09T01:58:16+00:00
+更新：2026-10-09T03:17:28+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|121|
+|managed_run|122|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -21,9 +21,9 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|265|
+|[cvs](by_method/cvs.md)|266|
 |[adv3b02](by_method/adv3b02.md)|146|
-|[phase1](by_method/phase1.md)|129|
+|[phase1](by_method/phase1.md)|130|
 |[phase2](by_method/phase2.md)|118|
 |[stage2](by_method/stage2.md)|67|
 |[clean_only](by_method/clean_only.md)|59|
@@ -41,7 +41,7 @@
 |[source_only](by_method/source_only.md)|16|
 |[d92](by_method/d92.md)|15|
 |[diagnostic](by_method/diagnostic.md)|15|
-|[scratch](by_method/scratch.md)|14|
+|[scratch](by_method/scratch.md)|15|
 |[residual](by_method/residual.md)|13|
 |[response](by_method/response.md)|13|
 |[daot](by_method/daot.md)|12|
@@ -60,11 +60,11 @@
 |[concat](by_method/concat.md)|7|
 |[benchmark_informed](by_method/benchmark_informed.md)|7|
 |[factorial](by_method/factorial.md)|7|
+|[benchmark_exposed](by_method/benchmark_exposed.md)|7|
 |[lightweight](by_method/lightweight.md)|6|
 |[ce_concat](by_method/ce_concat.md)|6|
 |[displacement](by_method/displacement.md)|6|
 |[contribution](by_method/contribution.md)|6|
-|[benchmark_exposed](by_method/benchmark_exposed.md)|6|
 |[core90](by_method/core90.md)|6|
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
@@ -115,6 +115,7 @@
 |[synthetic](by_method/synthetic.md)|2|
 |[sequential_source_selection](by_method/sequential_source_selection.md)|2|
 |[completed_snapshot](by_method/completed_snapshot.md)|2|
+|[cosine](by_method/cosine.md)|2|
 |[score_only](by_method/score_only.md)|2|
 |[physical_receiver_metadata_repair](by_method/physical_receiver_metadata_repair.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
@@ -194,11 +195,14 @@
 |[fixed_completed5](by_method/fixed_completed5.md)|1|
 |[single_seed](by_method/single_seed.md)|1|
 |[temporal_bank](by_method/temporal_bank.md)|1|
-|[cosine](by_method/cosine.md)|1|
 |[fixed_controls](by_method/fixed_controls.md)|1|
 |[CE](by_method/CE.md)|1|
 |[urban](by_method/urban.md)|1|
 |[channel_DG](by_method/channel_DG.md)|1|
+|[dual_backbone](by_method/dual_backbone.md)|1|
+|[curvature](by_method/curvature.md)|1|
+|[conditional_interaction](by_method/conditional_interaction.md)|1|
+|[legacy_pseudo](by_method/legacy_pseudo.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
 |[fedcvs](by_method/fedcvs.md)|1|
 
@@ -320,9 +324,9 @@
 |reference_response新增12行R5补测：clean及六residual|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-reference-completed-sixscene-manysig-m12-r01/report.md)|
 |更新CVS网络的Phase1修复：时序门控与学习率固定对照32行|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-reference-repair-manysig-m32-r01/report.md)|
 |CE＋urban中低仰角星地增强与信道泛化固定24行|managed_run|[打开](../automation_reports/CV-SincNet/20261008-phase1-urban-ce-manysig-m24-r01/report.md)|
+|旧门控＋cosine：保真与曲率双骨干、条件交互四seed研发|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-dual-evidence-manysig-m16-r01/report.md)|
 |完整冻结预测独立评分：R1混杂诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r05/report.md)|
 |完整冻结预测独立评分：R2四seed正式消融|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r06/report.md)|
 |冻结E200独立测试：R1随机混杂诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r03/report.md)|
 |冻结E200独立测试：R2修复后四seed正式消融|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r04/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
-|原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|

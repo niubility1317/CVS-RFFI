@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "curvature_gain_phase_CFO_max_error": 1.5795230865478516e-06,
+  "rows": [
+    {
+      "arm": "legacy_cosine",
+      "parameters": 844754,
+      "trainable_parameters": 844754,
+      "status": "PASS"
+    },
+    {
+      "arm": "raw_dual",
+      "parameters": 619535,
+      "trainable_parameters": 525025,
+      "status": "PASS"
+    },
+    {
+      "arm": "curvature_dual",
+      "parameters": 619535,
+      "trainable_parameters": 525025,
+      "status": "PASS"
+    },
+    {
+      "arm": "curvature_interaction",
+      "parameters": 619535,
+      "trainable_parameters": 525025,
+      "status": "PASS"
+    }
+  ],
+  "target_read": false,
+  "zero_gradient_finite": true,
+  "private_RNG": true,
+  "initial_main_logit_equivalence": true,
+  "both_backbone_gradients": true,
+  "stateless_batch_independent_inference": true,
+  "EMA_and_checkpoint_roundtrip": true,
+  "backend_flags": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  }
+}

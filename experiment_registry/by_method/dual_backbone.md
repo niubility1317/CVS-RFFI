@@ -1,4 +1,4 @@
-# cosine实验与历史证据
+# dual_backbone实验与历史证据
 
 [返回总索引](../README.md)
 
@@ -6,5 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|更新CVS网络的Phase1修复：时序门控与学习率固定对照32行|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-reference-repair-manysig-m32-r01/report.md)|
 |旧门控＋cosine：保真与曲率双骨干、条件交互四seed研发|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-dual-evidence-manysig-m16-r01/report.md)|
