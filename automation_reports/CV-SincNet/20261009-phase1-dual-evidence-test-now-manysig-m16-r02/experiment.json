@@ -1953,7 +1953,7 @@
     "Curve invariance limited to ideal global complex gain/phase/constant CFO in evidence input. No arbitrary channel cancellation or transmitter-factor identifiability claim.",
     "Design and literature: experiments/cvs_dual_evidence/DESIGN.md. Actual clean/6view gains unknown until scoring."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "rows": 16,
     "views": [
@@ -2033,5 +2033,6 @@
   "registered_at": "2026-10-09T03:11:50+00:00",
   "constraints": [
     "Evaluation only: per GPU max1 extra inference; all CUDA/pre-CUDA experiment owners total<=5; free>=3000MiB. Original idle controller takeover only after exact PID/start/cwd/argv/no-child/no-prediction checks."
-  ]
+  ],
+  "results_ref": "results/full_results.md"
 }

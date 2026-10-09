@@ -1,0 +1,60 @@
+{
+  "row_id": "curvature_dual-s2026092702",
+  "stage": "dual_evidence",
+  "arm": "curvature_dual",
+  "model_seed": 2026092702,
+  "prediction": {
+    "status": "PREDICTIONS_COMPLETE",
+    "count": 168000,
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "truth_read": false,
+    "query_fit": false,
+    "inference_seconds": {
+      "clean": 10.153256734949537,
+      "practical_high": 10.112731711938977,
+      "practical_mid": 9.850344137987122,
+      "practical_low_suburban": 9.994975983980112,
+      "practical_high_urban": 8.650052482960746,
+      "practical_mid_urban": 7.340484934975393,
+      "practical_low_urban": 7.385880067944527
+    },
+    "wall_seconds": 65.1470863140421,
+    "peak_cuda_allocated_bytes": 90610176,
+    "peak_cuda_reserved_bytes": 130023424,
+    "peak_process_rss_bytes": 1534513152,
+    "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+  },
+  "source": {
+    "elapsed_seconds": 15808.701514959335,
+    "hardware": "NVIDIA GeForce RTX 3090",
+    "parameters": 619535,
+    "last_epoch_resource_metrics": {
+      "dual_correction_ratio": 3.4277570247650146,
+      "dual_gate_abs_delta": 0.0,
+      "dual_secondary_feature_norm": 12.633583068847656,
+      "dual_main_gradient_norm": 0.8314968347549438,
+      "dual_secondary_gradient_norm": 1.2304229736328125,
+      "dual_fusion_gradient_norm": 0.4945094585418701,
+      "dual_arm": "curvature_dual",
+      "dual_parameters": 619535,
+      "dual_trainable_parameters": 525025,
+      "dual_gradient_present_parameters": 525025,
+      "dual_parameter_buffer_bytes": 2581288,
+      "dual_cuda_peak_allocated_bytes": 834582528,
+      "dual_cuda_peak_reserved_bytes": 2027945984,
+      "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+    },
+    "peak_process_rss_bytes": null,
+    "training_flops": null,
+    "transmission_bytes": 0,
+    "scope": "Source training only; no satellite adaptation/transfer; RSS/FLOPs not measured"
+  }
+}

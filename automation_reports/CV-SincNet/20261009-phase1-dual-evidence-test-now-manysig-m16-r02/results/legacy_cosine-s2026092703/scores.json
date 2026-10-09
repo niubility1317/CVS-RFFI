@@ -1,0 +1,6178 @@
+{
+  "results": [
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8090357142857143,
+      "macro_f1": 0.8044395255330642,
+      "macro_accuracy": 0.8090357142857143,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26920,
+          153,
+          458,
+          444,
+          12,
+          13
+        ],
+        [
+          795,
+          12581,
+          111,
+          14442,
+          56,
+          15
+        ],
+        [
+          1269,
+          599,
+          22856,
+          224,
+          154,
+          2898
+        ],
+        [
+          2296,
+          6544,
+          484,
+          18605,
+          16,
+          55
+        ],
+        [
+          10,
+          9,
+          20,
+          8,
+          27950,
+          3
+        ],
+        [
+          10,
+          58,
+          766,
+          13,
+          147,
+          27006
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.759125,
+      "macro_f1": 0.7249964431891868,
+      "macro_accuracy": 0.759125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3988,
+          5,
+          5,
+          2,
+          0,
+          0
+        ],
+        [
+          421,
+          751,
+          3,
+          2825,
+          0,
+          0
+        ],
+        [
+          974,
+          1,
+          2181,
+          2,
+          0,
+          842
+        ],
+        [
+          23,
+          8,
+          0,
+          3969,
+          0,
+          0
+        ],
+        [
+          2,
+          6,
+          10,
+          2,
+          3980,
+          0
+        ],
+        [
+          2,
+          0,
+          641,
+          6,
+          1,
+          3350
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6805,
+      "macro_f1": 0.6713343467304634,
+      "macro_accuracy": 0.6804999999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3953,
+          1,
+          0,
+          46,
+          0,
+          0
+        ],
+        [
+          0,
+          1336,
+          0,
+          2662,
+          2,
+          0
+        ],
+        [
+          1,
+          185,
+          2992,
+          0,
+          2,
+          820
+        ],
+        [
+          45,
+          3628,
+          224,
+          63,
+          3,
+          37
+        ],
+        [
+          0,
+          1,
+          4,
+          0,
+          3995,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          1,
+          4,
+          3993
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.903,
+      "macro_f1": 0.9018964040608224,
+      "macro_accuracy": 0.9029999999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3611,
+          118,
+          207,
+          59,
+          3,
+          2
+        ],
+        [
+          1,
+          2531,
+          0,
+          1438,
+          22,
+          8
+        ],
+        [
+          13,
+          4,
+          3953,
+          8,
+          17,
+          5
+        ],
+        [
+          16,
+          376,
+          6,
+          3594,
+          6,
+          2
+        ],
+        [
+          1,
+          1,
+          0,
+          2,
+          3996,
+          0
+        ],
+        [
+          0,
+          1,
+          8,
+          2,
+          2,
+          3987
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.804625,
+      "macro_f1": 0.8055816406319329,
+      "macro_accuracy": 0.804625,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3973,
+          3,
+          2,
+          10,
+          8,
+          4
+        ],
+        [
+          7,
+          2096,
+          31,
+          1840,
+          19,
+          7
+        ],
+        [
+          23,
+          181,
+          3704,
+          10,
+          26,
+          56
+        ],
+        [
+          11,
+          2169,
+          11,
+          1802,
+          3,
+          4
+        ],
+        [
+          7,
+          1,
+          3,
+          4,
+          3984,
+          1
+        ],
+        [
+          8,
+          11,
+          93,
+          3,
+          133,
+          3752
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8583333333333333,
+      "macro_f1": 0.8500263477962738,
+      "macro_accuracy": 0.8583333333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3647,
+          1,
+          244,
+          101,
+          0,
+          7
+        ],
+        [
+          3,
+          1632,
+          5,
+          2352,
+          8,
+          0
+        ],
+        [
+          252,
+          133,
+          3451,
+          10,
+          106,
+          48
+        ],
+        [
+          2,
+          58,
+          1,
+          3936,
+          2,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          44,
+          15,
+          0,
+          5,
+          3936
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8387916666666667,
+      "macro_f1": 0.8263902685418225,
+      "macro_accuracy": 0.8387916666666665,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3996,
+          4,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          362,
+          2776,
+          72,
+          787,
+          3,
+          0
+        ],
+        [
+          3,
+          1,
+          3994,
+          1,
+          1,
+          0
+        ],
+        [
+          2198,
+          175,
+          242,
+          1373,
+          1,
+          11
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          0,
+          1,
+          3,
+          1,
+          2,
+          3993
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.818875,
+      "macro_f1": 0.8086784747130289,
+      "macro_accuracy": 0.8188750000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3752,
+          21,
+          0,
+          226,
+          1,
+          0
+        ],
+        [
+          1,
+          1459,
+          0,
+          2538,
+          2,
+          0
+        ],
+        [
+          3,
+          94,
+          2581,
+          193,
+          2,
+          1127
+        ],
+        [
+          1,
+          130,
+          0,
+          3868,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          5,
+          0,
+          0,
+          3995
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9614285714285714,
+      "macro_f1": 0.16338917212915757,
+      "macro_accuracy": 0.9614285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26920,
+          153,
+          458,
+          444,
+          12,
+          13
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4493214285714286,
+      "macro_f1": 0.10334064381525015,
+      "macro_accuracy": 0.4493214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          795,
+          12581,
+          111,
+          14442,
+          56,
+          15
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8162857142857143,
+      "macro_f1": 0.14980860993130932,
+      "macro_accuracy": 0.8162857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1269,
+          599,
+          22856,
+          224,
+          154,
+          2898
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6644642857142857,
+      "macro_f1": 0.13306869792225443,
+      "macro_accuracy": 0.6644642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2296,
+          6544,
+          484,
+          18605,
+          16,
+          55
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9982142857142857,
+      "macro_f1": 0.16651772415847482,
+      "macro_accuracy": 0.9982142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          10,
+          9,
+          20,
+          8,
+          27950,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9645,
+      "macro_f1": 0.16365487401374396,
+      "macro_accuracy": 0.9645,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          10,
+          58,
+          766,
+          13,
+          147,
+          27006
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7852559523809524,
+      "macro_f1": 0.7818908879688792,
+      "macro_accuracy": 0.7852559523809525,
+      "query_count": 168000,
+      "confusion": [
+        [
+          25614,
+          289,
+          956,
+          1052,
+          77,
+          12
+        ],
+        [
+          683,
+          12772,
+          113,
+          14153,
+          248,
+          31
+        ],
+        [
+          803,
+          249,
+          22537,
+          1129,
+          943,
+          2339
+        ],
+        [
+          3265,
+          6220,
+          323,
+          18106,
+          63,
+          23
+        ],
+        [
+          27,
+          105,
+          107,
+          91,
+          27653,
+          17
+        ],
+        [
+          11,
+          11,
+          305,
+          10,
+          2422,
+          25241
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.74825,
+      "macro_f1": 0.7076495754377525,
+      "macro_accuracy": 0.74825,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3940,
+          27,
+          20,
+          10,
+          3,
+          0
+        ],
+        [
+          341,
+          390,
+          17,
+          3247,
+          3,
+          2
+        ],
+        [
+          719,
+          5,
+          2420,
+          0,
+          3,
+          853
+        ],
+        [
+          509,
+          61,
+          7,
+          3420,
+          3,
+          0
+        ],
+        [
+          5,
+          20,
+          15,
+          12,
+          3948,
+          0
+        ],
+        [
+          0,
+          2,
+          144,
+          5,
+          9,
+          3840
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6776666666666666,
+      "macro_f1": 0.6762691746023828,
+      "macro_accuracy": 0.6776666666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3751,
+          14,
+          9,
+          224,
+          2,
+          0
+        ],
+        [
+          12,
+          837,
+          10,
+          3126,
+          14,
+          1
+        ],
+        [
+          3,
+          8,
+          3269,
+          2,
+          4,
+          714
+        ],
+        [
+          46,
+          2617,
+          216,
+          1108,
+          6,
+          7
+        ],
+        [
+          4,
+          3,
+          15,
+          2,
+          3972,
+          4
+        ],
+        [
+          0,
+          2,
+          3,
+          0,
+          668,
+          3327
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8310416666666667,
+      "macro_f1": 0.8305437450311568,
+      "macro_accuracy": 0.8310416666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3270,
+          99,
+          396,
+          187,
+          46,
+          2
+        ],
+        [
+          6,
+          2659,
+          33,
+          1196,
+          91,
+          15
+        ],
+        [
+          13,
+          6,
+          3938,
+          11,
+          19,
+          13
+        ],
+        [
+          37,
+          856,
+          7,
+          3079,
+          18,
+          3
+        ],
+        [
+          5,
+          5,
+          4,
+          7,
+          3978,
+          1
+        ],
+        [
+          0,
+          0,
+          18,
+          2,
+          959,
+          3021
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7792916666666667,
+      "macro_f1": 0.7790869066121996,
+      "macro_accuracy": 0.7792916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3919,
+          22,
+          14,
+          28,
+          10,
+          7
+        ],
+        [
+          57,
+          2095,
+          24,
+          1805,
+          14,
+          5
+        ],
+        [
+          24,
+          197,
+          3606,
+          55,
+          42,
+          76
+        ],
+        [
+          187,
+          2245,
+          22,
+          1527,
+          15,
+          4
+        ],
+        [
+          8,
+          49,
+          58,
+          47,
+          3828,
+          10
+        ],
+        [
+          8,
+          7,
+          82,
+          3,
+          172,
+          3728
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.861375,
+      "macro_f1": 0.8621965891379936,
+      "macro_accuracy": 0.8613750000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3142,
+          6,
+          507,
+          338,
+          6,
+          1
+        ],
+        [
+          25,
+          3295,
+          8,
+          655,
+          15,
+          2
+        ],
+        [
+          30,
+          10,
+          3060,
+          7,
+          804,
+          89
+        ],
+        [
+          13,
+          160,
+          9,
+          3801,
+          14,
+          3
+        ],
+        [
+          0,
+          4,
+          6,
+          5,
+          3984,
+          1
+        ],
+        [
+          0,
+          0,
+          13,
+          0,
+          596,
+          3391
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8286666666666667,
+      "macro_f1": 0.8167574433447223,
+      "macro_accuracy": 0.8286666666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3969,
+          9,
+          6,
+          13,
+          2,
+          1
+        ],
+        [
+          233,
+          2775,
+          15,
+          892,
+          80,
+          5
+        ],
+        [
+          9,
+          8,
+          3961,
+          6,
+          10,
+          6
+        ],
+        [
+          2460,
+          203,
+          48,
+          1280,
+          3,
+          6
+        ],
+        [
+          4,
+          19,
+          4,
+          13,
+          3960,
+          0
+        ],
+        [
+          2,
+          0,
+          39,
+          0,
+          16,
+          3943
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7705,
+      "macro_f1": 0.7505202926055407,
+      "macro_accuracy": 0.7705000000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3623,
+          112,
+          4,
+          252,
+          8,
+          1
+        ],
+        [
+          9,
+          721,
+          6,
+          3232,
+          31,
+          1
+        ],
+        [
+          5,
+          15,
+          2283,
+          1048,
+          61,
+          588
+        ],
+        [
+          13,
+          78,
+          14,
+          3891,
+          4,
+          0
+        ],
+        [
+          1,
+          5,
+          5,
+          5,
+          3983,
+          1
+        ],
+        [
+          1,
+          0,
+          6,
+          0,
+          2,
+          3991
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9147857142857143,
+      "macro_f1": 0.1592494497705823,
+      "macro_accuracy": 0.9147857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          25614,
+          289,
+          956,
+          1052,
+          77,
+          12
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4561428571428571,
+      "macro_f1": 0.10441806468491449,
+      "macro_accuracy": 0.4561428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          683,
+          12772,
+          113,
+          14153,
+          248,
+          31
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8048928571428572,
+      "macro_f1": 0.14865016390631286,
+      "macro_accuracy": 0.8048928571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          803,
+          249,
+          22537,
+          1129,
+          943,
+          2339
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6466428571428572,
+      "macro_f1": 0.13090125652481963,
+      "macro_accuracy": 0.6466428571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3265,
+          6220,
+          323,
+          18106,
+          63,
+          23
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9876071428571429,
+      "macro_f1": 0.16562748938362112,
+      "macro_accuracy": 0.9876071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          27,
+          105,
+          107,
+          91,
+          27653,
+          17
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9014642857142857,
+      "macro_f1": 0.1580298391590441,
+      "macro_accuracy": 0.9014642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          11,
+          11,
+          305,
+          10,
+          2422,
+          25241
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7662916666666667,
+      "macro_f1": 0.7628386486489617,
+      "macro_accuracy": 0.7662916666666666,
+      "query_count": 168000,
+      "confusion": [
+        [
+          24845,
+          499,
+          1098,
+          1316,
+          191,
+          51
+        ],
+        [
+          1100,
+          12821,
+          253,
+          13347,
+          422,
+          57
+        ],
+        [
+          905,
+          391,
+          21776,
+          1194,
+          1072,
+          2662
+        ],
+        [
+          3615,
+          6509,
+          523,
+          17031,
+          256,
+          66
+        ],
+        [
+          121,
+          269,
+          287,
+          246,
+          27002,
+          75
+        ],
+        [
+          43,
+          36,
+          326,
+          13,
+          2320,
+          25262
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7281666666666666,
+      "macro_f1": 0.6926001773523768,
+      "macro_accuracy": 0.7281666666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3846,
+          44,
+          54,
+          31,
+          22,
+          3
+        ],
+        [
+          419,
+          471,
+          38,
+          3043,
+          23,
+          6
+        ],
+        [
+          734,
+          10,
+          2365,
+          2,
+          12,
+          877
+        ],
+        [
+          673,
+          126,
+          26,
+          3144,
+          23,
+          8
+        ],
+        [
+          14,
+          49,
+          32,
+          36,
+          3862,
+          7
+        ],
+        [
+          6,
+          9,
+          156,
+          5,
+          36,
+          3788
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.66925,
+      "macro_f1": 0.6671160332551848,
+      "macro_accuracy": 0.66925,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3626,
+          46,
+          25,
+          276,
+          21,
+          6
+        ],
+        [
+          70,
+          1055,
+          19,
+          2814,
+          42,
+          0
+        ],
+        [
+          14,
+          36,
+          3124,
+          13,
+          11,
+          802
+        ],
+        [
+          89,
+          2561,
+          304,
+          1004,
+          29,
+          13
+        ],
+        [
+          22,
+          24,
+          40,
+          15,
+          3874,
+          25
+        ],
+        [
+          3,
+          6,
+          13,
+          2,
+          597,
+          3379
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8127916666666667,
+      "macro_f1": 0.8120797514760971,
+      "macro_accuracy": 0.8127916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3181,
+          127,
+          417,
+          193,
+          67,
+          15
+        ],
+        [
+          48,
+          2552,
+          50,
+          1200,
+          127,
+          23
+        ],
+        [
+          19,
+          23,
+          3863,
+          25,
+          39,
+          31
+        ],
+        [
+          105,
+          908,
+          28,
+          2902,
+          47,
+          10
+        ],
+        [
+          18,
+          20,
+          31,
+          25,
+          3899,
+          7
+        ],
+        [
+          4,
+          2,
+          15,
+          2,
+          867,
+          3110
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7565,
+      "macro_f1": 0.7549437447673736,
+      "macro_accuracy": 0.7565000000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3834,
+          45,
+          33,
+          61,
+          20,
+          7
+        ],
+        [
+          124,
+          2082,
+          51,
+          1694,
+          40,
+          9
+        ],
+        [
+          49,
+          246,
+          3440,
+          80,
+          71,
+          114
+        ],
+        [
+          280,
+          2189,
+          48,
+          1415,
+          57,
+          11
+        ],
+        [
+          29,
+          79,
+          105,
+          79,
+          3692,
+          16
+        ],
+        [
+          17,
+          12,
+          75,
+          3,
+          200,
+          3693
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.83475,
+      "macro_f1": 0.8351818773114837,
+      "macro_accuracy": 0.83475,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3041,
+          23,
+          515,
+          399,
+          14,
+          8
+        ],
+        [
+          72,
+          3163,
+          27,
+          688,
+          44,
+          6
+        ],
+        [
+          39,
+          19,
+          2950,
+          16,
+          796,
+          180
+        ],
+        [
+          71,
+          274,
+          27,
+          3581,
+          41,
+          6
+        ],
+        [
+          10,
+          24,
+          30,
+          24,
+          3904,
+          8
+        ],
+        [
+          2,
+          2,
+          12,
+          0,
+          589,
+          3395
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8099583333333333,
+      "macro_f1": 0.7986269381510019,
+      "macro_accuracy": 0.8099583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3874,
+          40,
+          21,
+          41,
+          19,
+          5
+        ],
+        [
+          322,
+          2634,
+          45,
+          903,
+          85,
+          11
+        ],
+        [
+          35,
+          22,
+          3842,
+          19,
+          55,
+          27
+        ],
+        [
+          2333,
+          269,
+          64,
+          1301,
+          21,
+          12
+        ],
+        [
+          20,
+          51,
+          20,
+          36,
+          3867,
+          6
+        ],
+        [
+          4,
+          4,
+          46,
+          0,
+          25,
+          3921
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.752625,
+      "macro_f1": 0.7371619726627561,
+      "macro_accuracy": 0.752625,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3443,
+          174,
+          33,
+          315,
+          28,
+          7
+        ],
+        [
+          45,
+          864,
+          23,
+          3005,
+          61,
+          2
+        ],
+        [
+          15,
+          35,
+          2192,
+          1039,
+          88,
+          631
+        ],
+        [
+          64,
+          182,
+          26,
+          3684,
+          38,
+          6
+        ],
+        [
+          8,
+          22,
+          29,
+          31,
+          3904,
+          6
+        ],
+        [
+          7,
+          1,
+          9,
+          1,
+          6,
+          3976
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.8873214285714286,
+      "macro_f1": 0.15671618254644085,
+      "macro_accuracy": 0.8873214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          24845,
+          499,
+          1098,
+          1316,
+          191,
+          51
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.45789285714285716,
+      "macro_f1": 0.10469284600246605,
+      "macro_accuracy": 0.45789285714285716,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1100,
+          12821,
+          253,
+          13347,
+          422,
+          57
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7777142857142857,
+      "macro_f1": 0.1458266366655952,
+      "macro_accuracy": 0.7777142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          905,
+          391,
+          21776,
+          1194,
+          1072,
+          2662
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.60825,
+      "macro_f1": 0.126068708223224,
+      "macro_accuracy": 0.60825,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3615,
+          6509,
+          523,
+          17031,
+          256,
+          66
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9643571428571428,
+      "macro_f1": 0.16364253421087718,
+      "macro_accuracy": 0.9643571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          121,
+          269,
+          287,
+          246,
+          27002,
+          75
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9022142857142857,
+      "macro_f1": 0.15809895735546295,
+      "macro_accuracy": 0.9022142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          43,
+          36,
+          326,
+          13,
+          2320,
+          25262
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7454345238095238,
+      "macro_f1": 0.741683110224583,
+      "macro_accuracy": 0.7454345238095238,
+      "query_count": 168000,
+      "confusion": [
+        [
+          23971,
+          654,
+          1314,
+          1590,
+          352,
+          119
+        ],
+        [
+          1559,
+          12819,
+          432,
+          12496,
+          586,
+          108
+        ],
+        [
+          998,
+          515,
+          21162,
+          1281,
+          1182,
+          2862
+        ],
+        [
+          3996,
+          6824,
+          831,
+          15805,
+          403,
+          141
+        ],
+        [
+          212,
+          389,
+          477,
+          458,
+          26316,
+          148
+        ],
+        [
+          70,
+          36,
+          405,
+          26,
+          2303,
+          25160
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7071666666666667,
+      "macro_f1": 0.6746772562679534,
+      "macro_accuracy": 0.7071666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3744,
+          52,
+          86,
+          59,
+          40,
+          19
+        ],
+        [
+          554,
+          497,
+          54,
+          2836,
+          54,
+          5
+        ],
+        [
+          697,
+          12,
+          2388,
+          11,
+          18,
+          874
+        ],
+        [
+          817,
+          164,
+          67,
+          2880,
+          54,
+          18
+        ],
+        [
+          43,
+          79,
+          53,
+          92,
+          3715,
+          18
+        ],
+        [
+          14,
+          6,
+          163,
+          6,
+          63,
+          3748
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6569166666666667,
+      "macro_f1": 0.6525467077710349,
+      "macro_accuracy": 0.6569166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3467,
+          69,
+          72,
+          336,
+          38,
+          18
+        ],
+        [
+          109,
+          1221,
+          57,
+          2549,
+          58,
+          6
+        ],
+        [
+          22,
+          58,
+          3026,
+          15,
+          25,
+          854
+        ],
+        [
+          145,
+          2439,
+          412,
+          916,
+          53,
+          35
+        ],
+        [
+          39,
+          30,
+          71,
+          23,
+          3792,
+          45
+        ],
+        [
+          7,
+          10,
+          36,
+          1,
+          602,
+          3344
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.7955833333333333,
+      "macro_f1": 0.7943251530171714,
+      "macro_accuracy": 0.7955833333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3036,
+          145,
+          477,
+          222,
+          98,
+          22
+        ],
+        [
+          102,
+          2488,
+          73,
+          1158,
+          149,
+          30
+        ],
+        [
+          36,
+          30,
+          3801,
+          36,
+          52,
+          45
+        ],
+        [
+          125,
+          980,
+          73,
+          2747,
+          53,
+          22
+        ],
+        [
+          26,
+          39,
+          53,
+          18,
+          3845,
+          19
+        ],
+        [
+          4,
+          3,
+          22,
+          2,
+          792,
+          3177
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7306666666666667,
+      "macro_f1": 0.7285631895244508,
+      "macro_accuracy": 0.7306666666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3661,
+          106,
+          59,
+          116,
+          35,
+          23
+        ],
+        [
+          186,
+          2106,
+          77,
+          1552,
+          62,
+          17
+        ],
+        [
+          69,
+          277,
+          3311,
+          112,
+          121,
+          110
+        ],
+        [
+          368,
+          2209,
+          68,
+          1260,
+          74,
+          21
+        ],
+        [
+          33,
+          105,
+          147,
+          144,
+          3551,
+          20
+        ],
+        [
+          21,
+          6,
+          105,
+          7,
+          214,
+          3647
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.805625,
+      "macro_f1": 0.8058626971383712,
+      "macro_accuracy": 0.805625,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2935,
+          36,
+          515,
+          450,
+          47,
+          17
+        ],
+        [
+          124,
+          2987,
+          62,
+          743,
+          61,
+          23
+        ],
+        [
+          74,
+          19,
+          2902,
+          33,
+          784,
+          188
+        ],
+        [
+          128,
+          436,
+          57,
+          3299,
+          67,
+          13
+        ],
+        [
+          28,
+          30,
+          51,
+          46,
+          3828,
+          17
+        ],
+        [
+          7,
+          5,
+          15,
+          1,
+          588,
+          3384
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7870833333333334,
+      "macro_f1": 0.7757659513351669,
+      "macro_accuracy": 0.7870833333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3793,
+          41,
+          54,
+          64,
+          38,
+          10
+        ],
+        [
+          409,
+          2528,
+          56,
+          881,
+          112,
+          14
+        ],
+        [
+          66,
+          58,
+          3683,
+          47,
+          84,
+          62
+        ],
+        [
+          2301,
+          314,
+          87,
+          1240,
+          38,
+          20
+        ],
+        [
+          31,
+          74,
+          50,
+          91,
+          3742,
+          12
+        ],
+        [
+          12,
+          4,
+          40,
+          8,
+          32,
+          3904
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.735,
+      "macro_f1": 0.7215679585378599,
+      "macro_accuracy": 0.735,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3335,
+          205,
+          51,
+          343,
+          56,
+          10
+        ],
+        [
+          75,
+          992,
+          53,
+          2777,
+          90,
+          13
+        ],
+        [
+          34,
+          61,
+          2051,
+          1027,
+          98,
+          729
+        ],
+        [
+          112,
+          282,
+          67,
+          3463,
+          64,
+          12
+        ],
+        [
+          12,
+          32,
+          52,
+          44,
+          3843,
+          17
+        ],
+        [
+          5,
+          2,
+          24,
+          1,
+          12,
+          3956
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.8561071428571428,
+      "macro_f1": 0.15374599937144431,
+      "macro_accuracy": 0.8561071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          23971,
+          654,
+          1314,
+          1590,
+          352,
+          119
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.45782142857142855,
+      "macro_f1": 0.10468164335236042,
+      "macro_accuracy": 0.45782142857142855,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1559,
+          12819,
+          432,
+          12496,
+          586,
+          108
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7557857142857143,
+      "macro_f1": 0.14348480533745575,
+      "macro_accuracy": 0.7557857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          998,
+          515,
+          21162,
+          1281,
+          1182,
+          2862
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.5644642857142858,
+      "macro_f1": 0.12026785374576722,
+      "macro_accuracy": 0.5644642857142858,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3996,
+          6824,
+          831,
+          15805,
+          403,
+          141
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9398571428571428,
+      "macro_f1": 0.16149937403343398,
+      "macro_accuracy": 0.9398571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          212,
+          389,
+          477,
+          458,
+          26316,
+          148
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.8985714285714286,
+      "macro_f1": 0.15776272886882367,
+      "macro_accuracy": 0.8985714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          70,
+          36,
+          405,
+          26,
+          2303,
+          25160
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.757547619047619,
+      "macro_f1": 0.7537582906662101,
+      "macro_accuracy": 0.7575476190476191,
+      "query_count": 168000,
+      "confusion": [
+        [
+          24440,
+          606,
+          1259,
+          1329,
+          311,
+          55
+        ],
+        [
+          1104,
+          12274,
+          368,
+          13649,
+          542,
+          63
+        ],
+        [
+          950,
+          425,
+          21750,
+          1214,
+          1117,
+          2544
+        ],
+        [
+          3499,
+          6162,
+          726,
+          17116,
+          415,
+          82
+        ],
+        [
+          177,
+          344,
+          447,
+          391,
+          26540,
+          101
+        ],
+        [
+          43,
+          35,
+          399,
+          13,
+          2362,
+          25148
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.724125,
+      "macro_f1": 0.6880408291611088,
+      "macro_accuracy": 0.724125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3781,
+          57,
+          70,
+          56,
+          29,
+          7
+        ],
+        [
+          396,
+          438,
+          52,
+          3076,
+          35,
+          3
+        ],
+        [
+          745,
+          7,
+          2373,
+          2,
+          11,
+          862
+        ],
+        [
+          548,
+          140,
+          51,
+          3220,
+          39,
+          2
+        ],
+        [
+          28,
+          68,
+          48,
+          57,
+          3792,
+          7
+        ],
+        [
+          6,
+          8,
+          159,
+          5,
+          47,
+          3775
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6564583333333334,
+      "macro_f1": 0.6531752375753863,
+      "macro_accuracy": 0.6564583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3575,
+          66,
+          62,
+          257,
+          35,
+          5
+        ],
+        [
+          68,
+          856,
+          30,
+          2973,
+          68,
+          5
+        ],
+        [
+          15,
+          47,
+          3158,
+          17,
+          18,
+          745
+        ],
+        [
+          81,
+          2449,
+          330,
+          1059,
+          49,
+          32
+        ],
+        [
+          34,
+          28,
+          79,
+          16,
+          3798,
+          45
+        ],
+        [
+          3,
+          2,
+          38,
+          1,
+          647,
+          3309
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.80375,
+      "macro_f1": 0.8031557154059277,
+      "macro_accuracy": 0.80375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3156,
+          138,
+          415,
+          200,
+          80,
+          11
+        ],
+        [
+          82,
+          2500,
+          77,
+          1186,
+          136,
+          19
+        ],
+        [
+          33,
+          42,
+          3807,
+          31,
+          68,
+          19
+        ],
+        [
+          114,
+          816,
+          53,
+          2927,
+          83,
+          7
+        ],
+        [
+          23,
+          34,
+          72,
+          48,
+          3814,
+          9
+        ],
+        [
+          5,
+          1,
+          18,
+          3,
+          887,
+          3086
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7469583333333333,
+      "macro_f1": 0.7462143511416229,
+      "macro_accuracy": 0.7469583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3732,
+          91,
+          55,
+          72,
+          40,
+          10
+        ],
+        [
+          108,
+          1989,
+          69,
+          1766,
+          57,
+          11
+        ],
+        [
+          41,
+          211,
+          3443,
+          86,
+          98,
+          121
+        ],
+        [
+          249,
+          2136,
+          71,
+          1450,
+          82,
+          12
+        ],
+        [
+          23,
+          90,
+          119,
+          102,
+          3649,
+          17
+        ],
+        [
+          12,
+          15,
+          105,
+          3,
+          201,
+          3664
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8305,
+      "macro_f1": 0.8312082163025396,
+      "macro_accuracy": 0.8305000000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2971,
+          35,
+          550,
+          393,
+          46,
+          5
+        ],
+        [
+          85,
+          3140,
+          31,
+          673,
+          60,
+          11
+        ],
+        [
+          44,
+          31,
+          2992,
+          10,
+          777,
+          146
+        ],
+        [
+          82,
+          208,
+          54,
+          3580,
+          66,
+          10
+        ],
+        [
+          26,
+          40,
+          43,
+          63,
+          3818,
+          10
+        ],
+        [
+          0,
+          4,
+          11,
+          0,
+          554,
+          3431
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7970416666666666,
+      "macro_f1": 0.7853130755916192,
+      "macro_accuracy": 0.7970416666666665,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3780,
+          53,
+          54,
+          69,
+          33,
+          11
+        ],
+        [
+          289,
+          2604,
+          69,
+          913,
+          115,
+          10
+        ],
+        [
+          50,
+          43,
+          3772,
+          16,
+          66,
+          53
+        ],
+        [
+          2339,
+          258,
+          107,
+          1251,
+          34,
+          11
+        ],
+        [
+          27,
+          56,
+          50,
+          61,
+          3802,
+          4
+        ],
+        [
+          13,
+          2,
+          52,
+          1,
+          12,
+          3920
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.744,
+      "macro_f1": 0.725591342608895,
+      "macro_accuracy": 0.7440000000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3445,
+          166,
+          53,
+          282,
+          48,
+          6
+        ],
+        [
+          76,
+          747,
+          40,
+          3062,
+          71,
+          4
+        ],
+        [
+          22,
+          44,
+          2205,
+          1052,
+          79,
+          598
+        ],
+        [
+          86,
+          155,
+          60,
+          3629,
+          62,
+          8
+        ],
+        [
+          16,
+          28,
+          36,
+          44,
+          3867,
+          9
+        ],
+        [
+          4,
+          3,
+          16,
+          0,
+          14,
+          3963
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.8728571428571429,
+      "macro_f1": 0.15535214848715992,
+      "macro_accuracy": 0.8728571428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          24440,
+          606,
+          1259,
+          1329,
+          311,
+          55
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.43835714285714283,
+      "macro_f1": 0.10158745923755608,
+      "macro_accuracy": 0.43835714285714283,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1104,
+          12274,
+          368,
+          13649,
+          542,
+          63
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7767857142857143,
+      "macro_f1": 0.1457286432160804,
+      "macro_accuracy": 0.7767857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          950,
+          425,
+          21750,
+          1214,
+          1117,
+          2544
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6112857142857143,
+      "macro_f1": 0.126459201465851,
+      "macro_accuracy": 0.6112857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3499,
+          6162,
+          726,
+          17116,
+          415,
+          82
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9478571428571428,
+      "macro_f1": 0.16220510939982888,
+      "macro_accuracy": 0.9478571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          177,
+          344,
+          447,
+          391,
+          26540,
+          101
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.8981428571428571,
+      "macro_f1": 0.15772308772986127,
+      "macro_accuracy": 0.8981428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          43,
+          35,
+          399,
+          13,
+          2362,
+          25148
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.6374107142857143,
+      "macro_f1": 0.6303120671425013,
+      "macro_accuracy": 0.6374107142857143,
+      "query_count": 168000,
+      "confusion": [
+        [
+          19450,
+          1477,
+          2718,
+          2504,
+          1393,
+          458
+        ],
+        [
+          2961,
+          10159,
+          1826,
+          10705,
+          1999,
+          350
+        ],
+        [
+          1707,
+          983,
+          18380,
+          1450,
+          1937,
+          3543
+        ],
+        [
+          4599,
+          5817,
+          2495,
+          12740,
+          1869,
+          480
+        ],
+        [
+          1039,
+          1116,
+          1859,
+          1522,
+          21785,
+          679
+        ],
+        [
+          232,
+          141,
+          783,
+          65,
+          2208,
+          24571
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.6145416666666667,
+      "macro_f1": 0.5893336160908856,
+      "macro_accuracy": 0.6145416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3024,
+          169,
+          380,
+          220,
+          154,
+          53
+        ],
+        [
+          634,
+          506,
+          278,
+          2331,
+          221,
+          30
+        ],
+        [
+          835,
+          40,
+          2181,
+          24,
+          68,
+          852
+        ],
+        [
+          763,
+          292,
+          260,
+          2382,
+          250,
+          53
+        ],
+        [
+          158,
+          209,
+          225,
+          223,
+          3111,
+          74
+        ],
+        [
+          53,
+          36,
+          221,
+          21,
+          124,
+          3545
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.5642916666666666,
+      "macro_f1": 0.5534255801335078,
+      "macro_accuracy": 0.5642916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2825,
+          198,
+          285,
+          422,
+          222,
+          48
+        ],
+        [
+          342,
+          922,
+          243,
+          2194,
+          257,
+          42
+        ],
+        [
+          96,
+          185,
+          2664,
+          67,
+          82,
+          906
+        ],
+        [
+          258,
+          1856,
+          768,
+          804,
+          215,
+          99
+        ],
+        [
+          175,
+          112,
+          307,
+          119,
+          3022,
+          265
+        ],
+        [
+          38,
+          20,
+          130,
+          7,
+          499,
+          3306
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.68125,
+      "macro_f1": 0.6774480235522233,
+      "macro_accuracy": 0.6812499999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2552,
+          215,
+          630,
+          297,
+          218,
+          88
+        ],
+        [
+          344,
+          1901,
+          262,
+          984,
+          444,
+          65
+        ],
+        [
+          122,
+          143,
+          3274,
+          106,
+          232,
+          123
+        ],
+        [
+          384,
+          825,
+          287,
+          2113,
+          341,
+          50
+        ],
+        [
+          133,
+          152,
+          267,
+          180,
+          3219,
+          49
+        ],
+        [
+          14,
+          10,
+          47,
+          4,
+          634,
+          3291
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.615375,
+      "macro_f1": 0.6100727729697883,
+      "macro_accuracy": 0.6153750000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2913,
+          217,
+          262,
+          347,
+          196,
+          65
+        ],
+        [
+          380,
+          1639,
+          287,
+          1396,
+          244,
+          54
+        ],
+        [
+          145,
+          256,
+          2854,
+          141,
+          329,
+          275
+        ],
+        [
+          546,
+          1710,
+          266,
+          1090,
+          303,
+          85
+        ],
+        [
+          153,
+          202,
+          394,
+          329,
+          2839,
+          83
+        ],
+        [
+          44,
+          32,
+          173,
+          19,
+          298,
+          3434
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.6860416666666667,
+      "macro_f1": 0.6845122032343705,
+      "macro_accuracy": 0.6860416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2389,
+          128,
+          660,
+          556,
+          200,
+          67
+        ],
+        [
+          327,
+          2382,
+          254,
+          729,
+          247,
+          61
+        ],
+        [
+          147,
+          58,
+          2497,
+          74,
+          737,
+          487
+        ],
+        [
+          383,
+          442,
+          259,
+          2573,
+          281,
+          62
+        ],
+        [
+          134,
+          133,
+          225,
+          211,
+          3236,
+          61
+        ],
+        [
+          14,
+          17,
+          28,
+          0,
+          553,
+          3388
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.668,
+      "macro_f1": 0.6569213135023076,
+      "macro_accuracy": 0.668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3072,
+          179,
+          264,
+          257,
+          145,
+          83
+        ],
+        [
+          596,
+          2006,
+          284,
+          821,
+          244,
+          49
+        ],
+        [
+          228,
+          165,
+          2997,
+          88,
+          278,
+          244
+        ],
+        [
+          1917,
+          375,
+          385,
+          1114,
+          149,
+          60
+        ],
+        [
+          164,
+          177,
+          220,
+          261,
+          3104,
+          74
+        ],
+        [
+          51,
+          16,
+          122,
+          8,
+          64,
+          3739
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.632375,
+      "macro_f1": 0.6157603726880149,
+      "macro_accuracy": 0.632375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2675,
+          371,
+          237,
+          405,
+          258,
+          54
+        ],
+        [
+          338,
+          803,
+          218,
+          2250,
+          342,
+          49
+        ],
+        [
+          134,
+          136,
+          1913,
+          950,
+          211,
+          656
+        ],
+        [
+          348,
+          317,
+          270,
+          2664,
+          330,
+          71
+        ],
+        [
+          122,
+          131,
+          221,
+          199,
+          3254,
+          73
+        ],
+        [
+          18,
+          10,
+          62,
+          6,
+          36,
+          3868
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.6946428571428571,
+      "macro_f1": 0.13663505444327362,
+      "macro_accuracy": 0.6946428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          19450,
+          1477,
+          2718,
+          2504,
+          1393,
+          458
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.3628214285714286,
+      "macro_f1": 0.08874271687762608,
+      "macro_accuracy": 0.3628214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2961,
+          10159,
+          1826,
+          10705,
+          1999,
+          350
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6564285714285715,
+      "macro_f1": 0.13209716831967802,
+      "macro_accuracy": 0.6564285714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1707,
+          983,
+          18380,
+          1450,
+          1937,
+          3543
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.455,
+      "macro_f1": 0.10423825887743414,
+      "macro_accuracy": 0.455,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          4599,
+          5817,
+          2495,
+          12740,
+          1869,
+          480
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.7780357142857143,
+      "macro_f1": 0.14586053362793344,
+      "macro_accuracy": 0.7780357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1039,
+          1116,
+          1859,
+          1522,
+          21785,
+          679
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.8775357142857143,
+      "macro_f1": 0.1557956541312384,
+      "macro_accuracy": 0.8775357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          232,
+          141,
+          783,
+          65,
+          2208,
+          24571
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.5366666666666666,
+      "macro_f1": 0.5267913853707663,
+      "macro_accuracy": 0.5366666666666666,
+      "query_count": 168000,
+      "confusion": [
+        [
+          15811,
+          1624,
+          3877,
+          3253,
+          2460,
+          975
+        ],
+        [
+          4082,
+          8032,
+          3037,
+          8711,
+          3286,
+          852
+        ],
+        [
+          2382,
+          1344,
+          15339,
+          1788,
+          2793,
+          4354
+        ],
+        [
+          5070,
+          5030,
+          3856,
+          9899,
+          3057,
+          1088
+        ],
+        [
+          1788,
+          1407,
+          3167,
+          2340,
+          17993,
+          1305
+        ],
+        [
+          605,
+          320,
+          1283,
+          212,
+          2494,
+          23086
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.5143333333333333,
+      "macro_f1": 0.49395076577184166,
+      "macro_accuracy": 0.5143333333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2491,
+          192,
+          513,
+          359,
+          293,
+          152
+        ],
+        [
+          823,
+          494,
+          421,
+          1796,
+          369,
+          97
+        ],
+        [
+          839,
+          65,
+          1938,
+          71,
+          173,
+          914
+        ],
+        [
+          947,
+          343,
+          401,
+          1733,
+          432,
+          144
+        ],
+        [
+          281,
+          245,
+          472,
+          356,
+          2497,
+          149
+        ],
+        [
+          132,
+          86,
+          295,
+          47,
+          249,
+          3191
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.484375,
+      "macro_f1": 0.46941877822664896,
+      "macro_accuracy": 0.484375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2330,
+          265,
+          411,
+          490,
+          382,
+          122
+        ],
+        [
+          493,
+          873,
+          434,
+          1600,
+          501,
+          99
+        ],
+        [
+          194,
+          312,
+          2156,
+          152,
+          181,
+          1005
+        ],
+        [
+          362,
+          1384,
+          1010,
+          660,
+          385,
+          199
+        ],
+        [
+          289,
+          158,
+          514,
+          182,
+          2457,
+          400
+        ],
+        [
+          76,
+          62,
+          238,
+          16,
+          459,
+          3149
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.5767083333333334,
+      "macro_f1": 0.5695199311507005,
+      "macro_accuracy": 0.5767083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2062,
+          231,
+          789,
+          383,
+          390,
+          145
+        ],
+        [
+          508,
+          1423,
+          436,
+          912,
+          579,
+          142
+        ],
+        [
+          261,
+          194,
+          2717,
+          208,
+          383,
+          237
+        ],
+        [
+          495,
+          723,
+          469,
+          1659,
+          508,
+          146
+        ],
+        [
+          240,
+          196,
+          436,
+          267,
+          2715,
+          146
+        ],
+        [
+          50,
+          20,
+          76,
+          16,
+          573,
+          3265
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.5174583333333334,
+      "macro_f1": 0.5094754113777485,
+      "macro_accuracy": 0.5174583333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2392,
+          241,
+          437,
+          463,
+          334,
+          133
+        ],
+        [
+          561,
+          1261,
+          436,
+          1152,
+          469,
+          121
+        ],
+        [
+          265,
+          285,
+          2407,
+          205,
+          460,
+          378
+        ],
+        [
+          680,
+          1292,
+          442,
+          926,
+          477,
+          183
+        ],
+        [
+          260,
+          222,
+          565,
+          459,
+          2325,
+          169
+        ],
+        [
+          109,
+          67,
+          261,
+          59,
+          396,
+          3108
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.5675833333333333,
+      "macro_f1": 0.5624951414470541,
+      "macro_accuracy": 0.5675833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          1861,
+          167,
+          831,
+          652,
+          342,
+          147
+        ],
+        [
+          500,
+          1709,
+          433,
+          729,
+          463,
+          166
+        ],
+        [
+          260,
+          95,
+          2117,
+          141,
+          739,
+          648
+        ],
+        [
+          515,
+          496,
+          420,
+          1936,
+          483,
+          150
+        ],
+        [
+          218,
+          170,
+          386,
+          349,
+          2709,
+          168
+        ],
+        [
+          47,
+          21,
+          72,
+          11,
+          559,
+          3290
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.5576666666666666,
+      "macro_f1": 0.5459119941055456,
+      "macro_accuracy": 0.5576666666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2550,
+          184,
+          439,
+          400,
+          293,
+          134
+        ],
+        [
+          758,
+          1484,
+          465,
+          790,
+          396,
+          107
+        ],
+        [
+          343,
+          202,
+          2407,
+          148,
+          501,
+          399
+        ],
+        [
+          1574,
+          375,
+          626,
+          965,
+          301,
+          159
+        ],
+        [
+          262,
+          245,
+          418,
+          414,
+          2526,
+          135
+        ],
+        [
+          114,
+          34,
+          206,
+          35,
+          159,
+          3452
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.5385416666666667,
+      "macro_f1": 0.5225816611307009,
+      "macro_accuracy": 0.5385416666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2125,
+          344,
+          457,
+          506,
+          426,
+          142
+        ],
+        [
+          439,
+          788,
+          412,
+          1732,
+          509,
+          120
+        ],
+        [
+          220,
+          191,
+          1597,
+          863,
+          356,
+          773
+        ],
+        [
+          497,
+          417,
+          488,
+          2020,
+          471,
+          107
+        ],
+        [
+          238,
+          171,
+          376,
+          313,
+          2764,
+          138
+        ],
+        [
+          77,
+          30,
+          135,
+          28,
+          99,
+          3631
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.5646785714285715,
+      "macro_f1": 0.1202970334695244,
+      "macro_accuracy": 0.5646785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          15811,
+          1624,
+          3877,
+          3253,
+          2460,
+          975
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.28685714285714287,
+      "macro_f1": 0.07430432208407341,
+      "macro_accuracy": 0.28685714285714287,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          4082,
+          8032,
+          3037,
+          8711,
+          3286,
+          852
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.5478214285714286,
+      "macro_f1": 0.11797687994646854,
+      "macro_accuracy": 0.5478214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2382,
+          1344,
+          15339,
+          1788,
+          2793,
+          4354
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.3535357142857143,
+      "macro_f1": 0.08706474225353351,
+      "macro_accuracy": 0.3535357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          5070,
+          5030,
+          3856,
+          9899,
+          3057,
+          1088
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.6426071428571428,
+      "macro_f1": 0.13040390204306454,
+      "macro_accuracy": 0.6426071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1788,
+          1407,
+          3167,
+          2340,
+          17993,
+          1305
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.8245,
+      "macro_f1": 0.1506348771352882,
+      "macro_accuracy": 0.8245,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          605,
+          320,
+          1283,
+          212,
+          2494,
+          23086
+        ]
+      ]
+    }
+  ]
+}

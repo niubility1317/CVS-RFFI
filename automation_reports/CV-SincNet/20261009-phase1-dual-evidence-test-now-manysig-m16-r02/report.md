@@ -41,3 +41,7 @@
 RUNNING / VERIFIED。控制器PID2293080；8个实际GPU预测进程已启动，另8行排第二批。每卡1个本run推理，每卡总数5，原32个训练PID全部仍在。旧空闲控制器2074109退出已读回；所有新worker实际PID/start_ticks/CWD/argv及batch256、FP32、frozen参数、无truth/query拟合核对通过。代码提交`62af0de14adc42cdb6f9be8323b599d1d31fb3da`。证据见[evidence/launch_verified.json](evidence/launch_verified.json)。
 
 本地观察器PID57220已通过Win32_Process及observer.json读回，自动收取、复算全部结果并交付Git；当前测试进行中，没有准确率结论。
+
+## 完整测试交付
+
+ANALYZED / VERIFIED。完整结果见[结果表](results/full_results.md)、[逐RX/TX](results/scores.csv)、[逐日期](results/day_scores.csv)。所有负结果完整保留。

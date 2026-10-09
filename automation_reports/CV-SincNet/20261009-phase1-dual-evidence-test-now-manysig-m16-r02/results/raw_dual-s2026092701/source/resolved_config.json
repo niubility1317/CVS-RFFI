@@ -1,0 +1,82 @@
+{
+  "schema": "dual_evidence_v1",
+  "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+  "stage": "dual_evidence",
+  "arm": "raw_dual",
+  "model_seed": 2026092701,
+  "row_id": "raw_dual-s2026092701",
+  "features": [
+    "ema",
+    "leo",
+    "pseudo",
+    "twostage"
+  ],
+  "variant": "reference_response",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/raw_dual-s2026092701/source",
+  "epochs": 200,
+  "steps_per_epoch": 222,
+  "model_initialization": "scratch",
+  "checkpoint_sources": [],
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "method": "cvs_dual_evidence",
+  "target_access": false,
+  "pseudo_domain_gate": false,
+  "temporal_mode": "batch_neighbor",
+  "temporal_min_streak": 2,
+  "lr_schedule": "cosine",
+  "lr_min": 1e-06,
+  "dual_recipe": {
+    "lags": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "evidence_channels": 12,
+    "widths": [
+      32,
+      64,
+      96,
+      160
+    ],
+    "fusion_rank": 64,
+    "curvature_log_scale": 0.25,
+    "interaction_bound": 0.5,
+    "initial_fusion_output": "zero",
+    "new_objective_weights": {},
+    "source_selection": "fixed_E200_all_controls"
+  },
+  "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+  "pid": 2074135,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_20261009_r01",
+  "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+  "commit": "a759963aa77150da25bd91fd8c031f7d06120cf4",
+  "torch_version": "2.1.0+cu121",
+  "cuda_visible_devices": "2",
+  "total_parameters": 619535,
+  "hardware": "NVIDIA GeForce RTX 3090",
+  "backend_flags": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/raw_dual-s2026092701/source/resolved_native_args.json",
+  "execution_policy": {
+    "a1_gradient_snapshot": true,
+    "source_validation_reuse": true,
+    "native_epoch_telemetry": "incremental",
+    "scalar_readback": "batched_same_dtype",
+    "compact_epoch_telemetry": "original_full_history",
+    "a1_runtime_fast": false
+  }
+}

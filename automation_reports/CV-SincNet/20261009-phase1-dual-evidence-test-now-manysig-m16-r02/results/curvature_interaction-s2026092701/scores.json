@@ -1,0 +1,6178 @@
+{
+  "results": [
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.5727619047619048,
+      "macro_f1": 0.5638418661402711,
+      "macro_accuracy": 0.5727619047619047,
+      "query_count": 168000,
+      "confusion": [
+        [
+          21250,
+          1094,
+          59,
+          5414,
+          171,
+          12
+        ],
+        [
+          3942,
+          6211,
+          95,
+          16832,
+          866,
+          54
+        ],
+        [
+          3543,
+          794,
+          12511,
+          514,
+          1741,
+          8897
+        ],
+        [
+          8925,
+          6630,
+          99,
+          11254,
+          974,
+          118
+        ],
+        [
+          25,
+          2053,
+          37,
+          2534,
+          23341,
+          10
+        ],
+        [
+          153,
+          41,
+          4152,
+          10,
+          1987,
+          21657
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.5513333333333333,
+      "macro_f1": 0.5520189414828981,
+      "macro_accuracy": 0.5513333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          1702,
+          237,
+          0,
+          1988,
+          73,
+          0
+        ],
+        [
+          517,
+          1060,
+          1,
+          2421,
+          1,
+          0
+        ],
+        [
+          1,
+          3,
+          1945,
+          3,
+          1,
+          2047
+        ],
+        [
+          2797,
+          4,
+          0,
+          1002,
+          197,
+          0
+        ],
+        [
+          2,
+          179,
+          2,
+          116,
+          3699,
+          2
+        ],
+        [
+          2,
+          0,
+          108,
+          4,
+          62,
+          3824
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.2940833333333333,
+      "macro_f1": 0.289710166737671,
+      "macro_accuracy": 0.2940833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3647,
+          1,
+          0,
+          352,
+          0,
+          0
+        ],
+        [
+          1306,
+          39,
+          0,
+          2642,
+          13,
+          0
+        ],
+        [
+          79,
+          60,
+          864,
+          3,
+          5,
+          2989
+        ],
+        [
+          490,
+          3313,
+          56,
+          22,
+          7,
+          112
+        ],
+        [
+          8,
+          1506,
+          2,
+          0,
+          2481,
+          3
+        ],
+        [
+          0,
+          0,
+          3995,
+          0,
+          0,
+          5
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.694375,
+      "macro_f1": 0.6850491373285235,
+      "macro_accuracy": 0.694375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2658,
+          304,
+          48,
+          912,
+          70,
+          8
+        ],
+        [
+          434,
+          1149,
+          0,
+          1968,
+          444,
+          5
+        ],
+        [
+          487,
+          110,
+          3321,
+          6,
+          16,
+          60
+        ],
+        [
+          1252,
+          512,
+          1,
+          1616,
+          618,
+          1
+        ],
+        [
+          0,
+          17,
+          24,
+          14,
+          3944,
+          1
+        ],
+        [
+          0,
+          4,
+          6,
+          2,
+          11,
+          3977
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.558,
+      "macro_f1": 0.5549851025694554,
+      "macro_accuracy": 0.5579999999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2479,
+          489,
+          11,
+          1008,
+          10,
+          3
+        ],
+        [
+          429,
+          789,
+          73,
+          2320,
+          379,
+          10
+        ],
+        [
+          378,
+          553,
+          1498,
+          476,
+          831,
+          264
+        ],
+        [
+          621,
+          2629,
+          11,
+          703,
+          33,
+          3
+        ],
+        [
+          14,
+          2,
+          7,
+          8,
+          3967,
+          2
+        ],
+        [
+          4,
+          3,
+          17,
+          4,
+          16,
+          3956
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.68425,
+      "macro_f1": 0.6433909785446218,
+      "macro_accuracy": 0.6842499999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3963,
+          0,
+          0,
+          27,
+          9,
+          1
+        ],
+        [
+          121,
+          1771,
+          16,
+          2044,
+          10,
+          38
+        ],
+        [
+          2127,
+          47,
+          834,
+          14,
+          546,
+          432
+        ],
+        [
+          45,
+          16,
+          1,
+          3930,
+          8,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          147,
+          33,
+          1,
+          0,
+          1893,
+          1926
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.5879583333333334,
+      "macro_f1": 0.5809131537340492,
+      "macro_accuracy": 0.5879583333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3954,
+          30,
+          0,
+          16,
+          0,
+          0
+        ],
+        [
+          1131,
+          1392,
+          2,
+          1457,
+          17,
+          1
+        ],
+        [
+          464,
+          20,
+          3162,
+          9,
+          341,
+          4
+        ],
+        [
+          3374,
+          140,
+          30,
+          346,
+          108,
+          2
+        ],
+        [
+          0,
+          324,
+          1,
+          2393,
+          1281,
+          1
+        ],
+        [
+          0,
+          0,
+          20,
+          0,
+          4,
+          3976
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.6393333333333333,
+      "macro_f1": 0.573882446608677,
+      "macro_accuracy": 0.6393333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2847,
+          33,
+          0,
+          1111,
+          9,
+          0
+        ],
+        [
+          4,
+          11,
+          3,
+          3980,
+          2,
+          0
+        ],
+        [
+          7,
+          1,
+          887,
+          3,
+          1,
+          3101
+        ],
+        [
+          346,
+          16,
+          0,
+          3635,
+          3,
+          0
+        ],
+        [
+          1,
+          25,
+          0,
+          3,
+          3971,
+          0
+        ],
+        [
+          0,
+          1,
+          5,
+          0,
+          1,
+          3993
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.7589285714285714,
+      "macro_f1": 0.14382402707275804,
+      "macro_accuracy": 0.7589285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          21250,
+          1094,
+          59,
+          5414,
+          171,
+          12
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.22182142857142856,
+      "macro_f1": 0.06051659797531009,
+      "macro_accuracy": 0.22182142857142856,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3942,
+          6211,
+          95,
+          16832,
+          866,
+          54
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.4468214285714286,
+      "macro_f1": 0.1029432335250508,
+      "macro_accuracy": 0.4468214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3543,
+          794,
+          12511,
+          514,
+          1741,
+          8897
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.4019285714285714,
+      "macro_f1": 0.09556563237716752,
+      "macro_accuracy": 0.4019285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          8925,
+          6630,
+          99,
+          11254,
+          974,
+          118
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.8336071428571429,
+      "macro_f1": 0.1515423021237088,
+      "macro_accuracy": 0.8336071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          25,
+          2053,
+          37,
+          2534,
+          23341,
+          10
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.7734642857142857,
+      "macro_f1": 0.14537728819703163,
+      "macro_accuracy": 0.7734642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          153,
+          41,
+          4152,
+          10,
+          1987,
+          21657
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.6339404761904762,
+      "macro_f1": 0.6239824068319401,
+      "macro_accuracy": 0.6339404761904762,
+      "query_count": 168000,
+      "confusion": [
+        [
+          23002,
+          599,
+          87,
+          4097,
+          197,
+          18
+        ],
+        [
+          1743,
+          6604,
+          61,
+          19014,
+          560,
+          18
+        ],
+        [
+          1904,
+          3441,
+          13683,
+          467,
+          844,
+          7661
+        ],
+        [
+          5150,
+          7673,
+          101,
+          14786,
+          223,
+          67
+        ],
+        [
+          41,
+          189,
+          65,
+          237,
+          27454,
+          14
+        ],
+        [
+          16,
+          238,
+          4051,
+          22,
+          2700,
+          20973
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.6804583333333334,
+      "macro_f1": 0.6553547410052042,
+      "macro_accuracy": 0.6804583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3320,
+          76,
+          1,
+          597,
+          6,
+          0
+        ],
+        [
+          396,
+          578,
+          4,
+          3019,
+          2,
+          1
+        ],
+        [
+          9,
+          2,
+          2256,
+          0,
+          4,
+          1729
+        ],
+        [
+          1370,
+          23,
+          1,
+          2603,
+          3,
+          0
+        ],
+        [
+          8,
+          65,
+          1,
+          37,
+          3888,
+          1
+        ],
+        [
+          4,
+          7,
+          74,
+          15,
+          214,
+          3686
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.3712916666666667,
+      "macro_f1": 0.36011694869956296,
+      "macro_accuracy": 0.37129166666666663,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3570,
+          9,
+          2,
+          416,
+          2,
+          1
+        ],
+        [
+          108,
+          280,
+          2,
+          3604,
+          6,
+          0
+        ],
+        [
+          194,
+          962,
+          1089,
+          4,
+          14,
+          1737
+        ],
+        [
+          544,
+          3268,
+          69,
+          48,
+          9,
+          62
+        ],
+        [
+          12,
+          79,
+          6,
+          29,
+          3870,
+          4
+        ],
+        [
+          0,
+          0,
+          3941,
+          0,
+          5,
+          54
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.7592083333333334,
+      "macro_f1": 0.7529751239758239,
+      "macro_accuracy": 0.7592083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2482,
+          228,
+          60,
+          1058,
+          162,
+          10
+        ],
+        [
+          170,
+          1502,
+          2,
+          1839,
+          484,
+          3
+        ],
+        [
+          48,
+          212,
+          3431,
+          6,
+          17,
+          286
+        ],
+        [
+          460,
+          474,
+          0,
+          2916,
+          149,
+          1
+        ],
+        [
+          2,
+          8,
+          43,
+          16,
+          3931,
+          0
+        ],
+        [
+          0,
+          0,
+          9,
+          0,
+          32,
+          3959
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.5670833333333334,
+      "macro_f1": 0.5886281506608156,
+      "macro_accuracy": 0.5670833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3077,
+          53,
+          12,
+          841,
+          11,
+          6
+        ],
+        [
+          181,
+          695,
+          41,
+          3052,
+          24,
+          7
+        ],
+        [
+          254,
+          1500,
+          1576,
+          404,
+          131,
+          135
+        ],
+        [
+          121,
+          3434,
+          12,
+          395,
+          36,
+          2
+        ],
+        [
+          6,
+          5,
+          8,
+          52,
+          3924,
+          5
+        ],
+        [
+          4,
+          4,
+          19,
+          6,
+          24,
+          3943
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.662375,
+      "macro_f1": 0.6307757482781314,
+      "macro_accuracy": 0.662375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3656,
+          4,
+          12,
+          322,
+          5,
+          1
+        ],
+        [
+          29,
+          1798,
+          8,
+          2143,
+          19,
+          3
+        ],
+        [
+          806,
+          113,
+          1224,
+          32,
+          488,
+          1337
+        ],
+        [
+          41,
+          61,
+          1,
+          3881,
+          16,
+          0
+        ],
+        [
+          1,
+          7,
+          2,
+          15,
+          3974,
+          1
+        ],
+        [
+          5,
+          219,
+          0,
+          1,
+          2411,
+          1364
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.6982083333333333,
+      "macro_f1": 0.6877578614137637,
+      "macro_accuracy": 0.6982083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3725,
+          171,
+          0,
+          104,
+          0,
+          0
+        ],
+        [
+          847,
+          1701,
+          2,
+          1432,
+          16,
+          2
+        ],
+        [
+          587,
+          644,
+          2419,
+          12,
+          182,
+          156
+        ],
+        [
+          2569,
+          380,
+          17,
+          1027,
+          5,
+          2
+        ],
+        [
+          8,
+          17,
+          4,
+          70,
+          3899,
+          2
+        ],
+        [
+          3,
+          2,
+          6,
+          0,
+          3,
+          3986
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.6989583333333333,
+      "macro_f1": 0.6466179819895942,
+      "macro_accuracy": 0.6989583333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3172,
+          58,
+          0,
+          759,
+          11,
+          0
+        ],
+        [
+          12,
+          50,
+          2,
+          3925,
+          9,
+          2
+        ],
+        [
+          6,
+          8,
+          1688,
+          9,
+          8,
+          2281
+        ],
+        [
+          45,
+          33,
+          1,
+          3916,
+          5,
+          0
+        ],
+        [
+          4,
+          8,
+          1,
+          18,
+          3968,
+          1
+        ],
+        [
+          0,
+          6,
+          2,
+          0,
+          11,
+          3981
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.8215,
+      "macro_f1": 0.1503339738310916,
+      "macro_accuracy": 0.8215,
+      "query_count": 28000,
+      "confusion": [
+        [
+          23002,
+          599,
+          87,
+          4097,
+          197,
+          18
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.23585714285714285,
+      "macro_f1": 0.06361499633953686,
+      "macro_accuracy": 0.23585714285714285,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1743,
+          6604,
+          61,
+          19014,
+          560,
+          18
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.4886785714285714,
+      "macro_f1": 0.10942110692608498,
+      "macro_accuracy": 0.4886785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1904,
+          3441,
+          13683,
+          467,
+          844,
+          7661
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.5280714285714285,
+      "macro_f1": 0.11519344333816357,
+      "macro_accuracy": 0.5280714285714285,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          5150,
+          7673,
+          101,
+          14786,
+          223,
+          67
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9805,
+      "macro_f1": 0.16502566691912815,
+      "macro_accuracy": 0.9805,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          41,
+          189,
+          65,
+          237,
+          27454,
+          14
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.7490357142857142,
+      "macro_f1": 0.14275212872399076,
+      "macro_accuracy": 0.7490357142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          16,
+          238,
+          4051,
+          22,
+          2700,
+          20973
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.6213630952380952,
+      "macro_f1": 0.6122428230663352,
+      "macro_accuracy": 0.6213630952380953,
+      "query_count": 168000,
+      "confusion": [
+        [
+          22470,
+          747,
+          140,
+          4330,
+          262,
+          51
+        ],
+        [
+          2186,
+          6585,
+          114,
+          18466,
+          618,
+          31
+        ],
+        [
+          2073,
+          3452,
+          13629,
+          558,
+          968,
+          7320
+        ],
+        [
+          5606,
+          7479,
+          146,
+          14297,
+          385,
+          87
+        ],
+        [
+          197,
+          369,
+          133,
+          598,
+          26658,
+          45
+        ],
+        [
+          61,
+          279,
+          3913,
+          28,
+          2969,
+          20750
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.6724583333333334,
+      "macro_f1": 0.6498369278053954,
+      "macro_accuracy": 0.6724583333333335,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3279,
+          105,
+          10,
+          586,
+          13,
+          7
+        ],
+        [
+          487,
+          608,
+          8,
+          2885,
+          12,
+          0
+        ],
+        [
+          23,
+          4,
+          2343,
+          6,
+          4,
+          1620
+        ],
+        [
+          1403,
+          42,
+          4,
+          2525,
+          23,
+          3
+        ],
+        [
+          31,
+          76,
+          8,
+          89,
+          3790,
+          6
+        ],
+        [
+          25,
+          16,
+          91,
+          17,
+          257,
+          3594
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.373625,
+      "macro_f1": 0.3646481787147066,
+      "macro_accuracy": 0.37362500000000004,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3434,
+          30,
+          8,
+          512,
+          14,
+          2
+        ],
+        [
+          191,
+          345,
+          10,
+          3421,
+          33,
+          0
+        ],
+        [
+          214,
+          971,
+          1160,
+          4,
+          27,
+          1624
+        ],
+        [
+          615,
+          3149,
+          71,
+          63,
+          41,
+          61
+        ],
+        [
+          42,
+          122,
+          22,
+          62,
+          3734,
+          18
+        ],
+        [
+          2,
+          1,
+          3743,
+          1,
+          22,
+          231
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.7395,
+      "macro_f1": 0.7337703881882843,
+      "macro_accuracy": 0.7395,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2444,
+          231,
+          75,
+          1060,
+          173,
+          17
+        ],
+        [
+          252,
+          1442,
+          11,
+          1840,
+          443,
+          12
+        ],
+        [
+          72,
+          271,
+          3354,
+          16,
+          39,
+          248
+        ],
+        [
+          576,
+          466,
+          12,
+          2772,
+          167,
+          7
+        ],
+        [
+          28,
+          34,
+          60,
+          52,
+          3822,
+          4
+        ],
+        [
+          5,
+          2,
+          17,
+          1,
+          61,
+          3914
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.5604166666666667,
+      "macro_f1": 0.579090943538477,
+      "macro_accuracy": 0.5604166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3050,
+          84,
+          16,
+          824,
+          17,
+          9
+        ],
+        [
+          247,
+          697,
+          52,
+          2954,
+          37,
+          13
+        ],
+        [
+          295,
+          1376,
+          1600,
+          404,
+          177,
+          148
+        ],
+        [
+          223,
+          3265,
+          14,
+          423,
+          68,
+          7
+        ],
+        [
+          29,
+          31,
+          13,
+          130,
+          3792,
+          5
+        ],
+        [
+          7,
+          11,
+          36,
+          8,
+          50,
+          3888
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.639375,
+      "macro_f1": 0.6083343816157085,
+      "macro_accuracy": 0.639375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3547,
+          13,
+          17,
+          399,
+          17,
+          7
+        ],
+        [
+          76,
+          1743,
+          14,
+          2125,
+          38,
+          4
+        ],
+        [
+          821,
+          133,
+          1247,
+          62,
+          480,
+          1257
+        ],
+        [
+          122,
+          112,
+          11,
+          3714,
+          39,
+          2
+        ],
+        [
+          21,
+          14,
+          10,
+          72,
+          3877,
+          6
+        ],
+        [
+          13,
+          238,
+          2,
+          0,
+          2530,
+          1217
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.6805416666666667,
+      "macro_f1": 0.6716049317533909,
+      "macro_accuracy": 0.6805416666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3644,
+          200,
+          3,
+          144,
+          5,
+          4
+        ],
+        [
+          876,
+          1659,
+          10,
+          1425,
+          29,
+          1
+        ],
+        [
+          636,
+          670,
+          2280,
+          34,
+          226,
+          154
+        ],
+        [
+          2541,
+          357,
+          27,
+          1048,
+          23,
+          4
+        ],
+        [
+          28,
+          70,
+          10,
+          133,
+          3754,
+          5
+        ],
+        [
+          7,
+          4,
+          15,
+          0,
+          26,
+          3948
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.683625,
+      "macro_f1": 0.6351452060563338,
+      "macro_accuracy": 0.6836249999999998,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3072,
+          84,
+          11,
+          805,
+          23,
+          5
+        ],
+        [
+          57,
+          91,
+          9,
+          3816,
+          26,
+          1
+        ],
+        [
+          12,
+          27,
+          1645,
+          32,
+          15,
+          2269
+        ],
+        [
+          126,
+          88,
+          7,
+          3752,
+          24,
+          3
+        ],
+        [
+          18,
+          22,
+          10,
+          60,
+          3889,
+          1
+        ],
+        [
+          2,
+          7,
+          9,
+          1,
+          23,
+          3958
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.8025,
+      "macro_f1": 0.14840499306518726,
+      "macro_accuracy": 0.8025,
+      "query_count": 28000,
+      "confusion": [
+        [
+          22470,
+          747,
+          140,
+          4330,
+          262,
+          51
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.23517857142857143,
+      "macro_f1": 0.06346682087610235,
+      "macro_accuracy": 0.23517857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2186,
+          6585,
+          114,
+          18466,
+          618,
+          31
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.48675,
+      "macro_f1": 0.10913065411131663,
+      "macro_accuracy": 0.48675,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2073,
+          3452,
+          13629,
+          558,
+          968,
+          7320
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.5106071428571428,
+      "macro_f1": 0.11267150546532062,
+      "macro_accuracy": 0.5106071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          5606,
+          7479,
+          146,
+          14297,
+          385,
+          87
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9520714285714286,
+      "macro_f1": 0.16257455450254307,
+      "macro_accuracy": 0.9520714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          197,
+          369,
+          133,
+          598,
+          26658,
+          45
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.7410714285714286,
+      "macro_f1": 0.14188034188034188,
+      "macro_accuracy": 0.7410714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          61,
+          279,
+          3913,
+          28,
+          2969,
+          20750
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.6074642857142857,
+      "macro_f1": 0.5988686959352242,
+      "macro_accuracy": 0.6074642857142858,
+      "query_count": 168000,
+      "confusion": [
+        [
+          21722,
+          872,
+          250,
+          4639,
+          429,
+          88
+        ],
+        [
+          2658,
+          6547,
+          192,
+          17740,
+          781,
+          82
+        ],
+        [
+          2207,
+          3499,
+          13532,
+          665,
+          1038,
+          7059
+        ],
+        [
+          6059,
+          7314,
+          293,
+          13692,
+          513,
+          129
+        ],
+        [
+          362,
+          486,
+          236,
+          855,
+          25952,
+          109
+        ],
+        [
+          118,
+          286,
+          3832,
+          38,
+          3117,
+          20609
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.6560833333333334,
+      "macro_f1": 0.6347767478533031,
+      "macro_accuracy": 0.6560833333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3162,
+          127,
+          23,
+          649,
+          32,
+          7
+        ],
+        [
+          576,
+          591,
+          21,
+          2773,
+          35,
+          4
+        ],
+        [
+          51,
+          4,
+          2373,
+          9,
+          13,
+          1550
+        ],
+        [
+          1419,
+          75,
+          24,
+          2413,
+          60,
+          9
+        ],
+        [
+          58,
+          101,
+          27,
+          142,
+          3657,
+          15
+        ],
+        [
+          42,
+          17,
+          105,
+          21,
+          265,
+          3550
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.37004166666666666,
+      "macro_f1": 0.36279250694691734,
+      "macro_accuracy": 0.37004166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3220,
+          53,
+          26,
+          648,
+          41,
+          12
+        ],
+        [
+          242,
+          375,
+          24,
+          3280,
+          70,
+          9
+        ],
+        [
+          245,
+          947,
+          1218,
+          12,
+          37,
+          1541
+        ],
+        [
+          718,
+          2952,
+          113,
+          96,
+          53,
+          68
+        ],
+        [
+          72,
+          138,
+          33,
+          86,
+          3634,
+          37
+        ],
+        [
+          7,
+          2,
+          3632,
+          2,
+          19,
+          338
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.7258333333333333,
+      "macro_f1": 0.7201476418340174,
+      "macro_accuracy": 0.7258333333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2423,
+          256,
+          85,
+          1005,
+          206,
+          25
+        ],
+        [
+          295,
+          1412,
+          19,
+          1800,
+          460,
+          14
+        ],
+        [
+          91,
+          298,
+          3279,
+          36,
+          45,
+          251
+        ],
+        [
+          649,
+          465,
+          18,
+          2682,
+          173,
+          13
+        ],
+        [
+          44,
+          45,
+          65,
+          78,
+          3762,
+          6
+        ],
+        [
+          4,
+          5,
+          18,
+          2,
+          109,
+          3862
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.5505,
+      "macro_f1": 0.5653526928296335,
+      "macro_accuracy": 0.5505,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2995,
+          110,
+          36,
+          812,
+          32,
+          15
+        ],
+        [
+          362,
+          706,
+          63,
+          2797,
+          53,
+          19
+        ],
+        [
+          318,
+          1346,
+          1568,
+          406,
+          212,
+          150
+        ],
+        [
+          347,
+          3095,
+          30,
+          422,
+          89,
+          17
+        ],
+        [
+          45,
+          47,
+          38,
+          196,
+          3663,
+          11
+        ],
+        [
+          16,
+          8,
+          49,
+          9,
+          60,
+          3858
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.6237916666666666,
+      "macro_f1": 0.5951128899480043,
+      "macro_accuracy": 0.6237916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3420,
+          24,
+          31,
+          471,
+          41,
+          13
+        ],
+        [
+          130,
+          1740,
+          34,
+          2030,
+          53,
+          13
+        ],
+        [
+          793,
+          193,
+          1313,
+          78,
+          455,
+          1168
+        ],
+        [
+          196,
+          167,
+          34,
+          3540,
+          58,
+          5
+        ],
+        [
+          48,
+          28,
+          31,
+          73,
+          3803,
+          17
+        ],
+        [
+          23,
+          228,
+          4,
+          0,
+          2590,
+          1155
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.656625,
+      "macro_f1": 0.6475889270799667,
+      "macro_accuracy": 0.656625,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3530,
+          198,
+          24,
+          206,
+          32,
+          10
+        ],
+        [
+          960,
+          1576,
+          13,
+          1391,
+          47,
+          13
+        ],
+        [
+          685,
+          675,
+          2135,
+          72,
+          246,
+          187
+        ],
+        [
+          2527,
+          414,
+          52,
+          968,
+          26,
+          13
+        ],
+        [
+          50,
+          95,
+          21,
+          200,
+          3622,
+          12
+        ],
+        [
+          24,
+          5,
+          13,
+          4,
+          26,
+          3928
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.669375,
+      "macro_f1": 0.6251711261777465,
+      "macro_accuracy": 0.669375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2972,
+          104,
+          25,
+          848,
+          45,
+          6
+        ],
+        [
+          93,
+          147,
+          18,
+          3669,
+          63,
+          10
+        ],
+        [
+          24,
+          36,
+          1646,
+          52,
+          30,
+          2212
+        ],
+        [
+          203,
+          146,
+          22,
+          3571,
+          54,
+          4
+        ],
+        [
+          45,
+          32,
+          21,
+          80,
+          3811,
+          11
+        ],
+        [
+          2,
+          21,
+          11,
+          0,
+          48,
+          3918
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.7757857142857143,
+      "macro_f1": 0.14562299719775285,
+      "macro_accuracy": 0.7757857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          21722,
+          872,
+          250,
+          4639,
+          429,
+          88
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.23382142857142857,
+      "macro_f1": 0.06316998099207842,
+      "macro_accuracy": 0.23382142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2658,
+          6547,
+          192,
+          17740,
+          781,
+          82
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.48328571428571426,
+      "macro_f1": 0.10860701788179396,
+      "macro_accuracy": 0.48328571428571426,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2207,
+          3499,
+          13532,
+          665,
+          1038,
+          7059
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.489,
+      "macro_f1": 0.10946944257891202,
+      "macro_accuracy": 0.489,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6059,
+          7314,
+          293,
+          13692,
+          513,
+          129
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9268571428571428,
+      "macro_f1": 0.16034005535784895,
+      "macro_accuracy": 0.9268571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          362,
+          486,
+          236,
+          855,
+          25952,
+          109
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.7360357142857142,
+      "macro_f1": 0.14132499468548348,
+      "macro_accuracy": 0.7360357142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          118,
+          286,
+          3832,
+          38,
+          3117,
+          20609
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.6179821428571428,
+      "macro_f1": 0.6086458124007278,
+      "macro_accuracy": 0.6179821428571427,
+      "query_count": 168000,
+      "confusion": [
+        [
+          22334,
+          796,
+          172,
+          4302,
+          349,
+          47
+        ],
+        [
+          2266,
+          6554,
+          123,
+          18262,
+          765,
+          30
+        ],
+        [
+          2117,
+          3293,
+          13487,
+          605,
+          1078,
+          7420
+        ],
+        [
+          5641,
+          7395,
+          195,
+          14199,
+          479,
+          91
+        ],
+        [
+          361,
+          431,
+          155,
+          760,
+          26227,
+          66
+        ],
+        [
+          48,
+          247,
+          3878,
+          21,
+          2786,
+          21020
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.6658333333333334,
+      "macro_f1": 0.6429019997374534,
+      "macro_accuracy": 0.6658333333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3240,
+          121,
+          15,
+          592,
+          23,
+          9
+        ],
+        [
+          484,
+          580,
+          12,
+          2906,
+          16,
+          2
+        ],
+        [
+          39,
+          6,
+          2298,
+          0,
+          10,
+          1647
+        ],
+        [
+          1361,
+          71,
+          16,
+          2509,
+          43,
+          0
+        ],
+        [
+          56,
+          91,
+          5,
+          119,
+          3724,
+          5
+        ],
+        [
+          11,
+          19,
+          99,
+          15,
+          227,
+          3629
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.37166666666666665,
+      "macro_f1": 0.36341886768517767,
+      "macro_accuracy": 0.37166666666666665,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3418,
+          39,
+          15,
+          503,
+          24,
+          1
+        ],
+        [
+          198,
+          327,
+          14,
+          3414,
+          44,
+          3
+        ],
+        [
+          228,
+          953,
+          1125,
+          9,
+          38,
+          1647
+        ],
+        [
+          632,
+          3084,
+          110,
+          72,
+          35,
+          67
+        ],
+        [
+          76,
+          107,
+          30,
+          64,
+          3689,
+          34
+        ],
+        [
+          1,
+          0,
+          3696,
+          0,
+          14,
+          289
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.7349166666666667,
+      "macro_f1": 0.7292976016051052,
+      "macro_accuracy": 0.7349166666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2439,
+          229,
+          71,
+          1056,
+          190,
+          15
+        ],
+        [
+          255,
+          1450,
+          16,
+          1763,
+          512,
+          4
+        ],
+        [
+          97,
+          229,
+          3310,
+          37,
+          42,
+          285
+        ],
+        [
+          574,
+          469,
+          7,
+          2782,
+          163,
+          5
+        ],
+        [
+          42,
+          42,
+          52,
+          90,
+          3765,
+          9
+        ],
+        [
+          2,
+          2,
+          12,
+          1,
+          91,
+          3892
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.5540833333333334,
+      "macro_f1": 0.5723126537782036,
+      "macro_accuracy": 0.5540833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2984,
+          87,
+          23,
+          872,
+          24,
+          10
+        ],
+        [
+          275,
+          686,
+          46,
+          2921,
+          62,
+          10
+        ],
+        [
+          297,
+          1361,
+          1606,
+          389,
+          207,
+          140
+        ],
+        [
+          252,
+          3216,
+          13,
+          419,
+          94,
+          6
+        ],
+        [
+          43,
+          50,
+          34,
+          148,
+          3717,
+          8
+        ],
+        [
+          11,
+          6,
+          40,
+          5,
+          52,
+          3886
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.6405,
+      "macro_f1": 0.6121207319241131,
+      "macro_accuracy": 0.6405,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3543,
+          23,
+          22,
+          372,
+          36,
+          4
+        ],
+        [
+          101,
+          1736,
+          18,
+          2098,
+          44,
+          3
+        ],
+        [
+          806,
+          95,
+          1215,
+          59,
+          484,
+          1341
+        ],
+        [
+          164,
+          98,
+          12,
+          3657,
+          67,
+          2
+        ],
+        [
+          41,
+          46,
+          10,
+          101,
+          3798,
+          4
+        ],
+        [
+          7,
+          212,
+          2,
+          0,
+          2356,
+          1423
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.6759166666666667,
+      "macro_f1": 0.667404019451082,
+      "macro_accuracy": 0.6759166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3568,
+          199,
+          14,
+          198,
+          18,
+          3
+        ],
+        [
+          867,
+          1663,
+          12,
+          1408,
+          47,
+          3
+        ],
+        [
+          629,
+          611,
+          2289,
+          45,
+          267,
+          159
+        ],
+        [
+          2526,
+          379,
+          32,
+          1031,
+          25,
+          7
+        ],
+        [
+          61,
+          57,
+          8,
+          139,
+          3732,
+          3
+        ],
+        [
+          15,
+          5,
+          20,
+          0,
+          21,
+          3939
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.6829583333333333,
+      "macro_f1": 0.6350079117890637,
+      "macro_accuracy": 0.6829583333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3142,
+          98,
+          12,
+          709,
+          34,
+          5
+        ],
+        [
+          86,
+          112,
+          5,
+          3752,
+          40,
+          5
+        ],
+        [
+          21,
+          38,
+          1644,
+          66,
+          30,
+          2201
+        ],
+        [
+          132,
+          78,
+          5,
+          3729,
+          52,
+          4
+        ],
+        [
+          42,
+          38,
+          16,
+          99,
+          3802,
+          3
+        ],
+        [
+          1,
+          3,
+          9,
+          0,
+          25,
+          3962
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.7976428571428571,
+      "macro_f1": 0.14790532575727475,
+      "macro_accuracy": 0.7976428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          22334,
+          796,
+          172,
+          4302,
+          349,
+          47
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.23407142857142857,
+      "macro_f1": 0.06322471108024155,
+      "macro_accuracy": 0.23407142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2266,
+          6554,
+          123,
+          18262,
+          765,
+          30
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.48167857142857146,
+      "macro_f1": 0.10836326238741452,
+      "macro_accuracy": 0.48167857142857146,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2117,
+          3293,
+          13487,
+          605,
+          1078,
+          7420
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.5071071428571429,
+      "macro_f1": 0.11215905590179863,
+      "macro_accuracy": 0.5071071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          5641,
+          7395,
+          195,
+          14199,
+          479,
+          91
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9366785714285715,
+      "macro_f1": 0.16121735174974336,
+      "macro_accuracy": 0.9366785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          361,
+          431,
+          155,
+          760,
+          26227,
+          66
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.7507142857142857,
+      "macro_f1": 0.14293485652114782,
+      "macro_accuracy": 0.7507142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          48,
+          247,
+          3878,
+          21,
+          2786,
+          21020
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.55025,
+      "macro_f1": 0.5422151691695957,
+      "macro_accuracy": 0.55025,
+      "query_count": 168000,
+      "confusion": [
+        [
+          19197,
+          1399,
+          756,
+          5188,
+          1176,
+          284
+        ],
+        [
+          4563,
+          5921,
+          610,
+          14913,
+          1795,
+          198
+        ],
+        [
+          3001,
+          2893,
+          12699,
+          1130,
+          1767,
+          6510
+        ],
+        [
+          6962,
+          6273,
+          840,
+          11914,
+          1717,
+          294
+        ],
+        [
+          1635,
+          1193,
+          754,
+          2667,
+          21341,
+          410
+        ],
+        [
+          244,
+          285,
+          3247,
+          64,
+          2790,
+          21370
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.5980416666666667,
+      "macro_f1": 0.5812346558993596,
+      "macro_accuracy": 0.5980416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2848,
+          171,
+          105,
+          683,
+          156,
+          37
+        ],
+        [
+          789,
+          587,
+          86,
+          2371,
+          147,
+          20
+        ],
+        [
+          186,
+          11,
+          2420,
+          14,
+          40,
+          1329
+        ],
+        [
+          1339,
+          213,
+          95,
+          2103,
+          223,
+          27
+        ],
+        [
+          248,
+          227,
+          86,
+          383,
+          3008,
+          48
+        ],
+        [
+          68,
+          33,
+          189,
+          30,
+          293,
+          3387
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.3757916666666667,
+      "macro_f1": 0.37172841087760555,
+      "macro_accuracy": 0.3757916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2830,
+          167,
+          78,
+          733,
+          170,
+          22
+        ],
+        [
+          514,
+          450,
+          75,
+          2707,
+          232,
+          22
+        ],
+        [
+          388,
+          785,
+          1282,
+          41,
+          163,
+          1341
+        ],
+        [
+          838,
+          2309,
+          245,
+          281,
+          232,
+          95
+        ],
+        [
+          319,
+          161,
+          145,
+          215,
+          2983,
+          177
+        ],
+        [
+          16,
+          3,
+          2735,
+          6,
+          47,
+          1193
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.6404166666666666,
+      "macro_f1": 0.6348524210738367,
+      "macro_accuracy": 0.6404166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2256,
+          265,
+          208,
+          942,
+          269,
+          60
+        ],
+        [
+          619,
+          1166,
+          87,
+          1517,
+          574,
+          37
+        ],
+        [
+          259,
+          328,
+          2883,
+          119,
+          144,
+          267
+        ],
+        [
+          836,
+          473,
+          95,
+          2242,
+          320,
+          34
+        ],
+        [
+          218,
+          149,
+          139,
+          348,
+          3118,
+          28
+        ],
+        [
+          18,
+          8,
+          71,
+          4,
+          194,
+          3705
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.49604166666666666,
+      "macro_f1": 0.5015124845714537,
+      "macro_accuracy": 0.49604166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2616,
+          204,
+          78,
+          916,
+          142,
+          44
+        ],
+        [
+          591,
+          669,
+          126,
+          2317,
+          253,
+          44
+        ],
+        [
+          466,
+          982,
+          1519,
+          430,
+          355,
+          248
+        ],
+        [
+          733,
+          2335,
+          75,
+          508,
+          314,
+          35
+        ],
+        [
+          209,
+          170,
+          128,
+          486,
+          2961,
+          46
+        ],
+        [
+          33,
+          24,
+          129,
+          18,
+          164,
+          3632
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.5649166666666666,
+      "macro_f1": 0.5510807754799553,
+      "macro_accuracy": 0.5649166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2967,
+          108,
+          117,
+          625,
+          138,
+          45
+        ],
+        [
+          476,
+          1438,
+          75,
+          1791,
+          197,
+          23
+        ],
+        [
+          744,
+          149,
+          1368,
+          127,
+          472,
+          1140
+        ],
+        [
+          539,
+          284,
+          84,
+          2820,
+          239,
+          34
+        ],
+        [
+          199,
+          139,
+          77,
+          409,
+          3145,
+          31
+        ],
+        [
+          45,
+          189,
+          6,
+          0,
+          1940,
+          1820
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.5836666666666667,
+      "macro_f1": 0.5771635529606,
+      "macro_accuracy": 0.5836666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3080,
+          230,
+          95,
+          452,
+          98,
+          45
+        ],
+        [
+          1101,
+          1335,
+          87,
+          1286,
+          163,
+          28
+        ],
+        [
+          874,
+          515,
+          1785,
+          149,
+          432,
+          245
+        ],
+        [
+          2141,
+          450,
+          159,
+          1064,
+          147,
+          39
+        ],
+        [
+          259,
+          203,
+          93,
+          437,
+          2975,
+          33
+        ],
+        [
+          58,
+          3,
+          73,
+          4,
+          93,
+          3769
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.592875,
+      "macro_f1": 0.5566309701921909,
+      "macro_accuracy": 0.5928749999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2600,
+          254,
+          75,
+          837,
+          203,
+          31
+        ],
+        [
+          473,
+          276,
+          74,
+          2924,
+          229,
+          24
+        ],
+        [
+          84,
+          123,
+          1442,
+          250,
+          161,
+          1940
+        ],
+        [
+          536,
+          209,
+          87,
+          2896,
+          242,
+          30
+        ],
+        [
+          183,
+          144,
+          86,
+          389,
+          3151,
+          47
+        ],
+        [
+          6,
+          25,
+          44,
+          2,
+          59,
+          3864
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.6856071428571429,
+      "macro_f1": 0.13558065131258343,
+      "macro_accuracy": 0.6856071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          19197,
+          1399,
+          756,
+          5188,
+          1176,
+          284
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.21146428571428572,
+      "macro_f1": 0.05818421233650737,
+      "macro_accuracy": 0.21146428571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          4563,
+          5921,
+          610,
+          14913,
+          1795,
+          198
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.45353571428571426,
+      "macro_f1": 0.10400746947099437,
+      "macro_accuracy": 0.45353571428571426,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3001,
+          2893,
+          12699,
+          1130,
+          1767,
+          6510
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.4255,
+      "macro_f1": 0.09949725242604934,
+      "macro_accuracy": 0.4255,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6962,
+          6273,
+          840,
+          11914,
+          1717,
+          294
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.7621785714285715,
+      "macro_f1": 0.14417354059842052,
+      "macro_accuracy": 0.7621785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1635,
+          1193,
+          754,
+          2667,
+          21341,
+          410
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.7632142857142857,
+      "macro_f1": 0.1442846532982243,
+      "macro_accuracy": 0.7632142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          244,
+          285,
+          3247,
+          64,
+          2790,
+          21370
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.48304166666666665,
+      "macro_f1": 0.4730198261990554,
+      "macro_accuracy": 0.48304166666666665,
+      "query_count": 168000,
+      "confusion": [
+        [
+          16297,
+          1762,
+          1674,
+          5442,
+          2158,
+          667
+        ],
+        [
+          5818,
+          5031,
+          1469,
+          12247,
+          2868,
+          567
+        ],
+        [
+          3538,
+          2576,
+          11377,
+          1599,
+          2594,
+          6316
+        ],
+        [
+          7434,
+          5382,
+          1673,
+          9827,
+          2951,
+          733
+        ],
+        [
+          2679,
+          1569,
+          1550,
+          3577,
+          17657,
+          968
+        ],
+        [
+          533,
+          299,
+          3018,
+          146,
+          3042,
+          20962
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.5212916666666667,
+      "macro_f1": 0.5050375217757544,
+      "macro_accuracy": 0.5212916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2469,
+          230,
+          221,
+          701,
+          277,
+          102
+        ],
+        [
+          975,
+          522,
+          194,
+          1919,
+          307,
+          83
+        ],
+        [
+          311,
+          27,
+          2310,
+          51,
+          123,
+          1178
+        ],
+        [
+          1358,
+          290,
+          199,
+          1656,
+          418,
+          79
+        ],
+        [
+          418,
+          256,
+          232,
+          519,
+          2460,
+          115
+        ],
+        [
+          129,
+          40,
+          302,
+          52,
+          383,
+          3094
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.3584583333333333,
+      "macro_f1": 0.3506230996988102,
+      "macro_accuracy": 0.3584583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2409,
+          230,
+          191,
+          780,
+          304,
+          86
+        ],
+        [
+          703,
+          420,
+          195,
+          2179,
+          437,
+          66
+        ],
+        [
+          522,
+          651,
+          1207,
+          91,
+          308,
+          1221
+        ],
+        [
+          888,
+          1747,
+          404,
+          355,
+          431,
+          175
+        ],
+        [
+          513,
+          222,
+          261,
+          287,
+          2411,
+          306
+        ],
+        [
+          38,
+          19,
+          2035,
+          10,
+          97,
+          1801
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.5527916666666667,
+      "macro_f1": 0.5460043449283934,
+      "macro_accuracy": 0.5527916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          1976,
+          282,
+          344,
+          899,
+          405,
+          94
+        ],
+        [
+          815,
+          939,
+          184,
+          1361,
+          606,
+          95
+        ],
+        [
+          421,
+          407,
+          2419,
+          212,
+          269,
+          272
+        ],
+        [
+          949,
+          483,
+          203,
+          1779,
+          492,
+          94
+        ],
+        [
+          327,
+          212,
+          267,
+          461,
+          2630,
+          103
+        ],
+        [
+          39,
+          6,
+          113,
+          14,
+          304,
+          3524
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.44708333333333333,
+      "macro_f1": 0.44445457231042534,
+      "macro_accuracy": 0.44708333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2268,
+          260,
+          230,
+          885,
+          275,
+          82
+        ],
+        [
+          793,
+          631,
+          238,
+          1822,
+          427,
+          89
+        ],
+        [
+          580,
+          736,
+          1457,
+          441,
+          447,
+          339
+        ],
+        [
+          920,
+          1726,
+          176,
+          586,
+          494,
+          98
+        ],
+        [
+          341,
+          217,
+          227,
+          656,
+          2429,
+          130
+        ],
+        [
+          77,
+          27,
+          239,
+          36,
+          262,
+          3359
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.492,
+      "macro_f1": 0.4823652376600072,
+      "macro_accuracy": 0.492,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2460,
+          181,
+          252,
+          700,
+          288,
+          119
+        ],
+        [
+          650,
+          1125,
+          231,
+          1502,
+          394,
+          98
+        ],
+        [
+          639,
+          135,
+          1303,
+          213,
+          578,
+          1132
+        ],
+        [
+          737,
+          344,
+          187,
+          2226,
+          418,
+          88
+        ],
+        [
+          343,
+          189,
+          167,
+          542,
+          2644,
+          115
+        ],
+        [
+          87,
+          161,
+          30,
+          8,
+          1664,
+          2050
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.4962083333333333,
+      "macro_f1": 0.48785648884558425,
+      "macro_accuracy": 0.49620833333333336,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2548,
+          270,
+          246,
+          610,
+          234,
+          92
+        ],
+        [
+          1229,
+          1033,
+          214,
+          1164,
+          296,
+          64
+        ],
+        [
+          919,
+          462,
+          1467,
+          220,
+          586,
+          346
+        ],
+        [
+          1891,
+          450,
+          298,
+          962,
+          284,
+          115
+        ],
+        [
+          409,
+          275,
+          202,
+          599,
+          2415,
+          100
+        ],
+        [
+          104,
+          13,
+          181,
+          18,
+          200,
+          3484
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.5134583333333333,
+      "macro_f1": 0.4824501379206347,
+      "macro_accuracy": 0.5134583333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2167,
+          309,
+          190,
+          867,
+          375,
+          92
+        ],
+        [
+          653,
+          361,
+          213,
+          2300,
+          401,
+          72
+        ],
+        [
+          146,
+          158,
+          1214,
+          371,
+          283,
+          1828
+        ],
+        [
+          691,
+          342,
+          206,
+          2263,
+          414,
+          84
+        ],
+        [
+          328,
+          198,
+          194,
+          513,
+          2668,
+          99
+        ],
+        [
+          59,
+          33,
+          118,
+          8,
+          132,
+          3650
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.5820357142857143,
+      "macro_f1": 0.12263433942102926,
+      "macro_accuracy": 0.5820357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          16297,
+          1762,
+          1674,
+          5442,
+          2158,
+          667
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.17967857142857144,
+      "macro_f1": 0.05077048832914535,
+      "macro_accuracy": 0.17967857142857144,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          5818,
+          5031,
+          1469,
+          12247,
+          2868,
+          567
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.40632142857142856,
+      "macro_f1": 0.09630833566125742,
+      "macro_accuracy": 0.40632142857142856,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3538,
+          2576,
+          11377,
+          1599,
+          2594,
+          6316
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.35096428571428573,
+      "macro_f1": 0.08659599404305567,
+      "macro_accuracy": 0.35096428571428573,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          7434,
+          5382,
+          1673,
+          9827,
+          2951,
+          733
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.6306071428571428,
+      "macro_f1": 0.12891049930277212,
+      "macro_accuracy": 0.6306071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2679,
+          1569,
+          1550,
+          3577,
+          17657,
+          968
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.7486428571428572,
+      "macro_f1": 0.14270931198344294,
+      "macro_accuracy": 0.7486428571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          533,
+          299,
+          3018,
+          146,
+          3042,
+          20962
+        ]
+      ]
+    }
+  ]
+}

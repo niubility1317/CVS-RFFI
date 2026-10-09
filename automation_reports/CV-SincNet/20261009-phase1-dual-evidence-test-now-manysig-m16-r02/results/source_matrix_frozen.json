@@ -1,0 +1,1171 @@
+{
+  "status": "ALL_SOURCE_FROZEN",
+  "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+  "rows": [
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092701,
+      "row_id": "legacy_cosine-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/legacy_cosine-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "raw_dual",
+      "model_seed": 2026092701,
+      "row_id": "raw_dual-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/raw_dual-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "curvature_dual",
+      "model_seed": 2026092701,
+      "row_id": "curvature_dual-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_dual-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "row_id": "curvature_interaction-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_interaction-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092702,
+      "row_id": "legacy_cosine-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/legacy_cosine-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "raw_dual",
+      "model_seed": 2026092702,
+      "row_id": "raw_dual-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/raw_dual-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "curvature_dual",
+      "model_seed": 2026092702,
+      "row_id": "curvature_dual-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_dual-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092702,
+      "row_id": "curvature_interaction-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_interaction-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "row_id": "legacy_cosine-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/legacy_cosine-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "raw_dual",
+      "model_seed": 2026092703,
+      "row_id": "raw_dual-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/raw_dual-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "curvature_dual",
+      "model_seed": 2026092703,
+      "row_id": "curvature_dual-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_dual-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092703,
+      "row_id": "curvature_interaction-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_interaction-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092704,
+      "row_id": "legacy_cosine-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/legacy_cosine-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "raw_dual",
+      "model_seed": 2026092704,
+      "row_id": "raw_dual-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/raw_dual-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "curvature_dual",
+      "model_seed": 2026092704,
+      "row_id": "curvature_dual-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_dual-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "dual_evidence_v1",
+      "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "stage": "dual_evidence",
+      "arm": "curvature_interaction",
+      "model_seed": 2026092704,
+      "row_id": "curvature_interaction-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_interaction-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_dual_evidence",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "dual_recipe": {
+        "lags": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "evidence_channels": 12,
+        "widths": [
+          32,
+          64,
+          96,
+          160
+        ],
+        "fusion_rank": 64,
+        "curvature_log_scale": 0.25,
+        "interaction_bound": 0.5,
+        "initial_fusion_output": "zero",
+        "new_objective_weights": {},
+        "source_selection": "fixed_E200_all_controls"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    }
+  ],
+  "source_metrics": [
+    {
+      "arm": "legacy_cosine",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9855925925925926,
+      "source_val_rx_accuracy": {
+        "1": 0.9964814814814815,
+        "3": 0.960925925925926,
+        "4": 0.9862962962962963,
+        "6": 0.9966666666666667,
+        "8": 0.9875925925925926
+      },
+      "source_val_worst_rx": 0.960925925925926
+    },
+    {
+      "arm": "raw_dual",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.988,
+      "source_val_rx_accuracy": {
+        "1": 0.997037037037037,
+        "3": 0.9677777777777777,
+        "4": 0.99,
+        "6": 0.9968518518518519,
+        "8": 0.9883333333333333
+      },
+      "source_val_worst_rx": 0.9677777777777777
+    },
+    {
+      "arm": "curvature_dual",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9762962962962963,
+      "source_val_rx_accuracy": {
+        "1": 0.997037037037037,
+        "3": 0.932962962962963,
+        "4": 0.99,
+        "6": 0.9964814814814815,
+        "8": 0.965
+      },
+      "source_val_worst_rx": 0.932962962962963
+    },
+    {
+      "arm": "curvature_interaction",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9757037037037037,
+      "source_val_rx_accuracy": {
+        "1": 0.9983333333333333,
+        "3": 0.9318518518518518,
+        "4": 0.9879629629629629,
+        "6": 0.9966666666666667,
+        "8": 0.9637037037037037
+      },
+      "source_val_worst_rx": 0.9318518518518518
+    },
+    {
+      "arm": "legacy_cosine",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9865555555555555,
+      "source_val_rx_accuracy": {
+        "1": 0.9977777777777778,
+        "3": 0.9631481481481482,
+        "4": 0.9866666666666667,
+        "6": 0.9968518518518519,
+        "8": 0.9883333333333333
+      },
+      "source_val_worst_rx": 0.9631481481481482
+    },
+    {
+      "arm": "raw_dual",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9883703703703703,
+      "source_val_rx_accuracy": {
+        "1": 0.9975925925925926,
+        "3": 0.9705555555555555,
+        "4": 0.9881481481481481,
+        "6": 0.9972222222222222,
+        "8": 0.9883333333333333
+      },
+      "source_val_worst_rx": 0.9705555555555555
+    },
+    {
+      "arm": "curvature_dual",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9739629629629629,
+      "source_val_rx_accuracy": {
+        "1": 0.9962962962962963,
+        "3": 0.9244444444444444,
+        "4": 0.9912962962962963,
+        "6": 0.9968518518518519,
+        "8": 0.960925925925926
+      },
+      "source_val_worst_rx": 0.9244444444444444
+    },
+    {
+      "arm": "curvature_interaction",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9765925925925926,
+      "source_val_rx_accuracy": {
+        "1": 0.9977777777777778,
+        "3": 0.9355555555555556,
+        "4": 0.9905555555555555,
+        "6": 0.997037037037037,
+        "8": 0.962037037037037
+      },
+      "source_val_worst_rx": 0.9355555555555556
+    },
+    {
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9857777777777778,
+      "source_val_rx_accuracy": {
+        "1": 0.9966666666666667,
+        "3": 0.9598148148148148,
+        "4": 0.9890740740740741,
+        "6": 0.9968518518518519,
+        "8": 0.9864814814814815
+      },
+      "source_val_worst_rx": 0.9598148148148148
+    },
+    {
+      "arm": "raw_dual",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9874814814814815,
+      "source_val_rx_accuracy": {
+        "1": 0.9959259259259259,
+        "3": 0.9692592592592593,
+        "4": 0.9877777777777778,
+        "6": 0.9972222222222222,
+        "8": 0.9872222222222222
+      },
+      "source_val_worst_rx": 0.9692592592592593
+    },
+    {
+      "arm": "curvature_dual",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9754074074074074,
+      "source_val_rx_accuracy": {
+        "1": 0.9972222222222222,
+        "3": 0.9355555555555556,
+        "4": 0.99,
+        "6": 0.9962962962962963,
+        "8": 0.957962962962963
+      },
+      "source_val_worst_rx": 0.9355555555555556
+    },
+    {
+      "arm": "curvature_interaction",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9755925925925926,
+      "source_val_rx_accuracy": {
+        "1": 0.9968518518518519,
+        "3": 0.9335185185185185,
+        "4": 0.9888888888888889,
+        "6": 0.9966666666666667,
+        "8": 0.962037037037037
+      },
+      "source_val_worst_rx": 0.9335185185185185
+    },
+    {
+      "arm": "legacy_cosine",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9853703703703703,
+      "source_val_rx_accuracy": {
+        "1": 0.9972222222222222,
+        "3": 0.9562962962962963,
+        "4": 0.9888888888888889,
+        "6": 0.9968518518518519,
+        "8": 0.9875925925925926
+      },
+      "source_val_worst_rx": 0.9562962962962963
+    },
+    {
+      "arm": "raw_dual",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9885555555555555,
+      "source_val_rx_accuracy": {
+        "1": 0.9962962962962963,
+        "3": 0.9701851851851852,
+        "4": 0.9901851851851852,
+        "6": 0.9985185185185185,
+        "8": 0.9875925925925926
+      },
+      "source_val_worst_rx": 0.9701851851851852
+    },
+    {
+      "arm": "curvature_dual",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9752592592592593,
+      "source_val_rx_accuracy": {
+        "1": 0.9968518518518519,
+        "3": 0.9381481481481482,
+        "4": 0.9879629629629629,
+        "6": 0.9974074074074074,
+        "8": 0.955925925925926
+      },
+      "source_val_worst_rx": 0.9381481481481482
+    },
+    {
+      "arm": "curvature_interaction",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9742962962962963,
+      "source_val_rx_accuracy": {
+        "1": 0.997037037037037,
+        "3": 0.9303703703703704,
+        "4": 0.9877777777777778,
+        "6": 0.9968518518518519,
+        "8": 0.9594444444444444
+      },
+      "source_val_worst_rx": 0.9303703703703704
+    }
+  ],
+  "arm_scores": {
+    "legacy_cosine": 0.9729351851851852,
+    "raw_dual": 0.9787731481481481,
+    "curvature_dual": 0.9540046296296297,
+    "curvature_interaction": 0.9541851851851851
+  },
+  "source_preferred_arm": "raw_dual",
+  "source_preference": "mean4(.5V+.5worstRX); exact ties fewer parameters; all fixed controls tested",
+  "target_access": false,
+  "selection": "ALL_PREREGISTERED_FIXED_CONTROLS",
+  "frozen_at": 1791534156.6544478
+}

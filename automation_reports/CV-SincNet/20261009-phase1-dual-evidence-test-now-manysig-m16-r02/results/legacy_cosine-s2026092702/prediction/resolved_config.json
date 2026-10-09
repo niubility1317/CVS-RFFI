@@ -1,0 +1,32 @@
+{
+  "row_id": "legacy_cosine-s2026092702",
+  "run_id": "20261009-phase1-dual-evidence-test-now-manysig-m16-r02",
+  "pid": 2293186,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+  "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+  "evaluation_commit": "62af0de14adc42cdb6f9be8323b599d1d31fb3da",
+  "source_run": "20261009-phase1-dual-evidence-manysig-m16-r01",
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+  "backend_flags": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "batch_size": 256,
+  "parameters": 844754,
+  "trainable_parameters": 0,
+  "hardware": "NVIDIA GeForce RTX 3090",
+  "torch_version": "2.1.0+cu121",
+  "scheduling_override": "one additional inference process per GPU; total at most5"
+}

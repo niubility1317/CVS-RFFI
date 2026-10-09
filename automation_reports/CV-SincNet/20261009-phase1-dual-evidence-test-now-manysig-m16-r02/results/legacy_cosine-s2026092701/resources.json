@@ -1,0 +1,54 @@
+{
+  "row_id": "legacy_cosine-s2026092701",
+  "stage": "dual_evidence",
+  "arm": "legacy_cosine",
+  "model_seed": 2026092701,
+  "prediction": {
+    "status": "PREDICTIONS_COMPLETE",
+    "count": 168000,
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "truth_read": false,
+    "query_fit": false,
+    "inference_seconds": {
+      "clean": 5.315623722039163,
+      "practical_high": 5.195543009904213,
+      "practical_mid": 5.30630853807088,
+      "practical_low_suburban": 5.061581426067278,
+      "practical_high_urban": 4.956409509992227,
+      "practical_mid_urban": 4.996369712986052,
+      "practical_low_urban": 5.354288407950662
+    },
+    "wall_seconds": 37.75580501300283,
+    "peak_cuda_allocated_bytes": 91524096,
+    "peak_cuda_reserved_bytes": 130023424,
+    "peak_process_rss_bytes": 1526833152,
+    "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+  },
+  "source": {
+    "elapsed_seconds": 16163.812587022781,
+    "hardware": "NVIDIA GeForce RTX 3090",
+    "parameters": 844754,
+    "last_epoch_resource_metrics": {
+      "dual_arm": "legacy_cosine",
+      "dual_parameters": 844754,
+      "dual_trainable_parameters": 844754,
+      "dual_gradient_present_parameters": 177025,
+      "dual_parameter_buffer_bytes": 3482816,
+      "dual_cuda_peak_allocated_bytes": 2371087360,
+      "dual_cuda_peak_reserved_bytes": 3435134976,
+      "dual_metric_scope": "last forward batch at epoch end; gradients from last training update"
+    },
+    "peak_process_rss_bytes": null,
+    "training_flops": null,
+    "transmission_bytes": 0,
+    "scope": "Source training only; no satellite adaptation/transfer; RSS/FLOPs not measured"
+  }
+}

@@ -1,0 +1,837 @@
+{
+  "at": 1791535573.5382135,
+  "receipt": {
+    "status": "SUBMITTED",
+    "pid": 2293080,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_dual_test_now.driver"
+    ],
+    "commit": "62af0de14adc42cdb6f9be8323b599d1d31fb3da",
+    "run_id": "20261009-phase1-dual-evidence-test-now-manysig-m16-r02"
+  },
+  "controller": null,
+  "queue": {
+    "kind": "predict",
+    "active": [],
+    "pending": [],
+    "completed": [
+      "legacy_cosine-s2026092701",
+      "legacy_cosine-s2026092702",
+      "raw_dual-s2026092701",
+      "raw_dual-s2026092702",
+      "curvature_dual-s2026092701",
+      "curvature_interaction-s2026092701",
+      "curvature_interaction-s2026092702",
+      "curvature_dual-s2026092702",
+      "legacy_cosine-s2026092703",
+      "raw_dual-s2026092703",
+      "legacy_cosine-s2026092704",
+      "curvature_dual-s2026092703",
+      "curvature_interaction-s2026092703",
+      "raw_dual-s2026092704",
+      "curvature_dual-s2026092704",
+      "curvature_interaction-s2026092704"
+    ],
+    "failures": [],
+    "total_gpu_limit": 5,
+    "updated_at": 1791535547.426523
+  },
+  "failure": null,
+  "completion": {
+    "status": "ANALYZED",
+    "rows": 16,
+    "views": 7,
+    "source_run": "20261009-phase1-dual-evidence-manysig-m16-r01",
+    "truth_last": true
+  },
+  "rows": [
+    {
+      "row_id": "legacy_cosine-s2026092701",
+      "kind": "predict",
+      "gpu": 0,
+      "pid": 2293105,
+      "start_ticks": 78311577,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "legacy_cosine-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/legacy_cosine-s2026092701.log",
+      "actual": null,
+      "log_bytes": 951,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.315623722039163,
+          "practical_high": 5.195543009904213,
+          "practical_mid": 5.30630853807088,
+          "practical_low_suburban": 5.061581426067278,
+          "practical_high_urban": 4.956409509992227,
+          "practical_mid_urban": 4.996369712986052,
+          "practical_low_urban": 5.354288407950662
+        },
+        "wall_seconds": 37.75580501300283,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1526833152,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "raw_dual-s2026092701",
+      "kind": "predict",
+      "gpu": 1,
+      "pid": 2293114,
+      "start_ticks": 78311611,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "raw_dual-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/raw_dual-s2026092701.log",
+      "actual": null,
+      "log_bytes": 919,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 6.714130623964593,
+          "practical_high": 6.6093563109170645,
+          "practical_mid": 6.6333334220107645,
+          "practical_low_suburban": 6.538701962097548,
+          "practical_high_urban": 7.131004772032611,
+          "practical_mid_urban": 6.501823883969337,
+          "practical_low_urban": 6.718175026937388
+        },
+        "wall_seconds": 48.35173965105787,
+        "peak_cuda_allocated_bytes": 90610176,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1534988288,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "curvature_dual-s2026092701",
+      "kind": "predict",
+      "gpu": 2,
+      "pid": 2293165,
+      "start_ticks": 78311639,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "curvature_dual-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/curvature_dual-s2026092701.log",
+      "actual": null,
+      "log_bytes": 959,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 7.856723033939488,
+          "practical_high": 7.7697016060119495,
+          "practical_mid": 7.641100478009321,
+          "practical_low_suburban": 7.227560386992991,
+          "practical_high_urban": 7.251391811063513,
+          "practical_mid_urban": 7.20922660198994,
+          "practical_low_urban": 7.481308870948851
+        },
+        "wall_seconds": 54.161001542932354,
+        "peak_cuda_allocated_bytes": 90610176,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1534873600,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "curvature_interaction-s2026092701",
+      "kind": "predict",
+      "gpu": 3,
+      "pid": 2293177,
+      "start_ticks": 78311671,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "curvature_interaction-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/curvature_interaction-s2026092701.log",
+      "actual": null,
+      "log_bytes": 1009,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 7.690509850974195,
+          "practical_high": 7.220349877956323,
+          "practical_mid": 7.157999183051288,
+          "practical_low_suburban": 7.4016330619342625,
+          "practical_high_urban": 7.153203055029735,
+          "practical_mid_urban": 7.431144924019463,
+          "practical_low_urban": 7.325459028012119
+        },
+        "wall_seconds": 52.86334389005788,
+        "peak_cuda_allocated_bytes": 90610176,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1532932096,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "legacy_cosine-s2026092702",
+      "kind": "predict",
+      "gpu": 4,
+      "pid": 2293186,
+      "start_ticks": 78311708,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "legacy_cosine-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/legacy_cosine-s2026092702.log",
+      "actual": null,
+      "log_bytes": 951,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.494628758984618,
+          "practical_high": 5.452762529021129,
+          "practical_mid": 5.347308694967069,
+          "practical_low_suburban": 5.41866460791789,
+          "practical_high_urban": 5.283071644953452,
+          "practical_mid_urban": 5.447256254032254,
+          "practical_low_urban": 5.356441729934886
+        },
+        "wall_seconds": 39.3461737689795,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1528942592,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "raw_dual-s2026092702",
+      "kind": "predict",
+      "gpu": 5,
+      "pid": 2293196,
+      "start_ticks": 78311739,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "raw_dual-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/raw_dual-s2026092702.log",
+      "actual": null,
+      "log_bytes": 917,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 6.502518441993743,
+          "practical_high": 6.323756381054409,
+          "practical_mid": 6.3332973279757425,
+          "practical_low_suburban": 6.30512783897575,
+          "practical_high_urban": 6.540093814022839,
+          "practical_mid_urban": 6.755557266063988,
+          "practical_low_urban": 7.231146225007251
+        },
+        "wall_seconds": 47.54049572709482,
+        "peak_cuda_allocated_bytes": 90610176,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1534664704,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "curvature_dual-s2026092702",
+      "kind": "predict",
+      "gpu": 6,
+      "pid": 2293272,
+      "start_ticks": 78311797,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "curvature_dual-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/curvature_dual-s2026092702.log",
+      "actual": null,
+      "log_bytes": 961,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 10.153256734949537,
+          "practical_high": 10.112731711938977,
+          "practical_mid": 9.850344137987122,
+          "practical_low_suburban": 9.994975983980112,
+          "practical_high_urban": 8.650052482960746,
+          "practical_mid_urban": 7.340484934975393,
+          "practical_low_urban": 7.385880067944527
+        },
+        "wall_seconds": 65.1470863140421,
+        "peak_cuda_allocated_bytes": 90610176,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1534513152,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "curvature_interaction-s2026092702",
+      "kind": "predict",
+      "gpu": 7,
+      "pid": 2293423,
+      "start_ticks": 78311915,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "curvature_interaction-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/curvature_interaction-s2026092702.log",
+      "actual": null,
+      "log_bytes": 1007,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 7.483972021029331,
+          "practical_high": 7.01265083195176,
+          "practical_mid": 7.037395427003503,
+          "practical_low_suburban": 7.059112990973517,
+          "practical_high_urban": 7.213001615018584,
+          "practical_mid_urban": 7.646741854958236,
+          "practical_low_urban": 7.494204413029365
+        },
+        "wall_seconds": 52.4700523649808,
+        "peak_cuda_allocated_bytes": 90610176,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1536204800,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "legacy_cosine-s2026092703",
+      "kind": "predict",
+      "gpu": 0,
+      "pid": 2294112,
+      "start_ticks": 78315951,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "legacy_cosine-s2026092703"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/legacy_cosine-s2026092703.log",
+      "actual": null,
+      "log_bytes": 953,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.380797071033157,
+          "practical_high": 5.373536098981276,
+          "practical_mid": 5.419297185027972,
+          "practical_low_suburban": 5.6186831559753045,
+          "practical_high_urban": 5.068705799989402,
+          "practical_mid_urban": 5.244648981024511,
+          "practical_low_urban": 5.203946945024654
+        },
+        "wall_seconds": 38.73370182607323,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1524736000,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "raw_dual-s2026092703",
+      "kind": "predict",
+      "gpu": 4,
+      "pid": 2294611,
+      "start_ticks": 78316487,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "raw_dual-s2026092703"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/raw_dual-s2026092703.log",
+      "actual": null,
+      "log_bytes": 917,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 7.343162297969684,
+          "practical_high": 7.210454804007895,
+          "practical_mid": 6.815143749001436,
+          "practical_low_suburban": 6.139414578909054,
+          "practical_high_urban": 6.306272120098583,
+          "practical_mid_urban": 6.433423134032637,
+          "practical_low_urban": 6.693180292961188
+        },
+        "wall_seconds": 48.42774583294522,
+        "peak_cuda_allocated_bytes": 90610176,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1529364480,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "curvature_dual-s2026092703",
+      "kind": "predict",
+      "gpu": 1,
+      "pid": 2294704,
+      "start_ticks": 78317015,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "curvature_dual-s2026092703"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/curvature_dual-s2026092703.log",
+      "actual": null,
+      "log_bytes": 961,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 7.468950774986297,
+          "practical_high": 7.1673722949344665,
+          "practical_mid": 7.202944920049049,
+          "practical_low_suburban": 7.381323079927824,
+          "practical_high_urban": 7.4485297069186345,
+          "practical_mid_urban": 7.622219651937485,
+          "practical_low_urban": 7.646674755960703
+        },
+        "wall_seconds": 53.433448527008295,
+        "peak_cuda_allocated_bytes": 90610176,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1533349888,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "curvature_interaction-s2026092703",
+      "kind": "predict",
+      "gpu": 5,
+      "pid": 2294709,
+      "start_ticks": 78317046,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "curvature_interaction-s2026092703"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/curvature_interaction-s2026092703.log",
+      "actual": null,
+      "log_bytes": 1008,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 7.529390061972663,
+          "practical_high": 7.344336956972256,
+          "practical_mid": 7.322948144981638,
+          "practical_low_suburban": 7.355970397940837,
+          "practical_high_urban": 7.452822478022426,
+          "practical_mid_urban": 7.814348298008554,
+          "practical_low_urban": 7.487306974013336
+        },
+        "wall_seconds": 53.81231008796021,
+        "peak_cuda_allocated_bytes": 90610176,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1532977152,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "legacy_cosine-s2026092704",
+      "kind": "predict",
+      "gpu": 2,
+      "pid": 2294872,
+      "start_ticks": 78317577,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "legacy_cosine-s2026092704"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/legacy_cosine-s2026092704.log",
+      "actual": null,
+      "log_bytes": 952,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.361076410044916,
+          "practical_high": 5.274689938058145,
+          "practical_mid": 5.281647551106289,
+          "practical_low_suburban": 5.31358347996138,
+          "practical_high_urban": 5.354213205981068,
+          "practical_mid_urban": 5.5020992329809815,
+          "practical_low_urban": 5.774590770946816
+        },
+        "wall_seconds": 39.28790084004868,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1528528896,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "raw_dual-s2026092704",
+      "kind": "predict",
+      "gpu": 3,
+      "pid": 2294877,
+      "start_ticks": 78317609,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "raw_dual-s2026092704"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/raw_dual-s2026092704.log",
+      "actual": null,
+      "log_bytes": 917,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 7.152958740014583,
+          "practical_high": 7.270130189950578,
+          "practical_mid": 6.900440483004786,
+          "practical_low_suburban": 6.637758668046445,
+          "practical_high_urban": 6.719783117994666,
+          "practical_mid_urban": 6.624613213003613,
+          "practical_low_urban": 6.601863045943901
+        },
+        "wall_seconds": 49.34154358203523,
+        "peak_cuda_allocated_bytes": 90610176,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1534951424,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "curvature_dual-s2026092704",
+      "kind": "predict",
+      "gpu": 7,
+      "pid": 2294882,
+      "start_ticks": 78317641,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "curvature_dual-s2026092704"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/curvature_dual-s2026092704.log",
+      "actual": null,
+      "log_bytes": 959,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 8.367079386021942,
+          "practical_high": 8.106749816914089,
+          "practical_mid": 8.048367890063673,
+          "practical_low_suburban": 8.290968551998958,
+          "practical_high_urban": 8.324003333924338,
+          "practical_mid_urban": 8.824438108946197,
+          "practical_low_urban": 8.878808432957157
+        },
+        "wall_seconds": 60.31095237494446,
+        "peak_cuda_allocated_bytes": 90610176,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1537519616,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "curvature_interaction-s2026092704",
+      "kind": "predict",
+      "gpu": 6,
+      "pid": 2295148,
+      "start_ticks": 78319178,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02/experiments/cvs_dual_test_now/train_worker.py",
+        "--row",
+        "curvature_interaction-s2026092704"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-dual-evidence-test-now-manysig-m16-r02/curvature_interaction-s2026092704.log",
+      "actual": null,
+      "log_bytes": 1009,
+      "epoch": null,
+      "resolved": null,
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 7.893512798007578,
+          "practical_high": 8.071159117040224,
+          "practical_mid": 7.447163425968029,
+          "practical_low_suburban": 7.242641019984148,
+          "practical_high_urban": 7.290939396014437,
+          "practical_mid_urban": 7.3049512669676915,
+          "practical_low_urban": 7.601090669981204
+        },
+        "wall_seconds": 54.09185937209986,
+        "peak_cuda_allocated_bytes": 90610176,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1531727872,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    }
+  ]
+}

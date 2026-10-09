@@ -1,3 +1,4 @@
 {"at": "2026-10-09T08:41:47+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-09T08:43:34+00:00", "status": "LOCAL_VERIFIED", "note": "Immediate evaluation-only scheduling override; fixed source checkpoints and all112 predictions; no training changes", "evidence": ["evidence/local_checks.json"], "row_id": null}
 {"at": "2026-10-09T08:45:48+00:00", "status": "RUNNING", "note": "8 active GPU predictions +8 queued;32 existing training PIDs preserved; temporary total5/GPU verified", "evidence": ["evidence/launch_verified.json"], "row_id": null}
+{"at": "2026-10-09T08:47:22+00:00", "status": "ANALYZED", "note": "Independent artifact readback; full fixed-matrix delivery, no worker interventions", "evidence": ["evidence/final_remote_readback.json"], "row_id": null}
