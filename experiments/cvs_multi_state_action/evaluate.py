@@ -8,8 +8,8 @@ import sys
 import time
 from types import SimpleNamespace
 
-RUN = '20261009-phase1-multi-state-action-manysig-m36-r01'
-RELEASE = 'cvs_multi_state_action_20261009_r01'
+RUN = '20261009-phase1-multi-state-action-manysig-m36-r02'
+RELEASE = 'cvs_multi_state_action_20261009_r02'
 PROJECT = '/home/szu2070436088/2510044040/CV-SincNet'
 ROOT = Path(__file__).resolve().parents[2]
 BASE = Path(PROJECT) / 'runs' / RUN

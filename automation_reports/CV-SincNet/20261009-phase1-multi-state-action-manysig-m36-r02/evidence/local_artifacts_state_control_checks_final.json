@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "registered_rows": 36,
+  "audit_rows": 4,
+  "source_contract_preserved": true,
+  "role_preserving_views": true,
+  "weak_views": [
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "no_query": true
+}

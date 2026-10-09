@@ -21,7 +21,7 @@ def register():
   description='逐项执行用户新报告：四seed源作用匹配对照、联合clean/LEO和六折辅助TX留出，随后9身份对照×4seed从零E200，全冻结后10视图独立truth-last测试。',
   group_id='cvs-multi-state-action',aliases=['multi_state_action','状态条件多解耦'],
   comparison_group_id='manysig-state-action-fixed-controls-v1',tags=['phase1','multi_state_action','source_diagnostic','scratch','legacy_cosine'],
-  parent_run_ids=[d.parent.RUN],replaces_run_id=None,
+  parent_run_ids=[d.parent.RUN],replaces_run_id=d.REPLACES,
   authorization='用户2026-10-09：根据设计报告继续完成下一步优化探索，不能遗漏，要一一完成。沿用每卡4个实验进程；全三阶段及冻结后的独立测试均在本次范围。',
   rows=[],status='PLANNED',state_recipe=d.RECIPE,audit_recipe=d.AUDIT,
   notes=['参考报告逐条追溯analysis/multi_state_action_traceability.md；LT是报告明确保留的诊断，不新增LT网络。',

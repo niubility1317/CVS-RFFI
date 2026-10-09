@@ -1,1 +1,2 @@
 {"at": "2026-10-09T15:13:08.585042+00:00", "status": "PLANNED", "note": "All report stages registered before execution"}
+{"at": "2026-10-09T15:20:49.762489+00:00", "status": "FAILED", "note": "FAILED：r01远端无query checkpoint预检在初始化native模块前torch.load，ModuleNotFoundError baseline_origin_sat_view；预检阻止dispatcher创建，尚无训练任务。保留release/preflight.log；修复加载顺序后以r02保持矩阵/数据/预算发布。", "evidence": "releases/cvs_multi_state_action_20261009_r01/preflight.log"}

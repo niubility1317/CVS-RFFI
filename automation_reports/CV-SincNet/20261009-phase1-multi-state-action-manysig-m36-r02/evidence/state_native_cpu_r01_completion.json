@@ -1,0 +1,292 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "rows": [
+    {
+      "arm": "native",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "execution": {
+        "fit_steps": {},
+        "identity_steps": {},
+        "attempted_identity_steps": {},
+        "receiver_relations_total": 0,
+        "exposure_totals": {},
+        "reference_versions": 0,
+        "target_access": false,
+        "calibration_scope": "physical source-L auxiliary holdout",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "real_views",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "execution": {
+        "fit_steps": {},
+        "identity_steps": {},
+        "attempted_identity_steps": {},
+        "receiver_relations_total": 0,
+        "exposure_totals": {
+          "source_L_physical_packets": 96,
+          "extra_real_IQ_views": 576,
+          "exact_reference_calls": 0
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source-L auxiliary holdout",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "unified",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "execution": {
+        "fit_steps": {
+          "linear": 6,
+          "temporal": 6
+        },
+        "identity_steps": {
+          "linear": 0,
+          "temporal": 0
+        },
+        "attempted_identity_steps": {
+          "linear": 6,
+          "temporal": 6,
+          "receiver": 6
+        },
+        "receiver_relations_total": 0,
+        "exposure_totals": {
+          "source_L_physical_packets": 96,
+          "extra_real_IQ_views": 576,
+          "exact_reference_calls": 12
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source-L auxiliary holdout",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "L",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "execution": {
+        "fit_steps": {
+          "linear": 6
+        },
+        "identity_steps": {
+          "linear": 4
+        },
+        "attempted_identity_steps": {
+          "linear": 6
+        },
+        "receiver_relations_total": 0,
+        "exposure_totals": {
+          "source_L_physical_packets": 96,
+          "extra_real_IQ_views": 576,
+          "exact_reference_calls": 6
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source-L auxiliary holdout",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LT",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "execution": {
+        "fit_steps": {
+          "linear": 6,
+          "temporal": 6
+        },
+        "identity_steps": {
+          "linear": 4,
+          "temporal": 0
+        },
+        "attempted_identity_steps": {
+          "linear": 6,
+          "temporal": 6
+        },
+        "receiver_relations_total": 0,
+        "exposure_totals": {
+          "source_L_physical_packets": 96,
+          "extra_real_IQ_views": 576,
+          "exact_reference_calls": 12
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source-L auxiliary holdout",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LTR",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "execution": {
+        "fit_steps": {
+          "linear": 6,
+          "temporal": 6
+        },
+        "identity_steps": {
+          "linear": 4,
+          "temporal": 0
+        },
+        "attempted_identity_steps": {
+          "linear": 6,
+          "temporal": 6,
+          "receiver": 6
+        },
+        "receiver_relations_total": 0,
+        "exposure_totals": {
+          "source_L_physical_packets": 96,
+          "extra_real_IQ_views": 576,
+          "exact_reference_calls": 12
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source-L auxiliary holdout",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "L_EG",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "execution": {
+        "fit_steps": {
+          "linear": 6
+        },
+        "identity_steps": {
+          "linear": 4
+        },
+        "attempted_identity_steps": {
+          "linear": 6
+        },
+        "receiver_relations_total": 0,
+        "exposure_totals": {
+          "source_L_physical_packets": 96,
+          "extra_real_IQ_views": 576,
+          "exact_reference_calls": 6
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source-L auxiliary holdout",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LT_EG",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "execution": {
+        "fit_steps": {
+          "linear": 6,
+          "temporal": 6
+        },
+        "identity_steps": {
+          "linear": 4,
+          "temporal": 0
+        },
+        "attempted_identity_steps": {
+          "linear": 6,
+          "temporal": 6
+        },
+        "receiver_relations_total": 0,
+        "exposure_totals": {
+          "source_L_physical_packets": 96,
+          "extra_real_IQ_views": 576,
+          "exact_reference_calls": 12
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source-L auxiliary holdout",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LTR_EG",
+      "status": "PASS",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "execution": {
+        "fit_steps": {
+          "linear": 6,
+          "temporal": 6
+        },
+        "identity_steps": {
+          "linear": 4,
+          "temporal": 0
+        },
+        "attempted_identity_steps": {
+          "linear": 6,
+          "temporal": 6,
+          "receiver": 6
+        },
+        "receiver_relations_total": 0,
+        "exposure_totals": {
+          "source_L_physical_packets": 96,
+          "extra_real_IQ_views": 576,
+          "exact_reference_calls": 12
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source-L auxiliary holdout",
+        "gated_off_is_valid_negative": true
+      }
+    }
+  ],
+  "synthetic": true,
+  "target_access": false,
+  "full_budget_verified": false,
+  "production_native_hook": true,
+  "production_writer": true
+}

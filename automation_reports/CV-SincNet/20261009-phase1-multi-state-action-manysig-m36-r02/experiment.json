@@ -1,6 +1,6 @@
 {
   "schema": "experiment_record_v1",
-  "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+  "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
   "group_id": "cvs-multi-state-action",
   "display_name": "多解耦状态条件作用：参数/前端/分布修正、联合条件、36行身份验证",
   "description": "逐项执行用户新报告：四seed源作用匹配对照、联合clean/LEO和六折辅助TX留出，随后9身份对照×4seed从零E200，全冻结后10视图独立truth-last测试。",
@@ -21,13 +21,13 @@
   "parent_run_ids": [
     "20261009-phase1-multi-disentangle-manysig-m32-r01"
   ],
-  "replaces_run_id": null,
+  "replaces_run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
   "authorization": "用户2026-10-09：根据设计报告继续完成下一步优化探索，不能遗漏，要一一完成。沿用每卡4个实验进程；全三阶段及冻结后的独立测试均在本次范围。",
   "code": {
     "commit": "Actual committed/pushed release_commit.txt",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -99,10 +99,10 @@
     "host": "N607",
     "launch_owner": "codex/root/multi-state-action-20261009",
     "gpu_policy": "<=4 total experiment processes/GPU including CUDA and pre-CUDA; shared capacity lock and stable worker checks; >=12GB free; preserve other healthy runs",
-    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01",
-    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01",
-    "local_artifact_root": "automation_reports/CV-SincNet/20261009-phase1-multi-state-action-manysig-m36-r01",
-    "launch_command": "python -m experiments.cvs_multi_state_action.publish --output local_artifacts/cvs_multi_state_action_20261009_r01",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261009-phase1-multi-state-action-manysig-m36-r02",
+    "launch_command": "python -m experiments.cvs_multi_state_action.publish --output local_artifacts/cvs_multi_state_action_20261009_r02",
     "stop_rule": "Only affected technical failure; retain artifacts, no automatic retry, fallback or low-performance stop. No interventions on healthy existing jobs."
   },
   "expected_artifacts": [
@@ -166,7 +166,7 @@
       "transmitter",
       "day"
     ],
-    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/<row>/prediction/predictions.npz",
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/<row>/prediction/predictions.npz",
     "scorer_ref": "experiments/cvs_multi_state_action/evaluate.py score; all360 predictions complete before truth; independent recount",
     "primary": "Four model seeds mean/sample SD and paired deltas; accuracy/F1/worst RX; six-view mean paired effects; all negative results retained",
     "desired_gain": "six-view mean >=+2pp; clean drop<=.5pp; no systematic worstRX decline; >=3/4seed same direction. Scientific aim, not stop or tuning gate.",
@@ -180,7 +180,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "native",
         "model_seed": 2026092701,
@@ -194,7 +194,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092701/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092701/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -270,7 +270,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/native-s2026092701.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -288,10 +288,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092701/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092701/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-native-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row native-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092701/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092701/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-native-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row native-s2026092701",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -330,7 +330,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "real_views",
         "model_seed": 2026092701,
@@ -344,7 +344,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092701/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092701/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -420,7 +420,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/real_views-s2026092701.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -438,10 +438,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092701/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092701/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-real_views-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row real_views-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092701/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092701/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-real_views-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row real_views-s2026092701",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -480,7 +480,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "unified",
         "model_seed": 2026092701,
@@ -494,7 +494,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092701/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092701/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -570,7 +570,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/unified-s2026092701.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -588,10 +588,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092701/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092701/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-unified-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row unified-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092701/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092701/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-unified-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row unified-s2026092701",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -630,7 +630,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "L",
         "model_seed": 2026092701,
@@ -644,7 +644,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092701/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092701/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -720,7 +720,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/L-s2026092701.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -738,10 +738,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092701/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092701/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-L-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row L-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092701/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092701/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-L-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row L-s2026092701",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -780,7 +780,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LT",
         "model_seed": 2026092701,
@@ -794,7 +794,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092701/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092701/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -870,7 +870,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LT-s2026092701.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -888,10 +888,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092701/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092701/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LT-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092701/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092701/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LT-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT-s2026092701",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -930,7 +930,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LTR",
         "model_seed": 2026092701,
@@ -944,7 +944,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092701/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092701/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -1020,7 +1020,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LTR-s2026092701.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -1038,10 +1038,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092701/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092701/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LTR-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092701/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092701/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LTR-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR-s2026092701",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -1080,7 +1080,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "L_EG",
         "model_seed": 2026092701,
@@ -1094,7 +1094,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092701/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092701/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -1170,7 +1170,7 @@
         "virtual_gradient_path": "EG"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/L_EG-s2026092701.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -1188,10 +1188,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092701/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092701/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-L_EG-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row L_EG-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092701/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092701/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-L_EG-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row L_EG-s2026092701",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -1230,7 +1230,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LT_EG",
         "model_seed": 2026092701,
@@ -1244,7 +1244,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092701/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092701/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -1320,7 +1320,7 @@
         "virtual_gradient_path": "EG"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LT_EG-s2026092701.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -1338,10 +1338,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092701/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092701/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LT_EG-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT_EG-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092701/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092701/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LT_EG-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT_EG-s2026092701",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -1380,7 +1380,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LTR_EG",
         "model_seed": 2026092701,
@@ -1394,7 +1394,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092701/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092701/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -1470,7 +1470,7 @@
         "virtual_gradient_path": "EG"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LTR_EG-s2026092701.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -1488,10 +1488,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092701/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092701/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LTR_EG-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR_EG-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092701/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092701/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LTR_EG-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR_EG-s2026092701",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -1530,7 +1530,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "native",
         "model_seed": 2026092702,
@@ -1544,7 +1544,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092702/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092702/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -1620,7 +1620,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/native-s2026092702.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -1638,10 +1638,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092702/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092702/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-native-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row native-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092702/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092702/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-native-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row native-s2026092702",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -1680,7 +1680,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "real_views",
         "model_seed": 2026092702,
@@ -1694,7 +1694,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092702/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092702/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -1770,7 +1770,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/real_views-s2026092702.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -1788,10 +1788,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092702/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092702/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-real_views-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row real_views-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092702/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092702/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-real_views-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row real_views-s2026092702",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -1830,7 +1830,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "unified",
         "model_seed": 2026092702,
@@ -1844,7 +1844,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092702/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092702/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -1920,7 +1920,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/unified-s2026092702.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -1938,10 +1938,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092702/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092702/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-unified-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row unified-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092702/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092702/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-unified-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row unified-s2026092702",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -1980,7 +1980,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "L",
         "model_seed": 2026092702,
@@ -1994,7 +1994,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092702/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092702/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -2070,7 +2070,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/L-s2026092702.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -2088,10 +2088,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092702/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092702/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-L-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row L-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092702/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092702/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-L-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row L-s2026092702",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -2130,7 +2130,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LT",
         "model_seed": 2026092702,
@@ -2144,7 +2144,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092702/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092702/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -2220,7 +2220,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LT-s2026092702.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -2238,10 +2238,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092702/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092702/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LT-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092702/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092702/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LT-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT-s2026092702",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -2280,7 +2280,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LTR",
         "model_seed": 2026092702,
@@ -2294,7 +2294,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092702/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092702/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -2370,7 +2370,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LTR-s2026092702.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -2388,10 +2388,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092702/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092702/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LTR-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092702/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092702/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LTR-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR-s2026092702",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -2430,7 +2430,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "L_EG",
         "model_seed": 2026092702,
@@ -2444,7 +2444,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092702/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092702/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -2520,7 +2520,7 @@
         "virtual_gradient_path": "EG"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/L_EG-s2026092702.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -2538,10 +2538,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092702/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092702/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-L_EG-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row L_EG-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092702/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092702/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-L_EG-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row L_EG-s2026092702",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -2580,7 +2580,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LT_EG",
         "model_seed": 2026092702,
@@ -2594,7 +2594,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092702/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092702/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -2670,7 +2670,7 @@
         "virtual_gradient_path": "EG"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LT_EG-s2026092702.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -2688,10 +2688,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092702/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092702/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LT_EG-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT_EG-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092702/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092702/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LT_EG-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT_EG-s2026092702",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -2730,7 +2730,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LTR_EG",
         "model_seed": 2026092702,
@@ -2744,7 +2744,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092702/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092702/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -2820,7 +2820,7 @@
         "virtual_gradient_path": "EG"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LTR_EG-s2026092702.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -2838,10 +2838,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092702/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092702/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LTR_EG-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR_EG-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092702/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092702/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LTR_EG-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR_EG-s2026092702",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -2880,7 +2880,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "native",
         "model_seed": 2026092703,
@@ -2894,7 +2894,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092703/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092703/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -2970,7 +2970,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/native-s2026092703.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -2988,10 +2988,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092703/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092703/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-native-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row native-s2026092703",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092703/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092703/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-native-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row native-s2026092703",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -3030,7 +3030,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "real_views",
         "model_seed": 2026092703,
@@ -3044,7 +3044,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092703/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092703/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -3120,7 +3120,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/real_views-s2026092703.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -3138,10 +3138,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092703/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092703/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-real_views-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row real_views-s2026092703",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092703/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092703/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-real_views-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row real_views-s2026092703",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -3180,7 +3180,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "unified",
         "model_seed": 2026092703,
@@ -3194,7 +3194,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092703/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092703/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -3270,7 +3270,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/unified-s2026092703.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -3288,10 +3288,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092703/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092703/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-unified-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row unified-s2026092703",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092703/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092703/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-unified-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row unified-s2026092703",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -3330,7 +3330,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "L",
         "model_seed": 2026092703,
@@ -3344,7 +3344,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092703/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092703/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -3420,7 +3420,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/L-s2026092703.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -3438,10 +3438,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092703/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092703/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-L-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row L-s2026092703",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092703/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092703/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-L-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row L-s2026092703",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -3480,7 +3480,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LT",
         "model_seed": 2026092703,
@@ -3494,7 +3494,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092703/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092703/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -3570,7 +3570,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LT-s2026092703.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -3588,10 +3588,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092703/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092703/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LT-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT-s2026092703",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092703/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092703/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LT-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT-s2026092703",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -3630,7 +3630,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LTR",
         "model_seed": 2026092703,
@@ -3644,7 +3644,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092703/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092703/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -3720,7 +3720,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LTR-s2026092703.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -3738,10 +3738,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092703/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092703/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LTR-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR-s2026092703",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092703/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092703/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LTR-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR-s2026092703",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -3780,7 +3780,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "L_EG",
         "model_seed": 2026092703,
@@ -3794,7 +3794,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092703/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092703/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -3870,7 +3870,7 @@
         "virtual_gradient_path": "EG"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/L_EG-s2026092703.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -3888,10 +3888,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092703/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092703/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-L_EG-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row L_EG-s2026092703",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092703/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092703/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-L_EG-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row L_EG-s2026092703",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -3930,7 +3930,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LT_EG",
         "model_seed": 2026092703,
@@ -3944,7 +3944,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092703/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092703/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -4020,7 +4020,7 @@
         "virtual_gradient_path": "EG"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LT_EG-s2026092703.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -4038,10 +4038,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092703/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092703/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LT_EG-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT_EG-s2026092703",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092703/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092703/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LT_EG-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT_EG-s2026092703",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -4080,7 +4080,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LTR_EG",
         "model_seed": 2026092703,
@@ -4094,7 +4094,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092703/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092703/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -4170,7 +4170,7 @@
         "virtual_gradient_path": "EG"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LTR_EG-s2026092703.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -4188,10 +4188,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092703/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092703/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LTR_EG-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR_EG-s2026092703",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092703/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092703/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LTR_EG-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR_EG-s2026092703",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -4230,7 +4230,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "native",
         "model_seed": 2026092704,
@@ -4244,7 +4244,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092704/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092704/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -4320,7 +4320,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/native-s2026092704.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092704/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092704/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092704,
@@ -4338,10 +4338,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092704/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/native-s2026092704/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-native-s2026092704.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row native-s2026092704",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092704/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092704/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-native-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row native-s2026092704",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -4380,7 +4380,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "real_views",
         "model_seed": 2026092704,
@@ -4394,7 +4394,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092704/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092704/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -4470,7 +4470,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/real_views-s2026092704.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092704/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092704/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092704,
@@ -4488,10 +4488,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092704/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/real_views-s2026092704/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-real_views-s2026092704.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row real_views-s2026092704",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092704/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092704/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-real_views-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row real_views-s2026092704",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -4530,7 +4530,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "unified",
         "model_seed": 2026092704,
@@ -4544,7 +4544,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092704/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092704/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -4620,7 +4620,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/unified-s2026092704.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092704/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092704/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092704,
@@ -4638,10 +4638,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092704/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/unified-s2026092704/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-unified-s2026092704.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row unified-s2026092704",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092704/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092704/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-unified-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row unified-s2026092704",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -4680,7 +4680,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "L",
         "model_seed": 2026092704,
@@ -4694,7 +4694,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092704/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092704/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -4770,7 +4770,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/L-s2026092704.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092704/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092704/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092704,
@@ -4788,10 +4788,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092704/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092704/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-L-s2026092704.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row L-s2026092704",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092704/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092704/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-L-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row L-s2026092704",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -4830,7 +4830,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LT",
         "model_seed": 2026092704,
@@ -4844,7 +4844,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092704/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092704/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -4920,7 +4920,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LT-s2026092704.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092704/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092704/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092704,
@@ -4938,10 +4938,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092704/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT-s2026092704/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LT-s2026092704.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT-s2026092704",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092704/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092704/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LT-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT-s2026092704",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -4980,7 +4980,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LTR",
         "model_seed": 2026092704,
@@ -4994,7 +4994,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092704/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092704/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -5070,7 +5070,7 @@
         "virtual_gradient_path": "G_only"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LTR-s2026092704.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092704/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092704/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092704,
@@ -5088,10 +5088,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092704/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR-s2026092704/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LTR-s2026092704.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR-s2026092704",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092704/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092704/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LTR-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR-s2026092704",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -5130,7 +5130,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "L_EG",
         "model_seed": 2026092704,
@@ -5144,7 +5144,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092704/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092704/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -5220,7 +5220,7 @@
         "virtual_gradient_path": "EG"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/L_EG-s2026092704.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092704/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092704/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092704,
@@ -5238,10 +5238,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092704/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L_EG-s2026092704/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-L_EG-s2026092704.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row L_EG-s2026092704",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092704/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092704/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-L_EG-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row L_EG-s2026092704",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -5280,7 +5280,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LT_EG",
         "model_seed": 2026092704,
@@ -5294,7 +5294,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092704/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092704/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -5370,7 +5370,7 @@
         "virtual_gradient_path": "EG"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LT_EG-s2026092704.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092704/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092704/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092704,
@@ -5388,10 +5388,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092704/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LT_EG-s2026092704/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LT_EG-s2026092704.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT_EG-s2026092704",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092704/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092704/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LT_EG-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LT_EG-s2026092704",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -5430,7 +5430,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "stage": "multi_state_action",
         "arm": "LTR_EG",
         "model_seed": 2026092704,
@@ -5444,7 +5444,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092704/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092704/source",
         "epochs": 200,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -5520,7 +5520,7 @@
         "virtual_gradient_path": "EG"
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/LTR_EG-s2026092704.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092704/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092704/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092704,
@@ -5538,10 +5538,10 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "44400successfulnativeupdates; every4steps max32sourceL; fixedtotalvirtualbudget",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092704/source",
-      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/LTR_EG-s2026092704/prediction",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/source-LTR_EG-s2026092704.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR_EG-s2026092704",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092704/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092704/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/source-LTR_EG-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind source --row LTR_EG-s2026092704",
       "expected_artifacts": [
         "source/initial_smoke.pt",
         "source/initialization.json",
@@ -5580,7 +5580,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_audit_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "row_id": "audit-s2026092701",
         "model_seed": 2026092701,
         "kind": "audit",
@@ -5719,11 +5719,11 @@
           "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
         },
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-s2026092701",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092701",
         "target_access": false
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/audit-s2026092701.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-s2026092701/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092701/resolved_config.json",
       "data_overrides": {
         "only_source_L": true
       },
@@ -5743,10 +5743,10 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "6modes×2branches×3exposures×200 plus6TX×2modes×2branches×200; Rnew/legacy3×2×200",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092701",
       "prediction_root": null,
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-audit-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind audit --row audit-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-audit-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind audit --row audit-s2026092701",
       "expected_artifacts": [
         "physical_roles.json",
         "resolved_config.json",
@@ -5764,7 +5764,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_audit_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "row_id": "audit-s2026092702",
         "model_seed": 2026092702,
         "kind": "audit",
@@ -5903,11 +5903,11 @@
           "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
         },
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-s2026092702",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092702",
         "target_access": false
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/audit-s2026092702.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-s2026092702/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092702/resolved_config.json",
       "data_overrides": {
         "only_source_L": true
       },
@@ -5927,10 +5927,10 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "6modes×2branches×3exposures×200 plus6TX×2modes×2branches×200; Rnew/legacy3×2×200",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092702",
       "prediction_root": null,
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-audit-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind audit --row audit-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-audit-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind audit --row audit-s2026092702",
       "expected_artifacts": [
         "physical_roles.json",
         "resolved_config.json",
@@ -5948,7 +5948,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_audit_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "row_id": "audit-s2026092703",
         "model_seed": 2026092703,
         "kind": "audit",
@@ -6087,11 +6087,11 @@
           "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
         },
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-s2026092703",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092703",
         "target_access": false
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/audit-s2026092703.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-s2026092703/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092703/resolved_config.json",
       "data_overrides": {
         "only_source_L": true
       },
@@ -6111,10 +6111,10 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "6modes×2branches×3exposures×200 plus6TX×2modes×2branches×200; Rnew/legacy3×2×200",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-s2026092703",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092703",
       "prediction_root": null,
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-audit-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind audit --row audit-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-audit-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind audit --row audit-s2026092703",
       "expected_artifacts": [
         "physical_roles.json",
         "resolved_config.json",
@@ -6132,7 +6132,7 @@
       "gpu": null,
       "config": {
         "schema": "multi_state_action_audit_v1",
-        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+        "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
         "row_id": "audit-s2026092704",
         "model_seed": 2026092704,
         "kind": "audit",
@@ -6271,11 +6271,11 @@
           "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
         },
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-s2026092704",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092704",
         "target_access": false
       },
       "config_ref": "experiments/cvs_multi_state_action/configs/audit-s2026092704.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-s2026092704/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092704/resolved_config.json",
       "data_overrides": {
         "only_source_L": true
       },
@@ -6295,10 +6295,10 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "6modes×2branches×3exposures×200 plus6TX×2modes×2branches×200; Rnew/legacy3×2×200",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-s2026092704",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-s2026092704",
       "prediction_root": null,
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r01/audit-audit-s2026092704.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r01/experiments/cvs_multi_state_action/train_worker.py --kind audit --row audit-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261009-phase1-multi-state-action-manysig-m36-r02/audit-audit-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_state_action_20261009_r02/experiments/cvs_multi_state_action/train_worker.py --kind audit --row audit-s2026092704",
       "expected_artifacts": [
         "physical_roles.json",
         "resolved_config.json",
@@ -6320,7 +6320,7 @@
     "K、适应前后、新类注册、H为N/A；本次是Phase1身份域泛化，无目标适应。",
     "sharedGPU耗时仅共享负载实测，不声称隔离加速；未测FLOPs记N/A。"
   ],
-  "status": "FAILED",
+  "status": "LOCAL_VERIFIED",
   "test_completion_plan": {
     "rows": 36,
     "views": [
@@ -6378,7 +6378,7 @@
     "all_predictions_before_truth": true,
     "scene_partition": "six full scenes same physical IDs; not disjoint formal LEO strata",
     "target_feedback": false,
-    "weak_views": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/weak_views",
+    "weak_views": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/weak_views",
     "weak_view_seeds": [
       2026100912,
       2026100913,
@@ -6535,5 +6535,5 @@
     "source_admission": "Report every branch/condition vs zero and directedRXmean; efficacy never implied by positive hskill alone. Online independent calibration gates actual virtual loss; no target access.",
     "no_early_stopping": true
   },
-  "latest_evidence": "releases/cvs_multi_state_action_20261009_r01/preflight.log"
+  "latest_evidence": "evidence/checkpoint_order_recovery.json"
 }

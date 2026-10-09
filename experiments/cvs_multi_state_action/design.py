@@ -9,8 +9,9 @@ from experiments.cvs_phase1_overlay.contract import read, write
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT=parent.PROJECT; SOURCE=parent.SOURCE; CAPSULE=parent.CAPSULE; TRUTH=parent.TRUTH
 SEEDS=parent.SEEDS; CLASSES=parent.CLASSES; FULL_FP32_POLICY=parent.FULL_FP32_POLICY
-RUN='20261009-phase1-multi-state-action-manysig-m36-r01'
-RELEASE='cvs_multi_state_action_20261009_r01'
+RUN='20261009-phase1-multi-state-action-manysig-m36-r02'
+RELEASE='cvs_multi_state_action_20261009_r02'
+REPLACES='20261009-phase1-multi-state-action-manysig-m36-r01'
 BASE=Path(PROJECT)/'runs'/RUN
 OWNER='codex/root/multi-state-action-20261009'
 ARMS=('native','real_views','unified','L','LT','LTR','L_EG','LT_EG','LTR_EG')

@@ -1,6 +1,6 @@
 {
   "schema": "multi_state_action_v1",
-  "run_id": "20261009-phase1-multi-state-action-manysig-m36-r01",
+  "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
   "stage": "multi_state_action",
   "arm": "L",
   "model_seed": 2026092701,
@@ -14,7 +14,7 @@
   "variant": "reference_response",
   "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
   "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r01/L-s2026092701/source",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092701/source",
   "epochs": 200,
   "steps_per_epoch": 222,
   "model_initialization": "scratch",

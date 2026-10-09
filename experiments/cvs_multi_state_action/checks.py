@@ -7,6 +7,21 @@ from experiments.cvs_multi_state_action.runner import joint,subset,composition_i
 from experiments.cvs_multi_state_action.views import channel_batch,WEAK
 from experiments.cvs_multi_action_audit.checks import channel_bridge_check
 
+def checkpoint_order_check(output):
+ import subprocess,sys
+ from experiments.cvs_multi_disentangle.runtime import installed
+ p=Path(output);p.parent.mkdir(parents=True,exist_ok=True)
+ c=d.audit_config(d.audit_rows()[0])['parent_config']
+ with installed(c,training=False):
+  from baseline_origin_sat_view import SatViewStage
+  torch.save(dict(stage=SatViewStage(1,('practical_mid',),.3)),p)
+ negative=subprocess.run([sys.executable,'-c','import sys,torch; torch.load(sys.argv[1],weights_only=False)',str(p.resolve())],capture_output=True,text=True,cwd=d.ROOT)
+ if negative.returncode==0 or 'baseline_origin_sat_view' not in negative.stderr:raise AssertionError('Load-before-bootstrap reproduction differs')
+ positive="import sys,torch; from experiments.cvs_multi_state_action import design as d; from experiments.cvs_multi_disentangle.runtime import installed; c=d.audit_config(d.audit_rows()[0])['parent_config'];\nwith installed(c,training=False):\n v=torch.load(sys.argv[1],weights_only=False); assert v['stage'].start_epoch==1\n"
+ good=subprocess.run([sys.executable,'-c',positive,str(p.resolve())],capture_output=True,text=True,cwd=d.ROOT)
+ if good.returncode:raise RuntimeError(good.stderr)
+ return dict(status='PASS',old_order_reproduced=True,new_order_loads=True,fixture='serialized native SatViewStage; no IQ/model weights')
+
 def checks(device='cpu'):
  torch.set_num_threads(2)
  assert len(d.rows())==36 and len(d.audit_rows())==4
@@ -34,4 +49,6 @@ def checks(device='cpu'):
   role_preserving_views=True,weak_views=WEAK,no_query=True)
 
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--device',default='cpu');p.add_argument('--output',required=True);a=p.parse_args();v=checks(a.device);d.write(a.output,v);print(v)
+ p=argparse.ArgumentParser();p.add_argument('--device',default='cpu');p.add_argument('--output',required=True);p.add_argument('--checkpoint-order',action='store_true');a=p.parse_args()
+ v=checkpoint_order_check(Path(a.output).with_suffix('.pt')) if a.checkpoint_order else checks(a.device)
+ d.write(a.output,v);print(v)

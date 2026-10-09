@@ -12,4 +12,4 @@ R执行逐包作用后非线性聚合，描述/接受作用/目的统计独立�
 
 源作用科学判定同时观察归一化身份特征与竞争类margin，并比较强基线；正h-skill不能单独证明约束有效。固定对照不因源负结果被删除，在线可靠性可为零且如实报告。只有技术失败停止所属任务，保留所有产物。当前状态以原登记事件及独立进程/产物读回为准。
 
-FAILED：r01远端无query checkpoint预检在初始化native模块前torch.load，ModuleNotFoundError baseline_origin_sat_view；预检阻止dispatcher创建，尚无训练任务。保留release/preflight.log；修复加载顺序后以r02保持矩阵/数据/预算发布。
+r02仅修复真实checkpoint反序列化前的native模块初始化顺序；同一SatViewStage本地回归确认旧顺序失败、新顺序通过，独立定向P0/P1复查PASS。保持4诊断+36身份行、全部科学配置和预算。

@@ -52,9 +52,9 @@ def run(c,smoke=False):
  d.validate_audit(c);torch.set_num_threads(2);device=torch.device('cpu' if smoke else 'cuda:0')
  torch.manual_seed(c['model_seed']);started=time.perf_counter()
  source=source_provenance(d.parent,c['parent_config'])
- ck=torch.load(source/'final_ssdg.pth',map_location='cpu',weights_only=False)
- checkpoint_provenance(d.parent,c['parent_config'],ck)
  with numerical_context(d.FULL_FP32_POLICY),installed(c['parent_config'],training=False) as native:
+  ck=torch.load(source/'final_ssdg.pth',map_location='cpu',weights_only=False)
+  checkpoint_provenance(d.parent,c['parent_config'],ck)
   model=native.build_baseline_model(SimpleNamespace(**ck['baseline_args']),device)
   model.load_state_dict(ck['model'],strict=True);model.eval();del ck
   with torch.no_grad():z=model(torch.zeros(2,2,256,device=device))

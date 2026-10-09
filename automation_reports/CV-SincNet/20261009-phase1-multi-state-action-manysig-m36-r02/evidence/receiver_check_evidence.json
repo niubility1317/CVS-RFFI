@@ -1,0 +1,18 @@
+{
+  "status": "VERIFIED",
+  "commands": [
+    "python -X utf8 -m experiments.cvs_multi_state_action.receiver_checks --device cpu",
+    "python -X utf8 -m experiments.cvs_multi_state_action.receiver_checks --device cuda:0"
+  ],
+  "evidence": "worker tool executions and independent targeted source review; stdout not separately persisted",
+  "checks": [
+    "packetwise nonlinear mean",
+    "disjoint bags",
+    "daymatch",
+    "live recipient gradients",
+    "auxiliary/history no gradients",
+    "fit/audit partition",
+    "distinctrecipient16",
+    "expiry/version"
+  ]
+}
