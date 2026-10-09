@@ -35,3 +35,9 @@
 原16行E200/44400更新、合法源域物理ID契约、scratch继承来源、冻结矩阵和所有权重保持不变。推理模型/runtime/evaluate及其依赖与原发布a759963aa没有代码差异；原同包batch256、完整FP32、clean及六种practical视图、168000query/视图均不变。独立评分必须等待全部112组预测固定后才连接truth。此处既有代理基准不作为新盲测或真实在轨验证。
 
 本地`python -m experiments.cvs_dual_test_now.checks`通过7个拒绝接管/重复预测/PID复用负测、源checkpoint路径不变及新输出隔离检查；compileall通过。真实16个checkpoint无query来源检查在控制器接管前执行，各预测仍先运行原真实checkpoint无query前向smoke。新run未重新训练。统一使用原已验证评分与独立复算器，源训练日志从原run只读收取。
+
+## 实际启动读回
+
+RUNNING / VERIFIED。控制器PID2293080；8个实际GPU预测进程已启动，另8行排第二批。每卡1个本run推理，每卡总数5，原32个训练PID全部仍在。旧空闲控制器2074109退出已读回；所有新worker实际PID/start_ticks/CWD/argv及batch256、FP32、frozen参数、无truth/query拟合核对通过。代码提交`62af0de14adc42cdb6f9be8323b599d1d31fb3da`。证据见[evidence/launch_verified.json](evidence/launch_verified.json)。
+
+本地观察器PID57220已通过Win32_Process及observer.json读回，自动收取、复算全部结果并交付Git；当前测试进行中，没有准确率结论。

@@ -1,0 +1,892 @@
+{
+  "status": "VERIFIED",
+  "controller": {
+    "pid": 2293080,
+    "state": "S",
+    "start_ticks": 78311268,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_dual_test_now.driver"
+    ]
+  },
+  "active": 8,
+  "pending": 8,
+  "gpu_process_counts": {
+    "GPU-56adac86-77cd-36c9-8770-dbf002650461": 5,
+    "GPU-a2d039ff-1792-4222-2b47-140429e10f94": 5,
+    "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562": 5,
+    "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97": 5,
+    "GPU-95d925a1-7218-ca7b-adef-164241f4f491": 5,
+    "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331": 5,
+    "GPU-5463e082-259e-537b-603a-01575d45801c": 5,
+    "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9": 5
+  },
+  "old_idle_controller_exited": true,
+  "all32_training_pids_preserved": true,
+  "actual_config_and_fp32_verified": true,
+  "truth_read": false,
+  "details": {
+    "rows": [
+      {
+        "row_id": "legacy_cosine-s2026092701",
+        "resolved": {
+          "row_id": "legacy_cosine-s2026092701",
+          "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "pid": 2293105,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+          "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "evaluation_commit": "62af0de14adc42cdb6f9be8323b599d1d31fb3da",
+          "source_run": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "views": [
+            "clean",
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+          "backend_flags": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "batch_size": 256,
+          "parameters": 844754,
+          "trainable_parameters": 0,
+          "hardware": "NVIDIA GeForce RTX 3090",
+          "torch_version": "2.1.0+cu121"
+        },
+        "provenance": {
+          "status": "VERIFIED",
+          "config": {
+            "schema": "dual_evidence_v1",
+            "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+            "stage": "dual_evidence",
+            "arm": "legacy_cosine",
+            "model_seed": 2026092701,
+            "row_id": "legacy_cosine-s2026092701",
+            "features": [
+              "ema",
+              "leo",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/legacy_cosine-s2026092701/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_dual_evidence",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06,
+            "dual_recipe": {
+              "lags": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "evidence_channels": 12,
+              "widths": [
+                32,
+                64,
+                96,
+                160
+              ],
+              "fusion_rank": 64,
+              "curvature_log_scale": 0.25,
+              "interaction_bound": 0.5,
+              "initial_fusion_output": "zero",
+              "new_objective_weights": {},
+              "source_selection": "fixed_E200_all_controls"
+            },
+            "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+          },
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/legacy_cosine-s2026092701/source/final_ssdg.pth",
+          "scratch_sources": [],
+          "source_roles": "EXACT_MATCH",
+          "own_E200": true,
+          "optimizer_steps": 44400,
+          "query_fit": false,
+          "truth_read": false
+        },
+        "log_tail": "onds\": 5.195543009904213, \"truth_read\": false}\n{\"row_id\": \"legacy_cosine-s2026092701\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.30630853807088, \"truth_read\": false}\n{\"row_id\": \"legacy_cosine-s2026092701\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 5.061581426067278, \"truth_read\": false}\n{\"row_id\": \"legacy_cosine-s2026092701\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 4.956409509992227, \"truth_read\": false}\n{\"row_id\": \"legacy_cosine-s2026092701\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 4.996369712986052, \"truth_read\": false}\n"
+      },
+      {
+        "row_id": "raw_dual-s2026092701",
+        "resolved": {
+          "row_id": "raw_dual-s2026092701",
+          "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "pid": 2293114,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+          "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "evaluation_commit": "62af0de14adc42cdb6f9be8323b599d1d31fb3da",
+          "source_run": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "views": [
+            "clean",
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+          "backend_flags": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "batch_size": 256,
+          "parameters": 619535,
+          "trainable_parameters": 0,
+          "hardware": "NVIDIA GeForce RTX 3090",
+          "torch_version": "2.1.0+cu121"
+        },
+        "provenance": {
+          "status": "VERIFIED",
+          "config": {
+            "schema": "dual_evidence_v1",
+            "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+            "stage": "dual_evidence",
+            "arm": "raw_dual",
+            "model_seed": 2026092701,
+            "row_id": "raw_dual-s2026092701",
+            "features": [
+              "ema",
+              "leo",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/raw_dual-s2026092701/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_dual_evidence",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06,
+            "dual_recipe": {
+              "lags": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "evidence_channels": 12,
+              "widths": [
+                32,
+                64,
+                96,
+                160
+              ],
+              "fusion_rank": 64,
+              "curvature_log_scale": 0.25,
+              "interaction_bound": 0.5,
+              "initial_fusion_output": "zero",
+              "new_objective_weights": {},
+              "source_selection": "fixed_E200_all_controls"
+            },
+            "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+          },
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/raw_dual-s2026092701/source/final_ssdg.pth",
+          "scratch_sources": [],
+          "source_roles": "EXACT_MATCH",
+          "own_E200": true,
+          "optimizer_steps": 44400,
+          "query_fit": false,
+          "truth_read": false
+        },
+        "log_tail": " \"count\": 168000, \"seconds\": 6.714130623964593, \"truth_read\": false}\n{\"row_id\": \"raw_dual-s2026092701\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 6.6093563109170645, \"truth_read\": false}\n{\"row_id\": \"raw_dual-s2026092701\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 6.6333334220107645, \"truth_read\": false}\n{\"row_id\": \"raw_dual-s2026092701\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 6.538701962097548, \"truth_read\": false}\n{\"row_id\": \"raw_dual-s2026092701\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 7.131004772032611, \"truth_read\": false}\n"
+      },
+      {
+        "row_id": "curvature_dual-s2026092701",
+        "resolved": {
+          "row_id": "curvature_dual-s2026092701",
+          "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "pid": 2293165,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+          "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "evaluation_commit": "62af0de14adc42cdb6f9be8323b599d1d31fb3da",
+          "source_run": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "views": [
+            "clean",
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+          "backend_flags": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "batch_size": 256,
+          "parameters": 619535,
+          "trainable_parameters": 0,
+          "hardware": "NVIDIA GeForce RTX 3090",
+          "torch_version": "2.1.0+cu121"
+        },
+        "provenance": {
+          "status": "VERIFIED",
+          "config": {
+            "schema": "dual_evidence_v1",
+            "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+            "stage": "dual_evidence",
+            "arm": "curvature_dual",
+            "model_seed": 2026092701,
+            "row_id": "curvature_dual-s2026092701",
+            "features": [
+              "ema",
+              "leo",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_dual-s2026092701/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_dual_evidence",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06,
+            "dual_recipe": {
+              "lags": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "evidence_channels": 12,
+              "widths": [
+                32,
+                64,
+                96,
+                160
+              ],
+              "fusion_rank": 64,
+              "curvature_log_scale": 0.25,
+              "interaction_bound": 0.5,
+              "initial_fusion_output": "zero",
+              "new_objective_weights": {},
+              "source_selection": "fixed_E200_all_controls"
+            },
+            "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+          },
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_dual-s2026092701/source/final_ssdg.pth",
+          "scratch_sources": [],
+          "source_roles": "EXACT_MATCH",
+          "own_E200": true,
+          "optimizer_steps": 44400,
+          "query_fit": false,
+          "truth_read": false
+        },
+        "log_tail": "{\"row_id\": \"curvature_dual-s2026092701\", \"view\": \"clean\", \"count\": 168000, \"seconds\": 7.856723033939488, \"truth_read\": false}\n{\"row_id\": \"curvature_dual-s2026092701\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 7.7697016060119495, \"truth_read\": false}\n{\"row_id\": \"curvature_dual-s2026092701\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 7.641100478009321, \"truth_read\": false}\n{\"row_id\": \"curvature_dual-s2026092701\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 7.227560386992991, \"truth_read\": false}\n"
+      },
+      {
+        "row_id": "curvature_interaction-s2026092701",
+        "resolved": {
+          "row_id": "curvature_interaction-s2026092701",
+          "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "pid": 2293177,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+          "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "evaluation_commit": "62af0de14adc42cdb6f9be8323b599d1d31fb3da",
+          "source_run": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "views": [
+            "clean",
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+          "backend_flags": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "batch_size": 256,
+          "parameters": 619535,
+          "trainable_parameters": 0,
+          "hardware": "NVIDIA GeForce RTX 3090",
+          "torch_version": "2.1.0+cu121"
+        },
+        "provenance": {
+          "status": "VERIFIED",
+          "config": {
+            "schema": "dual_evidence_v1",
+            "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+            "stage": "dual_evidence",
+            "arm": "curvature_interaction",
+            "model_seed": 2026092701,
+            "row_id": "curvature_interaction-s2026092701",
+            "features": [
+              "ema",
+              "leo",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_interaction-s2026092701/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_dual_evidence",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06,
+            "dual_recipe": {
+              "lags": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "evidence_channels": 12,
+              "widths": [
+                32,
+                64,
+                96,
+                160
+              ],
+              "fusion_rank": 64,
+              "curvature_log_scale": 0.25,
+              "interaction_bound": 0.5,
+              "initial_fusion_output": "zero",
+              "new_objective_weights": {},
+              "source_selection": "fixed_E200_all_controls"
+            },
+            "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+          },
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_interaction-s2026092701/source/final_ssdg.pth",
+          "scratch_sources": [],
+          "source_roles": "EXACT_MATCH",
+          "own_E200": true,
+          "optimizer_steps": 44400,
+          "query_fit": false,
+          "truth_read": false
+        },
+        "log_tail": "{\"row_id\": \"curvature_interaction-s2026092701\", \"view\": \"clean\", \"count\": 168000, \"seconds\": 7.690509850974195, \"truth_read\": false}\n{\"row_id\": \"curvature_interaction-s2026092701\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 7.220349877956323, \"truth_read\": false}\n{\"row_id\": \"curvature_interaction-s2026092701\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 7.157999183051288, \"truth_read\": false}\n{\"row_id\": \"curvature_interaction-s2026092701\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 7.4016330619342625, \"truth_read\": false}\n"
+      },
+      {
+        "row_id": "legacy_cosine-s2026092702",
+        "resolved": {
+          "row_id": "legacy_cosine-s2026092702",
+          "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "pid": 2293186,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+          "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "evaluation_commit": "62af0de14adc42cdb6f9be8323b599d1d31fb3da",
+          "source_run": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "views": [
+            "clean",
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+          "backend_flags": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "batch_size": 256,
+          "parameters": 844754,
+          "trainable_parameters": 0,
+          "hardware": "NVIDIA GeForce RTX 3090",
+          "torch_version": "2.1.0+cu121"
+        },
+        "provenance": {
+          "status": "VERIFIED",
+          "config": {
+            "schema": "dual_evidence_v1",
+            "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+            "stage": "dual_evidence",
+            "arm": "legacy_cosine",
+            "model_seed": 2026092702,
+            "row_id": "legacy_cosine-s2026092702",
+            "features": [
+              "ema",
+              "leo",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/legacy_cosine-s2026092702/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_dual_evidence",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06,
+            "dual_recipe": {
+              "lags": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "evidence_channels": 12,
+              "widths": [
+                32,
+                64,
+                96,
+                160
+              ],
+              "fusion_rank": 64,
+              "curvature_log_scale": 0.25,
+              "interaction_bound": 0.5,
+              "initial_fusion_output": "zero",
+              "new_objective_weights": {},
+              "source_selection": "fixed_E200_all_controls"
+            },
+            "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+          },
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/legacy_cosine-s2026092702/source/final_ssdg.pth",
+          "scratch_sources": [],
+          "source_roles": "EXACT_MATCH",
+          "own_E200": true,
+          "optimizer_steps": 44400,
+          "query_fit": false,
+          "truth_read": false
+        },
+        "log_tail": " \"seconds\": 5.494628758984618, \"truth_read\": false}\n{\"row_id\": \"legacy_cosine-s2026092702\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 5.452762529021129, \"truth_read\": false}\n{\"row_id\": \"legacy_cosine-s2026092702\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.347308694967069, \"truth_read\": false}\n{\"row_id\": \"legacy_cosine-s2026092702\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 5.41866460791789, \"truth_read\": false}\n{\"row_id\": \"legacy_cosine-s2026092702\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 5.283071644953452, \"truth_read\": false}\n"
+      },
+      {
+        "row_id": "raw_dual-s2026092702",
+        "resolved": {
+          "row_id": "raw_dual-s2026092702",
+          "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "pid": 2293196,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+          "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "evaluation_commit": "62af0de14adc42cdb6f9be8323b599d1d31fb3da",
+          "source_run": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "views": [
+            "clean",
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+          "backend_flags": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "batch_size": 256,
+          "parameters": 619535,
+          "trainable_parameters": 0,
+          "hardware": "NVIDIA GeForce RTX 3090",
+          "torch_version": "2.1.0+cu121"
+        },
+        "provenance": {
+          "status": "VERIFIED",
+          "config": {
+            "schema": "dual_evidence_v1",
+            "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+            "stage": "dual_evidence",
+            "arm": "raw_dual",
+            "model_seed": 2026092702,
+            "row_id": "raw_dual-s2026092702",
+            "features": [
+              "ema",
+              "leo",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/raw_dual-s2026092702/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_dual_evidence",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06,
+            "dual_recipe": {
+              "lags": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "evidence_channels": 12,
+              "widths": [
+                32,
+                64,
+                96,
+                160
+              ],
+              "fusion_rank": 64,
+              "curvature_log_scale": 0.25,
+              "interaction_bound": 0.5,
+              "initial_fusion_output": "zero",
+              "new_objective_weights": {},
+              "source_selection": "fixed_E200_all_controls"
+            },
+            "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+          },
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/raw_dual-s2026092702/source/final_ssdg.pth",
+          "scratch_sources": [],
+          "source_roles": "EXACT_MATCH",
+          "own_E200": true,
+          "optimizer_steps": 44400,
+          "query_fit": false,
+          "truth_read": false
+        },
+        "log_tail": "{\"row_id\": \"raw_dual-s2026092702\", \"view\": \"clean\", \"count\": 168000, \"seconds\": 6.502518441993743, \"truth_read\": false}\n{\"row_id\": \"raw_dual-s2026092702\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 6.323756381054409, \"truth_read\": false}\n{\"row_id\": \"raw_dual-s2026092702\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 6.3332973279757425, \"truth_read\": false}\n{\"row_id\": \"raw_dual-s2026092702\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 6.30512783897575, \"truth_read\": false}\n"
+      },
+      {
+        "row_id": "curvature_dual-s2026092702",
+        "resolved": {
+          "row_id": "curvature_dual-s2026092702",
+          "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "pid": 2293272,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+          "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "evaluation_commit": "62af0de14adc42cdb6f9be8323b599d1d31fb3da",
+          "source_run": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "views": [
+            "clean",
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+          "backend_flags": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "batch_size": 256,
+          "parameters": 619535,
+          "trainable_parameters": 0,
+          "hardware": "NVIDIA GeForce RTX 3090",
+          "torch_version": "2.1.0+cu121"
+        },
+        "provenance": {
+          "status": "VERIFIED",
+          "config": {
+            "schema": "dual_evidence_v1",
+            "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+            "stage": "dual_evidence",
+            "arm": "curvature_dual",
+            "model_seed": 2026092702,
+            "row_id": "curvature_dual-s2026092702",
+            "features": [
+              "ema",
+              "leo",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_dual-s2026092702/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_dual_evidence",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06,
+            "dual_recipe": {
+              "lags": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "evidence_channels": 12,
+              "widths": [
+                32,
+                64,
+                96,
+                160
+              ],
+              "fusion_rank": 64,
+              "curvature_log_scale": 0.25,
+              "interaction_bound": 0.5,
+              "initial_fusion_output": "zero",
+              "new_objective_weights": {},
+              "source_selection": "fixed_E200_all_controls"
+            },
+            "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+          },
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_dual-s2026092702/source/final_ssdg.pth",
+          "scratch_sources": [],
+          "source_roles": "EXACT_MATCH",
+          "own_E200": true,
+          "optimizer_steps": 44400,
+          "query_fit": false,
+          "truth_read": false
+        },
+        "log_tail": "{\"row_id\": \"curvature_dual-s2026092702\", \"view\": \"clean\", \"count\": 168000, \"seconds\": 10.153256734949537, \"truth_read\": false}\n{\"row_id\": \"curvature_dual-s2026092702\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 10.112731711938977, \"truth_read\": false}\n{\"row_id\": \"curvature_dual-s2026092702\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 9.850344137987122, \"truth_read\": false}\n"
+      },
+      {
+        "row_id": "curvature_interaction-s2026092702",
+        "resolved": {
+          "row_id": "curvature_interaction-s2026092702",
+          "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "pid": 2293423,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+          "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "evaluation_commit": "62af0de14adc42cdb6f9be8323b599d1d31fb3da",
+          "source_run": "20261009-phase1-dual-evidence-manysig-m16-r01",
+          "views": [
+            "clean",
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+          "backend_flags": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "batch_size": 256,
+          "parameters": 619535,
+          "trainable_parameters": 0,
+          "hardware": "NVIDIA GeForce RTX 3090",
+          "torch_version": "2.1.0+cu121"
+        },
+        "provenance": {
+          "status": "VERIFIED",
+          "config": {
+            "schema": "dual_evidence_v1",
+            "run_id": "20261009-phase1-dual-evidence-manysig-m16-r01",
+            "stage": "dual_evidence",
+            "arm": "curvature_interaction",
+            "model_seed": 2026092702,
+            "row_id": "curvature_interaction-s2026092702",
+            "features": [
+              "ema",
+              "leo",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_interaction-s2026092702/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_dual_evidence",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06,
+            "dual_recipe": {
+              "lags": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "evidence_channels": 12,
+              "widths": [
+                32,
+                64,
+                96,
+                160
+              ],
+              "fusion_rank": 64,
+              "curvature_log_scale": 0.25,
+              "interaction_bound": 0.5,
+              "initial_fusion_output": "zero",
+              "new_objective_weights": {},
+              "source_selection": "fixed_E200_all_controls"
+            },
+            "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+          },
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/curvature_interaction-s2026092702/source/final_ssdg.pth",
+          "scratch_sources": [],
+          "source_roles": "EXACT_MATCH",
+          "own_E200": true,
+          "optimizer_steps": 44400,
+          "query_fit": false,
+          "truth_read": false
+        },
+        "log_tail": "{\"row_id\": \"curvature_interaction-s2026092702\", \"view\": \"clean\", \"count\": 168000, \"seconds\": 7.483972021029331, \"truth_read\": false}\n{\"row_id\": \"curvature_interaction-s2026092702\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 7.01265083195176, \"truth_read\": false}\n{\"row_id\": \"curvature_interaction-s2026092702\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 7.037395427003503, \"truth_read\": false}\n{\"row_id\": \"curvature_interaction-s2026092702\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 7.059112990973517, \"truth_read\": false}\n"
+      }
+    ],
+    "takeover": {
+      "status": "VERIFIED",
+      "old_controller": {
+        "pid": 2074109,
+        "start_ticks": 76356526,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_20261009_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_dual_evidence.dispatch"
+        ],
+        "gpu": null
+      },
+      "old_controller_stopped": true,
+      "reason": "User requested immediate tests after capacity conflict was explained",
+      "healthy_training_mutated": false
+    },
+    "context": {
+      "run_id": "20261009-phase1-dual-evidence-test-now-manysig-m16-r02",
+      "source_run": "20261009-phase1-dual-evidence-manysig-m16-r01",
+      "source_commit": "a759963aa77150da25bd91fd8c031f7d06120cf4",
+      "evaluation_commit": "62af0de14adc42cdb6f9be8323b599d1d31fb3da",
+      "source_freeze_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-dual-evidence-manysig-m16-r01/source_matrix_frozen.json",
+      "total_gpu_limit": 5,
+      "per_gpu_test_limit": 1,
+      "source_training_mutated": false,
+      "selection": "ALL16_FROZEN_CONTROLS",
+      "truth_last": true
+    },
+    "old_pid_exists": false,
+    "gpu": "2129534, GPU-56adac86-77cd-36c9-8770-dbf002650461\n2217180, GPU-56adac86-77cd-36c9-8770-dbf002650461\n2251833, GPU-56adac86-77cd-36c9-8770-dbf002650461\n2256449, GPU-56adac86-77cd-36c9-8770-dbf002650461\n2293105, GPU-56adac86-77cd-36c9-8770-dbf002650461\n2129071, GPU-a2d039ff-1792-4222-2b47-140429e10f94\n2178327, GPU-a2d039ff-1792-4222-2b47-140429e10f94\n2252721, GPU-a2d039ff-1792-4222-2b47-140429e10f94\n2254773, GPU-a2d039ff-1792-4222-2b47-140429e10f94\n2293114, GPU-a2d039ff-1792-4222-2b47-140429e10f94\n2128878, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562\n2159333, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562\n2249689, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562\n2251951, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562\n2293165, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562\n2128908, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97\n2226817, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97\n2248976, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97\n2249694, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97\n2293177, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97\n2128731, GPU-95d925a1-7218-ca7b-adef-164241f4f491\n2128755, GPU-95d925a1-7218-ca7b-adef-164241f4f491\n2245687, GPU-95d925a1-7218-ca7b-adef-164241f4f491\n2246480, GPU-95d925a1-7218-ca7b-adef-164241f4f491\n2293186, GPU-95d925a1-7218-ca7b-adef-164241f4f491\n2128736, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331\n2128761, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331\n2244718, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331\n2245692, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331\n2293196, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331\n2128743, GPU-5463e082-259e-537b-603a-01575d45801c\n2128826, GPU-5463e082-259e-537b-603a-01575d45801c\n2248221, GPU-5463e082-259e-537b-603a-01575d45801c\n2251276, GPU-5463e082-259e-537b-603a-01575d45801c\n2293272, GPU-5463e082-259e-537b-603a-01575d45801c\n2128749, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9\n2128852, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9\n2247496, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9\n2278754, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9\n2293423, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9\n"
+  }
+}

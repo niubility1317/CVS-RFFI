@@ -55,3 +55,7 @@ SOURCE COMPLETE / TEST QUEUED / VERIFIED。16 行均完成 E200 和 44400 次成
 固定测试范围为 4 组×4 seed×7 视图，共 112 组预测，每视图 168000 个固定 query；包括 clean 和六种已登记 practical 代理视图。全部预测完成后，独立 CPU scorer 才连接 truth，输出 1568 条总体/RX/TX 指标及 448 条日期指标，并保留四 seed 统计和同 row 差值。不是仅测源域验证集，也不新增场景或更换 checkpoint。
 
 本地观察器 PID20076 的实际命令行与原 observer.json 已独立核实，继续自动收取、复算和提交完整结果。本次仅完成训练/冻结/测试队列状态核实；测试和评分未完成，准确率暂无。证据见 [测试队列](evidence/test_queue_verified.json) 与 [冻结及预检读回](evidence/test_freeze_readback.json)。
+
+## 立即测试交接
+
+用户随后要求“直接启动”，测试由独立run `20261009-phase1-dual-evidence-test-now-manysig-m16-r02`接管并已运行。原空闲调度器已安全退出，源训练与权重不变。8个预测进程正在执行、8行待第二批；本次临时每卡最多1额外推理、总数5。最终完整结果见[立即测试报告](../20261009-phase1-dual-evidence-test-now-manysig-m16-r02/report.md)。原队列快照为历史状态，不代表仍等待容量。

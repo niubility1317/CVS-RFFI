@@ -29,7 +29,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-09 用户在获知8卡每卡4进程占满、测试排队后指令：直接启动。仅测试调度临时覆盖，训练不动。",
   "code": {
-    "commit": "release_commit.txt records committed/pushed evaluation version",
+    "commit": "62af0de14adc42cdb6f9be8323b599d1d31fb3da",
     "checkout": "E:/type10-7/code/worktrees/receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02"
@@ -121,7 +121,23 @@
     "local_artifact_root": "automation_reports/CV-SincNet/20261009-phase1-dual-evidence-test-now-manysig-m16-r02",
     "launch_command": "python -m experiments.cvs_dual_test_now.publish --output local_artifacts/cvs_dual_evidence_test_now_20261009_r02",
     "stop_rule": "Only affected technical failure; retain artifacts, no automatic retry, fallback or low-performance stop. No interventions on healthy existing jobs.",
-    "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_dual_test_now.driver"
+    "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_dual_test_now.driver",
+    "dispatcher": {
+      "pid": 2293080,
+      "state": "S",
+      "start_ticks": 78311268,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_dual_evidence_test_now_20261009_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_dual_test_now.driver"
+      ]
+    },
+    "local_observer": {
+      "pid": 57220,
+      "verified": "Independent Win32_Process + observer.json; stderr empty"
+    }
   },
   "expected_artifacts": [
     "source/initial_smoke.pt",
@@ -1937,7 +1953,7 @@
     "Curve invariance limited to ideal global complex gain/phase/constant CFO in evidence input. No arbitrary channel cancellation or transmitter-factor identifiability claim.",
     "Design and literature: experiments/cvs_dual_evidence/DESIGN.md. Actual clean/6view gains unknown until scoring."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "test_completion_plan": {
     "rows": 16,
     "views": [
