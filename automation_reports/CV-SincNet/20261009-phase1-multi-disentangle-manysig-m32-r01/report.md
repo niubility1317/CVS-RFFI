@@ -3,7 +3,7 @@
 - run_id：`20261009-phase1-multi-disentangle-manysig-m32-r01`
 - group_id：`cvs-multi-disentanglement`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -80,3 +80,7 @@ VERIFIED。代码提交：`c037af5a19d5973486942a090bced9cbae070d38`；控制器
 ## 完整测试交付
 
 ANALYZED / VERIFIED。完整结果见[结果表](results/full_results.md)、[逐RX/TX](results/scores.csv)、[逐日期](results/day_scores.csv)。所有负结果完整保留。
+
+## 本轮结果解释
+
+32模型×7视图完整测试与独立复算已完成。全部场景、逐seed、Macro-F1、最差RX及关键配对差值见[完整汇总](results/complete_summary.md)。本轮L/T/R主方案未高于同轮基线，不能把已执行等同于有效解耦。全部32行实际机制记录VERIFIED，见[执行计数](results/mechanism_execution_summary.json)。
