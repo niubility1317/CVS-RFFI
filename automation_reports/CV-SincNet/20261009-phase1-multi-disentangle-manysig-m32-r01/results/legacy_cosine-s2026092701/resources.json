@@ -1,0 +1,90 @@
+{
+  "row_id": "legacy_cosine-s2026092701",
+  "stage": "multi_disentangle",
+  "arm": "legacy_cosine",
+  "model_seed": 2026092701,
+  "prediction": {
+    "status": "PREDICTIONS_COMPLETE",
+    "count": 168000,
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "truth_read": false,
+    "query_fit": false,
+    "inference_seconds": {
+      "clean": 4.738953375024721,
+      "practical_high": 4.9433994009159505,
+      "practical_mid": 5.213592645013705,
+      "practical_low_suburban": 5.80459882307332,
+      "practical_high_urban": 7.148199230898172,
+      "practical_mid_urban": 7.499290084000677,
+      "practical_low_urban": 7.536266137030907
+    },
+    "wall_seconds": 44.48220236599445,
+    "peak_cuda_allocated_bytes": 91524096,
+    "peak_cuda_reserved_bytes": 130023424,
+    "peak_process_rss_bytes": 1529798656,
+    "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+  },
+  "source": {
+    "elapsed_seconds": 16589.666450738907,
+    "hardware": "NVIDIA GeForce RTX 3090",
+    "parameters": 844754,
+    "last_epoch_resource_metrics": {
+      "multi_active": 0.0,
+      "multi_epoch": 200.0,
+      "multi_native_update": 44399.0,
+      "multi_auxiliary_successful_updates": 0,
+      "multi_source_L_only": 1.0,
+      "multi_identity_aux_weight": 0.05,
+      "multi_paired_consistency_weight": 0.03,
+      "multi_receiver_identity_weight": 0.01,
+      "multi_cadence": 4.0,
+      "multi_auxiliary_training_seconds": 0.0,
+      "multi_auxiliary_active_steps_epoch": 0,
+      "multi_auxiliary_parameters": 0,
+      "multi_training_parameters": 844754,
+      "multi_inference_parameters": 844754,
+      "multi_metric_scope": "active auxiliary steps in this epoch; no target observations",
+      "multi_receiver_relations_total": 0
+    },
+    "auxiliary_cost": {
+      "identity_parameters": 844754,
+      "auxiliary_parameters": 0,
+      "inference_auxiliary_parameters": 0,
+      "auxiliary_optimizer": "separate AdamW",
+      "auxiliary_active_paths": [],
+      "auxiliary_data": "source_L_only",
+      "native_optimizer_excludes_auxiliaries": true,
+      "resume_supported": false,
+      "mechanism_execution": {
+        "fit_steps": {},
+        "identity_steps": {},
+        "receiver_relations_total": 0,
+        "exposure_totals": {},
+        "source_L_only": true,
+        "target_access": false
+      }
+    },
+    "mechanism_execution": {
+      "status": "VERIFIED",
+      "missing": [],
+      "fit_steps": {},
+      "identity_steps": {},
+      "receiver_relations_total": 0,
+      "exposure_totals": {},
+      "source_L_only": true,
+      "target_access": false
+    },
+    "peak_process_rss_bytes": null,
+    "training_flops": null,
+    "transmission_bytes": 0,
+    "scope": "Source training only; no satellite adaptation/transfer; RSS/FLOPs not measured"
+  }
+}

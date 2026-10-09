@@ -1,0 +1,29 @@
+{
+  "status": "PREDICTIONS_COMPLETE",
+  "count": 168000,
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "truth_read": false,
+  "query_fit": false,
+  "inference_seconds": {
+    "clean": 5.360668746987358,
+    "practical_high": 5.20340863103047,
+    "practical_mid": 6.260497046983801,
+    "practical_low_suburban": 6.3969889810541645,
+    "practical_high_urban": 6.024434134014882,
+    "practical_mid_urban": 5.376827745931223,
+    "practical_low_urban": 5.259419610025361
+  },
+  "wall_seconds": 41.34245751996059,
+  "peak_cuda_allocated_bytes": 91524096,
+  "peak_cuda_reserved_bytes": 130023424,
+  "peak_process_rss_bytes": 1528610816,
+  "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+}

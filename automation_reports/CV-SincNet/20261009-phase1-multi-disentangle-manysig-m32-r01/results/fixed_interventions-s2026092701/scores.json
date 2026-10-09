@@ -1,0 +1,6178 @@
+{
+  "results": [
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8203928571428571,
+      "macro_f1": 0.8156301276874363,
+      "macro_accuracy": 0.8203928571428571,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27503,
+          119,
+          100,
+          244,
+          28,
+          6
+        ],
+        [
+          918,
+          14497,
+          149,
+          12363,
+          60,
+          13
+        ],
+        [
+          1344,
+          180,
+          21763,
+          1060,
+          289,
+          3364
+        ],
+        [
+          2908,
+          4969,
+          1282,
+          18756,
+          31,
+          54
+        ],
+        [
+          9,
+          12,
+          10,
+          8,
+          27957,
+          4
+        ],
+        [
+          18,
+          16,
+          67,
+          8,
+          541,
+          27350
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7924583333333334,
+      "macro_f1": 0.7685407093717055,
+      "macro_accuracy": 0.7924583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3993,
+          4,
+          1,
+          2,
+          0,
+          0
+        ],
+        [
+          218,
+          1117,
+          7,
+          2658,
+          0,
+          0
+        ],
+        [
+          1186,
+          3,
+          2187,
+          3,
+          0,
+          621
+        ],
+        [
+          150,
+          66,
+          0,
+          3784,
+          0,
+          0
+        ],
+        [
+          4,
+          7,
+          1,
+          3,
+          3985,
+          0
+        ],
+        [
+          4,
+          0,
+          37,
+          3,
+          3,
+          3953
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7411666666666666,
+      "macro_f1": 0.7170063962203305,
+      "macro_accuracy": 0.7411666666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3994,
+          0,
+          0,
+          6,
+          0,
+          0
+        ],
+        [
+          11,
+          2208,
+          1,
+          1778,
+          2,
+          0
+        ],
+        [
+          18,
+          1,
+          3132,
+          3,
+          2,
+          844
+        ],
+        [
+          191,
+          2136,
+          1161,
+          462,
+          2,
+          48
+        ],
+        [
+          0,
+          1,
+          5,
+          0,
+          3994,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          0,
+          3998
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.9093333333333333,
+      "macro_f1": 0.9081745207374303,
+      "macro_accuracy": 0.9093333333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3764,
+          74,
+          90,
+          53,
+          19,
+          0
+        ],
+        [
+          2,
+          2631,
+          95,
+          1243,
+          23,
+          6
+        ],
+        [
+          14,
+          3,
+          3950,
+          10,
+          16,
+          7
+        ],
+        [
+          26,
+          462,
+          1,
+          3500,
+          10,
+          1
+        ],
+        [
+          0,
+          1,
+          1,
+          1,
+          3997,
+          0
+        ],
+        [
+          0,
+          3,
+          9,
+          3,
+          3,
+          3982
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7655833333333333,
+      "macro_f1": 0.7671551233254608,
+      "macro_accuracy": 0.7655833333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3976,
+          4,
+          4,
+          3,
+          8,
+          5
+        ],
+        [
+          23,
+          1652,
+          23,
+          2278,
+          20,
+          4
+        ],
+        [
+          60,
+          125,
+          3460,
+          149,
+          156,
+          50
+        ],
+        [
+          32,
+          2070,
+          5,
+          1878,
+          13,
+          2
+        ],
+        [
+          5,
+          3,
+          3,
+          4,
+          3982,
+          3
+        ],
+        [
+          14,
+          12,
+          15,
+          2,
+          531,
+          3426
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8971666666666667,
+      "macro_f1": 0.8941644687552017,
+      "macro_accuracy": 0.8971666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3842,
+          0,
+          5,
+          152,
+          0,
+          1
+        ],
+        [
+          7,
+          2105,
+          2,
+          1879,
+          6,
+          1
+        ],
+        [
+          43,
+          26,
+          3631,
+          116,
+          113,
+          71
+        ],
+        [
+          8,
+          32,
+          0,
+          3957,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          1,
+          3998
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8380416666666667,
+      "macro_f1": 0.8246998137322304,
+      "macro_accuracy": 0.8380416666666665,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          656,
+          2966,
+          21,
+          354,
+          1,
+          2
+        ],
+        [
+          14,
+          2,
+          3964,
+          19,
+          1,
+          0
+        ],
+        [
+          2500,
+          192,
+          115,
+          1187,
+          3,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          2,
+          3996
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.799,
+      "macro_f1": 0.7804123445926311,
+      "macro_accuracy": 0.799,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3934,
+          37,
+          0,
+          28,
+          1,
+          0
+        ],
+        [
+          1,
+          1818,
+          0,
+          2173,
+          8,
+          0
+        ],
+        [
+          9,
+          20,
+          1439,
+          760,
+          1,
+          1771
+        ],
+        [
+          1,
+          11,
+          0,
+          3988,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          1,
+          3997
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.98225,
+      "macro_f1": 0.16517425484508344,
+      "macro_accuracy": 0.98225,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27503,
+          119,
+          100,
+          244,
+          28,
+          6
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.51775,
+      "macro_f1": 0.1137099873716576,
+      "macro_accuracy": 0.51775,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          918,
+          14497,
+          149,
+          12363,
+          60,
+          13
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.77725,
+      "macro_f1": 0.14577765274065738,
+      "macro_accuracy": 0.77725,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1344,
+          180,
+          21763,
+          1060,
+          289,
+          3364
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6698571428571428,
+      "macro_f1": 0.13371545897852682,
+      "macro_accuracy": 0.6698571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2908,
+          4969,
+          1282,
+          18756,
+          31,
+          54
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9984642857142857,
+      "macro_f1": 0.16653859213324518,
+      "macro_accuracy": 0.9984642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          9,
+          12,
+          10,
+          8,
+          27957,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9767857142857143,
+      "macro_f1": 0.1647094248720265,
+      "macro_accuracy": 0.9767857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          18,
+          16,
+          67,
+          8,
+          541,
+          27350
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7848690476190476,
+      "macro_f1": 0.7809566311205586,
+      "macro_accuracy": 0.7848690476190477,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26215,
+          305,
+          205,
+          1192,
+          73,
+          10
+        ],
+        [
+          1125,
+          14421,
+          171,
+          12122,
+          137,
+          24
+        ],
+        [
+          3207,
+          1205,
+          18331,
+          1636,
+          1356,
+          2265
+        ],
+        [
+          3963,
+          5258,
+          320,
+          18386,
+          58,
+          15
+        ],
+        [
+          42,
+          85,
+          71,
+          74,
+          27712,
+          16
+        ],
+        [
+          36,
+          23,
+          139,
+          5,
+          1004,
+          26793
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.6909583333333333,
+      "macro_f1": 0.6491985259208194,
+      "macro_accuracy": 0.6909583333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3953,
+          27,
+          6,
+          12,
+          2,
+          0
+        ],
+        [
+          441,
+          512,
+          10,
+          3032,
+          4,
+          1
+        ],
+        [
+          2149,
+          3,
+          1292,
+          1,
+          4,
+          551
+        ],
+        [
+          868,
+          168,
+          3,
+          2956,
+          5,
+          0
+        ],
+        [
+          8,
+          28,
+          6,
+          10,
+          3946,
+          2
+        ],
+        [
+          3,
+          3,
+          62,
+          1,
+          7,
+          3924
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.732,
+      "macro_f1": 0.7270654612889039,
+      "macro_accuracy": 0.7319999999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3756,
+          15,
+          11,
+          211,
+          6,
+          1
+        ],
+        [
+          17,
+          1602,
+          8,
+          2362,
+          11,
+          0
+        ],
+        [
+          288,
+          11,
+          2884,
+          2,
+          4,
+          811
+        ],
+        [
+          292,
+          1805,
+          262,
+          1628,
+          8,
+          5
+        ],
+        [
+          7,
+          9,
+          14,
+          2,
+          3961,
+          7
+        ],
+        [
+          0,
+          0,
+          5,
+          1,
+          257,
+          3737
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8891666666666667,
+      "macro_f1": 0.888716722875579,
+      "macro_accuracy": 0.8891666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3551,
+          117,
+          150,
+          146,
+          34,
+          2
+        ],
+        [
+          22,
+          2796,
+          122,
+          973,
+          74,
+          13
+        ],
+        [
+          14,
+          5,
+          3942,
+          10,
+          24,
+          5
+        ],
+        [
+          47,
+          733,
+          5,
+          3202,
+          10,
+          3
+        ],
+        [
+          5,
+          6,
+          9,
+          9,
+          3971,
+          0
+        ],
+        [
+          0,
+          4,
+          17,
+          2,
+          99,
+          3878
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7301666666666666,
+      "macro_f1": 0.7284102792704717,
+      "macro_accuracy": 0.7301666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3925,
+          25,
+          9,
+          24,
+          12,
+          5
+        ],
+        [
+          106,
+          2212,
+          9,
+          1654,
+          16,
+          3
+        ],
+        [
+          541,
+          534,
+          2221,
+          276,
+          375,
+          53
+        ],
+        [
+          112,
+          2142,
+          13,
+          1710,
+          19,
+          4
+        ],
+        [
+          12,
+          8,
+          31,
+          17,
+          3927,
+          5
+        ],
+        [
+          9,
+          15,
+          40,
+          1,
+          406,
+          3529
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8745,
+      "macro_f1": 0.873587230441427,
+      "macro_accuracy": 0.8744999999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3284,
+          8,
+          15,
+          688,
+          5,
+          0
+        ],
+        [
+          23,
+          3480,
+          6,
+          481,
+          9,
+          1
+        ],
+        [
+          164,
+          43,
+          2667,
+          93,
+          895,
+          138
+        ],
+        [
+          22,
+          153,
+          2,
+          3816,
+          6,
+          1
+        ],
+        [
+          1,
+          6,
+          4,
+          9,
+          3979,
+          1
+        ],
+        [
+          3,
+          0,
+          5,
+          0,
+          230,
+          3762
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8210833333333334,
+      "macro_f1": 0.8090369456541625,
+      "macro_accuracy": 0.8210833333333335,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3972,
+          8,
+          3,
+          10,
+          5,
+          2
+        ],
+        [
+          498,
+          2752,
+          12,
+          723,
+          11,
+          4
+        ],
+        [
+          33,
+          8,
+          3906,
+          38,
+          11,
+          4
+        ],
+        [
+          2605,
+          210,
+          29,
+          1151,
+          3,
+          2
+        ],
+        [
+          4,
+          19,
+          4,
+          22,
+          3950,
+          1
+        ],
+        [
+          19,
+          1,
+          4,
+          0,
+          1,
+          3975
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7562083333333334,
+      "macro_f1": 0.7336806572021976,
+      "macro_accuracy": 0.7562083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3774,
+          105,
+          11,
+          101,
+          9,
+          0
+        ],
+        [
+          18,
+          1067,
+          4,
+          2897,
+          12,
+          2
+        ],
+        [
+          18,
+          601,
+          1419,
+          1216,
+          43,
+          703
+        ],
+        [
+          17,
+          47,
+          6,
+          3923,
+          7,
+          0
+        ],
+        [
+          5,
+          9,
+          3,
+          5,
+          3978,
+          0
+        ],
+        [
+          2,
+          0,
+          6,
+          0,
+          4,
+          3988
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.93625,
+      "macro_f1": 0.16117925543361308,
+      "macro_accuracy": 0.93625,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26215,
+          305,
+          205,
+          1192,
+          73,
+          10
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5150357142857143,
+      "macro_f1": 0.11331651776242897,
+      "macro_accuracy": 0.5150357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1125,
+          14421,
+          171,
+          12122,
+          137,
+          24
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6546785714285714,
+      "macro_f1": 0.13188433949911146,
+      "macro_accuracy": 0.6546785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3207,
+          1205,
+          18331,
+          1636,
+          1356,
+          2265
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6566428571428572,
+      "macro_f1": 0.13212319809137815,
+      "macro_accuracy": 0.6566428571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3963,
+          5258,
+          320,
+          18386,
+          58,
+          15
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9897142857142858,
+      "macro_f1": 0.16580509285851044,
+      "macro_accuracy": 0.9897142857142858,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          42,
+          85,
+          71,
+          74,
+          27712,
+          16
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9568928571428571,
+      "macro_f1": 0.16299527311882905,
+      "macro_accuracy": 0.9568928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          36,
+          23,
+          139,
+          5,
+          1004,
+          26793
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7646845238095238,
+      "macro_f1": 0.7602870879998495,
+      "macro_accuracy": 0.7646845238095238,
+      "query_count": 168000,
+      "confusion": [
+        [
+          25561,
+          474,
+          362,
+          1375,
+          171,
+          57
+        ],
+        [
+          1721,
+          14111,
+          325,
+          11495,
+          297,
+          51
+        ],
+        [
+          3220,
+          1298,
+          17869,
+          1710,
+          1369,
+          2534
+        ],
+        [
+          4570,
+          5411,
+          470,
+          17279,
+          208,
+          62
+        ],
+        [
+          163,
+          271,
+          256,
+          203,
+          27027,
+          80
+        ],
+        [
+          59,
+          42,
+          197,
+          12,
+          1070,
+          26620
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.6724166666666667,
+      "macro_f1": 0.635240408424234,
+      "macro_accuracy": 0.6724166666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3862,
+          48,
+          35,
+          26,
+          24,
+          5
+        ],
+        [
+          584,
+          542,
+          28,
+          2833,
+          12,
+          1
+        ],
+        [
+          2057,
+          8,
+          1327,
+          2,
+          7,
+          599
+        ],
+        [
+          1054,
+          216,
+          27,
+          2676,
+          20,
+          7
+        ],
+        [
+          21,
+          53,
+          35,
+          34,
+          3849,
+          8
+        ],
+        [
+          7,
+          7,
+          81,
+          2,
+          21,
+          3882
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.71725,
+      "macro_f1": 0.7113565509361505,
+      "macro_accuracy": 0.7172499999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3654,
+          45,
+          20,
+          261,
+          13,
+          7
+        ],
+        [
+          86,
+          1667,
+          23,
+          2181,
+          40,
+          3
+        ],
+        [
+          312,
+          38,
+          2796,
+          16,
+          11,
+          827
+        ],
+        [
+          365,
+          1783,
+          292,
+          1516,
+          31,
+          13
+        ],
+        [
+          30,
+          20,
+          40,
+          9,
+          3868,
+          33
+        ],
+        [
+          2,
+          4,
+          10,
+          1,
+          270,
+          3713
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.86325,
+      "macro_f1": 0.8621348893405846,
+      "macro_accuracy": 0.8632499999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3446,
+          119,
+          199,
+          170,
+          52,
+          14
+        ],
+        [
+          79,
+          2673,
+          151,
+          977,
+          98,
+          22
+        ],
+        [
+          31,
+          31,
+          3857,
+          19,
+          33,
+          29
+        ],
+        [
+          141,
+          787,
+          25,
+          3001,
+          39,
+          7
+        ],
+        [
+          20,
+          40,
+          30,
+          22,
+          3884,
+          4
+        ],
+        [
+          0,
+          5,
+          20,
+          2,
+          116,
+          3857
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7157083333333333,
+      "macro_f1": 0.7122337366028715,
+      "macro_accuracy": 0.7157083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3825,
+          64,
+          24,
+          55,
+          22,
+          10
+        ],
+        [
+          204,
+          2201,
+          26,
+          1518,
+          40,
+          11
+        ],
+        [
+          528,
+          527,
+          2194,
+          259,
+          399,
+          93
+        ],
+        [
+          277,
+          2008,
+          32,
+          1632,
+          40,
+          11
+        ],
+        [
+          28,
+          32,
+          72,
+          52,
+          3802,
+          14
+        ],
+        [
+          15,
+          17,
+          48,
+          5,
+          392,
+          3523
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8457916666666667,
+      "macro_f1": 0.8445105720214882,
+      "macro_accuracy": 0.8457916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3209,
+          23,
+          33,
+          704,
+          23,
+          8
+        ],
+        [
+          74,
+          3301,
+          23,
+          556,
+          39,
+          7
+        ],
+        [
+          179,
+          72,
+          2565,
+          118,
+          843,
+          223
+        ],
+        [
+          88,
+          249,
+          18,
+          3605,
+          32,
+          8
+        ],
+        [
+          20,
+          38,
+          22,
+          24,
+          3888,
+          8
+        ],
+        [
+          3,
+          3,
+          8,
+          1,
+          254,
+          3731
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7972083333333333,
+      "macro_f1": 0.7857374598376236,
+      "macro_accuracy": 0.7972083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3907,
+          35,
+          16,
+          26,
+          12,
+          4
+        ],
+        [
+          633,
+          2560,
+          46,
+          730,
+          28,
+          3
+        ],
+        [
+          83,
+          23,
+          3759,
+          74,
+          35,
+          26
+        ],
+        [
+          2557,
+          232,
+          59,
+          1126,
+          16,
+          10
+        ],
+        [
+          30,
+          56,
+          26,
+          42,
+          3844,
+          2
+        ],
+        [
+          31,
+          3,
+          21,
+          0,
+          8,
+          3937
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7411666666666666,
+      "macro_f1": 0.7207356955106728,
+      "macro_accuracy": 0.7411666666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3658,
+          140,
+          35,
+          133,
+          25,
+          9
+        ],
+        [
+          61,
+          1167,
+          28,
+          2700,
+          40,
+          4
+        ],
+        [
+          30,
+          599,
+          1371,
+          1222,
+          41,
+          737
+        ],
+        [
+          88,
+          136,
+          17,
+          3723,
+          30,
+          6
+        ],
+        [
+          14,
+          32,
+          31,
+          20,
+          3892,
+          11
+        ],
+        [
+          1,
+          3,
+          9,
+          1,
+          9,
+          3977
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9128928571428572,
+      "macro_f1": 0.1590771892483959,
+      "macro_accuracy": 0.9128928571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          25561,
+          474,
+          362,
+          1375,
+          171,
+          57
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5039642857142858,
+      "macro_f1": 0.11169686463552675,
+      "macro_accuracy": 0.5039642857142858,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1721,
+          14111,
+          325,
+          11495,
+          297,
+          51
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6381785714285715,
+      "macro_f1": 0.12985531259310937,
+      "macro_accuracy": 0.6381785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3220,
+          1298,
+          17869,
+          1710,
+          1369,
+          2534
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6171071428571429,
+      "macro_f1": 0.12720392823751997,
+      "macro_accuracy": 0.6171071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          4570,
+          5411,
+          470,
+          17279,
+          208,
+          62
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.96525,
+      "macro_f1": 0.1637196285459865,
+      "macro_accuracy": 0.96525,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          163,
+          271,
+          256,
+          203,
+          27027,
+          80
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9507142857142857,
+      "macro_f1": 0.16245575491273037,
+      "macro_accuracy": 0.9507142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          59,
+          42,
+          197,
+          12,
+          1070,
+          26620
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7416130952380953,
+      "macro_f1": 0.7367004825144745,
+      "macro_accuracy": 0.7416130952380953,
+      "query_count": 168000,
+      "confusion": [
+        [
+          24730,
+          678,
+          612,
+          1570,
+          288,
+          122
+        ],
+        [
+          2451,
+          13865,
+          496,
+          10647,
+          429,
+          112
+        ],
+        [
+          3323,
+          1364,
+          17433,
+          1752,
+          1412,
+          2716
+        ],
+        [
+          5170,
+          5790,
+          699,
+          15821,
+          392,
+          128
+        ],
+        [
+          271,
+          428,
+          455,
+          364,
+          26303,
+          179
+        ],
+        [
+          99,
+          65,
+          264,
+          24,
+          1109,
+          26439
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.6514166666666666,
+      "macro_f1": 0.6193254361162758,
+      "macro_accuracy": 0.6514166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3753,
+          60,
+          79,
+          62,
+          30,
+          16
+        ],
+        [
+          814,
+          565,
+          53,
+          2520,
+          40,
+          8
+        ],
+        [
+          1973,
+          17,
+          1403,
+          3,
+          15,
+          589
+        ],
+        [
+          1227,
+          254,
+          66,
+          2372,
+          68,
+          13
+        ],
+        [
+          37,
+          114,
+          57,
+          58,
+          3718,
+          16
+        ],
+        [
+          15,
+          13,
+          101,
+          3,
+          45,
+          3823
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6953333333333334,
+      "macro_f1": 0.6875260008583362,
+      "macro_accuracy": 0.6953333333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3478,
+          75,
+          63,
+          328,
+          38,
+          18
+        ],
+        [
+          163,
+          1735,
+          51,
+          1979,
+          61,
+          11
+        ],
+        [
+          335,
+          50,
+          2733,
+          13,
+          21,
+          848
+        ],
+        [
+          489,
+          1780,
+          357,
+          1295,
+          52,
+          27
+        ],
+        [
+          52,
+          35,
+          64,
+          26,
+          3766,
+          57
+        ],
+        [
+          8,
+          13,
+          26,
+          3,
+          269,
+          3681
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8393333333333334,
+      "macro_f1": 0.8377284364848085,
+      "macro_accuracy": 0.8393333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3339,
+          149,
+          235,
+          176,
+          74,
+          27
+        ],
+        [
+          139,
+          2591,
+          161,
+          971,
+          114,
+          24
+        ],
+        [
+          43,
+          46,
+          3777,
+          46,
+          48,
+          40
+        ],
+        [
+          198,
+          890,
+          51,
+          2786,
+          46,
+          29
+        ],
+        [
+          34,
+          45,
+          57,
+          28,
+          3821,
+          15
+        ],
+        [
+          5,
+          8,
+          22,
+          3,
+          132,
+          3830
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.6927083333333334,
+      "macro_f1": 0.6881023667444458,
+      "macro_accuracy": 0.6927083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3692,
+          105,
+          63,
+          88,
+          31,
+          21
+        ],
+        [
+          327,
+          2127,
+          69,
+          1405,
+          58,
+          14
+        ],
+        [
+          534,
+          515,
+          2129,
+          293,
+          427,
+          102
+        ],
+        [
+          386,
+          1965,
+          53,
+          1506,
+          65,
+          25
+        ],
+        [
+          47,
+          73,
+          126,
+          81,
+          3650,
+          23
+        ],
+        [
+          22,
+          20,
+          68,
+          7,
+          362,
+          3521
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8155833333333333,
+      "macro_f1": 0.814301400319406,
+      "macro_accuracy": 0.8155833333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3087,
+          51,
+          71,
+          736,
+          37,
+          18
+        ],
+        [
+          147,
+          3114,
+          54,
+          616,
+          48,
+          21
+        ],
+        [
+          210,
+          77,
+          2547,
+          137,
+          776,
+          253
+        ],
+        [
+          162,
+          413,
+          41,
+          3316,
+          59,
+          9
+        ],
+        [
+          34,
+          44,
+          52,
+          38,
+          3806,
+          26
+        ],
+        [
+          8,
+          1,
+          14,
+          0,
+          273,
+          3704
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.77,
+      "macro_f1": 0.7585782365794884,
+      "macro_accuracy": 0.7699999999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3823,
+          46,
+          46,
+          43,
+          30,
+          12
+        ],
+        [
+          753,
+          2422,
+          52,
+          711,
+          46,
+          16
+        ],
+        [
+          169,
+          64,
+          3545,
+          108,
+          56,
+          58
+        ],
+        [
+          2544,
+          279,
+          74,
+          1048,
+          38,
+          17
+        ],
+        [
+          44,
+          84,
+          43,
+          93,
+          3719,
+          17
+        ],
+        [
+          32,
+          2,
+          18,
+          5,
+          20,
+          3923
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7269166666666667,
+      "macro_f1": 0.7071432381878603,
+      "macro_accuracy": 0.7269166666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3558,
+          192,
+          55,
+          137,
+          48,
+          10
+        ],
+        [
+          108,
+          1311,
+          56,
+          2445,
+          62,
+          18
+        ],
+        [
+          59,
+          595,
+          1299,
+          1152,
+          69,
+          826
+        ],
+        [
+          164,
+          209,
+          57,
+          3498,
+          64,
+          8
+        ],
+        [
+          23,
+          33,
+          56,
+          40,
+          3823,
+          25
+        ],
+        [
+          9,
+          8,
+          15,
+          3,
+          8,
+          3957
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.8832142857142857,
+      "macro_f1": 0.15633099437385423,
+      "macro_accuracy": 0.8832142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          24730,
+          678,
+          612,
+          1570,
+          288,
+          122
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4951785714285714,
+      "macro_f1": 0.11039452207492335,
+      "macro_accuracy": 0.4951785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2451,
+          13865,
+          496,
+          10647,
+          429,
+          112
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6226071428571428,
+      "macro_f1": 0.12790262584465037,
+      "macro_accuracy": 0.6226071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3323,
+          1364,
+          17433,
+          1752,
+          1412,
+          2716
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.5650357142857143,
+      "macro_f1": 0.12034564858553358,
+      "macro_accuracy": 0.5650357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          5170,
+          5790,
+          699,
+          15821,
+          392,
+          128
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9393928571428571,
+      "macro_f1": 0.1614582374208914,
+      "macro_accuracy": 0.9393928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          271,
+          428,
+          455,
+          364,
+          26303,
+          179
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.94425,
+      "macro_f1": 0.1618876173331619,
+      "macro_accuracy": 0.94425,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          99,
+          65,
+          264,
+          24,
+          1109,
+          26439
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7556488095238095,
+      "macro_f1": 0.7513006066572666,
+      "macro_accuracy": 0.7556488095238096,
+      "query_count": 168000,
+      "confusion": [
+        [
+          25133,
+          695,
+          474,
+          1346,
+          307,
+          45
+        ],
+        [
+          1731,
+          13873,
+          345,
+          11546,
+          448,
+          57
+        ],
+        [
+          3322,
+          1314,
+          17732,
+          1617,
+          1509,
+          2506
+        ],
+        [
+          4332,
+          5430,
+          585,
+          17205,
+          380,
+          68
+        ],
+        [
+          322,
+          463,
+          349,
+          292,
+          26471,
+          103
+        ],
+        [
+          72,
+          61,
+          240,
+          6,
+          1086,
+          26535
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.6675833333333333,
+      "macro_f1": 0.6301661165427501,
+      "macro_accuracy": 0.6675833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3805,
+          70,
+          47,
+          44,
+          28,
+          6
+        ],
+        [
+          530,
+          529,
+          41,
+          2862,
+          34,
+          4
+        ],
+        [
+          2068,
+          10,
+          1305,
+          3,
+          13,
+          601
+        ],
+        [
+          893,
+          245,
+          39,
+          2769,
+          50,
+          4
+        ],
+        [
+          54,
+          89,
+          41,
+          50,
+          3758,
+          8
+        ],
+        [
+          17,
+          8,
+          83,
+          2,
+          34,
+          3856
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7085833333333333,
+      "macro_f1": 0.7026089642854075,
+      "macro_accuracy": 0.7085833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3593,
+          87,
+          46,
+          223,
+          46,
+          5
+        ],
+        [
+          95,
+          1614,
+          18,
+          2198,
+          69,
+          6
+        ],
+        [
+          326,
+          42,
+          2781,
+          7,
+          24,
+          820
+        ],
+        [
+          317,
+          1751,
+          329,
+          1542,
+          39,
+          22
+        ],
+        [
+          60,
+          39,
+          67,
+          15,
+          3777,
+          42
+        ],
+        [
+          6,
+          7,
+          27,
+          0,
+          261,
+          3699
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8530416666666667,
+      "macro_f1": 0.8519713322923628,
+      "macro_accuracy": 0.8530416666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3411,
+          152,
+          195,
+          164,
+          72,
+          6
+        ],
+        [
+          112,
+          2640,
+          142,
+          964,
+          126,
+          16
+        ],
+        [
+          44,
+          54,
+          3786,
+          24,
+          71,
+          21
+        ],
+        [
+          147,
+          771,
+          34,
+          2976,
+          63,
+          9
+        ],
+        [
+          40,
+          45,
+          63,
+          33,
+          3806,
+          13
+        ],
+        [
+          1,
+          7,
+          23,
+          2,
+          113,
+          3854
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7037916666666667,
+      "macro_f1": 0.7011481455612915,
+      "macro_accuracy": 0.7037916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3758,
+          89,
+          34,
+          63,
+          46,
+          10
+        ],
+        [
+          194,
+          2162,
+          35,
+          1543,
+          57,
+          9
+        ],
+        [
+          548,
+          520,
+          2168,
+          250,
+          416,
+          98
+        ],
+        [
+          231,
+          2045,
+          38,
+          1596,
+          77,
+          13
+        ],
+        [
+          44,
+          81,
+          72,
+          67,
+          3720,
+          16
+        ],
+        [
+          16,
+          21,
+          61,
+          2,
+          413,
+          3487
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.841,
+      "macro_f1": 0.839892706780892,
+      "macro_accuracy": 0.8410000000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3164,
+          47,
+          76,
+          669,
+          40,
+          4
+        ],
+        [
+          108,
+          3294,
+          31,
+          511,
+          45,
+          11
+        ],
+        [
+          189,
+          51,
+          2607,
+          86,
+          865,
+          202
+        ],
+        [
+          134,
+          215,
+          28,
+          3561,
+          56,
+          6
+        ],
+        [
+          35,
+          65,
+          37,
+          43,
+          3810,
+          10
+        ],
+        [
+          3,
+          4,
+          10,
+          0,
+          235,
+          3748
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7862916666666667,
+      "macro_f1": 0.7745170268852846,
+      "macro_accuracy": 0.7862916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3792,
+          85,
+          33,
+          49,
+          33,
+          8
+        ],
+        [
+          585,
+          2555,
+          54,
+          749,
+          49,
+          8
+        ],
+        [
+          89,
+          58,
+          3688,
+          60,
+          63,
+          42
+        ],
+        [
+          2490,
+          274,
+          76,
+          1117,
+          33,
+          10
+        ],
+        [
+          54,
+          78,
+          31,
+          47,
+          3784,
+          6
+        ],
+        [
+          19,
+          10,
+          24,
+          0,
+          12,
+          3935
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.72925,
+      "macro_f1": 0.7080847723887932,
+      "macro_accuracy": 0.72925,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3610,
+          165,
+          43,
+          134,
+          42,
+          6
+        ],
+        [
+          107,
+          1079,
+          24,
+          2719,
+          68,
+          3
+        ],
+        [
+          58,
+          579,
+          1397,
+          1187,
+          57,
+          722
+        ],
+        [
+          120,
+          129,
+          41,
+          3644,
+          62,
+          4
+        ],
+        [
+          35,
+          66,
+          38,
+          37,
+          3816,
+          8
+        ],
+        [
+          10,
+          4,
+          12,
+          0,
+          18,
+          3956
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.8976071428571428,
+      "macro_f1": 0.15767351112616768,
+      "macro_accuracy": 0.8976071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          25133,
+          695,
+          474,
+          1346,
+          307,
+          45
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4954642857142857,
+      "macro_f1": 0.11043711540451684,
+      "macro_accuracy": 0.4954642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1731,
+          13873,
+          345,
+          11546,
+          448,
+          57
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6332857142857143,
+      "macro_f1": 0.1292457506049739,
+      "macro_accuracy": 0.6332857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3322,
+          1314,
+          17732,
+          1617,
+          1509,
+          2506
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6144642857142857,
+      "macro_f1": 0.12686649706890832,
+      "macro_accuracy": 0.6144642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          4332,
+          5430,
+          585,
+          17205,
+          380,
+          68
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9453928571428571,
+      "macro_f1": 0.16198833630127346,
+      "macro_accuracy": 0.9453928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          322,
+          463,
+          349,
+          292,
+          26471,
+          103
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9476785714285715,
+      "macro_f1": 0.1621894196387641,
+      "macro_accuracy": 0.9476785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          72,
+          61,
+          240,
+          6,
+          1086,
+          26535
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.6332023809523809,
+      "macro_f1": 0.6263318151211751,
+      "macro_accuracy": 0.6332023809523809,
+      "query_count": 168000,
+      "confusion": [
+        [
+          20363,
+          1916,
+          1916,
+          1994,
+          1315,
+          496
+        ],
+        [
+          3822,
+          11562,
+          1590,
+          8820,
+          1817,
+          389
+        ],
+        [
+          3571,
+          1798,
+          15444,
+          1703,
+          1996,
+          3488
+        ],
+        [
+          5688,
+          5712,
+          2062,
+          12351,
+          1701,
+          486
+        ],
+        [
+          1377,
+          1589,
+          1760,
+          1258,
+          21320,
+          696
+        ],
+        [
+          282,
+          220,
+          697,
+          61,
+          1402,
+          25338
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.5749583333333333,
+      "macro_f1": 0.5530306075855246,
+      "macro_accuracy": 0.5749583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3105,
+          212,
+          301,
+          151,
+          168,
+          63
+        ],
+        [
+          818,
+          626,
+          216,
+          2083,
+          209,
+          48
+        ],
+        [
+          1720,
+          48,
+          1471,
+          21,
+          59,
+          681
+        ],
+        [
+          1051,
+          456,
+          206,
+          1962,
+          273,
+          52
+        ],
+        [
+          199,
+          281,
+          211,
+          193,
+          3034,
+          82
+        ],
+        [
+          50,
+          45,
+          180,
+          12,
+          112,
+          3601
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.5909166666666666,
+      "macro_f1": 0.5793952285249663,
+      "macro_accuracy": 0.5909166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2905,
+          277,
+          236,
+          347,
+          181,
+          54
+        ],
+        [
+          421,
+          1458,
+          212,
+          1592,
+          279,
+          38
+        ],
+        [
+          384,
+          214,
+          2364,
+          54,
+          87,
+          897
+        ],
+        [
+          535,
+          1491,
+          651,
+          1029,
+          189,
+          105
+        ],
+        [
+          251,
+          132,
+          302,
+          109,
+          2943,
+          263
+        ],
+        [
+          38,
+          36,
+          128,
+          7,
+          308,
+          3483
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.711125,
+      "macro_f1": 0.7065523782822939,
+      "macro_accuracy": 0.711125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2756,
+          264,
+          444,
+          223,
+          221,
+          92
+        ],
+        [
+          431,
+          2065,
+          295,
+          800,
+          349,
+          60
+        ],
+        [
+          151,
+          241,
+          3218,
+          87,
+          188,
+          115
+        ],
+        [
+          499,
+          788,
+          235,
+          2124,
+          289,
+          65
+        ],
+        [
+          155,
+          208,
+          283,
+          149,
+          3149,
+          56
+        ],
+        [
+          14,
+          24,
+          52,
+          9,
+          146,
+          3755
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.5892083333333333,
+      "macro_f1": 0.5837548294476492,
+      "macro_accuracy": 0.5892083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2993,
+          296,
+          217,
+          220,
+          203,
+          71
+        ],
+        [
+          492,
+          1783,
+          232,
+          1192,
+          236,
+          65
+        ],
+        [
+          532,
+          494,
+          1945,
+          285,
+          479,
+          265
+        ],
+        [
+          590,
+          1615,
+          230,
+          1200,
+          282,
+          83
+        ],
+        [
+          204,
+          262,
+          322,
+          240,
+          2883,
+          89
+        ],
+        [
+          47,
+          47,
+          142,
+          21,
+          406,
+          3337
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.69225,
+      "macro_f1": 0.689584430725107,
+      "macro_accuracy": 0.69225,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2596,
+          206,
+          286,
+          655,
+          191,
+          66
+        ],
+        [
+          376,
+          2533,
+          231,
+          552,
+          244,
+          64
+        ],
+        [
+          281,
+          87,
+          2263,
+          127,
+          760,
+          482
+        ],
+        [
+          463,
+          511,
+          212,
+          2495,
+          260,
+          59
+        ],
+        [
+          176,
+          221,
+          209,
+          177,
+          3149,
+          68
+        ],
+        [
+          32,
+          24,
+          25,
+          2,
+          339,
+          3578
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.6548333333333334,
+      "macro_f1": 0.6422868967989388,
+      "macro_accuracy": 0.6548333333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3132,
+          266,
+          211,
+          179,
+          127,
+          85
+        ],
+        [
+          853,
+          2008,
+          218,
+          656,
+          209,
+          56
+        ],
+        [
+          332,
+          187,
+          2907,
+          105,
+          246,
+          223
+        ],
+        [
+          2100,
+          474,
+          287,
+          918,
+          156,
+          65
+        ],
+        [
+          225,
+          278,
+          223,
+          194,
+          3009,
+          71
+        ],
+        [
+          68,
+          27,
+          110,
+          9,
+          44,
+          3742
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.619125,
+      "macro_f1": 0.6015996198814533,
+      "macro_accuracy": 0.619125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2876,
+          395,
+          221,
+          219,
+          224,
+          65
+        ],
+        [
+          431,
+          1089,
+          186,
+          1945,
+          291,
+          58
+        ],
+        [
+          171,
+          527,
+          1276,
+          1024,
+          177,
+          825
+        ],
+        [
+          450,
+          377,
+          241,
+          2623,
+          252,
+          57
+        ],
+        [
+          167,
+          207,
+          210,
+          196,
+          3153,
+          67
+        ],
+        [
+          33,
+          17,
+          60,
+          1,
+          47,
+          3842
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.72725,
+      "macro_f1": 0.140348337916727,
+      "macro_accuracy": 0.72725,
+      "query_count": 28000,
+      "confusion": [
+        [
+          20363,
+          1916,
+          1916,
+          1994,
+          1315,
+          496
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4129285714285714,
+      "macro_f1": 0.09741671300743138,
+      "macro_accuracy": 0.4129285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3822,
+          11562,
+          1590,
+          8820,
+          1817,
+          389
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.5515714285714286,
+      "macro_f1": 0.1184973759322346,
+      "macro_accuracy": 0.5515714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3571,
+          1798,
+          15444,
+          1703,
+          1996,
+          3488
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.44110714285714286,
+      "macro_f1": 0.10202968947485812,
+      "macro_accuracy": 0.44110714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          5688,
+          5712,
+          2062,
+          12351,
+          1701,
+          486
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.7614285714285715,
+      "macro_f1": 0.14409299810759665,
+      "macro_accuracy": 0.7614285714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1377,
+          1589,
+          1760,
+          1258,
+          21320,
+          696
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9049285714285714,
+      "macro_f1": 0.1583486444936068,
+      "macro_accuracy": 0.9049285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          282,
+          220,
+          697,
+          61,
+          1402,
+          25338
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.5314047619047619,
+      "macro_f1": 0.5220458542250938,
+      "macro_accuracy": 0.5314047619047618,
+      "query_count": 168000,
+      "confusion": [
+        [
+          16375,
+          2444,
+          3332,
+          2555,
+          2104,
+          1190
+        ],
+        [
+          4820,
+          9315,
+          2877,
+          7219,
+          2740,
+          1029
+        ],
+        [
+          3660,
+          2185,
+          13464,
+          1820,
+          2536,
+          4335
+        ],
+        [
+          6043,
+          5399,
+          3478,
+          9199,
+          2743,
+          1138
+        ],
+        [
+          2161,
+          2224,
+          3130,
+          1853,
+          17179,
+          1453
+        ],
+        [
+          618,
+          408,
+          1272,
+          166,
+          1792,
+          23744
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.4861666666666667,
+      "macro_f1": 0.4702527583657086,
+      "macro_accuracy": 0.48616666666666664,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2494,
+          291,
+          513,
+          260,
+          256,
+          186
+        ],
+        [
+          983,
+          629,
+          412,
+          1535,
+          318,
+          123
+        ],
+        [
+          1424,
+          91,
+          1512,
+          38,
+          160,
+          775
+        ],
+        [
+          1158,
+          506,
+          379,
+          1389,
+          405,
+          163
+        ],
+        [
+          342,
+          359,
+          467,
+          286,
+          2385,
+          161
+        ],
+        [
+          109,
+          91,
+          295,
+          36,
+          210,
+          3259
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.494875,
+      "macro_f1": 0.4798656662990817,
+      "macro_accuracy": 0.49487499999999995,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2393,
+          368,
+          407,
+          397,
+          293,
+          142
+        ],
+        [
+          570,
+          1177,
+          397,
+          1283,
+          449,
+          124
+        ],
+        [
+          479,
+          318,
+          1950,
+          118,
+          185,
+          950
+        ],
+        [
+          622,
+          1153,
+          858,
+          781,
+          407,
+          179
+        ],
+        [
+          389,
+          187,
+          541,
+          157,
+          2290,
+          436
+        ],
+        [
+          71,
+          93,
+          230,
+          15,
+          305,
+          3286
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.5924166666666667,
+      "macro_f1": 0.5844881679053602,
+      "macro_accuracy": 0.5924166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2215,
+          313,
+          651,
+          332,
+          315,
+          174
+        ],
+        [
+          592,
+          1596,
+          456,
+          737,
+          454,
+          165
+        ],
+        [
+          230,
+          347,
+          2712,
+          160,
+          309,
+          242
+        ],
+        [
+          585,
+          851,
+          450,
+          1552,
+          410,
+          152
+        ],
+        [
+          266,
+          306,
+          449,
+          225,
+          2589,
+          165
+        ],
+        [
+          53,
+          39,
+          89,
+          9,
+          256,
+          3554
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.4995,
+      "macro_f1": 0.49209672236690377,
+      "macro_accuracy": 0.4995,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2419,
+          390,
+          434,
+          306,
+          294,
+          157
+        ],
+        [
+          640,
+          1444,
+          399,
+          960,
+          405,
+          152
+        ],
+        [
+          547,
+          473,
+          1763,
+          300,
+          525,
+          392
+        ],
+        [
+          755,
+          1322,
+          395,
+          937,
+          414,
+          177
+        ],
+        [
+          299,
+          345,
+          503,
+          374,
+          2309,
+          170
+        ],
+        [
+          106,
+          63,
+          258,
+          43,
+          414,
+          3116
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.57375,
+      "macro_f1": 0.5685500082653672,
+      "macro_accuracy": 0.57375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2061,
+          259,
+          528,
+          650,
+          325,
+          177
+        ],
+        [
+          549,
+          1890,
+          404,
+          585,
+          382,
+          190
+        ],
+        [
+          342,
+          135,
+          2000,
+          166,
+          693,
+          664
+        ],
+        [
+          593,
+          583,
+          392,
+          1870,
+          411,
+          151
+        ],
+        [
+          278,
+          322,
+          388,
+          254,
+          2572,
+          186
+        ],
+        [
+          75,
+          40,
+          71,
+          14,
+          423,
+          3377
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.5463333333333333,
+      "macro_f1": 0.531684488147069,
+      "macro_accuracy": 0.5463333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2537,
+          327,
+          401,
+          292,
+          265,
+          178
+        ],
+        [
+          954,
+          1556,
+          439,
+          604,
+          310,
+          137
+        ],
+        [
+          385,
+          286,
+          2373,
+          163,
+          421,
+          372
+        ],
+        [
+          1729,
+          516,
+          538,
+          755,
+          282,
+          180
+        ],
+        [
+          327,
+          409,
+          429,
+          304,
+          2385,
+          146
+        ],
+        [
+          122,
+          39,
+          196,
+          28,
+          109,
+          3506
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.5267916666666667,
+      "macro_f1": 0.5115637698941518,
+      "macro_accuracy": 0.5267916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2256,
+          496,
+          398,
+          318,
+          356,
+          176
+        ],
+        [
+          532,
+          1023,
+          370,
+          1515,
+          422,
+          138
+        ],
+        [
+          253,
+          535,
+          1154,
+          875,
+          243,
+          940
+        ],
+        [
+          601,
+          468,
+          466,
+          1915,
+          414,
+          136
+        ],
+        [
+          260,
+          296,
+          353,
+          253,
+          2649,
+          189
+        ],
+        [
+          82,
+          43,
+          133,
+          21,
+          75,
+          3646
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.5848214285714286,
+      "macro_f1": 0.12300469483568076,
+      "macro_accuracy": 0.5848214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          16375,
+          2444,
+          3332,
+          2555,
+          2104,
+          1190
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.33267857142857143,
+      "macro_f1": 0.08321050515878332,
+      "macro_accuracy": 0.33267857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          4820,
+          9315,
+          2877,
+          7219,
+          2740,
+          1029
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.48085714285714287,
+      "macro_f1": 0.10823847192745513,
+      "macro_accuracy": 0.48085714285714287,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3660,
+          2185,
+          13464,
+          1820,
+          2536,
+          4335
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.32853571428571426,
+      "macro_f1": 0.08243053128668333,
+      "macro_accuracy": 0.32853571428571426,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6043,
+          5399,
+          3478,
+          9199,
+          2743,
+          1138
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.6135357142857143,
+      "macro_f1": 0.12674767775588955,
+      "macro_accuracy": 0.6135357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2161,
+          2224,
+          3130,
+          1853,
+          17179,
+          1453
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "fixed_interventions-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.848,
+      "macro_f1": 0.15295815295815296,
+      "macro_accuracy": 0.848,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          618,
+          408,
+          1272,
+          166,
+          1792,
+          23744
+        ]
+      ]
+    }
+  ]
+}

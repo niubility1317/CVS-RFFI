@@ -1,0 +1,24 @@
+{
+  "status": "VERIFIED",
+  "missing": [],
+  "fit_steps": {
+    "linear": 9990,
+    "temporal": 9990,
+    "receiver": 9990,
+    "interaction": 9990
+  },
+  "identity_steps": {
+    "linear": 9990,
+    "temporal": 9990,
+    "receiver": 9989,
+    "interaction": 9990
+  },
+  "receiver_relations_total": 79905,
+  "exposure_totals": {
+    "ema_extra_packet_forwards": 1278720,
+    "identity_extra_packet_forwards": 1278720,
+    "actual_intervention_view_packets": 959040
+  },
+  "source_L_only": true,
+  "target_access": false
+}

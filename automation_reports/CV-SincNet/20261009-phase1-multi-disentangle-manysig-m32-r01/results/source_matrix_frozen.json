@@ -1,0 +1,3543 @@
+{
+  "status": "ALL_SOURCE_FROZEN",
+  "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+  "rows": [
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092701,
+      "row_id": "legacy_cosine-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/legacy_cosine-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "row_id": "fixed_interventions-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/fixed_interventions-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "unified",
+      "model_seed": 2026092701,
+      "row_id": "unified-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/unified-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "linear",
+      "model_seed": 2026092701,
+      "row_id": "linear-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/linear-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "temporal",
+      "model_seed": 2026092701,
+      "row_id": "temporal-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/temporal-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "receiver",
+      "model_seed": 2026092701,
+      "row_id": "receiver-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/receiver-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "multi",
+      "model_seed": 2026092701,
+      "row_id": "multi-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "row_id": "multi_interaction-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi_interaction-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092702,
+      "row_id": "legacy_cosine-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/legacy_cosine-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092702,
+      "row_id": "fixed_interventions-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/fixed_interventions-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "unified",
+      "model_seed": 2026092702,
+      "row_id": "unified-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/unified-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "linear",
+      "model_seed": 2026092702,
+      "row_id": "linear-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/linear-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "temporal",
+      "model_seed": 2026092702,
+      "row_id": "temporal-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/temporal-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "receiver",
+      "model_seed": 2026092702,
+      "row_id": "receiver-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/receiver-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "multi",
+      "model_seed": 2026092702,
+      "row_id": "multi-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092702,
+      "row_id": "multi_interaction-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi_interaction-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "row_id": "legacy_cosine-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/legacy_cosine-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092703,
+      "row_id": "fixed_interventions-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/fixed_interventions-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "unified",
+      "model_seed": 2026092703,
+      "row_id": "unified-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/unified-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "linear",
+      "model_seed": 2026092703,
+      "row_id": "linear-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/linear-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "temporal",
+      "model_seed": 2026092703,
+      "row_id": "temporal-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/temporal-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "receiver",
+      "model_seed": 2026092703,
+      "row_id": "receiver-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/receiver-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "multi",
+      "model_seed": 2026092703,
+      "row_id": "multi-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092703,
+      "row_id": "multi_interaction-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi_interaction-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "legacy_cosine",
+      "model_seed": 2026092704,
+      "row_id": "legacy_cosine-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/legacy_cosine-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "fixed_interventions",
+      "model_seed": 2026092704,
+      "row_id": "fixed_interventions-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/fixed_interventions-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "unified",
+      "model_seed": 2026092704,
+      "row_id": "unified-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/unified-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "linear",
+      "model_seed": 2026092704,
+      "row_id": "linear-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/linear-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "temporal",
+      "model_seed": 2026092704,
+      "row_id": "temporal-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/temporal-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "receiver",
+      "model_seed": 2026092704,
+      "row_id": "receiver-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/receiver-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "multi",
+      "model_seed": 2026092704,
+      "row_id": "multi-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    },
+    {
+      "schema": "multi_disentangle_v1",
+      "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092704,
+      "row_id": "multi_interaction-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-disentangle-manysig-m32-r01/multi_interaction-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_disentangle",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "multi_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "rank": 8,
+        "code_dim": 8,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_aux_weight": 0.05,
+        "paired_consistency_weight": 0.03,
+        "receiver_identity_weight": 0.01,
+        "residual_bound": 0.25,
+        "receiver_min_group_count": 2,
+        "receiver_max_age_steps": 888,
+        "receiver_relations_max": 8,
+        "receiver_quality_thresholds": [
+          0.25,
+          0.75
+        ],
+        "receiver_response_rms_threshold": 1.0,
+        "receiver_abs_cfo_threshold": 0.1,
+        "auxiliary_data": "labeled_source_train_only",
+        "deployment": "identity_only",
+        "resume": false,
+        "source_selection": "fixed_E200_all_controls",
+        "interactions": "explicit_L_then_T_factorial",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        },
+        "randomness": "private_generator_no_native_RNG_draws",
+        "receiver_scope": "quality_matched_group_statistics_not_packet_counterfactual"
+      },
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine"
+    }
+  ],
+  "source_metrics": [
+    {
+      "arm": "legacy_cosine",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9858518518518519,
+      "source_val_rx_accuracy": {
+        "1": 0.9964814814814815,
+        "3": 0.9611111111111111,
+        "4": 0.9868518518518519,
+        "6": 0.9972222222222222,
+        "8": 0.9875925925925926
+      },
+      "source_val_worst_rx": 0.9611111111111111
+    },
+    {
+      "arm": "fixed_interventions",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9858148148148148,
+      "source_val_rx_accuracy": {
+        "1": 0.9964814814814815,
+        "3": 0.962037037037037,
+        "4": 0.9868518518518519,
+        "6": 0.9968518518518519,
+        "8": 0.9868518518518519
+      },
+      "source_val_worst_rx": 0.962037037037037
+    },
+    {
+      "arm": "unified",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9860740740740741,
+      "source_val_rx_accuracy": {
+        "1": 0.9964814814814815,
+        "3": 0.9624074074074074,
+        "4": 0.9868518518518519,
+        "6": 0.9968518518518519,
+        "8": 0.9877777777777778
+      },
+      "source_val_worst_rx": 0.9624074074074074
+    },
+    {
+      "arm": "linear",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9859629629629629,
+      "source_val_rx_accuracy": {
+        "1": 0.9962962962962963,
+        "3": 0.9622222222222222,
+        "4": 0.9864814814814815,
+        "6": 0.9964814814814815,
+        "8": 0.9883333333333333
+      },
+      "source_val_worst_rx": 0.9622222222222222
+    },
+    {
+      "arm": "temporal",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9854444444444445,
+      "source_val_rx_accuracy": {
+        "1": 0.9962962962962963,
+        "3": 0.9605555555555556,
+        "4": 0.9868518518518519,
+        "6": 0.9968518518518519,
+        "8": 0.9866666666666667
+      },
+      "source_val_worst_rx": 0.9605555555555556
+    },
+    {
+      "arm": "receiver",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9856296296296296,
+      "source_val_rx_accuracy": {
+        "1": 0.9962962962962963,
+        "3": 0.9612962962962963,
+        "4": 0.9864814814814815,
+        "6": 0.9966666666666667,
+        "8": 0.9874074074074074
+      },
+      "source_val_worst_rx": 0.9612962962962963
+    },
+    {
+      "arm": "multi",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9853333333333333,
+      "source_val_rx_accuracy": {
+        "1": 0.9964814814814815,
+        "3": 0.9598148148148148,
+        "4": 0.9862962962962963,
+        "6": 0.9966666666666667,
+        "8": 0.9874074074074074
+      },
+      "source_val_worst_rx": 0.9598148148148148
+    },
+    {
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9857037037037037,
+      "source_val_rx_accuracy": {
+        "1": 0.9966666666666667,
+        "3": 0.960925925925926,
+        "4": 0.9866666666666667,
+        "6": 0.9968518518518519,
+        "8": 0.9874074074074074
+      },
+      "source_val_worst_rx": 0.960925925925926
+    },
+    {
+      "arm": "legacy_cosine",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.986037037037037,
+      "source_val_rx_accuracy": {
+        "1": 0.9975925925925926,
+        "3": 0.9612962962962963,
+        "4": 0.9866666666666667,
+        "6": 0.9968518518518519,
+        "8": 0.9877777777777778
+      },
+      "source_val_worst_rx": 0.9612962962962963
+    },
+    {
+      "arm": "fixed_interventions",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9861481481481481,
+      "source_val_rx_accuracy": {
+        "1": 0.9977777777777778,
+        "3": 0.9612962962962963,
+        "4": 0.9872222222222222,
+        "6": 0.9964814814814815,
+        "8": 0.9879629629629629
+      },
+      "source_val_worst_rx": 0.9612962962962963
+    },
+    {
+      "arm": "unified",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9861851851851852,
+      "source_val_rx_accuracy": {
+        "1": 0.9975925925925926,
+        "3": 0.9611111111111111,
+        "4": 0.9875925925925926,
+        "6": 0.9966666666666667,
+        "8": 0.9879629629629629
+      },
+      "source_val_worst_rx": 0.9611111111111111
+    },
+    {
+      "arm": "linear",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9864074074074074,
+      "source_val_rx_accuracy": {
+        "1": 0.9975925925925926,
+        "3": 0.9625925925925926,
+        "4": 0.9875925925925926,
+        "6": 0.9968518518518519,
+        "8": 0.9874074074074074
+      },
+      "source_val_worst_rx": 0.9625925925925926
+    },
+    {
+      "arm": "temporal",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9861111111111112,
+      "source_val_rx_accuracy": {
+        "1": 0.9977777777777778,
+        "3": 0.9616666666666667,
+        "4": 0.9872222222222222,
+        "6": 0.9966666666666667,
+        "8": 0.9872222222222222
+      },
+      "source_val_worst_rx": 0.9616666666666667
+    },
+    {
+      "arm": "receiver",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9862962962962963,
+      "source_val_rx_accuracy": {
+        "1": 0.9975925925925926,
+        "3": 0.9624074074074074,
+        "4": 0.9872222222222222,
+        "6": 0.9966666666666667,
+        "8": 0.9875925925925926
+      },
+      "source_val_worst_rx": 0.9624074074074074
+    },
+    {
+      "arm": "multi",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9858148148148148,
+      "source_val_rx_accuracy": {
+        "1": 0.9977777777777778,
+        "3": 0.9612962962962963,
+        "4": 0.9864814814814815,
+        "6": 0.9966666666666667,
+        "8": 0.9868518518518519
+      },
+      "source_val_worst_rx": 0.9612962962962963
+    },
+    {
+      "arm": "multi_interaction",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.986,
+      "source_val_rx_accuracy": {
+        "1": 0.9974074074074074,
+        "3": 0.9616666666666667,
+        "4": 0.9872222222222222,
+        "6": 0.9968518518518519,
+        "8": 0.9868518518518519
+      },
+      "source_val_worst_rx": 0.9616666666666667
+    },
+    {
+      "arm": "legacy_cosine",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9851851851851852,
+      "source_val_rx_accuracy": {
+        "1": 0.9964814814814815,
+        "3": 0.9585185185185185,
+        "4": 0.9888888888888889,
+        "6": 0.9966666666666667,
+        "8": 0.9853703703703703
+      },
+      "source_val_worst_rx": 0.9585185185185185
+    },
+    {
+      "arm": "fixed_interventions",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9854074074074074,
+      "source_val_rx_accuracy": {
+        "1": 0.9968518518518519,
+        "3": 0.9587037037037037,
+        "4": 0.9885185185185185,
+        "6": 0.9964814814814815,
+        "8": 0.9864814814814815
+      },
+      "source_val_worst_rx": 0.9587037037037037
+    },
+    {
+      "arm": "unified",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9854814814814815,
+      "source_val_rx_accuracy": {
+        "1": 0.9966666666666667,
+        "3": 0.9590740740740741,
+        "4": 0.9890740740740741,
+        "6": 0.9962962962962963,
+        "8": 0.9862962962962963
+      },
+      "source_val_worst_rx": 0.9590740740740741
+    },
+    {
+      "arm": "linear",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9854814814814815,
+      "source_val_rx_accuracy": {
+        "1": 0.9968518518518519,
+        "3": 0.9590740740740741,
+        "4": 0.9887037037037038,
+        "6": 0.9961111111111111,
+        "8": 0.9866666666666667
+      },
+      "source_val_worst_rx": 0.9590740740740741
+    },
+    {
+      "arm": "temporal",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.985037037037037,
+      "source_val_rx_accuracy": {
+        "1": 0.9966666666666667,
+        "3": 0.957037037037037,
+        "4": 0.9887037037037038,
+        "6": 0.9968518518518519,
+        "8": 0.9859259259259259
+      },
+      "source_val_worst_rx": 0.957037037037037
+    },
+    {
+      "arm": "receiver",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9853333333333333,
+      "source_val_rx_accuracy": {
+        "1": 0.9966666666666667,
+        "3": 0.9572222222222222,
+        "4": 0.9892592592592593,
+        "6": 0.9968518518518519,
+        "8": 0.9866666666666667
+      },
+      "source_val_worst_rx": 0.9572222222222222
+    },
+    {
+      "arm": "multi",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9853333333333333,
+      "source_val_rx_accuracy": {
+        "1": 0.9964814814814815,
+        "3": 0.9585185185185185,
+        "4": 0.9883333333333333,
+        "6": 0.9966666666666667,
+        "8": 0.9866666666666667
+      },
+      "source_val_worst_rx": 0.9585185185185185
+    },
+    {
+      "arm": "multi_interaction",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9848888888888889,
+      "source_val_rx_accuracy": {
+        "1": 0.9968518518518519,
+        "3": 0.9568518518518518,
+        "4": 0.9887037037037038,
+        "6": 0.9962962962962963,
+        "8": 0.9857407407407407
+      },
+      "source_val_worst_rx": 0.9568518518518518
+    },
+    {
+      "arm": "legacy_cosine",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9853703703703703,
+      "source_val_rx_accuracy": {
+        "1": 0.997037037037037,
+        "3": 0.9562962962962963,
+        "4": 0.9892592592592593,
+        "6": 0.9968518518518519,
+        "8": 0.9874074074074074
+      },
+      "source_val_worst_rx": 0.9562962962962963
+    },
+    {
+      "arm": "fixed_interventions",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9852962962962963,
+      "source_val_rx_accuracy": {
+        "1": 0.9972222222222222,
+        "3": 0.9562962962962963,
+        "4": 0.9892592592592593,
+        "6": 0.9968518518518519,
+        "8": 0.9868518518518519
+      },
+      "source_val_worst_rx": 0.9562962962962963
+    },
+    {
+      "arm": "unified",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9852222222222222,
+      "source_val_rx_accuracy": {
+        "1": 0.997037037037037,
+        "3": 0.9557407407407408,
+        "4": 0.9890740740740741,
+        "6": 0.9968518518518519,
+        "8": 0.9874074074074074
+      },
+      "source_val_worst_rx": 0.9557407407407408
+    },
+    {
+      "arm": "linear",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9854074074074074,
+      "source_val_rx_accuracy": {
+        "1": 0.9972222222222222,
+        "3": 0.9564814814814815,
+        "4": 0.9888888888888889,
+        "6": 0.9968518518518519,
+        "8": 0.9875925925925926
+      },
+      "source_val_worst_rx": 0.9564814814814815
+    },
+    {
+      "arm": "temporal",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.985037037037037,
+      "source_val_rx_accuracy": {
+        "1": 0.9974074074074074,
+        "3": 0.9555555555555556,
+        "4": 0.9888888888888889,
+        "6": 0.9968518518518519,
+        "8": 0.9864814814814815
+      },
+      "source_val_worst_rx": 0.9555555555555556
+    },
+    {
+      "arm": "receiver",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9849259259259259,
+      "source_val_rx_accuracy": {
+        "1": 0.997037037037037,
+        "3": 0.9553703703703704,
+        "4": 0.9892592592592593,
+        "6": 0.9966666666666667,
+        "8": 0.9862962962962963
+      },
+      "source_val_worst_rx": 0.9553703703703704
+    },
+    {
+      "arm": "multi",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9848518518518519,
+      "source_val_rx_accuracy": {
+        "1": 0.997037037037037,
+        "3": 0.9557407407407408,
+        "4": 0.9892592592592593,
+        "6": 0.9966666666666667,
+        "8": 0.9855555555555555
+      },
+      "source_val_worst_rx": 0.9557407407407408
+    },
+    {
+      "arm": "multi_interaction",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9854444444444445,
+      "source_val_rx_accuracy": {
+        "1": 0.997037037037037,
+        "3": 0.9561111111111111,
+        "4": 0.9894444444444445,
+        "6": 0.9972222222222222,
+        "8": 0.9874074074074074
+      },
+      "source_val_worst_rx": 0.9561111111111111
+    }
+  ],
+  "arm_scores": {
+    "legacy_cosine": 0.9724583333333333,
+    "fixed_interventions": 0.972625,
+    "unified": 0.9726620370370371,
+    "linear": 0.9729537037037037,
+    "temporal": 0.9720555555555556,
+    "receiver": 0.9723101851851852,
+    "multi": 0.9720879629629628,
+    "multi_interaction": 0.9721990740740741
+  },
+  "source_preferred_arm": "linear",
+  "source_preference": "mean4(.5V+.5worstRX); exact ties fewer parameters; all fixed controls tested",
+  "target_access": false,
+  "selection": "ALL_PREREGISTERED_FIXED_CONTROLS",
+  "frozen_at": 1791551552.7602916
+}

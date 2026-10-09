@@ -1,0 +1,31 @@
+{
+  "row_id": "receiver-s2026092701",
+  "run_id": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+  "pid": 2456851,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_disentangle_20261009_r01",
+  "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+  "evaluation_commit": "c037af5a19d5973486942a090bced9cbae070d38",
+  "source_run": "20261009-phase1-multi-disentangle-manysig-m32-r01",
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+  "backend_flags": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "batch_size": 256,
+  "parameters": 844754,
+  "trainable_parameters": 0,
+  "hardware": "NVIDIA GeForce RTX 3090",
+  "torch_version": "2.1.0+cu121"
+}

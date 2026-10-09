@@ -1,0 +1,169 @@
+{
+  "row_id": "multi-s2026092704",
+  "stage": "multi_disentangle",
+  "arm": "multi",
+  "model_seed": 2026092704,
+  "prediction": {
+    "status": "PREDICTIONS_COMPLETE",
+    "count": 168000,
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "truth_read": false,
+    "query_fit": false,
+    "inference_seconds": {
+      "clean": 7.24243307299912,
+      "practical_high": 6.153913361951709,
+      "practical_mid": 5.694637947017327,
+      "practical_low_suburban": 5.657501267967746,
+      "practical_high_urban": 5.651154356077313,
+      "practical_mid_urban": 5.654420018894598,
+      "practical_low_urban": 5.658869312959723
+    },
+    "wall_seconds": 43.40136809006799,
+    "peak_cuda_allocated_bytes": 91524096,
+    "peak_cuda_reserved_bytes": 130023424,
+    "peak_process_rss_bytes": 1526628352,
+    "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+  },
+  "source": {
+    "elapsed_seconds": 18380.576138973236,
+    "hardware": "NVIDIA GeForce RTX 3090",
+    "parameters": 844754,
+    "last_epoch_resource_metrics": {
+      "multi_active": 1.0,
+      "multi_epoch": 200.0,
+      "multi_native_update": 44288.0,
+      "multi_auxiliary_successful_updates": 9990,
+      "multi_source_L_only": 1.0,
+      "multi_identity_aux_weight": 0.04999999999999997,
+      "multi_paired_consistency_weight": 0.030000000000000023,
+      "multi_receiver_identity_weight": 0.010000000000000005,
+      "multi_cadence": 4.0,
+      "multi_receiver_groups": 73.61818181818182,
+      "multi_receiver_pairs": 32.0,
+      "multi_receiver_fit_skipped_no_groups": 0.0,
+      "multi_linear_fit_loss": 0.5663126495751467,
+      "multi_linear_parameter_loss": 0.061473003842613914,
+      "multi_temporal_fit_loss": 0.3046177698807283,
+      "multi_temporal_parameter_loss": 0.11114901195872914,
+      "multi_receiver_residual_target": 1.0,
+      "multi_receiver_main_subtraction_enabled": 1.0,
+      "multi_receiver_main_action_norm": 0.7277764602140947,
+      "multi_receiver_residual_target_norm": 1.8972943110899492,
+      "multi_receiver_target_requires_grad": 0.0,
+      "multi_receiver_fit_loss": 0.335502596876838,
+      "multi_receiver_parameter_loss": 0.0,
+      "multi_auxiliary_gradient_norm": 0.2762927133928646,
+      "multi_linear_gradient_norm": 0.1825296777215871,
+      "multi_temporal_gradient_norm": 0.19648221758278933,
+      "multi_receiver_gradient_norm": 0.04775643365626985,
+      "multi_auxiliary_fit_loss": 0.459685017303987,
+      "multi_auxiliary_lr": 1.0050970042532945e-06,
+      "multi_auxiliary_fit_seconds": 0.018519516456448896,
+      "multi_linear_identity_ce": 0.0013606511627916585,
+      "multi_linear_consistency_loss": 0.00704391517422416,
+      "multi_linear_reliability": 0.6395844567905773,
+      "multi_linear_delta_norm": 0.4055455299940976,
+      "multi_temporal_identity_ce": 0.0017236177862452512,
+      "multi_temporal_consistency_loss": 0.005808834833177653,
+      "multi_temporal_reliability": 0.7675557429140264,
+      "multi_temporal_delta_norm": 0.535224770415913,
+      "multi_receiver_relations": 8.0,
+      "multi_receiver_identity_skipped_no_relation": 0.0,
+      "multi_receiver_relational_loss": 0.0021966749474152244,
+      "multi_identity_aux_loss": 4.824331104332073e-05,
+      "multi_auxiliary_batch_size": 32.0,
+      "multi_active_paths": 3.0,
+      "multi_auxiliary_step_seconds": 0.10909360639158297,
+      "multi_receiver_samplewise_counterfactual": 0.0,
+      "multi_ema_extra_packet_forwards": 96.0,
+      "multi_identity_extra_packet_forwards": 96.0,
+      "multi_actual_intervention_view_packets": 64.0,
+      "multi_cuda_peak_allocated_bytes": 2375602688.0,
+      "multi_cuda_peak_reserved_bytes": 3477078016.0,
+      "multi_auxiliary_training_seconds": 2052.2425494882045,
+      "multi_auxiliary_active_steps_epoch": 55,
+      "multi_auxiliary_parameters": 39992,
+      "multi_training_parameters": 884746,
+      "multi_inference_parameters": 844754,
+      "multi_metric_scope": "active auxiliary steps in this epoch; no target observations",
+      "multi_linear_fit_steps_total": 9990,
+      "multi_temporal_fit_steps_total": 9990,
+      "multi_receiver_fit_steps_total": 9990,
+      "multi_linear_identity_steps_total": 9990,
+      "multi_temporal_identity_steps_total": 9990,
+      "multi_receiver_identity_steps_total": 9989,
+      "multi_receiver_relations_total": 79912,
+      "multi_ema_extra_packet_forwards_total": 959040,
+      "multi_identity_extra_packet_forwards_total": 959040,
+      "multi_actual_intervention_view_packets_total": 639360
+    },
+    "auxiliary_cost": {
+      "identity_parameters": 844754,
+      "auxiliary_parameters": 39992,
+      "inference_auxiliary_parameters": 0,
+      "auxiliary_optimizer": "separate AdamW",
+      "auxiliary_active_paths": [
+        "linear",
+        "temporal",
+        "receiver"
+      ],
+      "auxiliary_data": "source_L_only",
+      "native_optimizer_excludes_auxiliaries": true,
+      "resume_supported": false,
+      "mechanism_execution": {
+        "fit_steps": {
+          "linear": 9990,
+          "temporal": 9990,
+          "receiver": 9990
+        },
+        "identity_steps": {
+          "linear": 9990,
+          "temporal": 9990,
+          "receiver": 9989
+        },
+        "receiver_relations_total": 79912,
+        "exposure_totals": {
+          "ema_extra_packet_forwards": 959040,
+          "identity_extra_packet_forwards": 959040,
+          "actual_intervention_view_packets": 639360
+        },
+        "source_L_only": true,
+        "target_access": false
+      }
+    },
+    "mechanism_execution": {
+      "status": "VERIFIED",
+      "missing": [],
+      "fit_steps": {
+        "linear": 9990,
+        "temporal": 9990,
+        "receiver": 9990
+      },
+      "identity_steps": {
+        "linear": 9990,
+        "temporal": 9990,
+        "receiver": 9989
+      },
+      "receiver_relations_total": 79912,
+      "exposure_totals": {
+        "ema_extra_packet_forwards": 959040,
+        "identity_extra_packet_forwards": 959040,
+        "actual_intervention_view_packets": 639360
+      },
+      "source_L_only": true,
+      "target_access": false
+    },
+    "peak_process_rss_bytes": null,
+    "training_flops": null,
+    "transmission_bytes": 0,
+    "scope": "Source training only; no satellite adaptation/transfer; RSS/FLOPs not measured"
+  }
+}

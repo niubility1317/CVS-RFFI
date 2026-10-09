@@ -1,0 +1,28 @@
+{
+  "identity_parameters": 844754,
+  "auxiliary_parameters": 11456,
+  "inference_auxiliary_parameters": 0,
+  "auxiliary_optimizer": "separate AdamW",
+  "auxiliary_active_paths": [
+    "receiver"
+  ],
+  "auxiliary_data": "source_L_only",
+  "native_optimizer_excludes_auxiliaries": true,
+  "resume_supported": false,
+  "mechanism_execution": {
+    "fit_steps": {
+      "receiver": 9990
+    },
+    "identity_steps": {
+      "receiver": 9989
+    },
+    "receiver_relations_total": 79912,
+    "exposure_totals": {
+      "ema_extra_packet_forwards": 319680,
+      "identity_extra_packet_forwards": 319680,
+      "actual_intervention_view_packets": 0
+    },
+    "source_L_only": true,
+    "target_access": false
+  }
+}

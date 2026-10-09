@@ -1,0 +1,18 @@
+{
+  "identity_parameters": 844754,
+  "auxiliary_parameters": 0,
+  "inference_auxiliary_parameters": 0,
+  "auxiliary_optimizer": "separate AdamW",
+  "auxiliary_active_paths": [],
+  "auxiliary_data": "source_L_only",
+  "native_optimizer_excludes_auxiliaries": true,
+  "resume_supported": false,
+  "mechanism_execution": {
+    "fit_steps": {},
+    "identity_steps": {},
+    "receiver_relations_total": 0,
+    "exposure_totals": {},
+    "source_L_only": true,
+    "target_access": false
+  }
+}

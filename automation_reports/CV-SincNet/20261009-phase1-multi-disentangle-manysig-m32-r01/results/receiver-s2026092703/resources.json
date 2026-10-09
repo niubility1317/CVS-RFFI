@@ -1,0 +1,141 @@
+{
+  "row_id": "receiver-s2026092703",
+  "stage": "multi_disentangle",
+  "arm": "receiver",
+  "model_seed": 2026092703,
+  "prediction": {
+    "status": "PREDICTIONS_COMPLETE",
+    "count": 168000,
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "truth_read": false,
+    "query_fit": false,
+    "inference_seconds": {
+      "clean": 7.5182098461082205,
+      "practical_high": 7.427561698015779,
+      "practical_mid": 6.936508129001595,
+      "practical_low_suburban": 5.174265739042312,
+      "practical_high_urban": 5.316945774946362,
+      "practical_mid_urban": 5.184721764991991,
+      "practical_low_urban": 4.607666190015152
+    },
+    "wall_seconds": 44.458608323009685,
+    "peak_cuda_allocated_bytes": 91524096,
+    "peak_cuda_reserved_bytes": 130023424,
+    "peak_process_rss_bytes": 1528086528,
+    "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+  },
+  "source": {
+    "elapsed_seconds": 17262.171885728836,
+    "hardware": "NVIDIA GeForce RTX 3090",
+    "parameters": 844754,
+    "last_epoch_resource_metrics": {
+      "multi_active": 1.0,
+      "multi_epoch": 200.0,
+      "multi_native_update": 44288.0,
+      "multi_auxiliary_successful_updates": 9989,
+      "multi_source_L_only": 1.0,
+      "multi_identity_aux_weight": 0.04999999999999997,
+      "multi_paired_consistency_weight": 0.030000000000000023,
+      "multi_receiver_identity_weight": 0.010000000000000005,
+      "multi_cadence": 4.0,
+      "multi_receiver_groups": 71.52727272727273,
+      "multi_receiver_pairs": 32.0,
+      "multi_receiver_fit_skipped_no_groups": 0.0,
+      "multi_receiver_residual_target": 1.0,
+      "multi_receiver_main_subtraction_enabled": 0.0,
+      "multi_receiver_main_action_norm": 0.0,
+      "multi_receiver_residual_target_norm": 2.0690535740418867,
+      "multi_receiver_target_requires_grad": 0.0,
+      "multi_receiver_fit_loss": 0.34331753795797176,
+      "multi_receiver_parameter_loss": 0.0,
+      "multi_auxiliary_gradient_norm": 0.11620579687031833,
+      "multi_receiver_gradient_norm": 0.11620579687031833,
+      "multi_auxiliary_fit_loss": 0.34331753795797176,
+      "multi_auxiliary_lr": 1.0050970042532945e-06,
+      "multi_auxiliary_fit_seconds": 0.005331610191867433,
+      "multi_receiver_relations": 8.0,
+      "multi_receiver_identity_skipped_no_relation": 0.0,
+      "multi_receiver_relational_loss": 0.003363284167029302,
+      "multi_identity_aux_loss": 3.363284084695227e-05,
+      "multi_auxiliary_batch_size": 32.0,
+      "multi_active_paths": 1.0,
+      "multi_auxiliary_step_seconds": 0.05078979646575383,
+      "multi_receiver_samplewise_counterfactual": 0.0,
+      "multi_ema_extra_packet_forwards": 32.0,
+      "multi_identity_extra_packet_forwards": 32.0,
+      "multi_actual_intervention_view_packets": 0.0,
+      "multi_cuda_peak_allocated_bytes": 2374925824.0,
+      "multi_cuda_peak_reserved_bytes": 3439329280.0,
+      "multi_auxiliary_training_seconds": 1313.6514065164374,
+      "multi_auxiliary_active_steps_epoch": 55,
+      "multi_auxiliary_parameters": 11456,
+      "multi_training_parameters": 856210,
+      "multi_inference_parameters": 844754,
+      "multi_metric_scope": "active auxiliary steps in this epoch; no target observations",
+      "multi_receiver_fit_steps_total": 9989,
+      "multi_receiver_identity_steps_total": 9989,
+      "multi_receiver_relations_total": 79910,
+      "multi_ema_extra_packet_forwards_total": 319680,
+      "multi_identity_extra_packet_forwards_total": 319680,
+      "multi_actual_intervention_view_packets_total": 0
+    },
+    "auxiliary_cost": {
+      "identity_parameters": 844754,
+      "auxiliary_parameters": 11456,
+      "inference_auxiliary_parameters": 0,
+      "auxiliary_optimizer": "separate AdamW",
+      "auxiliary_active_paths": [
+        "receiver"
+      ],
+      "auxiliary_data": "source_L_only",
+      "native_optimizer_excludes_auxiliaries": true,
+      "resume_supported": false,
+      "mechanism_execution": {
+        "fit_steps": {
+          "receiver": 9989
+        },
+        "identity_steps": {
+          "receiver": 9989
+        },
+        "receiver_relations_total": 79910,
+        "exposure_totals": {
+          "ema_extra_packet_forwards": 319680,
+          "identity_extra_packet_forwards": 319680,
+          "actual_intervention_view_packets": 0
+        },
+        "source_L_only": true,
+        "target_access": false
+      }
+    },
+    "mechanism_execution": {
+      "status": "VERIFIED",
+      "missing": [],
+      "fit_steps": {
+        "receiver": 9989
+      },
+      "identity_steps": {
+        "receiver": 9989
+      },
+      "receiver_relations_total": 79910,
+      "exposure_totals": {
+        "ema_extra_packet_forwards": 319680,
+        "identity_extra_packet_forwards": 319680,
+        "actual_intervention_view_packets": 0
+      },
+      "source_L_only": true,
+      "target_access": false
+    },
+    "peak_process_rss_bytes": null,
+    "training_flops": null,
+    "transmission_bytes": 0,
+    "scope": "Source training only; no satellite adaptation/transfer; RSS/FLOPs not measured"
+  }
+}

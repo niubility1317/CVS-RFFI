@@ -1,0 +1,6178 @@
+{
+  "results": [
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8203988095238095,
+      "macro_f1": 0.815917760717972,
+      "macro_accuracy": 0.8203988095238094,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27459,
+          126,
+          100,
+          281,
+          28,
+          6
+        ],
+        [
+          944,
+          14769,
+          159,
+          12052,
+          60,
+          16
+        ],
+        [
+          1375,
+          177,
+          21554,
+          1099,
+          361,
+          3434
+        ],
+        [
+          2975,
+          5379,
+          983,
+          18585,
+          31,
+          47
+        ],
+        [
+          9,
+          13,
+          10,
+          6,
+          27958,
+          4
+        ],
+        [
+          16,
+          21,
+          59,
+          10,
+          392,
+          27502
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.792125,
+      "macro_f1": 0.768414908540322,
+      "macro_accuracy": 0.792125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3992,
+          5,
+          1,
+          2,
+          0,
+          0
+        ],
+        [
+          219,
+          1142,
+          7,
+          2631,
+          1,
+          0
+        ],
+        [
+          1182,
+          3,
+          2159,
+          3,
+          1,
+          652
+        ],
+        [
+          161,
+          64,
+          0,
+          3775,
+          0,
+          0
+        ],
+        [
+          4,
+          7,
+          1,
+          2,
+          3986,
+          0
+        ],
+        [
+          3,
+          0,
+          34,
+          3,
+          3,
+          3957
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7390833333333333,
+      "macro_f1": 0.7106270187924467,
+      "macro_accuracy": 0.7390833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3992,
+          0,
+          0,
+          8,
+          0,
+          0
+        ],
+        [
+          12,
+          2335,
+          0,
+          1651,
+          2,
+          0
+        ],
+        [
+          8,
+          1,
+          3137,
+          4,
+          2,
+          848
+        ],
+        [
+          325,
+          2478,
+          869,
+          284,
+          2,
+          42
+        ],
+        [
+          0,
+          1,
+          5,
+          0,
+          3994,
+          0
+        ],
+        [
+          1,
+          2,
+          0,
+          1,
+          0,
+          3996
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.9087083333333333,
+      "macro_f1": 0.9076412000708579,
+      "macro_accuracy": 0.9087083333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3754,
+          79,
+          90,
+          59,
+          18,
+          0
+        ],
+        [
+          2,
+          2651,
+          107,
+          1213,
+          21,
+          6
+        ],
+        [
+          12,
+          3,
+          3952,
+          8,
+          19,
+          6
+        ],
+        [
+          25,
+          489,
+          1,
+          3473,
+          12,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          1,
+          3997,
+          0
+        ],
+        [
+          0,
+          3,
+          8,
+          4,
+          3,
+          3982
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7715416666666667,
+      "macro_f1": 0.7734844044753008,
+      "macro_accuracy": 0.7715416666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3976,
+          4,
+          4,
+          4,
+          8,
+          4
+        ],
+        [
+          23,
+          1726,
+          20,
+          2205,
+          19,
+          7
+        ],
+        [
+          59,
+          137,
+          3408,
+          159,
+          188,
+          49
+        ],
+        [
+          26,
+          2107,
+          4,
+          1848,
+          13,
+          2
+        ],
+        [
+          5,
+          4,
+          3,
+          3,
+          3982,
+          3
+        ],
+        [
+          11,
+          15,
+          12,
+          2,
+          383,
+          3577
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8944583333333334,
+      "macro_f1": 0.8914509412797681,
+      "macro_accuracy": 0.8944583333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3815,
+          0,
+          5,
+          177,
+          1,
+          2
+        ],
+        [
+          6,
+          2094,
+          1,
+          1891,
+          7,
+          1
+        ],
+        [
+          55,
+          9,
+          3603,
+          111,
+          149,
+          73
+        ],
+        [
+          7,
+          31,
+          0,
+          3959,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          1,
+          3997
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8385833333333333,
+      "macro_f1": 0.8268297254271476,
+      "macro_accuracy": 0.8385833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3999,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          681,
+          2949,
+          23,
+          342,
+          3,
+          2
+        ],
+        [
+          45,
+          1,
+          3923,
+          30,
+          1,
+          0
+        ],
+        [
+          2430,
+          198,
+          109,
+          1259,
+          1,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          2,
+          3996
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7982916666666666,
+      "macro_f1": 0.7790088408379828,
+      "macro_accuracy": 0.7982916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3931,
+          37,
+          0,
+          31,
+          1,
+          0
+        ],
+        [
+          1,
+          1872,
+          1,
+          2119,
+          7,
+          0
+        ],
+        [
+          14,
+          23,
+          1372,
+          784,
+          1,
+          1806
+        ],
+        [
+          1,
+          12,
+          0,
+          3987,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          1,
+          1,
+          1,
+          0,
+          0,
+          3997
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9806785714285714,
+      "macro_f1": 0.16504084098162605,
+      "macro_accuracy": 0.9806785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27459,
+          126,
+          100,
+          281,
+          28,
+          6
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5274642857142857,
+      "macro_f1": 0.11510673618742547,
+      "macro_accuracy": 0.5274642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          944,
+          14769,
+          159,
+          12052,
+          60,
+          16
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7697857142857143,
+      "macro_f1": 0.14498661392958523,
+      "macro_accuracy": 0.7697857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1375,
+          177,
+          21554,
+          1099,
+          361,
+          3434
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.66375,
+      "macro_f1": 0.13298271975957926,
+      "macro_accuracy": 0.66375,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2975,
+          5379,
+          983,
+          18585,
+          31,
+          47
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9985,
+      "macro_f1": 0.1665415728463014,
+      "macro_accuracy": 0.9985,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          9,
+          13,
+          10,
+          6,
+          27958,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9822142857142857,
+      "macro_f1": 0.16517122506095877,
+      "macro_accuracy": 0.9822142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          16,
+          21,
+          59,
+          10,
+          392,
+          27502
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7874702380952381,
+      "macro_f1": 0.7839810149094483,
+      "macro_accuracy": 0.787470238095238,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26214,
+          309,
+          198,
+          1191,
+          78,
+          10
+        ],
+        [
+          1098,
+          15315,
+          148,
+          11286,
+          129,
+          24
+        ],
+        [
+          3160,
+          1300,
+          18161,
+          1761,
+          1396,
+          2222
+        ],
+        [
+          3976,
+          5725,
+          299,
+          17928,
+          60,
+          12
+        ],
+        [
+          44,
+          91,
+          66,
+          74,
+          27713,
+          12
+        ],
+        [
+          28,
+          21,
+          128,
+          4,
+          855,
+          26964
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.6941666666666667,
+      "macro_f1": 0.6553978904535273,
+      "macro_accuracy": 0.6941666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3955,
+          26,
+          7,
+          9,
+          3,
+          0
+        ],
+        [
+          450,
+          578,
+          6,
+          2959,
+          6,
+          1
+        ],
+        [
+          2129,
+          3,
+          1333,
+          1,
+          4,
+          530
+        ],
+        [
+          913,
+          160,
+          1,
+          2920,
+          6,
+          0
+        ],
+        [
+          11,
+          29,
+          6,
+          12,
+          3941,
+          1
+        ],
+        [
+          1,
+          2,
+          56,
+          0,
+          8,
+          3933
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.733625,
+      "macro_f1": 0.7278362490058424,
+      "macro_accuracy": 0.733625,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3775,
+          15,
+          9,
+          194,
+          6,
+          1
+        ],
+        [
+          17,
+          1916,
+          8,
+          2046,
+          13,
+          0
+        ],
+        [
+          291,
+          12,
+          2909,
+          2,
+          4,
+          782
+        ],
+        [
+          272,
+          2171,
+          249,
+          1298,
+          7,
+          3
+        ],
+        [
+          8,
+          10,
+          13,
+          2,
+          3962,
+          5
+        ],
+        [
+          0,
+          1,
+          3,
+          1,
+          248,
+          3747
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8917083333333333,
+      "macro_f1": 0.8915871487837647,
+      "macro_accuracy": 0.8917083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3543,
+          117,
+          151,
+          153,
+          34,
+          2
+        ],
+        [
+          23,
+          2911,
+          107,
+          885,
+          61,
+          13
+        ],
+        [
+          16,
+          5,
+          3940,
+          11,
+          22,
+          6
+        ],
+        [
+          43,
+          791,
+          5,
+          3149,
+          9,
+          3
+        ],
+        [
+          6,
+          7,
+          6,
+          12,
+          3969,
+          0
+        ],
+        [
+          0,
+          4,
+          18,
+          2,
+          87,
+          3889
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7380833333333333,
+      "macro_f1": 0.7356220635488974,
+      "macro_accuracy": 0.7380833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3921,
+          29,
+          8,
+          22,
+          16,
+          4
+        ],
+        [
+          103,
+          2395,
+          7,
+          1477,
+          15,
+          3
+        ],
+        [
+          506,
+          528,
+          2183,
+          359,
+          377,
+          47
+        ],
+        [
+          106,
+          2200,
+          13,
+          1657,
+          21,
+          3
+        ],
+        [
+          9,
+          10,
+          31,
+          16,
+          3930,
+          4
+        ],
+        [
+          10,
+          13,
+          35,
+          1,
+          313,
+          3628
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8759166666666667,
+      "macro_f1": 0.8746515125879241,
+      "macro_accuracy": 0.8759166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3265,
+          7,
+          13,
+          709,
+          6,
+          0
+        ],
+        [
+          27,
+          3542,
+          5,
+          416,
+          9,
+          1
+        ],
+        [
+          146,
+          45,
+          2631,
+          92,
+          953,
+          133
+        ],
+        [
+          19,
+          166,
+          2,
+          3804,
+          8,
+          1
+        ],
+        [
+          1,
+          5,
+          4,
+          7,
+          3982,
+          1
+        ],
+        [
+          3,
+          0,
+          5,
+          0,
+          194,
+          3798
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8224166666666667,
+      "macro_f1": 0.8112414323162973,
+      "macro_accuracy": 0.8224166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3971,
+          10,
+          3,
+          9,
+          5,
+          2
+        ],
+        [
+          461,
+          2800,
+          11,
+          713,
+          11,
+          4
+        ],
+        [
+          46,
+          12,
+          3855,
+          72,
+          11,
+          4
+        ],
+        [
+          2608,
+          186,
+          23,
+          1178,
+          3,
+          2
+        ],
+        [
+          4,
+          21,
+          4,
+          19,
+          3951,
+          1
+        ],
+        [
+          11,
+          1,
+          4,
+          0,
+          1,
+          3983
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.756375,
+      "macro_f1": 0.7335237496840467,
+      "macro_accuracy": 0.7563749999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3784,
+          105,
+          7,
+          95,
+          8,
+          1
+        ],
+        [
+          17,
+          1173,
+          4,
+          2790,
+          14,
+          2
+        ],
+        [
+          26,
+          695,
+          1310,
+          1224,
+          25,
+          720
+        ],
+        [
+          15,
+          51,
+          6,
+          3922,
+          6,
+          0
+        ],
+        [
+          5,
+          9,
+          2,
+          6,
+          3978,
+          0
+        ],
+        [
+          3,
+          0,
+          7,
+          0,
+          4,
+          3986
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9362142857142857,
+      "macro_f1": 0.16117607997934114,
+      "macro_accuracy": 0.9362142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26214,
+          309,
+          198,
+          1191,
+          78,
+          10
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5469642857142857,
+      "macro_f1": 0.11785755511947361,
+      "macro_accuracy": 0.5469642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1098,
+          15315,
+          148,
+          11286,
+          129,
+          24
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6486071428571428,
+      "macro_f1": 0.1311424506979196,
+      "macro_accuracy": 0.6486071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3160,
+          1300,
+          18161,
+          1761,
+          1396,
+          2222
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6402857142857142,
+      "macro_f1": 0.13011670440689774,
+      "macro_accuracy": 0.6402857142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3976,
+          5725,
+          299,
+          17928,
+          60,
+          12
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.98975,
+      "macro_f1": 0.16580809984503916,
+      "macro_accuracy": 0.98975,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          44,
+          91,
+          66,
+          74,
+          27713,
+          12
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.963,
+      "macro_f1": 0.16352521650534896,
+      "macro_accuracy": 0.963,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          28,
+          21,
+          128,
+          4,
+          855,
+          26964
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7667321428571429,
+      "macro_f1": 0.7628303912018319,
+      "macro_accuracy": 0.7667321428571428,
+      "query_count": 168000,
+      "confusion": [
+        [
+          25564,
+          477,
+          337,
+          1379,
+          188,
+          55
+        ],
+        [
+          1698,
+          14880,
+          285,
+          10802,
+          280,
+          55
+        ],
+        [
+          3144,
+          1415,
+          17738,
+          1864,
+          1387,
+          2452
+        ],
+        [
+          4560,
+          5848,
+          436,
+          16893,
+          203,
+          60
+        ],
+        [
+          160,
+          290,
+          251,
+          222,
+          26997,
+          80
+        ],
+        [
+          49,
+          45,
+          181,
+          14,
+          972,
+          26739
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.6749166666666667,
+      "macro_f1": 0.6399994490926296,
+      "macro_accuracy": 0.6749166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3867,
+          49,
+          30,
+          26,
+          24,
+          4
+        ],
+        [
+          574,
+          583,
+          27,
+          2802,
+          12,
+          2
+        ],
+        [
+          2015,
+          10,
+          1379,
+          2,
+          7,
+          587
+        ],
+        [
+          1078,
+          237,
+          20,
+          2633,
+          24,
+          8
+        ],
+        [
+          23,
+          56,
+          31,
+          36,
+          3844,
+          10
+        ],
+        [
+          6,
+          7,
+          76,
+          2,
+          17,
+          3892
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.718875,
+      "macro_f1": 0.7120113564191967,
+      "macro_accuracy": 0.718875,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3666,
+          45,
+          16,
+          249,
+          17,
+          7
+        ],
+        [
+          92,
+          1934,
+          22,
+          1904,
+          45,
+          3
+        ],
+        [
+          310,
+          39,
+          2832,
+          15,
+          11,
+          793
+        ],
+        [
+          346,
+          2095,
+          270,
+          1249,
+          28,
+          12
+        ],
+        [
+          30,
+          25,
+          41,
+          9,
+          3866,
+          29
+        ],
+        [
+          2,
+          6,
+          10,
+          1,
+          275,
+          3706
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8675833333333334,
+      "macro_f1": 0.8668245999934715,
+      "macro_accuracy": 0.8675833333333335,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3449,
+          117,
+          187,
+          175,
+          58,
+          14
+        ],
+        [
+          78,
+          2794,
+          131,
+          893,
+          80,
+          24
+        ],
+        [
+          37,
+          27,
+          3858,
+          20,
+          34,
+          24
+        ],
+        [
+          137,
+          827,
+          24,
+          2967,
+          39,
+          6
+        ],
+        [
+          16,
+          43,
+          26,
+          26,
+          3882,
+          7
+        ],
+        [
+          0,
+          5,
+          18,
+          3,
+          102,
+          3872
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.72075,
+      "macro_f1": 0.7171321665035088,
+      "macro_accuracy": 0.7207500000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3816,
+          68,
+          24,
+          57,
+          26,
+          9
+        ],
+        [
+          208,
+          2344,
+          24,
+          1378,
+          35,
+          11
+        ],
+        [
+          501,
+          543,
+          2151,
+          346,
+          379,
+          80
+        ],
+        [
+          271,
+          2045,
+          28,
+          1602,
+          44,
+          10
+        ],
+        [
+          26,
+          38,
+          76,
+          57,
+          3789,
+          14
+        ],
+        [
+          16,
+          18,
+          45,
+          6,
+          319,
+          3596
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8465833333333334,
+      "macro_f1": 0.8452623741672848,
+      "macro_accuracy": 0.8465833333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3192,
+          27,
+          30,
+          723,
+          19,
+          9
+        ],
+        [
+          75,
+          3351,
+          21,
+          509,
+          38,
+          6
+        ],
+        [
+          154,
+          72,
+          2557,
+          121,
+          881,
+          215
+        ],
+        [
+          91,
+          264,
+          18,
+          3590,
+          29,
+          8
+        ],
+        [
+          19,
+          41,
+          23,
+          26,
+          3884,
+          7
+        ],
+        [
+          4,
+          4,
+          6,
+          1,
+          241,
+          3744
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.797125,
+      "macro_f1": 0.7862333074832151,
+      "macro_accuracy": 0.797125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3902,
+          31,
+          19,
+          29,
+          15,
+          4
+        ],
+        [
+          605,
+          2603,
+          41,
+          718,
+          28,
+          5
+        ],
+        [
+          93,
+          39,
+          3694,
+          107,
+          41,
+          26
+        ],
+        [
+          2552,
+          234,
+          57,
+          1139,
+          9,
+          9
+        ],
+        [
+          29,
+          56,
+          26,
+          46,
+          3841,
+          2
+        ],
+        [
+          19,
+          3,
+          17,
+          0,
+          9,
+          3952
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7412916666666667,
+      "macro_f1": 0.7204496520798016,
+      "macro_accuracy": 0.7412916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3672,
+          140,
+          31,
+          120,
+          29,
+          8
+        ],
+        [
+          66,
+          1271,
+          19,
+          2598,
+          42,
+          4
+        ],
+        [
+          34,
+          685,
+          1267,
+          1253,
+          34,
+          727
+        ],
+        [
+          85,
+          146,
+          19,
+          3713,
+          30,
+          7
+        ],
+        [
+          17,
+          31,
+          28,
+          22,
+          3891,
+          11
+        ],
+        [
+          2,
+          2,
+          9,
+          1,
+          9,
+          3977
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.913,
+      "macro_f1": 0.15908694894580938,
+      "macro_accuracy": 0.913,
+      "query_count": 28000,
+      "confusion": [
+        [
+          25564,
+          477,
+          337,
+          1379,
+          188,
+          55
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5314285714285715,
+      "macro_f1": 0.11567164179104478,
+      "macro_accuracy": 0.5314285714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1698,
+          14880,
+          285,
+          10802,
+          280,
+          55
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6335,
+      "macro_f1": 0.12927252321191715,
+      "macro_accuracy": 0.6335,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3144,
+          1415,
+          17738,
+          1864,
+          1387,
+          2452
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6033214285714286,
+      "macro_f1": 0.12543158176107636,
+      "macro_accuracy": 0.6033214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          4560,
+          5848,
+          436,
+          16893,
+          203,
+          60
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9641785714285714,
+      "macro_f1": 0.16362710693310545,
+      "macro_accuracy": 0.9641785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          160,
+          290,
+          251,
+          222,
+          26997,
+          80
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9549642857142857,
+      "macro_f1": 0.16282723469555527,
+      "macro_accuracy": 0.9549642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          49,
+          45,
+          181,
+          14,
+          972,
+          26739
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7438095238095238,
+      "macro_f1": 0.7392796614499783,
+      "macro_accuracy": 0.7438095238095238,
+      "query_count": 168000,
+      "confusion": [
+        [
+          24761,
+          685,
+          589,
+          1531,
+          316,
+          118
+        ],
+        [
+          2371,
+          14536,
+          457,
+          10099,
+          416,
+          121
+        ],
+        [
+          3261,
+          1450,
+          17307,
+          1917,
+          1400,
+          2665
+        ],
+        [
+          5152,
+          6157,
+          645,
+          15519,
+          394,
+          133
+        ],
+        [
+          280,
+          454,
+          413,
+          400,
+          26282,
+          171
+        ],
+        [
+          100,
+          68,
+          245,
+          26,
+          1006,
+          26555
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.6543333333333333,
+      "macro_f1": 0.6239796032556881,
+      "macro_accuracy": 0.6543333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3763,
+          58,
+          69,
+          58,
+          36,
+          16
+        ],
+        [
+          797,
+          608,
+          55,
+          2495,
+          37,
+          8
+        ],
+        [
+          1941,
+          14,
+          1440,
+          5,
+          19,
+          581
+        ],
+        [
+          1244,
+          269,
+          57,
+          2352,
+          65,
+          13
+        ],
+        [
+          41,
+          123,
+          52,
+          62,
+          3707,
+          15
+        ],
+        [
+          14,
+          13,
+          93,
+          4,
+          42,
+          3834
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6953333333333334,
+      "macro_f1": 0.6865263031180232,
+      "macro_accuracy": 0.6953333333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3502,
+          78,
+          61,
+          303,
+          37,
+          19
+        ],
+        [
+          160,
+          1898,
+          47,
+          1823,
+          59,
+          13
+        ],
+        [
+          339,
+          56,
+          2744,
+          14,
+          25,
+          822
+        ],
+        [
+          463,
+          2005,
+          325,
+          1117,
+          60,
+          30
+        ],
+        [
+          54,
+          39,
+          60,
+          30,
+          3764,
+          53
+        ],
+        [
+          8,
+          13,
+          25,
+          3,
+          288,
+          3663
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8409583333333334,
+      "macro_f1": 0.8395866120856675,
+      "macro_accuracy": 0.8409583333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3326,
+          151,
+          241,
+          177,
+          79,
+          26
+        ],
+        [
+          137,
+          2688,
+          142,
+          902,
+          103,
+          28
+        ],
+        [
+          48,
+          45,
+          3777,
+          49,
+          44,
+          37
+        ],
+        [
+          198,
+          943,
+          54,
+          2729,
+          48,
+          28
+        ],
+        [
+          36,
+          53,
+          47,
+          33,
+          3814,
+          17
+        ],
+        [
+          6,
+          8,
+          23,
+          2,
+          112,
+          3849
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.6989166666666666,
+      "macro_f1": 0.6939828533161365,
+      "macro_accuracy": 0.6989166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3690,
+          108,
+          59,
+          87,
+          38,
+          18
+        ],
+        [
+          330,
+          2256,
+          61,
+          1279,
+          61,
+          13
+        ],
+        [
+          513,
+          534,
+          2112,
+          345,
+          393,
+          103
+        ],
+        [
+          378,
+          2009,
+          50,
+          1470,
+          67,
+          26
+        ],
+        [
+          46,
+          72,
+          119,
+          86,
+          3657,
+          20
+        ],
+        [
+          19,
+          22,
+          63,
+          7,
+          300,
+          3589
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8187083333333334,
+      "macro_f1": 0.8172006624831,
+      "macro_accuracy": 0.8187083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3080,
+          57,
+          65,
+          737,
+          41,
+          20
+        ],
+        [
+          143,
+          3197,
+          54,
+          538,
+          46,
+          22
+        ],
+        [
+          178,
+          82,
+          2535,
+          147,
+          806,
+          252
+        ],
+        [
+          165,
+          434,
+          42,
+          3291,
+          58,
+          10
+        ],
+        [
+          38,
+          44,
+          43,
+          45,
+          3804,
+          26
+        ],
+        [
+          10,
+          0,
+          12,
+          2,
+          234,
+          3742
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.770625,
+      "macro_f1": 0.7602646430833676,
+      "macro_accuracy": 0.770625,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3822,
+          45,
+          40,
+          44,
+          39,
+          10
+        ],
+        [
+          703,
+          2488,
+          45,
+          700,
+          46,
+          18
+        ],
+        [
+          183,
+          70,
+          3480,
+          159,
+          52,
+          56
+        ],
+        [
+          2543,
+          275,
+          66,
+          1067,
+          33,
+          16
+        ],
+        [
+          41,
+          85,
+          39,
+          104,
+          3713,
+          18
+        ],
+        [
+          30,
+          3,
+          16,
+          5,
+          21,
+          3925
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7277916666666666,
+      "macro_f1": 0.707735821139358,
+      "macro_accuracy": 0.7277916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3578,
+          188,
+          54,
+          125,
+          46,
+          9
+        ],
+        [
+          101,
+          1401,
+          53,
+          2362,
+          64,
+          19
+        ],
+        [
+          59,
+          649,
+          1219,
+          1198,
+          61,
+          814
+        ],
+        [
+          161,
+          222,
+          51,
+          3493,
+          63,
+          10
+        ],
+        [
+          24,
+          38,
+          53,
+          40,
+          3823,
+          22
+        ],
+        [
+          13,
+          9,
+          13,
+          3,
+          9,
+          3953
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.8843214285714286,
+      "macro_f1": 0.15643499301883337,
+      "macro_accuracy": 0.8843214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          24761,
+          685,
+          589,
+          1531,
+          316,
+          118
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5191428571428571,
+      "macro_f1": 0.11391135352015547,
+      "macro_accuracy": 0.5191428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2371,
+          14536,
+          457,
+          10099,
+          416,
+          121
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6181071428571429,
+      "macro_f1": 0.12733131745646367,
+      "macro_accuracy": 0.6181071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3261,
+          1450,
+          17307,
+          1917,
+          1400,
+          2665
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.55425,
+      "macro_f1": 0.11886762103908638,
+      "macro_accuracy": 0.55425,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          5152,
+          6157,
+          645,
+          15519,
+          394,
+          133
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9386428571428571,
+      "macro_f1": 0.16139174434742026,
+      "macro_accuracy": 0.9386428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          280,
+          454,
+          413,
+          400,
+          26282,
+          171
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_suburban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9483928571428571,
+      "macro_f1": 0.16225216142730578,
+      "macro_accuracy": 0.9483928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          100,
+          68,
+          245,
+          26,
+          1006,
+          26555
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7576845238095238,
+      "macro_f1": 0.7538530188476295,
+      "macro_accuracy": 0.7576845238095239,
+      "query_count": 168000,
+      "confusion": [
+        [
+          25101,
+          705,
+          454,
+          1372,
+          321,
+          47
+        ],
+        [
+          1714,
+          14712,
+          313,
+          10776,
+          430,
+          55
+        ],
+        [
+          3219,
+          1423,
+          17584,
+          1787,
+          1529,
+          2458
+        ],
+        [
+          4340,
+          5881,
+          557,
+          16766,
+          391,
+          65
+        ],
+        [
+          324,
+          480,
+          330,
+          308,
+          26455,
+          103
+        ],
+        [
+          59,
+          65,
+          222,
+          9,
+          972,
+          26673
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.6716666666666666,
+      "macro_f1": 0.636794801641588,
+      "macro_accuracy": 0.6716666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3799,
+          69,
+          43,
+          50,
+          33,
+          6
+        ],
+        [
+          542,
+          591,
+          28,
+          2801,
+          33,
+          5
+        ],
+        [
+          2029,
+          10,
+          1354,
+          3,
+          11,
+          593
+        ],
+        [
+          917,
+          234,
+          35,
+          2751,
+          59,
+          4
+        ],
+        [
+          53,
+          96,
+          34,
+          50,
+          3758,
+          9
+        ],
+        [
+          10,
+          9,
+          74,
+          4,
+          36,
+          3867
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7065833333333333,
+      "macro_f1": 0.6992538545328445,
+      "macro_accuracy": 0.7065833333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3604,
+          90,
+          45,
+          210,
+          46,
+          5
+        ],
+        [
+          92,
+          1912,
+          18,
+          1898,
+          75,
+          5
+        ],
+        [
+          330,
+          56,
+          2779,
+          9,
+          24,
+          802
+        ],
+        [
+          308,
+          2128,
+          317,
+          1192,
+          37,
+          18
+        ],
+        [
+          61,
+          38,
+          66,
+          19,
+          3774,
+          42
+        ],
+        [
+          6,
+          7,
+          22,
+          0,
+          268,
+          3697
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8560416666666667,
+      "macro_f1": 0.855251167237154,
+      "macro_accuracy": 0.8560416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3397,
+          152,
+          197,
+          176,
+          71,
+          7
+        ],
+        [
+          113,
+          2744,
+          133,
+          883,
+          111,
+          16
+        ],
+        [
+          57,
+          51,
+          3772,
+          30,
+          68,
+          22
+        ],
+        [
+          147,
+          800,
+          35,
+          2947,
+          60,
+          11
+        ],
+        [
+          36,
+          50,
+          58,
+          31,
+          3812,
+          13
+        ],
+        [
+          1,
+          9,
+          22,
+          2,
+          93,
+          3873
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7107083333333334,
+      "macro_f1": 0.7078081165273872,
+      "macro_accuracy": 0.7107083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3755,
+          97,
+          29,
+          62,
+          47,
+          10
+        ],
+        [
+          199,
+          2316,
+          38,
+          1390,
+          48,
+          9
+        ],
+        [
+          496,
+          534,
+          2143,
+          343,
+          392,
+          92
+        ],
+        [
+          224,
+          2092,
+          34,
+          1559,
+          79,
+          12
+        ],
+        [
+          49,
+          71,
+          70,
+          74,
+          3721,
+          15
+        ],
+        [
+          16,
+          20,
+          60,
+          2,
+          339,
+          3563
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.842375,
+      "macro_f1": 0.841159658077522,
+      "macro_accuracy": 0.842375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3137,
+          50,
+          70,
+          696,
+          43,
+          4
+        ],
+        [
+          97,
+          3367,
+          28,
+          451,
+          46,
+          11
+        ],
+        [
+          160,
+          56,
+          2588,
+          85,
+          920,
+          191
+        ],
+        [
+          137,
+          233,
+          26,
+          3543,
+          57,
+          4
+        ],
+        [
+          31,
+          74,
+          36,
+          48,
+          3802,
+          9
+        ],
+        [
+          0,
+          5,
+          8,
+          0,
+          207,
+          3780
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7869166666666667,
+      "macro_f1": 0.7758860828536666,
+      "macro_accuracy": 0.7869166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3786,
+          85,
+          32,
+          53,
+          36,
+          8
+        ],
+        [
+          565,
+          2599,
+          47,
+          730,
+          53,
+          6
+        ],
+        [
+          99,
+          61,
+          3642,
+          90,
+          69,
+          39
+        ],
+        [
+          2489,
+          265,
+          69,
+          1135,
+          32,
+          10
+        ],
+        [
+          55,
+          79,
+          29,
+          47,
+          3783,
+          7
+        ],
+        [
+          14,
+          11,
+          22,
+          1,
+          11,
+          3941
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7295,
+      "macro_f1": 0.7085828587951776,
+      "macro_accuracy": 0.7294999999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3623,
+          162,
+          38,
+          125,
+          45,
+          7
+        ],
+        [
+          106,
+          1183,
+          21,
+          2623,
+          64,
+          3
+        ],
+        [
+          48,
+          655,
+          1306,
+          1227,
+          45,
+          719
+        ],
+        [
+          118,
+          129,
+          41,
+          3639,
+          67,
+          6
+        ],
+        [
+          39,
+          72,
+          37,
+          39,
+          3805,
+          8
+        ],
+        [
+          12,
+          4,
+          14,
+          0,
+          18,
+          3952
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.8964642857142857,
+      "macro_f1": 0.15756765409314324,
+      "macro_accuracy": 0.8964642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          25101,
+          705,
+          454,
+          1372,
+          321,
+          47
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5254285714285715,
+      "macro_f1": 0.11481550852219517,
+      "macro_accuracy": 0.5254285714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1714,
+          14712,
+          313,
+          10776,
+          430,
+          55
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.628,
+      "macro_f1": 0.1285831285831286,
+      "macro_accuracy": 0.628,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3219,
+          1423,
+          17584,
+          1787,
+          1529,
+          2458
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.5987857142857143,
+      "macro_f1": 0.12484176979552934,
+      "macro_accuracy": 0.5987857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          4340,
+          5881,
+          557,
+          16766,
+          391,
+          65
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9448214285714286,
+      "macro_f1": 0.16193799161387076,
+      "macro_accuracy": 0.9448214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          324,
+          480,
+          330,
+          308,
+          26455,
+          103
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_high_urban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9526071428571429,
+      "macro_f1": 0.16262140361787356,
+      "macro_accuracy": 0.9526071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          59,
+          65,
+          222,
+          9,
+          972,
+          26673
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.6334583333333333,
+      "macro_f1": 0.6268630063971604,
+      "macro_accuracy": 0.6334583333333333,
+      "query_count": 168000,
+      "confusion": [
+        [
+          20333,
+          1951,
+          1838,
+          2000,
+          1376,
+          502
+        ],
+        [
+          3793,
+          12085,
+          1485,
+          8421,
+          1838,
+          378
+        ],
+        [
+          3547,
+          1903,
+          15217,
+          1841,
+          2033,
+          3459
+        ],
+        [
+          5665,
+          6001,
+          1963,
+          12109,
+          1773,
+          489
+        ],
+        [
+          1373,
+          1681,
+          1658,
+          1274,
+          21309,
+          705
+        ],
+        [
+          266,
+          259,
+          658,
+          58,
+          1391,
+          25368
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.5744166666666667,
+      "macro_f1": 0.55337651106865,
+      "macro_accuracy": 0.5744166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3097,
+          218,
+          289,
+          157,
+          177,
+          62
+        ],
+        [
+          823,
+          668,
+          198,
+          2061,
+          210,
+          40
+        ],
+        [
+          1700,
+          54,
+          1468,
+          24,
+          60,
+          694
+        ],
+        [
+          1088,
+          445,
+          187,
+          1927,
+          303,
+          50
+        ],
+        [
+          209,
+          300,
+          197,
+          190,
+          3021,
+          83
+        ],
+        [
+          50,
+          50,
+          164,
+          12,
+          119,
+          3605
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.589875,
+      "macro_f1": 0.577357370209937,
+      "macro_accuracy": 0.589875,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2919,
+          276,
+          222,
+          342,
+          181,
+          60
+        ],
+        [
+          414,
+          1609,
+          203,
+          1442,
+          296,
+          36
+        ],
+        [
+          381,
+          224,
+          2358,
+          60,
+          89,
+          888
+        ],
+        [
+          503,
+          1708,
+          626,
+          868,
+          194,
+          101
+        ],
+        [
+          261,
+          154,
+          279,
+          114,
+          2927,
+          265
+        ],
+        [
+          35,
+          42,
+          119,
+          6,
+          322,
+          3476
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.711875,
+      "macro_f1": 0.7075706173117507,
+      "macro_accuracy": 0.711875,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2742,
+          275,
+          426,
+          221,
+          240,
+          96
+        ],
+        [
+          421,
+          2134,
+          278,
+          761,
+          344,
+          62
+        ],
+        [
+          169,
+          248,
+          3185,
+          88,
+          197,
+          113
+        ],
+        [
+          483,
+          825,
+          228,
+          2100,
+          297,
+          67
+        ],
+        [
+          160,
+          214,
+          260,
+          151,
+          3158,
+          57
+        ],
+        [
+          14,
+          25,
+          51,
+          6,
+          138,
+          3766
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.5937916666666667,
+      "macro_f1": 0.5882189000076398,
+      "macro_accuracy": 0.5937916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2984,
+          302,
+          217,
+          223,
+          202,
+          72
+        ],
+        [
+          504,
+          1892,
+          219,
+          1099,
+          221,
+          65
+        ],
+        [
+          517,
+          496,
+          1912,
+          339,
+          481,
+          255
+        ],
+        [
+          573,
+          1642,
+          222,
+          1195,
+          288,
+          80
+        ],
+        [
+          196,
+          267,
+          319,
+          240,
+          2887,
+          91
+        ],
+        [
+          45,
+          52,
+          142,
+          21,
+          359,
+          3381
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.6926666666666667,
+      "macro_f1": 0.6901080979341391,
+      "macro_accuracy": 0.6926666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2582,
+          212,
+          269,
+          669,
+          203,
+          65
+        ],
+        [
+          382,
+          2597,
+          208,
+          501,
+          248,
+          64
+        ],
+        [
+          261,
+          95,
+          2252,
+          140,
+          770,
+          482
+        ],
+        [
+          464,
+          524,
+          200,
+          2482,
+          268,
+          62
+        ],
+        [
+          172,
+          231,
+          200,
+          180,
+          3148,
+          69
+        ],
+        [
+          29,
+          33,
+          21,
+          2,
+          352,
+          3563
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.654375,
+      "macro_f1": 0.6421466389076105,
+      "macro_accuracy": 0.6543749999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3133,
+          256,
+          208,
+          180,
+          136,
+          87
+        ],
+        [
+          816,
+          2047,
+          207,
+          660,
+          217,
+          53
+        ],
+        [
+          356,
+          191,
+          2842,
+          126,
+          255,
+          230
+        ],
+        [
+          2113,
+          471,
+          272,
+          918,
+          163,
+          63
+        ],
+        [
+          215,
+          289,
+          211,
+          196,
+          3024,
+          65
+        ],
+        [
+          64,
+          32,
+          103,
+          9,
+          51,
+          3741
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.6172083333333334,
+      "macro_f1": 0.599668581798683,
+      "macro_accuracy": 0.6172083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2876,
+          412,
+          207,
+          208,
+          237,
+          60
+        ],
+        [
+          433,
+          1138,
+          172,
+          1897,
+          302,
+          58
+        ],
+        [
+          163,
+          595,
+          1200,
+          1064,
+          181,
+          797
+        ],
+        [
+          441,
+          386,
+          228,
+          2619,
+          260,
+          66
+        ],
+        [
+          160,
+          226,
+          192,
+          203,
+          3144,
+          75
+        ],
+        [
+          29,
+          25,
+          58,
+          2,
+          50,
+          3836
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.7261785714285715,
+      "macro_f1": 0.1402285533003676,
+      "macro_accuracy": 0.7261785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          20333,
+          1951,
+          1838,
+          2000,
+          1376,
+          502
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.43160714285714286,
+      "macro_f1": 0.10049478192174961,
+      "macro_accuracy": 0.43160714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3793,
+          12085,
+          1485,
+          8421,
+          1838,
+          378
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.5434642857142857,
+      "macro_f1": 0.11736893660673654,
+      "macro_accuracy": 0.5434642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3547,
+          1903,
+          15217,
+          1841,
+          2033,
+          3459
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.4324642857142857,
+      "macro_f1": 0.10063410539612888,
+      "macro_accuracy": 0.4324642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          5665,
+          6001,
+          1963,
+          12109,
+          1773,
+          489
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.7610357142857143,
+      "macro_f1": 0.14405078180453873,
+      "macro_accuracy": 0.7610357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1373,
+          1681,
+          1658,
+          1274,
+          21309,
+          705
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_mid_urban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.906,
+      "macro_f1": 0.1584470094438615,
+      "macro_accuracy": 0.906,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          266,
+          259,
+          658,
+          58,
+          1391,
+          25368
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.5310297619047619,
+      "macro_f1": 0.5218056194182352,
+      "macro_accuracy": 0.531029761904762,
+      "query_count": 168000,
+      "confusion": [
+        [
+          16339,
+          2533,
+          3175,
+          2585,
+          2176,
+          1192
+        ],
+        [
+          4750,
+          9670,
+          2717,
+          7017,
+          2820,
+          1026
+        ],
+        [
+          3616,
+          2329,
+          13108,
+          1947,
+          2620,
+          4380
+        ],
+        [
+          6106,
+          5552,
+          3313,
+          9075,
+          2828,
+          1126
+        ],
+        [
+          2168,
+          2319,
+          2911,
+          1912,
+          17249,
+          1441
+        ],
+        [
+          608,
+          448,
+          1206,
+          176,
+          1790,
+          23772
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.48554166666666665,
+      "macro_f1": 0.46995440033417474,
+      "macro_accuracy": 0.4855416666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2487,
+          296,
+          493,
+          283,
+          253,
+          188
+        ],
+        [
+          968,
+          665,
+          396,
+          1512,
+          330,
+          129
+        ],
+        [
+          1433,
+          91,
+          1463,
+          43,
+          163,
+          807
+        ],
+        [
+          1196,
+          502,
+          351,
+          1377,
+          413,
+          161
+        ],
+        [
+          348,
+          364,
+          430,
+          293,
+          2406,
+          159
+        ],
+        [
+          112,
+          101,
+          295,
+          38,
+          199,
+          3255
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.49395833333333333,
+      "macro_f1": 0.47814290099288614,
+      "macro_accuracy": 0.49395833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2390,
+          387,
+          372,
+          387,
+          318,
+          146
+        ],
+        [
+          549,
+          1278,
+          372,
+          1213,
+          471,
+          117
+        ],
+        [
+          453,
+          348,
+          1910,
+          127,
+          197,
+          965
+        ],
+        [
+          616,
+          1263,
+          821,
+          683,
+          432,
+          185
+        ],
+        [
+          411,
+          199,
+          499,
+          154,
+          2313,
+          424
+        ],
+        [
+          71,
+          99,
+          210,
+          15,
+          324,
+          3281
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.5921666666666666,
+      "macro_f1": 0.5847170029349666,
+      "macro_accuracy": 0.5921666666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2202,
+          335,
+          618,
+          347,
+          325,
+          173
+        ],
+        [
+          596,
+          1635,
+          409,
+          731,
+          470,
+          159
+        ],
+        [
+          235,
+          360,
+          2678,
+          168,
+          310,
+          249
+        ],
+        [
+          591,
+          858,
+          435,
+          1552,
+          418,
+          146
+        ],
+        [
+          265,
+          339,
+          415,
+          239,
+          2579,
+          163
+        ],
+        [
+          54,
+          40,
+          78,
+          8,
+          254,
+          3566
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.501375,
+      "macro_f1": 0.49400123472235463,
+      "macro_accuracy": 0.501375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2418,
+          404,
+          397,
+          310,
+          323,
+          148
+        ],
+        [
+          634,
+          1518,
+          387,
+          898,
+          406,
+          157
+        ],
+        [
+          525,
+          504,
+          1713,
+          346,
+          513,
+          399
+        ],
+        [
+          750,
+          1352,
+          381,
+          924,
+          423,
+          170
+        ],
+        [
+          292,
+          354,
+          479,
+          397,
+          2311,
+          167
+        ],
+        [
+          108,
+          75,
+          235,
+          46,
+          387,
+          3149
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.5697916666666667,
+      "macro_f1": 0.5645272322193896,
+      "macro_accuracy": 0.5697916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2044,
+          274,
+          517,
+          659,
+          323,
+          183
+        ],
+        [
+          546,
+          1908,
+          385,
+          566,
+          409,
+          186
+        ],
+        [
+          341,
+          141,
+          1936,
+          178,
+          738,
+          666
+        ],
+        [
+          605,
+          596,
+          371,
+          1855,
+          426,
+          147
+        ],
+        [
+          281,
+          337,
+          372,
+          260,
+          2560,
+          190
+        ],
+        [
+          65,
+          45,
+          66,
+          19,
+          433,
+          3372
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.5455833333333333,
+      "macro_f1": 0.5316900068730216,
+      "macro_accuracy": 0.5455833333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2529,
+          333,
+          397,
+          293,
+          275,
+          173
+        ],
+        [
+          944,
+          1593,
+          411,
+          604,
+          311,
+          137
+        ],
+        [
+          384,
+          312,
+          2288,
+          199,
+          437,
+          380
+        ],
+        [
+          1751,
+          499,
+          510,
+          768,
+          289,
+          183
+        ],
+        [
+          319,
+          413,
+          392,
+          319,
+          2410,
+          147
+        ],
+        [
+          114,
+          41,
+          194,
+          32,
+          113,
+          3506
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.5287916666666667,
+      "macro_f1": 0.5136521869287282,
+      "macro_accuracy": 0.5287916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          2269,
+          504,
+          381,
+          306,
+          359,
+          181
+        ],
+        [
+          513,
+          1073,
+          357,
+          1493,
+          423,
+          141
+        ],
+        [
+          245,
+          573,
+          1120,
+          886,
+          262,
+          914
+        ],
+        [
+          597,
+          482,
+          444,
+          1916,
+          427,
+          134
+        ],
+        [
+          252,
+          313,
+          324,
+          250,
+          2670,
+          191
+        ],
+        [
+          84,
+          47,
+          128,
+          18,
+          80,
+          3643
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.5835357142857143,
+      "macro_f1": 0.12283392348346452,
+      "macro_accuracy": 0.5835357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          16339,
+          2533,
+          3175,
+          2585,
+          2176,
+          1192
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.34535714285714286,
+      "macro_f1": 0.08556764888063002,
+      "macro_accuracy": 0.34535714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          4750,
+          9670,
+          2717,
+          7017,
+          2820,
+          1026
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.46814285714285714,
+      "macro_f1": 0.10628912458240082,
+      "macro_accuracy": 0.46814285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3616,
+          2329,
+          13108,
+          1947,
+          2620,
+          4380
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.32410714285714287,
+      "macro_f1": 0.0815913688469319,
+      "macro_accuracy": 0.32410714285714287,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6106,
+          5552,
+          3313,
+          9075,
+          2828,
+          1126
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.6160357142857142,
+      "macro_f1": 0.1270672648382653,
+      "macro_accuracy": 0.6160357142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2168,
+          2319,
+          2911,
+          1912,
+          17249,
+          1441
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "multi_interaction-s2026092701",
+      "stage": "multi_disentangle",
+      "arm": "multi_interaction",
+      "model_seed": 2026092701,
+      "view": "practical_low_urban",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.849,
+      "macro_f1": 0.15305570578691183,
+      "macro_accuracy": 0.849,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          608,
+          448,
+          1206,
+          176,
+          1790,
+          23772
+        ]
+      ]
+    }
+  ]
+}

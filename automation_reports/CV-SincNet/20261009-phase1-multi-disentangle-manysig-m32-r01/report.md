@@ -76,3 +76,7 @@ VERIFIED。代码提交：`c037af5a19d5973486942a090bced9cbae070d38`；控制器
 完整训练和测试尚未完成，性能提升未知。控制器自动执行固定 E200 冻结、全部 224 组预测和独立 truth-last 评分；本地只读观察器收取并独立复算产物后交付报告。
 
 观察器 PID 68664 已通过独立 Win32_Process 与启动产物读回验证，见 [observer_verified.json](evidence/observer_verified.json)。N607 提交版本的 CPU 检查与八臂原生训练链预检均 PASS，见 [remote_preflight_verified.json](evidence/remote_preflight_verified.json)。代码推送 OID 证据见 [code_git_verified.json](evidence/code_git_verified.json)，草稿 [PR #8](https://github.com/niubility1317/CVS-RFFI/pull/8) 已更新，未合并。
+
+## 完整测试交付
+
+ANALYZED / VERIFIED。完整结果见[结果表](results/full_results.md)、[逐RX/TX](results/scores.csv)、[逐日期](results/day_scores.csv)。所有负结果完整保留。
