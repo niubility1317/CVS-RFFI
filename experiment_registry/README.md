@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-10T10:29:17.558210+00:00
+更新：2026-10-10T11:02:07.463839+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|131|
+|managed_run|132|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -23,7 +23,7 @@
 |---|---:|
 |[cvs](by_method/cvs.md)|268|
 |[adv3b02](by_method/adv3b02.md)|146|
-|[phase1](by_method/phase1.md)|137|
+|[phase1](by_method/phase1.md)|138|
 |[phase2](by_method/phase2.md)|118|
 |[stage2](by_method/stage2.md)|67|
 |[clean_only](by_method/clean_only.md)|59|
@@ -71,16 +71,16 @@
 |[mmse](by_method/mmse.md)|5|
 |[relative_cfo](by_method/relative_cfo.md)|5|
 |[repair](by_method/repair.md)|5|
+|[multi_disentanglement](by_method/multi_disentanglement.md)|5|
+|[three_seed](by_method/three_seed.md)|5|
 |[final200](by_method/final200.md)|4|
 |[mirror_relation](by_method/mirror_relation.md)|4|
 |[fixed_comparison](by_method/fixed_comparison.md)|4|
 |[auto_after_parent](by_method/auto_after_parent.md)|4|
 |[cosine](by_method/cosine.md)|4|
-|[multi_disentanglement](by_method/multi_disentanglement.md)|4|
 |[test_completion](by_method/test_completion.md)|4|
 |[frozen_checkpoint](by_method/frozen_checkpoint.md)|4|
 |[schema_repair](by_method/schema_repair.md)|4|
-|[three_seed](by_method/three_seed.md)|4|
 |[receiver_agnostic](by_method/receiver_agnostic.md)|4|
 |[shot](by_method/shot.md)|4|
 |[architecture](by_method/architecture.md)|3|
@@ -129,6 +129,7 @@
 |[source_diagnostic](by_method/source_diagnostic.md)|2|
 |[score_only](by_method/score_only.md)|2|
 |[physical_receiver_metadata_repair](by_method/physical_receiver_metadata_repair.md)|2|
+|[pure_ce](by_method/pure_ce.md)|2|
 |[nm fdu](by_method/nm_fdu.md)|2|
 |[protonet](by_method/protonet.md)|2|
 |[original_leo](by_method/original_leo.md)|1|
@@ -211,9 +212,11 @@
 |[channel_DG](by_method/channel_DG.md)|1|
 |[factorial_interaction](by_method/factorial_interaction.md)|1|
 |[independent_auxiliary_networks](by_method/independent_auxiliary_networks.md)|1|
+|[relation_sampling](by_method/relation_sampling.md)|1|
+|[weak_mixstyle](by_method/weak_mixstyle.md)|1|
+|[directional_fishr](by_method/directional_fishr.md)|1|
 |[no_satellite_augmentation](by_method/no_satellite_augmentation.md)|1|
 |[automatic_row_test](by_method/automatic_row_test.md)|1|
-|[pure_ce](by_method/pure_ce.md)|1|
 |[action_proposals](by_method/action_proposals.md)|1|
 |[margin_distribution](by_method/margin_distribution.md)|1|
 |[fixed_completed24](by_method/fixed_completed24.md)|1|

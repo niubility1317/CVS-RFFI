@@ -1,0 +1,98 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "rows": [
+    {
+      "arm": "native",
+      "epochs": [
+        1,
+        20,
+        21,
+        200
+      ],
+      "status": "PASS",
+      "counts": {}
+    },
+    {
+      "arm": "S_raw5",
+      "epochs": [
+        1,
+        20,
+        21,
+        200
+      ],
+      "status": "PASS",
+      "counts": {
+        "relation_calls": 4,
+        "relation_clean_forward_packets": 192,
+        "fishr_statistics_updates": 4,
+        "fishr_positive_weight_calls": 2
+      }
+    },
+    {
+      "arm": "LTR_S_AF5",
+      "epochs": [
+        1,
+        20,
+        21,
+        200
+      ],
+      "status": "PASS",
+      "counts": {
+        "relation_calls": 4,
+        "relation_clean_forward_packets": 192,
+        "fishr_statistics_updates": 4,
+        "fishr_positive_weight_calls": 2
+      }
+    },
+    {
+      "arm": "joint_noR",
+      "epochs": [
+        1,
+        20,
+        21,
+        200
+      ],
+      "status": "PASS",
+      "counts": {
+        "relation_calls": 4,
+        "relation_clean_forward_packets": 192,
+        "fishr_statistics_updates": 4,
+        "fishr_positive_weight_calls": 2
+      }
+    },
+    {
+      "arm": "joint_direct",
+      "epochs": [
+        1,
+        20,
+        21,
+        200
+      ],
+      "status": "PASS",
+      "counts": {
+        "relation_calls": 4,
+        "relation_clean_forward_packets": 192,
+        "fishr_statistics_updates": 4,
+        "fishr_positive_weight_calls": 2
+      }
+    },
+    {
+      "arm": "joint_shared",
+      "epochs": [
+        1,
+        20,
+        21,
+        200
+      ],
+      "status": "PASS",
+      "counts": {
+        "relation_calls": 4,
+        "relation_clean_forward_packets": 192,
+        "fishr_statistics_updates": 4,
+        "fishr_positive_weight_calls": 2
+      }
+    }
+  ],
+  "synthetic_only": true
+}

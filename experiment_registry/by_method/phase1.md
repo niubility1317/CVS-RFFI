@@ -34,6 +34,7 @@
 |完整冻结预测独立评分：R2四seed正式消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r06/report.md)|
 |冻结E200独立测试：R1随机混杂诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r03/report.md)|
 |冻结E200独立测试：R2修复后四seed正式消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r04/report.md)|
+|特征增强版多解耦三种子探索|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-feature-disentangle-manysig-m48-r01/report.md)|
 |旧门控＋cos、关闭星地增强：三seed基线|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/report.md)|
 |下一版多解耦：真实动作提案与R判别分布风险|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-multi-action-risk-manysig-m48-r01/report.md)|
 |已完成24个多解耦模型：完整测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-state-action-completed-test-manysig-m24-r01/report.md)|

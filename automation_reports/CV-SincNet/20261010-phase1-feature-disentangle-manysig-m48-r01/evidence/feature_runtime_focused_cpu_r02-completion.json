@@ -1,0 +1,338 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "retention": {
+    "status": "PASS",
+    "legal_mispredicted_hard_IQ_retained": 24,
+    "random_IQ": 8
+  },
+  "quality": [
+    {
+      "proxy": "coherence",
+      "bin": 0,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        22,
+        24
+      ],
+      "variance_gap": 0.5460455417633057,
+      "pair_penalty": 0.45999637246131897,
+      "class_counts": [
+        [
+          4,
+          2,
+          4,
+          4,
+          4,
+          4
+        ],
+        [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ]
+      ]
+    },
+    {
+      "proxy": "coherence",
+      "bin": 1,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        2,
+        0
+      ],
+      "variance_gap": null,
+      "pair_penalty": null,
+      "class_counts": [
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "proxy": "coherence",
+      "bin": 2,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        0,
+        0
+      ],
+      "variance_gap": null,
+      "pair_penalty": null,
+      "class_counts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "proxy": "coherence",
+      "bin": 3,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        0,
+        0
+      ],
+      "variance_gap": null,
+      "pair_penalty": null,
+      "class_counts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "proxy": "repeat_residual",
+      "bin": 0,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        0,
+        0
+      ],
+      "variance_gap": null,
+      "pair_penalty": null,
+      "class_counts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "proxy": "repeat_residual",
+      "bin": 1,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        0,
+        0
+      ],
+      "variance_gap": null,
+      "pair_penalty": null,
+      "class_counts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "proxy": "repeat_residual",
+      "bin": 2,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        0,
+        0
+      ],
+      "variance_gap": null,
+      "pair_penalty": null,
+      "class_counts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "proxy": "repeat_residual",
+      "bin": 3,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        24,
+        24
+      ],
+      "variance_gap": 0.4861682951450348,
+      "pair_penalty": 0.37003105878829956,
+      "class_counts": [
+        [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ]
+      ]
+    }
+  ],
+  "calibration": {
+    "target_ratio": 0.05,
+    "min_bucket_updates": 8,
+    "observations": [
+      {
+        "accepted": true,
+        "ce_gradient_norm": 14.21903918520325,
+        "fishr_gradient_norm": 0.008899839040222846,
+        "cosine_with_ce": 0.16131303730365484,
+        "bucket_counts": [
+          17,
+          17
+        ],
+        "norm_ratio": 1597.6737467880337,
+        "epoch": 20
+      },
+      {
+        "accepted": true,
+        "ce_gradient_norm": 15.466591195567279,
+        "fishr_gradient_norm": 0.0037813181168140503,
+        "cosine_with_ce": -0.17719130521206403,
+        "bucket_counts": [
+          17,
+          17
+        ],
+        "norm_ratio": 4090.2644839092923,
+        "epoch": 20
+      }
+    ],
+    "lambda_max": 142.19845576743316
+  }
+}

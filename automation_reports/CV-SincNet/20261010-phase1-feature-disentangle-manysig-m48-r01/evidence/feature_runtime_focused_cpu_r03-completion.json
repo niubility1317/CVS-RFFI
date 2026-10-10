@@ -1,0 +1,339 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "retention": {
+    "status": "PASS",
+    "legal_mispredicted_hard_IQ_retained": 24,
+    "random_IQ": 8
+  },
+  "quality": [
+    {
+      "proxy": "coherence",
+      "bin": 0,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        22,
+        24
+      ],
+      "variance_gap": 0.5425352454185486,
+      "pair_penalty": 0.5954270958900452,
+      "class_counts": [
+        [
+          4,
+          2,
+          4,
+          4,
+          4,
+          4
+        ],
+        [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ]
+      ]
+    },
+    {
+      "proxy": "coherence",
+      "bin": 1,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        2,
+        0
+      ],
+      "variance_gap": null,
+      "pair_penalty": null,
+      "class_counts": [
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "proxy": "coherence",
+      "bin": 2,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        0,
+        0
+      ],
+      "variance_gap": null,
+      "pair_penalty": null,
+      "class_counts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "proxy": "coherence",
+      "bin": 3,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        0,
+        0
+      ],
+      "variance_gap": null,
+      "pair_penalty": null,
+      "class_counts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "proxy": "repeat_residual",
+      "bin": 0,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        0,
+        0
+      ],
+      "variance_gap": null,
+      "pair_penalty": null,
+      "class_counts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "proxy": "repeat_residual",
+      "bin": 1,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        0,
+        0
+      ],
+      "variance_gap": null,
+      "pair_penalty": null,
+      "class_counts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "proxy": "repeat_residual",
+      "bin": 2,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        0,
+        0
+      ],
+      "variance_gap": null,
+      "pair_penalty": null,
+      "class_counts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "proxy": "repeat_residual",
+      "bin": 3,
+      "bounds": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "receivers": [
+        1,
+        8
+      ],
+      "support": [
+        24,
+        24
+      ],
+      "variance_gap": 0.5428374409675598,
+      "pair_penalty": 0.6121564507484436,
+      "class_counts": [
+        [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ]
+      ]
+    }
+  ],
+  "calibration": {
+    "target_ratio": 0.05,
+    "min_bucket_updates": 8,
+    "observations": [
+      {
+        "accepted": true,
+        "ce_gradient_norm": 13.809887217992172,
+        "fishr_gradient_norm": 0.008899839040222846,
+        "cosine_with_ce": 0.12558942801767017,
+        "bucket_counts": [
+          17,
+          17
+        ],
+        "norm_ratio": 1551.700784202765,
+        "epoch": 20
+      },
+      {
+        "accepted": true,
+        "ce_gradient_norm": 13.946930681745888,
+        "fishr_gradient_norm": 0.0037813181168140503,
+        "cosine_with_ce": -0.10640767345027632,
+        "bucket_counts": [
+          17,
+          17
+        ],
+        "norm_ratio": 3688.378034032449,
+        "epoch": 20
+      }
+    ],
+    "lambda_max": 131.00197045588035
+  },
+  "duplicate_epoch_annotation": "PASS"
+}

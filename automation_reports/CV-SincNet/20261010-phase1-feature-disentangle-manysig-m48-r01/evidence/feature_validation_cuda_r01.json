@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "actual_adapter_time_vector_probe": true,
+  "frequency_PA_reference_outputs_unchanged": true,
+  "source_V_count": 27000,
+  "pressure_views": [
+    "LT",
+    "LTL_heldout",
+    "TL",
+    "clean",
+    "curvature_pressure",
+    "linear",
+    "noise_fixed_LT",
+    "temporal"
+  ],
+  "clean_quality_quartiles_all_packets": true,
+  "grouped_macroF1_margin_errorTail": true,
+  "modes_RNG_style_Fishr_state_unchanged": true,
+  "incomplete_V_and_seeds_rejected": true,
+  "immutable_source_only_selection": true,
+  "all_eight_views_score": true,
+  "exact_tie_lower_ratio": true,
+  "no_feasible_fallback": true,
+  "selected_training_rows": 48,
+  "selected_test_rows": 36
+}

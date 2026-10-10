@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "dtype": "torch.float64",
+  "checks": {
+    "raw_vs_per_sample_autograd_max_error": 5.551115123125783e-16,
+    "raw_a_minus_four_ratio": 0.01234567901234568,
+    "direction_independent_positive_row_scale_invariant": true,
+    "variance_n_denominator_and_pair_quarter": true,
+    "epsilon_regime_rejected": true,
+    "EMA_independent_count_debias_detach_coefficient": true,
+    "state_roundtrip_missing_bucket_and_validation_no_mutation": true,
+    "true_upstream_E_G_C_gradients": {
+      "E": 0.04880008342769633,
+      "G": 0.18773846424995896,
+      "C": 0.00551402368534778
+    },
+    "fixed_calibration": [
+      {
+        "target": 0.03,
+        "achieved": 0.03,
+        "lambda_max": 2.297034234170298
+      },
+      {
+        "target": 0.05,
+        "achieved": 0.05,
+        "lambda_max": 3.82839039028383
+      },
+      {
+        "target": 0.1,
+        "achieved": 0.1,
+        "lambda_max": 7.65678078056766
+      }
+    ]
+  }
+}

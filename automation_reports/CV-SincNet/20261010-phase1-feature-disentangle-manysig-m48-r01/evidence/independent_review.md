@@ -1,0 +1,1 @@
+独立P0/P1审查：PASS，无剩余阻断。发现dispatch调用source_provenance缺少design.require_budget，已显式导入并加入检查。核对cosine方向梯度/raw对照、桶EMA、B48/RNG、Style原生forward_model入口、source-only强度选择、48训练36测试、七视图truth-last、远端入口/容量/输出隔离。另修复新包双层telemetry重复annotate覆盖稀疏计数，保留定向回归。运行状态与效果以正式产物为准。

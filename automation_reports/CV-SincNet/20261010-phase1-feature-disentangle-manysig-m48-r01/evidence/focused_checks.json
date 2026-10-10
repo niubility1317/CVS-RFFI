@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "integration_artifacts": [
+    "local_artifacts\\feature_runtime_cpu_r01\\runtime_completion.json",
+    "local_artifacts\\feature_runtime_cuda_r01\\runtime_completion.json",
+    "local_artifacts\\feature_native_cpu_r02\\completion.json",
+    "local_artifacts\\feature_native_cuda_r01\\completion.json",
+    "local_artifacts\\feature_runtime_focused_cpu_r02\\completion.json",
+    "local_artifacts\\feature_runtime_focused_cpu_r03\\completion.json",
+    "local_artifacts\\feature_runtime_focused_cuda_r01\\completion.json"
+  ],
+  "commands": [
+    "python -m experiments.cvs_feature_disentangle.fishr_checks --device cpu / cuda:0",
+    "python -m experiments.cvs_feature_disentangle.sampling_style_checks --device cpu / cuda:0",
+    "python -m experiments.cvs_feature_disentangle.validation_checks --device cpu / cuda:0",
+    "python -m experiments.cvs_feature_disentangle.runtime_checks --output <unique> --device cpu / cuda:0",
+    "python -m experiments.cvs_feature_disentangle.runtime_checks --output <unique> --device cpu / cuda:0 --native",
+    "python -m experiments.cvs_feature_disentangle.checks",
+    "python -m compileall -q experiments/cvs_feature_disentangle",
+    "E:/type10-7/tools/experiment_registry.py validate experiment.json --launch-ready"
+  ],
+  "scope": "Focused CPU/CUDA synthetic and actual native integration; does not establish real-data efficacy"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "feature_disentangle_v1",
+  "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+  "stage": "feature_disentangle",
+  "arm": "S_dir5",
+  "model_seed": 2026092702,
+  "row_id": "S_dir5-s2026092702",
+  "features": [],
+  "variant": "reference_response",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r01/S_dir5-s2026092702/source",
+  "epochs": 200,
+  "steps_per_epoch": 222,
+  "model_initialization": "scratch",
+  "checkpoint_sources": [],
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "method": "cvs_feature_disentangle",
+  "target_access": false,
+  "pseudo_domain_gate": false,
+  "temporal_mode": "batch_neighbor",
+  "temporal_min_streak": 2,
+  "lr_schedule": "cosine",
+  "lr_min": 1e-06,
+  "risk_recipe": {
+    "warmup_epochs": 20,
+    "auxiliary_every_steps": 4,
+    "auxiliary_batch_size": 32,
+    "auxiliary_lr": 0.0002,
+    "auxiliary_lr_min": 1e-06,
+    "reference_refresh_steps": 888,
+    "gradient_audit_every_steps": 888,
+    "epochs": 200,
+    "steps_per_epoch": 222,
+    "hidden": 48,
+    "branch_weights": {
+      "linear": 0.015,
+      "temporal": 0.015,
+      "joint": 0.02,
+      "receiver": 0.01
+    },
+    "proposal_candidates": 4,
+    "random_fraction": 0.25,
+    "receiver_tail_alpha": 0.25,
+    "proposal_risk_relative_tolerance": 0.25,
+    "proposal_risk_error_ema": 0.9,
+    "proposal_quality_bins": 4,
+    "proposal_min_distinct_audit_ids": 16,
+    "receiver_live_audit_reencode_max": 32,
+    "auxiliary_batch_scope": "at most32 fresh source-L packets; R may separately re-encode at most32 cached audit IQ packets; count both",
+    "receiver_max_age_steps": 888,
+    "resume": false,
+    "source_selection": "fixed_E200_all_preregistered_controls",
+    "deployment": "identity_only",
+    "reference": "periodically frozen own student; no EMA teacher",
+    "action_scope": "bounded post-receive linear/phase increments; no satellite simulator in training",
+    "source_u_scope": "No U access in any arm"
+  },
+  "arm_plan": {
+    "paths": [],
+    "action_mode": "proposal",
+    "shared": false,
+    "r_target": "distribution",
+    "consistency_weight": 0.0,
+    "action_label_free": false,
+    "source_u_fit": false,
+    "replacements": [],
+    "conditional_edges": true
+  },
+  "source_stress": {
+    "seed": 2026101007,
+    "physical_selection": "all existing source V",
+    "batch_size": 256,
+    "views": [
+      "clean",
+      "linear",
+      "temporal",
+      "LT",
+      "TL",
+      "noise_fixed_LT",
+      "LTL_heldout",
+      "curvature_pressure"
+    ],
+    "clean_noninferiority_pp": 0.5,
+    "noise_tie_pp": 0.0,
+    "tail_alpha": 0.25,
+    "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
+    "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
+  },
+  "feature_plan": {
+    "relation": "balanced",
+    "style": false,
+    "fishr": "direction",
+    "fishr_ratio": 0.05,
+    "r_identity": true,
+    "selection_required": false
+  },
+  "feature_recipe": {
+    "relation_every": 8,
+    "relation_weight": 0.1,
+    "relation_batch": 48,
+    "relation_calls": 5550,
+    "relation_packet_occurrences": 266400,
+    "positive_fishr_calls": 4995,
+    "relation_blocks": 30,
+    "source_rx": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      0,
+      1,
+      2
+    ],
+    "source_classes": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "style_probability": 0.15,
+    "style_eta": 0.2,
+    "style_alpha": 0.1,
+    "style_location": "time_down",
+    "fishr_beta": 0.9,
+    "fishr_scale": 30.0,
+    "fishr_coordinates": 960,
+    "fishr_scene_weights": {
+      "clean": 1.0
+    },
+    "warmup_epochs": 20,
+    "ramp_epochs": 20,
+    "calibration_epoch": 20,
+    "calibration_target_ratios": [
+      0.03,
+      0.05,
+      0.1
+    ],
+    "calibration_scope": "mature source-L relation buckets; fixed once, no later weight adaptation",
+    "style_scope": "native labeled clean CE only; no extra CE or KL",
+    "statistical_ema": "gradient statistics only, not an EMA teacher",
+    "shared_hidden": 50,
+    "independent_hidden": 48,
+    "capacity_relative_tolerance": 0.002,
+    "deferred": [
+      "hard_resampling",
+      "DSU_alternative",
+      "fourth_interaction_network"
+    ]
+  },
+  "source_selection": {
+    "candidates": [
+      3,
+      5,
+      10
+    ],
+    "source_arms": [
+      "LTR_S_AF3",
+      "LTR_S_AF5",
+      "LTR_S_AF10"
+    ],
+    "seed_count": 3,
+    "baseline": "LTR_S",
+    "clean_noninferiority_pp": 0.5,
+    "score": "mean over seeds and all eight source views of (accuracy+worst_rx)/2",
+    "no_feasible": "choose maximum clean score then pressure score; flag no clean-noninferior candidate; never halt for low performance",
+    "tie": "exact score ties lower ratio",
+    "target_feedback": false,
+    "selected_companion": "LTR_S_F{ratio}",
+    "post_selection_controls": [
+      "joint_noR",
+      "joint_shared",
+      "joint_direct"
+    ]
+  }
+}
