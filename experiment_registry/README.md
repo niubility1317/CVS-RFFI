@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-10T09:34:48.976256+00:00
+更新：2026-10-10T10:00:06.164056+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|129|
+|managed_run|130|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -23,7 +23,7 @@
 |---|---:|
 |[cvs](by_method/cvs.md)|268|
 |[adv3b02](by_method/adv3b02.md)|146|
-|[phase1](by_method/phase1.md)|135|
+|[phase1](by_method/phase1.md)|136|
 |[phase2](by_method/phase2.md)|118|
 |[stage2](by_method/stage2.md)|67|
 |[clean_only](by_method/clean_only.md)|59|
@@ -95,6 +95,8 @@
 |[legacy_pseudo](by_method/legacy_pseudo.md)|3|
 |[multi_disentanglement](by_method/multi_disentanglement.md)|3|
 |[multi_state_action](by_method/multi_state_action.md)|3|
+|[legacy_cosine](by_method/legacy_cosine.md)|3|
+|[three_seed](by_method/three_seed.md)|3|
 |[smoke](by_method/smoke.md)|3|
 |[evaluation](by_method/evaluation.md)|2|
 |[true256](by_method/true256.md)|2|
@@ -125,10 +127,8 @@
 |[heldout_physical_packets](by_method/heldout_physical_packets.md)|2|
 |[cross_tx_action](by_method/cross_tx_action.md)|2|
 |[source_diagnostic](by_method/source_diagnostic.md)|2|
-|[legacy_cosine](by_method/legacy_cosine.md)|2|
 |[score_only](by_method/score_only.md)|2|
 |[physical_receiver_metadata_repair](by_method/physical_receiver_metadata_repair.md)|2|
-|[three_seed](by_method/three_seed.md)|2|
 |[nm fdu](by_method/nm_fdu.md)|2|
 |[protonet](by_method/protonet.md)|2|
 |[original_leo](by_method/original_leo.md)|1|
@@ -211,6 +211,8 @@
 |[channel_DG](by_method/channel_DG.md)|1|
 |[factorial_interaction](by_method/factorial_interaction.md)|1|
 |[independent_auxiliary_networks](by_method/independent_auxiliary_networks.md)|1|
+|[no_satellite_augmentation](by_method/no_satellite_augmentation.md)|1|
+|[automatic_row_test](by_method/automatic_row_test.md)|1|
 |[fixed_completed24](by_method/fixed_completed24.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
 |[fedcvs](by_method/fedcvs.md)|1|

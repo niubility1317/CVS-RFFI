@@ -1,0 +1,1 @@
+Independent P0/P1 review: PASS. Three scratch seeds, EMA/old batch-neighbor/130+70/cosine preserved, satellite training disabled; independent per-row seven-view scoring after prediction preflight; complete provenance and capacity checks. Independent checks: PASS. Nonblocking copied evaluator text corrected before publication.

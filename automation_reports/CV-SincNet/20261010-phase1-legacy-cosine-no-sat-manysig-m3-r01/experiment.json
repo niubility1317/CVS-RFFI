@@ -1,0 +1,471 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+  "group_id": "cvs-legacy-cosine-no-sat",
+  "display_name": "旧门控＋cos关闭星地增强：三seed基线",
+  "description": "仅关闭星地训练增强，保留EMA教师、旧batch_neighbor伪标签门控、130+70半监督、cosine以及原身份结构，scratch E200。每row结束自动7视图测试和独立评分。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "legacy_cosine_no_sat"
+  ],
+  "tags": [
+    "phase1",
+    "legacy_cosine",
+    "no_satellite_augmentation",
+    "three_seed",
+    "automatic_row_test"
+  ],
+  "comparison_group_id": "legacy-cosine-no-sat-three-seed",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "用户：跑三种子的旧门控＋cos、关闭星地增强的基线。三seed取既有顺序前3个，预算保持E200；明确覆盖纯CE探索默认。",
+  "code": {
+    "commit": "release_commit.txt at actual launch",
+    "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center256; unit packet RMS; fs=25000000Hz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids; /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#class_txs",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "ManySig.tx_list: all6; actual physical class strings exported at runtime",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3,
+      "U_use": "Own EMA old batch-neighbor pseudo CE and full-U entropy from E131"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json",
+    "support_query_ref": null,
+    "leo_config_ref": "Training disabled. Test reuses existing VALIDATED_ONCE six practical views."
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "Frozen per-packet Phase1 inference only; separate truth-last scorer",
+    "external_method_exception": null,
+    "claim_scope": "Fixed three-seed scratch legacy gating cosine baseline without satellite training augmentation; previously exposed proxy benchmark, not new blind or physical satellite evidence"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "provenance_verdict": "SCRATCH_NO_INHERITANCE; own EMA only; verify exact source contract at data build",
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "selection_rule": "Fixed ownE200 for each of three rows; no target feedback"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/legacy-no-sat-20261010",
+    "gpu_policy": "At most 2 total experiment processes per GPU including CUDA/pre-CUDA reservations; at most 3 active rows; >=12GB free; shared capacity lock; preserve healthy runs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/logs",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+    "launch_command": "python -m experiments.cvs_legacy_no_sat.publish --output local_artifacts/cvs_legacy_no_sat_20261010_r01",
+    "stop_rule": "Only affected technical failure; retain artifacts, no automatic retry, fallback or low-performance stop. No interventions on healthy existing jobs."
+  },
+  "expected_artifacts": [
+    "source_frozen.json",
+    "prediction/predictions.npz",
+    "prediction/complete.json",
+    "row_scoring/<row>/scoring_complete.json",
+    "summary.json",
+    "summary.csv",
+    "scores.csv",
+    "day_scores.csv",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "worst_rx",
+      "source_V_accuracy",
+      "source_V_worst_rx",
+      "pseudo_acceptance",
+      "entropy_loss",
+      "backbone_gradient_norm",
+      "parameters",
+      "trainable_parameters",
+      "parameter_buffer_bytes",
+      "elapsed_seconds",
+      "peak_cuda_bytes",
+      "normalized_z_skill"
+    ],
+    "dimensions": [
+      "arm",
+      "model_seed",
+      "view",
+      "receiver",
+      "transmitter",
+      "day"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/<row>/prediction/predictions.npz",
+    "scorer_ref": "experiments/cvs_legacy_no_sat/evaluate.py score; per-row seven views frozen before truth",
+    "primary": "Three model seeds mean and sample SD; accuracy, macro F1, worst RX, six-practical mean; all results retained; no target-feedback selection",
+    "resource_limits": "Shared-GPU wall time and per-process CUDA peak; no isolated speed claim. Source RSS/FLOPs N/A. Phase2 K/adaptation/new TX/H/transfer N/A."
+  },
+  "rows": [
+    {
+      "row_id": "legacy_cosine_no_sat-s2026092701",
+      "method": "legacy_cosine_no_sat",
+      "purpose": "fixed_baseline",
+      "gpu": null,
+      "config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092701,
+        "row_id": "legacy_cosine_no_sat-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "config_ref": "experiments/cvs_legacy_no_sat/configs/legacy_cosine_no_sat-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source physical split392005. Augmentation seed controls pseudo strong noise; satellite augmentation disabled. Evaluation deterministic and reuses existing six-view observations.",
+      "k": null,
+      "scenario": "clean,practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "44400 updates;222 steps/epoch;130 supervised+70 pseudo",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/logs/legacy_cosine_no_sat-s2026092701.log",
+      "command": "python experiments/cvs_legacy_no_sat/train_worker.py --row legacy_cosine_no_sat-s2026092701",
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/initialization.json",
+        "source/resolved_native_args.json",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/step_metrics.jsonl.gz",
+        "source/final_ssdg.pth",
+        "source_frozen.json",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scores.json"
+      ]
+    },
+    {
+      "row_id": "legacy_cosine_no_sat-s2026092702",
+      "method": "legacy_cosine_no_sat",
+      "purpose": "fixed_baseline",
+      "gpu": null,
+      "config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092702,
+        "row_id": "legacy_cosine_no_sat-s2026092702",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "config_ref": "experiments/cvs_legacy_no_sat/configs/legacy_cosine_no_sat-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source physical split392005. Augmentation seed controls pseudo strong noise; satellite augmentation disabled. Evaluation deterministic and reuses existing six-view observations.",
+      "k": null,
+      "scenario": "clean,practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "44400 updates;222 steps/epoch;130 supervised+70 pseudo",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/logs/legacy_cosine_no_sat-s2026092702.log",
+      "command": "python experiments/cvs_legacy_no_sat/train_worker.py --row legacy_cosine_no_sat-s2026092702",
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/initialization.json",
+        "source/resolved_native_args.json",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/step_metrics.jsonl.gz",
+        "source/final_ssdg.pth",
+        "source_frozen.json",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scores.json"
+      ]
+    },
+    {
+      "row_id": "legacy_cosine_no_sat-s2026092703",
+      "method": "legacy_cosine_no_sat",
+      "purpose": "fixed_baseline",
+      "gpu": null,
+      "config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092703,
+        "row_id": "legacy_cosine_no_sat-s2026092703",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "config_ref": "experiments/cvs_legacy_no_sat/configs/legacy_cosine_no_sat-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source physical split392005. Augmentation seed controls pseudo strong noise; satellite augmentation disabled. Evaluation deterministic and reuses existing six-view observations.",
+      "k": null,
+      "scenario": "clean,practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "44400 updates;222 steps/epoch;130 supervised+70 pseudo",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source",
+      "prediction_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/logs/legacy_cosine_no_sat-s2026092703.log",
+      "command": "python experiments/cvs_legacy_no_sat/train_worker.py --row legacy_cosine_no_sat-s2026092703",
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/initialization.json",
+        "source/resolved_native_args.json",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/step_metrics.jsonl.gz",
+        "source/final_ssdg.pth",
+        "source_frozen.json",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fresh scratch training, no parent checkpoint or target-driven source selection.",
+    "Only satellite training augmentation removed from legacy pseudo_batch_cosine. CE label smoothing0.01 retained; this is not pure-CE-only.",
+    "No L/T/R, GRL, orthogonality, MixStyle, DAOT or RC4 objectives.",
+    "All predictions pointwise; scores never read by other training rows.",
+    "Preserve complete structured step records plus detailed native text/compact epoch JSONL and CSV."
+  ],
+  "status": "PLANNED",
+  "test_completion_plan": {
+    "rows": 3,
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "query_count": 168000,
+    "registered_classes": 6,
+    "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+    "received_views": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+    "physical_id_index": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/index.npz",
+    "truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json",
+    "target_tx_ids": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "target_rx_indices": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "target_rx_map": {
+      "0": "1-1",
+      "2": "14-7",
+      "5": "2-1",
+      "7": "20-1",
+      "9": "7-14",
+      "10": "7-7",
+      "11": "8-8"
+    },
+    "target_days": [
+      "2021_03_01",
+      "2021_03_08",
+      "2021_03_15",
+      "2021_03_23"
+    ],
+    "weight_selection": "Fixed ownE200 each row",
+    "all_predictions_before_truth": "All seven views within the same row fixed before independent row scoring; all three rows fixed before final aggregate scoring",
+    "scene_partition": "six full scenes same physical IDs; not disjoint formal LEO strata",
+    "target_feedback": false,
+    "weak_views": null,
+    "weak_view_seeds": null,
+    "trigger": "Each row: train -> freeze -> predict seven views -> separate scorer; never wait for other seeds",
+    "own_source_row_frozen_before_query": true
+  },
+  "mechanism_recipe": {
+    "identity": "reference_response",
+    "ema_decay": 0.999,
+    "pseudo_temporal_mode": "batch_neighbor",
+    "pseudo_domain_gate": false,
+    "lambda_u": 0.16,
+    "lambda_entropy": 0.01,
+    "label_smoothing": 0.01,
+    "label_epochs": 130,
+    "pseudo_epochs": 70,
+    "lr_schedule": "cosine",
+    "lr": 0.0002,
+    "lr_min": 1e-06,
+    "satellite_training_augmentation": false,
+    "auxiliary_networks": false,
+    "initialization": "scratch"
+  },
+  "results_ref": "analysis.md",
+  "local_validation": {
+    "cpu_native_smoke": "PASS",
+    "cuda_native_smoke": "PASS",
+    "native_epochs": [
+      1,
+      80,
+      131,
+      132,
+      200
+    ],
+    "independent_P0_P1_review": "PASS; no blocking findings",
+    "registry_launch_ready": "PASS"
+  }
+}

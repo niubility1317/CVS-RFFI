@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "rows": [
+    {
+      "stage": "repair",
+      "arm": "legacy_cosine_no_sat",
+      "epochs": [
+        1,
+        80,
+        131,
+        132,
+        200
+      ],
+      "source": "synthetic",
+      "status": "PASS"
+    }
+  ],
+  "target_access": false,
+  "formal_weights": false
+}
