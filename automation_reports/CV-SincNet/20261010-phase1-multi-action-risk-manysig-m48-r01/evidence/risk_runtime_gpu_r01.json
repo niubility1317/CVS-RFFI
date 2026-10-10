@@ -1,0 +1,637 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "rows": [
+    {
+      "arm": "native",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {},
+        "identity_steps": {},
+        "attempted_identity_steps": {},
+        "exposure_totals": {},
+        "receiver_counters": {},
+        "reference_versions": 0,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "random_ce",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {},
+        "identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 0,
+          "linear_identity_real_packets": 32,
+          "temporal_identity_real_packets": 32,
+          "joint_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {},
+        "reference_versions": 0,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "random_cons",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {},
+        "identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 0,
+          "linear_identity_real_packets": 32,
+          "temporal_identity_real_packets": 32,
+          "joint_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {},
+        "reference_versions": 0,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "exact_g",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {},
+        "identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 0,
+          "linear_identity_real_packets": 32,
+          "temporal_identity_real_packets": 32,
+          "joint_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {},
+        "reference_versions": 0,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "L",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {
+          "linear": 1
+        },
+        "identity_steps": {
+          "linear": 1
+        },
+        "attempted_identity_steps": {
+          "linear": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 128,
+          "linear_main_edge_packets": 17,
+          "exact29_calls": 3,
+          "exact29_packets": 96,
+          "linear_candidate_packets": 128,
+          "linear_verification_packets": 32,
+          "linear_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {},
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LT",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {
+          "linear": 1,
+          "temporal": 1
+        },
+        "identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 128,
+          "linear_main_edge_packets": 17,
+          "temporal_conditional_edge_packets": 17,
+          "exact29_calls": 9,
+          "exact29_packets": 288,
+          "linear_candidate_packets": 128,
+          "linear_verification_packets": 32,
+          "temporal_candidate_packets": 128,
+          "temporal_verification_packets": 32,
+          "joint_candidate_packets": 128,
+          "joint_verification_packets": 32,
+          "linear_identity_real_packets": 32,
+          "temporal_identity_real_packets": 32,
+          "joint_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {},
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LR",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {
+          "linear": 1,
+          "receiver": 1
+        },
+        "identity_steps": {
+          "linear": 1,
+          "receiver": 0
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "receiver": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 128,
+          "linear_main_edge_packets": 17,
+          "exact29_calls": 3,
+          "exact29_packets": 96,
+          "linear_candidate_packets": 128,
+          "linear_verification_packets": 32,
+          "linear_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {
+          "available": 0,
+          "fit_used": 1,
+          "identity_used": 0,
+          "audit_used": 0,
+          "unique_physical_ids": 32,
+          "unique_used_physical_ids": 5,
+          "live_unique_physical_ids": 32,
+          "count_semantics": "available is current candidate count; *_used cumulative actual relation uses; unique IDs never sum repeats"
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LTR",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "receiver": 1
+        },
+        "identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1,
+          "receiver": 0
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1,
+          "receiver": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 128,
+          "linear_main_edge_packets": 17,
+          "temporal_conditional_edge_packets": 17,
+          "exact29_calls": 9,
+          "exact29_packets": 288,
+          "linear_candidate_packets": 128,
+          "linear_verification_packets": 32,
+          "temporal_candidate_packets": 128,
+          "temporal_verification_packets": 32,
+          "joint_candidate_packets": 128,
+          "joint_verification_packets": 32,
+          "linear_identity_real_packets": 32,
+          "temporal_identity_real_packets": 32,
+          "joint_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {
+          "available": 0,
+          "fit_used": 1,
+          "identity_used": 0,
+          "audit_used": 0,
+          "unique_physical_ids": 32,
+          "unique_used_physical_ids": 5,
+          "live_unique_physical_ids": 32,
+          "count_semantics": "available is current candidate count; *_used cumulative actual relation uses; unique IDs never sum repeats"
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LTR_mean",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "receiver": 1
+        },
+        "identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1,
+          "receiver": 0
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1,
+          "receiver": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 128,
+          "linear_main_edge_packets": 17,
+          "temporal_conditional_edge_packets": 17,
+          "exact29_calls": 9,
+          "exact29_packets": 288,
+          "linear_candidate_packets": 128,
+          "linear_verification_packets": 32,
+          "temporal_candidate_packets": 128,
+          "temporal_verification_packets": 32,
+          "joint_candidate_packets": 128,
+          "joint_verification_packets": 32,
+          "linear_identity_real_packets": 32,
+          "temporal_identity_real_packets": 32,
+          "joint_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {
+          "available": 0,
+          "fit_used": 1,
+          "identity_used": 0,
+          "audit_used": 0,
+          "unique_physical_ids": 32,
+          "unique_used_physical_ids": 5,
+          "live_unique_physical_ids": 32,
+          "count_semantics": "available is current candidate count; *_used cumulative actual relation uses; unique IDs never sum repeats"
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "shared_LTR",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "receiver": 1
+        },
+        "identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1,
+          "receiver": 0
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1,
+          "receiver": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 128,
+          "linear_main_edge_packets": 17,
+          "temporal_conditional_edge_packets": 17,
+          "exact29_calls": 9,
+          "exact29_packets": 288,
+          "linear_candidate_packets": 128,
+          "linear_verification_packets": 32,
+          "temporal_candidate_packets": 128,
+          "temporal_verification_packets": 32,
+          "joint_candidate_packets": 128,
+          "joint_verification_packets": 32,
+          "linear_identity_real_packets": 32,
+          "temporal_identity_real_packets": 32,
+          "joint_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {
+          "available": 0,
+          "fit_used": 1,
+          "identity_used": 0,
+          "audit_used": 0,
+          "unique_physical_ids": 32,
+          "unique_used_physical_ids": 5,
+          "live_unique_physical_ids": 32,
+          "count_semantics": "available is current candidate count; *_used cumulative actual relation uses; unique IDs never sum repeats"
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "L_budget",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {
+          "linear": 1
+        },
+        "identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 128,
+          "linear_main_edge_packets": 17,
+          "exact29_calls": 3,
+          "exact29_packets": 96,
+          "linear_candidate_packets": 128,
+          "linear_verification_packets": 32,
+          "linear_identity_real_packets": 32,
+          "temporal_identity_real_packets": 32,
+          "joint_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {},
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LT_budget",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {
+          "linear": 1,
+          "temporal": 1
+        },
+        "identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 128,
+          "linear_main_edge_packets": 17,
+          "temporal_conditional_edge_packets": 17,
+          "exact29_calls": 9,
+          "exact29_packets": 288,
+          "linear_candidate_packets": 128,
+          "linear_verification_packets": 32,
+          "temporal_candidate_packets": 128,
+          "temporal_verification_packets": 32,
+          "joint_candidate_packets": 128,
+          "joint_verification_packets": 32,
+          "linear_identity_real_packets": 32,
+          "temporal_identity_real_packets": 32,
+          "joint_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {},
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LR_budget",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {
+          "linear": 1,
+          "receiver": 1
+        },
+        "identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1,
+          "receiver": 0
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1,
+          "receiver": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 128,
+          "linear_main_edge_packets": 17,
+          "exact29_calls": 3,
+          "exact29_packets": 96,
+          "linear_candidate_packets": 128,
+          "linear_verification_packets": 32,
+          "linear_identity_real_packets": 32,
+          "temporal_identity_real_packets": 32,
+          "joint_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {
+          "available": 0,
+          "fit_used": 1,
+          "identity_used": 0,
+          "audit_used": 0,
+          "unique_physical_ids": 32,
+          "unique_used_physical_ids": 5,
+          "live_unique_physical_ids": 32,
+          "count_semantics": "available is current candidate count; *_used cumulative actual relation uses; unique IDs never sum repeats"
+        },
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LT_no_edges",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {
+          "linear": 1,
+          "temporal": 1
+        },
+        "identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 128,
+          "linear_main_edge_packets": 17,
+          "temporal_main_edge_packets": 17,
+          "exact29_calls": 9,
+          "exact29_packets": 288,
+          "linear_candidate_packets": 128,
+          "linear_verification_packets": 32,
+          "temporal_candidate_packets": 128,
+          "temporal_verification_packets": 32,
+          "joint_candidate_packets": 128,
+          "joint_verification_packets": 32,
+          "linear_identity_real_packets": 32,
+          "temporal_identity_real_packets": 32,
+          "joint_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {},
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LT_label_free",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {
+          "linear": 1,
+          "temporal": 1
+        },
+        "identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 128,
+          "linear_main_edge_packets": 17,
+          "temporal_conditional_edge_packets": 17,
+          "exact29_calls": 9,
+          "exact29_packets": 288,
+          "linear_candidate_packets": 128,
+          "linear_verification_packets": 32,
+          "temporal_candidate_packets": 128,
+          "temporal_verification_packets": 32,
+          "joint_candidate_packets": 128,
+          "joint_verification_packets": 32,
+          "linear_identity_real_packets": 32,
+          "temporal_identity_real_packets": 32,
+          "joint_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {},
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    },
+    {
+      "arm": "LT_label_free_U",
+      "status": "PASS",
+      "execution": {
+        "fit_steps": {
+          "linear": 2,
+          "temporal": 2
+        },
+        "identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "attempted_identity_steps": {
+          "linear": 1,
+          "temporal": 1,
+          "joint": 1
+        },
+        "exposure_totals": {
+          "reference_endpoint_packets": 128,
+          "linear_main_edge_packets": 49,
+          "temporal_conditional_edge_packets": 49,
+          "source_U_action_only_packets": 32,
+          "exact29_calls": 9,
+          "exact29_packets": 288,
+          "linear_candidate_packets": 128,
+          "linear_verification_packets": 32,
+          "temporal_candidate_packets": 128,
+          "temporal_verification_packets": 32,
+          "joint_candidate_packets": 128,
+          "joint_verification_packets": 32,
+          "linear_identity_real_packets": 32,
+          "temporal_identity_real_packets": 32,
+          "joint_identity_real_packets": 32,
+          "source_L_physical_packets": 32
+        },
+        "receiver_counters": {},
+        "reference_versions": 1,
+        "target_access": false,
+        "calibration_scope": "physical source L audit; TX0 excluded from action fits",
+        "gated_off_is_valid_negative": true
+      }
+    }
+  ]
+}

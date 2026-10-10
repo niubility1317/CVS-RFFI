@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "rows": [
+    {
+      "arm": "native",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "status": "PASS"
+    },
+    {
+      "arm": "LTR",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "status": "PASS"
+    },
+    {
+      "arm": "LT_label_free_U",
+      "epochs": [
+        1,
+        21,
+        131,
+        200
+      ],
+      "status": "PASS"
+    }
+  ],
+  "target_access": false,
+  "formal_weights": false
+}

@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "commands": [
+    "python -m experiments.cvs_multi_action_risk.action_checks --device cpu / cuda:0",
+    "python -m experiments.cvs_multi_action_risk.receiver_checks --device cpu / cuda:0",
+    "python -m experiments.cvs_multi_action_risk.diagnostic_checks --device cuda:0",
+    "python -m experiments.cvs_multi_action_risk.runtime_checks --output <unique> --device cpu / cuda:0",
+    "python -m experiments.cvs_multi_action_risk.runtime_checks --output <unique> --device cpu / cuda:0 --native",
+    "python -m experiments.cvs_multi_action_risk.checks",
+    "python -m compileall -q experiments/cvs_multi_action_risk",
+    "experiment_registry.py validate experiment.json --launch-ready"
+  ],
+  "provenance": "Worker reported executed commands and main-agent checks, synthetic/native artifacts attached; not formal efficacy results",
+  "receiver_regression": {
+    "checks": 21,
+    "singleton_arrivals": 16,
+    "first15_weight": 0,
+    "last_weight_cpu": 0.666666666658,
+    "last_weight_cuda": 0.666666666663,
+    "current_backend_changes_recompute": true
+  },
+  "source_V_fixture_count": 27000,
+  "actual_identity_adapter_diagnostic": true
+}

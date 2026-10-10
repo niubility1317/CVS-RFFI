@@ -7,5 +7,6 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |旧门控＋cos、关闭星地增强：三seed基线|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/report.md)|
+|下一版多解耦：真实动作提案与R判别分布风险|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-multi-action-risk-manysig-m48-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
