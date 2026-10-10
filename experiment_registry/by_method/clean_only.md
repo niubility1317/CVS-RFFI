@@ -65,3 +65,4 @@
 |CVS频点内可学习时间关系：整包与逐频能量归一化×四seed|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/report.md)|
 |有效历史双路径：完整测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-validdual-clean-manysig-m8-r01/report.md)|
 |有效历史滤波与原始指纹双路径|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-validdual-identity-manysig-m8-r01/report.md)|
+|四种batch已完成E200模型：只测clean独立评分|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-evaluation-ce-singlepass-clean-manysig-m4-r01/report.md)|

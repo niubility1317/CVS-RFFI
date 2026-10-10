@@ -46,3 +46,4 @@
 |CVS可学习注意力读出：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)|
 |CVS约束响应融合：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-identity-manysig-m8-r01/report.md)|
 |CVS频点内可学习时间关系：整包与逐频能量归一化×四seed|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-identity-manysig-m8-r01/report.md)|
+|常用网络纯CE固定对比|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-standard-ce-baselines-manysig-m56-r01/report.md)|

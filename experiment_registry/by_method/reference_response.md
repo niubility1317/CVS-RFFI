@@ -1,20 +1,27 @@
-# reference_response实验
+# reference_response实验与历史证据
 
 [返回总索引](../README.md)
 
-- [reference_response 原 Phase1 机制叠加：LEO×MixStyle 四 seed 消融](../../automation_reports/CV-SincNet/20261004-phase1-reference-overlay-r1-manysig-m16-r01/report.md)
-- [reference_response原Phase1剩余机制：R2至R6共136行](../../automation_reports/CV-SincNet/20261004-phase1-reference-stack-manysig-m136-r01/report.md)
-- [reference_response剩余136行：clean及完整六residual环境自动测试](../../automation_reports/CV-SincNet/20261004-phase1-reference-stack-sixscene-manysig-m136-r01/report.md)
-- [R2至R6执行加速：合成输入配对耗时与完整状态一致性](../../automation_reports/CV-SincNet/20261004-diagnostic-reference-stack-speed-synthetic-m12-r01/report.md)
-- [reference_response原Phase1剩余机制：R2至R6共136行：故障恢复r02](../../automation_reports/CV-SincNet/20261006-phase1-reference-stack-manysig-m136-r02/report.md)
-- [reference_response剩余136行：clean及完整六residual环境自动测试：故障恢复r02](../../automation_reports/CV-SincNet/20261006-phase1-reference-stack-sixscene-manysig-m136-r02/report.md)
-- [reference_response136行独立测试修复：原混合视图及clean+六完整residual](../../automation_reports/CV-SincNet/20261006-phase1-reference-stack-sixscene-manysig-m136-r03/report.md)
-- [reference_response已完成32行立即测试：clean及六完整residual](../../automation_reports/CV-SincNet/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/report.md)
-- [reference_response新增完成48行补测：clean及六完整residual](../../automation_reports/CV-SincNet/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/report.md)
-- [简洁星地增强：单视图替换与拼接的本地合成计算成本诊断](../../automation_reports/CV-SincNet/20261008-diagnostic-cvs-singleview-synthetic-m3-r01/report.md)
-- [CE＋urban中低仰角星地增强与信道泛化固定24行](../../automation_reports/CV-SincNet/20261008-phase1-urban-ce-manysig-m24-r01/report.md)
-- [reference_response新增12行R5补测：clean及六residual](../../automation_reports/CV-SincNet/20261008-phase1-reference-completed-sixscene-manysig-m12-r01/report.md)
-- [修复后新增14个E200模型：立即执行clean及六星地场景独立测试](../../automation_reports/CV-SincNet/20261009-evaluation-reference-repair-completed14-manysig-m14-r01/report.md)
-- [更新CVS网络的Phase1修复：时序门控与学习率固定对照32行](../../automation_reports/CV-SincNet/20261008-phase1-reference-repair-manysig-m32-r01/report.md)
-- [四种batch已完成E200模型：只测clean独立评分](../../automation_reports/CV-SincNet/20261009-evaluation-ce-singlepass-clean-manysig-m4-r01/report.md)
-- [纯CE正常遍历：batch256/512/1024/2048速度与泛化对照](../../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/report.md)
+路径标签/旧目录字段仅用于查找；历史记录和备份不等于独立实验，状态未实时核实。
+
+|名称|记录类型|证据入口|
+|---|---|---|
+|reference_response 原 Phase1 机制叠加：LEO×MixStyle 四 seed 消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261004-phase1-reference-overlay-r1-manysig-m16-r01/report.md)|
+|reference_response原Phase1剩余机制：R2至R6共136行|managed_run|[打开](../../automation_reports/CV-SincNet/20261004-phase1-reference-stack-manysig-m136-r01/report.md)|
+|reference_response剩余136行：clean及完整六residual环境自动测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261004-phase1-reference-stack-sixscene-manysig-m136-r01/report.md)|
+|reference_response已完成32行立即测试：clean及六完整residual|managed_run|[打开](../../automation_reports/CV-SincNet/20261006-phase1-reference-completed-sixscene-manysig-m32-r01/report.md)|
+|reference_response原Phase1剩余机制：R2至R6共136行：故障恢复r02|managed_run|[打开](../../automation_reports/CV-SincNet/20261006-phase1-reference-stack-manysig-m136-r02/report.md)|
+|reference_response剩余136行：clean及完整六residual环境自动测试：故障恢复r02|managed_run|[打开](../../automation_reports/CV-SincNet/20261006-phase1-reference-stack-sixscene-manysig-m136-r02/report.md)|
+|reference_response136行独立测试修复：原混合视图及clean+六完整residual|managed_run|[打开](../../automation_reports/CV-SincNet/20261006-phase1-reference-stack-sixscene-manysig-m136-r03/report.md)|
+|reference_response新增完成48行补测：clean及六完整residual|managed_run|[打开](../../automation_reports/CV-SincNet/20261007-phase1-reference-completed-sixscene-manysig-m48-r01/report.md)|
+|简洁星地信道增强：单视图原型与计算诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-diagnostic-cvs-singleview-synthetic-m3-r01/report.md)|
+|R5新增完成12行立即补测：base、DAOT、DAOT＋RC4四seed|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-evaluation-reference-r5-completed-manysig-m12-r01/report.md)|
+|修复后首批5个E200模型：立即执行clean及六星地场景独立测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-evaluation-reference-repair-completed5-manysig-m5-r01/report.md)|
+|reference_response新增12行R5补测：clean及六residual|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-reference-completed-sixscene-manysig-m12-r01/report.md)|
+|更新CVS网络的Phase1修复：时序门控与学习率固定对照32行|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-reference-repair-manysig-m32-r01/report.md)|
+|CE＋urban中低仰角星地增强与信道泛化固定24行|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-urban-ce-manysig-m24-r01/report.md)|
+|四种batch已完成E200模型：只测clean独立评分|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-evaluation-ce-singlepass-clean-manysig-m4-r01/report.md)|
+|修复后新增14个E200模型：立即执行clean及六星地场景独立测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-evaluation-reference-repair-completed14-manysig-m14-r01/report.md)|
+|纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r01/report.md)|
+|纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/report.md)|
+|纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/report.md)|

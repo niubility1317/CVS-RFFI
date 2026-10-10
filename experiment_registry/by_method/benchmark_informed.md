@@ -8,3 +8,8 @@
 |---|---|---|
 |residual_fusion 完整六环境测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/report.md)|
 |CVS 固定身份网络：mid／low urban 拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/report.md)|
+|reference_response 原 Phase1 机制叠加：LEO×MixStyle 四 seed 消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261004-phase1-reference-overlay-r1-manysig-m16-r01/report.md)|
+|reference_response原Phase1剩余机制：R2至R6共136行|managed_run|[打开](../../automation_reports/CV-SincNet/20261004-phase1-reference-stack-manysig-m136-r01/report.md)|
+|reference_response原Phase1剩余机制：R2至R6共136行：故障恢复r02|managed_run|[打开](../../automation_reports/CV-SincNet/20261006-phase1-reference-stack-manysig-m136-r02/report.md)|
+|更新CVS网络的Phase1修复：时序门控与学习率固定对照32行|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-reference-repair-manysig-m32-r01/report.md)|
+|CE＋urban中低仰角星地增强与信道泛化固定24行|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-urban-ce-manysig-m24-r01/report.md)|
