@@ -1,0 +1,159 @@
+{
+  "status": "PASS",
+  "models": [
+    {
+      "variant": "resnet18",
+      "parameters": 3847430,
+      "gradient_used_parameters": 3847430,
+      "synthetic_ce": 1.7175779342651367,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "variant": "resnet34",
+      "parameters": 7221766,
+      "gradient_used_parameters": 7221766,
+      "synthetic_ce": 1.6204853057861328,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "variant": "resnet50",
+      "parameters": 15966982,
+      "gradient_used_parameters": 15966982,
+      "synthetic_ce": 2.427341938018799,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "variant": "vgg16_bn",
+      "parameters": 36406022,
+      "gradient_used_parameters": 36406022,
+      "synthetic_ce": 1.757047176361084,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "variant": "densenet121",
+      "parameters": 5526086,
+      "gradient_used_parameters": 5526086,
+      "synthetic_ce": 1.9920885562896729,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "variant": "convnext_tiny",
+      "parameters": 26768550,
+      "gradient_used_parameters": 26768550,
+      "synthetic_ce": 2.008312940597534,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "variant": "transformer6",
+      "parameters": 18921990,
+      "gradient_used_parameters": 18921990,
+      "synthetic_ce": 2.0230071544647217,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "variant": "bilstm3",
+      "parameters": 14743558,
+      "gradient_used_parameters": 14743558,
+      "synthetic_ce": 1.7838850021362305,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "variant": "cvresnet18_1d",
+      "parameters": 7693958,
+      "gradient_used_parameters": 7693958,
+      "synthetic_ce": 1.9267631769180298,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "variant": "cvresnet18_2d",
+      "parameters": 22346630,
+      "gradient_used_parameters": 22346630,
+      "synthetic_ce": 1.6567418575286865,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "variant": "resnet18_2d",
+      "parameters": 11176454,
+      "gradient_used_parameters": 11176454,
+      "synthetic_ce": 2.1359806060791016,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "variant": "resnet50_2d",
+      "parameters": 23517190,
+      "gradient_used_parameters": 23517190,
+      "synthetic_ce": 1.883088231086731,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "variant": "native",
+      "parameters": 382146,
+      "gradient_used_parameters": 317665,
+      "synthetic_ce": 3.5210864543914795,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "variant": "residual_fusion",
+      "parameters": 164225,
+      "gradient_used_parameters": 164225,
+      "synthetic_ce": 3.479511022567749,
+      "batch": 2,
+      "device": "cpu",
+      "peak_cuda_allocated_bytes": null,
+      "no_query": true,
+      "checkpoint_roundtrip": true
+    }
+  ]
+}

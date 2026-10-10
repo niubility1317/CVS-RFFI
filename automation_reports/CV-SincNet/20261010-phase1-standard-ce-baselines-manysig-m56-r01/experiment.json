@@ -20,7 +20,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-10用户要求更多常见、更大容量网络并实际跑对比；沿用纯CE无额外训练策略要求及逐行自动测试协议。",
   "code": {
-    "commit": "release_commit.txt",
+    "commit": "0cb655b3a2c6a2ee7dbd1ae66099553b9a93d0fc",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01"
@@ -93,7 +93,11 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261010-phase1-standard-ce-baselines-manysig-m56-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261010-phase1-standard-ce-baselines-manysig-m56-r01",
     "launch_command": "python -m experiments.standard_ce_baselines.publish --output local_artifacts/standard_ce_baselines_20261010_r01",
-    "stop_rule": "Own row only on nonfinite, provenance mismatch, output collision, nonzero exit or incomplete prediction; retain artifacts, no automatic retry; low scores do not stop training"
+    "stop_rule": "Own row only on nonfinite, provenance mismatch, output collision, nonzero exit or incomplete prediction; retain artifacts, no automatic retry; low scores do not stop training",
+    "dispatcher_pid": 2933342,
+    "launch_readback_ref": "evidence/startup/readback.json",
+    "remote_verdict": "VERIFIED",
+    "submit_ref": "evidence/submit.json"
   },
   "expected_artifacts": [
     "pipeline_state.json",
@@ -141,7 +145,7 @@
       "row_id": "resnet18-s2026092701",
       "method": "resnet18",
       "purpose": "fixed_comparator",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/standard_ce_baselines/configs/resnet18-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet18-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -179,13 +183,15 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "TRAINING",
+      "pid": 2933359
     },
     {
       "row_id": "resnet34-s2026092701",
       "method": "resnet34",
       "purpose": "fixed_comparator",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/standard_ce_baselines/configs/resnet34-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet34-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -223,13 +229,15 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "TRAINING",
+      "pid": 2933448
     },
     {
       "row_id": "resnet50-s2026092701",
       "method": "resnet50",
       "purpose": "fixed_comparator",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/standard_ce_baselines/configs/resnet50-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet50-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -267,13 +275,15 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "TRAINING",
+      "pid": 2933539
     },
     {
       "row_id": "vgg16_bn-s2026092701",
       "method": "vgg16_bn",
       "purpose": "fixed_comparator",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/standard_ce_baselines/configs/vgg16_bn-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/vgg16_bn-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -311,7 +321,9 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "TRAINING",
+      "pid": 2933625
     },
     {
       "row_id": "densenet121-s2026092701",
@@ -355,7 +367,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "convnext_tiny-s2026092701",
@@ -399,7 +412,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "transformer6-s2026092701",
@@ -443,7 +457,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "bilstm3-s2026092701",
@@ -487,7 +502,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "cvresnet18_1d-s2026092701",
@@ -531,7 +547,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "cvresnet18_2d-s2026092701",
@@ -575,7 +592,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet18_2d-s2026092701",
@@ -619,7 +637,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet50_2d-s2026092701",
@@ -663,7 +682,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "native-s2026092701",
@@ -707,7 +727,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "residual_fusion-s2026092701",
@@ -751,7 +772,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet18-s2026092702",
@@ -795,7 +817,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet34-s2026092702",
@@ -839,7 +862,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet50-s2026092702",
@@ -883,7 +907,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "vgg16_bn-s2026092702",
@@ -927,7 +952,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "densenet121-s2026092702",
@@ -971,7 +997,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "convnext_tiny-s2026092702",
@@ -1015,7 +1042,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "transformer6-s2026092702",
@@ -1059,7 +1087,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "bilstm3-s2026092702",
@@ -1103,7 +1132,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "cvresnet18_1d-s2026092702",
@@ -1147,7 +1177,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "cvresnet18_2d-s2026092702",
@@ -1191,7 +1222,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet18_2d-s2026092702",
@@ -1235,7 +1267,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet50_2d-s2026092702",
@@ -1279,7 +1312,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "native-s2026092702",
@@ -1323,7 +1357,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "residual_fusion-s2026092702",
@@ -1367,7 +1402,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet18-s2026092703",
@@ -1411,7 +1447,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet34-s2026092703",
@@ -1455,7 +1492,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet50-s2026092703",
@@ -1499,7 +1537,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "vgg16_bn-s2026092703",
@@ -1543,7 +1582,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "densenet121-s2026092703",
@@ -1587,7 +1627,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "convnext_tiny-s2026092703",
@@ -1631,7 +1672,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "transformer6-s2026092703",
@@ -1675,7 +1717,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "bilstm3-s2026092703",
@@ -1719,7 +1762,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "cvresnet18_1d-s2026092703",
@@ -1763,7 +1807,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "cvresnet18_2d-s2026092703",
@@ -1807,7 +1852,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet18_2d-s2026092703",
@@ -1851,7 +1897,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet50_2d-s2026092703",
@@ -1895,7 +1942,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "native-s2026092703",
@@ -1939,7 +1987,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "residual_fusion-s2026092703",
@@ -1983,7 +2032,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet18-s2026092704",
@@ -2027,7 +2077,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet34-s2026092704",
@@ -2071,7 +2122,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet50-s2026092704",
@@ -2115,7 +2167,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "vgg16_bn-s2026092704",
@@ -2159,7 +2212,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "densenet121-s2026092704",
@@ -2203,7 +2257,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "convnext_tiny-s2026092704",
@@ -2247,7 +2302,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "transformer6-s2026092704",
@@ -2291,7 +2347,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "bilstm3-s2026092704",
@@ -2335,7 +2392,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "cvresnet18_1d-s2026092704",
@@ -2379,7 +2437,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "cvresnet18_2d-s2026092704",
@@ -2423,7 +2482,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet18_2d-s2026092704",
@@ -2467,7 +2527,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "resnet50_2d-s2026092704",
@@ -2511,7 +2572,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "native-s2026092704",
@@ -2555,7 +2617,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "residual_fusion-s2026092704",
@@ -2599,7 +2662,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "QUEUED"
     }
   ],
   "notes": [
@@ -2616,5 +2680,5 @@
     "No smaller-parameter filter. Parameter count is measured, not a selection criterion. This benchmark was previously exposed and is not a new blind confirmation set."
   ],
   "registered_at": "2026-10-10T02:49:13+00:00",
-  "status": "PLANNED"
+  "status": "RUNNING"
 }

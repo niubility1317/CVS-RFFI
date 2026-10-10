@@ -1,0 +1,1237 @@
+{
+  "read_at": 1791600690.6063366,
+  "user": "szu2070436088",
+  "host": "dell-DSS8440",
+  "release_exists": true,
+  "run_exists": true,
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 2933342,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.standard_ce_baselines.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01/experiments/standard_ce_baselines/configs/launch_spec.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01/dispatcher.stdout.log",
+    "commit": "0cb655b3a2c6a2ee7dbd1ae66099553b9a93d0fc",
+    "sha256": "f6d8854fc4dafc635cd0999bf44634b7a7ea858143961e824fb4d6483f7d6d4e"
+  },
+  "state": {
+    "status": "RUNNING",
+    "pid": 2933342,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01/experiments/standard_ce_baselines/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01/experiments/standard_ce_baselines/configs/launch_spec.json"
+    ],
+    "run_id": "20261010-phase1-standard-ce-baselines-manysig-m56-r01",
+    "launch_owner": "codex/root/standard-ce-baselines-20261010",
+    "commit": "0cb655b3a2c6a2ee7dbd1ae66099553b9a93d0fc",
+    "rows": {
+      "resnet18-s2026092701": {
+        "status": "TRAINING",
+        "variant": "resnet18",
+        "model_seed": 2026092701,
+        "pid": 2933359,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.standard_ce_baselines.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01/experiments/standard_ce_baselines/configs/resnet18-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet18-s2026092701.source.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet18-s2026092701/source",
+        "started": 1791600671.481274
+      },
+      "resnet34-s2026092701": {
+        "status": "TRAINING",
+        "variant": "resnet34",
+        "model_seed": 2026092701,
+        "pid": 2933448,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.standard_ce_baselines.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01/experiments/standard_ce_baselines/configs/resnet34-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet34-s2026092701.source.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet34-s2026092701/source",
+        "started": 1791600676.7133489
+      },
+      "resnet50-s2026092701": {
+        "status": "TRAINING",
+        "variant": "resnet50",
+        "model_seed": 2026092701,
+        "pid": 2933539,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.standard_ce_baselines.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01/experiments/standard_ce_baselines/configs/resnet50-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet50-s2026092701.source.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet50-s2026092701/source",
+        "started": 1791600681.9430788
+      },
+      "vgg16_bn-s2026092701": {
+        "status": "TRAINING",
+        "variant": "vgg16_bn",
+        "model_seed": 2026092701,
+        "pid": 2933625,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.standard_ce_baselines.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01/experiments/standard_ce_baselines/configs/vgg16_bn-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/vgg16_bn-s2026092701.source.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/vgg16_bn-s2026092701/source",
+        "started": 1791600687.1780033
+      },
+      "densenet121-s2026092701": {
+        "status": "QUEUED",
+        "variant": "densenet121",
+        "model_seed": 2026092701
+      },
+      "convnext_tiny-s2026092701": {
+        "status": "QUEUED",
+        "variant": "convnext_tiny",
+        "model_seed": 2026092701
+      },
+      "transformer6-s2026092701": {
+        "status": "QUEUED",
+        "variant": "transformer6",
+        "model_seed": 2026092701
+      },
+      "bilstm3-s2026092701": {
+        "status": "QUEUED",
+        "variant": "bilstm3",
+        "model_seed": 2026092701
+      },
+      "cvresnet18_1d-s2026092701": {
+        "status": "QUEUED",
+        "variant": "cvresnet18_1d",
+        "model_seed": 2026092701
+      },
+      "cvresnet18_2d-s2026092701": {
+        "status": "QUEUED",
+        "variant": "cvresnet18_2d",
+        "model_seed": 2026092701
+      },
+      "resnet18_2d-s2026092701": {
+        "status": "QUEUED",
+        "variant": "resnet18_2d",
+        "model_seed": 2026092701
+      },
+      "resnet50_2d-s2026092701": {
+        "status": "QUEUED",
+        "variant": "resnet50_2d",
+        "model_seed": 2026092701
+      },
+      "native-s2026092701": {
+        "status": "QUEUED",
+        "variant": "native",
+        "model_seed": 2026092701
+      },
+      "residual_fusion-s2026092701": {
+        "status": "QUEUED",
+        "variant": "residual_fusion",
+        "model_seed": 2026092701
+      },
+      "resnet18-s2026092702": {
+        "status": "QUEUED",
+        "variant": "resnet18",
+        "model_seed": 2026092702
+      },
+      "resnet34-s2026092702": {
+        "status": "QUEUED",
+        "variant": "resnet34",
+        "model_seed": 2026092702
+      },
+      "resnet50-s2026092702": {
+        "status": "QUEUED",
+        "variant": "resnet50",
+        "model_seed": 2026092702
+      },
+      "vgg16_bn-s2026092702": {
+        "status": "QUEUED",
+        "variant": "vgg16_bn",
+        "model_seed": 2026092702
+      },
+      "densenet121-s2026092702": {
+        "status": "QUEUED",
+        "variant": "densenet121",
+        "model_seed": 2026092702
+      },
+      "convnext_tiny-s2026092702": {
+        "status": "QUEUED",
+        "variant": "convnext_tiny",
+        "model_seed": 2026092702
+      },
+      "transformer6-s2026092702": {
+        "status": "QUEUED",
+        "variant": "transformer6",
+        "model_seed": 2026092702
+      },
+      "bilstm3-s2026092702": {
+        "status": "QUEUED",
+        "variant": "bilstm3",
+        "model_seed": 2026092702
+      },
+      "cvresnet18_1d-s2026092702": {
+        "status": "QUEUED",
+        "variant": "cvresnet18_1d",
+        "model_seed": 2026092702
+      },
+      "cvresnet18_2d-s2026092702": {
+        "status": "QUEUED",
+        "variant": "cvresnet18_2d",
+        "model_seed": 2026092702
+      },
+      "resnet18_2d-s2026092702": {
+        "status": "QUEUED",
+        "variant": "resnet18_2d",
+        "model_seed": 2026092702
+      },
+      "resnet50_2d-s2026092702": {
+        "status": "QUEUED",
+        "variant": "resnet50_2d",
+        "model_seed": 2026092702
+      },
+      "native-s2026092702": {
+        "status": "QUEUED",
+        "variant": "native",
+        "model_seed": 2026092702
+      },
+      "residual_fusion-s2026092702": {
+        "status": "QUEUED",
+        "variant": "residual_fusion",
+        "model_seed": 2026092702
+      },
+      "resnet18-s2026092703": {
+        "status": "QUEUED",
+        "variant": "resnet18",
+        "model_seed": 2026092703
+      },
+      "resnet34-s2026092703": {
+        "status": "QUEUED",
+        "variant": "resnet34",
+        "model_seed": 2026092703
+      },
+      "resnet50-s2026092703": {
+        "status": "QUEUED",
+        "variant": "resnet50",
+        "model_seed": 2026092703
+      },
+      "vgg16_bn-s2026092703": {
+        "status": "QUEUED",
+        "variant": "vgg16_bn",
+        "model_seed": 2026092703
+      },
+      "densenet121-s2026092703": {
+        "status": "QUEUED",
+        "variant": "densenet121",
+        "model_seed": 2026092703
+      },
+      "convnext_tiny-s2026092703": {
+        "status": "QUEUED",
+        "variant": "convnext_tiny",
+        "model_seed": 2026092703
+      },
+      "transformer6-s2026092703": {
+        "status": "QUEUED",
+        "variant": "transformer6",
+        "model_seed": 2026092703
+      },
+      "bilstm3-s2026092703": {
+        "status": "QUEUED",
+        "variant": "bilstm3",
+        "model_seed": 2026092703
+      },
+      "cvresnet18_1d-s2026092703": {
+        "status": "QUEUED",
+        "variant": "cvresnet18_1d",
+        "model_seed": 2026092703
+      },
+      "cvresnet18_2d-s2026092703": {
+        "status": "QUEUED",
+        "variant": "cvresnet18_2d",
+        "model_seed": 2026092703
+      },
+      "resnet18_2d-s2026092703": {
+        "status": "QUEUED",
+        "variant": "resnet18_2d",
+        "model_seed": 2026092703
+      },
+      "resnet50_2d-s2026092703": {
+        "status": "QUEUED",
+        "variant": "resnet50_2d",
+        "model_seed": 2026092703
+      },
+      "native-s2026092703": {
+        "status": "QUEUED",
+        "variant": "native",
+        "model_seed": 2026092703
+      },
+      "residual_fusion-s2026092703": {
+        "status": "QUEUED",
+        "variant": "residual_fusion",
+        "model_seed": 2026092703
+      },
+      "resnet18-s2026092704": {
+        "status": "QUEUED",
+        "variant": "resnet18",
+        "model_seed": 2026092704
+      },
+      "resnet34-s2026092704": {
+        "status": "QUEUED",
+        "variant": "resnet34",
+        "model_seed": 2026092704
+      },
+      "resnet50-s2026092704": {
+        "status": "QUEUED",
+        "variant": "resnet50",
+        "model_seed": 2026092704
+      },
+      "vgg16_bn-s2026092704": {
+        "status": "QUEUED",
+        "variant": "vgg16_bn",
+        "model_seed": 2026092704
+      },
+      "densenet121-s2026092704": {
+        "status": "QUEUED",
+        "variant": "densenet121",
+        "model_seed": 2026092704
+      },
+      "convnext_tiny-s2026092704": {
+        "status": "QUEUED",
+        "variant": "convnext_tiny",
+        "model_seed": 2026092704
+      },
+      "transformer6-s2026092704": {
+        "status": "QUEUED",
+        "variant": "transformer6",
+        "model_seed": 2026092704
+      },
+      "bilstm3-s2026092704": {
+        "status": "QUEUED",
+        "variant": "bilstm3",
+        "model_seed": 2026092704
+      },
+      "cvresnet18_1d-s2026092704": {
+        "status": "QUEUED",
+        "variant": "cvresnet18_1d",
+        "model_seed": 2026092704
+      },
+      "cvresnet18_2d-s2026092704": {
+        "status": "QUEUED",
+        "variant": "cvresnet18_2d",
+        "model_seed": 2026092704
+      },
+      "resnet18_2d-s2026092704": {
+        "status": "QUEUED",
+        "variant": "resnet18_2d",
+        "model_seed": 2026092704
+      },
+      "resnet50_2d-s2026092704": {
+        "status": "QUEUED",
+        "variant": "resnet50_2d",
+        "model_seed": 2026092704
+      },
+      "native-s2026092704": {
+        "status": "QUEUED",
+        "variant": "native",
+        "model_seed": 2026092704
+      },
+      "residual_fusion-s2026092704": {
+        "status": "QUEUED",
+        "variant": "residual_fusion",
+        "model_seed": 2026092704
+      }
+    }
+  },
+  "rows": [
+    {
+      "row_id": "resnet18-s2026092701",
+      "status": "TRAINING",
+      "gpu": 0,
+      "process": {
+        "pid": 2933359,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.standard_ce_baselines.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01/experiments/standard_ce_baselines/configs/resnet18-s2026092701.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 2,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 100,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.0671750020980835,
+        "total_loss": 0.0671750020980835,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019998772493192525,
+        "gradient_norm": 1.872921085357666,
+        "gradient_used_parameters": 3847430,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9602222222222222,
+        "source_val_ce": 0.11781045451649913,
+        "source_val_rx_accuracy": {
+          "1": 0.9955555555555555,
+          "3": 0.8914814814814814,
+          "4": 0.9814814814814815,
+          "6": 0.997037037037037,
+          "8": 0.9355555555555556
+        },
+        "source_val_worst_rx": 0.8914814814814814,
+        "elapsed_seconds": 5.1741649290779606,
+        "peak_cuda_allocated_bytes": 176762880
+      },
+      "resolved": {
+        "method": "standard_ce_baselines",
+        "variant": "resnet18",
+        "model_seed": 2026092701,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet18-s2026092701/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "pid": 2933359,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0cb655b3a2c6a2ee7dbd1ae66099553b9a93d0fc",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 3847430,
+        "trainable_parameters": 3847430,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092701
+      },
+      "log_bytes": 3040,
+      "log_tail": [
+        "EPOCH {\"epoch\": 1, \"optimizer_steps\": 50, \"optimizer_steps_total\": 50, \"source_sample_exposure\": 6300, \"clean_ce\": 0.50239451572299, \"total_loss\": 0.50239451572299, \"ce_weight\": 1.0, \"learning_rate\": 0.0002, \"gradient_norm\": 3.089436240196228, \"gradient_used_parameters\": 3847430, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"source_val_count\": 27000, \"source_val_accuracy\": 0.9405925925925926, \"source_val_ce\": 0.20338336511232236, \"source_val_rx_accuracy\": {\"1\": 0.9874074074074074, \"3\": 0.8483333333333334, \"4\": 0.9768518518518519, \"6\": 0.9918518518518519, \"8\": 0.8985185185185185}, \"source_val_worst_rx\": 0.8483333333333334, \"elapsed_seconds\": 5.483806926989928, \"peak_cuda_allocated_bytes\": 176762880}",
+        "EPOCH {\"epoch\": 2, \"optimizer_steps\": 50, \"optimizer_steps_total\": 100, \"source_sample_exposure\": 6300, \"clean_ce\": 0.0671750020980835, \"total_loss\": 0.0671750020980835, \"ce_weight\": 1.0, \"learning_rate\": 0.00019998772493192525, \"gradient_norm\": 1.872921085357666, \"gradient_used_parameters\": 3847430, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"source_val_count\": 27000, \"source_val_accuracy\": 0.9602222222222222, \"source_val_ce\": 0.11781045451649913, \"source_val_rx_accuracy\": {\"1\": 0.9955555555555555, \"3\": 0.8914814814814814, \"4\": 0.9814814814814815, \"6\": 0.997037037037037, \"8\": 0.9355555555555556}, \"source_val_worst_rx\": 0.8914814814814814, \"elapsed_seconds\": 5.1741649290779606, \"peak_cuda_allocated_bytes\": 176762880}"
+      ],
+      "error": null
+    },
+    {
+      "row_id": "resnet34-s2026092701",
+      "status": "TRAINING",
+      "gpu": 5,
+      "process": {
+        "pid": 2933448,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.standard_ce_baselines.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01/experiments/standard_ce_baselines/configs/resnet34-s2026092701.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 1,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 50,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.6191714110970498,
+        "total_loss": 0.6191714110970498,
+        "ce_weight": 1.0,
+        "learning_rate": 0.0002,
+        "gradient_norm": 9.574289693832398,
+        "gradient_used_parameters": 7221766,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.8272592592592592,
+        "source_val_ce": 0.40364157485520397,
+        "source_val_rx_accuracy": {
+          "1": 0.8931481481481481,
+          "3": 0.7203703703703703,
+          "4": 0.9344444444444444,
+          "6": 0.8146296296296296,
+          "8": 0.7737037037037037
+        },
+        "source_val_worst_rx": 0.7203703703703703,
+        "elapsed_seconds": 6.548717241035774,
+        "peak_cuda_allocated_bytes": 302129152
+      },
+      "resolved": {
+        "method": "standard_ce_baselines",
+        "variant": "resnet34",
+        "model_seed": 2026092701,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet34-s2026092701/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "pid": 2933448,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0cb655b3a2c6a2ee7dbd1ae66099553b9a93d0fc",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 7221766,
+        "trainable_parameters": 7221766,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092701
+      },
+      "log_bytes": 2204,
+      "log_tail": [
+        "RESOLVED_CONFIG {\"method\": \"standard_ce_baselines\", \"variant\": \"resnet34\", \"model_seed\": 2026092701, \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet34-s2026092701/source\", \"epochs\": 200, \"batch_size\": 128, \"lr\": 0.0002, \"lr_min\": 1e-06, \"weight_decay\": 0.0001, \"drop_last\": false, \"augmentation\": false, \"domain_backbone\": false, \"extra_losses\": [], \"selection\": \"fixed_last_epoch\", \"split_seed\": 392005, \"device\": \"cuda:0\", \"pid\": 2933448, \"cwd\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01\", \"python\": \"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"commit\": \"0cb655b3a2c6a2ee7dbd1ae66099553b9a93d0fc\", \"torch_version\": \"2.1.0+cu121\", \"hardware\": \"NVIDIA GeForce RTX 3090\", \"source_counts\": {\"L_s\": 6300, \"U_s\": 56700, \"V\": 27000}, \"steps_per_epoch\": 50, \"total_parameters\": 7221766, \"trainable_parameters\": 7221766, \"U_s_use\": \"unused\", \"target_access\": false, \"precision\": \"float32\", \"gradient_clipping\": null, \"optimizer\": \"AdamW+CosineAnnealingLR\", \"loader_seed\": 2026092701}",
+        "EPOCH {\"epoch\": 1, \"optimizer_steps\": 50, \"optimizer_steps_total\": 50, \"source_sample_exposure\": 6300, \"clean_ce\": 0.6191714110970498, \"total_loss\": 0.6191714110970498, \"ce_weight\": 1.0, \"learning_rate\": 0.0002, \"gradient_norm\": 9.574289693832398, \"gradient_used_parameters\": 7221766, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"source_val_count\": 27000, \"source_val_accuracy\": 0.8272592592592592, \"source_val_ce\": 0.40364157485520397, \"source_val_rx_accuracy\": {\"1\": 0.8931481481481481, \"3\": 0.7203703703703703, \"4\": 0.9344444444444444, \"6\": 0.8146296296296296, \"8\": 0.7737037037037037}, \"source_val_worst_rx\": 0.7203703703703703, \"elapsed_seconds\": 6.548717241035774, \"peak_cuda_allocated_bytes\": 302129152}"
+      ],
+      "error": null
+    },
+    {
+      "row_id": "resnet50-s2026092701",
+      "status": "TRAINING",
+      "gpu": 0,
+      "process": {
+        "pid": 2933539,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.standard_ce_baselines.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01/experiments/standard_ce_baselines/configs/resnet50-s2026092701.json",
+          ""
+        ]
+      },
+      "epoch": null,
+      "resolved": {
+        "method": "standard_ce_baselines",
+        "variant": "resnet50",
+        "model_seed": 2026092701,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet50-s2026092701/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "pid": 2933539,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0cb655b3a2c6a2ee7dbd1ae66099553b9a93d0fc",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 15966982,
+        "trainable_parameters": 15966982,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092701
+      },
+      "log_bytes": 1383,
+      "log_tail": [
+        "SMOKE PASS initial checkpoint roundtrip; query_read=false",
+        "RESOLVED_CONFIG {\"method\": \"standard_ce_baselines\", \"variant\": \"resnet50\", \"model_seed\": 2026092701, \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/resnet50-s2026092701/source\", \"epochs\": 200, \"batch_size\": 128, \"lr\": 0.0002, \"lr_min\": 1e-06, \"weight_decay\": 0.0001, \"drop_last\": false, \"augmentation\": false, \"domain_backbone\": false, \"extra_losses\": [], \"selection\": \"fixed_last_epoch\", \"split_seed\": 392005, \"device\": \"cuda:0\", \"pid\": 2933539, \"cwd\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01\", \"python\": \"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"commit\": \"0cb655b3a2c6a2ee7dbd1ae66099553b9a93d0fc\", \"torch_version\": \"2.1.0+cu121\", \"hardware\": \"NVIDIA GeForce RTX 3090\", \"source_counts\": {\"L_s\": 6300, \"U_s\": 56700, \"V\": 27000}, \"steps_per_epoch\": 50, \"total_parameters\": 15966982, \"trainable_parameters\": 15966982, \"U_s_use\": \"unused\", \"target_access\": false, \"precision\": \"float32\", \"gradient_clipping\": null, \"optimizer\": \"AdamW+CosineAnnealingLR\", \"loader_seed\": 2026092701}"
+      ],
+      "error": null
+    },
+    {
+      "row_id": "vgg16_bn-s2026092701",
+      "status": "TRAINING",
+      "gpu": 5,
+      "process": {
+        "pid": 2933625,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.standard_ce_baselines.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01/experiments/standard_ce_baselines/configs/vgg16_bn-s2026092701.json",
+          ""
+        ]
+      },
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": 58,
+      "log_tail": [
+        "SMOKE PASS initial checkpoint roundtrip; query_read=false"
+      ],
+      "error": null
+    },
+    {
+      "row_id": "densenet121-s2026092701",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "convnext_tiny-s2026092701",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "transformer6-s2026092701",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "bilstm3-s2026092701",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "cvresnet18_1d-s2026092701",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "cvresnet18_2d-s2026092701",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet18_2d-s2026092701",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet50_2d-s2026092701",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "native-s2026092701",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "residual_fusion-s2026092701",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet18-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet34-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet50-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "vgg16_bn-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "densenet121-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "convnext_tiny-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "transformer6-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "bilstm3-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "cvresnet18_1d-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "cvresnet18_2d-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet18_2d-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet50_2d-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "native-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "residual_fusion-s2026092702",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet18-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet34-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet50-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "vgg16_bn-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "densenet121-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "convnext_tiny-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "transformer6-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "bilstm3-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "cvresnet18_1d-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "cvresnet18_2d-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet18_2d-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet50_2d-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "native-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "residual_fusion-s2026092703",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet18-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet34-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet50-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "vgg16_bn-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "densenet121-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "convnext_tiny-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "transformer6-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "bilstm3-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "cvresnet18_1d-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "cvresnet18_2d-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet18_2d-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "resnet50_2d-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "native-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    },
+    {
+      "row_id": "residual_fusion-s2026092704",
+      "status": "QUEUED",
+      "gpu": null,
+      "process": null,
+      "epoch": null,
+      "resolved": null,
+      "log_bytes": null,
+      "log_tail": [],
+      "error": null
+    }
+  ],
+  "dispatcher": {
+    "pid": 2933342,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.standard_ce_baselines.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_baselines_20261010_r01/experiments/standard_ce_baselines/configs/launch_spec.json",
+      ""
+    ]
+  },
+  "summary": null,
+  "gpu": "2933359, GPU-56adac86-77cd-36c9-8770-dbf002650461, 542 MiB\n2933539, GPU-56adac86-77cd-36c9-8770-dbf002650461, 1126 MiB\n2547180, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 3794 MiB\n2547124, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 3790 MiB\n2548022, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 3788 MiB\n2547095, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 3788 MiB\n2548745, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 3790 MiB\n2705573, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 3778 MiB\n2933448, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 684 MiB\n2933625, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 626 MiB\n2547678, GPU-5463e082-259e-537b-603a-01575d45801c, 3790 MiB\n2549022, GPU-5463e082-259e-537b-603a-01575d45801c, 3792 MiB\n2574488, GPU-5463e082-259e-537b-603a-01575d45801c, 3788 MiB\n2722542, GPU-5463e082-259e-537b-603a-01575d45801c, 3756 MiB\n2548414, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 3788 MiB\n"
+}

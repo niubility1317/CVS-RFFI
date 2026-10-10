@@ -1,6 +1,6 @@
 # 常用网络纯CE固定对比
 
-状态：LOCAL_VERIFIED；尚无新训练或测试性能结果。
+状态：RUNNING；远端发布和训练启动VERIFIED，尚无新测试性能结果。
 
 用户要求常用网络、包含较大容量的1D和2D复数CNN、只使用CE，并在训练完成后自动测试clean。本实验固定14种网络×4个模型种子，共56行，每行从零训练，不以参数量筛选或扩大通道来凑规模。
 
@@ -50,3 +50,13 @@
 远端路径：/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01。
 
 下一步：提交/push及OID读回，发布不可变release，核实dispatcher和各row进程、实际参数及log增长。训练、clean预测、独立评分、同row报告及汇总由已实现队列自动衔接。
+
+## 实际发布与启动核验
+
+VERIFIED：N607 release提交`0cb655b3a2c6a2ee7dbd1ae66099553b9a93d0fc`；dispatcher PID=2933342。
+
+只读读回确认4行正在训练，52行排队；首行已完成E2。PID、CWD、argv、GPU、resolved config及log产物见evidence/startup/readback.json。
+
+远端最终14项合成CE与严格checkpoint roundtrip smoke已PASS，launcher随后启动。当前尚无新E200模型或clean评分；不把源域进度写成测试结果。每row自动clean链路已在此次release中启用。
+
+当前状态RUNNING；不重启、不修改健康任务。下一步按相同run只读回收完整epoch日志、clean预测、scores及summary，更新原登记并提交报告。
