@@ -1,0 +1,21 @@
+{
+  "status": "SUBMITTED",
+  "pid": 3250081,
+  "start_ticks": 87921012,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+    "--release",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/dispatcher.stdout.log",
+  "control_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01",
+  "control_commit": "7b71ecc7b94518bd09d82245a5093abbf62172ec",
+  "commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+  "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+  "per_gpu_limit": 4,
+  "launch_owner": "codex/root/feature-disentangle-20261010",
+  "at": 1791631505.6976523
+}

@@ -1,0 +1,150 @@
+{
+  "at": 1791631537.4552104,
+  "old_controller": null,
+  "original_worker": {
+    "pid": 3235684,
+    "start_ticks": 87786957,
+    "state": "R",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01/experiments/cvs_feature_disentangle/train_worker.py",
+      "--kind",
+      "train",
+      "--row",
+      "native-s2026092701"
+    ],
+    "gpu": "2"
+  },
+  "capacity": {
+    "0": {
+      "pids": [
+        3197269,
+        3216055,
+        3250116,
+        3250674
+      ],
+      "free_mb": 15318
+    },
+    "1": {
+      "pids": [
+        3197274,
+        3216371,
+        3250122,
+        3250949
+      ],
+      "free_mb": 15312
+    },
+    "2": {
+      "pids": [
+        3197280,
+        3235684,
+        3250098,
+        3250186
+      ],
+      "free_mb": 15334
+    },
+    "3": {
+      "pids": [
+        3215771,
+        3215805,
+        3250105,
+        3250216
+      ],
+      "free_mb": 15324
+    },
+    "4": {
+      "pids": [
+        3215780,
+        3215816,
+        3250110,
+        3250379
+      ],
+      "free_mb": 15316
+    },
+    "5": {
+      "pids": [
+        3215786,
+        3215833,
+        3250158,
+        3251137
+      ],
+      "free_mb": 15276
+    },
+    "6": {
+      "pids": [
+        3215791,
+        3215859,
+        3250141,
+        3251047
+      ],
+      "free_mb": 15310
+    },
+    "7": {
+      "pids": [
+        3215799,
+        3215891,
+        3250130,
+        3251211
+      ],
+      "free_mb": 15298
+    }
+  },
+  "handoff": {
+    "status": "OLD_CONTROLLER_EXIT_VERIFIED",
+    "workers_before": [
+      {
+        "pid": 3235684,
+        "start_ticks": 87786957,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01/experiments/cvs_feature_disentangle/train_worker.py",
+          "--kind",
+          "train",
+          "--row",
+          "native-s2026092701"
+        ],
+        "gpu": "2"
+      }
+    ],
+    "workers_after": [
+      {
+        "pid": 3235684,
+        "start_ticks": 87786957,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01/experiments/cvs_feature_disentangle/train_worker.py",
+          "--kind",
+          "train",
+          "--row",
+          "native-s2026092701"
+        ],
+        "gpu": "2"
+      }
+    ],
+    "training_workers_signaled": false,
+    "old_controller": {
+      "pid": 3235663,
+      "start_ticks": 87786790,
+      "state": "S",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.dispatch"
+      ],
+      "gpu": null
+    },
+    "authorization": "用户要求每张卡4进程",
+    "at": 1791631505.6957345
+  },
+  "controller_stdout": ""
+}

@@ -159,7 +159,7 @@
     "local_artifact_root": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\automation_reports\\CV-SincNet\\20261010-phase1-feature-disentangle-manysig-m48-r01",
     "launch_command": "python -m experiments.cvs_feature_disentangle.publish --output local_artifacts/cvs_feature_disentangle_20261010_r01",
     "stop_rule": "Technical failure: stop new dispatch, preserve active healthy tasks/artifacts. No low-score halt/retry or target feedback.",
-    "controller_pid": 3235663,
+    "controller_pid": 3250081,
     "verified_at": "2026-10-10T11:03:54.446842+00:00",
     "current_phase": "train",
     "readback_ref": "evidence/readback.json",
@@ -168,10 +168,14 @@
       "authorization": "用户：每张卡4进程",
       "at": "2026-10-10T11:25:32.689803+00:00",
       "scope": "current feature-disentangle run; scheduler-only adoption",
-      "status": "PLANNED",
+      "status": "VERIFIED",
       "control_release": "cvs_feature_capacity4_20261010_r01",
-      "scientific_release": "cvs_feature_disentangle_20261010_r01"
-    }
+      "scientific_release": "cvs_feature_disentangle_20261010_r01",
+      "controller_pid": 3250081,
+      "control_commit": "7b71ecc7b94518bd09d82245a5093abbf62172ec",
+      "verified_at": "2026-10-10T11:26:55.320671+00:00"
+    },
+    "control_commit": "7b71ecc7b94518bd09d82245a5093abbf62172ec"
   },
   "expected_artifacts": [
     "<row>/source/resolved_config.json",
@@ -467,7 +471,7 @@
       "row_id": "native-s2026092702",
       "method": "feature_disentangle_native",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 2,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -686,13 +690,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3250098,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "native-s2026092702"
+      ]
     },
     {
       "row_id": "native-s2026092703",
       "method": "feature_disentangle_native",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 3,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -911,13 +927,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3250105,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "native-s2026092703"
+      ]
     },
     {
       "row_id": "random_S-s2026092701",
       "method": "feature_disentangle_random_S",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 4,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -1136,13 +1164,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3250110,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "random_S-s2026092701"
+      ]
     },
     {
       "row_id": "random_S-s2026092702",
       "method": "feature_disentangle_random_S",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 0,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -1361,13 +1401,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3250116,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "random_S-s2026092702"
+      ]
     },
     {
       "row_id": "random_S-s2026092703",
       "method": "feature_disentangle_random_S",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 1,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -1586,13 +1638,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3250122,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "random_S-s2026092703"
+      ]
     },
     {
       "row_id": "S-s2026092701",
       "method": "feature_disentangle_S",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 7,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -1811,13 +1875,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3250130,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "S-s2026092701"
+      ]
     },
     {
       "row_id": "S-s2026092702",
       "method": "feature_disentangle_S",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 6,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -2036,13 +2112,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3250141,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "S-s2026092702"
+      ]
     },
     {
       "row_id": "S-s2026092703",
       "method": "feature_disentangle_S",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 5,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -2261,13 +2349,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3250158,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "S-s2026092703"
+      ]
     },
     {
       "row_id": "S_raw5-s2026092701",
       "method": "feature_disentangle_S_raw5",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 2,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -2486,13 +2586,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3250186,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "S_raw5-s2026092701"
+      ]
     },
     {
       "row_id": "S_raw5-s2026092702",
       "method": "feature_disentangle_S_raw5",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 3,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -2711,13 +2823,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3250216,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "S_raw5-s2026092702"
+      ]
     },
     {
       "row_id": "S_raw5-s2026092703",
       "method": "feature_disentangle_S_raw5",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 4,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -2936,13 +3060,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3250379,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "S_raw5-s2026092703"
+      ]
     },
     {
       "row_id": "S_dir5-s2026092701",
       "method": "feature_disentangle_S_dir5",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 0,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -3161,13 +3297,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3250674,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "S_dir5-s2026092701"
+      ]
     },
     {
       "row_id": "S_dir5-s2026092702",
       "method": "feature_disentangle_S_dir5",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 1,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -3386,13 +3534,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3250949,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "S_dir5-s2026092702"
+      ]
     },
     {
       "row_id": "S_dir5-s2026092703",
       "method": "feature_disentangle_S_dir5",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 6,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -3611,13 +3771,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3251047,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "S_dir5-s2026092703"
+      ]
     },
     {
       "row_id": "LTR_S-s2026092701",
       "method": "feature_disentangle_LTR_S",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 5,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -3840,13 +4012,25 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3251137,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "LTR_S-s2026092701"
+      ]
     },
     {
       "row_id": "LTR_S-s2026092702",
       "method": "feature_disentangle_LTR_S",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 7,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -4069,7 +4253,19 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "QUEUED"
+      "status": "RUNNING",
+      "pid": 3251211,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "--worker",
+        "train",
+        "--row",
+        "LTR_S-s2026092702"
+      ]
     },
     {
       "row_id": "LTR_S-s2026092703",
