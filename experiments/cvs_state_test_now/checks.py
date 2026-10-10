@@ -25,6 +25,9 @@ def checks():
     assert e.BASE==d.BASE and e.BASE!=d.parent.BASE
     from experiments.cvs_state_test_now import views
     assert views.ROOT==d.BASE/'weak_views' and e.WEAK_ROOT==views.ROOT
+    from experiments.cvs_state_test_now.publish import REMOTE
+    compile(REMOTE.replace('CONFIG',repr(dict(project='p',release='r',run='id',archive='a',sha256='s',commit='c'))),'remote','exec')
+    assert "check=True)" in REMOTE and 'dispatch import prepare; prepare()' in REMOTE
     print('PASS: 24 immutable source configs; changed freeze rejected; truth barrier; partial-arm pairs; isolated outputs')
 
 if __name__=='__main__':checks()

@@ -25,7 +25,7 @@
     "commit": "release_commit.txt at launch",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r01"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -120,7 +120,7 @@
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs",
     "local_artifact_root": "automation_reports/CV-SincNet/20261010-phase1-state-action-completed-test-manysig-m24-r01",
-    "launch_command": "python -m experiments.cvs_state_test_now.publish --output local_artifacts/cvs_state_test_now_20261010_r01",
+    "launch_command": "python -m experiments.cvs_state_test_now.publish --output local_artifacts/cvs_state_test_now_20261010_r02",
     "stop_rule": "Only affected technical failure; retain artifacts, no automatic retry, fallback or low-performance stop. No interventions on healthy existing jobs.",
     "dispatcher_pid": 2534798,
     "launch_verified": "VERIFIED"

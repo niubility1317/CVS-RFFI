@@ -6,7 +6,7 @@ from experiments.cvs_multi_state_action.publish import REMOTE as PARENT_REMOTE
 from experiments.cvs_state_test_now import design as d
 
 REMOTE=PARENT_REMOTE
-start=REMOTE.index('check=')
+start=REMOTE.index('\ncheck=')+1
 end=REMOTE.index("with (release/'preflight.log')",start)
 REMOTE=REMOTE[:start]+'''check="from experiments.cvs_state_test_now.dispatch import prepare; prepare()"
 '''+REMOTE[end:]

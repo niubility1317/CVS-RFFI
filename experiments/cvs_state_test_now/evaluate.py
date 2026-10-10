@@ -9,7 +9,7 @@ import time
 from types import SimpleNamespace
 
 RUN = '20261010-phase1-state-action-completed-test-manysig-m24-r01'
-RELEASE = 'cvs_state_test_now_20261010_r01'
+RELEASE = 'cvs_state_test_now_20261010_r02'
 PROJECT = '/home/szu2070436088/2510044040/CV-SincNet'
 ROOT = Path(__file__).resolve().parents[2]
 BASE = Path(PROJECT) / 'runs' / RUN
