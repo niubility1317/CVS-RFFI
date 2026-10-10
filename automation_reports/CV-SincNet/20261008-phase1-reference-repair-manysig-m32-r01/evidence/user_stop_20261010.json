@@ -1,0 +1,18 @@
+{
+  "status": "VERIFIED",
+  "lifecycle": "STOPPED",
+  "reason": "User explicitly requested stopping reference repair32 and Urban CE24",
+  "stopped_at": "2026-10-10T10:25:50+08:00",
+  "independent_readback_at": "2026-10-10T10:26:08+08:00",
+  "controller": {"pid": 1170536, "start_ticks": 66622045},
+  "worker": {"pid": 2870257, "start_ticks": 84223127, "row_id": "bank_cosine_domain-s2026092704", "last_logged_epoch": 75},
+  "pending_cancelled": ["bank_cosine_mixstyle-s2026092704"],
+  "source_rows_complete_before_stop": 30,
+  "procedure": "Verify CWD/argv/parentage; SIGSTOP both specified dispatchers to prevent new dispatch; SIGTERM exact worker and dispatchers; SIGCONT dispatchers to deliver pending termination",
+  "post_state": "Both dispatchers and repair worker absent in independent ps; worker absent from nvidia-smi; no matching repair/urban processes",
+  "preserved_state_action_controller": 2534798,
+  "preserved_state_action_workers": [2547095,2547124,2547180,2547678,2548022,2548217,2548414,2548745,2549022,2574488,2705573,2722542],
+  "artifacts_deleted_or_overwritten": false,
+  "queue_snapshots": "Historical; not overwritten. STOPPED lifecycle supersedes old queue snapshots.",
+  "restart_authorized": false
+}

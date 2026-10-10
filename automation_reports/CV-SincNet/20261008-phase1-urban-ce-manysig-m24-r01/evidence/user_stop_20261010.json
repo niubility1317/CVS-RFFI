@@ -1,0 +1,15 @@
+{
+  "status": "VERIFIED",
+  "lifecycle": "STOPPED",
+  "reason": "User explicitly requested stopping reference repair32 and Urban CE24",
+  "stopped_at": "2026-10-10T10:25:50+08:00",
+  "independent_readback_at": "2026-10-10T10:26:08+08:00",
+  "controller": {"pid": 1173940, "start_ticks": 66656235},
+  "source_rows_started": 0,
+  "pending_rows_cancelled": 24,
+  "procedure": "Verified CWD/argv; froze Urban controller before terminating repair controller to prevent dependency release from starting Urban; terminated exact controller PID",
+  "post_state": "Controller absent in independent ps; no matching urban processes; all12 state-action workers still alive",
+  "artifacts_deleted_or_overwritten": false,
+  "queue_snapshots": "Historical; not overwritten. STOPPED lifecycle supersedes old queue snapshots.",
+  "restart_authorized": false
+}
