@@ -14,3 +14,4 @@
 |R5新增完成12行立即补测：base、DAOT、DAOT＋RC4四seed|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-evaluation-reference-r5-completed-manysig-m12-r01/report.md)|
 |修复后首批5个E200模型：立即执行clean及六星地场景独立测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-evaluation-reference-repair-completed5-manysig-m5-r01/report.md)|
 |reference_response新增12行R5补测：clean及六residual|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-phase1-reference-completed-sixscene-manysig-m12-r01/report.md)|
+|已完成24个多解耦模型即时测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-state-action-completed-test-manysig-m24-r01/report.md)|

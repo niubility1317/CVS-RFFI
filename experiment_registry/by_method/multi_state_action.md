@@ -8,3 +8,4 @@
 |---|---|---|
 |多解耦状态条件作用：三阶段完整验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-multi-state-action-manysig-m36-r01/report.md)|
 |多解耦状态条件作用：三阶段完整验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-multi-state-action-manysig-m36-r02/report.md)|
+|已完成24个多解耦模型即时测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-state-action-completed-test-manysig-m24-r01/report.md)|

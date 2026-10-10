@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-09T15:26:00.635836+00:00
+更新：2026-10-10T01:54:14.639436+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|128|
+|managed_run|129|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -23,7 +23,7 @@
 |---|---:|
 |[cvs](by_method/cvs.md)|268|
 |[adv3b02](by_method/adv3b02.md)|146|
-|[phase1](by_method/phase1.md)|134|
+|[phase1](by_method/phase1.md)|135|
 |[phase2](by_method/phase2.md)|118|
 |[stage2](by_method/stage2.md)|67|
 |[clean_only](by_method/clean_only.md)|59|
@@ -52,10 +52,10 @@
 |[sixscene](by_method/sixscene.md)|9|
 |[truth_last](by_method/truth_last.md)|9|
 |[no_training](by_method/no_training.md)|9|
+|[evaluation_only](by_method/evaluation_only.md)|9|
 |[benchmark_exposed](by_method/benchmark_exposed.md)|9|
 |[practical](by_method/practical.md)|8|
 |[residual_noeq](by_method/residual_noeq.md)|8|
-|[evaluation_only](by_method/evaluation_only.md)|8|
 |[mopc](by_method/mopc.md)|8|
 |[csil](by_method/csil.md)|8|
 |[concat](by_method/concat.md)|7|
@@ -94,6 +94,7 @@
 |[packet_compensation](by_method/packet_compensation.md)|3|
 |[legacy_pseudo](by_method/legacy_pseudo.md)|3|
 |[multi_disentanglement](by_method/multi_disentanglement.md)|3|
+|[multi_state_action](by_method/multi_state_action.md)|3|
 |[smoke](by_method/smoke.md)|3|
 |[evaluation](by_method/evaluation.md)|2|
 |[true256](by_method/true256.md)|2|
@@ -123,7 +124,6 @@
 |[conditional_interaction](by_method/conditional_interaction.md)|2|
 |[heldout_physical_packets](by_method/heldout_physical_packets.md)|2|
 |[cross_tx_action](by_method/cross_tx_action.md)|2|
-|[multi_state_action](by_method/multi_state_action.md)|2|
 |[source_diagnostic](by_method/source_diagnostic.md)|2|
 |[legacy_cosine](by_method/legacy_cosine.md)|2|
 |[score_only](by_method/score_only.md)|2|
@@ -211,6 +211,7 @@
 |[channel_DG](by_method/channel_DG.md)|1|
 |[factorial_interaction](by_method/factorial_interaction.md)|1|
 |[independent_auxiliary_networks](by_method/independent_auxiliary_networks.md)|1|
+|[fixed_completed24](by_method/fixed_completed24.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
 |[fedcvs](by_method/fedcvs.md)|1|
 
