@@ -97,7 +97,9 @@
     "dispatcher_pid": 2933342,
     "launch_readback_ref": "evidence/startup/readback.json",
     "remote_verdict": "VERIFIED",
-    "submit_ref": "evidence/submit.json"
+    "submit_ref": "evidence/submit.json",
+    "final_readback_ref": "results/verified_results.json",
+    "dispatcher_live": false
   },
   "expected_artifacts": [
     "pipeline_state.json",
@@ -184,8 +186,9 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "TRAINING",
-      "pid": 2933359
+      "status": "SCORED",
+      "pid": 2933359,
+      "result_ref": "results/verified_results.json#resnet18-s2026092701"
     },
     {
       "row_id": "resnet34-s2026092701",
@@ -230,8 +233,9 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "TRAINING",
-      "pid": 2933448
+      "status": "SCORED",
+      "pid": 2933448,
+      "result_ref": "results/verified_results.json#resnet34-s2026092701"
     },
     {
       "row_id": "resnet50-s2026092701",
@@ -276,8 +280,9 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "TRAINING",
-      "pid": 2933539
+      "status": "SCORED",
+      "pid": 2933539,
+      "result_ref": "results/verified_results.json#resnet50-s2026092701"
     },
     {
       "row_id": "vgg16_bn-s2026092701",
@@ -322,8 +327,9 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "TRAINING",
-      "pid": 2933625
+      "status": "SCORED",
+      "pid": 2933625,
+      "result_ref": "results/verified_results.json#vgg16_bn-s2026092701"
     },
     {
       "row_id": "densenet121-s2026092701",
@@ -368,7 +374,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#densenet121-s2026092701"
     },
     {
       "row_id": "convnext_tiny-s2026092701",
@@ -413,7 +420,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#convnext_tiny-s2026092701"
     },
     {
       "row_id": "transformer6-s2026092701",
@@ -458,7 +466,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#transformer6-s2026092701"
     },
     {
       "row_id": "bilstm3-s2026092701",
@@ -503,7 +512,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#bilstm3-s2026092701"
     },
     {
       "row_id": "cvresnet18_1d-s2026092701",
@@ -548,7 +558,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#cvresnet18_1d-s2026092701"
     },
     {
       "row_id": "cvresnet18_2d-s2026092701",
@@ -593,7 +604,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#cvresnet18_2d-s2026092701"
     },
     {
       "row_id": "resnet18_2d-s2026092701",
@@ -638,7 +650,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet18_2d-s2026092701"
     },
     {
       "row_id": "resnet50_2d-s2026092701",
@@ -683,7 +696,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet50_2d-s2026092701"
     },
     {
       "row_id": "native-s2026092701",
@@ -728,7 +742,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#native-s2026092701"
     },
     {
       "row_id": "residual_fusion-s2026092701",
@@ -773,7 +788,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#residual_fusion-s2026092701"
     },
     {
       "row_id": "resnet18-s2026092702",
@@ -818,7 +834,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet18-s2026092702"
     },
     {
       "row_id": "resnet34-s2026092702",
@@ -863,7 +880,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet34-s2026092702"
     },
     {
       "row_id": "resnet50-s2026092702",
@@ -908,7 +926,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet50-s2026092702"
     },
     {
       "row_id": "vgg16_bn-s2026092702",
@@ -953,7 +972,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#vgg16_bn-s2026092702"
     },
     {
       "row_id": "densenet121-s2026092702",
@@ -998,7 +1018,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#densenet121-s2026092702"
     },
     {
       "row_id": "convnext_tiny-s2026092702",
@@ -1043,7 +1064,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#convnext_tiny-s2026092702"
     },
     {
       "row_id": "transformer6-s2026092702",
@@ -1088,7 +1110,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#transformer6-s2026092702"
     },
     {
       "row_id": "bilstm3-s2026092702",
@@ -1133,7 +1156,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#bilstm3-s2026092702"
     },
     {
       "row_id": "cvresnet18_1d-s2026092702",
@@ -1178,7 +1202,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#cvresnet18_1d-s2026092702"
     },
     {
       "row_id": "cvresnet18_2d-s2026092702",
@@ -1223,7 +1248,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#cvresnet18_2d-s2026092702"
     },
     {
       "row_id": "resnet18_2d-s2026092702",
@@ -1268,7 +1294,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet18_2d-s2026092702"
     },
     {
       "row_id": "resnet50_2d-s2026092702",
@@ -1313,7 +1340,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet50_2d-s2026092702"
     },
     {
       "row_id": "native-s2026092702",
@@ -1358,7 +1386,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#native-s2026092702"
     },
     {
       "row_id": "residual_fusion-s2026092702",
@@ -1403,7 +1432,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#residual_fusion-s2026092702"
     },
     {
       "row_id": "resnet18-s2026092703",
@@ -1448,7 +1478,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet18-s2026092703"
     },
     {
       "row_id": "resnet34-s2026092703",
@@ -1493,7 +1524,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet34-s2026092703"
     },
     {
       "row_id": "resnet50-s2026092703",
@@ -1538,7 +1570,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet50-s2026092703"
     },
     {
       "row_id": "vgg16_bn-s2026092703",
@@ -1583,7 +1616,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#vgg16_bn-s2026092703"
     },
     {
       "row_id": "densenet121-s2026092703",
@@ -1628,7 +1662,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#densenet121-s2026092703"
     },
     {
       "row_id": "convnext_tiny-s2026092703",
@@ -1673,7 +1708,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#convnext_tiny-s2026092703"
     },
     {
       "row_id": "transformer6-s2026092703",
@@ -1718,7 +1754,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#transformer6-s2026092703"
     },
     {
       "row_id": "bilstm3-s2026092703",
@@ -1763,7 +1800,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#bilstm3-s2026092703"
     },
     {
       "row_id": "cvresnet18_1d-s2026092703",
@@ -1808,7 +1846,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#cvresnet18_1d-s2026092703"
     },
     {
       "row_id": "cvresnet18_2d-s2026092703",
@@ -1853,7 +1892,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#cvresnet18_2d-s2026092703"
     },
     {
       "row_id": "resnet18_2d-s2026092703",
@@ -1898,7 +1938,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet18_2d-s2026092703"
     },
     {
       "row_id": "resnet50_2d-s2026092703",
@@ -1943,7 +1984,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet50_2d-s2026092703"
     },
     {
       "row_id": "native-s2026092703",
@@ -1988,7 +2030,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#native-s2026092703"
     },
     {
       "row_id": "residual_fusion-s2026092703",
@@ -2033,7 +2076,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#residual_fusion-s2026092703"
     },
     {
       "row_id": "resnet18-s2026092704",
@@ -2078,7 +2122,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet18-s2026092704"
     },
     {
       "row_id": "resnet34-s2026092704",
@@ -2123,7 +2168,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet34-s2026092704"
     },
     {
       "row_id": "resnet50-s2026092704",
@@ -2168,7 +2214,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet50-s2026092704"
     },
     {
       "row_id": "vgg16_bn-s2026092704",
@@ -2213,7 +2260,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#vgg16_bn-s2026092704"
     },
     {
       "row_id": "densenet121-s2026092704",
@@ -2258,7 +2306,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#densenet121-s2026092704"
     },
     {
       "row_id": "convnext_tiny-s2026092704",
@@ -2303,7 +2352,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#convnext_tiny-s2026092704"
     },
     {
       "row_id": "transformer6-s2026092704",
@@ -2348,7 +2398,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#transformer6-s2026092704"
     },
     {
       "row_id": "bilstm3-s2026092704",
@@ -2393,7 +2444,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#bilstm3-s2026092704"
     },
     {
       "row_id": "cvresnet18_1d-s2026092704",
@@ -2438,7 +2490,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#cvresnet18_1d-s2026092704"
     },
     {
       "row_id": "cvresnet18_2d-s2026092704",
@@ -2483,7 +2536,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#cvresnet18_2d-s2026092704"
     },
     {
       "row_id": "resnet18_2d-s2026092704",
@@ -2528,7 +2582,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet18_2d-s2026092704"
     },
     {
       "row_id": "resnet50_2d-s2026092704",
@@ -2573,7 +2628,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#resnet50_2d-s2026092704"
     },
     {
       "row_id": "native-s2026092704",
@@ -2618,7 +2674,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#native-s2026092704"
     },
     {
       "row_id": "residual_fusion-s2026092704",
@@ -2663,7 +2720,8 @@
         "each scores/scores.json",
         "each scores/report.md"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "result_ref": "results/verified_results.json#residual_fusion-s2026092704"
     }
   ],
   "notes": [
@@ -2680,5 +2738,18 @@
     "No smaller-parameter filter. Parameter count is measured, not a selection criterion. This benchmark was previously exposed and is not a new blind confirmation set."
   ],
   "registered_at": "2026-10-10T02:49:13+00:00",
-  "status": "RUNNING"
+  "status": "ANALYZED",
+  "results": {
+    "verified_at": "2026-10-10T14:12:33.505857+08:00",
+    "verdict": "VERIFIED",
+    "rows": 56,
+    "expected_rows": 56,
+    "actual_seed_count_per_network": 4,
+    "view": "clean",
+    "query_count_per_checkpoint": 168000,
+    "summary_ref": "results/network_summary.csv",
+    "per_seed_ref": "results/per_seed_metrics.csv",
+    "report_ref": "report.md",
+    "truth_reopened": false
+  }
 }

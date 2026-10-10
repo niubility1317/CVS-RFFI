@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-10T02:53:35+00:00
+更新：2026-10-10T06:17:18+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -323,6 +323,6 @@
 |纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r01/report.md)|
 |纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/report.md)|
 |纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/report.md)|
-|常用网络纯CE固定对比|managed_run|[打开](../automation_reports/CV-SincNet/20261010-phase1-standard-ce-baselines-manysig-m56-r01/report.md)|
+|常用网络纯CE：完整clean测试结果|managed_run|[打开](../automation_reports/CV-SincNet/20261010-phase1-standard-ce-baselines-manysig-m56-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|

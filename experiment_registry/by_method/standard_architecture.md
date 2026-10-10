@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|常用网络纯CE固定对比|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-standard-ce-baselines-manysig-m56-r01/report.md)|
+|常用网络纯CE：完整clean测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-standard-ce-baselines-manysig-m56-r01/report.md)|
