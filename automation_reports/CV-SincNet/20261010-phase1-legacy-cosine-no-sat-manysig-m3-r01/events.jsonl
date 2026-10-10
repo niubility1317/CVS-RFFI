@@ -1,2 +1,3 @@
 {"status": "PLANNED", "note": "用户：跑三种子的旧门控＋cos、关闭星地增强的基线。三seed取既有顺序前3个，预算保持E200；明确覆盖纯CE探索默认。"}
 {"at": "2026-10-10T09:59:59.308840+00:00", "status": "LOCAL_VERIFIED", "note": "CPU/CUDA native phase-boundary smoke, independent P0/P1 review and launch-ready registry PASS; copied unrelated registration metadata removed before release."}
+{"at": "2026-10-10T10:01:58.792594+00:00", "status": "RUNNING", "verification": "VERIFIED", "commit": "0c79b8daf3bcf1f1e885a43940348c1da5d6c371", "rows": [{"row_id": "legacy_cosine_no_sat-s2026092701", "pid": 3197269, "gpu": 0}, {"row_id": "legacy_cosine_no_sat-s2026092702", "pid": 3197274, "gpu": 1}, {"row_id": "legacy_cosine_no_sat-s2026092703", "pid": 3197280, "gpu": 2}]}

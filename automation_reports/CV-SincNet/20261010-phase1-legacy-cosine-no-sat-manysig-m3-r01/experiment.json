@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "用户：跑三种子的旧门控＋cos、关闭星地增强的基线。三seed取既有顺序前3个，预算保持E200；明确覆盖纯CE探索默认。",
   "code": {
-    "commit": "release_commit.txt at actual launch",
+    "commit": "0c79b8daf3bcf1f1e885a43940348c1da5d6c371",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01"
@@ -95,7 +95,10 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/logs",
     "local_artifact_root": "automation_reports/CV-SincNet/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
     "launch_command": "python -m experiments.cvs_legacy_no_sat.publish --output local_artifacts/cvs_legacy_no_sat_20261010_r01",
-    "stop_rule": "Only affected technical failure; retain artifacts, no automatic retry, fallback or low-performance stop. No interventions on healthy existing jobs."
+    "stop_rule": "Only affected technical failure; retain artifacts, no automatic retry, fallback or low-performance stop. No interventions on healthy existing jobs.",
+    "dispatcher_pid": 3196841,
+    "launch_verified": "VERIFIED",
+    "last_verified_at": "2026-10-10T10:01:58.778593+00:00"
   },
   "expected_artifacts": [
     "source_frozen.json",
@@ -143,7 +146,7 @@
       "row_id": "legacy_cosine_no_sat-s2026092701",
       "method": "legacy_cosine_no_sat",
       "purpose": "fixed_baseline",
-      "gpu": null,
+      "gpu": 0,
       "config": {
         "schema": "legacy_no_sat_v1",
         "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
@@ -214,13 +217,29 @@
         "prediction/complete.json",
         "prediction/predictions.npz",
         "scores.json"
-      ]
+      ],
+      "pid": 3197269,
+      "status": "RUNNING",
+      "actual_recipe": {
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "phase1_lr_schedule": "cosine",
+        "sat_training_mode": "disabled",
+        "use_concat_sat_channel_aug": false,
+        "lambda_sat_cls": 0.0,
+        "lambda_sat_cons": 0.0,
+        "label_epochs": 130,
+        "pseudo_epochs": 70,
+        "label_smoothing": 0.01
+      },
+      "startup_evidence_ref": "evidence/readback.json"
     },
     {
       "row_id": "legacy_cosine_no_sat-s2026092702",
       "method": "legacy_cosine_no_sat",
       "purpose": "fixed_baseline",
-      "gpu": null,
+      "gpu": 1,
       "config": {
         "schema": "legacy_no_sat_v1",
         "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
@@ -291,13 +310,29 @@
         "prediction/complete.json",
         "prediction/predictions.npz",
         "scores.json"
-      ]
+      ],
+      "pid": 3197274,
+      "status": "RUNNING",
+      "actual_recipe": {
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "phase1_lr_schedule": "cosine",
+        "sat_training_mode": "disabled",
+        "use_concat_sat_channel_aug": false,
+        "lambda_sat_cls": 0.0,
+        "lambda_sat_cons": 0.0,
+        "label_epochs": 130,
+        "pseudo_epochs": 70,
+        "label_smoothing": 0.01
+      },
+      "startup_evidence_ref": "evidence/readback.json"
     },
     {
       "row_id": "legacy_cosine_no_sat-s2026092703",
       "method": "legacy_cosine_no_sat",
       "purpose": "fixed_baseline",
-      "gpu": null,
+      "gpu": 2,
       "config": {
         "schema": "legacy_no_sat_v1",
         "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
@@ -368,7 +403,23 @@
         "prediction/complete.json",
         "prediction/predictions.npz",
         "scores.json"
-      ]
+      ],
+      "pid": 3197280,
+      "status": "RUNNING",
+      "actual_recipe": {
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "phase1_lr_schedule": "cosine",
+        "sat_training_mode": "disabled",
+        "use_concat_sat_channel_aug": false,
+        "lambda_sat_cls": 0.0,
+        "lambda_sat_cons": 0.0,
+        "label_epochs": 130,
+        "pseudo_epochs": 70,
+        "label_smoothing": 0.01
+      },
+      "startup_evidence_ref": "evidence/readback.json"
     }
   ],
   "notes": [
@@ -378,7 +429,7 @@
     "All predictions pointwise; scores never read by other training rows.",
     "Preserve complete structured step records plus detailed native text/compact epoch JSONL and CSV."
   ],
-  "status": "PLANNED",
+  "status": "RUNNING",
   "test_completion_plan": {
     "rows": 3,
     "views": [
@@ -467,5 +518,6 @@
     ],
     "independent_P0_P1_review": "PASS; no blocking findings",
     "registry_launch_ready": "PASS"
-  }
+  },
+  "startup_validation": "VERIFIED: remote preflight PASS, three live workers, exact requested actual recipe and independently growing logs"
 }

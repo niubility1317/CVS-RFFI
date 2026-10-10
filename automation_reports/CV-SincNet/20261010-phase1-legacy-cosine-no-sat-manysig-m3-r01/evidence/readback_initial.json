@@ -1,0 +1,393 @@
+{
+  "at": 1791626403.4964104,
+  "receipt": {
+    "status": "SUBMITTED",
+    "pid": 3196841,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_legacy_no_sat.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01/dispatcher.stdout.log",
+    "commit": "0c79b8daf3bcf1f1e885a43940348c1da5d6c371",
+    "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01"
+  },
+  "controller": {
+    "pid": 3196841,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_legacy_no_sat.dispatch",
+      ""
+    ],
+    "state": "S"
+  },
+  "queue": {
+    "active": [
+      "legacy_cosine_no_sat-s2026092701",
+      "legacy_cosine_no_sat-s2026092702",
+      "legacy_cosine_no_sat-s2026092703"
+    ],
+    "pending": [],
+    "completed": [],
+    "failures": [],
+    "per_gpu_limit": 2,
+    "updated_at": 1791626402.995298
+  },
+  "failure": null,
+  "completion": null,
+  "rows": [
+    {
+      "row_id": "legacy_cosine_no_sat-s2026092701",
+      "pid": 3197269,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/logs/legacy_cosine_no_sat-s2026092701.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01/experiments/cvs_legacy_no_sat/train_worker.py",
+        "--row",
+        "legacy_cosine_no_sat-s2026092701"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01",
+      "process": {
+        "pid": 3197269,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01/experiments/cvs_legacy_no_sat/train_worker.py",
+          "--row",
+          "legacy_cosine_no_sat-s2026092701",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 6473,
+      "tail": [
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=130 pseudo_epochs=70 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=1 ema=1 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "resolved": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092701,
+        "row_id": "legacy_cosine_no_sat-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "pid": 3197269,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c79b8daf3bcf1f1e885a43940348c1da5d6c371",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "0",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "actual_recipe": {
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "phase1_lr_schedule": "cosine",
+        "sat_training_mode": "disabled",
+        "use_concat_sat_channel_aug": false,
+        "lambda_sat_cls": 0.0,
+        "lambda_sat_cons": 0.0,
+        "label_epochs": 130,
+        "pseudo_epochs": 70,
+        "label_smoothing": 0.01
+      },
+      "source_completion": null,
+      "prediction_completion": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "legacy_cosine_no_sat-s2026092702",
+      "pid": 3197274,
+      "gpu": 1,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/logs/legacy_cosine_no_sat-s2026092702.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01/experiments/cvs_legacy_no_sat/train_worker.py",
+        "--row",
+        "legacy_cosine_no_sat-s2026092702"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01",
+      "process": {
+        "pid": 3197274,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01/experiments/cvs_legacy_no_sat/train_worker.py",
+          "--row",
+          "legacy_cosine_no_sat-s2026092702",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 6473,
+      "tail": [
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=130 pseudo_epochs=70 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=1 ema=1 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "resolved": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092702,
+        "row_id": "legacy_cosine_no_sat-s2026092702",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "pid": 3197274,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c79b8daf3bcf1f1e885a43940348c1da5d6c371",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "1",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "actual_recipe": {
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "phase1_lr_schedule": "cosine",
+        "sat_training_mode": "disabled",
+        "use_concat_sat_channel_aug": false,
+        "lambda_sat_cls": 0.0,
+        "lambda_sat_cons": 0.0,
+        "label_epochs": 130,
+        "pseudo_epochs": 70,
+        "label_smoothing": 0.01
+      },
+      "source_completion": null,
+      "prediction_completion": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "legacy_cosine_no_sat-s2026092703",
+      "pid": 3197280,
+      "gpu": 2,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/logs/legacy_cosine_no_sat-s2026092703.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01/experiments/cvs_legacy_no_sat/train_worker.py",
+        "--row",
+        "legacy_cosine_no_sat-s2026092703"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01",
+      "process": {
+        "pid": 3197280,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01/experiments/cvs_legacy_no_sat/train_worker.py",
+          "--row",
+          "legacy_cosine_no_sat-s2026092703",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 6473,
+      "tail": [
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=130 pseudo_epochs=70 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=1 ema=1 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "resolved": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092703,
+        "row_id": "legacy_cosine_no_sat-s2026092703",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "pid": 3197280,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_legacy_no_sat_20261010_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "0c79b8daf3bcf1f1e885a43940348c1da5d6c371",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "2",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "actual_recipe": {
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "phase1_lr_schedule": "cosine",
+        "sat_training_mode": "disabled",
+        "use_concat_sat_channel_aug": false,
+        "lambda_sat_cls": 0.0,
+        "lambda_sat_cons": 0.0,
+        "label_epochs": 130,
+        "pseudo_epochs": 70,
+        "label_smoothing": 0.01
+      },
+      "source_completion": null,
+      "prediction_completion": null,
+      "completion": null,
+      "failure": null
+    }
+  ],
+  "preflight": {
+    "status": "PASS",
+    "device": "cpu",
+    "rows": [
+      {
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "epochs": [
+          1,
+          80,
+          131,
+          132,
+          200
+        ],
+        "source": "synthetic",
+        "status": "PASS"
+      }
+    ],
+    "target_access": false,
+    "formal_weights": false
+  }
+}
