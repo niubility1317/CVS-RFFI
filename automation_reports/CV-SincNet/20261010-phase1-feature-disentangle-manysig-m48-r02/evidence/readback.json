@@ -1,0 +1,2491 @@
+{
+  "at": 1791647370.9023514,
+  "receipt": {
+    "status": "SUBMITTED",
+    "pid": 3408569,
+    "start_ticks": 89494515,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_feature_disentangle.recovery",
+      "--mode",
+      "dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02/dispatcher.stdout.log",
+    "commit": "1636ad48355ac217932dc9dc4e281d2bc5a8b438",
+    "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r02"
+  },
+  "controller": {
+    "pid": 3408569,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_feature_disentangle.recovery",
+      "--mode",
+      "dispatch"
+    ]
+  },
+  "queue": {
+    "phase": "train",
+    "active": [
+      "S_dir5-s2026092703",
+      "LTR_S_F5-s2026092703",
+      "LTR_S_F10-s2026092701",
+      "LTR_S_F10-s2026092702",
+      "LTR_S_F10-s2026092703",
+      "LTR_S_AF3-s2026092701",
+      "LTR_S_AF3-s2026092702",
+      "LTR_S_AF3-s2026092703",
+      "LTR_S_AF5-s2026092701",
+      "LTR_S_AF5-s2026092702",
+      "LTR_S_AF5-s2026092703",
+      "LTR_S_AF10-s2026092701",
+      "LTR_S_AF10-s2026092702",
+      "LTR_S_AF10-s2026092703"
+    ],
+    "pending": [
+      "LTR_S-s2026092701",
+      "LTR_S-s2026092702",
+      "LTR_S-s2026092703",
+      "LTR_S_A-s2026092701",
+      "LTR_S_A-s2026092702",
+      "LTR_S_A-s2026092703",
+      "LTR_S_F3-s2026092701",
+      "LTR_S_F3-s2026092702",
+      "LTR_S_F3-s2026092703",
+      "LTR_S_F5-s2026092701",
+      "LTR_S_F5-s2026092702"
+    ],
+    "completed": [
+      "native-s2026092701",
+      "native-s2026092702",
+      "native-s2026092703",
+      "random_S-s2026092701",
+      "random_S-s2026092702",
+      "random_S-s2026092703",
+      "S-s2026092701",
+      "S-s2026092702",
+      "S-s2026092703",
+      "S_raw5-s2026092701",
+      "S_raw5-s2026092702",
+      "S_raw5-s2026092703",
+      "S_dir5-s2026092701",
+      "S_dir5-s2026092702"
+    ],
+    "failures": [],
+    "waiting_original": [
+      "LTR_S-s2026092701",
+      "LTR_S-s2026092702",
+      "LTR_S-s2026092703",
+      "LTR_S_A-s2026092701",
+      "LTR_S_A-s2026092702",
+      "LTR_S_A-s2026092703",
+      "LTR_S_F3-s2026092701",
+      "LTR_S_F3-s2026092702",
+      "LTR_S_F3-s2026092703",
+      "LTR_S_F5-s2026092701",
+      "LTR_S_F5-s2026092702"
+    ],
+    "per_gpu_limit": 4,
+    "trained_identity_rows": 48,
+    "reused_training_rows": 26,
+    "new_training_rows": 22,
+    "total_test_rows": 36,
+    "updated_at": 1791647363.3398454
+  },
+  "failure": null,
+  "completion": null,
+  "rows": [
+    {
+      "row_id": "native-s2026092701",
+      "kind": "train",
+      "pid": 3408587,
+      "start_ticks": 89494685,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "native-s2026092701"
+      ],
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/native-s2026092701-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 903,
+      "tail": [
+        "{\"row_id\": \"native-s2026092701\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.137169294059277, \"truth_read\": false}",
+        "{\"row_id\": \"native-s2026092701\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 5.120489630964585, \"truth_read\": false}",
+        "{\"row_id\": \"native-s2026092701\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 5.160664893919602, \"truth_read\": false}",
+        "{\"row_id\": \"native-s2026092701\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 5.236944793956354, \"truth_read\": false}",
+        "{\"row_id\": \"native-s2026092701\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 5.133157068979926, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.956597544020042,
+          "practical_high": 5.078154101036489,
+          "practical_mid": 5.137169294059277,
+          "practical_low_suburban": 5.120489630964585,
+          "practical_high_urban": 5.160664893919602,
+          "practical_mid_urban": 5.236944793956354,
+          "practical_low_urban": 5.133157068979926
+        },
+        "wall_seconds": 36.35888320405502,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3876962304,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "native-s2026092702",
+      "kind": "train",
+      "pid": 3408594,
+      "start_ticks": 89494716,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "native-s2026092702"
+      ],
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/native-s2026092702-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 902,
+      "tail": [
+        "{\"row_id\": \"native-s2026092702\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.052623266004957, \"truth_read\": false}",
+        "{\"row_id\": \"native-s2026092702\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 5.09190832299646, \"truth_read\": false}",
+        "{\"row_id\": \"native-s2026092702\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 5.415705543011427, \"truth_read\": false}",
+        "{\"row_id\": \"native-s2026092702\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 5.341858602012508, \"truth_read\": false}",
+        "{\"row_id\": \"native-s2026092702\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 4.987332163960673, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.998755281907506,
+          "practical_high": 5.021102976985276,
+          "practical_mid": 5.052623266004957,
+          "practical_low_suburban": 5.09190832299646,
+          "practical_high_urban": 5.415705543011427,
+          "practical_mid_urban": 5.341858602012508,
+          "practical_low_urban": 4.987332163960673
+        },
+        "wall_seconds": 36.43634399701841,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3876601856,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "native-s2026092703",
+      "kind": "train",
+      "pid": 3408599,
+      "start_ticks": 89494743,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "native-s2026092703"
+      ],
+      "gpu": 1,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/native-s2026092703-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 902,
+      "tail": [
+        "{\"row_id\": \"native-s2026092703\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.00792889110744, \"truth_read\": false}",
+        "{\"row_id\": \"native-s2026092703\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 5.052418626961298, \"truth_read\": false}",
+        "{\"row_id\": \"native-s2026092703\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 4.988726294017397, \"truth_read\": false}",
+        "{\"row_id\": \"native-s2026092703\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 5.066718833055347, \"truth_read\": false}",
+        "{\"row_id\": \"native-s2026092703\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 5.125488481018692, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.146190042956732,
+          "practical_high": 5.411526135983877,
+          "practical_mid": 5.00792889110744,
+          "practical_low_suburban": 5.052418626961298,
+          "practical_high_urban": 4.988726294017397,
+          "practical_mid_urban": 5.066718833055347,
+          "practical_low_urban": 5.125488481018692
+        },
+        "wall_seconds": 36.38606673304457,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3877425152,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "random_S-s2026092701",
+      "kind": "train",
+      "pid": 3408605,
+      "start_ticks": 89494774,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "random_S-s2026092701"
+      ],
+      "gpu": 2,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/random_S-s2026092701-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 917,
+      "tail": [
+        "{\"row_id\": \"random_S-s2026092701\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.213413715013303, \"truth_read\": false}",
+        "{\"row_id\": \"random_S-s2026092701\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 5.190060455002822, \"truth_read\": false}",
+        "{\"row_id\": \"random_S-s2026092701\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 5.170444580959156, \"truth_read\": false}",
+        "{\"row_id\": \"random_S-s2026092701\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 5.541897244984284, \"truth_read\": false}",
+        "{\"row_id\": \"random_S-s2026092701\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 5.282062768004835, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.122707027941942,
+          "practical_high": 5.173238210962154,
+          "practical_mid": 5.213413715013303,
+          "practical_low_suburban": 5.190060455002822,
+          "practical_high_urban": 5.170444580959156,
+          "practical_mid_urban": 5.541897244984284,
+          "practical_low_urban": 5.282062768004835
+        },
+        "wall_seconds": 37.26098267210182,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3880873984,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "random_S-s2026092702",
+      "kind": "train",
+      "pid": 3408611,
+      "start_ticks": 89494802,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "random_S-s2026092702"
+      ],
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/random_S-s2026092702-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 917,
+      "tail": [
+        "{\"row_id\": \"random_S-s2026092702\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.143538148025982, \"truth_read\": false}",
+        "{\"row_id\": \"random_S-s2026092702\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 5.063886470044963, \"truth_read\": false}",
+        "{\"row_id\": \"random_S-s2026092702\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 5.063449694076553, \"truth_read\": false}",
+        "{\"row_id\": \"random_S-s2026092702\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 5.056585612008348, \"truth_read\": false}",
+        "{\"row_id\": \"random_S-s2026092702\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 5.145191028015688, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.002207812969573,
+          "practical_high": 5.104961164994165,
+          "practical_mid": 5.143538148025982,
+          "practical_low_suburban": 5.063886470044963,
+          "practical_high_urban": 5.063449694076553,
+          "practical_mid_urban": 5.056585612008348,
+          "practical_low_urban": 5.145191028015688
+        },
+        "wall_seconds": 36.11229751200881,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3876954112,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "random_S-s2026092703",
+      "kind": "train",
+      "pid": 3408619,
+      "start_ticks": 89494830,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "random_S-s2026092703"
+      ],
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/random_S-s2026092703-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 917,
+      "tail": [
+        "{\"row_id\": \"random_S-s2026092703\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.150738156051375, \"truth_read\": false}",
+        "{\"row_id\": \"random_S-s2026092703\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 5.174674071953632, \"truth_read\": false}",
+        "{\"row_id\": \"random_S-s2026092703\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 5.156673987978138, \"truth_read\": false}",
+        "{\"row_id\": \"random_S-s2026092703\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 5.156278384034522, \"truth_read\": false}",
+        "{\"row_id\": \"random_S-s2026092703\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 5.220013492042199, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.47675228305161,
+          "practical_high": 4.9731880550971255,
+          "practical_mid": 5.150738156051375,
+          "practical_low_suburban": 5.174674071953632,
+          "practical_high_urban": 5.156673987978138,
+          "practical_mid_urban": 5.156278384034522,
+          "practical_low_urban": 5.220013492042199
+        },
+        "wall_seconds": 36.832382251974195,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3878567936,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "S-s2026092701",
+      "kind": "train",
+      "pid": 3408630,
+      "start_ticks": 89494885,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S-s2026092701"
+      ],
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S-s2026092701-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 869,
+      "tail": [
+        "{\"row_id\": \"S-s2026092701\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.122358763939701, \"truth_read\": false}",
+        "{\"row_id\": \"S-s2026092701\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 5.166388048906811, \"truth_read\": false}",
+        "{\"row_id\": \"S-s2026092701\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 5.238630841951817, \"truth_read\": false}",
+        "{\"row_id\": \"S-s2026092701\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 5.095148565946147, \"truth_read\": false}",
+        "{\"row_id\": \"S-s2026092701\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 4.8322982440004125, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.127943311934359,
+          "practical_high": 5.151824129978195,
+          "practical_mid": 5.122358763939701,
+          "practical_low_suburban": 5.166388048906811,
+          "practical_high_urban": 5.238630841951817,
+          "practical_mid_urban": 5.095148565946147,
+          "practical_low_urban": 4.8322982440004125
+        },
+        "wall_seconds": 36.343695456977,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3877552128,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "S-s2026092702",
+      "kind": "train",
+      "pid": 3408647,
+      "start_ticks": 89494972,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S-s2026092702"
+      ],
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S-s2026092702-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 869,
+      "tail": [
+        "{\"row_id\": \"S-s2026092702\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.1038240160560235, \"truth_read\": false}",
+        "{\"row_id\": \"S-s2026092702\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 5.424582799081691, \"truth_read\": false}",
+        "{\"row_id\": \"S-s2026092702\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 5.291140206973068, \"truth_read\": false}",
+        "{\"row_id\": \"S-s2026092702\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 4.978212360991165, \"truth_read\": false}",
+        "{\"row_id\": \"S-s2026092702\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 4.820177157991566, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.080430863890797,
+          "practical_high": 5.030701642972417,
+          "practical_mid": 5.1038240160560235,
+          "practical_low_suburban": 5.424582799081691,
+          "practical_high_urban": 5.291140206973068,
+          "practical_mid_urban": 4.978212360991165,
+          "practical_low_urban": 4.820177157991566
+        },
+        "wall_seconds": 36.3233356110286,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3880755200,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "S-s2026092703",
+      "kind": "train",
+      "pid": 3408673,
+      "start_ticks": 89495129,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S-s2026092703"
+      ],
+      "gpu": 1,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S-s2026092703-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 868,
+      "tail": [
+        "{\"row_id\": \"S-s2026092703\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.052019044058397, \"truth_read\": false}",
+        "{\"row_id\": \"S-s2026092703\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 4.997577216010541, \"truth_read\": false}",
+        "{\"row_id\": \"S-s2026092703\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 5.092647774028592, \"truth_read\": false}",
+        "{\"row_id\": \"S-s2026092703\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 5.139481653925031, \"truth_read\": false}",
+        "{\"row_id\": \"S-s2026092703\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 4.908028080011718, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.526743827038445,
+          "practical_high": 4.957903219969012,
+          "practical_mid": 5.052019044058397,
+          "practical_low_suburban": 4.997577216010541,
+          "practical_high_urban": 5.092647774028592,
+          "practical_mid_urban": 5.139481653925031,
+          "practical_low_urban": 4.908028080011718
+        },
+        "wall_seconds": 36.25423648010474,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3880853504,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "S_raw5-s2026092701",
+      "kind": "train",
+      "pid": 3408705,
+      "start_ticks": 89495317,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S_raw5-s2026092701"
+      ],
+      "gpu": 2,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_raw5-s2026092701-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 902,
+      "tail": [
+        "{\"row_id\": \"S_raw5-s2026092701\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.186521998955868, \"truth_read\": false}",
+        "{\"row_id\": \"S_raw5-s2026092701\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 5.142972872010432, \"truth_read\": false}",
+        "{\"row_id\": \"S_raw5-s2026092701\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 5.627732477034442, \"truth_read\": false}",
+        "{\"row_id\": \"S_raw5-s2026092701\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 5.08054708794225, \"truth_read\": false}",
+        "{\"row_id\": \"S_raw5-s2026092701\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 4.798623855924234, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.269765991019085,
+          "practical_high": 5.211642374983057,
+          "practical_mid": 5.186521998955868,
+          "practical_low_suburban": 5.142972872010432,
+          "practical_high_urban": 5.627732477034442,
+          "practical_mid_urban": 5.08054708794225,
+          "practical_low_urban": 4.798623855924234
+        },
+        "wall_seconds": 37.02945136197377,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3881009152,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "S_raw5-s2026092702",
+      "kind": "train",
+      "pid": 3408739,
+      "start_ticks": 89495528,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S_raw5-s2026092702"
+      ],
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_raw5-s2026092702-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 904,
+      "tail": [
+        "{\"row_id\": \"S_raw5-s2026092702\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 5.067607326083817, \"truth_read\": false}",
+        "{\"row_id\": \"S_raw5-s2026092702\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 5.0598852259572595, \"truth_read\": false}",
+        "{\"row_id\": \"S_raw5-s2026092702\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 5.056846635998227, \"truth_read\": false}",
+        "{\"row_id\": \"S_raw5-s2026092702\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 5.146379726938903, \"truth_read\": false}",
+        "{\"row_id\": \"S_raw5-s2026092702\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 4.968909114017151, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.139651630888693,
+          "practical_high": 5.136066979030147,
+          "practical_mid": 5.067607326083817,
+          "practical_low_suburban": 5.0598852259572595,
+          "practical_high_urban": 5.056846635998227,
+          "practical_mid_urban": 5.146379726938903,
+          "practical_low_urban": 4.968909114017151
+        },
+        "wall_seconds": 36.194105800939724,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3877539840,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "S_raw5-s2026092703",
+      "kind": "train",
+      "pid": 3408781,
+      "start_ticks": 89495770,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S_raw5-s2026092703"
+      ],
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_raw5-s2026092703-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 903,
+      "tail": [
+        "{\"row_id\": \"S_raw5-s2026092703\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 6.673253537970595, \"truth_read\": false}",
+        "{\"row_id\": \"S_raw5-s2026092703\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 6.753123346017674, \"truth_read\": false}",
+        "{\"row_id\": \"S_raw5-s2026092703\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 6.399391888058744, \"truth_read\": false}",
+        "{\"row_id\": \"S_raw5-s2026092703\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 6.0961769910063595, \"truth_read\": false}",
+        "{\"row_id\": \"S_raw5-s2026092703\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 5.572702251025476, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 6.70029973401688,
+          "practical_high": 6.676448843092658,
+          "practical_mid": 6.673253537970595,
+          "practical_low_suburban": 6.753123346017674,
+          "practical_high_urban": 6.399391888058744,
+          "practical_mid_urban": 6.0961769910063595,
+          "practical_low_urban": 5.572702251025476
+        },
+        "wall_seconds": 45.55507719190791,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3879440384,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "S_dir5-s2026092701",
+      "kind": "train",
+      "pid": 3408805,
+      "start_ticks": 89495919,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S_dir5-s2026092701"
+      ],
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_dir5-s2026092701-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 903,
+      "tail": [
+        "{\"row_id\": \"S_dir5-s2026092701\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 4.890187609009445, \"truth_read\": false}",
+        "{\"row_id\": \"S_dir5-s2026092701\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 4.965995199978352, \"truth_read\": false}",
+        "{\"row_id\": \"S_dir5-s2026092701\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 4.97441411705222, \"truth_read\": false}",
+        "{\"row_id\": \"S_dir5-s2026092701\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 5.0162816538941115, \"truth_read\": false}",
+        "{\"row_id\": \"S_dir5-s2026092701\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 5.079033324029297, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.955553069943562,
+          "practical_high": 4.927564201992936,
+          "practical_mid": 4.890187609009445,
+          "practical_low_suburban": 4.965995199978352,
+          "practical_high_urban": 4.97441411705222,
+          "practical_mid_urban": 5.0162816538941115,
+          "practical_low_urban": 5.079033324029297
+        },
+        "wall_seconds": 35.3391701040091,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3880497152,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "S_dir5-s2026092702",
+      "kind": "train",
+      "pid": 3408825,
+      "start_ticks": 89496041,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S_dir5-s2026092702"
+      ],
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_dir5-s2026092702-train.log",
+      "mode": "recover_diagnostics",
+      "process": null,
+      "log_bytes": 902,
+      "tail": [
+        "{\"row_id\": \"S_dir5-s2026092702\", \"view\": \"practical_mid\", \"count\": 168000, \"seconds\": 4.974270172067918, \"truth_read\": false}",
+        "{\"row_id\": \"S_dir5-s2026092702\", \"view\": \"practical_low_suburban\", \"count\": 168000, \"seconds\": 4.989376019919291, \"truth_read\": false}",
+        "{\"row_id\": \"S_dir5-s2026092702\", \"view\": \"practical_high_urban\", \"count\": 168000, \"seconds\": 5.185102741001174, \"truth_read\": false}",
+        "{\"row_id\": \"S_dir5-s2026092702\", \"view\": \"practical_mid_urban\", \"count\": 168000, \"seconds\": 5.155865011038259, \"truth_read\": false}",
+        "{\"row_id\": \"S_dir5-s2026092702\", \"view\": \"practical_low_urban\", \"count\": 168000, \"seconds\": 4.977949682041071, \"truth_read\": false}"
+      ],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.333281212951988,
+          "practical_high": 5.16312411299441,
+          "practical_mid": 4.974270172067918,
+          "practical_low_suburban": 4.989376019919291,
+          "practical_high_urban": 5.185102741001174,
+          "practical_mid_urban": 5.155865011038259,
+          "practical_low_urban": 4.977949682041071
+        },
+        "wall_seconds": 36.36221361393109,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 146800640,
+        "peak_process_rss_bytes": 3880144896,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      },
+      "completion": {
+        "status": "ANALYZED",
+        "views": 7,
+        "independent_recount": "VERIFIED"
+      },
+      "failure": null
+    },
+    {
+      "row_id": "S_dir5-s2026092703",
+      "kind": "train",
+      "pid": 3410761,
+      "start_ticks": 89503344,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S_dir5-s2026092703"
+      ],
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_dir5-s2026092703-train.log",
+      "mode": "recover_diagnostics",
+      "process": {
+        "pid": 3410761,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "S_dir5-s2026092703"
+        ]
+      },
+      "log_bytes": 0,
+      "tail": [],
+      "source_status": "SOURCE_TRAINED",
+      "stress_status": "SOURCE_STRESS_COMPLETE",
+      "probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "recovery_status": "VERIFIED",
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "LTR_S_F5-s2026092703",
+      "kind": "train",
+      "pid": 3410766,
+      "start_ticks": 89503370,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_F5-s2026092703"
+      ],
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_F5-s2026092703-train.log",
+      "mode": "scratch_train",
+      "process": {
+        "pid": 3410766,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "LTR_S_F5-s2026092703"
+        ]
+      },
+      "log_bytes": 9633,
+      "tail": [
+        "[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F5-s2026092703/source/best_clean_val_tx_safe_ssdg.pth safe_latest_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F5-s2026092703/source/latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75",
+        "[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit",
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=200 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F5-s2026092703/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F5-s2026092703/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F5-s2026092703/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_status": null,
+      "stress_status": null,
+      "probe_hook": null,
+      "recovery_status": null,
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "LTR_S_F10-s2026092701",
+      "kind": "train",
+      "pid": 3410771,
+      "start_ticks": 89503396,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_F10-s2026092701"
+      ],
+      "gpu": 1,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_F10-s2026092701-train.log",
+      "mode": "scratch_train",
+      "process": {
+        "pid": 3410771,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "LTR_S_F10-s2026092701"
+        ]
+      },
+      "log_bytes": 9640,
+      "tail": [
+        "[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092701/source/best_clean_val_tx_safe_ssdg.pth safe_latest_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092701/source/latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75",
+        "[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit",
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=200 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092701/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092701/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092701/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_status": null,
+      "stress_status": null,
+      "probe_hook": null,
+      "recovery_status": null,
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "LTR_S_F10-s2026092702",
+      "kind": "train",
+      "pid": 3410777,
+      "start_ticks": 89503427,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_F10-s2026092702"
+      ],
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_F10-s2026092702-train.log",
+      "mode": "scratch_train",
+      "process": {
+        "pid": 3410777,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "LTR_S_F10-s2026092702"
+        ]
+      },
+      "log_bytes": 9640,
+      "tail": [
+        "[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092702/source/best_clean_val_tx_safe_ssdg.pth safe_latest_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092702/source/latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75",
+        "[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit",
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=200 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092702/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092702/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092702/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_status": null,
+      "stress_status": null,
+      "probe_hook": null,
+      "recovery_status": null,
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "LTR_S_F10-s2026092703",
+      "kind": "train",
+      "pid": 3410785,
+      "start_ticks": 89503454,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_F10-s2026092703"
+      ],
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_F10-s2026092703-train.log",
+      "mode": "scratch_train",
+      "process": {
+        "pid": 3410785,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "LTR_S_F10-s2026092703"
+        ]
+      },
+      "log_bytes": 9640,
+      "tail": [
+        "[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092703/source/best_clean_val_tx_safe_ssdg.pth safe_latest_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092703/source/latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75",
+        "[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit",
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=200 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092703/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092703/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092703/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_status": null,
+      "stress_status": null,
+      "probe_hook": null,
+      "recovery_status": null,
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "LTR_S_AF3-s2026092701",
+      "kind": "train",
+      "pid": 3410791,
+      "start_ticks": 89503485,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF3-s2026092701"
+      ],
+      "gpu": 1,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF3-s2026092701-train.log",
+      "mode": "scratch_train",
+      "process": {
+        "pid": 3410791,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "LTR_S_AF3-s2026092701"
+        ]
+      },
+      "log_bytes": 9640,
+      "tail": [
+        "[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092701/source/best_clean_val_tx_safe_ssdg.pth safe_latest_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092701/source/latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75",
+        "[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit",
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=200 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092701/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092701/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092701/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_status": null,
+      "stress_status": null,
+      "probe_hook": null,
+      "recovery_status": null,
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "LTR_S_AF3-s2026092702",
+      "kind": "train",
+      "pid": 3410802,
+      "start_ticks": 89503542,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF3-s2026092702"
+      ],
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF3-s2026092702-train.log",
+      "mode": "scratch_train",
+      "process": {
+        "pid": 3410802,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "LTR_S_AF3-s2026092702"
+        ]
+      },
+      "log_bytes": 9640,
+      "tail": [
+        "[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092702/source/best_clean_val_tx_safe_ssdg.pth safe_latest_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092702/source/latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75",
+        "[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit",
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=200 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092702/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092702/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092702/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_status": null,
+      "stress_status": null,
+      "probe_hook": null,
+      "recovery_status": null,
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "LTR_S_AF3-s2026092703",
+      "kind": "train",
+      "pid": 3410819,
+      "start_ticks": 89503632,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF3-s2026092703"
+      ],
+      "gpu": 2,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF3-s2026092703-train.log",
+      "mode": "scratch_train",
+      "process": {
+        "pid": 3410819,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "LTR_S_AF3-s2026092703"
+        ]
+      },
+      "log_bytes": 9640,
+      "tail": [
+        "[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092703/source/best_clean_val_tx_safe_ssdg.pth safe_latest_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092703/source/latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75",
+        "[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit",
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=200 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092703/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092703/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092703/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_status": null,
+      "stress_status": null,
+      "probe_hook": null,
+      "recovery_status": null,
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "LTR_S_AF5-s2026092701",
+      "kind": "train",
+      "pid": 3410849,
+      "start_ticks": 89503778,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF5-s2026092701"
+      ],
+      "gpu": 2,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF5-s2026092701-train.log",
+      "mode": "scratch_train",
+      "process": {
+        "pid": 3410849,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "LTR_S_AF5-s2026092701"
+        ]
+      },
+      "log_bytes": 9640,
+      "tail": [
+        "[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092701/source/best_clean_val_tx_safe_ssdg.pth safe_latest_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092701/source/latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75",
+        "[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit",
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=200 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092701/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092701/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092701/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_status": null,
+      "stress_status": null,
+      "probe_hook": null,
+      "recovery_status": null,
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "LTR_S_AF5-s2026092702",
+      "kind": "train",
+      "pid": 3410892,
+      "start_ticks": 89503956,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF5-s2026092702"
+      ],
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF5-s2026092702-train.log",
+      "mode": "scratch_train",
+      "process": {
+        "pid": 3410892,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "LTR_S_AF5-s2026092702"
+        ]
+      },
+      "log_bytes": 9640,
+      "tail": [
+        "[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092702/source/best_clean_val_tx_safe_ssdg.pth safe_latest_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092702/source/latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75",
+        "[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit",
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=200 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092702/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092702/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092702/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_status": null,
+      "stress_status": null,
+      "probe_hook": null,
+      "recovery_status": null,
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "LTR_S_AF5-s2026092703",
+      "kind": "train",
+      "pid": 3411417,
+      "start_ticks": 89504188,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF5-s2026092703"
+      ],
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF5-s2026092703-train.log",
+      "mode": "scratch_train",
+      "process": {
+        "pid": 3411417,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "LTR_S_AF5-s2026092703"
+        ]
+      },
+      "log_bytes": 9640,
+      "tail": [
+        "[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092703/source/best_clean_val_tx_safe_ssdg.pth safe_latest_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092703/source/latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75",
+        "[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit",
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=200 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092703/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092703/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092703/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_status": null,
+      "stress_status": null,
+      "probe_hook": null,
+      "recovery_status": null,
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "LTR_S_AF10-s2026092701",
+      "kind": "train",
+      "pid": 3411740,
+      "start_ticks": 89504423,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF10-s2026092701"
+      ],
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF10-s2026092701-train.log",
+      "mode": "scratch_train",
+      "process": {
+        "pid": 3411740,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "LTR_S_AF10-s2026092701"
+        ]
+      },
+      "log_bytes": 9647,
+      "tail": [
+        "[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092701/source/best_clean_val_tx_safe_ssdg.pth safe_latest_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092701/source/latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75",
+        "[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit",
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=200 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092701/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092701/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092701/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_status": null,
+      "stress_status": null,
+      "probe_hook": null,
+      "recovery_status": null,
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "LTR_S_AF10-s2026092702",
+      "kind": "train",
+      "pid": 3411903,
+      "start_ticks": 89504601,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF10-s2026092702"
+      ],
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF10-s2026092702-train.log",
+      "mode": "scratch_train",
+      "process": {
+        "pid": 3411903,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "LTR_S_AF10-s2026092702"
+        ]
+      },
+      "log_bytes": 9647,
+      "tail": [
+        "[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092702/source/best_clean_val_tx_safe_ssdg.pth safe_latest_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092702/source/latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75",
+        "[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit",
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=200 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092702/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092702/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092702/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_status": null,
+      "stress_status": null,
+      "probe_hook": null,
+      "recovery_status": null,
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "row_id": "LTR_S_AF10-s2026092703",
+      "kind": "train",
+      "pid": 3412416,
+      "start_ticks": 89505774,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF10-s2026092703"
+      ],
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF10-s2026092703-train.log",
+      "mode": "scratch_train",
+      "process": {
+        "pid": 3412416,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_feature_disentangle.recovery",
+          "--mode",
+          "worker",
+          "--kind",
+          "train",
+          "--row",
+          "LTR_S_AF10-s2026092703"
+        ]
+      },
+      "log_bytes": 9647,
+      "tail": [
+        "[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092703/source/best_clean_val_tx_safe_ssdg.pth safe_latest_path=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092703/source/latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75",
+        "[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit",
+        "[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0",
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=200 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092703/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092703/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092703/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_status": null,
+      "stress_status": null,
+      "probe_hook": null,
+      "recovery_status": null,
+      "prediction": null,
+      "completion": null,
+      "failure": null
+    }
+  ],
+  "preflight": {
+    "status": "PASS",
+    "models": 48,
+    "reused": 26,
+    "scratch": 22,
+    "tested": 36,
+    "live_workers_preserved": true,
+    "unknown_failure_rejected": true,
+    "source_selection_gate": true,
+    "checkpoint": {
+      "status": "VERIFIED",
+      "row_id": "native-s2026092701",
+      "no_query": true,
+      "target_access": false,
+      "actual_checkpoint_forward": true,
+      "mechanism_status": "VERIFIED",
+      "logged_steps": 44400,
+      "logged_epochs": 200,
+      "training_epoch_seconds": 9826.546422481537,
+      "training_time_scope": "sum of 200 measured epoch_time_s; excludes startup and post-training diagnostics"
+    },
+    "probe": {
+      "status": "PASS",
+      "device": "cpu",
+      "actual_model": "DualCVSincNetDisentangle",
+      "old_global_probe_match_count": 2,
+      "identity_probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+      "probe_calls_per_forward": 1,
+      "max_logit_change": 2.4048471450805664,
+      "restored_forward_exact": true,
+      "frequency_PA_reference_outputs_unchanged": true,
+      "all_state_modes_and_hooks_unchanged": true,
+      "exception_cleanup": true,
+      "missing_identity_rejected": true,
+      "source_views": 8,
+      "full_V_fixture_count": null,
+      "source_validation_path": "all views then expected incomplete-V rejection",
+      "target_access": false
+    }
+  },
+  "preflight_tail": [
+    "{\"status\": \"PASS\", \"models\": 48, \"reused\": 26, \"scratch\": 22, \"tested\": 36, \"live_workers_preserved\": true, \"unknown_failure_rejected\": true, \"source_selection_gate\": true, \"checkpoint\": {\"status\": \"VERIFIED\", \"row_id\": \"native-s2026092701\", \"no_query\": true, \"target_access\": false, \"actual_checkpoint_forward\": true, \"mechanism_status\": \"VERIFIED\", \"logged_steps\": 44400, \"logged_epochs\": 200, \"training_epoch_seconds\": 9826.546422481537, \"training_time_scope\": \"sum of 200 measured epoch_time_s; excludes startup and post-training diagnostics\"}, \"probe\": {\"status\": \"PASS\", \"device\": \"cpu\", \"actual_model\": \"DualCVSincNetDisentangle\", \"old_global_probe_match_count\": 2, \"identity_probe_hook\": \"id_backbone.encoder.core.id_backbone.t_proj\", \"probe_calls_per_forward\": 1, \"max_logit_change\": 2.4048471450805664, \"restored_forward_exact\": true, \"frequency_PA_reference_outputs_unchanged\": true, \"all_state_modes_and_hooks_unchanged\": true, \"exception_cleanup\": true, \"missing_identity_rejected\": true, \"source_views\": 8, \"full_V_fixture_count\": null, \"source_validation_path\": \"all views then expected incomplete-V rejection\", \"target_access\": false}}"
+  ],
+  "dispatcher_tail": [],
+  "old_workers": [
+    {
+      "pid": 3251137,
+      "process": {
+        "pid": 3251137,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S-s2026092701"
+        ]
+      }
+    },
+    {
+      "pid": 3251211,
+      "process": {
+        "pid": 3251211,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S-s2026092702"
+        ]
+      }
+    },
+    {
+      "pid": 3294901,
+      "process": {
+        "pid": 3294901,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S-s2026092703"
+        ]
+      }
+    },
+    {
+      "pid": 3298916,
+      "process": {
+        "pid": 3298916,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_A-s2026092701"
+        ]
+      }
+    },
+    {
+      "pid": 3302547,
+      "process": {
+        "pid": 3302547,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_A-s2026092702"
+        ]
+      }
+    },
+    {
+      "pid": 3307994,
+      "process": {
+        "pid": 3307994,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_A-s2026092703"
+        ]
+      }
+    },
+    {
+      "pid": 3314299,
+      "process": {
+        "pid": 3314299,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F3-s2026092701"
+        ]
+      }
+    },
+    {
+      "pid": 3316284,
+      "process": {
+        "pid": 3316284,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F3-s2026092702"
+        ]
+      }
+    },
+    {
+      "pid": 3319429,
+      "process": {
+        "pid": 3319429,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F3-s2026092703"
+        ]
+      }
+    },
+    {
+      "pid": 3324897,
+      "process": {
+        "pid": 3324897,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F5-s2026092701"
+        ]
+      }
+    },
+    {
+      "pid": 3326943,
+      "process": {
+        "pid": 3326943,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F5-s2026092702"
+        ]
+      }
+    }
+  ],
+  "handoff": {
+    "old_controller": {
+      "status": "SUBMITTED",
+      "pid": 3250081,
+      "start_ticks": 87921012,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+        "--release",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/dispatcher.stdout.log",
+      "control_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01",
+      "control_commit": "7b71ecc7b94518bd09d82245a5093abbf62172ec",
+      "commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+      "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+      "per_gpu_limit": 4,
+      "launch_owner": "codex/root/feature-disentangle-20261010",
+      "at": 1791631505.6976523
+    },
+    "old_controller_exited": true,
+    "workers_before": [
+      {
+        "pid": 3251137,
+        "start_ticks": 87922735,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S-s2026092701"
+        ],
+        "gpu": "5"
+      },
+      {
+        "pid": 3251211,
+        "start_ticks": 87922794,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S-s2026092702"
+        ],
+        "gpu": "7"
+      },
+      {
+        "pid": 3294901,
+        "start_ticks": 88358786,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S-s2026092703"
+        ],
+        "gpu": "2"
+      },
+      {
+        "pid": 3298916,
+        "start_ticks": 88395998,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_A-s2026092701"
+        ],
+        "gpu": "0"
+      },
+      {
+        "pid": 3302547,
+        "start_ticks": 88433199,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_A-s2026092702"
+        ],
+        "gpu": "1"
+      },
+      {
+        "pid": 3307994,
+        "start_ticks": 88491028,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_A-s2026092703"
+        ],
+        "gpu": "3"
+      },
+      {
+        "pid": 3314299,
+        "start_ticks": 88546855,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F3-s2026092701"
+        ],
+        "gpu": "6"
+      },
+      {
+        "pid": 3316284,
+        "start_ticks": 88567547,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F3-s2026092702"
+        ],
+        "gpu": "4"
+      },
+      {
+        "pid": 3319429,
+        "start_ticks": 88597542,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F3-s2026092703"
+        ],
+        "gpu": "5"
+      },
+      {
+        "pid": 3324897,
+        "start_ticks": 88649243,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F5-s2026092701"
+        ],
+        "gpu": "7"
+      },
+      {
+        "pid": 3326943,
+        "start_ticks": 88670989,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F5-s2026092702"
+        ],
+        "gpu": "0"
+      }
+    ],
+    "workers_after": [
+      {
+        "pid": 3251137,
+        "start_ticks": 87922735,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S-s2026092701"
+        ],
+        "gpu": "5"
+      },
+      {
+        "pid": 3251211,
+        "start_ticks": 87922794,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S-s2026092702"
+        ],
+        "gpu": "7"
+      },
+      {
+        "pid": 3294901,
+        "start_ticks": 88358786,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S-s2026092703"
+        ],
+        "gpu": "2"
+      },
+      {
+        "pid": 3298916,
+        "start_ticks": 88395998,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_A-s2026092701"
+        ],
+        "gpu": "0"
+      },
+      {
+        "pid": 3302547,
+        "start_ticks": 88433199,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_A-s2026092702"
+        ],
+        "gpu": "1"
+      },
+      {
+        "pid": 3307994,
+        "start_ticks": 88491028,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_A-s2026092703"
+        ],
+        "gpu": "3"
+      },
+      {
+        "pid": 3314299,
+        "start_ticks": 88546855,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F3-s2026092701"
+        ],
+        "gpu": "6"
+      },
+      {
+        "pid": 3316284,
+        "start_ticks": 88567547,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F3-s2026092702"
+        ],
+        "gpu": "4"
+      },
+      {
+        "pid": 3319429,
+        "start_ticks": 88597542,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F3-s2026092703"
+        ],
+        "gpu": "5"
+      },
+      {
+        "pid": 3324897,
+        "start_ticks": 88649243,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F5-s2026092701"
+        ],
+        "gpu": "7"
+      },
+      {
+        "pid": 3326943,
+        "start_ticks": 88670989,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_capacity4_20261010_r01/experiments/cvs_feature_disentangle/capacity4.py",
+          "--release",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01",
+          "--worker",
+          "train",
+          "--row",
+          "LTR_S_F5-s2026092702"
+        ],
+        "gpu": "0"
+      }
+    ],
+    "workers_signaled": false,
+    "at": 1791647240.7294767
+  },
+  "gpu": "3298916, GPU-56adac86-77cd-36c9-8770-dbf002650461, 3396 MiB\n3326943, GPU-56adac86-77cd-36c9-8770-dbf002650461, 3396 MiB\n3411417, GPU-56adac86-77cd-36c9-8770-dbf002650461, 1050 MiB\n3412416, GPU-56adac86-77cd-36c9-8770-dbf002650461, 1044 MiB\n3302547, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 3398 MiB\n3358028, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 3370 MiB\n3410771, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 2238 MiB\n3410791, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 2238 MiB\n3294901, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 3396 MiB\n3354935, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 3380 MiB\n3410819, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 2190 MiB\n3410849, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 1050 MiB\n3307994, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 3396 MiB\n3355526, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 3370 MiB\n3410766, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 2238 MiB\n3410785, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 2238 MiB\n3215816, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 3360 MiB\n3316284, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 3396 MiB\n3410777, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 2238 MiB\n3410761, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 464 MiB\n3215833, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 3386 MiB\n3251137, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 3396 MiB\n3319429, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 3396 MiB\n3411740, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 1050 MiB\n3215859, GPU-5463e082-259e-537b-603a-01575d45801c, 3386 MiB\n3314299, GPU-5463e082-259e-537b-603a-01575d45801c, 3396 MiB\n3410802, GPU-5463e082-259e-537b-603a-01575d45801c, 2238 MiB\n3410892, GPU-5463e082-259e-537b-603a-01575d45801c, 1050 MiB\n3215891, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 3386 MiB\n3251211, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 3396 MiB\n3324897, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 3396 MiB\n3411903, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 1048 MiB\n"
+}

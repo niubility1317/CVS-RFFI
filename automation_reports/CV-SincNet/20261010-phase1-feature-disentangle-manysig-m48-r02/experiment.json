@@ -137,10 +137,10 @@
     "20261010-phase1-feature-disentangle-manysig-m48-r01"
   ],
   "replaces_run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
-  "status": "PLANNED",
+  "status": "RUNNING",
   "authorization": "用户要求修复特征增强多解耦实验问题；沿用每卡4进程。",
   "code": {
-    "commit": "release_commit.txt at launch",
+    "commit": "1636ad48355ac217932dc9dc4e281d2bc5a8b438",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r02"
@@ -194,7 +194,11 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs",
     "local_artifact_root": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\automation_reports\\CV-SincNet\\20261010-phase1-feature-disentangle-manysig-m48-r02",
     "launch_command": "python -m experiments.cvs_feature_disentangle.publish_recovery --output local_artifacts/cvs_feature_disentangle_20261010_r02",
-    "stop_rule": "Technical failure: stop new dispatch, preserve active healthy tasks/artifacts. No low-score halt/retry or target feedback."
+    "stop_rule": "Technical failure: stop new dispatch, preserve active healthy tasks/artifacts. No low-score halt/retry or target feedback.",
+    "controller_pid": 3408569,
+    "remote_verdict": "VERIFIED",
+    "readback_ref": "evidence/readback.json",
+    "monitor_command": "python -m experiments.cvs_feature_disentangle.recovery_monitor"
   },
   "expected_artifacts": [
     "<row>/source/resolved_config.json",
@@ -654,7 +658,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/native-s2026092701-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/native-s2026092701-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row native-s2026092701",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -664,7 +668,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408587,
+      "gpu": 4,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "native-s2026092701"
+      ]
     },
     {
       "row_id": "native-s2026092702",
@@ -1069,7 +1087,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/native-s2026092702-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/native-s2026092702-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row native-s2026092702",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -1079,7 +1097,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408594,
+      "gpu": 3,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "native-s2026092702"
+      ]
     },
     {
       "row_id": "native-s2026092703",
@@ -1484,7 +1516,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/native-s2026092703-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/native-s2026092703-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row native-s2026092703",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -1494,7 +1526,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408599,
+      "gpu": 1,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "native-s2026092703"
+      ]
     },
     {
       "row_id": "random_S-s2026092701",
@@ -1899,7 +1945,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/random_S-s2026092701/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/random_S-s2026092701/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/random_S-s2026092701-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/random_S-s2026092701-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row random_S-s2026092701",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -1909,7 +1955,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408605,
+      "gpu": 2,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "random_S-s2026092701"
+      ]
     },
     {
       "row_id": "random_S-s2026092702",
@@ -2314,7 +2374,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/random_S-s2026092702/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/random_S-s2026092702/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/random_S-s2026092702-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/random_S-s2026092702-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row random_S-s2026092702",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -2324,7 +2384,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408611,
+      "gpu": 6,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "random_S-s2026092702"
+      ]
     },
     {
       "row_id": "random_S-s2026092703",
@@ -2729,7 +2803,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/random_S-s2026092703/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/random_S-s2026092703/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/random_S-s2026092703-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/random_S-s2026092703-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row random_S-s2026092703",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -2739,7 +2813,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408619,
+      "gpu": 0,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "random_S-s2026092703"
+      ]
     },
     {
       "row_id": "S-s2026092701",
@@ -3144,7 +3232,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/S-s2026092701/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/S-s2026092701/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S-s2026092701-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S-s2026092701-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row S-s2026092701",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -3154,7 +3242,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408630,
+      "gpu": 4,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S-s2026092701"
+      ]
     },
     {
       "row_id": "S-s2026092702",
@@ -3559,7 +3661,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/S-s2026092702/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/S-s2026092702/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S-s2026092702-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S-s2026092702-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row S-s2026092702",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -3569,7 +3671,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408647,
+      "gpu": 3,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S-s2026092702"
+      ]
     },
     {
       "row_id": "S-s2026092703",
@@ -3974,7 +4090,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/S-s2026092703/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/S-s2026092703/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S-s2026092703-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S-s2026092703-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row S-s2026092703",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -3984,7 +4100,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408673,
+      "gpu": 1,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S-s2026092703"
+      ]
     },
     {
       "row_id": "S_raw5-s2026092701",
@@ -4389,7 +4519,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/S_raw5-s2026092701/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/S_raw5-s2026092701/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_raw5-s2026092701-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_raw5-s2026092701-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row S_raw5-s2026092701",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -4399,7 +4529,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408705,
+      "gpu": 2,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S_raw5-s2026092701"
+      ]
     },
     {
       "row_id": "S_raw5-s2026092702",
@@ -4804,7 +4948,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/S_raw5-s2026092702/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/S_raw5-s2026092702/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_raw5-s2026092702-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_raw5-s2026092702-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row S_raw5-s2026092702",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -4814,7 +4958,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408739,
+      "gpu": 6,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S_raw5-s2026092702"
+      ]
     },
     {
       "row_id": "S_raw5-s2026092703",
@@ -5219,7 +5377,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/S_raw5-s2026092703/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/S_raw5-s2026092703/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_raw5-s2026092703-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_raw5-s2026092703-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row S_raw5-s2026092703",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -5229,7 +5387,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408781,
+      "gpu": 0,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S_raw5-s2026092703"
+      ]
     },
     {
       "row_id": "S_dir5-s2026092701",
@@ -5634,7 +5806,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/S_dir5-s2026092701/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/S_dir5-s2026092701/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_dir5-s2026092701-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_dir5-s2026092701-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row S_dir5-s2026092701",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -5644,7 +5816,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408805,
+      "gpu": 5,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S_dir5-s2026092701"
+      ]
     },
     {
       "row_id": "S_dir5-s2026092702",
@@ -6049,7 +6235,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/S_dir5-s2026092702/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/S_dir5-s2026092702/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_dir5-s2026092702-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_dir5-s2026092702-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row S_dir5-s2026092702",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -6059,7 +6245,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "ANALYZED",
+      "pid": 3408825,
+      "gpu": 7,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S_dir5-s2026092702"
+      ]
     },
     {
       "row_id": "S_dir5-s2026092703",
@@ -6464,7 +6664,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/S_dir5-s2026092703/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/S_dir5-s2026092703/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_dir5-s2026092703-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/S_dir5-s2026092703-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row S_dir5-s2026092703",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -6474,7 +6674,21 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "AWAIT_ORIGINAL_OR_RECOVER"
+      "status": "RUNNING",
+      "pid": 3410761,
+      "gpu": 4,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "S_dir5-s2026092703"
+      ]
     },
     {
       "row_id": "LTR_S-s2026092701",
@@ -11345,7 +11559,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F5-s2026092703/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F5-s2026092703/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_F5-s2026092703-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_F5-s2026092703-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row LTR_S_F5-s2026092703",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -11355,7 +11569,21 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "QUEUED_SCRATCH"
+      "status": "RUNNING",
+      "pid": 3410766,
+      "gpu": 3,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_F5-s2026092703"
+      ]
     },
     {
       "row_id": "LTR_S_F10-s2026092701",
@@ -11573,7 +11801,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092701/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092701/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_F10-s2026092701-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_F10-s2026092701-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row LTR_S_F10-s2026092701",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -11583,7 +11811,21 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "QUEUED_SCRATCH"
+      "status": "RUNNING",
+      "pid": 3410771,
+      "gpu": 1,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_F10-s2026092701"
+      ]
     },
     {
       "row_id": "LTR_S_F10-s2026092702",
@@ -11801,7 +12043,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092702/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092702/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_F10-s2026092702-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_F10-s2026092702-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row LTR_S_F10-s2026092702",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -11811,7 +12053,21 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "QUEUED_SCRATCH"
+      "status": "RUNNING",
+      "pid": 3410777,
+      "gpu": 4,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_F10-s2026092702"
+      ]
     },
     {
       "row_id": "LTR_S_F10-s2026092703",
@@ -12029,7 +12285,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092703/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_F10-s2026092703/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_F10-s2026092703-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_F10-s2026092703-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row LTR_S_F10-s2026092703",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -12039,7 +12295,21 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "QUEUED_SCRATCH"
+      "status": "RUNNING",
+      "pid": 3410785,
+      "gpu": 3,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_F10-s2026092703"
+      ]
     },
     {
       "row_id": "LTR_S_AF3-s2026092701",
@@ -12257,7 +12527,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092701/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092701/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF3-s2026092701-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF3-s2026092701-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row LTR_S_AF3-s2026092701",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -12267,7 +12537,21 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "QUEUED_SCRATCH"
+      "status": "RUNNING",
+      "pid": 3410791,
+      "gpu": 1,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF3-s2026092701"
+      ]
     },
     {
       "row_id": "LTR_S_AF3-s2026092702",
@@ -12485,7 +12769,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092702/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092702/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF3-s2026092702-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF3-s2026092702-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row LTR_S_AF3-s2026092702",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -12495,7 +12779,21 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "QUEUED_SCRATCH"
+      "status": "RUNNING",
+      "pid": 3410802,
+      "gpu": 6,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF3-s2026092702"
+      ]
     },
     {
       "row_id": "LTR_S_AF3-s2026092703",
@@ -12713,7 +13011,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092703/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF3-s2026092703/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF3-s2026092703-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF3-s2026092703-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row LTR_S_AF3-s2026092703",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -12723,7 +13021,21 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "QUEUED_SCRATCH"
+      "status": "RUNNING",
+      "pid": 3410819,
+      "gpu": 2,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF3-s2026092703"
+      ]
     },
     {
       "row_id": "LTR_S_AF5-s2026092701",
@@ -12941,7 +13253,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092701/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092701/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF5-s2026092701-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF5-s2026092701-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row LTR_S_AF5-s2026092701",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -12951,7 +13263,21 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "QUEUED_SCRATCH"
+      "status": "RUNNING",
+      "pid": 3410849,
+      "gpu": 2,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF5-s2026092701"
+      ]
     },
     {
       "row_id": "LTR_S_AF5-s2026092702",
@@ -13169,7 +13495,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092702/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092702/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF5-s2026092702-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF5-s2026092702-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row LTR_S_AF5-s2026092702",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -13179,7 +13505,21 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "QUEUED_SCRATCH"
+      "status": "RUNNING",
+      "pid": 3410892,
+      "gpu": 6,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF5-s2026092702"
+      ]
     },
     {
       "row_id": "LTR_S_AF5-s2026092703",
@@ -13397,7 +13737,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092703/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF5-s2026092703/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF5-s2026092703-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF5-s2026092703-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row LTR_S_AF5-s2026092703",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -13407,7 +13747,21 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "QUEUED_SCRATCH"
+      "status": "RUNNING",
+      "pid": 3411417,
+      "gpu": 0,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF5-s2026092703"
+      ]
     },
     {
       "row_id": "LTR_S_AF10-s2026092701",
@@ -13625,7 +13979,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092701/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092701/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF10-s2026092701-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF10-s2026092701-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row LTR_S_AF10-s2026092701",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -13635,7 +13989,21 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "QUEUED_SCRATCH"
+      "status": "RUNNING",
+      "pid": 3411740,
+      "gpu": 5,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF10-s2026092701"
+      ]
     },
     {
       "row_id": "LTR_S_AF10-s2026092702",
@@ -13853,7 +14221,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092702/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092702/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF10-s2026092702-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF10-s2026092702-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row LTR_S_AF10-s2026092702",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -13863,7 +14231,21 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "QUEUED_SCRATCH"
+      "status": "RUNNING",
+      "pid": 3411903,
+      "gpu": 7,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF10-s2026092702"
+      ]
     },
     {
       "row_id": "LTR_S_AF10-s2026092703",
@@ -14081,7 +14463,7 @@
       "budget_ref": "E200×222=44400 identity updates; B48 every8steps; D≤32L every4 afterE20, R cached audit≤32 separately counted",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092703/source",
       "prediction_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/LTR_S_AF10-s2026092703/prediction",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF10-s2026092703-train.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/logs/LTR_S_AF10-s2026092703-train.log",
       "command": "python -m experiments.cvs_feature_disentangle.recovery --mode worker --kind train --row LTR_S_AF10-s2026092703",
       "expected_artifacts": [
         "source/final_ssdg.pth",
@@ -14091,7 +14473,21 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "QUEUED_SCRATCH"
+      "status": "RUNNING",
+      "pid": 3412416,
+      "gpu": 0,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_feature_disentangle.recovery",
+        "--mode",
+        "worker",
+        "--kind",
+        "train",
+        "--row",
+        "LTR_S_AF10-s2026092703"
+      ]
     },
     {
       "row_id": "joint_noR-s2026092701",

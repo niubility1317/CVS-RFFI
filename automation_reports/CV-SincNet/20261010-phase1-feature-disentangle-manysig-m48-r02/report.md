@@ -13,3 +13,11 @@
 状态：PLANNED。原失败产物全部保留。实际恢复状态以发布读回和 source_stress/completion 产物确认。
 
 本地验证 PASS：实际 Dual 模型旧诊断定位到两处投影，新诊断唯一定位身份分支；CPU/CUDA 回归确认其他分支输出、参数和状态保持，完整 27000 合成源 V 八视图通过。来源恢复 9 项回归、恢复路由及 source-only 测试权限负测通过。
+
+## 修复发布核实
+
+**VERIFIED / RUNNING**。代码 `1636ad48355ac217932dc9dc4e281d2bc5a8b438`，新控制器 PID `3408569`。独立 P0/P1 审查无阻断项，远端真实最终权重与完整预算的无 query 冒烟 PASS。旧调度器已退出，11 个健康训练 PID 原样保留。
+
+截至本次读回，14 行已复用原 E200 权重完成修复后的全源 V 八视图诊断，随后自动完成 clean＋六 practical 预测与独立 truth-last 评分，均为 ANALYZED；其余按原预登记继续排队/运行。无重复训练已完成模型、无改变科学矩阵或源选择。每卡总进程数读回均不超过 4。
+
+证据：[远端读回](evidence/readback.json)、[发布回执](evidence/submit.json)、[故障原始证据](evidence/failure_readback.json)。全矩阵训练和测试尚未结束，不能把当前完成行数当作全实验完成。
