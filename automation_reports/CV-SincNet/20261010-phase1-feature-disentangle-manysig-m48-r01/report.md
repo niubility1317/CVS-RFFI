@@ -38,3 +38,19 @@ L/T预测用于筛选并在真实IQ训练；合法困难IQ不因代理预测失�
 报告中旧U/EMA/LEO配方按用户明确要求覆盖为pureCE和clean-only Fishr；DSU、困难重采样和第四网络按首轮条件延后。完整要求见[设计追溯](traceability.md)和[原报告](design_report.md)。
 
 本地CPU/CUDA聚焦与原生训练集成验证通过，独立P0/P1审查通过。E20全部成熟关系批次中位数定标；保存每桶统计、计数、年龄及各分支加权梯度。日志重复annotate按epoch幂等，避免覆盖稀疏观测分母。详见evidence。
+
+## 发布核验
+
+**VERIFIED / RUNNING**。新训练已实际启动，其余行由同一控制器按资源容量排队；保持既有健康任务。
+
+执行代码提交：`d4723b1aa227fce6368fd25680bb74b1190557d7`。控制器PID：`3235663`。远端预检PASS，独立读回确认进程、目录、命令、纯CE/noU/noEMA/noSat实际参数与日志增长。
+
+| 已启动row | GPU | PID | 日志字节 | 两次读回增长 |
+|---|---:|---:|---:|---:|
+| native-s2026092701 | 2 | 3235684 | 14938 | 5369 |
+
+发布证据：[归档参数](evidence/package.json)、[回执](evidence/submit.json)、[首次读回](evidence/readback_initial.json)、[再次读回](evidence/readback.json)。
+
+设计追溯25项verified、3项按报告首轮条件延后（困难采样、DSU替代、第四网络）、0项rejected/blocked。严格落实设计，旧半监督/LEO配方按用户明确要求替换为pureCE和clean-only Fishr。
+
+正式训练和测试尚未完成；最高剩余风险是源V及目标识别收益是否成立，尤其是弱Style是否削弱时间分支身份信息、Fishr是否与多解耦重复约束。完整源选择、分支探针和冻结后的独立测试将给出证据。

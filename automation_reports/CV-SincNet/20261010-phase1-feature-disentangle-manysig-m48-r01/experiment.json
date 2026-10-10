@@ -135,10 +135,10 @@
   "comparison_group_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
   "parent_run_ids": [],
   "replaces_run_id": null,
-  "status": "PLANNED",
+  "status": "RUNNING",
   "authorization": "用户要求严格实现新报告并发布三seed特征增强版多解耦，继续纯CE无半监督无星地训练增强。",
   "code": {
-    "commit": "release_commit.txt at launch",
+    "commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01"
@@ -158,7 +158,12 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r01/logs",
     "local_artifact_root": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\automation_reports\\CV-SincNet\\20261010-phase1-feature-disentangle-manysig-m48-r01",
     "launch_command": "python -m experiments.cvs_feature_disentangle.publish --output local_artifacts/cvs_feature_disentangle_20261010_r01",
-    "stop_rule": "Technical failure: stop new dispatch, preserve active healthy tasks/artifacts. No low-score halt/retry or target feedback."
+    "stop_rule": "Technical failure: stop new dispatch, preserve active healthy tasks/artifacts. No low-score halt/retry or target feedback.",
+    "controller_pid": 3235663,
+    "verified_at": "2026-10-10T11:03:54.446842+00:00",
+    "current_phase": "train",
+    "readback_ref": "evidence/readback.json",
+    "remote_verdict": "VERIFIED"
   },
   "expected_artifacts": [
     "<row>/source/resolved_config.json",
@@ -219,7 +224,7 @@
       "row_id": "native-s2026092701",
       "method": "feature_disentangle_native",
       "purpose": "fixed_comparison",
-      "gpu": null,
+      "gpu": 2,
       "config": {
         "schema": "feature_disentangle_v1",
         "run_id": "20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -438,7 +443,17 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "pid": 3235684,
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_disentangle_20261010_r01/experiments/cvs_feature_disentangle/train_worker.py",
+        "--kind",
+        "train",
+        "--row",
+        "native-s2026092701"
+      ]
     },
     {
       "row_id": "native-s2026092702",
@@ -663,7 +678,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "native-s2026092703",
@@ -888,7 +903,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "random_S-s2026092701",
@@ -1113,7 +1128,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "random_S-s2026092702",
@@ -1338,7 +1353,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "random_S-s2026092703",
@@ -1563,7 +1578,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "S-s2026092701",
@@ -1788,7 +1803,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "S-s2026092702",
@@ -2013,7 +2028,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "S-s2026092703",
@@ -2238,7 +2253,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "S_raw5-s2026092701",
@@ -2463,7 +2478,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "S_raw5-s2026092702",
@@ -2688,7 +2703,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "S_raw5-s2026092703",
@@ -2913,7 +2928,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "S_dir5-s2026092701",
@@ -3138,7 +3153,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "S_dir5-s2026092702",
@@ -3363,7 +3378,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "S_dir5-s2026092703",
@@ -3588,7 +3603,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S-s2026092701",
@@ -3817,7 +3832,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S-s2026092702",
@@ -4046,7 +4061,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S-s2026092703",
@@ -4275,7 +4290,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_A-s2026092701",
@@ -4504,7 +4519,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_A-s2026092702",
@@ -4733,7 +4748,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_A-s2026092703",
@@ -4962,7 +4977,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_F3-s2026092701",
@@ -5191,7 +5206,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_F3-s2026092702",
@@ -5420,7 +5435,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_F3-s2026092703",
@@ -5649,7 +5664,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_F5-s2026092701",
@@ -5878,7 +5893,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_F5-s2026092702",
@@ -6107,7 +6122,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_F5-s2026092703",
@@ -6336,7 +6351,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_F10-s2026092701",
@@ -6565,7 +6580,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_F10-s2026092702",
@@ -6794,7 +6809,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_F10-s2026092703",
@@ -7023,7 +7038,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_AF3-s2026092701",
@@ -7252,7 +7267,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_AF3-s2026092702",
@@ -7481,7 +7496,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_AF3-s2026092703",
@@ -7710,7 +7725,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_AF5-s2026092701",
@@ -7939,7 +7954,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_AF5-s2026092702",
@@ -8168,7 +8183,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_AF5-s2026092703",
@@ -8397,7 +8412,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_AF10-s2026092701",
@@ -8626,7 +8641,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_AF10-s2026092702",
@@ -8855,7 +8870,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_S_AF10-s2026092703",
@@ -9084,7 +9099,7 @@
         "source_frozen.json"
       ],
       "target_access": "Source selection required",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "joint_noR-s2026092701",
@@ -9313,7 +9328,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "joint_noR-s2026092702",
@@ -9542,7 +9557,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "joint_noR-s2026092703",
@@ -9771,7 +9786,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "joint_shared-s2026092701",
@@ -10000,7 +10015,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "joint_shared-s2026092702",
@@ -10229,7 +10244,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "joint_shared-s2026092703",
@@ -10458,7 +10473,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "joint_direct-s2026092701",
@@ -10689,7 +10704,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "joint_direct-s2026092702",
@@ -10920,7 +10935,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     },
     {
       "row_id": "joint_direct-s2026092703",
@@ -11151,7 +11166,7 @@
         "source_frozen.json"
       ],
       "target_access": "After ownsource freeze",
-      "status": "PLANNED"
+      "status": "QUEUED"
     }
   ],
   "source_selection_rule": {

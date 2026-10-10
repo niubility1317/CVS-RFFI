@@ -1,2 +1,3 @@
 {"at": "2026-10-10T10:56:18.734802+00:00", "status": "PLANNED", "trained": 48, "tested": 36, "source_only": 12}
 {"at": "2026-10-10T11:01:07.292880+00:00", "status": "LOCAL_VERIFIED", "trained": 48, "tested": 36, "review": "PASS"}
+{"at": "2026-10-10T11:05:06.806396+00:00", "status": "RUNNING", "verdict": "VERIFIED", "code_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7", "controller_pid": 3235663, "active_rows": ["native-s2026092701"], "trained_rows": 48, "planned_test_rows": 36, "readback_ref": "evidence/readback.json", "log_growth_bytes": {"native-s2026092701": 5369}}

@@ -28,13 +28,13 @@
 | F22 | X | macro/RX/day/TX/最差RX/margin低尾/质量分层/桶年龄/采样/style/作用R使用 | runtime/validation | verified | artifact assertions | 稀疏指标独立次数 |
 | F23 | X.6 | sampler/loader/donor/Beta/action私有随机流不改变native序列 | sampling/style/runtime | verified | RNG isolation | 无LEO RNG |
 | F24 | 发布 | 逐行冻结→clean+6practical→独立truth-last评分；源候选只测选中 | dispatch/evaluate | verified | negative gate tests | 不回流target调参 |
-| F25 | 发布 | 完整登记、真实smoke、独立P0/P1、Git及N607证据 | checks/register/publish | implemented | 本地/独立审查通过；待N607发布读回 | 唯一launch owner |
+| F25 | 发布 | 完整登记、真实smoke、独立P0/P1、Git及N607证据 | checks/register/publish | verified | 本地CPU/CUDA、独立审查、Git远端OID、N607 preflight/PID/配置/日志增长读回通过 | 唯一launch owner |
 | F26 | III.4 VII | 困难重采样作为后续独立项 | report | deferred | 报告明确首轮公平覆盖 | 不在Fishr流引入偏置 |
 | F27 | IV.2 | DSU作为互斥替代候选 | report | deferred | 报告明确首轮弱MixStyle | 不叠加统计增强 |
 | F28 | IV.1 | 剩余交互稳定后再加第四网络 | report | deferred | 条件未触发 | 本轮保持L/T/R |
 
 预登记固定 13 种配置×3seed；其中 SF/SAF 的 3%、5%、10% 在源 V 完整三seed上选择共同ratio，只选中SF/SAF接触target；其余四候选保留source-only。随后该ratio的noR/shared/direct三种机制对照各三seed从零训练。共48次完整训练，36行测试。source-only选择不读取已有或本轮target成绩。
 
-本地核验：24项verified，F25已实现等待远端读回，3项按设计deferred，0项rejected/blocked。CPU/CUDA证据见本run evidence；不把实现检查表述为泛化收益。
+实现与发布核验：25项verified，3项按设计deferred，0项rejected/blocked。F25已由远端预检、进程、实际配置和日志增长读回验证。CPU/CUDA证据见本run evidence；不把实现检查表述为泛化收益。
 
 私有流：动作model_seed+49071、关系采样model_seed+88739、Style donor/Beta model_seed+77917。Fishr定标使用E20全部成熟关系批次的梯度范数比中位数；E20末固定，之后不随惩罚下降增权。
