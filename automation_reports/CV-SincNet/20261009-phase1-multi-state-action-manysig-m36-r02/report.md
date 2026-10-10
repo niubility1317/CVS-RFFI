@@ -15,3 +15,7 @@ R执行逐包作用后非线性聚合，描述/接受作用/目的统计独立�
 r02仅修复真实checkpoint反序列化前的native模块初始化顺序；同一SatViewStage本地回归确认旧顺序失败、新顺序通过，独立定向P0/P1复查PASS。保持4诊断+36身份行、全部科学配置和预算。
 
 VERIFIED：r02远端预检通过，dispatcher PID2534798；4个源诊断worker PID/CWD/argv/GPU/实际commit及日志增长均核实。后续36个scratch E200身份任务、冻结及10视图truth-last测试已由同一控制器串联，目前尚未完成。
+
+## 2026-10-10完整测试完成
+
+VERIFIED：36/36训练与360/360视图预测完成，独立评分及本地全记录复算通过。完整成绩、波动、配对差及原始明细见[test_results.md](test_results.md)。原RUNNING描述为历史启动记录，当前状态为ANALYZED。

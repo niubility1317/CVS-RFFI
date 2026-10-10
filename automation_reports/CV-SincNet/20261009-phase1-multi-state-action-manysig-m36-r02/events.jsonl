@@ -1,3 +1,4 @@
 {"at": "2026-10-09T15:21:56.047170+00:00", "status": "PLANNED", "note": "All report stages registered before execution"}
 {"at": "2026-10-09T15:22:53.585029+00:00", "status": "LOCAL_VERIFIED", "note": "r02仅修复真实checkpoint反序列化前的native模块初始化顺序；同一SatViewStage本地回归确认旧顺序失败、新顺序通过，独立定向P0/P1复查PASS。保持4诊断+36身份行、全部科学配置和预算。", "evidence": "evidence/checkpoint_order_recovery.json"}
 {"at": "2026-10-09T15:25:58.881206+00:00", "status": "RUNNING", "note": "VERIFIED：r02远端预检通过，dispatcher PID2534798；4个源诊断worker PID/CWD/argv/GPU/实际commit及日志增长均核实。后续36个scratch E200身份任务、冻结及10视图truth-last测试已由同一控制器串联，目前尚未完成。", "evidence": "evidence/launch_readback.json"}
+{"at": "2026-10-10T09:33:59.493707+00:00", "status": "ANALYZED", "remote_verdict": "VERIFIED", "note": "All4 audits,36 trainings,360 views and independent scoring complete; local full confusion recount passed", "evidence": "test_results.md"}

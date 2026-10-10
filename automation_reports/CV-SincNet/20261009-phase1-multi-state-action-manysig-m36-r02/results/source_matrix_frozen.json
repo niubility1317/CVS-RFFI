@@ -1,0 +1,3804 @@
+{
+  "status": "ALL_SOURCE_FROZEN",
+  "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+  "rows": [
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "native",
+      "model_seed": 2026092701,
+      "row_id": "native-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "model_seed": 2026092701,
+      "row_id": "real_views-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "model_seed": 2026092701,
+      "row_id": "unified-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "L",
+      "model_seed": 2026092701,
+      "row_id": "L-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "model_seed": 2026092701,
+      "row_id": "LT-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "model_seed": 2026092701,
+      "row_id": "LTR-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "model_seed": 2026092701,
+      "row_id": "L_EG-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "EG"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "model_seed": 2026092701,
+      "row_id": "LT_EG-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "EG"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "model_seed": 2026092701,
+      "row_id": "LTR_EG-s2026092701",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "EG"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "native",
+      "model_seed": 2026092702,
+      "row_id": "native-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "model_seed": 2026092702,
+      "row_id": "real_views-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "model_seed": 2026092702,
+      "row_id": "unified-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "L",
+      "model_seed": 2026092702,
+      "row_id": "L-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "model_seed": 2026092702,
+      "row_id": "LT-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "model_seed": 2026092702,
+      "row_id": "LTR-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "model_seed": 2026092702,
+      "row_id": "L_EG-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "EG"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "model_seed": 2026092702,
+      "row_id": "LT_EG-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "EG"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "model_seed": 2026092702,
+      "row_id": "LTR_EG-s2026092702",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "EG"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "native",
+      "model_seed": 2026092703,
+      "row_id": "native-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "model_seed": 2026092703,
+      "row_id": "real_views-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "model_seed": 2026092703,
+      "row_id": "unified-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "L",
+      "model_seed": 2026092703,
+      "row_id": "L-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "model_seed": 2026092703,
+      "row_id": "LT-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "model_seed": 2026092703,
+      "row_id": "LTR-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "model_seed": 2026092703,
+      "row_id": "L_EG-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "EG"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "model_seed": 2026092703,
+      "row_id": "LT_EG-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "EG"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "model_seed": 2026092703,
+      "row_id": "LTR_EG-s2026092703",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092703/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "EG"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "native",
+      "model_seed": 2026092704,
+      "row_id": "native-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "model_seed": 2026092704,
+      "row_id": "real_views-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/real_views-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "model_seed": 2026092704,
+      "row_id": "unified-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/unified-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "L",
+      "model_seed": 2026092704,
+      "row_id": "L-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "model_seed": 2026092704,
+      "row_id": "LT-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "model_seed": 2026092704,
+      "row_id": "LTR-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "G_only"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "model_seed": 2026092704,
+      "row_id": "L_EG-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/L_EG-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "EG"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "model_seed": 2026092704,
+      "row_id": "LT_EG-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LT_EG-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "EG"
+    },
+    {
+      "schema": "multi_state_action_v1",
+      "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "model_seed": 2026092704,
+      "row_id": "LTR_EG-s2026092704",
+      "features": [
+        "ema",
+        "leo",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/LTR_EG-s2026092704/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_multi_state_action",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "baseline_recipe": "cvs_phase1_repair/pseudo_batch_cosine",
+      "state_recipe": {
+        "warmup_epochs": 20,
+        "auxiliary_every_steps": 4,
+        "auxiliary_batch_size": 32,
+        "auxiliary_lr": 0.0002,
+        "auxiliary_lr_min": 1e-06,
+        "identity_real_weight": 0.05,
+        "identity_virtual_weight": 0.05,
+        "receiver_identity_weight": 0.01,
+        "total_auxiliary_weight": 0.05,
+        "paired_consistency_weight": 0.01,
+        "reference_refresh_steps": 888,
+        "receiver_max_age_steps": 888,
+        "gradient_audit_every_steps": 888,
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "hidden": 48,
+        "resume": false,
+        "source_selection": "fixed_E200_all_preregistered_controls",
+        "reliability": "source-heldout minimum of normalized-z and all-competitor-margin skills; clip[0,1]; min16; percondition; reset on reference version",
+        "model_spec": "independent increment/state first+second actions; exact29 reference; packetwiseR distribution",
+        "deployment": "identity_only",
+        "interventions": {
+          "scope": "Known mild post-receive interventions only",
+          "shape": [
+            2,
+            256
+          ],
+          "linear_delays": [
+            1,
+            3
+          ],
+          "linear_tap_scale": 0.06,
+          "linear_parameters": 4,
+          "temporal_parameters": 3,
+          "temporal_basis": [
+            "constant",
+            "linear",
+            "quadratic"
+          ],
+          "temporal_scales": [
+            0.08,
+            0.1,
+            0.06
+          ],
+          "parameter_distribution": "independent uniform [-1,1]",
+          "boundary": "causal zero padding",
+          "order": "temporal(linear(x))",
+          "rms_renormalization": false,
+          "rng": "explicit private CPU generator",
+          "exact_physical_factor_identification": false
+        }
+      },
+      "virtual_gradient_path": "EG"
+    }
+  ],
+  "source_metrics": [
+    {
+      "arm": "native",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9859629629629629,
+      "source_val_rx_accuracy": {
+        "1": 0.9964814814814815,
+        "3": 0.9618518518518518,
+        "4": 0.9866666666666667,
+        "6": 0.997037037037037,
+        "8": 0.9877777777777778
+      },
+      "source_val_worst_rx": 0.9618518518518518
+    },
+    {
+      "arm": "real_views",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.986,
+      "source_val_rx_accuracy": {
+        "1": 0.9964814814814815,
+        "3": 0.9625925925925926,
+        "4": 0.9864814814814815,
+        "6": 0.9962962962962963,
+        "8": 0.9881481481481481
+      },
+      "source_val_worst_rx": 0.9625925925925926
+    },
+    {
+      "arm": "unified",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.986037037037037,
+      "source_val_rx_accuracy": {
+        "1": 0.9964814814814815,
+        "3": 0.962037037037037,
+        "4": 0.987037037037037,
+        "6": 0.9962962962962963,
+        "8": 0.9883333333333333
+      },
+      "source_val_worst_rx": 0.962037037037037
+    },
+    {
+      "arm": "L",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.986,
+      "source_val_rx_accuracy": {
+        "1": 0.9962962962962963,
+        "3": 0.9618518518518518,
+        "4": 0.9868518518518519,
+        "6": 0.997037037037037,
+        "8": 0.9879629629629629
+      },
+      "source_val_worst_rx": 0.9618518518518518
+    },
+    {
+      "arm": "LT",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9857407407407407,
+      "source_val_rx_accuracy": {
+        "1": 0.9962962962962963,
+        "3": 0.962037037037037,
+        "4": 0.9866666666666667,
+        "6": 0.9966666666666667,
+        "8": 0.987037037037037
+      },
+      "source_val_worst_rx": 0.962037037037037
+    },
+    {
+      "arm": "LTR",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9862962962962963,
+      "source_val_rx_accuracy": {
+        "1": 0.9966666666666667,
+        "3": 0.9627777777777777,
+        "4": 0.9868518518518519,
+        "6": 0.9968518518518519,
+        "8": 0.9883333333333333
+      },
+      "source_val_worst_rx": 0.9627777777777777
+    },
+    {
+      "arm": "L_EG",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9860740740740741,
+      "source_val_rx_accuracy": {
+        "1": 0.9964814814814815,
+        "3": 0.9627777777777777,
+        "4": 0.9864814814814815,
+        "6": 0.9966666666666667,
+        "8": 0.9879629629629629
+      },
+      "source_val_worst_rx": 0.9627777777777777
+    },
+    {
+      "arm": "LT_EG",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9862592592592593,
+      "source_val_rx_accuracy": {
+        "1": 0.9966666666666667,
+        "3": 0.9622222222222222,
+        "4": 0.9868518518518519,
+        "6": 0.9972222222222222,
+        "8": 0.9883333333333333
+      },
+      "source_val_worst_rx": 0.9622222222222222
+    },
+    {
+      "arm": "LTR_EG",
+      "model_seed": 2026092701,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9861481481481481,
+      "source_val_rx_accuracy": {
+        "1": 0.9962962962962963,
+        "3": 0.9629629629629629,
+        "4": 0.9862962962962963,
+        "6": 0.9966666666666667,
+        "8": 0.9885185185185185
+      },
+      "source_val_worst_rx": 0.9629629629629629
+    },
+    {
+      "arm": "native",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9861111111111112,
+      "source_val_rx_accuracy": {
+        "1": 0.9974074074074074,
+        "3": 0.962037037037037,
+        "4": 0.9866666666666667,
+        "6": 0.9972222222222222,
+        "8": 0.9872222222222222
+      },
+      "source_val_worst_rx": 0.962037037037037
+    },
+    {
+      "arm": "real_views",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9863333333333333,
+      "source_val_rx_accuracy": {
+        "1": 0.9977777777777778,
+        "3": 0.9611111111111111,
+        "4": 0.9877777777777778,
+        "6": 0.9972222222222222,
+        "8": 0.9877777777777778
+      },
+      "source_val_worst_rx": 0.9611111111111111
+    },
+    {
+      "arm": "unified",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9864444444444445,
+      "source_val_rx_accuracy": {
+        "1": 0.9979629629629629,
+        "3": 0.9614814814814815,
+        "4": 0.9874074074074074,
+        "6": 0.997037037037037,
+        "8": 0.9883333333333333
+      },
+      "source_val_worst_rx": 0.9614814814814815
+    },
+    {
+      "arm": "L",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9865555555555555,
+      "source_val_rx_accuracy": {
+        "1": 0.9977777777777778,
+        "3": 0.9627777777777777,
+        "4": 0.9875925925925926,
+        "6": 0.9968518518518519,
+        "8": 0.9877777777777778
+      },
+      "source_val_worst_rx": 0.9627777777777777
+    },
+    {
+      "arm": "LT",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9867407407407407,
+      "source_val_rx_accuracy": {
+        "1": 0.9977777777777778,
+        "3": 0.9629629629629629,
+        "4": 0.9874074074074074,
+        "6": 0.9968518518518519,
+        "8": 0.9887037037037038
+      },
+      "source_val_worst_rx": 0.9629629629629629
+    },
+    {
+      "arm": "LTR",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9861851851851852,
+      "source_val_rx_accuracy": {
+        "1": 0.9975925925925926,
+        "3": 0.9614814814814815,
+        "4": 0.9868518518518519,
+        "6": 0.9968518518518519,
+        "8": 0.9881481481481481
+      },
+      "source_val_worst_rx": 0.9614814814814815
+    },
+    {
+      "arm": "L_EG",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9865185185185186,
+      "source_val_rx_accuracy": {
+        "1": 0.9979629629629629,
+        "3": 0.9627777777777777,
+        "4": 0.9872222222222222,
+        "6": 0.9968518518518519,
+        "8": 0.9877777777777778
+      },
+      "source_val_worst_rx": 0.9627777777777777
+    },
+    {
+      "arm": "LT_EG",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9868888888888889,
+      "source_val_rx_accuracy": {
+        "1": 0.9975925925925926,
+        "3": 0.9635185185185186,
+        "4": 0.9875925925925926,
+        "6": 0.9972222222222222,
+        "8": 0.9885185185185185
+      },
+      "source_val_worst_rx": 0.9635185185185186
+    },
+    {
+      "arm": "LTR_EG",
+      "model_seed": 2026092702,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9860740740740741,
+      "source_val_rx_accuracy": {
+        "1": 0.9975925925925926,
+        "3": 0.9607407407407408,
+        "4": 0.9874074074074074,
+        "6": 0.9968518518518519,
+        "8": 0.9877777777777778
+      },
+      "source_val_worst_rx": 0.9607407407407408
+    },
+    {
+      "arm": "native",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9853333333333333,
+      "source_val_rx_accuracy": {
+        "1": 0.9966666666666667,
+        "3": 0.9583333333333334,
+        "4": 0.9885185185185185,
+        "6": 0.9966666666666667,
+        "8": 0.9864814814814815
+      },
+      "source_val_worst_rx": 0.9583333333333334
+    },
+    {
+      "arm": "real_views",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9854444444444445,
+      "source_val_rx_accuracy": {
+        "1": 0.9968518518518519,
+        "3": 0.9583333333333334,
+        "4": 0.9888888888888889,
+        "6": 0.9964814814814815,
+        "8": 0.9866666666666667
+      },
+      "source_val_worst_rx": 0.9583333333333334
+    },
+    {
+      "arm": "unified",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9856296296296296,
+      "source_val_rx_accuracy": {
+        "1": 0.9966666666666667,
+        "3": 0.9592592592592593,
+        "4": 0.9888888888888889,
+        "6": 0.9966666666666667,
+        "8": 0.9866666666666667
+      },
+      "source_val_worst_rx": 0.9592592592592593
+    },
+    {
+      "arm": "L",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9851851851851852,
+      "source_val_rx_accuracy": {
+        "1": 0.9968518518518519,
+        "3": 0.9583333333333334,
+        "4": 0.9883333333333333,
+        "6": 0.9966666666666667,
+        "8": 0.9857407407407407
+      },
+      "source_val_worst_rx": 0.9583333333333334
+    },
+    {
+      "arm": "LT",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9855925925925926,
+      "source_val_rx_accuracy": {
+        "1": 0.9968518518518519,
+        "3": 0.9590740740740741,
+        "4": 0.9888888888888889,
+        "6": 0.9968518518518519,
+        "8": 0.9862962962962963
+      },
+      "source_val_worst_rx": 0.9590740740740741
+    },
+    {
+      "arm": "LTR",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9851851851851852,
+      "source_val_rx_accuracy": {
+        "1": 0.9966666666666667,
+        "3": 0.9574074074074074,
+        "4": 0.9888888888888889,
+        "6": 0.9968518518518519,
+        "8": 0.9861111111111112
+      },
+      "source_val_worst_rx": 0.9574074074074074
+    },
+    {
+      "arm": "L_EG",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9853703703703703,
+      "source_val_rx_accuracy": {
+        "1": 0.9966666666666667,
+        "3": 0.9594444444444444,
+        "4": 0.9877777777777778,
+        "6": 0.9966666666666667,
+        "8": 0.9862962962962963
+      },
+      "source_val_worst_rx": 0.9594444444444444
+    },
+    {
+      "arm": "LT_EG",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9858518518518519,
+      "source_val_rx_accuracy": {
+        "1": 0.9968518518518519,
+        "3": 0.9588888888888889,
+        "4": 0.9890740740740741,
+        "6": 0.9966666666666667,
+        "8": 0.9877777777777778
+      },
+      "source_val_worst_rx": 0.9588888888888889
+    },
+    {
+      "arm": "LTR_EG",
+      "model_seed": 2026092703,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9852962962962963,
+      "source_val_rx_accuracy": {
+        "1": 0.9966666666666667,
+        "3": 0.9577777777777777,
+        "4": 0.9888888888888889,
+        "6": 0.9962962962962963,
+        "8": 0.9868518518518519
+      },
+      "source_val_worst_rx": 0.9577777777777777
+    },
+    {
+      "arm": "native",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9853333333333333,
+      "source_val_rx_accuracy": {
+        "1": 0.9968518518518519,
+        "3": 0.9557407407407408,
+        "4": 0.9898148148148148,
+        "6": 0.9968518518518519,
+        "8": 0.9874074074074074
+      },
+      "source_val_worst_rx": 0.9557407407407408
+    },
+    {
+      "arm": "real_views",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9855925925925926,
+      "source_val_rx_accuracy": {
+        "1": 0.997037037037037,
+        "3": 0.9575925925925926,
+        "4": 0.9887037037037038,
+        "6": 0.9968518518518519,
+        "8": 0.9877777777777778
+      },
+      "source_val_worst_rx": 0.9575925925925926
+    },
+    {
+      "arm": "unified",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9857407407407407,
+      "source_val_rx_accuracy": {
+        "1": 0.9972222222222222,
+        "3": 0.9577777777777777,
+        "4": 0.9890740740740741,
+        "6": 0.9964814814814815,
+        "8": 0.9881481481481481
+      },
+      "source_val_worst_rx": 0.9577777777777777
+    },
+    {
+      "arm": "L",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.986037037037037,
+      "source_val_rx_accuracy": {
+        "1": 0.997037037037037,
+        "3": 0.9583333333333334,
+        "4": 0.9894444444444445,
+        "6": 0.997037037037037,
+        "8": 0.9883333333333333
+      },
+      "source_val_worst_rx": 0.9583333333333334
+    },
+    {
+      "arm": "LT",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9856296296296296,
+      "source_val_rx_accuracy": {
+        "1": 0.9972222222222222,
+        "3": 0.9568518518518518,
+        "4": 0.9888888888888889,
+        "6": 0.9972222222222222,
+        "8": 0.9879629629629629
+      },
+      "source_val_worst_rx": 0.9568518518518518
+    },
+    {
+      "arm": "LTR",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9856666666666667,
+      "source_val_rx_accuracy": {
+        "1": 0.9972222222222222,
+        "3": 0.9575925925925926,
+        "4": 0.9890740740740741,
+        "6": 0.9966666666666667,
+        "8": 0.9877777777777778
+      },
+      "source_val_worst_rx": 0.9575925925925926
+    },
+    {
+      "arm": "L_EG",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9850740740740741,
+      "source_val_rx_accuracy": {
+        "1": 0.9972222222222222,
+        "3": 0.9555555555555556,
+        "4": 0.9888888888888889,
+        "6": 0.9966666666666667,
+        "8": 0.987037037037037
+      },
+      "source_val_worst_rx": 0.9555555555555556
+    },
+    {
+      "arm": "LT_EG",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9854074074074074,
+      "source_val_rx_accuracy": {
+        "1": 0.9974074074074074,
+        "3": 0.9568518518518518,
+        "4": 0.9890740740740741,
+        "6": 0.9968518518518519,
+        "8": 0.9868518518518519
+      },
+      "source_val_worst_rx": 0.9568518518518518
+    },
+    {
+      "arm": "LTR_EG",
+      "model_seed": 2026092704,
+      "source_val_count": 27000,
+      "source_val_accuracy": 0.9852592592592593,
+      "source_val_rx_accuracy": {
+        "1": 0.9972222222222222,
+        "3": 0.9561111111111111,
+        "4": 0.9890740740740741,
+        "6": 0.9966666666666667,
+        "8": 0.9872222222222222
+      },
+      "source_val_worst_rx": 0.9561111111111111
+    }
+  ],
+  "arm_scores": {
+    "native": 0.972587962962963,
+    "real_views": 0.9728749999999999,
+    "unified": 0.9730509259259259,
+    "L": 0.9731342592592591,
+    "LT": 0.9730787037037036,
+    "LTR": 0.9728240740740741,
+    "L_EG": 0.972949074074074,
+    "LT_EG": 0.9732361111111112,
+    "LTR_EG": 0.9725462962962963
+  },
+  "source_preferred_arm": "LT_EG",
+  "source_preference": "mean4(.5V+.5worstRX); exact ties fewer parameters; all fixed controls tested",
+  "target_access": false,
+  "selection": "ALL_PREREGISTERED_FIXED_CONTROLS",
+  "frozen_at": 1791622275.0385516
+}

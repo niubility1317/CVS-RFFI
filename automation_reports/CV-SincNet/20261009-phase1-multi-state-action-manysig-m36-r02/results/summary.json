@@ -1,0 +1,2165 @@
+{
+  "results": [
+    {
+      "stage": "multi_state_action",
+      "arm": "native",
+      "view": "clean",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "native-s2026092701",
+        "native-s2026092702",
+        "native-s2026092703",
+        "native-s2026092704"
+      ],
+      "accuracy_mean": 0.8090833333333334,
+      "accuracy_sd": 0.007724936919853907,
+      "macro_f1_mean": 0.8043675694952067,
+      "macro_f1_sd": 0.007805308864873623,
+      "worst_rx_mean": 0.69046875,
+      "worst_rx_sd": 0.05037522832178752
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "native",
+      "view": "practical_high",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "native-s2026092701",
+        "native-s2026092702",
+        "native-s2026092703",
+        "native-s2026092704"
+      ],
+      "accuracy_mean": 0.7903988095238095,
+      "accuracy_sd": 0.006061151042931581,
+      "macro_f1_mean": 0.7871979859668718,
+      "macro_f1_sd": 0.006304678708121942,
+      "worst_rx_mean": 0.7008333333333333,
+      "worst_rx_sd": 0.011648199670144554
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "native",
+      "view": "practical_mid",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "native-s2026092701",
+        "native-s2026092702",
+        "native-s2026092703",
+        "native-s2026092704"
+      ],
+      "accuracy_mean": 0.7699479166666667,
+      "accuracy_sd": 0.005340840218487934,
+      "macro_f1_mean": 0.7663842773521364,
+      "macro_f1_sd": 0.005587251422900957,
+      "worst_rx_mean": 0.6856875,
+      "worst_rx_sd": 0.009636777306332837
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "native",
+      "view": "practical_low_suburban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "native-s2026092701",
+        "native-s2026092702",
+        "native-s2026092703",
+        "native-s2026092704"
+      ],
+      "accuracy_mean": 0.7482455357142858,
+      "accuracy_sd": 0.005662666519887705,
+      "macro_f1_mean": 0.7439425280876364,
+      "macro_f1_sd": 0.005814814883705783,
+      "worst_rx_mean": 0.6673437499999999,
+      "worst_rx_sd": 0.011981919973443321
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "native",
+      "view": "practical_high_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "native-s2026092701",
+        "native-s2026092702",
+        "native-s2026092703",
+        "native-s2026092704"
+      ],
+      "accuracy_mean": 0.760361607142857,
+      "accuracy_sd": 0.005281459156610103,
+      "macro_f1_mean": 0.7566689440896134,
+      "macro_f1_sd": 0.005546747028749431,
+      "worst_rx_mean": 0.6761145833333333,
+      "worst_rx_sd": 0.011887024857116407
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "native",
+      "view": "practical_mid_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "native-s2026092701",
+        "native-s2026092702",
+        "native-s2026092703",
+        "native-s2026092704"
+      ],
+      "accuracy_mean": 0.6359568452380953,
+      "accuracy_sd": 0.0011458539474542067,
+      "macro_f1_mean": 0.6291035605123843,
+      "macro_f1_sd": 0.001370570591444516,
+      "worst_rx_mean": 0.5738125000000001,
+      "worst_rx_sd": 0.007187671092971684
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "native",
+      "view": "practical_low_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "native-s2026092701",
+        "native-s2026092702",
+        "native-s2026092703",
+        "native-s2026092704"
+      ],
+      "accuracy_mean": 0.5331949404761904,
+      "accuracy_sd": 0.0023217102749305183,
+      "macro_f1_mean": 0.5237506909452668,
+      "macro_f1_sd": 0.001819067552984911,
+      "worst_rx_mean": 0.48640625000000004,
+      "worst_rx_sd": 0.0020750878495459715
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "native",
+      "view": "leo_clear_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "native-s2026092701",
+        "native-s2026092702",
+        "native-s2026092703",
+        "native-s2026092704"
+      ],
+      "accuracy_mean": 0.652266369047619,
+      "accuracy_sd": 0.019082267825540216,
+      "macro_f1_mean": 0.6523184949848854,
+      "macro_f1_sd": 0.01682858805637702,
+      "worst_rx_mean": 0.5046250000000001,
+      "worst_rx_sd": 0.026491896909278747
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "native",
+      "view": "leo_low_elev_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "native-s2026092701",
+        "native-s2026092702",
+        "native-s2026092703",
+        "native-s2026092704"
+      ],
+      "accuracy_mean": 0.6190029761904762,
+      "accuracy_sd": 0.01762683393213028,
+      "macro_f1_mean": 0.6196004437873754,
+      "macro_f1_sd": 0.015044334044906451,
+      "worst_rx_mean": 0.49025,
+      "worst_rx_sd": 0.029940817395259854
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "native",
+      "view": "leo_rain_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "native-s2026092701",
+        "native-s2026092702",
+        "native-s2026092703",
+        "native-s2026092704"
+      ],
+      "accuracy_mean": 0.6208467261904762,
+      "accuracy_sd": 0.015259329493712854,
+      "macro_f1_mean": 0.6200448791803297,
+      "macro_f1_sd": 0.01282929774672215,
+      "worst_rx_mean": 0.5000208333333334,
+      "worst_rx_sd": 0.029947803743748447
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "view": "clean",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "real_views-s2026092701",
+        "real_views-s2026092702",
+        "real_views-s2026092703",
+        "real_views-s2026092704"
+      ],
+      "accuracy_mean": 0.8084821428571428,
+      "accuracy_sd": 0.007774230341802817,
+      "macro_f1_mean": 0.8041427043062558,
+      "macro_f1_sd": 0.008033548109054338,
+      "worst_rx_mean": 0.6948125,
+      "worst_rx_sd": 0.049162176113198945
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "view": "practical_high",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "real_views-s2026092701",
+        "real_views-s2026092702",
+        "real_views-s2026092703",
+        "real_views-s2026092704"
+      ],
+      "accuracy_mean": 0.7881785714285714,
+      "accuracy_sd": 0.005302759678137558,
+      "macro_f1_mean": 0.7854051685601996,
+      "macro_f1_sd": 0.005675690989641356,
+      "worst_rx_mean": 0.6938020833333333,
+      "worst_rx_sd": 0.012698897908946743
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "view": "practical_mid",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "real_views-s2026092701",
+        "real_views-s2026092702",
+        "real_views-s2026092703",
+        "real_views-s2026092704"
+      ],
+      "accuracy_mean": 0.7678913690476191,
+      "accuracy_sd": 0.004703798196616211,
+      "macro_f1_mean": 0.764857634724346,
+      "macro_f1_sd": 0.005130670579506016,
+      "worst_rx_mean": 0.6796458333333333,
+      "worst_rx_sd": 0.009955543542279429
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "view": "practical_low_suburban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "real_views-s2026092701",
+        "real_views-s2026092702",
+        "real_views-s2026092703",
+        "real_views-s2026092704"
+      ],
+      "accuracy_mean": 0.7461607142857143,
+      "accuracy_sd": 0.004428595430042482,
+      "macro_f1_mean": 0.7424693891142207,
+      "macro_f1_sd": 0.004816994069877848,
+      "worst_rx_mean": 0.6623020833333333,
+      "worst_rx_sd": 0.007527294085526347
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "view": "practical_high_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "real_views-s2026092701",
+        "real_views-s2026092702",
+        "real_views-s2026092703",
+        "real_views-s2026092704"
+      ],
+      "accuracy_mean": 0.7585357142857143,
+      "accuracy_sd": 0.004083868376256477,
+      "macro_f1_mean": 0.7553998487654349,
+      "macro_f1_sd": 0.004421206704426885,
+      "worst_rx_mean": 0.6700833333333334,
+      "worst_rx_sd": 0.012528208911034289
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "view": "practical_mid_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "real_views-s2026092701",
+        "real_views-s2026092702",
+        "real_views-s2026092703",
+        "real_views-s2026092704"
+      ],
+      "accuracy_mean": 0.6344375,
+      "accuracy_sd": 0.002615620503059314,
+      "macro_f1_mean": 0.6284517864006062,
+      "macro_f1_sd": 0.002323971449277497,
+      "worst_rx_mean": 0.5701875000000001,
+      "worst_rx_sd": 0.008015068274471827
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "view": "practical_low_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "real_views-s2026092701",
+        "real_views-s2026092702",
+        "real_views-s2026092703",
+        "real_views-s2026092704"
+      ],
+      "accuracy_mean": 0.5321175595238096,
+      "accuracy_sd": 0.003824299763860394,
+      "macro_f1_mean": 0.5234324216077724,
+      "macro_f1_sd": 0.0028942965557173257,
+      "worst_rx_mean": 0.48366666666666663,
+      "worst_rx_sd": 0.004464105816481141
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "view": "leo_clear_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "real_views-s2026092701",
+        "real_views-s2026092702",
+        "real_views-s2026092703",
+        "real_views-s2026092704"
+      ],
+      "accuracy_mean": 0.6486383928571429,
+      "accuracy_sd": 0.017391128500056557,
+      "macro_f1_mean": 0.6496792219049898,
+      "macro_f1_sd": 0.016137582797200067,
+      "worst_rx_mean": 0.503375,
+      "worst_rx_sd": 0.026204038245476027
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "view": "leo_low_elev_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "real_views-s2026092701",
+        "real_views-s2026092702",
+        "real_views-s2026092703",
+        "real_views-s2026092704"
+      ],
+      "accuracy_mean": 0.6153377976190476,
+      "accuracy_sd": 0.016549356405741428,
+      "macro_f1_mean": 0.6170050816425301,
+      "macro_f1_sd": 0.015373525953118677,
+      "worst_rx_mean": 0.4871458333333333,
+      "worst_rx_sd": 0.029273247725652284
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "real_views",
+      "view": "leo_rain_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "real_views-s2026092701",
+        "real_views-s2026092702",
+        "real_views-s2026092703",
+        "real_views-s2026092704"
+      ],
+      "accuracy_mean": 0.6164389880952381,
+      "accuracy_sd": 0.014138541154246885,
+      "macro_f1_mean": 0.6168540352774619,
+      "macro_f1_sd": 0.013144042931368366,
+      "worst_rx_mean": 0.49364583333333334,
+      "worst_rx_sd": 0.027845275631604
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "view": "clean",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "unified-s2026092701",
+        "unified-s2026092702",
+        "unified-s2026092703",
+        "unified-s2026092704"
+      ],
+      "accuracy_mean": 0.8101220238095238,
+      "accuracy_sd": 0.006463877365862305,
+      "macro_f1_mean": 0.8057810136930965,
+      "macro_f1_sd": 0.006762253874508755,
+      "worst_rx_mean": 0.6990000000000001,
+      "worst_rx_sd": 0.049819500588513435
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "view": "practical_high",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "unified-s2026092701",
+        "unified-s2026092702",
+        "unified-s2026092703",
+        "unified-s2026092704"
+      ],
+      "accuracy_mean": 0.7909910714285715,
+      "accuracy_sd": 0.00598799169180568,
+      "macro_f1_mean": 0.7882986387672151,
+      "macro_f1_sd": 0.006461892977432355,
+      "worst_rx_mean": 0.6970000000000001,
+      "worst_rx_sd": 0.012166999614926836
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "view": "practical_mid",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "unified-s2026092701",
+        "unified-s2026092702",
+        "unified-s2026092703",
+        "unified-s2026092704"
+      ],
+      "accuracy_mean": 0.7706488095238095,
+      "accuracy_sd": 0.005122790713456631,
+      "macro_f1_mean": 0.7676715847318422,
+      "macro_f1_sd": 0.0055869150928827445,
+      "worst_rx_mean": 0.6818541666666667,
+      "worst_rx_sd": 0.006940929666091527
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "view": "practical_low_suburban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "unified-s2026092701",
+        "unified-s2026092702",
+        "unified-s2026092703",
+        "unified-s2026092704"
+      ],
+      "accuracy_mean": 0.7487931547619047,
+      "accuracy_sd": 0.004224139830569158,
+      "macro_f1_mean": 0.7451556512511783,
+      "macro_f1_sd": 0.004556709699316639,
+      "worst_rx_mean": 0.6649791666666667,
+      "worst_rx_sd": 0.0030515440839509866
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "view": "practical_high_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "unified-s2026092701",
+        "unified-s2026092702",
+        "unified-s2026092703",
+        "unified-s2026092704"
+      ],
+      "accuracy_mean": 0.7611279761904762,
+      "accuracy_sd": 0.004696204754559782,
+      "macro_f1_mean": 0.7579802731956865,
+      "macro_f1_sd": 0.0051976858825042325,
+      "worst_rx_mean": 0.6725520833333334,
+      "worst_rx_sd": 0.012726211240832667
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "view": "practical_mid_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "unified-s2026092701",
+        "unified-s2026092702",
+        "unified-s2026092703",
+        "unified-s2026092704"
+      ],
+      "accuracy_mean": 0.6362008928571429,
+      "accuracy_sd": 0.0025822558968502285,
+      "macro_f1_mean": 0.6301325778262481,
+      "macro_f1_sd": 0.002427699243062292,
+      "worst_rx_mean": 0.57171875,
+      "worst_rx_sd": 0.008657538929977374
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "view": "practical_low_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "unified-s2026092701",
+        "unified-s2026092702",
+        "unified-s2026092703",
+        "unified-s2026092704"
+      ],
+      "accuracy_mean": 0.5335178571428572,
+      "accuracy_sd": 0.004190436733219727,
+      "macro_f1_mean": 0.5247331777404043,
+      "macro_f1_sd": 0.0038115910704207448,
+      "worst_rx_mean": 0.4855104166666667,
+      "worst_rx_sd": 0.00696364359914592
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "view": "leo_clear_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "unified-s2026092701",
+        "unified-s2026092702",
+        "unified-s2026092703",
+        "unified-s2026092704"
+      ],
+      "accuracy_mean": 0.6498883928571428,
+      "accuracy_sd": 0.018812221259640077,
+      "macro_f1_mean": 0.6503255123728616,
+      "macro_f1_sd": 0.017683317755586788,
+      "worst_rx_mean": 0.5028229166666667,
+      "worst_rx_sd": 0.028941399425294615
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "view": "leo_low_elev_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "unified-s2026092701",
+        "unified-s2026092702",
+        "unified-s2026092703",
+        "unified-s2026092704"
+      ],
+      "accuracy_mean": 0.6164583333333333,
+      "accuracy_sd": 0.017777766041308506,
+      "macro_f1_mean": 0.6175400247075682,
+      "macro_f1_sd": 0.016522868412261887,
+      "worst_rx_mean": 0.4871354166666667,
+      "worst_rx_sd": 0.03210524819722715
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "unified",
+      "view": "leo_rain_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "unified-s2026092701",
+        "unified-s2026092702",
+        "unified-s2026092703",
+        "unified-s2026092704"
+      ],
+      "accuracy_mean": 0.6178035714285715,
+      "accuracy_sd": 0.015485034865950327,
+      "macro_f1_mean": 0.6176727298631388,
+      "macro_f1_sd": 0.014398422418144034,
+      "worst_rx_mean": 0.49559375,
+      "worst_rx_sd": 0.029780259568272807
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L",
+      "view": "clean",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L-s2026092701",
+        "L-s2026092702",
+        "L-s2026092703",
+        "L-s2026092704"
+      ],
+      "accuracy_mean": 0.8118482142857143,
+      "accuracy_sd": 0.0076121318128998085,
+      "macro_f1_mean": 0.8073076781860018,
+      "macro_f1_sd": 0.007904911661615293,
+      "worst_rx_mean": 0.7031666666666666,
+      "worst_rx_sd": 0.04616632821777263
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L",
+      "view": "practical_high",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L-s2026092701",
+        "L-s2026092702",
+        "L-s2026092703",
+        "L-s2026092704"
+      ],
+      "accuracy_mean": 0.7890416666666666,
+      "accuracy_sd": 0.004840726615372666,
+      "macro_f1_mean": 0.7860852762038117,
+      "macro_f1_sd": 0.005129229236933436,
+      "worst_rx_mean": 0.6938854166666667,
+      "worst_rx_sd": 0.009425473696220665
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L",
+      "view": "practical_mid",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L-s2026092701",
+        "L-s2026092702",
+        "L-s2026092703",
+        "L-s2026092704"
+      ],
+      "accuracy_mean": 0.7687410714285715,
+      "accuracy_sd": 0.00461876251983839,
+      "macro_f1_mean": 0.7655698646727901,
+      "macro_f1_sd": 0.00495466213063083,
+      "worst_rx_mean": 0.6810937499999999,
+      "worst_rx_sd": 0.005612112293793499
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L",
+      "view": "practical_low_suburban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L-s2026092701",
+        "L-s2026092702",
+        "L-s2026092703",
+        "L-s2026092704"
+      ],
+      "accuracy_mean": 0.7472693452380952,
+      "accuracy_sd": 0.0041854462704476805,
+      "macro_f1_mean": 0.743526621581891,
+      "macro_f1_sd": 0.004446932882884236,
+      "worst_rx_mean": 0.6638645833333333,
+      "worst_rx_sd": 0.004457018887228434
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L",
+      "view": "practical_high_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L-s2026092701",
+        "L-s2026092702",
+        "L-s2026092703",
+        "L-s2026092704"
+      ],
+      "accuracy_mean": 0.7592946428571428,
+      "accuracy_sd": 0.003862144329856269,
+      "macro_f1_mean": 0.7559865181128606,
+      "macro_f1_sd": 0.004170338781648267,
+      "worst_rx_mean": 0.6700937499999999,
+      "worst_rx_sd": 0.008705400556125616
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L",
+      "view": "practical_mid_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L-s2026092701",
+        "L-s2026092702",
+        "L-s2026092703",
+        "L-s2026092704"
+      ],
+      "accuracy_mean": 0.6355580357142857,
+      "accuracy_sd": 0.002527154935912273,
+      "macro_f1_mean": 0.6294456605938648,
+      "macro_f1_sd": 0.0020799331118882126,
+      "worst_rx_mean": 0.5710520833333333,
+      "worst_rx_sd": 0.006917785635725643
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L",
+      "view": "practical_low_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L-s2026092701",
+        "L-s2026092702",
+        "L-s2026092703",
+        "L-s2026092704"
+      ],
+      "accuracy_mean": 0.5327872023809523,
+      "accuracy_sd": 0.003611966937003433,
+      "macro_f1_mean": 0.5240044695085616,
+      "macro_f1_sd": 0.00275601196927218,
+      "worst_rx_mean": 0.4843854166666667,
+      "worst_rx_sd": 0.005088610080001842
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L",
+      "view": "leo_clear_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L-s2026092701",
+        "L-s2026092702",
+        "L-s2026092703",
+        "L-s2026092704"
+      ],
+      "accuracy_mean": 0.6507544642857143,
+      "accuracy_sd": 0.020343951318010766,
+      "macro_f1_mean": 0.6513416609856556,
+      "macro_f1_sd": 0.018355606125970206,
+      "worst_rx_mean": 0.5047187500000001,
+      "worst_rx_sd": 0.031890897905404975
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L",
+      "view": "leo_low_elev_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L-s2026092701",
+        "L-s2026092702",
+        "L-s2026092703",
+        "L-s2026092704"
+      ],
+      "accuracy_mean": 0.6173080357142857,
+      "accuracy_sd": 0.019231995398053224,
+      "macro_f1_mean": 0.6186535584125443,
+      "macro_f1_sd": 0.01739037849515379,
+      "worst_rx_mean": 0.49045833333333333,
+      "worst_rx_sd": 0.03322194932069262
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L",
+      "view": "leo_rain_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L-s2026092701",
+        "L-s2026092702",
+        "L-s2026092703",
+        "L-s2026092704"
+      ],
+      "accuracy_mean": 0.6193511904761905,
+      "accuracy_sd": 0.017038999356041376,
+      "macro_f1_mean": 0.619261719678006,
+      "macro_f1_sd": 0.015171367001317616,
+      "worst_rx_mean": 0.49813541666666666,
+      "worst_rx_sd": 0.03271123262097183
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "view": "clean",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT-s2026092701",
+        "LT-s2026092702",
+        "LT-s2026092703",
+        "LT-s2026092704"
+      ],
+      "accuracy_mean": 0.8099226190476192,
+      "accuracy_sd": 0.008136398917173394,
+      "macro_f1_mean": 0.8055124933121125,
+      "macro_f1_sd": 0.00823294930701941,
+      "worst_rx_mean": 0.69871875,
+      "worst_rx_sd": 0.04652271168522203
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "view": "practical_high",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT-s2026092701",
+        "LT-s2026092702",
+        "LT-s2026092703",
+        "LT-s2026092704"
+      ],
+      "accuracy_mean": 0.7889419642857143,
+      "accuracy_sd": 0.006450444811063965,
+      "macro_f1_mean": 0.7861738401667029,
+      "macro_f1_sd": 0.006988039442122751,
+      "worst_rx_mean": 0.6957500000000001,
+      "worst_rx_sd": 0.018644362915329636
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "view": "practical_mid",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT-s2026092701",
+        "LT-s2026092702",
+        "LT-s2026092703",
+        "LT-s2026092704"
+      ],
+      "accuracy_mean": 0.7685163690476191,
+      "accuracy_sd": 0.005270983457121957,
+      "macro_f1_mean": 0.7655409761274421,
+      "macro_f1_sd": 0.005746874623999807,
+      "worst_rx_mean": 0.68034375,
+      "worst_rx_sd": 0.01345329605593064
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "view": "practical_low_suburban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT-s2026092701",
+        "LT-s2026092702",
+        "LT-s2026092703",
+        "LT-s2026092704"
+      ],
+      "accuracy_mean": 0.7470372023809524,
+      "accuracy_sd": 0.0049184063733875745,
+      "macro_f1_mean": 0.7434708329831039,
+      "macro_f1_sd": 0.00526921493766801,
+      "worst_rx_mean": 0.6629375,
+      "worst_rx_sd": 0.011693693892515405
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "view": "practical_high_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT-s2026092701",
+        "LT-s2026092702",
+        "LT-s2026092703",
+        "LT-s2026092704"
+      ],
+      "accuracy_mean": 0.7592619047619047,
+      "accuracy_sd": 0.005525222605927237,
+      "macro_f1_mean": 0.7561546391603631,
+      "macro_f1_sd": 0.006109413517622684,
+      "worst_rx_mean": 0.6712499999999999,
+      "worst_rx_sd": 0.017881004559981376
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "view": "practical_mid_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT-s2026092701",
+        "LT-s2026092702",
+        "LT-s2026092703",
+        "LT-s2026092704"
+      ],
+      "accuracy_mean": 0.6346086309523808,
+      "accuracy_sd": 0.0015386981517109073,
+      "macro_f1_mean": 0.6286530965878209,
+      "macro_f1_sd": 0.001935446437094371,
+      "worst_rx_mean": 0.5700833333333334,
+      "worst_rx_sd": 0.010107981811236916
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "view": "practical_low_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT-s2026092701",
+        "LT-s2026092702",
+        "LT-s2026092703",
+        "LT-s2026092704"
+      ],
+      "accuracy_mean": 0.5320699404761904,
+      "accuracy_sd": 0.002301929580802492,
+      "macro_f1_mean": 0.523441442025943,
+      "macro_f1_sd": 0.0017068989937084507,
+      "worst_rx_mean": 0.4840729166666667,
+      "worst_rx_sd": 0.005107906792958876
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "view": "leo_clear_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT-s2026092701",
+        "LT-s2026092702",
+        "LT-s2026092703",
+        "LT-s2026092704"
+      ],
+      "accuracy_mean": 0.6492738095238095,
+      "accuracy_sd": 0.019661306871779253,
+      "macro_f1_mean": 0.6498989384911172,
+      "macro_f1_sd": 0.017353006849539773,
+      "worst_rx_mean": 0.50284375,
+      "worst_rx_sd": 0.028060664585692566
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "view": "leo_low_elev_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT-s2026092701",
+        "LT-s2026092702",
+        "LT-s2026092703",
+        "LT-s2026092704"
+      ],
+      "accuracy_mean": 0.6160714285714286,
+      "accuracy_sd": 0.018499636750534787,
+      "macro_f1_mean": 0.6175728529508464,
+      "macro_f1_sd": 0.016164823614816887,
+      "worst_rx_mean": 0.4872916666666667,
+      "worst_rx_sd": 0.03039470287670144
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT",
+      "view": "leo_rain_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT-s2026092701",
+        "LT-s2026092702",
+        "LT-s2026092703",
+        "LT-s2026092704"
+      ],
+      "accuracy_mean": 0.6173363095238095,
+      "accuracy_sd": 0.015973440626899194,
+      "macro_f1_mean": 0.6175924973360405,
+      "macro_f1_sd": 0.013660509439213313,
+      "worst_rx_mean": 0.49553125,
+      "worst_rx_sd": 0.029196638865883435
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "view": "clean",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR-s2026092701",
+        "LTR-s2026092702",
+        "LTR-s2026092703",
+        "LTR-s2026092704"
+      ],
+      "accuracy_mean": 0.8110178571428571,
+      "accuracy_sd": 0.007728298132557955,
+      "macro_f1_mean": 0.806527643609989,
+      "macro_f1_sd": 0.00799212385528259,
+      "worst_rx_mean": 0.6981875,
+      "worst_rx_sd": 0.046879234376648496
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "view": "practical_high",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR-s2026092701",
+        "LTR-s2026092702",
+        "LTR-s2026092703",
+        "LTR-s2026092704"
+      ],
+      "accuracy_mean": 0.7922872023809524,
+      "accuracy_sd": 0.006384581588682796,
+      "macro_f1_mean": 0.7895755807391889,
+      "macro_f1_sd": 0.006772903124055192,
+      "worst_rx_mean": 0.6964166666666666,
+      "worst_rx_sd": 0.022883410212705693
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "view": "practical_mid",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR-s2026092701",
+        "LTR-s2026092702",
+        "LTR-s2026092703",
+        "LTR-s2026092704"
+      ],
+      "accuracy_mean": 0.7714568452380952,
+      "accuracy_sd": 0.005414554304233368,
+      "macro_f1_mean": 0.7684595587167552,
+      "macro_f1_sd": 0.005763748425058711,
+      "worst_rx_mean": 0.68253125,
+      "worst_rx_sd": 0.016930255044730703
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "view": "practical_low_suburban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR-s2026092701",
+        "LTR-s2026092702",
+        "LTR-s2026092703",
+        "LTR-s2026092704"
+      ],
+      "accuracy_mean": 0.7493705357142857,
+      "accuracy_sd": 0.00521896166137863,
+      "macro_f1_mean": 0.7457483275109059,
+      "macro_f1_sd": 0.005477113124431653,
+      "worst_rx_mean": 0.6654166666666667,
+      "worst_rx_sd": 0.013545490912996627
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "view": "practical_high_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR-s2026092701",
+        "LTR-s2026092702",
+        "LTR-s2026092703",
+        "LTR-s2026092704"
+      ],
+      "accuracy_mean": 0.7621949404761905,
+      "accuracy_sd": 0.004945723869634377,
+      "macro_f1_mean": 0.7590697156218832,
+      "macro_f1_sd": 0.005406861574147988,
+      "worst_rx_mean": 0.6729270833333334,
+      "worst_rx_sd": 0.02181143874102999
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "view": "practical_mid_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR-s2026092701",
+        "LTR-s2026092702",
+        "LTR-s2026092703",
+        "LTR-s2026092704"
+      ],
+      "accuracy_mean": 0.6372127976190476,
+      "accuracy_sd": 0.0008710888047623612,
+      "macro_f1_mean": 0.631215747620062,
+      "macro_f1_sd": 0.0008892422434469459,
+      "worst_rx_mean": 0.5727708333333333,
+      "worst_rx_sd": 0.011710161976613263
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "view": "practical_low_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR-s2026092701",
+        "LTR-s2026092702",
+        "LTR-s2026092703",
+        "LTR-s2026092704"
+      ],
+      "accuracy_mean": 0.5336279761904762,
+      "accuracy_sd": 0.0031328020518610594,
+      "macro_f1_mean": 0.5248837569000824,
+      "macro_f1_sd": 0.0021786504352553256,
+      "worst_rx_mean": 0.48520833333333335,
+      "worst_rx_sd": 0.006362142080451501
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "view": "leo_clear_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR-s2026092701",
+        "LTR-s2026092702",
+        "LTR-s2026092703",
+        "LTR-s2026092704"
+      ],
+      "accuracy_mean": 0.6510163690476191,
+      "accuracy_sd": 0.02067939063575922,
+      "macro_f1_mean": 0.6515497258771358,
+      "macro_f1_sd": 0.019373163362030328,
+      "worst_rx_mean": 0.5060312499999999,
+      "worst_rx_sd": 0.02796685734854211
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "view": "leo_low_elev_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR-s2026092701",
+        "LTR-s2026092702",
+        "LTR-s2026092703",
+        "LTR-s2026092704"
+      ],
+      "accuracy_mean": 0.6177529761904762,
+      "accuracy_sd": 0.01931266885950635,
+      "macro_f1_mean": 0.6190786162727838,
+      "macro_f1_sd": 0.017818634870703617,
+      "worst_rx_mean": 0.48992708333333335,
+      "worst_rx_sd": 0.03137520058590154
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR",
+      "view": "leo_rain_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR-s2026092701",
+        "LTR-s2026092702",
+        "LTR-s2026092703",
+        "LTR-s2026092704"
+      ],
+      "accuracy_mean": 0.6191860119047619,
+      "accuracy_sd": 0.017473583327408473,
+      "macro_f1_mean": 0.6192006316594538,
+      "macro_f1_sd": 0.01621762459417359,
+      "worst_rx_mean": 0.4983541666666667,
+      "worst_rx_sd": 0.031036241136595297
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "view": "clean",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L_EG-s2026092701",
+        "L_EG-s2026092702",
+        "L_EG-s2026092703",
+        "L_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.809375,
+      "accuracy_sd": 0.010143365970171698,
+      "macro_f1_mean": 0.8051384416687539,
+      "macro_f1_sd": 0.010468632532575125,
+      "worst_rx_mean": 0.6984895833333333,
+      "worst_rx_sd": 0.05148194324541447
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "view": "practical_high",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L_EG-s2026092701",
+        "L_EG-s2026092702",
+        "L_EG-s2026092703",
+        "L_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.7878035714285714,
+      "accuracy_sd": 0.004885912597695582,
+      "macro_f1_mean": 0.7849580925058168,
+      "macro_f1_sd": 0.005254698123262822,
+      "worst_rx_mean": 0.6894479166666667,
+      "worst_rx_sd": 0.02432123403054455
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "view": "practical_mid",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L_EG-s2026092701",
+        "L_EG-s2026092702",
+        "L_EG-s2026092703",
+        "L_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.7677321428571429,
+      "accuracy_sd": 0.0036431716069272166,
+      "macro_f1_mean": 0.7647079205764978,
+      "macro_f1_sd": 0.003952603399266831,
+      "worst_rx_mean": 0.676,
+      "worst_rx_sd": 0.016507679189462766
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "view": "practical_low_suburban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L_EG-s2026092701",
+        "L_EG-s2026092702",
+        "L_EG-s2026092703",
+        "L_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.7461369047619048,
+      "accuracy_sd": 0.003227072596558988,
+      "macro_f1_mean": 0.7425308056033009,
+      "macro_f1_sd": 0.0034560712571734624,
+      "worst_rx_mean": 0.6595833333333333,
+      "worst_rx_sd": 0.011107898841215071
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "view": "practical_high_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L_EG-s2026092701",
+        "L_EG-s2026092702",
+        "L_EG-s2026092703",
+        "L_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.7581026785714287,
+      "accuracy_sd": 0.0035221916029145365,
+      "macro_f1_mean": 0.7549371654868459,
+      "macro_f1_sd": 0.0038786195859944663,
+      "worst_rx_mean": 0.6662395833333332,
+      "worst_rx_sd": 0.02260099184053494
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "view": "practical_mid_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L_EG-s2026092701",
+        "L_EG-s2026092702",
+        "L_EG-s2026092703",
+        "L_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.6346785714285714,
+      "accuracy_sd": 0.002339257946440439,
+      "macro_f1_mean": 0.6288403681239947,
+      "macro_f1_sd": 0.0017009006159496006,
+      "worst_rx_mean": 0.5681875,
+      "worst_rx_sd": 0.011801919374657919
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "view": "practical_low_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L_EG-s2026092701",
+        "L_EG-s2026092702",
+        "L_EG-s2026092703",
+        "L_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.5321309523809524,
+      "accuracy_sd": 0.004315162823871555,
+      "macro_f1_mean": 0.5237121656689353,
+      "macro_f1_sd": 0.0033958315635160253,
+      "worst_rx_mean": 0.4834166666666667,
+      "worst_rx_sd": 0.006487969636180494
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "view": "leo_clear_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L_EG-s2026092701",
+        "L_EG-s2026092702",
+        "L_EG-s2026092703",
+        "L_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.6499747023809525,
+      "accuracy_sd": 0.02186203312635401,
+      "macro_f1_mean": 0.650543433207806,
+      "macro_f1_sd": 0.019370014936870534,
+      "worst_rx_mean": 0.5006145833333333,
+      "worst_rx_sd": 0.034724717271467184
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "view": "leo_low_elev_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L_EG-s2026092701",
+        "L_EG-s2026092702",
+        "L_EG-s2026092703",
+        "L_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.6170967261904762,
+      "accuracy_sd": 0.020959745377275792,
+      "macro_f1_mean": 0.6184350015230172,
+      "macro_f1_sd": 0.01843675959821501,
+      "worst_rx_mean": 0.48653125,
+      "worst_rx_sd": 0.03572158568747722
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "L_EG",
+      "view": "leo_rain_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "L_EG-s2026092701",
+        "L_EG-s2026092702",
+        "L_EG-s2026092703",
+        "L_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.6187499999999999,
+      "accuracy_sd": 0.01837452726136402,
+      "macro_f1_mean": 0.6188097969273738,
+      "macro_f1_sd": 0.015928947440477917,
+      "worst_rx_mean": 0.49439583333333337,
+      "worst_rx_sd": 0.033726406362242514
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "view": "clean",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT_EG-s2026092701",
+        "LT_EG-s2026092702",
+        "LT_EG-s2026092703",
+        "LT_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.8106904761904762,
+      "accuracy_sd": 0.010174853122007306,
+      "macro_f1_mean": 0.8064328647175841,
+      "macro_f1_sd": 0.010718372051207563,
+      "worst_rx_mean": 0.6997604166666667,
+      "worst_rx_sd": 0.05814169289370832
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "view": "practical_high",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT_EG-s2026092701",
+        "LT_EG-s2026092702",
+        "LT_EG-s2026092703",
+        "LT_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.7902395833333333,
+      "accuracy_sd": 0.004166545845753945,
+      "macro_f1_mean": 0.7877677019378766,
+      "macro_f1_sd": 0.004697443974715043,
+      "worst_rx_mean": 0.6978854166666667,
+      "worst_rx_sd": 0.006146021654365241
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "view": "practical_mid",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT_EG-s2026092701",
+        "LT_EG-s2026092702",
+        "LT_EG-s2026092703",
+        "LT_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.7699880952380952,
+      "accuracy_sd": 0.004048847269301277,
+      "macro_f1_mean": 0.767229912976644,
+      "macro_f1_sd": 0.004591430821570662,
+      "worst_rx_mean": 0.6838333333333333,
+      "worst_rx_sd": 0.005394935038911416
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "view": "practical_low_suburban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT_EG-s2026092701",
+        "LT_EG-s2026092702",
+        "LT_EG-s2026092703",
+        "LT_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.7483258928571428,
+      "accuracy_sd": 0.0034076479852229976,
+      "macro_f1_mean": 0.7449721405471034,
+      "macro_f1_sd": 0.003904575007832177,
+      "worst_rx_mean": 0.6658124999999999,
+      "worst_rx_sd": 0.0038414015333912673
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "view": "practical_high_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT_EG-s2026092701",
+        "LT_EG-s2026092702",
+        "LT_EG-s2026092703",
+        "LT_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.7605104166666667,
+      "accuracy_sd": 0.00347261236470292,
+      "macro_f1_mean": 0.7576947709031607,
+      "macro_f1_sd": 0.003961758468569306,
+      "worst_rx_mean": 0.6740416666666667,
+      "worst_rx_sd": 0.007017999345598043
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "view": "practical_mid_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT_EG-s2026092701",
+        "LT_EG-s2026092702",
+        "LT_EG-s2026092703",
+        "LT_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.6356577380952381,
+      "accuracy_sd": 0.002878173673072185,
+      "macro_f1_mean": 0.6299576248788024,
+      "macro_f1_sd": 0.0026346303584728263,
+      "worst_rx_mean": 0.5728333333333333,
+      "worst_rx_sd": 0.00790598694848591
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "view": "practical_low_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT_EG-s2026092701",
+        "LT_EG-s2026092702",
+        "LT_EG-s2026092703",
+        "LT_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.5328988095238094,
+      "accuracy_sd": 0.00435391610070086,
+      "macro_f1_mean": 0.5243383137618829,
+      "macro_f1_sd": 0.0036398995001775862,
+      "worst_rx_mean": 0.485,
+      "worst_rx_sd": 0.006117011040865793
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "view": "leo_clear_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT_EG-s2026092701",
+        "LT_EG-s2026092702",
+        "LT_EG-s2026092703",
+        "LT_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.6483988095238095,
+      "accuracy_sd": 0.021978485107808587,
+      "macro_f1_mean": 0.6489733494875576,
+      "macro_f1_sd": 0.020133159423824914,
+      "worst_rx_mean": 0.5008020833333333,
+      "worst_rx_sd": 0.029163677922266647
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "view": "leo_low_elev_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT_EG-s2026092701",
+        "LT_EG-s2026092702",
+        "LT_EG-s2026092703",
+        "LT_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.6147098214285714,
+      "accuracy_sd": 0.020561162846197877,
+      "macro_f1_mean": 0.615913523452444,
+      "macro_f1_sd": 0.01872546105047214,
+      "worst_rx_mean": 0.48513541666666665,
+      "worst_rx_sd": 0.03067169295690396
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LT_EG",
+      "view": "leo_rain_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LT_EG-s2026092701",
+        "LT_EG-s2026092702",
+        "LT_EG-s2026092703",
+        "LT_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.616375,
+      "accuracy_sd": 0.018473167375612047,
+      "macro_f1_mean": 0.6163198421496727,
+      "macro_f1_sd": 0.016895656611362404,
+      "worst_rx_mean": 0.49331249999999993,
+      "worst_rx_sd": 0.030210172357814973
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "view": "clean",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR_EG-s2026092701",
+        "LTR_EG-s2026092702",
+        "LTR_EG-s2026092703",
+        "LTR_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.8091428571428572,
+      "accuracy_sd": 0.007513338479134347,
+      "macro_f1_mean": 0.804600381919858,
+      "macro_f1_sd": 0.007689494908843951,
+      "worst_rx_mean": 0.6946249999999999,
+      "worst_rx_sd": 0.05472247955382247
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "view": "practical_high",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR_EG-s2026092701",
+        "LTR_EG-s2026092702",
+        "LTR_EG-s2026092703",
+        "LTR_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.7872678571428571,
+      "accuracy_sd": 0.005228266843558467,
+      "macro_f1_mean": 0.7843465398016684,
+      "macro_f1_sd": 0.005706750186749418,
+      "worst_rx_mean": 0.68903125,
+      "worst_rx_sd": 0.01511232538268754
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "view": "practical_mid",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR_EG-s2026092701",
+        "LTR_EG-s2026092702",
+        "LTR_EG-s2026092703",
+        "LTR_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.7671800595238095,
+      "accuracy_sd": 0.004775940067558605,
+      "macro_f1_mean": 0.764069173624841,
+      "macro_f1_sd": 0.0050835929458953825,
+      "worst_rx_mean": 0.6769166666666667,
+      "worst_rx_sd": 0.010263710342756173
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "view": "practical_low_suburban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR_EG-s2026092701",
+        "LTR_EG-s2026092702",
+        "LTR_EG-s2026092703",
+        "LTR_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.7456815476190476,
+      "accuracy_sd": 0.0038586291350640547,
+      "macro_f1_mean": 0.7420118075951566,
+      "macro_f1_sd": 0.004182917607881929,
+      "worst_rx_mean": 0.6588854166666667,
+      "worst_rx_sd": 0.006977508094797415
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "view": "practical_high_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR_EG-s2026092701",
+        "LTR_EG-s2026092702",
+        "LTR_EG-s2026092703",
+        "LTR_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.7572961309523809,
+      "accuracy_sd": 0.004053419556975992,
+      "macro_f1_mean": 0.7540748971834091,
+      "macro_f1_sd": 0.004402059936154668,
+      "worst_rx_mean": 0.6661041666666667,
+      "worst_rx_sd": 0.015351042762265002
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "view": "practical_mid_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR_EG-s2026092701",
+        "LTR_EG-s2026092702",
+        "LTR_EG-s2026092703",
+        "LTR_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.6333690476190477,
+      "accuracy_sd": 0.0015267982842392096,
+      "macro_f1_mean": 0.6274182075015959,
+      "macro_f1_sd": 0.0008786969088856371,
+      "worst_rx_mean": 0.5680416666666667,
+      "worst_rx_sd": 0.011332312045487286
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "view": "practical_low_urban",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR_EG-s2026092701",
+        "LTR_EG-s2026092702",
+        "LTR_EG-s2026092703",
+        "LTR_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.5313229166666666,
+      "accuracy_sd": 0.003252598585382774,
+      "macro_f1_mean": 0.5227830968684344,
+      "macro_f1_sd": 0.00257127864399322,
+      "worst_rx_mean": 0.4819791666666666,
+      "worst_rx_sd": 0.007378373365350833
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "view": "leo_clear_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR_EG-s2026092701",
+        "LTR_EG-s2026092702",
+        "LTR_EG-s2026092703",
+        "LTR_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.6495491071428572,
+      "accuracy_sd": 0.018034203126356414,
+      "macro_f1_mean": 0.6506648384228741,
+      "macro_f1_sd": 0.016418715723416244,
+      "worst_rx_mean": 0.5019791666666666,
+      "worst_rx_sd": 0.027567352285575712
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "view": "leo_low_elev_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR_EG-s2026092701",
+        "LTR_EG-s2026092702",
+        "LTR_EG-s2026092703",
+        "LTR_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.6150565476190476,
+      "accuracy_sd": 0.016690844495291016,
+      "macro_f1_mean": 0.6169714644987215,
+      "macro_f1_sd": 0.015153168896994413,
+      "worst_rx_mean": 0.4852708333333333,
+      "worst_rx_sd": 0.029875290561116055
+    },
+    {
+      "stage": "multi_state_action",
+      "arm": "LTR_EG",
+      "view": "leo_rain_weak",
+      "seed_count": 4,
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "row_ids": [
+        "LTR_EG-s2026092701",
+        "LTR_EG-s2026092702",
+        "LTR_EG-s2026092703",
+        "LTR_EG-s2026092704"
+      ],
+      "accuracy_mean": 0.6163943452380952,
+      "accuracy_sd": 0.014977129969490698,
+      "macro_f1_mean": 0.6170494054900284,
+      "macro_f1_sd": 0.013673275720050334,
+      "worst_rx_mean": 0.4948958333333333,
+      "worst_rx_sd": 0.02943606733558655
+    }
+  ],
+  "aggregation": "ACTUAL_COMPLETED_SEEDS_ONLY"
+}
