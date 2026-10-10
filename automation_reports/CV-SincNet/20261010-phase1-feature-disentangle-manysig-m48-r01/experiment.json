@@ -153,7 +153,7 @@
   "execution": {
     "host": "N607",
     "launch_owner": "codex/root/feature-disentangle-20261010",
-    "gpu_policy": "<=2 total experiment processes/GPU, pre-CUDA reservations, max12 active, >=12GB free",
+    "gpu_policy": "User override: <=4 total experiment processes/GPU, pre-CUDA reservations, >=12GB free; all available GPU slots",
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r01/logs",
     "local_artifact_root": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\automation_reports\\CV-SincNet\\20261010-phase1-feature-disentangle-manysig-m48-r01",
@@ -163,7 +163,15 @@
     "verified_at": "2026-10-10T11:03:54.446842+00:00",
     "current_phase": "train",
     "readback_ref": "evidence/readback.json",
-    "remote_verdict": "VERIFIED"
+    "remote_verdict": "VERIFIED",
+    "capacity_override": {
+      "authorization": "用户：每张卡4进程",
+      "at": "2026-10-10T11:25:32.689803+00:00",
+      "scope": "current feature-disentangle run; scheduler-only adoption",
+      "status": "PLANNED",
+      "control_release": "cvs_feature_capacity4_20261010_r01",
+      "scientific_release": "cvs_feature_disentangle_20261010_r01"
+    }
   },
   "expected_artifacts": [
     "<row>/source/resolved_config.json",

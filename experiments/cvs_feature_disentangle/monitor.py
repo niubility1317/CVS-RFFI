@@ -14,7 +14,7 @@ def proc(pid):
  p=Path('/proc')/str(pid)
  try:return dict(pid=pid,cwd=str((p/'cwd').resolve()),argv=p.joinpath('cmdline').read_bytes().decode().split('\\0'),state=p.joinpath('stat').read_text().rsplit(')',1)[1].split()[0])
  except OSError:return None
-receipt=read(release/'submit.json');rows=[]
+receipt=read(b/'dispatcher_active.json') or read(release/'submit.json');rows=[]
 for r in (read(b/'launch.json') or dict(rows=[]))['rows']:
  log=Path(r['log']);text=log.read_text(errors='replace') if log.is_file() else ''
  root=b/r['row_id'];args=read(root/'source/resolved_native_args.json')
