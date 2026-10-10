@@ -34,7 +34,7 @@
 |完整冻结预测独立评分：R2四seed正式消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r06/report.md)|
 |冻结E200独立测试：R1随机混杂诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r03/report.md)|
 |冻结E200独立测试：R2修复后四seed正式消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r04/report.md)|
-|已完成24个多解耦模型即时测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-state-action-completed-test-manysig-m24-r01/report.md)|
+|已完成24个多解耦模型：完整测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-state-action-completed-test-manysig-m24-r01/report.md)|
 |Phase1架构研究：信道鲁棒性与射频指纹保留|legacy_evidence_group|[打开](../../docs/CVS_PHASE1_CHANNEL_ROBUST_ARCHITECTURE_20261003.md)|
 |CVS Phase1目标测试结果（2026-09-28）|legacy_evidence_group|[打开](../../docs/CVS_PHASE1_TARGET_RESULTS_20260928.md)|
 |phase1_dgleo_p0factorial8_matrix_20260714|legacy_evidence_group|[打开](../../local_artifacts/phase1_dgleo_p0factorial8_matrix_20260714.json)|

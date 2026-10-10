@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|已完成24个多解耦模型即时测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-state-action-completed-test-manysig-m24-r01/report.md)|
+|已完成24个多解耦模型：完整测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-state-action-completed-test-manysig-m24-r01/report.md)|

@@ -317,7 +317,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "RUNNING",
+      "status": "SCORED",
       "pid": 2898033
     },
     {
@@ -444,7 +444,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "RUNNING",
+      "status": "SCORED",
       "pid": 2898040
     },
     {
@@ -571,7 +571,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "RUNNING",
+      "status": "SCORED",
       "pid": 2898047
     },
     {
@@ -698,14 +698,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "RUNNING",
+      "status": "SCORED",
       "pid": 2898056
     },
     {
       "row_id": "L_EG-s2026092701",
       "method": "L_EG",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 0,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -825,13 +825,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2898999
     },
     {
       "row_id": "LT_EG-s2026092701",
       "method": "LT_EG",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 4,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -951,13 +952,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2899004
     },
     {
       "row_id": "native-s2026092702",
       "method": "native",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 7,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -1077,13 +1079,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2899009
     },
     {
       "row_id": "real_views-s2026092702",
       "method": "real_views",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 5,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -1203,13 +1206,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2899017
     },
     {
       "row_id": "L-s2026092702",
       "method": "L",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 0,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -1329,13 +1333,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2899965
     },
     {
       "row_id": "LT-s2026092702",
       "method": "LT",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 4,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -1455,13 +1460,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2899970
     },
     {
       "row_id": "L_EG-s2026092702",
       "method": "L_EG",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 7,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -1581,13 +1587,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2899975
     },
     {
       "row_id": "LT_EG-s2026092702",
       "method": "LT_EG",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 5,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -1707,13 +1714,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2899983
     },
     {
       "row_id": "native-s2026092703",
       "method": "native",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 0,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -1833,13 +1841,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2900920
     },
     {
       "row_id": "real_views-s2026092703",
       "method": "real_views",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 4,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -1959,13 +1968,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2900925
     },
     {
       "row_id": "L-s2026092703",
       "method": "L",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 7,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -2085,13 +2095,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2900931
     },
     {
       "row_id": "LT-s2026092703",
       "method": "LT",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 5,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -2211,13 +2222,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2900938
     },
     {
       "row_id": "L_EG-s2026092703",
       "method": "L_EG",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 0,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -2337,13 +2349,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2901871
     },
     {
       "row_id": "LT_EG-s2026092703",
       "method": "LT_EG",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 4,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -2463,13 +2476,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2901876
     },
     {
       "row_id": "native-s2026092704",
       "method": "native",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 7,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -2589,13 +2603,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2901881
     },
     {
       "row_id": "real_views-s2026092704",
       "method": "real_views",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 5,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -2715,13 +2730,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2901887
     },
     {
       "row_id": "L-s2026092704",
       "method": "L",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 4,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -2841,13 +2857,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2902755
     },
     {
       "row_id": "LT-s2026092704",
       "method": "LT",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 0,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -2967,13 +2984,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2902912
     },
     {
       "row_id": "L_EG-s2026092704",
       "method": "L_EG",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 7,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -3093,13 +3111,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2902917
     },
     {
       "row_id": "LT_EG-s2026092704",
       "method": "LT_EG",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 5,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -3219,7 +3238,8 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED"
+      "status": "SCORED",
+      "pid": 2902923
     }
   ],
   "notes": [
@@ -3227,7 +3247,7 @@
     "Independent test root does not modify the healthy original dispatcher, which retains its full-matrix final test plan. Any later duplicate predictions are confirmatory, never used to choose a run.",
     "Same original10 views and seeds; generated weak views use identical deterministic CPU stream and physical ordering."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "rows": 24,
     "views": [

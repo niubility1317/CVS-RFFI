@@ -1,17 +1,6 @@
 {
-  "at": 1791597343.8395464,
-  "controller": {
-    "pid": 2897819,
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
-    "argv": [
-      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-      "-u",
-      "-m",
-      "experiments.cvs_state_test_now.dispatch",
-      ""
-    ],
-    "state": "S"
-  },
+  "at": 1791597735.783187,
+  "controller": null,
   "receipt": {
     "status": "SUBMITTED",
     "pid": 2897819,
@@ -59,13 +48,13 @@
     "selection": "ALL_COMPLETED_UNTESTED_AT_SNAPSHOT"
   },
   "queue": {
-    "active": [
+    "active": [],
+    "pending": [],
+    "completed": [
       "native-s2026092701",
       "real_views-s2026092701",
       "L-s2026092701",
-      "LT-s2026092701"
-    ],
-    "pending": [
+      "LT-s2026092701",
       "L_EG-s2026092701",
       "LT_EG-s2026092701",
       "native-s2026092702",
@@ -78,8 +67,8 @@
       "real_views-s2026092703",
       "L-s2026092703",
       "LT-s2026092703",
-      "L_EG-s2026092703",
       "LT_EG-s2026092703",
+      "L_EG-s2026092703",
       "native-s2026092704",
       "real_views-s2026092704",
       "L-s2026092704",
@@ -87,12 +76,17 @@
       "L_EG-s2026092704",
       "LT_EG-s2026092704"
     ],
-    "completed": [],
     "failures": [],
-    "updated_at": 1791597340.4886792
+    "updated_at": 1791597661.8339844
   },
   "failure": null,
-  "completion": null,
+  "completion": {
+    "status": "ANALYZED",
+    "models": 24,
+    "views": 10,
+    "truth_last": true,
+    "independent_recount": "VERIFIED"
+  },
   "views_ready": true,
   "rows": [
     {
@@ -108,24 +102,46 @@
         "native-s2026092701"
       ],
       "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
-      "process": {
-        "pid": 2898033,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
-          "--row",
-          "native-s2026092701",
-          ""
-        ],
-        "state": "R"
-      },
-      "log_bytes": 247,
+      "process": null,
+      "log_bytes": 1288,
       "tail": [
-        "{\"row_id\": \"native-s2026092701\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 4.6615644849371165, \"truth_read\": false}"
+        "{\"row_id\": \"native-s2026092701\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.764342274982482, \"truth_read\": false}"
       ],
-      "completion": null
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.7185470359399915,
+          "practical_high": 4.6615644849371165,
+          "practical_mid": 4.6551943980157375,
+          "practical_low_suburban": 4.651936035021208,
+          "practical_high_urban": 4.629073271062225,
+          "practical_mid_urban": 4.665301022003405,
+          "practical_low_urban": 4.60261234396603,
+          "leo_clear_weak": 4.654630081029609,
+          "leo_low_elev_weak": 4.612285332987085,
+          "leo_rain_weak": 4.764342274982482
+        },
+        "wall_seconds": 48.0552247230662,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1533247488,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
     },
     {
       "row_id": "real_views-s2026092701",
@@ -140,24 +156,46 @@
         "real_views-s2026092701"
       ],
       "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
-      "process": {
-        "pid": 2898040,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
-          "--row",
-          "real_views-s2026092701",
-          ""
-        ],
-        "state": "R"
-      },
-      "log_bytes": 252,
+      "process": null,
+      "log_bytes": 1325,
       "tail": [
-        "{\"row_id\": \"real_views-s2026092701\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 4.496178682078607, \"truth_read\": false}"
+        "{\"row_id\": \"real_views-s2026092701\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.481211225967854, \"truth_read\": false}"
       ],
-      "completion": null
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.63282021204941,
+          "practical_high": 4.496178682078607,
+          "practical_mid": 4.499971091048792,
+          "practical_low_suburban": 4.50791918404866,
+          "practical_high_urban": 4.490598405012861,
+          "practical_mid_urban": 4.483410007087514,
+          "practical_low_urban": 4.4863784949993715,
+          "leo_clear_weak": 4.489456471987069,
+          "leo_low_elev_weak": 4.478666244074702,
+          "leo_rain_weak": 4.481211225967854
+        },
+        "wall_seconds": 46.49111965706106,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1529778176,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
     },
     {
       "row_id": "L-s2026092701",
@@ -172,24 +210,46 @@
         "L-s2026092701"
       ],
       "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
-      "process": {
-        "pid": 2898047,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
-          "--row",
-          "L-s2026092701",
-          ""
-        ],
-        "state": "R"
-      },
-      "log_bytes": 235,
+      "process": null,
+      "log_bytes": 1238,
       "tail": [
-        "{\"row_id\": \"L-s2026092701\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 4.491676187957637, \"truth_read\": false}"
+        "{\"row_id\": \"L-s2026092701\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.485072768991813, \"truth_read\": false}"
       ],
-      "completion": null
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.541935123037547,
+          "practical_high": 4.491676187957637,
+          "practical_mid": 4.490159722045064,
+          "practical_low_suburban": 4.488978476030752,
+          "practical_high_urban": 4.481295853969641,
+          "practical_mid_urban": 4.478520857985131,
+          "practical_low_urban": 4.4951674150070176,
+          "leo_clear_weak": 4.482456821016967,
+          "leo_low_elev_weak": 4.4842327979858965,
+          "leo_rain_weak": 4.485072768991813
+        },
+        "wall_seconds": 46.273117391974665,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1534246912,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
     },
     {
       "row_id": "LT-s2026092701",
@@ -204,24 +264,1126 @@
         "LT-s2026092701"
       ],
       "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
-      "process": {
-        "pid": 2898056,
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
-          "--row",
-          "LT-s2026092701",
-          ""
-        ],
-        "state": "R"
-      },
-      "log_bytes": 237,
+      "process": null,
+      "log_bytes": 1246,
       "tail": [
-        "{\"row_id\": \"LT-s2026092701\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 4.504218345042318, \"truth_read\": false}"
+        "{\"row_id\": \"LT-s2026092701\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.48493413394317, \"truth_read\": false}"
       ],
-      "completion": null
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.564448510063812,
+          "practical_high": 4.504218345042318,
+          "practical_mid": 4.502280175918713,
+          "practical_low_suburban": 4.491782611003146,
+          "practical_high_urban": 4.485554827027954,
+          "practical_mid_urban": 4.4673336170380935,
+          "practical_low_urban": 4.471781258005649,
+          "leo_clear_weak": 4.472097945981659,
+          "leo_low_elev_weak": 4.465743675944395,
+          "leo_rain_weak": 4.48493413394317
+        },
+        "wall_seconds": 46.24741053197067,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1533353984,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "L_EG-s2026092701",
+      "pid": 2898999,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/L_EG-s2026092701.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "L_EG-s2026092701"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1265,
+      "tail": [
+        "{\"row_id\": \"L_EG-s2026092701\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.55051040800754, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.677078563021496,
+          "practical_high": 4.565530576976016,
+          "practical_mid": 4.583845840999857,
+          "practical_low_suburban": 4.592600897070952,
+          "practical_high_urban": 4.562118766014464,
+          "practical_mid_urban": 4.555027332971804,
+          "practical_low_urban": 4.572389841079712,
+          "leo_clear_weak": 4.555440566968173,
+          "leo_low_elev_weak": 4.577352809952572,
+          "leo_rain_weak": 4.55051040800754
+        },
+        "wall_seconds": 47.21412464394234,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1532899328,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "LT_EG-s2026092701",
+      "pid": 2899004,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/LT_EG-s2026092701.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "LT_EG-s2026092701"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1276,
+      "tail": [
+        "{\"row_id\": \"LT_EG-s2026092701\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.443209173041396, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.5399319409625605,
+          "practical_high": 4.45298839895986,
+          "practical_mid": 4.451311893993989,
+          "practical_low_suburban": 4.4654107969254255,
+          "practical_high_urban": 4.458843892905861,
+          "practical_mid_urban": 4.456623955979012,
+          "practical_low_urban": 4.454821669030935,
+          "leo_clear_weak": 4.44702766102273,
+          "leo_low_elev_weak": 4.461624967050739,
+          "leo_rain_weak": 4.443209173041396
+        },
+        "wall_seconds": 46.04039634100627,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1533358080,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "native-s2026092702",
+      "pid": 2899009,
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/native-s2026092702.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "native-s2026092702"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1288,
+      "tail": [
+        "{\"row_id\": \"native-s2026092702\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.512167152017355, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.5797951959539205,
+          "practical_high": 4.523936470970511,
+          "practical_mid": 4.519763088901527,
+          "practical_low_suburban": 4.538639183039777,
+          "practical_high_urban": 4.520050012972206,
+          "practical_mid_urban": 4.510557282017544,
+          "practical_low_urban": 4.528864349937066,
+          "leo_clear_weak": 4.501852313987911,
+          "leo_low_elev_weak": 4.5015081509482116,
+          "leo_rain_weak": 4.512167152017355
+        },
+        "wall_seconds": 46.637678504921496,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1532465152,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "real_views-s2026092702",
+      "pid": 2899017,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/real_views-s2026092702.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "real_views-s2026092702"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1328,
+      "tail": [
+        "{\"row_id\": \"real_views-s2026092702\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.526410294929519, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.598886615014635,
+          "practical_high": 4.5440988530172035,
+          "practical_mid": 4.552133652963676,
+          "practical_low_suburban": 4.558407308999449,
+          "practical_high_urban": 4.535493973991834,
+          "practical_mid_urban": 4.533038596971892,
+          "practical_low_urban": 4.533149053924717,
+          "leo_clear_weak": 4.508257581037469,
+          "leo_low_elev_weak": 4.5245182840153575,
+          "leo_rain_weak": 4.526410294929519
+        },
+        "wall_seconds": 46.79176057991572,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1530929152,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "L-s2026092702",
+      "pid": 2899965,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/L-s2026092702.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "L-s2026092702"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1238,
+      "tail": [
+        "{\"row_id\": \"L-s2026092702\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.605332639068365, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.8341878990177065,
+          "practical_high": 4.56459819606971,
+          "practical_mid": 4.569582013995387,
+          "practical_low_suburban": 4.5861890310188755,
+          "practical_high_urban": 4.588011702988297,
+          "practical_mid_urban": 4.665929526905529,
+          "practical_low_urban": 4.655806923983619,
+          "leo_clear_weak": 4.6353612809907645,
+          "leo_low_elev_weak": 4.635260128998198,
+          "leo_rain_weak": 4.605332639068365
+        },
+        "wall_seconds": 47.6810608120868,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1532624896,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "LT-s2026092702",
+      "pid": 2899970,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/LT-s2026092702.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "LT-s2026092702"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1248,
+      "tail": [
+        "{\"row_id\": \"LT-s2026092702\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.471352885011584, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.578175237053074,
+          "practical_high": 4.497932738973759,
+          "practical_mid": 4.508462314028293,
+          "practical_low_suburban": 4.693092344910838,
+          "practical_high_urban": 4.4169010979821905,
+          "practical_mid_urban": 4.529659261112101,
+          "practical_low_urban": 4.514733014977537,
+          "leo_clear_weak": 4.490120148984715,
+          "leo_low_elev_weak": 4.4604298890335485,
+          "leo_rain_weak": 4.471352885011584
+        },
+        "wall_seconds": 46.5272013930371,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1534226432,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "L_EG-s2026092702",
+      "pid": 2899975,
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/L_EG-s2026092702.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "L_EG-s2026092702"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1267,
+      "tail": [
+        "{\"row_id\": \"L_EG-s2026092702\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.511428114026785, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.598218944040127,
+          "practical_high": 4.534383863094263,
+          "practical_mid": 4.538748273975216,
+          "practical_low_suburban": 4.545400558970869,
+          "practical_high_urban": 4.5260997109580785,
+          "practical_mid_urban": 4.526217113947496,
+          "practical_low_urban": 4.519764774013311,
+          "leo_clear_weak": 4.506856043939479,
+          "leo_low_elev_weak": 4.492737186024897,
+          "leo_rain_weak": 4.511428114026785
+        },
+        "wall_seconds": 46.70988524798304,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1531559936,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "LT_EG-s2026092702",
+      "pid": 2899983,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/LT_EG-s2026092702.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "LT_EG-s2026092702"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1275,
+      "tail": [
+        "{\"row_id\": \"LT_EG-s2026092702\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.435887806001119, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.556032599066384,
+          "practical_high": 4.485991489025764,
+          "practical_mid": 4.512196704046801,
+          "practical_low_suburban": 4.488058767048642,
+          "practical_high_urban": 4.489741761004552,
+          "practical_mid_urban": 4.561070508905686,
+          "practical_low_urban": 4.535931122954935,
+          "leo_clear_weak": 4.34284988802392,
+          "leo_low_elev_weak": 4.442630324978381,
+          "leo_rain_weak": 4.435887806001119
+        },
+        "wall_seconds": 46.121469936100766,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1531535360,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "native-s2026092703",
+      "pid": 2900920,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/native-s2026092703.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "native-s2026092703"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1286,
+      "tail": [
+        "{\"row_id\": \"native-s2026092703\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.530428542988375, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.706514007993974,
+          "practical_high": 4.603790181921795,
+          "practical_mid": 4.614927781978622,
+          "practical_low_suburban": 4.635179867967963,
+          "practical_high_urban": 4.640769291087054,
+          "practical_mid_urban": 4.746799199958332,
+          "practical_low_urban": 4.455444275983609,
+          "leo_clear_weak": 4.5285389829659835,
+          "leo_low_elev_weak": 4.53529987600632,
+          "leo_rain_weak": 4.530428542988375
+        },
+        "wall_seconds": 47.383748491993174,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1533177856,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "real_views-s2026092703",
+      "pid": 2900925,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/real_views-s2026092703.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "real_views-s2026092703"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1327,
+      "tail": [
+        "{\"row_id\": \"real_views-s2026092703\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.502694178954698, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.565924455993809,
+          "practical_high": 4.484189712908119,
+          "practical_mid": 4.507463456015103,
+          "practical_low_suburban": 4.523634933051653,
+          "practical_high_urban": 4.513970225001685,
+          "practical_mid_urban": 4.508638847968541,
+          "practical_low_urban": 4.5091887299204245,
+          "leo_clear_weak": 4.500913458992727,
+          "leo_low_elev_weak": 4.507441423018463,
+          "leo_rain_weak": 4.502694178954698
+        },
+        "wall_seconds": 46.42382654210087,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1534443520,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "L-s2026092703",
+      "pid": 2900931,
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/L-s2026092703.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "L-s2026092703"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1239,
+      "tail": [
+        "{\"row_id\": \"L-s2026092703\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.508234111010097, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.5487298760563135,
+          "practical_high": 4.459918171982281,
+          "practical_mid": 4.513828827999532,
+          "practical_low_suburban": 4.587860756088048,
+          "practical_high_urban": 4.3485387560212985,
+          "practical_mid_urban": 4.434238453046419,
+          "practical_low_urban": 4.4258464250015095,
+          "leo_clear_weak": 4.428047533030622,
+          "leo_low_elev_weak": 4.431876715971157,
+          "leo_rain_weak": 4.508234111010097
+        },
+        "wall_seconds": 46.07475016103126,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1532579840,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "LT-s2026092703",
+      "pid": 2900938,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/LT-s2026092703.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "LT-s2026092703"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1244,
+      "tail": [
+        "{\"row_id\": \"LT-s2026092703\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.513314253999852, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.5624703239882365,
+          "practical_high": 4.499861854943447,
+          "practical_mid": 4.508241640985943,
+          "practical_low_suburban": 4.520111156976782,
+          "practical_high_urban": 4.5297543220222,
+          "practical_mid_urban": 4.518358225002885,
+          "practical_low_urban": 4.509810530929826,
+          "leo_clear_weak": 4.49565374001395,
+          "leo_low_elev_weak": 4.494358466938138,
+          "leo_rain_weak": 4.513314253999852
+        },
+        "wall_seconds": 46.480337410001084,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1532542976,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "L_EG-s2026092703",
+      "pid": 2901871,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/L_EG-s2026092703.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "L_EG-s2026092703"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1266,
+      "tail": [
+        "{\"row_id\": \"L_EG-s2026092703\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.595460050972179, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.686161919031292,
+          "practical_high": 4.612598024075851,
+          "practical_mid": 4.598788009956479,
+          "practical_low_suburban": 4.61973030900117,
+          "practical_high_urban": 4.655716473003849,
+          "practical_mid_urban": 4.575289674918167,
+          "practical_low_urban": 4.574842281988822,
+          "leo_clear_weak": 4.5858775390079245,
+          "leo_low_elev_weak": 4.571441519074142,
+          "leo_rain_weak": 4.595460050972179
+        },
+        "wall_seconds": 47.37408111291006,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1533009920,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "LT_EG-s2026092703",
+      "pid": 2901876,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/LT_EG-s2026092703.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "LT_EG-s2026092703"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1277,
+      "tail": [
+        "{\"row_id\": \"LT_EG-s2026092703\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.4159746709046885, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.5487731349421665,
+          "practical_high": 4.420030493056402,
+          "practical_mid": 4.420986643992364,
+          "practical_low_suburban": 4.417772153043188,
+          "practical_high_urban": 4.452283126069233,
+          "practical_mid_urban": 4.42179902899079,
+          "practical_low_urban": 4.425981879932806,
+          "leo_clear_weak": 4.428350736037828,
+          "leo_low_elev_weak": 4.422718542977236,
+          "leo_rain_weak": 4.4159746709046885
+        },
+        "wall_seconds": 45.796590982005,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1532940288,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "native-s2026092704",
+      "pid": 2901881,
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/native-s2026092704.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "native-s2026092704"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1284,
+      "tail": [
+        "{\"row_id\": \"native-s2026092704\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.479950602049939, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.569980202941224,
+          "practical_high": 4.477453166968189,
+          "practical_mid": 4.501062976079993,
+          "practical_low_suburban": 4.49925718002487,
+          "practical_high_urban": 4.485705220955424,
+          "practical_mid_urban": 4.47451823099982,
+          "practical_low_urban": 4.491472863941453,
+          "leo_clear_weak": 4.481967685045674,
+          "leo_low_elev_weak": 4.473142939968966,
+          "leo_rain_weak": 4.479950602049939
+        },
+        "wall_seconds": 46.30834454006981,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1533800448,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "real_views-s2026092704",
+      "pid": 2901887,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/real_views-s2026092704.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "real_views-s2026092704"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1324,
+      "tail": [
+        "{\"row_id\": \"real_views-s2026092704\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.520960865076631, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.606854571029544,
+          "practical_high": 4.546216986957006,
+          "practical_mid": 4.535324450000189,
+          "practical_low_suburban": 4.5567231469322,
+          "practical_high_urban": 4.539344508899376,
+          "practical_mid_urban": 4.530259913066402,
+          "practical_low_urban": 4.532214657985605,
+          "leo_clear_weak": 4.522393194027245,
+          "leo_low_elev_weak": 4.525042964029126,
+          "leo_rain_weak": 4.520960865076631
+        },
+        "wall_seconds": 46.720936900004745,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1532596224,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "L-s2026092704",
+      "pid": 2902755,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/L-s2026092704.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "L-s2026092704"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1237,
+      "tail": [
+        "{\"row_id\": \"L-s2026092704\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.422349394997582, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.4891434429446235,
+          "practical_high": 4.457073736004531,
+          "practical_mid": 4.43522480095271,
+          "practical_low_suburban": 4.429414129001088,
+          "practical_high_urban": 4.411323446081951,
+          "practical_mid_urban": 4.411148935905658,
+          "practical_low_urban": 4.419913117075339,
+          "leo_clear_weak": 4.5657541250111535,
+          "leo_low_elev_weak": 4.326209618942812,
+          "leo_rain_weak": 4.422349394997582
+        },
+        "wall_seconds": 45.67455780599266,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1532792832,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "LT-s2026092704",
+      "pid": 2902912,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/LT-s2026092704.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "LT-s2026092704"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1244,
+      "tail": [
+        "{\"row_id\": \"LT-s2026092704\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.5917119949590415, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.666820259066299,
+          "practical_high": 4.593640696955845,
+          "practical_mid": 4.62410507700406,
+          "practical_low_suburban": 4.643934605061077,
+          "practical_high_urban": 4.68744174099993,
+          "practical_mid_urban": 4.63387242204044,
+          "practical_low_urban": 4.649833970004693,
+          "leo_clear_weak": 4.633876284933649,
+          "leo_low_elev_weak": 4.672220216016285,
+          "leo_rain_weak": 4.5917119949590415
+        },
+        "wall_seconds": 47.82213212095667,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1534857216,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "L_EG-s2026092704",
+      "pid": 2902917,
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/L_EG-s2026092704.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "L_EG-s2026092704"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1267,
+      "tail": [
+        "{\"row_id\": \"L_EG-s2026092704\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.486495136050507, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.565818544011563,
+          "practical_high": 4.504760493058711,
+          "practical_mid": 4.499143449938856,
+          "practical_low_suburban": 4.494647341081873,
+          "practical_high_urban": 4.499197910889052,
+          "practical_mid_urban": 4.499874508008361,
+          "practical_low_urban": 4.512311633909121,
+          "leo_clear_weak": 4.5035131049808115,
+          "leo_low_elev_weak": 4.502388341003098,
+          "leo_rain_weak": 4.486495136050507
+        },
+        "wall_seconds": 46.42875476309564,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1533702144,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
+    },
+    {
+      "row_id": "LT_EG-s2026092704",
+      "pid": 2902923,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/LT_EG-s2026092704.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "LT_EG-s2026092704"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": null,
+      "log_bytes": 1277,
+      "tail": [
+        "{\"row_id\": \"LT_EG-s2026092704\", \"view\": \"leo_rain_weak\", \"count\": 168000, \"seconds\": 4.475735062034801, \"truth_read\": false}"
+      ],
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.617187670897692,
+          "practical_high": 4.5017832649173215,
+          "practical_mid": 4.496046975953504,
+          "practical_low_suburban": 4.508163891034201,
+          "practical_high_urban": 4.499595079920255,
+          "practical_mid_urban": 4.503972101956606,
+          "practical_low_urban": 4.493474933085963,
+          "leo_clear_weak": 4.489300979999825,
+          "leo_low_elev_weak": 4.488942577969283,
+          "leo_rain_weak": 4.475735062034801
+        },
+        "wall_seconds": 46.443135540001094,
+        "peak_cuda_allocated_bytes": 91524096,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1533595648,
+        "memory_measurement": "Linux process high-water RSS; CUDA peaks after checkpoint smoke"
+      }
     }
   ],
   "dispatcher_tail": []
