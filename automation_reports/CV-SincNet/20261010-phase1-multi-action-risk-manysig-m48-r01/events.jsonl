@@ -1,2 +1,3 @@
 {"at": "2026-10-10T10:16:18.474236+00:00", "status": "PLANNED", "rows": 48, "seeds": [2026092701, 2026092702, 2026092703]}
 {"at": "2026-10-10T10:24:28.770595+00:00", "status": "LOCAL_VERIFIED", "review": "PASS", "rows": 48}
+{"at": "2026-10-10T10:28:54.833197+00:00", "status": "RUNNING", "verdict": "VERIFIED", "phase": "diagnostic", "code_commit": "33773918f509e78c1c0aa9f6fa36d85db099cbbe", "controller_pid": 3214285, "active_rows": ["diagnostic-s2026092701", "diagnostic-s2026092702", "diagnostic-s2026092703"], "total_identity_rows": 48, "readback_ref": "evidence/readback.json", "log_growth_bytes": {"diagnostic-s2026092701": 6559, "diagnostic-s2026092702": 6565, "diagnostic-s2026092703": 6821}}

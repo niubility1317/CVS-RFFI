@@ -1,0 +1,265 @@
+{
+  "at": 1791628064.7221243,
+  "receipt": {
+    "status": "SUBMITTED",
+    "pid": 3214285,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_multi_action_risk.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01/dispatcher.stdout.log",
+    "commit": "33773918f509e78c1c0aa9f6fa36d85db099cbbe",
+    "run_id": "20261010-phase1-multi-action-risk-manysig-m48-r01"
+  },
+  "controller": {
+    "pid": 3214285,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_multi_action_risk.dispatch",
+      ""
+    ],
+    "state": "S"
+  },
+  "queue": {
+    "phase": "diagnostic",
+    "active": [
+      "diagnostic-s2026092701",
+      "diagnostic-s2026092702",
+      "diagnostic-s2026092703"
+    ],
+    "pending": [],
+    "completed": [],
+    "failures": [],
+    "total_identity_rows": 48,
+    "per_gpu_limit": 2,
+    "updated_at": 1791628061.0606546
+  },
+  "failure": null,
+  "completion": null,
+  "rows": [
+    {
+      "kind": "diagnostic",
+      "row_id": "diagnostic-s2026092701",
+      "pid": 3214304,
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-multi-action-risk-manysig-m48-r01/logs/diagnostic-s2026092701.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01/experiments/cvs_multi_action_risk/train_worker.py",
+        "--kind",
+        "diagnostic",
+        "--row",
+        "diagnostic-s2026092701"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01",
+      "process": {
+        "pid": 3214304,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01/experiments/cvs_multi_action_risk/train_worker.py",
+          "--kind",
+          "diagnostic",
+          "--row",
+          "diagnostic-s2026092701",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 6826,
+      "tail": [
+        "ACTION_FIT {\"step\": 50, \"order\": \"TL\", \"conditional_edges\": true, \"fit_packets\": 32, \"temporal_fit\": 0.7465317249298096, \"temporal_parameter_loss\": 0.12771525979042053, \"linear_fit\": 0.6257636547088623, \"linear_parameter_loss\": 0.12963218986988068, \"heldout_tx\": 2}",
+        "ACTION_FIT {\"step\": 75, \"order\": \"LT\", \"conditional_edges\": true, \"fit_packets\": 32, \"linear_fit\": 0.5757086277008057, \"linear_parameter_loss\": 0.09236159175634384, \"temporal_fit\": 0.7958565950393677, \"temporal_parameter_loss\": 0.10929058492183685, \"heldout_tx\": 2}",
+        "ACTION_FIT {\"step\": 100, \"order\": \"TL\", \"conditional_edges\": true, \"fit_packets\": 32, \"temporal_fit\": 0.6800886988639832, \"temporal_parameter_loss\": 0.09473773837089539, \"linear_fit\": 0.5316518545150757, \"linear_parameter_loss\": 0.04717878997325897, \"heldout_tx\": 2}"
+      ],
+      "resolved": null,
+      "actual_recipe": null,
+      "source_completion": null,
+      "prediction_completion": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "kind": "diagnostic",
+      "row_id": "diagnostic-s2026092702",
+      "pid": 3214309,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-multi-action-risk-manysig-m48-r01/logs/diagnostic-s2026092702.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01/experiments/cvs_multi_action_risk/train_worker.py",
+        "--kind",
+        "diagnostic",
+        "--row",
+        "diagnostic-s2026092702"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01",
+      "process": {
+        "pid": 3214309,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01/experiments/cvs_multi_action_risk/train_worker.py",
+          "--kind",
+          "diagnostic",
+          "--row",
+          "diagnostic-s2026092702",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 6832,
+      "tail": [
+        "ACTION_FIT {\"step\": 50, \"order\": \"TL\", \"conditional_edges\": true, \"fit_packets\": 32, \"temporal_fit\": 0.8323136568069458, \"temporal_parameter_loss\": 0.12768614292144775, \"linear_fit\": 0.6014695763587952, \"linear_parameter_loss\": 0.12960399687290192, \"heldout_tx\": 2}",
+        "ACTION_FIT {\"step\": 75, \"order\": \"LT\", \"conditional_edges\": true, \"fit_packets\": 32, \"linear_fit\": 0.5554938912391663, \"linear_parameter_loss\": 0.09255441278219223, \"temporal_fit\": 0.801946759223938, \"temporal_parameter_loss\": 0.10943266749382019, \"heldout_tx\": 2}",
+        "ACTION_FIT {\"step\": 100, \"order\": \"TL\", \"conditional_edges\": true, \"fit_packets\": 32, \"temporal_fit\": 0.6258814930915833, \"temporal_parameter_loss\": 0.09481829404830933, \"linear_fit\": 0.5055709481239319, \"linear_parameter_loss\": 0.04750727117061615, \"heldout_tx\": 2}"
+      ],
+      "resolved": null,
+      "actual_recipe": null,
+      "source_completion": null,
+      "prediction_completion": null,
+      "completion": null,
+      "failure": null
+    },
+    {
+      "kind": "diagnostic",
+      "row_id": "diagnostic-s2026092703",
+      "pid": 3214314,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-multi-action-risk-manysig-m48-r01/logs/diagnostic-s2026092703.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01/experiments/cvs_multi_action_risk/train_worker.py",
+        "--kind",
+        "diagnostic",
+        "--row",
+        "diagnostic-s2026092703"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01",
+      "process": {
+        "pid": 3214314,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01/experiments/cvs_multi_action_risk/train_worker.py",
+          "--kind",
+          "diagnostic",
+          "--row",
+          "diagnostic-s2026092703",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 6821,
+      "tail": [
+        "ACTION_FIT {\"step\": 50, \"order\": \"TL\", \"conditional_edges\": true, \"fit_packets\": 32, \"temporal_fit\": 0.6877397894859314, \"temporal_parameter_loss\": 0.12765362858772278, \"linear_fit\": 0.630924642086029, \"linear_parameter_loss\": 0.12957894802093506, \"heldout_tx\": 2}",
+        "ACTION_FIT {\"step\": 75, \"order\": \"LT\", \"conditional_edges\": true, \"fit_packets\": 32, \"linear_fit\": 0.6436948180198669, \"linear_parameter_loss\": 0.09238062053918839, \"temporal_fit\": 0.6788023710250854, \"temporal_parameter_loss\": 0.10924924910068512, \"heldout_tx\": 2}",
+        "ACTION_FIT {\"step\": 100, \"order\": \"TL\", \"conditional_edges\": true, \"fit_packets\": 32, \"temporal_fit\": 0.6106181740760803, \"temporal_parameter_loss\": 0.09473642706871033, \"linear_fit\": 0.4960343837738037, \"linear_parameter_loss\": 0.04724125191569328, \"heldout_tx\": 2}"
+      ],
+      "resolved": null,
+      "actual_recipe": null,
+      "source_completion": null,
+      "prediction_completion": null,
+      "completion": null,
+      "failure": null
+    }
+  ],
+  "preflight": {
+    "status": "PASS",
+    "target_access": false,
+    "results": {
+      "config": {
+        "status": "PASS",
+        "rows": 48,
+        "seeds": 3,
+        "baseline": "pureCE_noEMA_noU_noSat",
+        "changed_config_rejected": true,
+        "source_freeze_required": true,
+        "incomplete_predictions_keep_truth_closed": true
+      },
+      "actions": {
+        "status": "PASS",
+        "device": "cpu",
+        "rng_preserved": true,
+        "physical_units": true,
+        "conditional_edge_budget": 2,
+        "periodic_phase": true,
+        "exact29_cache": true,
+        "stochastic_replay": true,
+        "chain_both_orders": true,
+        "shared_identical_form": true,
+        "random_fallback_retains_real_IQ": true,
+        "variable_quality": true,
+        "parameter_counts": {
+          "linear": 758090,
+          "temporal": 758090
+        }
+      },
+      "receiver": {
+        "status": "PASS",
+        "device": "cpu",
+        "checks": [
+          "equal_mean_different_accuracy_counterexample",
+          "actual_shared_core_same_form_zero_action",
+          "variable_quality_proxy_after_RMS_normalization",
+          "five_margin_covariance_and_lower_tail",
+          "small_bag_uncertainty_and_coarse_shrink",
+          "exact_fractional_CVaR",
+          "fit_reference_frozen",
+          "identity_GC_only_no_E_or_action_gradient",
+          "physical_three_bags",
+          "TX_holdout_excludes_fit_descriptors",
+          "day_condition_match",
+          "actual_use_vs_available_counts",
+          "repeats_not_unique_samples",
+          "zero_admission_no_identity_use",
+          "bounded_action",
+          "true_destination_heldout_calibration",
+          "version_age_expiry",
+          "repeated_singleton_IQ_accumulates_supported_live_distribution",
+          "oracle_live_reliability_positive_without_relaxing_gates",
+          "unsupported_covariance_and_tail_are_null",
+          "fresh_current_student_reencoding"
+        ],
+        "singleton_oracle": {
+          "singleton_calls": 16,
+          "final_distinct_recipient_ids": 16,
+          "oracle_live_weight": 0.6666666666465763,
+          "premature_admissions": 0
+        }
+      },
+      "checkpoints": [
+        {
+          "status": "VERIFIED",
+          "seed": 2026092701,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092701/source/final_ssdg.pth",
+          "target_read": false
+        },
+        {
+          "status": "VERIFIED",
+          "seed": 2026092702,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092702/source/final_ssdg.pth",
+          "target_read": false
+        },
+        {
+          "status": "VERIFIED",
+          "seed": 2026092703,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261009-phase1-multi-state-action-manysig-m36-r02/native-s2026092703/source/final_ssdg.pth",
+          "target_read": false
+        }
+      ]
+    }
+  }
+}

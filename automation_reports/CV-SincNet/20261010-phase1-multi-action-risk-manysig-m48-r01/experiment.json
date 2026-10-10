@@ -128,7 +128,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求严格落实新报告、实现下一版多解耦并发布三seed探索；随后明确纯CE底座、无半监督和星地增强。报告要求的全部必要对照每种三seed。",
   "code": {
-    "commit": "release_commit.txt at actual launch",
+    "commit": "33773918f509e78c1c0aa9f6fa36d85db099cbbe",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01"
@@ -154,7 +154,12 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-multi-action-risk-manysig-m48-r01/logs",
     "local_artifact_root": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\automation_reports\\CV-SincNet\\20261010-phase1-multi-action-risk-manysig-m48-r01",
     "launch_command": "python -m experiments.cvs_multi_action_risk.publish --output local_artifacts/cvs_multi_action_risk_20261010_r01",
-    "stop_rule": "Affected technical failure only; stop launching new rows and preserve healthy active rows/artifacts; no low-performance stop, retry or target-feedback tuning"
+    "stop_rule": "Affected technical failure only; stop launching new rows and preserve healthy active rows/artifacts; no low-performance stop, retry or target-feedback tuning",
+    "controller_pid": 3214285,
+    "verified_at": "2026-10-10T10:27:44.722124+00:00",
+    "current_phase": "diagnostic",
+    "readback_ref": "evidence/readback.json",
+    "remote_verdict": "VERIFIED"
   },
   "expected_artifacts": [
     "diagnostic-s*/completion.json",
@@ -352,7 +357,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "random_ce-s2026092701",
@@ -492,7 +498,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "random_cons-s2026092701",
@@ -632,7 +639,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "exact_g-s2026092701",
@@ -772,7 +780,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "L-s2026092701",
@@ -910,7 +919,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT-s2026092701",
@@ -1049,7 +1059,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LR-s2026092701",
@@ -1188,7 +1199,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR-s2026092701",
@@ -1328,7 +1340,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_mean-s2026092701",
@@ -1468,7 +1481,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "shared_LTR-s2026092701",
@@ -1608,7 +1622,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "L_budget-s2026092701",
@@ -1750,7 +1765,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_budget-s2026092701",
@@ -1891,7 +1907,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LR_budget-s2026092701",
@@ -2033,7 +2050,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_no_edges-s2026092701",
@@ -2172,7 +2190,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_label_free-s2026092701",
@@ -2311,7 +2330,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_label_free_U-s2026092701",
@@ -2450,7 +2470,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "native-s2026092702",
@@ -2586,7 +2607,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "random_ce-s2026092702",
@@ -2726,7 +2748,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "random_cons-s2026092702",
@@ -2866,7 +2889,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "exact_g-s2026092702",
@@ -3006,7 +3030,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "L-s2026092702",
@@ -3144,7 +3169,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT-s2026092702",
@@ -3283,7 +3309,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LR-s2026092702",
@@ -3422,7 +3449,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR-s2026092702",
@@ -3562,7 +3590,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_mean-s2026092702",
@@ -3702,7 +3731,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "shared_LTR-s2026092702",
@@ -3842,7 +3872,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "L_budget-s2026092702",
@@ -3984,7 +4015,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_budget-s2026092702",
@@ -4125,7 +4157,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LR_budget-s2026092702",
@@ -4267,7 +4300,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_no_edges-s2026092702",
@@ -4406,7 +4440,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_label_free-s2026092702",
@@ -4545,7 +4580,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_label_free_U-s2026092702",
@@ -4684,7 +4720,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "native-s2026092703",
@@ -4820,7 +4857,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "random_ce-s2026092703",
@@ -4960,7 +4998,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "random_cons-s2026092703",
@@ -5100,7 +5139,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "exact_g-s2026092703",
@@ -5240,7 +5280,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "L-s2026092703",
@@ -5378,7 +5419,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT-s2026092703",
@@ -5517,7 +5559,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LR-s2026092703",
@@ -5656,7 +5699,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR-s2026092703",
@@ -5796,7 +5840,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LTR_mean-s2026092703",
@@ -5936,7 +5981,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "shared_LTR-s2026092703",
@@ -6076,7 +6122,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "L_budget-s2026092703",
@@ -6218,7 +6265,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_budget-s2026092703",
@@ -6359,7 +6407,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LR_budget-s2026092703",
@@ -6501,7 +6550,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_no_edges-s2026092703",
@@ -6640,7 +6690,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_label_free-s2026092703",
@@ -6779,7 +6830,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_label_free_U-s2026092703",
@@ -6918,7 +6970,8 @@
         "source/source_stress.json",
         "prediction/complete.json",
         "scores.json"
-      ]
+      ],
+      "status": "QUEUED"
     }
   ],
   "mechanism_recipe": {
@@ -7077,7 +7130,20 @@
       "initializes_identity_training": false,
       "source_fit_role": "L_s",
       "identity_frozen": true,
-      "target_access": false
+      "target_access": false,
+      "status": "RUNNING",
+      "pid": 3214304,
+      "gpu": 3,
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-multi-action-risk-manysig-m48-r01/logs/diagnostic-s2026092701.log",
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01/experiments/cvs_multi_action_risk/train_worker.py",
+        "--kind",
+        "diagnostic",
+        "--row",
+        "diagnostic-s2026092701"
+      ]
     },
     {
       "row_id": "diagnostic-s2026092702",
@@ -7179,7 +7245,20 @@
       "initializes_identity_training": false,
       "source_fit_role": "L_s",
       "identity_frozen": true,
-      "target_access": false
+      "target_access": false,
+      "status": "RUNNING",
+      "pid": 3214309,
+      "gpu": 4,
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-multi-action-risk-manysig-m48-r01/logs/diagnostic-s2026092702.log",
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01/experiments/cvs_multi_action_risk/train_worker.py",
+        "--kind",
+        "diagnostic",
+        "--row",
+        "diagnostic-s2026092702"
+      ]
     },
     {
       "row_id": "diagnostic-s2026092703",
@@ -7281,10 +7360,23 @@
       "initializes_identity_training": false,
       "source_fit_role": "L_s",
       "identity_frozen": true,
-      "target_access": false
+      "target_access": false,
+      "status": "RUNNING",
+      "pid": 3214314,
+      "gpu": 5,
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-multi-action-risk-manysig-m48-r01/logs/diagnostic-s2026092703.log",
+      "launch_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_multi_action_risk_20261010_r01/experiments/cvs_multi_action_risk/train_worker.py",
+        "--kind",
+        "diagnostic",
+        "--row",
+        "diagnostic-s2026092703"
+      ]
     }
   ],
-  "status": "PLANNED",
+  "status": "RUNNING",
   "results_ref": "analysis.md",
   "notes": [
     "Native is clean labeled-source CE with label_smoothing=0, no EMA/pseudo/U iteration/satellite simulation.",

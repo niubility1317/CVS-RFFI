@@ -31,13 +31,13 @@
 | D23 | IX.4 | exact29/角点缓存复用与分项资源耗时 | actions.py/runtime.py | verified | CPU/CUDA focused and native integration checks; report/evidence | 不宣称隔离速度收益 |
 | D24 | 发布 | 独占输出、三seed、scratch合法性、原生完整日志 | design.py/source.py/register.py | verified | CPU/CUDA focused and native integration checks; report/evidence | E200预算不缩减 |
 | D25 | 发布 | 每row冻结→clean+6practical→独立评分→汇总登记 | evaluate.py/dispatch.py | verified | CPU/CUDA focused and native integration checks; report/evidence | 评分不回流 |
-| D26 | 发布 | 本地负测/原生smoke、独立P0P1、Git/远端读回 | checks.py/publish.py/report | implemented | 本地与独立审查通过；待远端发布读回 | 唯一launch owner/root |
+| D26 | 发布 | 本地负测/原生smoke、独立P0P1、Git/远端读回 | checks.py/publish.py/report | verified | CPU/CUDA checks; independent review; N607 preflight PASS, live processes and growing logs; Git remote OID matched | 唯一launch owner/root |
 
-实现细节、量化系数和矩阵将在首次远端训练前冻结。诊断不创建额外审批；技术错误保留产物，不因低性能停止或选择性重跑。
+实现细节、量化系数和矩阵已在首次远端运行前随提交33773918f509e78c1c0aa9f6fa36d85db099cbbe冻结。诊断不创建额外审批；技术错误保留产物，不因低性能停止或选择性重跑。
 
 ## 验证与解释边界
 
-D01–D21、D23–D25共24项已验证实现可达性；D22按设计条件延后1项（第四网络未触发）；D26远端启动待读回。正式源诊断/身份训练/目标结果仍待运行，不能把本地验证解释为效果已证实。
+D01–D21、D23–D26共25项已验证实现或发布可达性；D22按设计条件延后1项（第四网络未触发）；0项rejected，0项blocked。D26的远端预检、控制器、三seed诊断进程及日志增长已经独立读回。正式源诊断/身份训练/目标结果仍待运行，不能把本地验证解释为效果已证实。
 
 独立审查发现并修复R单包协方差令准入恒零问题；21项CPU/CUDA回归包含16次单包到达后oracle非零准入。源审计316份完整结构化文件已恢复，历史梯度归一化错误明确保留解释限制。
 
