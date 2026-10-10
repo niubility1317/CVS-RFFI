@@ -1,5 +1,15 @@
 # CV-SincNet Optimizer Workflow Contract
 
+## 逐行训练后自动测试与六种practical默认（2026-10-10）
+
+- 用户要求以后每次训练完成自动启动测试。新实验的launcher/队列须实际串联训练、合法源域选模/冻结、测试预测、独立truth-last评分、报告和登记，不只写提醒或停在SOURCE_TRAINED，也不再次等待测试指令。
+- 固定对比矩阵中，每个row完成并冻结后即进入测试队列；有资源即执行，不因其他row尚未训练完成而等待整批结束。若预登记要求跨row源域候选选择，先完成必要的source-only选择并冻结选中候选，再自动测试；不得借此对未选候选访问target。
+- Phase1默认测试保留clean对照，星地环境只测六种practical：`practical_high`、`practical_mid`、`practical_low_suburban`、`practical_high_urban`、`practical_mid_urban`、`practical_low_urban`。不再默认追加`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`。本条覆盖旧的Phase1最终测试场景默认，不改变训练增强或Phase2固定received IQ协议。
+- 每row全部预登记视图的prediction固定后，独立scorer才可连接truth。逐row结果不得影响其他健康训练、源域选模、参数或候选排序；完成后汇总实际seed数、配对差与缺项，不把不完整seed汇总冒充完整矩阵。
+- 同一row只有一个测试launch owner；恢复时先核实进程和prediction，已完成测试复用原产物，不重复启动。资源容量、checkpoint来源、数据角色与输出保护继续遵守原规则。
+- 本约定适用于后续新发布实验。当前健康运行任务保持已冻结计划；不热修改、停止、重启或追溯重测。用户明确只训练、只源诊断、只测clean或指定其他场景时按明确范围执行。
+
+
 ## 实验发布默认收尾（2026-10-01）
 
 - 用户要求每次发布实验最后默认进行测试集测试。新发布实验在既有预登记中写明测试数据、物理ID、视图/场景、逐行矩阵、指标和输出；默认完成训练（如适用）、合法源域选模/冻结、测试集预测、独立truth-last评分、同row报告及登记/Git交付，不以仅训练完成或源V指标作为最终结果。

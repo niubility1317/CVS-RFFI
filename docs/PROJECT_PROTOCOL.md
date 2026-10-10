@@ -38,6 +38,12 @@ rho_label ≤ 0.1
 
 当前统一划分语义为相对source全池`L_s/U_s/V=0.07/0.63/0.30`：有TX标签训练集、无TX标签训练集和单一source validation。三个角色均不得包含`R_t`，物理样本ID两两不交。`V`可用于source侧校准、阈值冻结和checkpoint选择，但不得反向传播、更新EMA、prototype、normalization或其他持久状态；不得再把`V`拆成`V_cal/V_select`等方法角色。Phase1可使用source clean与卫星增强训练，但这不授予Phase2访问这些样本或派生状态的权限。
 
+### 4.3.2 Phase1最终测试默认更新（2026-10-10）
+
+用户明确要求后续每次训练完成自动测试，星地环境只测六种practical。对后续新发布Phase1实验，最终测试默认采用clean对照加`practical_high`、`practical_mid`、`practical_low_suburban`、`practical_high_urban`、`practical_mid_urban`、`practical_low_urban`，覆盖4.3及4.3.1中默认必须追加三种LEO弱场景的最终测试要求。训练增强配置不因此改变，Phase2固定received IQ、support/query及单物理样本单观测规则保持。
+
+固定对比row训练完成并按预登记规则冻结后，由发布队列自动接续测试；涉及跨候选源域选择时先完成必要source-only选择。逐row所有预登记视图预测固定后独立truth-last评分，测试结果不回流其他训练或选模。既有健康运行和历史实验保持各自已冻结计划；用户明确指定的测试范围优先。
+
 ## Phase2最小数据协议
 
 ### 单物理样本单LEO接收观测
