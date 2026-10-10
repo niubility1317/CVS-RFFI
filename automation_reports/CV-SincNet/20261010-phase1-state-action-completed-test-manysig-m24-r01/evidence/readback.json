@@ -1,0 +1,228 @@
+{
+  "at": 1791597343.8395464,
+  "controller": {
+    "pid": 2897819,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_state_test_now.dispatch",
+      ""
+    ],
+    "state": "S"
+  },
+  "receipt": {
+    "status": "SUBMITTED",
+    "pid": 2897819,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_state_test_now.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/dispatcher.stdout.log",
+    "commit": "3b0a5070519cae70a6f0ccbce68b2376f8aa8a09",
+    "run_id": "20261010-phase1-state-action-completed-test-manysig-m24-r01"
+  },
+  "preflight": {
+    "status": "VERIFIED",
+    "models": 24,
+    "target_read": false,
+    "rows": [
+      "native-s2026092701",
+      "real_views-s2026092701",
+      "L-s2026092701",
+      "LT-s2026092701",
+      "L_EG-s2026092701",
+      "LT_EG-s2026092701",
+      "native-s2026092702",
+      "real_views-s2026092702",
+      "L-s2026092702",
+      "LT-s2026092702",
+      "L_EG-s2026092702",
+      "LT_EG-s2026092702",
+      "native-s2026092703",
+      "real_views-s2026092703",
+      "L-s2026092703",
+      "LT-s2026092703",
+      "L_EG-s2026092703",
+      "LT_EG-s2026092703",
+      "native-s2026092704",
+      "real_views-s2026092704",
+      "L-s2026092704",
+      "LT-s2026092704",
+      "L_EG-s2026092704",
+      "LT_EG-s2026092704"
+    ],
+    "selection": "ALL_COMPLETED_UNTESTED_AT_SNAPSHOT"
+  },
+  "queue": {
+    "active": [
+      "native-s2026092701",
+      "real_views-s2026092701",
+      "L-s2026092701",
+      "LT-s2026092701"
+    ],
+    "pending": [
+      "L_EG-s2026092701",
+      "LT_EG-s2026092701",
+      "native-s2026092702",
+      "real_views-s2026092702",
+      "L-s2026092702",
+      "LT-s2026092702",
+      "L_EG-s2026092702",
+      "LT_EG-s2026092702",
+      "native-s2026092703",
+      "real_views-s2026092703",
+      "L-s2026092703",
+      "LT-s2026092703",
+      "L_EG-s2026092703",
+      "LT_EG-s2026092703",
+      "native-s2026092704",
+      "real_views-s2026092704",
+      "L-s2026092704",
+      "LT-s2026092704",
+      "L_EG-s2026092704",
+      "LT_EG-s2026092704"
+    ],
+    "completed": [],
+    "failures": [],
+    "updated_at": 1791597340.4886792
+  },
+  "failure": null,
+  "completion": null,
+  "views_ready": true,
+  "rows": [
+    {
+      "row_id": "native-s2026092701",
+      "pid": 2898033,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/native-s2026092701.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "native-s2026092701"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": {
+        "pid": 2898033,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+          "--row",
+          "native-s2026092701",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 247,
+      "tail": [
+        "{\"row_id\": \"native-s2026092701\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 4.6615644849371165, \"truth_read\": false}"
+      ],
+      "completion": null
+    },
+    {
+      "row_id": "real_views-s2026092701",
+      "pid": 2898040,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/real_views-s2026092701.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "real_views-s2026092701"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": {
+        "pid": 2898040,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+          "--row",
+          "real_views-s2026092701",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 252,
+      "tail": [
+        "{\"row_id\": \"real_views-s2026092701\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 4.496178682078607, \"truth_read\": false}"
+      ],
+      "completion": null
+    },
+    {
+      "row_id": "L-s2026092701",
+      "pid": 2898047,
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/L-s2026092701.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "L-s2026092701"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": {
+        "pid": 2898047,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+          "--row",
+          "L-s2026092701",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 235,
+      "tail": [
+        "{\"row_id\": \"L-s2026092701\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 4.491676187957637, \"truth_read\": false}"
+      ],
+      "completion": null
+    },
+    {
+      "row_id": "LT-s2026092701",
+      "pid": 2898056,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/logs/LT-s2026092701.log",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+        "--row",
+        "LT-s2026092701"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+      "process": {
+        "pid": 2898056,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02/experiments/cvs_state_test_now/train_eval_worker.py",
+          "--row",
+          "LT-s2026092701",
+          ""
+        ],
+        "state": "R"
+      },
+      "log_bytes": 237,
+      "tail": [
+        "{\"row_id\": \"LT-s2026092701\", \"view\": \"practical_high\", \"count\": 168000, \"seconds\": 4.504218345042318, \"truth_read\": false}"
+      ],
+      "completion": null
+    }
+  ],
+  "dispatcher_tail": []
+}

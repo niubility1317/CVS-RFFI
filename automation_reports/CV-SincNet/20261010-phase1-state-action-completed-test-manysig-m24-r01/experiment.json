@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "用户：训练完的进行测试，给出测试集结果。",
   "code": {
-    "commit": "release_commit.txt at launch",
+    "commit": "3b0a5070519cae70a6f0ccbce68b2376f8aa8a09",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_state_test_now_20261010_r02"
@@ -122,7 +122,7 @@
     "local_artifact_root": "automation_reports/CV-SincNet/20261010-phase1-state-action-completed-test-manysig-m24-r01",
     "launch_command": "python -m experiments.cvs_state_test_now.publish --output local_artifacts/cvs_state_test_now_20261010_r02",
     "stop_rule": "Only affected technical failure; retain artifacts, no automatic retry, fallback or low-performance stop. No interventions on healthy existing jobs.",
-    "dispatcher_pid": 2534798,
+    "dispatcher_pid": 2897819,
     "launch_verified": "VERIFIED"
   },
   "expected_artifacts": [
@@ -197,7 +197,7 @@
       "row_id": "native-s2026092701",
       "method": "native",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 0,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -317,13 +317,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "RUNNING",
+      "pid": 2898033
     },
     {
       "row_id": "real_views-s2026092701",
       "method": "real_views",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 4,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -443,13 +444,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "RUNNING",
+      "pid": 2898040
     },
     {
       "row_id": "L-s2026092701",
       "method": "L",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 7,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -569,13 +571,14 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "RUNNING",
+      "pid": 2898047
     },
     {
       "row_id": "LT-s2026092701",
       "method": "LT",
       "purpose": "frozen_completed_identity_test",
-      "gpu": null,
+      "gpu": 5,
       "config": {
         "schema": "multi_state_action_v1",
         "run_id": "20261009-phase1-multi-state-action-manysig-m36-r02",
@@ -695,7 +698,8 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "RUNNING",
+      "pid": 2898056
     },
     {
       "row_id": "L_EG-s2026092701",
@@ -821,7 +825,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_EG-s2026092701",
@@ -947,7 +951,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "native-s2026092702",
@@ -1073,7 +1077,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "real_views-s2026092702",
@@ -1199,7 +1203,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "L-s2026092702",
@@ -1325,7 +1329,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "LT-s2026092702",
@@ -1451,7 +1455,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "L_EG-s2026092702",
@@ -1577,7 +1581,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_EG-s2026092702",
@@ -1703,7 +1707,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "native-s2026092703",
@@ -1829,7 +1833,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "real_views-s2026092703",
@@ -1955,7 +1959,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "L-s2026092703",
@@ -2081,7 +2085,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "LT-s2026092703",
@@ -2207,7 +2211,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "L_EG-s2026092703",
@@ -2333,7 +2337,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_EG-s2026092703",
@@ -2459,7 +2463,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "native-s2026092704",
@@ -2585,7 +2589,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "real_views-s2026092704",
@@ -2711,7 +2715,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "L-s2026092704",
@@ -2837,7 +2841,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "LT-s2026092704",
@@ -2963,7 +2967,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "L_EG-s2026092704",
@@ -3089,7 +3093,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     },
     {
       "row_id": "LT_EG-s2026092704",
@@ -3215,7 +3219,7 @@
         "prediction/predictions.npz",
         "scores.json"
       ],
-      "status": "QUEUED_AFTER_SOURCE_AUDITS"
+      "status": "QUEUED"
     }
   ],
   "notes": [
@@ -3223,7 +3227,7 @@
     "Independent test root does not modify the healthy original dispatcher, which retains its full-matrix final test plan. Any later duplicate predictions are confirmatory, never used to choose a run.",
     "Same original10 views and seeds; generated weak views use identical deterministic CPU stream and physical ordering."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "test_completion_plan": {
     "rows": 24,
     "views": [
@@ -3438,5 +3442,5 @@
     "source_admission": "Report every branch/condition vs zero and directedRXmean; efficacy never implied by positive hskill alone. Online independent calibration gates actual virtual loss; no target access.",
     "no_early_stopping": true
   },
-  "latest_evidence": "evidence/checkpoint_order_recovery.json"
+  "latest_evidence": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\local_artifacts\\cvs_state_test_now_20261010_r02\\readback.json"
 }

@@ -7,3 +7,7 @@
 本地聚焦检查PASS：快照变更拒绝、缺预测truth关闭、六组配对及独立路径。独立P0/P1审查PASS，无阻断；登记validate --launch-ready为VALID。
 
 首次发布FAILED于本地REMOTE字符串编译：命中compileall的check=True。独立读回确认远端release/run不存在，仅归档已传。修复为精确换行check赋值位置；新release r02保留旧归档，未启动的run ID不变；增加REMOTE实际编译回归PASS。
+
+VERIFIED：24个真实模型无query预检通过；控制器PID 2897819。已完成预测 0/24，状态 RUNNING。
+
+VERIFIED：24个真实模型无query预检通过；控制器PID 2897819。已完成预测 0/24，状态 RUNNING。
