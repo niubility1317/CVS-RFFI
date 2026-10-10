@@ -1,0 +1,16 @@
+[
+  {
+    "variant": "cvresnet18_1d",
+    "parameters": 7693958,
+    "ce": 1.9378292560577393,
+    "batch": 128,
+    "status": "PASS"
+  },
+  {
+    "variant": "cvresnet18_2d",
+    "parameters": 22346630,
+    "ce": 1.9684116840362549,
+    "batch": 128,
+    "status": "PASS"
+  }
+]

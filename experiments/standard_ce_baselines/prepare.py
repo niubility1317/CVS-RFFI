@@ -8,6 +8,7 @@ def main():
     old=read(ROOT/'experiments/cvs_clean_design/configs/experiment_spec.json')
     previous=read(ROOT/'experiments/cvs_sixscene_eval/configs/launch_spec.json')
     spec=copy.deepcopy(old)
+    spec.pop('registered_at',None)
     spec.update(run_id=RUN,group_id='phase1-standard-fullwidth-ce-baselines',kind='comparison',
         display_name='常见大容量1D/2D网络纯CE：十二基准与两种CVS四seed逐行自动clean测试',
         description='Twelve common/full-width architecture controls plus native and frozen residual CVS; scratch CE only; fixed E200; each row predicts clean before separate scoring.',
