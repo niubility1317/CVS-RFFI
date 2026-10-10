@@ -66,9 +66,17 @@ def _equal(left, right):
 @contextmanager
 def time_contribution_off(model):
     """Zero exactly the final time embedding; leave all other branch inputs intact."""
-    points = [(name, module) for name, module in model.named_modules() if name.split('.')[-1] == 't_proj']
+    # The native dual wrapper retains a domain backbone even when all domain
+    # losses are disabled. Its t_proj is not part of the identity dependency
+    # probe. Restrict resolution to identity before checking uniqueness; a
+    # standalone identity adapter (used by diagnostics) is already that scope.
+    identity = getattr(model, 'id_backbone', model)
+    prefix = 'id_backbone.' if identity is not model else ''
+    points = [(prefix + name, module) for name, module in identity.named_modules()
+              if name.split('.')[-1] == 't_proj']
     if len(points) != 1:
-        raise ValueError('Expected exactly one downstream time t_proj for dependency probe')
+        raise ValueError('Expected exactly one identity downstream time t_proj for dependency probe; '
+                         f'found {[name for name, _ in points]}')
     name, module = points[0]
     calls = {'count': 0, 'hook': name}
     def zero_time(_module, _inputs, output):
@@ -187,7 +195,7 @@ def _evaluate_source_stress(model, loader, device, c, output):
                 artificial_curvature_pressure=name == 'curvature_pressure',
                 quality_strata=_quality_layers(logits, y, rx, day, q))
     result['time_dependency_probe'] = dict(scope='full source V clean only', hook=probe_hook,
-        operation='zero downstream t_proj output; frequency, PA and reference inputs unchanged',
+        operation='zero identity downstream t_proj output; domain, frequency, PA and reference inputs unchanged',
         interpretation='dependency probe; feature intervention may be out of distribution, not causal contribution',
         full=metrics(full, y, rx, day), time_off=metrics(off, y, rx, day),
         paired_margin_difference_mean=float(difference.mean()),

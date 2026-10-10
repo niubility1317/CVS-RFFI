@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "actual_model": "DualCVSincNetDisentangle",
+  "old_global_probe_match_count": 2,
+  "identity_probe_hook": "id_backbone.encoder.core.id_backbone.t_proj",
+  "probe_calls_per_forward": 1,
+  "max_logit_change": 2.404846668243408,
+  "restored_forward_exact": true,
+  "frequency_PA_reference_outputs_unchanged": true,
+  "all_state_modes_and_hooks_unchanged": true,
+  "exception_cleanup": true,
+  "missing_identity_rejected": true,
+  "source_views": 8,
+  "full_V_fixture_count": null,
+  "source_validation_path": "all views then expected incomplete-V rejection",
+  "target_access": false
+}
