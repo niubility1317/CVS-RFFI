@@ -57,3 +57,4 @@
 
 远端日志目录：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/logs/`。每行自动训练→固定最终轮→clean预测→独立truth-last评分；不需要再次发测试指令。
 
+随后实际native args读回：12行use_unlabeled/use_ema_teacher/use_concat_sat_channel_aug均为false；各行已完成2至3轮，最近epoch_time_s为31.95至37.62秒，train_loss有限，auxiliary_training_seconds=0。按当前共享负载估算整批22:30左右结束，不是完成保证。
