@@ -1,0 +1,15 @@
+{
+  "status": "PASSED",
+  "reviewer": "/root/stochastic_forward_audit",
+  "p0": 0,
+  "p1": 0,
+  "scope": [
+    "population risk decomposition",
+    "source group alignment",
+    "P0 and fixed E40 provenance",
+    "V no fit",
+    "read-only state",
+    "CPU-only package"
+  ],
+  "interpretation": "measurements use P0 anchor; contrasts use control anchor and are incremental diagnostics, not actual training risk"
+}

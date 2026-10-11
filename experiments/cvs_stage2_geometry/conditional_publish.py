@@ -71,7 +71,8 @@ def inspect(output):
 
 def publish(output,run_id=RUN,release_name=RELEASE,
             module='experiments.cvs_stage2_geometry.conditional_audit',
-            checks_module='experiments.cvs_stage2_geometry.conditional_checks'):
+            checks_module='experiments.cvs_stage2_geometry.conditional_checks',extra_paths=()):
+    paths=list(dict.fromkeys([*PATHS,*extra_paths]))
     out=Path(output);out.mkdir(parents=True,exist_ok=False)
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=d.ROOT,text=True).strip()
     branch=subprocess.check_output(['git','branch','--show-current'],cwd=d.ROOT,text=True).strip()
@@ -79,10 +80,10 @@ def publish(output,run_id=RUN,release_name=RELEASE,
         'ls-remote','origin','refs/heads/'+branch],cwd=d.ROOT,text=True).split()[0]
     if remote!=commit:raise ValueError('Remote differs from HEAD')
     record='automation_reports/CV-SincNet/'+run_id
-    dirty=subprocess.check_output(['git','status','--porcelain','--',*PATHS,record],cwd=d.ROOT,text=True)
+    dirty=subprocess.check_output(['git','status','--porcelain','--',*paths,record],cwd=d.ROOT,text=True)
     if dirty.strip():raise ValueError('Uncommitted release paths')
     archive=out/(release_name+'.tar.gz')
-    blob=subprocess.check_output(['git','archive','--format=tar',commit,'--',*PATHS],cwd=d.ROOT)
+    blob=subprocess.check_output(['git','archive','--format=tar',commit,'--',*paths],cwd=d.ROOT)
     with tarfile.open(fileobj=io.BytesIO(blob)) as source,tarfile.open(archive,'w:gz') as target:
         for member in source.getmembers():
             if member.isfile() and Path(member.name).suffix in {'.py','.json','.md'}:
