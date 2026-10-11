@@ -32,3 +32,5 @@ run_id：`20261011-phase1-ce-epoch12-15-manysig-m6-r01`。状态 LOCAL_VERIFIED�
 |E12|1|3|5|
 
 独立证据：[launch_readback.json](evidence/launch_readback.json)。源训练后逐行自动 clean 测试及评分，无须再发测试指令。
+
+随后服务器 2026-10-11T23:13:23.103328+08:00 再次核实：六行均由 1 轮增长到 3 轮，日志各增长约 10.7KB，loss 有限，无报错。最近每轮实测约 31 至 33 秒。按客户端北京时间粗估 E12 训练与测试约 23:19 至 23:21，E15 约 23:21 至 23:23；共享负载可能改变时间，未作完成保证。证据：[startup_progress.json](evidence/startup_progress.json)。
