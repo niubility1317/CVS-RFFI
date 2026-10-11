@@ -134,10 +134,10 @@
     "20261011-phase1-stage2-soft-metric-source-manysig-m3-r01"
   ],
   "replaces_run_id": null,
-  "status": "LOCAL_VERIFIED",
+  "status": "SOURCE_DIAGNOSTIC_COMPLETE",
   "authorization": "按用户报告及84%活动目标继续源域研发；解释TX×RX交互，固定预测矩阵不使用target结果。",
   "code": {
-    "commit": "ca9b06da74ca5dcea1d27a5e7ce51f7f8a6472ac",
+    "commit": "a05a69319a46acc35d592077bdc99c66581c173c",
     "commit_note": "Preregistration baseline; exact execution commit read from immutable release",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -212,7 +212,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-conditional-transport-source-manysig-m3-r01/s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_conditional_transport_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
-      "status": "LOCAL_VERIFIED"
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "s2026092702",
@@ -241,7 +241,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-conditional-transport-source-manysig-m3-r01/s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_conditional_transport_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
-      "status": "LOCAL_VERIFIED"
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "s2026092703",
@@ -270,12 +270,28 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-conditional-transport-source-manysig-m3-r01/s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_conditional_transport_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
-      "status": "LOCAL_VERIFIED"
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     }
   ],
   "test_completion_plan": {
     "target_access": false,
     "scope": "source-only diagnostic, no new identity checkpoint or target predictions",
     "automatic_test": false
-  }
+  },
+  "execution_commit": "a05a69319a46acc35d592077bdc99c66581c173c",
+  "completion": {
+    "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+    "rows_completed": 3,
+    "identity_updates": 0,
+    "new_identity_forwards": 0,
+    "target_access": false,
+    "validation_fit": false,
+    "validation_input": false,
+    "affine_fits": 1080,
+    "primary_advanced": false,
+    "elapsed_seconds": 5.759402662049979,
+    "execution_commit": "a05a69319a46acc35d592077bdc99c66581c173c"
+  },
+  "source_advancement": "NOT_MET",
+  "updated_at_unix": 1791705839.702699
 }
