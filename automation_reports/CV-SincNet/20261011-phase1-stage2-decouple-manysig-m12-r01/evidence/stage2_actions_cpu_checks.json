@@ -1,0 +1,294 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "contract": {
+    "format_version": 1,
+    "input_state_dim": 40,
+    "random_code_dim": 8,
+    "hidden": 48,
+    "network": "LayerNorm(state)+code; 48-SiLU-48-SiLU-4",
+    "inputs_excluded": [
+      "identity_embedding",
+      "label",
+      "RX",
+      "day",
+      "student_loss"
+    ],
+    "objective": "maximize fixed-parent true-IQ logit-margin drop; fixed classifier scale 30",
+    "linear": {
+      "delays_samples": [
+        1,
+        3
+      ],
+      "complex_tap_component_limit": 0.06,
+      "boundary": "causal zero padding",
+      "rms_renormalization": false
+    },
+    "temporal": {
+      "phase_limit_rad": 0.25,
+      "cfo_limit_hz": 3120.0,
+      "phase_noise_limit_rad": 0.025,
+      "curvature_hz_s": 0.0,
+      "phase_process": "three smooth sine modes; clipped Gaussian coefficients",
+      "parameter_schema": [
+        "phase_rad",
+        "CFO_Hz",
+        "phase_noise_rad",
+        "curvature_Hz_s",
+        "delay_samples"
+      ]
+    },
+    "fractional_delay": {
+      "enabled": true,
+      "limit_samples": 0.25,
+      "padding_each_side_samples": 256,
+      "operator": "zero-pad 256 each side, FFT phase shift, crop original central 256",
+      "zero_delay": "exact value identity with differentiable delay path",
+      "boundary_assumption": "IQ outside observed 256-sample window is zero; sinc interpolation may ring near truncated edges",
+      "scope": "new fixed mild timing perturbation, not satellite/channel simulation or calibrated source error"
+    },
+    "random": "explicit private CPU generators; no global RNG consumption",
+    "fit": {
+      "passes_per_network": 2,
+      "batch_size": 128,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "weight_decay": 0.0001
+    },
+    "online_fit": false,
+    "frozen_during_identity_training": true
+  },
+  "fit_diagnostics": {
+    "seed": 2026092701,
+    "source_packets": 17,
+    "unique_physical_ids": 17,
+    "parent_clean_forward_batches": 0,
+    "parent_augmented_forward_batches": 12,
+    "passes_per_network": 2,
+    "batch_size": 6,
+    "branches": {
+      "linear": {
+        "passes": [
+          {
+            "pass_index": 1,
+            "samples": 17,
+            "unique_physical_ids": 17,
+            "steps": 3,
+            "mean_parent_margin_drop": 0.0021047311670639936,
+            "mean_action_gradient_norm": 0.5652188360691071,
+            "parameter_min": [
+              -0.03408791497349739,
+              -0.06476331502199173,
+              -0.05109105631709099,
+              -0.04785677418112755
+            ],
+            "parameter_max": [
+              0.001754534780047834,
+              -0.009134075604379177,
+              -0.00046390105853788555,
+              0.02284237928688526
+            ]
+          },
+          {
+            "pass_index": 2,
+            "samples": 17,
+            "unique_physical_ids": 17,
+            "steps": 3,
+            "mean_parent_margin_drop": 0.004010558128356934,
+            "mean_action_gradient_norm": 0.5303195615609487,
+            "parameter_min": [
+              -0.0379364937543869,
+              -0.06710518151521683,
+              -0.06513036042451859,
+              -0.044504228979349136
+            ],
+            "parameter_max": [
+              -0.009908407926559448,
+              0.01144011877477169,
+              -0.014011738821864128,
+              0.017863159999251366
+            ]
+          }
+        ],
+        "optimizer_steps": 6,
+        "total_samples": 34,
+        "elapsed_seconds": 0.04002839999157004,
+        "parameters": 4980
+      },
+      "temporal": {
+        "passes": [
+          {
+            "pass_index": 1,
+            "samples": 17,
+            "unique_physical_ids": 17,
+            "steps": 3,
+            "mean_parent_margin_drop": 0.0020588496152092427,
+            "mean_action_gradient_norm": 1.640778640906016,
+            "parameter_min": [
+              -0.012457209639251232,
+              -5.060880184173584,
+              0.012114809826016426,
+              0.0,
+              -0.019144751131534576
+            ],
+            "parameter_max": [
+              0.000930200214497745,
+              117.53343963623047,
+              0.012475919909775257,
+              0.0,
+              -0.0070952665992081165
+            ]
+          },
+          {
+            "pass_index": 2,
+            "samples": 17,
+            "unique_physical_ids": 17,
+            "steps": 3,
+            "mean_parent_margin_drop": -0.0011586020974551931,
+            "mean_action_gradient_norm": 1.4822402993837993,
+            "parameter_min": [
+              -0.010562245734035969,
+              -18.03973960876465,
+              0.012161171063780785,
+              0.0,
+              -0.024317974224686623
+            ],
+            "parameter_max": [
+              0.004764662589877844,
+              111.61273956298828,
+              0.01248798705637455,
+              0.0,
+              -0.012136485427618027
+            ]
+          }
+        ],
+        "optimizer_steps": 6,
+        "total_samples": 34,
+        "elapsed_seconds": 0.0309183000063058,
+        "parameters": 4980
+      }
+    },
+    "parent_parameters_and_buffers_unchanged": true,
+    "elapsed_seconds": 1.6542650999908801
+  },
+  "parent_modes_parameters_gradients_preserved": true,
+  "private_rng": true,
+  "deterministic_fit": true,
+  "shared_frozen_actions": true,
+  "repeated_fit_max_parameter_difference": 0.0,
+  "repeated_fit_parameter_tolerance": 0.0,
+  "transform_parent_forwards": 0,
+  "timing": {
+    "zero_identity": true,
+    "zero_delay_gradient_nonzero": true,
+    "sinusoid_interior_max_error": 0.0011190406264123265,
+    "constant_interior_max_error": 0.0018775823489745047,
+    "boundary_far_tail_max": 0.0009207119546699974,
+    "signed_delay_gradient_finite_difference": true,
+    "linear_amplitude_bound": true
+  },
+  "sample_transform_stats": [
+    {
+      "kind": "linear",
+      "samples": 17,
+      "finite": true,
+      "within_registered_bounds": true,
+      "parameter_min": [
+        -0.054439060389995575,
+        -0.07068449258804321,
+        -0.0674838125705719,
+        -0.04913928359746933
+      ],
+      "parameter_max": [
+        -0.0059971935115754604,
+        0.011507456190884113,
+        -0.0030834167264401913,
+        0.018675751984119415
+      ],
+      "physical_parameter_abs_mean": [
+        0.0017771351849660277,
+        0.001858192728832364,
+        0.0027712639421224594,
+        0.0012870078207924962
+      ]
+    },
+    {
+      "kind": "linear",
+      "samples": 17,
+      "finite": true,
+      "within_registered_bounds": true,
+      "parameter_min": [
+        -0.04320600628852844,
+        -0.04328230395913124,
+        -0.06963387131690979,
+        -0.05517248064279556
+      ],
+      "parameter_max": [
+        -0.012460104189813137,
+        0.006089857779443264,
+        -0.01273177657276392,
+        0.01705801486968994
+      ],
+      "physical_parameter_abs_mean": [
+        0.0017223655013367534,
+        0.0016642974223941565,
+        0.002746017649769783,
+        0.0009516120189800858
+      ]
+    },
+    {
+      "kind": "temporal",
+      "samples": 17,
+      "finite": true,
+      "within_registered_bounds": true,
+      "parameter_min": [
+        -0.009135649539530277,
+        -41.6130256652832,
+        0.012206248007714748,
+        0.0,
+        -0.023934198543429375
+      ],
+      "parameter_max": [
+        0.0034285925794392824,
+        152.70687866210938,
+        0.012428643181920052,
+        0.0,
+        -0.013483607210218906
+      ],
+      "physical_parameter_abs_mean": [
+        0.003939071670174599,
+        45.51311111450195,
+        0.012321221642196178,
+        0.0,
+        0.018822401762008667
+      ]
+    },
+    {
+      "kind": "temporal",
+      "samples": 17,
+      "finite": true,
+      "within_registered_bounds": true,
+      "parameter_min": [
+        -0.01047080010175705,
+        -34.02864074707031,
+        0.012104920111596584,
+        0.0,
+        -0.023860469460487366
+      ],
+      "parameter_max": [
+        0.002902187407016754,
+        111.3115234375,
+        0.012453683651983738,
+        0.0,
+        -0.01425527036190033
+      ],
+      "physical_parameter_abs_mean": [
+        0.004293545614928007,
+        54.863136291503906,
+        0.012254800647497177,
+        0.0,
+        0.019878963008522987
+      ]
+    }
+  ]
+}

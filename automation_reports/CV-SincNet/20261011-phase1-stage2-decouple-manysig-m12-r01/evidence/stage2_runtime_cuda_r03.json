@@ -1,0 +1,172 @@
+{
+  "objective": {
+    "drop_clean_direct_gradient_zero": true,
+    "drop_augmented_gradient_nonzero": true,
+    "receiver_strong_direct_gradient_zero": true,
+    "receiver_weak_gradient_nonzero": true,
+    "keep_full_batch_denominator": true,
+    "parent_wrong_no_imitation": true,
+    "pure_ce_objective": true,
+    "relation_action_positions_supported": true
+  },
+  "schedule": {
+    "full_8880_stream_equal_across_four_arms": true,
+    "counts": {
+      "C0": {
+        "linear": 1110,
+        "temporal": 1110,
+        "relation": 1110
+      },
+      "C1": {
+        "linear": 1110,
+        "temporal": 1110,
+        "relation": 1110
+      },
+      "C2": {
+        "linear": 1110,
+        "temporal": 1110,
+        "relation": 1110
+      },
+      "C3": {
+        "linear": 1110,
+        "temporal": 1110,
+        "relation": 1110
+      }
+    },
+    "learning_rate_endpoints": true,
+    "shared_sampling_is_not_identity_auxiliary": true
+  },
+  "actual_graph": {
+    "device": "cuda:0",
+    "hardware": "NVIDIA GeForce RTX 5070 Ti",
+    "forward_identity_matches_eval": true,
+    "identity_only_skips_domain": true,
+    "classifier_scale": 30.0,
+    "identity_parameters": 177025,
+    "group_parameters": {
+      "encoder": 131100,
+      "fusion_head": 45925
+    },
+    "parameter_groups": {
+      "encoder": [
+        "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+        "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+        "id_backbone.encoder.core.id_backbone.time_fuse.0.weight",
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.weight",
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.bias",
+        "id_backbone.encoder.core.id_backbone.t1.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t3.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f1.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f2.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f2.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f3.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f3.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b1.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b2.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b3.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.fuse.0.weight",
+        "id_backbone.encoder.core.id_backbone.fuse.0.bias"
+      ],
+      "fusion_head": [
+        "id_backbone.encoder.response_gain",
+        "id_backbone.encoder.core.id_backbone.t_proj.weight",
+        "id_backbone.encoder.core.id_backbone.t_proj.bias",
+        "id_backbone.encoder.core.id_backbone.f_proj.weight",
+        "id_backbone.encoder.core.id_backbone.f_proj.bias",
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.weight",
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.bias",
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.weight",
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.bias",
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.cls_head.gain",
+        "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+        "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+        "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+        "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias",
+        "id_backbone.encoder.response_projection.0.weight",
+        "id_backbone.encoder.response_projection.0.bias",
+        "id_backbone.encoder.response_projection.2.weight",
+        "id_backbone.encoder.response_projection.2.bias",
+        "id_backbone.encoder.response_projection.3.weight",
+        "id_backbone.encoder.response_projection.3.bias"
+      ]
+    },
+    "parameters_missing_gradient": [],
+    "fusion_parameters_misclassified": [],
+    "nonzero_gradient_parameter_count": 67,
+    "changed_parameter_count": 65,
+    "domain_parameters_and_buffers_unchanged": true,
+    "frozen_actions_unchanged": true,
+    "receiver_encoder_gradient_norm": 1.8345164060592651,
+    "receiver_strong_logit_direct_gradient_zero": true,
+    "receiver_weak_logit_gradient_nonzero": true,
+    "actual_same_batch_eval_margin_trajectory": {
+      "clean": {
+        "before": -3.2215731143951416,
+        "after": -2.9601123332977295,
+        "difference": 0.2614607810974121,
+        "accuracy_before": 0.1640625,
+        "accuracy_after": 0.1640625
+      },
+      "strong": {
+        "before": -1.9361467361450195,
+        "after": -1.7971826791763306,
+        "difference": 0.13896405696868896,
+        "accuracy_before": 0.3125,
+        "accuracy_after": 0.3125
+      },
+      "weak": {
+        "before": -4.583111763000488,
+        "after": -4.197454452514648,
+        "difference": 0.38565731048583984,
+        "accuracy_before": 0.0,
+        "accuracy_after": 0.0
+      }
+    },
+    "full_batch_clean": 128,
+    "action_batch": 32,
+    "loss": 4.7832231521606445,
+    "weighted_loss": {
+      "ce": 3.1961750984191895,
+      "keep": 0.10000000149011612,
+      "aug_ce": 1.066314458847046,
+      "drop": 0.16746942698955536,
+      "receiver": 0.25326380133628845
+    },
+    "step_seconds": 2.9650338999927044,
+    "peak_cuda_allocated_bytes": 232662016,
+    "peak_cuda_reserved_bytes": 241172480,
+    "scope": "Synthetic architecture, one integration update; no source/target samples or legitimate parent loaded"
+  },
+  "status": "PASS",
+  "target_access": false
+}

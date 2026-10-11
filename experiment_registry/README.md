@@ -8,6 +8,8 @@
 - [完整目录CSV](catalog.csv) · [结构化目录](catalog.jsonl) · [覆盖与缺项](coverage.json)
 - 通过show的`--section artifacts/facts`读取该条目的路径或配置出处；细目按记录压缩保存于details/，不扫描全库。
 
+- [第二阶段多解耦 C0–C3 三种子，E40，clean-only](../automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/report.md)（2026-10-11，状态以原记录为准）
+
 ## 登记规模
 
 |记录类型|数量|

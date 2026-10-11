@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "native_center_crop_and_complex_rms_exact": true,
+  "actual_dataset_order_and_opaque_ids_exact": true,
+  "metadata_rx_day_domain_preserved": true,
+  "parent_state_and_mode_preserved": true,
+  "source_L_only_parent_statistics": true,
+  "source_V_no_parent_forward_or_state_fit": true,
+  "unlabeled_sample_reads": 0,
+  "target_and_role_mismatch_rejected_before_caching": true,
+  "cached_validation_is_sequential_and_no_drop": true,
+  "validation_item_cannot_mutate_cache": true,
+  "cached_validation_preserves_global_rng": true,
+  "production_counts": {
+    "L_s": 6300,
+    "V": 27000
+  }
+}

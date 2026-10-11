@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "rows": 12,
+  "seeds": 3,
+  "per_gpu_limit": 4,
+  "clean_only": true,
+  "truth_last_rejection": true,
+  "checkpoint_parent_and_budget": true,
+  "no_target_feedback": true,
+  "paired_summary": true,
+  "partial_seed_not_complete": true,
+  "synthetic_full_matrix_scored": true
+}
