@@ -1,0 +1,38 @@
+{
+  "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
+  "read_at": 1791732052.8253658,
+  "status": "PARTIAL",
+  "completed_rows": [],
+  "missing_rows": [
+    "SSL-s2026092701",
+    "SAM_SSL-s2026092701",
+    "PHYS-s2026092701",
+    "SAM_PHYS-s2026092701",
+    "RANK-s2026092701",
+    "SAM_RANK-s2026092701",
+    "SSL-s2026092702",
+    "SAM_SSL-s2026092702",
+    "PHYS-s2026092702",
+    "SAM_PHYS-s2026092702",
+    "RANK-s2026092702",
+    "SAM_RANK-s2026092702",
+    "SSL-s2026092703",
+    "SAM_SSL-s2026092703",
+    "PHYS-s2026092703",
+    "SAM_PHYS-s2026092703",
+    "RANK-s2026092703",
+    "SAM_RANK-s2026092703"
+  ],
+  "summary": [],
+  "records": [],
+  "day_records": [],
+  "parent_records": [],
+  "resources": [],
+  "complete_arms_reaching_84": [],
+  "checks": {
+    "confusion_recount": true,
+    "source_config_budget": true,
+    "row_aggregate_agreement": false
+  },
+  "target_feedback_to_training": false
+}

@@ -1,0 +1,647 @@
+{
+  "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
+  "read_at": 1791732052.8253658,
+  "queue": {
+    "active": [
+      "SSL-s2026092701",
+      "SAM_SSL-s2026092701",
+      "PHYS-s2026092701",
+      "SAM_PHYS-s2026092701",
+      "RANK-s2026092701",
+      "SAM_RANK-s2026092701",
+      "SSL-s2026092702",
+      "SAM_SSL-s2026092702",
+      "PHYS-s2026092702",
+      "SAM_PHYS-s2026092702",
+      "RANK-s2026092702",
+      "SAM_RANK-s2026092702",
+      "SSL-s2026092703",
+      "SAM_SSL-s2026092703",
+      "PHYS-s2026092703",
+      "SAM_PHYS-s2026092703",
+      "RANK-s2026092703",
+      "SAM_RANK-s2026092703"
+    ],
+    "pending": [],
+    "completed": [],
+    "failures": [],
+    "max_total_processes_per_GPU": 3,
+    "updated_at": 1791732050.9482083
+  },
+  "failure": null,
+  "completion": null,
+  "rows": [
+    {
+      "row_id": "SSL-s2026092701",
+      "process": {
+        "pid": 54219,
+        "start_ticks": 97929648,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SSL-s2026092701"
+        ],
+        "gpu": "6"
+      },
+      "launch": {
+        "row_id": "SSL-s2026092701",
+        "pid": 54219,
+        "gpu": 6,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SSL-s2026092701"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SSL-s2026092701.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "SAM_SSL-s2026092701",
+      "process": {
+        "pid": 54306,
+        "start_ticks": 97929980,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_SSL-s2026092701"
+        ],
+        "gpu": "7"
+      },
+      "launch": {
+        "row_id": "SAM_SSL-s2026092701",
+        "pid": 54306,
+        "gpu": 7,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_SSL-s2026092701"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SAM_SSL-s2026092701.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "process": {
+        "pid": 54505,
+        "start_ticks": 97930313,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "PHYS-s2026092701"
+        ],
+        "gpu": "7"
+      },
+      "launch": {
+        "row_id": "PHYS-s2026092701",
+        "pid": 54505,
+        "gpu": 7,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "PHYS-s2026092701"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/PHYS-s2026092701.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "SAM_PHYS-s2026092701",
+      "process": {
+        "pid": 54645,
+        "start_ticks": 97930645,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_PHYS-s2026092701"
+        ],
+        "gpu": "6"
+      },
+      "launch": {
+        "row_id": "SAM_PHYS-s2026092701",
+        "pid": 54645,
+        "gpu": 6,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_PHYS-s2026092701"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SAM_PHYS-s2026092701.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "RANK-s2026092701",
+      "process": {
+        "pid": 54804,
+        "start_ticks": 97930980,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "RANK-s2026092701"
+        ],
+        "gpu": "4"
+      },
+      "launch": {
+        "row_id": "RANK-s2026092701",
+        "pid": 54804,
+        "gpu": 4,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "RANK-s2026092701"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/RANK-s2026092701.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "SAM_RANK-s2026092701",
+      "process": {
+        "pid": 54889,
+        "start_ticks": 97931314,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_RANK-s2026092701"
+        ],
+        "gpu": "5"
+      },
+      "launch": {
+        "row_id": "SAM_RANK-s2026092701",
+        "pid": 54889,
+        "gpu": 5,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_RANK-s2026092701"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SAM_RANK-s2026092701.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "SSL-s2026092702",
+      "process": {
+        "pid": 54973,
+        "start_ticks": 97931646,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SSL-s2026092702"
+        ],
+        "gpu": "0"
+      },
+      "launch": {
+        "row_id": "SSL-s2026092702",
+        "pid": 54973,
+        "gpu": 0,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SSL-s2026092702"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SSL-s2026092702.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "SAM_SSL-s2026092702",
+      "process": {
+        "pid": 55057,
+        "start_ticks": 97931978,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_SSL-s2026092702"
+        ],
+        "gpu": "1"
+      },
+      "launch": {
+        "row_id": "SAM_SSL-s2026092702",
+        "pid": 55057,
+        "gpu": 1,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_SSL-s2026092702"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SAM_SSL-s2026092702.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "process": {
+        "pid": 55141,
+        "start_ticks": 97932312,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "PHYS-s2026092702"
+        ],
+        "gpu": "2"
+      },
+      "launch": {
+        "row_id": "PHYS-s2026092702",
+        "pid": 55141,
+        "gpu": 2,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "PHYS-s2026092702"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/PHYS-s2026092702.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "SAM_PHYS-s2026092702",
+      "process": {
+        "pid": 55315,
+        "start_ticks": 97932644,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_PHYS-s2026092702"
+        ],
+        "gpu": "3"
+      },
+      "launch": {
+        "row_id": "SAM_PHYS-s2026092702",
+        "pid": 55315,
+        "gpu": 3,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_PHYS-s2026092702"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SAM_PHYS-s2026092702.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "RANK-s2026092702",
+      "process": {
+        "pid": 55716,
+        "start_ticks": 97932977,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "RANK-s2026092702"
+        ],
+        "gpu": "6"
+      },
+      "launch": {
+        "row_id": "RANK-s2026092702",
+        "pid": 55716,
+        "gpu": 6,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "RANK-s2026092702"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/RANK-s2026092702.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "SAM_RANK-s2026092702",
+      "process": {
+        "pid": 55800,
+        "start_ticks": 97933306,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_RANK-s2026092702"
+        ],
+        "gpu": "7"
+      },
+      "launch": {
+        "row_id": "SAM_RANK-s2026092702",
+        "pid": 55800,
+        "gpu": 7,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_RANK-s2026092702"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SAM_RANK-s2026092702.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "SSL-s2026092703",
+      "process": {
+        "pid": 55884,
+        "start_ticks": 97933635,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SSL-s2026092703"
+        ],
+        "gpu": "1"
+      },
+      "launch": {
+        "row_id": "SSL-s2026092703",
+        "pid": 55884,
+        "gpu": 1,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SSL-s2026092703"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SSL-s2026092703.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "SAM_SSL-s2026092703",
+      "process": {
+        "pid": 55968,
+        "start_ticks": 97933962,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_SSL-s2026092703"
+        ],
+        "gpu": "3"
+      },
+      "launch": {
+        "row_id": "SAM_SSL-s2026092703",
+        "pid": 55968,
+        "gpu": 3,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_SSL-s2026092703"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SAM_SSL-s2026092703.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "process": {
+        "pid": 56052,
+        "start_ticks": 97934294,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "PHYS-s2026092703"
+        ],
+        "gpu": "4"
+      },
+      "launch": {
+        "row_id": "PHYS-s2026092703",
+        "pid": 56052,
+        "gpu": 4,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "PHYS-s2026092703"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/PHYS-s2026092703.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "SAM_PHYS-s2026092703",
+      "process": {
+        "pid": 56136,
+        "start_ticks": 97934627,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_PHYS-s2026092703"
+        ],
+        "gpu": "5"
+      },
+      "launch": {
+        "row_id": "SAM_PHYS-s2026092703",
+        "pid": 56136,
+        "gpu": 5,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_PHYS-s2026092703"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SAM_PHYS-s2026092703.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "RANK-s2026092703",
+      "process": {
+        "pid": 56220,
+        "start_ticks": 97934958,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "RANK-s2026092703"
+        ],
+        "gpu": "0"
+      },
+      "launch": {
+        "row_id": "RANK-s2026092703",
+        "pid": 56220,
+        "gpu": 0,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "RANK-s2026092703"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/RANK-s2026092703.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "SAM_RANK-s2026092703",
+      "process": {
+        "pid": 56304,
+        "start_ticks": 97935291,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_RANK-s2026092703"
+        ],
+        "gpu": "2"
+      },
+      "launch": {
+        "row_id": "SAM_RANK-s2026092703",
+        "pid": 56304,
+        "gpu": 2,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_rx_sam.dispatch",
+          "--worker",
+          "SAM_RANK-s2026092703"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SAM_RANK-s2026092703.log"
+      },
+      "completion": null
+    }
+  ]
+}

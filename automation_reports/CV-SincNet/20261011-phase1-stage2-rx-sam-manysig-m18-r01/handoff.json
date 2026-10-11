@@ -3,8 +3,16 @@
   "execution_commit": "f73d4aa3046f41d4dd3c4d56005af538e9f703da",
   "dispatcher_pid": 54143,
   "workers": 18,
-  "next": "Read live same18PIDs; never republish. Per-row auto clean afterfinal40. Collect all18 results and paired SAM-by-physical/risk interactions; goal mean84 remains unmet/unproven.",
+  "next": "Read same18workers; no republish. Source audit54,985steps passed. Local collector now writes paired_interactions across all strata with no seed imputation. Collect automatic clean results when ready; full final source audit afterall18.",
   "collector": "python -m experiments.cvs_stage2_rx_sam.collect_results --output automation_reports/CV-SincNet/20261011-phase1-stage2-rx-sam-manysig-m18-r01",
   "compression": "E21 completefails0.3pp, E22 shortest tested pass; no additional budget launch. Main parents remain originalE200.",
-  "goal_status": "ACTIVE_NOT_ACHIEVED"
+  "goal_status": "ACTIVE_NOT_ACHIEVED",
+  "source_audit": "source_trajectory.md",
+  "source_evidence": {
+    "rows": 18,
+    "steps": 54985,
+    "execution_counts_valid": true,
+    "SAM_rho": 0.05,
+    "source_target_access": false
+  }
 }

@@ -44,6 +44,9 @@ def analyze(value):
         if not row['completion']:continue
         c=d.config(next(r for r in d.rows() if r['row_id']==row['row_id']));source=row['source_completion'];frozen=row['freeze']
         if source['config']!=c or source['optimizer_steps']!=8880 or source['epoch']!=40 or source['target_access']:raise ValueError('Completed source differs')
+        counts=source['mechanism_execution']
+        if counts['identity_gradient_passes']!=c['sam']['identity_gradient_passes'] or counts['identity_updates']!=8880:raise ValueError('Actual SAM gradient budget differs')
+        if counts['auxiliary_steps']!=(1998 if c['risk_learning']['online'] else 0):raise ValueError('Actual auxiliary budget differs')
         if frozen['config']!=c or frozen['target_access'] or frozen['optimizer_steps']!=8880:raise ValueError('Frozen source differs')
         a=row['artifacts'];rs=a['scores.json']['results'];ds=a['day_scores.json']['results']
         if len(rs)!=14 or len(ds)!=4 or any(r['row_id']!=row['row_id'] for r in rs+ds):raise ValueError('Row metric count or identity differs')
@@ -72,7 +75,7 @@ def analyze(value):
 
 
 def markdown(result):
-    out=['# 物理RX操作与辅助难度网络对照：clean 测试结果','',f"状态 {result['status']}，完成 {len(result['completed_rows'])}/18 行；读取时间 Unix {result['read_at']}。同一行168000条固定query，独立truth-last评分。本文件只汇总既有评分，没有重新预测或访问truth。",'', '|方案|种子1 (%)|种子2 (%)|种子3 (%)|实际均值 (%)|SD（百分点）|种子数|','|---|---:|---:|---:|---:|---:|---:|']
+    out=['# SAM与物理风险网络对照：clean 测试结果','',f"状态 {result['status']}，完成 {len(result['completed_rows'])}/18 行；读取时间 Unix {result['read_at']}。同一行168000条固定query，独立truth-last评分。本文件只汇总既有评分，没有重新预测或访问truth。",'', '|方案|种子1 (%)|种子2 (%)|种子3 (%)|实际均值 (%)|SD（百分点）|种子数|','|---|---:|---:|---:|---:|---:|---:|']
     for row in result['summary']:
         seeds={r['seed']:r['accuracy'] for r in row['per_seed']};columns=['N/A' if s not in seeds else f'{seeds[s]*100:.4f}' for s in d.SEEDS];sd='N/A' if row['accuracy_sd'] is None else f"{row['accuracy_sd']*100:.4f}"
         out.append(f"|{row['arm']}|"+'|'.join(columns)+f"|{row['accuracy_mean']*100:.4f}|{sd}|{row['seed_count']}/3|")
@@ -83,4 +86,6 @@ def markdown(result):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);args=p.parse_args();value=collect();result=analyze(value);args.output.mkdir(parents=True,exist_ok=True)
     d.write(args.output/'evidence/test_results_readback.json',value);d.write(args.output/'evidence/test_results_analysis.json',result);(args.output/'test_results.md').write_text(markdown(result),encoding='utf-8')
+    from .paired_analysis import analyze as paired,markdown as paired_markdown
+    contrasts=paired(result);d.write(args.output/'evidence/paired_interactions.json',contrasts);(args.output/'paired_interactions.md').write_text(paired_markdown(contrasts),encoding='utf-8')
     print(json.dumps(dict(status=result['status'],completed=len(result['completed_rows']),summary=result['summary'],complete_arms_reaching_84=result['complete_arms_reaching_84'])))
