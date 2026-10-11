@@ -212,10 +212,10 @@
     "20261011-phase1-stage2-stable-rx-manysig-m3-r01"
   ],
   "replaces_run_id": null,
-  "status": "LOCAL_VERIFIED",
+  "status": "FAILED",
   "authorization": "继续按最新设计报告追求三种子clean均值84%；根据全源日志确认R有梯度但尚无目标实现率证据，执行固定全部对照的source-only诊断，不根据target调参或重跑。",
   "code": {
-    "commit": "575c79c4bf5dc72cacc1f3281e0542d24852f7d1",
+    "commit": "ffc706c58b831062872ea7c830f84810b7f34f0c",
     "commit_note": "Preregistration baseline; exact execution commit read from immutable release",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -238,7 +238,9 @@
     "gpu_policy": "CPU 2 threads; serial 3 seeds x 4 final E40 models; no CUDA or identity training",
     "command": "python -m experiments.cvs_stage2_stable_rx.realized_audit",
     "launch_command": "python -m experiments.cvs_stage2_stable_rx.realized_audit",
-    "stop_rule": "technical failure preserved; no automatic retry or overwrite"
+    "stop_rule": "technical failure preserved; no automatic retry or overwrite",
+    "pid": 3926401,
+    "post_state": "FAILED_PROCESS_EXITED"
   },
   "expected_artifacts": [
     "summary.json",
@@ -291,7 +293,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-realized-geometry-source-manysig-m3-r01/s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_realized_geometry_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
-      "status": "LOCAL_VERIFIED"
+      "status": "NOT_EXECUTED"
     },
     {
       "row_id": "s2026092702",
@@ -320,7 +322,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-realized-geometry-source-manysig-m3-r01/s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_realized_geometry_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
-      "status": "LOCAL_VERIFIED"
+      "status": "NOT_EXECUTED"
     },
     {
       "row_id": "s2026092703",
@@ -349,12 +351,14 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-realized-geometry-source-manysig-m3-r01/s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_realized_geometry_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
-      "status": "LOCAL_VERIFIED"
+      "status": "NOT_EXECUTED"
     }
   ],
   "test_completion_plan": {
     "target_access": false,
     "scope": "source-only diagnostic, no new identity checkpoint or target predictions",
     "automatic_test": false
-  }
+  },
+  "execution_commit": "ffc706c58b831062872ea7c830f84810b7f34f0c",
+  "recovery_run_id": "20261011-phase1-stage2-realized-geometry-source-manysig-m3-r02"
 }

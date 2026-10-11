@@ -1,0 +1,60 @@
+{
+  "run_id": "20261011-phase1-stage2-realized-geometry-source-manysig-m3-r02",
+  "arms": [
+    "P0",
+    "B0",
+    "B2",
+    "B3",
+    "S3"
+  ],
+  "source_roles": [
+    "L_s",
+    "V"
+  ],
+  "source_counts": {
+    "L_s": 6300,
+    "V": 27000
+  },
+  "feature": "actual normalized cosine joint160",
+  "read_only_models": true,
+  "parent_features": "previous verified fixed source cache",
+  "target_banks": [
+    "B3",
+    "S3"
+  ],
+  "main_bank": "S3",
+  "fixed_potentials": true,
+  "new_fitting": false,
+  "contrast_pairs": [
+    [
+      "B3",
+      "B2"
+    ],
+    [
+      "S3",
+      "B2"
+    ],
+    [
+      "S3",
+      "B3"
+    ],
+    [
+      "B2",
+      "B0"
+    ]
+  ],
+  "risk": "0.5*mean_blocks(mean_pairs(c*norm(delta + alpha*p)^2))",
+  "progress": "mean(c*dot(delta,-alpha*p))/mean(c*norm(alpha*p)^2); signed, unbounded; null if no target energy",
+  "validation_reference": "V uses its own P0 group means; p/c/alpha remain fitted on L_s only",
+  "head_swaps": [
+    "current features/current head",
+    "current features/P0 head",
+    "P0 features/current head"
+  ],
+  "identity_updates": 0,
+  "target_access": false,
+  "optimizer_constructed": false,
+  "training_budget": null,
+  "interpretation": "Quantify whether predefined source group targets are realized before designing further training; no model or hyperparameter selected by target scores",
+  "model_seed": 2026092702
+}

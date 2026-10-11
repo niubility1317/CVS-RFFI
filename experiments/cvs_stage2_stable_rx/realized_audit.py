@@ -14,8 +14,8 @@ from . import design as d
 from experiments.cvs_stage2_geometry.features import identity
 from experiments.cvs_stage2_geometry.receiver import _check_features
 
-RUN='20261011-phase1-stage2-realized-geometry-source-manysig-m3-r01'
-RELEASE='cvs_stage2_realized_geometry_source_20261011_r01'
+RUN='20261011-phase1-stage2-realized-geometry-source-manysig-m3-r02'
+RELEASE='cvs_stage2_realized_geometry_source_20261011_r02'
 ARMS=('P0','B0','B2','B3','S3')
 HEAD='id_backbone.encoder.core.id_backbone.cls_head.weight'
 
@@ -65,6 +65,23 @@ def group_means(features,cache,payload):
         masks.append(mask);means.append(features[mask].double().mean(0));counts.append(int(mask.sum()))
     if not torch.stack(masks).sum(0).eq(1).all():raise ValueError('Source cells do not partition every packet once')
     return torch.stack(means),counts
+
+
+def validate_complete_cells(payload,cache):
+    """An occupied quality bin can have a nonzero label and still cover a cell."""
+    groups=payload['groups'];cells=set();all_indices=[]
+    if len(groups)!=90 or len(payload['blocks'])!=18:
+        raise ValueError('Expected ninety complete source cells in eighteen blocks')
+    for group in groups:
+        key=(group['tx'],group['day'],group['rx'])
+        if key in cells:raise ValueError('Quality splits a TX/day/RX cell')
+        cells.add(key)
+        expected=torch.where((cache['y']==key[0])&(cache['day']==key[1])&(cache['rx']==key[2]))[0].tolist()
+        if sorted(group['indices'])!=expected or len(expected)!=70:
+            raise ValueError('R group must contain the complete seventy-packet source cell')
+        all_indices.extend(group['indices'])
+    if sorted(all_indices)!=list(range(len(cache['ids']))):
+        raise ValueError('R groups must partition all source packets once')
 
 
 def scores(z,weight,y,rx):
@@ -131,8 +148,7 @@ def run():
                 if name=='S3' and bank.get('method')!=d.METHOD:raise ValueError('Stable estimator method differs')
             for a,b in zip(banks['B3']['groups'],banks['S3']['groups']):
                 if any(a[k]!=b[k] for k in ('tx','rx','day','indices','block_id')):raise ValueError('Old/new R groups differ')
-            if len(banks['S3']['groups'])!=90 or any(g['quality_bin']!=0 for g in banks['S3']['groups']):
-                raise ValueError('Diagnostic requires actual collapsed ninety source cells')
+            for bank in banks.values():validate_complete_cells(bank,caches['L_s'])
             row=output/f's{seed}';row.mkdir();means={};measurements=[];models=[]
             for arm in ARMS:
                 tick=time.perf_counter()

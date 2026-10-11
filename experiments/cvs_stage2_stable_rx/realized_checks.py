@@ -3,7 +3,7 @@ import unittest
 from copy import deepcopy
 import torch
 from torch.nn import functional as F
-from .realized_audit import geometry,group_means,scores
+from .realized_audit import geometry,group_means,scores,validate_complete_cells
 from experiments.cvs_stage2_geometry.receiver import finite_population_loss
 
 
@@ -66,6 +66,18 @@ class RealizedChecks(unittest.TestCase):
         same=scores(z,z,y,rx);flipped=scores(z,z.flip(0),y,rx)
         self.assertEqual(same['errors'],0);self.assertEqual(same['margin_mean'],30)
         self.assertEqual(flipped['errors'],6);self.assertEqual(flipped['margin_mean'],-30)
+
+    def test_complete_cells_allow_nonzero_quality_label(self):
+        keys=[(y,day,rx) for y in range(6) for day in (1,2,3) for rx in (1,3,4,6,8)]
+        metadata=torch.tensor([k for k in keys for _ in range(70)])
+        cache=dict(ids=list(range(6300)),y=metadata[:,0],day=metadata[:,1],rx=metadata[:,2])
+        bank=dict(groups=[dict(tx=y,day=day,rx=rx,quality_bins=2,quality_bin=1,
+            indices=list(range(i*70,(i+1)*70))) for i,(y,day,rx) in enumerate(keys)],blocks=[{}]*18)
+        validate_complete_cells(bank,cache)
+        wrong=deepcopy(bank);wrong['groups'][0]['indices'][0]=70
+        with self.assertRaises(ValueError):validate_complete_cells(wrong,cache)
+        wrong=deepcopy(bank);wrong['groups'][1].update(tx=0,day=1,rx=1)
+        with self.assertRaises(ValueError):validate_complete_cells(wrong,cache)
 
 
 if __name__=='__main__':unittest.main()
