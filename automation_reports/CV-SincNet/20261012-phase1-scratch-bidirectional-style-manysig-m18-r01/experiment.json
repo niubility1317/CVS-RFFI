@@ -694,7 +694,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 391170,
       "gpu": 1,
-      "live_epoch": 1
+      "live_epoch": 7
     },
     {
       "arm": "DELAY_BIDIR",
@@ -1134,13 +1134,13 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 391256,
       "gpu": 2,
-      "live_epoch": 1
+      "live_epoch": 7
     },
     {
       "arm": "CAP_POS",
       "model_seed": 2026092701,
       "row_id": "CAP_POS-s2026092701",
-      "status": "STARTING",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -1574,13 +1574,13 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 391344,
       "gpu": 3,
-      "live_epoch": 0
+      "live_epoch": 7
     },
     {
       "arm": "CAP_BIDIR",
       "model_seed": 2026092701,
       "row_id": "CAP_BIDIR-s2026092701",
-      "status": "STARTING",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -2014,13 +2014,13 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 391432,
       "gpu": 7,
-      "live_epoch": 0
+      "live_epoch": 7
     },
     {
       "arm": "DELAYCAP_POS",
       "model_seed": 2026092701,
       "row_id": "DELAYCAP_POS-s2026092701",
-      "status": "STARTING",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -2454,13 +2454,13 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 391518,
       "gpu": 7,
-      "live_epoch": 0
+      "live_epoch": 7
     },
     {
       "arm": "DELAYCAP_BIDIR",
       "model_seed": 2026092701,
       "row_id": "DELAYCAP_BIDIR-s2026092701",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -2891,13 +2891,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 391840,
+      "gpu": 1,
+      "live_epoch": 7
     },
     {
       "arm": "DELAY_POS",
       "model_seed": 2026092702,
       "row_id": "DELAY_POS-s2026092702",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -3328,13 +3331,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 391948,
+      "gpu": 2,
+      "live_epoch": 7
     },
     {
       "arm": "DELAY_BIDIR",
       "model_seed": 2026092702,
       "row_id": "DELAY_BIDIR-s2026092702",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -3765,13 +3771,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 392032,
+      "gpu": 3,
+      "live_epoch": 7
     },
     {
       "arm": "CAP_POS",
       "model_seed": 2026092702,
       "row_id": "CAP_POS-s2026092702",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -4202,13 +4211,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 392118,
+      "gpu": 7,
+      "live_epoch": 7
     },
     {
       "arm": "CAP_BIDIR",
       "model_seed": 2026092702,
       "row_id": "CAP_BIDIR-s2026092702",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -4639,13 +4651,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 392202,
+      "gpu": 1,
+      "live_epoch": 7
     },
     {
       "arm": "DELAYCAP_POS",
       "model_seed": 2026092702,
       "row_id": "DELAYCAP_POS-s2026092702",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -5076,13 +5091,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 392286,
+      "gpu": 2,
+      "live_epoch": 7
     },
     {
       "arm": "DELAYCAP_BIDIR",
       "model_seed": 2026092702,
       "row_id": "DELAYCAP_BIDIR-s2026092702",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -5513,13 +5531,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 392370,
+      "gpu": 3,
+      "live_epoch": 7
     },
     {
       "arm": "DELAY_POS",
       "model_seed": 2026092703,
       "row_id": "DELAY_POS-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -5950,13 +5971,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 392454,
+      "gpu": 6,
+      "live_epoch": 7
     },
     {
       "arm": "DELAY_BIDIR",
       "model_seed": 2026092703,
       "row_id": "DELAY_BIDIR-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -6387,13 +6411,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 392538,
+      "gpu": 0,
+      "live_epoch": 7
     },
     {
       "arm": "CAP_POS",
       "model_seed": 2026092703,
       "row_id": "CAP_POS-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -6824,13 +6851,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 393471,
+      "gpu": 5,
+      "live_epoch": 6
     },
     {
       "arm": "CAP_BIDIR",
       "model_seed": 2026092703,
       "row_id": "CAP_BIDIR-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -7261,13 +7291,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 403143,
+      "gpu": 0,
+      "live_epoch": 3
     },
     {
       "arm": "DELAYCAP_POS",
       "model_seed": 2026092703,
       "row_id": "DELAYCAP_POS-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -7698,13 +7731,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 404809,
+      "gpu": 6,
+      "live_epoch": 2
     },
     {
       "arm": "DELAYCAP_BIDIR",
       "model_seed": 2026092703,
       "row_id": "DELAYCAP_BIDIR-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -8135,7 +8171,10 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 405837,
+      "gpu": 0,
+      "live_epoch": 2
     }
   ],
   "registered_at": "2026-10-11T23:14:06+00:00",
