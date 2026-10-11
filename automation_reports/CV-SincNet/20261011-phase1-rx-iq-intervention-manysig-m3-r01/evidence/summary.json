@@ -1,0 +1,179 @@
+{
+  "status": "VERIFIED",
+  "summary": [
+    {
+      "variant": "physical_K33",
+      "scale": 0.5,
+      "views": 12,
+      "accuracy": 0.9997883041699728,
+      "break_count_mean": 1.3333333333333333,
+      "fix_count_mean": 0,
+      "NLL": 0.0012699679015592362,
+      "feature_cosine_mean": 0.9852085808912913,
+      "observable_shift_relative_MSE": 0.12243901576012901,
+      "FIR_response_relative_MSE": 0.012959819519892335,
+      "roundtrip_interior_relative_MSE": 2.1203012181558734e-06,
+      "boundary_wrap_comparison_MSE": 0.00026742159025161527,
+      "interior_wrap_comparison_MSE": 4.779903686399911e-13,
+      "clipped_bin_fraction": 0.0,
+      "gradient": {
+        "encoder": {
+          "norm_ratio_mean": 23.450102185736636,
+          "cosine_mean": 0.760532483458519,
+          "cosine_min": 0.36551761627197266
+        },
+        "fusion_head": {
+          "norm_ratio_mean": 24.742619044008364,
+          "cosine_mean": 0.6468821888168653,
+          "cosine_min": 0.21177813410758972
+        }
+      }
+    },
+    {
+      "variant": "physical_K33",
+      "scale": 1.0,
+      "views": 12,
+      "accuracy": 0.997156043847402,
+      "break_count_mean": 17.916666666666668,
+      "fix_count_mean": 0,
+      "NLL": 0.010046905236473927,
+      "feature_cosine_mean": 0.9633078972498575,
+      "observable_shift_relative_MSE": 0.14301491786408893,
+      "FIR_response_relative_MSE": 0.017860596533864737,
+      "roundtrip_interior_relative_MSE": 2.540950481488835e-05,
+      "boundary_wrap_comparison_MSE": 0.0007898148614913225,
+      "interior_wrap_comparison_MSE": 4.977777088091551e-13,
+      "clipped_bin_fraction": 0.07599826343357563,
+      "gradient": {
+        "encoder": {
+          "norm_ratio_mean": 113.21920868968043,
+          "cosine_mean": 0.40733114288498956,
+          "cosine_min": 0.046420980244874954
+        },
+        "fusion_head": {
+          "norm_ratio_mean": 106.37325454686179,
+          "cosine_mean": 0.2967853558560212,
+          "cosine_min": 0.09086217731237411
+        }
+      }
+    },
+    {
+      "variant": "physical_K17",
+      "scale": 0.5,
+      "views": 12,
+      "accuracy": 0.9998412132263184,
+      "break_count_mean": 1,
+      "fix_count_mean": 0,
+      "NLL": 0.0009185010300522359,
+      "feature_cosine_mean": 0.9879633982976278,
+      "observable_shift_relative_MSE": 0.16679078312286125,
+      "FIR_response_relative_MSE": 0.07108843885362148,
+      "roundtrip_interior_relative_MSE": 1.767270828167966e-05,
+      "boundary_wrap_comparison_MSE": 0.00033531535518704914,
+      "interior_wrap_comparison_MSE": 2.1756259445913917e-13,
+      "clipped_bin_fraction": 0.0,
+      "gradient": {
+        "encoder": {
+          "norm_ratio_mean": 21.15597098594448,
+          "cosine_mean": 0.7857288817564646,
+          "cosine_min": 0.44250261783599854
+        },
+        "fusion_head": {
+          "norm_ratio_mean": 22.04674034353927,
+          "cosine_mean": 0.6902869865298271,
+          "cosine_min": 0.22862038016319275
+        }
+      }
+    },
+    {
+      "variant": "physical_K17",
+      "scale": 1.0,
+      "views": 12,
+      "accuracy": 0.9980555127064387,
+      "break_count_mean": 12.25,
+      "fix_count_mean": 0,
+      "NLL": 0.006243392805724095,
+      "feature_cosine_mean": 0.9706099778413773,
+      "observable_shift_relative_MSE": 0.19486900155790124,
+      "FIR_response_relative_MSE": 0.0886312909424305,
+      "roundtrip_interior_relative_MSE": 0.00014495986215479206,
+      "boundary_wrap_comparison_MSE": 0.0009561988699715585,
+      "interior_wrap_comparison_MSE": 2.2765274908242983e-13,
+      "clipped_bin_fraction": 0.07599826343357563,
+      "gradient": {
+        "encoder": {
+          "norm_ratio_mean": 82.78765289000422,
+          "cosine_mean": 0.4232859692225854,
+          "cosine_min": 0.10436899214982986
+        },
+        "fusion_head": {
+          "norm_ratio_mean": 90.20052540327684,
+          "cosine_mean": 0.3634220299621423,
+          "cosine_min": 0.08776043355464935
+        }
+      }
+    },
+    {
+      "variant": "rotated_K33",
+      "scale": 0.5,
+      "views": 12,
+      "accuracy": 0.9976190030574799,
+      "break_count_mean": 15,
+      "fix_count_mean": 0,
+      "NLL": 0.00664425488988248,
+      "feature_cosine_mean": 0.9768514484167099,
+      "observable_shift_relative_MSE": 0.11986117189273895,
+      "FIR_response_relative_MSE": 0.013092671521008015,
+      "roundtrip_interior_relative_MSE": 1.6749999360854417e-06,
+      "boundary_wrap_comparison_MSE": 0.00042599842709023505,
+      "interior_wrap_comparison_MSE": 4.813843551207397e-13,
+      "clipped_bin_fraction": 0.0,
+      "gradient": {
+        "encoder": {
+          "norm_ratio_mean": 43.05790333707963,
+          "cosine_mean": 0.47284047057231265,
+          "cosine_min": -0.04138532280921936
+        },
+        "fusion_head": {
+          "norm_ratio_mean": 58.49109089200095,
+          "cosine_mean": 0.42840038426220417,
+          "cosine_min": 0.05171097069978714
+        }
+      }
+    },
+    {
+      "variant": "rotated_K33",
+      "scale": 1.0,
+      "views": 12,
+      "accuracy": 0.9729100118080775,
+      "break_count_mean": 170.66666666666666,
+      "fix_count_mean": 0,
+      "NLL": 0.09476294415071607,
+      "feature_cosine_mean": 0.932843546072642,
+      "observable_shift_relative_MSE": 0.11717918345653383,
+      "FIR_response_relative_MSE": 0.015013471944257617,
+      "roundtrip_interior_relative_MSE": 2.6097431145899463e-05,
+      "boundary_wrap_comparison_MSE": 0.0015990484098438174,
+      "interior_wrap_comparison_MSE": 5.009163656782833e-13,
+      "clipped_bin_fraction": 0.09012586623430252,
+      "gradient": {
+        "encoder": {
+          "norm_ratio_mean": 617.84795283253,
+          "cosine_mean": 0.11924321258751054,
+          "cosine_min": -0.1390053778886795
+        },
+        "fusion_head": {
+          "norm_ratio_mean": 423.46432142246476,
+          "cosine_mean": 0.05778518614048759,
+          "cosine_min": -0.13320018351078033
+        }
+      }
+    }
+  ],
+  "clean_accuracy": [
+    0.9999999403953552,
+    0.9999999403953552,
+    0.9999999403953552
+  ],
+  "physical_scope": "physical means use seed1 fourRX shifts only; same IQ/fit across all seeds, not independent3replicates"
+}

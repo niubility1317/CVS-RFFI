@@ -419,7 +419,7 @@
     {
       "row_id": "E200-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "config": {
         "run_id": "20261011-phase1-rx-iq-intervention-manysig-m3-r01",
         "row_id": "E200-s2026092701",
@@ -806,7 +806,7 @@
     {
       "row_id": "E200-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "config": {
         "run_id": "20261011-phase1-rx-iq-intervention-manysig-m3-r01",
         "row_id": "E200-s2026092702",
@@ -1193,7 +1193,7 @@
     {
       "row_id": "E200-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "config": {
         "run_id": "20261011-phase1-rx-iq-intervention-manysig-m3-r01",
         "row_id": "E200-s2026092703",
@@ -1585,7 +1585,7 @@
     "DCT rotation control matches coefficient norm only, not FIR energy or every physical statistic.",
     "All prescribed variants/scales/RX shifts reported; no V/target ranking."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "independent_review": {
     "reviewer": "stage2_release_review",
     "scope": "minimal8 finite IQ math,source roles,freeze,3row launch",
@@ -1593,5 +1593,7 @@
     "evidence": "stage2_release_review independent read-only review: P0/P1=0; TX AND day exclusion, finite FIR math, L-only data, frozen E200 identity and gradient audit, three-row transport"
   },
   "registered_at": "2026-10-11T12:59:14+00:00",
-  "updated_at": "2026-10-11T12:26:21.077516+00:00"
+  "updated_at": "2026-10-11T12:26:21.077516+00:00",
+  "delivery_verdict": "VERIFIED",
+  "execution_commit": "219c8918ad0d8dfc206b3cab3b57be0e1bfa5379"
 }

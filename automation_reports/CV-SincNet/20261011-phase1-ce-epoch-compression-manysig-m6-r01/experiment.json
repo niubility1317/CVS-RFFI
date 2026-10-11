@@ -1621,7 +1621,7 @@
     "Every E100/E150 starts from scratch; E200 weights never initialize these rows. No E125. Per-row automatic clean test.",
     "Goal clean mean>=84 remains active; diagnostic completion is not goal completion."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "independent_review": {
     "reviewer": "stage2_release_review",
     "scope": "P0/P1 minimal8",

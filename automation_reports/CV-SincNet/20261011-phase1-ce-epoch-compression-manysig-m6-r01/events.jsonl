@@ -1,3 +1,4 @@
 {"at": "2026-10-11T11:46:29+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-11T11:52:14.880227+00:00", "status": "RUNNING", "note": "All six scratch rows live with actual epoch telemetry; per-row clean auto-test configured", "evidence": ["evidence/remote_state.json", "evidence/package.json"]}
 {"event": "E100_THREE_SEEDS_SCORED", "time": 1791723033.608927, "next_run": "20261011-phase1-ce-epoch50-manysig-m3-r01", "evidence": "evidence/test_results_analysis.json"}
+{"event": "ALL_SIX_ROWS_TESTED", "time": 1791724688.7147748, "evidence": "evidence/test_results_analysis.json"}
