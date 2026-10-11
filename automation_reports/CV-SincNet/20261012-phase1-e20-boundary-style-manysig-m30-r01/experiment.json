@@ -4499,7 +4499,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 258999,
       "gpu": 0,
-      "live_epoch": 13
+      "live_epoch": 14
     },
     {
       "arm": "CE",
@@ -6996,7 +6996,7 @@
       "gpu": 5,
       "live_epoch": 20,
       "live_identity_updates": 4440,
-      "scoring_evidence_collected": false
+      "scoring_evidence_collected": true
     },
     {
       "arm": "L_REPLAY",
@@ -8666,7 +8666,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 259978,
       "gpu": 0,
-      "live_epoch": 13
+      "live_epoch": 14
     },
     {
       "arm": "CE",
@@ -9917,7 +9917,7 @@
       "arm": "M_SHALLOW",
       "model_seed": 2026092703,
       "row_id": "M_SHALLOW-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -10326,7 +10326,9 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 260317,
       "gpu": 3,
-      "live_epoch": 19
+      "live_epoch": 20,
+      "live_identity_updates": 4440,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "M_MIDDLE",
@@ -12418,7 +12420,7 @@
       "arm": "JOINT",
       "model_seed": 2026092703,
       "row_id": "JOINT-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -12831,18 +12833,20 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 264765,
       "gpu": 2,
-      "live_epoch": 19
+      "live_epoch": 20,
+      "live_identity_updates": 4440,
+      "scoring_evidence_collected": true
     }
   ],
   "registered_at": "2026-10-11T20:09:38+00:00",
   "execution_commit": "a5c2504224f16d3fb22bbfa706dddf176213cc0c",
   "delivery_verdict": "VERIFIED",
   "progress": {
-    "read_at": 1791751671.633779,
+    "read_at": 1791751881.854511,
     "launched": 30,
-    "scored_rows": 25,
-    "source_fully_audited_rows": 23,
-    "source_fully_audited_steps": 102120,
+    "scored_rows": 28,
+    "source_fully_audited_rows": 28,
+    "source_fully_audited_steps": 124320,
     "failure": null,
     "final_goal_status": "UNPROVEN"
   }
