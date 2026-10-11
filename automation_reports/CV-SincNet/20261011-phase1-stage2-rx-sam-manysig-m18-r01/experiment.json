@@ -60,7 +60,7 @@
   "comparison_group_id": "cvs-stage2-E200-40epoch-three-seed",
   "display_name": "原E200续训：三种半监督物理配方与SAM参数扰动优化的六方案三种子",
   "description": "SSL/PHYS/RANK分别匹配普通AdamW与SAM-AdamW；固定40epoch，源V仅健康检查，逐row自动clean truth-last",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "aliases": [],
   "tags": [
     "stage2",
@@ -5194,7 +5194,7 @@
       "arm": "SSL",
       "model_seed": 2026092701,
       "row_id": "SSL-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -5588,13 +5588,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 54219,
+      "gpu": 6,
+      "live_epoch": 11,
+      "live_identity_updates": 2442
     },
     {
       "arm": "SAM_SSL",
       "model_seed": 2026092701,
       "row_id": "SAM_SSL-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -5988,13 +5992,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 54306,
+      "gpu": 7,
+      "live_epoch": 5,
+      "live_identity_updates": 1110
     },
     {
       "arm": "PHYS",
       "model_seed": 2026092701,
       "row_id": "PHYS-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -6388,13 +6396,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 54505,
+      "gpu": 7,
+      "live_epoch": 8,
+      "live_identity_updates": 1776
     },
     {
       "arm": "SAM_PHYS",
       "model_seed": 2026092701,
       "row_id": "SAM_PHYS-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -6788,13 +6800,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 54645,
+      "gpu": 6,
+      "live_epoch": 5,
+      "live_identity_updates": 1110
     },
     {
       "arm": "RANK",
       "model_seed": 2026092701,
       "row_id": "RANK-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -7558,13 +7574,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 54804,
+      "gpu": 4,
+      "live_epoch": 6,
+      "live_identity_updates": 1332
     },
     {
       "arm": "SAM_RANK",
       "model_seed": 2026092701,
       "row_id": "SAM_RANK-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -8328,13 +8348,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 54889,
+      "gpu": 5,
+      "live_epoch": 4,
+      "live_identity_updates": 888
     },
     {
       "arm": "SSL",
       "model_seed": 2026092702,
       "row_id": "SSL-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -8728,13 +8752,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 54973,
+      "gpu": 0,
+      "live_epoch": 9,
+      "live_identity_updates": 1998
     },
     {
       "arm": "SAM_SSL",
       "model_seed": 2026092702,
       "row_id": "SAM_SSL-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -9128,13 +9156,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 55057,
+      "gpu": 1,
+      "live_epoch": 5,
+      "live_identity_updates": 1110
     },
     {
       "arm": "PHYS",
       "model_seed": 2026092702,
       "row_id": "PHYS-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -9528,13 +9560,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 55141,
+      "gpu": 2,
+      "live_epoch": 8,
+      "live_identity_updates": 1776
     },
     {
       "arm": "SAM_PHYS",
       "model_seed": 2026092702,
       "row_id": "SAM_PHYS-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -9928,13 +9964,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 55315,
+      "gpu": 3,
+      "live_epoch": 5,
+      "live_identity_updates": 1110
     },
     {
       "arm": "RANK",
       "model_seed": 2026092702,
       "row_id": "RANK-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -10698,13 +10738,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 55716,
+      "gpu": 6,
+      "live_epoch": 6,
+      "live_identity_updates": 1332
     },
     {
       "arm": "SAM_RANK",
       "model_seed": 2026092702,
       "row_id": "SAM_RANK-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -11468,13 +11512,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 55800,
+      "gpu": 7,
+      "live_epoch": 4,
+      "live_identity_updates": 888
     },
     {
       "arm": "SSL",
       "model_seed": 2026092703,
       "row_id": "SSL-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -11868,13 +11916,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 55884,
+      "gpu": 1,
+      "live_epoch": 9,
+      "live_identity_updates": 1998
     },
     {
       "arm": "SAM_SSL",
       "model_seed": 2026092703,
       "row_id": "SAM_SSL-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -12268,13 +12320,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 55968,
+      "gpu": 3,
+      "live_epoch": 4,
+      "live_identity_updates": 888
     },
     {
       "arm": "PHYS",
       "model_seed": 2026092703,
       "row_id": "PHYS-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -12668,13 +12724,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 56052,
+      "gpu": 4,
+      "live_epoch": 6,
+      "live_identity_updates": 1332
     },
     {
       "arm": "SAM_PHYS",
       "model_seed": 2026092703,
       "row_id": "SAM_PHYS-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -13068,13 +13128,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 56136,
+      "gpu": 5,
+      "live_epoch": 4,
+      "live_identity_updates": 888
     },
     {
       "arm": "RANK",
       "model_seed": 2026092703,
       "row_id": "RANK-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -13838,13 +13902,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 56220,
+      "gpu": 0,
+      "live_epoch": 5,
+      "live_identity_updates": 1110
     },
     {
       "arm": "SAM_RANK",
       "model_seed": 2026092703,
       "row_id": "SAM_RANK-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -14608,7 +14676,11 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 56304,
+      "gpu": 2,
+      "live_epoch": 3,
+      "live_identity_updates": 666
     }
   ],
   "semi_supervision": {
@@ -14700,5 +14772,7 @@
     "SAM is established, not claimed original. Risk pathway is one component of multi-disentanglement research, not proof of complete factor identifiability.",
     "V only health/forgetting, all5sourceRX seen by E200. All fixed outcomes are reported. Inference uses identity model only."
   ],
-  "registered_at": "2026-10-11T15:12:28+00:00"
+  "registered_at": "2026-10-11T15:12:28+00:00",
+  "execution_commit": "f73d4aa3046f41d4dd3c4d56005af538e9f703da",
+  "delivery_verdict": "VERIFIED"
 }

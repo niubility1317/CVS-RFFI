@@ -1,5 +1,7 @@
 {
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "execution_commit": "3166689ce1dddb2e7b5f4fdf4a875f4e4f810056",
-  "next": "Collect existing3row automatic clean results; E21pass shortest verified budget21,fail22; no repeats. Main84 study stays separate and originalE200 parents unchanged."
+  "next": "No further binary budget launch. E20/E21 fail, E22 shortest tested pass. Keep original E200 parents for main40epoch optimization.",
+  "scored_rows": 3,
+  "remaining_rows": []
 }

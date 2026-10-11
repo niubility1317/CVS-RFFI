@@ -138,7 +138,7 @@
     {
       "row_id": "E21-s2026092701",
       "model_seed": 2026092701,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch21-manysig-m3-r01",
@@ -379,7 +379,7 @@
     {
       "row_id": "E21-s2026092702",
       "model_seed": 2026092702,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch21-manysig-m3-r01",
@@ -620,7 +620,7 @@
     {
       "row_id": "E21-s2026092703",
       "model_seed": 2026092703,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch21-manysig-m3-r01",
@@ -864,7 +864,7 @@
     "E21 pass: shortest verified passing budget21; fail:22. Does not establish global minimum under nonmonotonic accuracy.",
     "All3 seeds scratch, noU/EMA/satellite; originalE200 stage2 parents unchanged."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "independent_review": {
     "reviewer": "stage2_release_review",
     "status": "PASS",
@@ -890,5 +890,12 @@
     "benchmark_role": "exposed development benchmark, not blind confirmation"
   },
   "execution_commit": "3166689ce1dddb2e7b5f4fdf4a875f4e4f810056",
-  "delivery_verdict": "VERIFIED"
+  "delivery_verdict": "VERIFIED",
+  "results": {
+    "complete_rows": 3,
+    "clean_mean": 0.8012519841269841,
+    "difference_pp": -0.40119047619047904,
+    "within_margin": false,
+    "shortest_tested_passing_epochs": 22
+  }
 }
