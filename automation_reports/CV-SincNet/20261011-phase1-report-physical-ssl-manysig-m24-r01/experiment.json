@@ -105,7 +105,7 @@
   "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
   "group_id": "cvs-report-physical-soft-ssl",
   "comparison_group_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
-  "status": "PREREGISTERED_LOCAL_VERIFIED",
+  "status": "RUNNING",
   "display_name": "无显式CFO物理软半监督多解耦（三种子24行设计）",
   "description": "先L适应、后软KL EMA；DL/DQ/DR与非线性身份支路及独立Sinc坐标优化。",
   "aliases": [
@@ -122,7 +122,7 @@
   ],
   "authorization": "用户最新“结合报告进行优化”及既有优化/三种子40epoch/自动clean授权",
   "code": {
-    "commit": "INSERTED_FROM_IMMUTABLE_RELEASE_AT_LAUNCH",
+    "commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
     "commit_note": "Exact execution commit inserted from immutable release at launch",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -145,7 +145,9 @@
     "command": "python -u -m experiments.cvs_report_ssl.dispatch",
     "launch_command": "python -u -m experiments.cvs_report_ssl.publish --output local_artifacts/report_delivery_20261011_r01",
     "stop_rule": "Technical failure retained; stop new pending submissions, healthy active rows complete; no automatic retry or low-performance stop",
-    "pid": null
+    "pid": 4066843,
+    "release_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+    "submitted_at": 1791715644.5382595
   },
   "metrics_plan": {
     "views": [
@@ -281,7 +283,7 @@
       "arm": "C0",
       "model_seed": 2026092701,
       "row_id": "C0-s2026092701",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -590,13 +592,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4066981,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C0-s2026092701.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C0-s2026092701/source/resolved_config.json"
     },
     {
       "arm": "C1",
       "model_seed": 2026092701,
       "row_id": "C1-s2026092701",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -905,13 +912,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4066986,
+      "gpu": 1,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C1-s2026092701.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C1-s2026092701/source/resolved_config.json"
     },
     {
       "arm": "C2",
       "model_seed": 2026092701,
       "row_id": "C2-s2026092701",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -1220,13 +1232,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4066997,
+      "gpu": 2,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C2-s2026092701.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C2-s2026092701/source/resolved_config.json"
     },
     {
       "arm": "C3",
       "model_seed": 2026092701,
       "row_id": "C3-s2026092701",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -1535,13 +1552,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4067003,
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C3-s2026092701.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C3-s2026092701/source/resolved_config.json"
     },
     {
       "arm": "C4",
       "model_seed": 2026092701,
       "row_id": "C4-s2026092701",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -1850,13 +1872,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4067011,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C4-s2026092701.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C4-s2026092701/source/resolved_config.json"
     },
     {
       "arm": "C6",
       "model_seed": 2026092701,
       "row_id": "C6-s2026092701",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -2165,13 +2192,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4067017,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C6-s2026092701.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C6-s2026092701/source/resolved_config.json"
     },
     {
       "arm": "C7",
       "model_seed": 2026092701,
       "row_id": "C7-s2026092701",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -2480,13 +2512,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4067028,
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C7-s2026092701.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C7-s2026092701/source/resolved_config.json"
     },
     {
       "arm": "C8",
       "model_seed": 2026092701,
       "row_id": "C8-s2026092701",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -2795,13 +2832,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4067045,
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C8-s2026092701.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C8-s2026092701/source/resolved_config.json"
     },
     {
       "arm": "C0",
       "model_seed": 2026092702,
       "row_id": "C0-s2026092702",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -3110,13 +3152,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4067071,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C0-s2026092702.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C0-s2026092702/source/resolved_config.json"
     },
     {
       "arm": "C1",
       "model_seed": 2026092702,
       "row_id": "C1-s2026092702",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -3425,13 +3472,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4067099,
+      "gpu": 1,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C1-s2026092702.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C1-s2026092702/source/resolved_config.json"
     },
     {
       "arm": "C2",
       "model_seed": 2026092702,
       "row_id": "C2-s2026092702",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -3740,13 +3792,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4067202,
+      "gpu": 2,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C2-s2026092702.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C2-s2026092702/source/resolved_config.json"
     },
     {
       "arm": "C3",
       "model_seed": 2026092702,
       "row_id": "C3-s2026092702",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -4055,13 +4112,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4067528,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C3-s2026092702.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C3-s2026092702/source/resolved_config.json"
     },
     {
       "arm": "C4",
       "model_seed": 2026092702,
       "row_id": "C4-s2026092702",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -4370,13 +4432,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4067696,
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C4-s2026092702.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C4-s2026092702/source/resolved_config.json"
     },
     {
       "arm": "C6",
       "model_seed": 2026092702,
       "row_id": "C6-s2026092702",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -4685,13 +4752,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4067854,
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C6-s2026092702.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C6-s2026092702/source/resolved_config.json"
     },
     {
       "arm": "C7",
       "model_seed": 2026092702,
       "row_id": "C7-s2026092702",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -5000,13 +5072,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4067872,
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C7-s2026092702.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C7-s2026092702/source/resolved_config.json"
     },
     {
       "arm": "C8",
       "model_seed": 2026092702,
       "row_id": "C8-s2026092702",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -5315,13 +5392,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4067954,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C8-s2026092702.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C8-s2026092702/source/resolved_config.json"
     },
     {
       "arm": "C0",
       "model_seed": 2026092703,
       "row_id": "C0-s2026092703",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -5630,13 +5712,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4068040,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C0-s2026092703.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C0-s2026092703/source/resolved_config.json"
     },
     {
       "arm": "C1",
       "model_seed": 2026092703,
       "row_id": "C1-s2026092703",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -5945,13 +6032,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4068056,
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C1-s2026092703.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C1-s2026092703/source/resolved_config.json"
     },
     {
       "arm": "C2",
       "model_seed": 2026092703,
       "row_id": "C2-s2026092703",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -6260,13 +6352,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4068144,
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C2-s2026092703.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C2-s2026092703/source/resolved_config.json"
     },
     {
       "arm": "C3",
       "model_seed": 2026092703,
       "row_id": "C3-s2026092703",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -6575,13 +6672,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4068228,
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C3-s2026092703.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C3-s2026092703/source/resolved_config.json"
     },
     {
       "arm": "C4",
       "model_seed": 2026092703,
       "row_id": "C4-s2026092703",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -6890,13 +6992,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4068249,
+      "gpu": 1,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C4-s2026092703.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C4-s2026092703/source/resolved_config.json"
     },
     {
       "arm": "C6",
       "model_seed": 2026092703,
       "row_id": "C6-s2026092703",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -7205,13 +7312,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4068338,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C6-s2026092703.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C6-s2026092703/source/resolved_config.json"
     },
     {
       "arm": "C7",
       "model_seed": 2026092703,
       "row_id": "C7-s2026092703",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -7520,13 +7632,18 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4068501,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C7-s2026092703.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C7-s2026092703/source/resolved_config.json"
     },
     {
       "arm": "C8",
       "model_seed": 2026092703,
       "row_id": "C8-s2026092703",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -7835,7 +7952,12 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index"
+      "seed_notes": "model is explicit; physical partition already fixed, no current split/data/support/evaluation RNG; augmentation private generator derives from model_seed and update index",
+      "pid": 4068591,
+      "gpu": 2,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C8-s2026092703.log",
+      "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C8-s2026092703/source/resolved_config.json"
     }
   ],
   "semi_supervision": {
@@ -7947,8 +8069,8 @@
       "C7"
     ]
   ],
-  "delivery_verdict": "NOT_RELEASED_NOT_TESTED",
-  "target_evaluation_status": "NOT_STARTED",
+  "delivery_verdict": "VERIFIED",
+  "target_evaluation_status": "AUTOMATIC_CLEAN_AFTER_EACH_ROW",
   "C5_source_selection": {
     "status": "deferred_until_complete_source_evidence",
     "score": ".5*mean_V_accuracy+.5*worst_RX_V_accuracy",
@@ -7956,5 +8078,6 @@
     "target_scores_allowed": false,
     "combination": "all eligible modules, otherwise C1; future distinct run, same parents and40 epochs",
     "C8": "fixed exploratory combination, not source-selected C5"
-  }
+  },
+  "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f"
 }

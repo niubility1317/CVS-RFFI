@@ -21,3 +21,5 @@ DR使用共享TX原型＋加性RX/日期偏移及50%共享方差收缩；保存L
 源码中data.py明确按TX/RX/day/eq分组、连续sig索引切分，当前合法源角色复用；不称随机划分，也不从sig索引推断绝对时间漂移。辅助网络只能读取作用实际参数和物理观测，U真实TX始终不提供。
 
 完整24row配置、六类seed记录和逐行输出已写入experiment.json。训练日志含各损失/权重、每888步分量梯度、普通权重移动、native频带实际变化、U访问/接受/翻转与RX×日期覆盖。测试保存argmax和log概率，固定后独立评分accuracy/F1/NLL及parent fix/break。历史父预测只有argmax，parent NLL记N/A。
+
+发布状态 **VERIFIED**：实际执行提交 `dfaf47493ac65cf98b96b81dc622d229b103139f`，N607 dispatcher PID 4066843，24/24新row实际进程及resolved config核对通过，8卡各3进程；三份真实E200父权重与24个native图预检PASS。预检在丢弃的内存副本上执行24次更新，正式预算仍每row8880。训练与测试尚未全部完成，clean均值84目标未验证。
