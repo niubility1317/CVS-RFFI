@@ -88,3 +88,10 @@ Z3源任务证据：八固定源V视图的均值准确率与S3最大绝对差0.0
 ## 当前：单锚点条件传递源诊断完成
 
 20261011-phase1-stage2-conditional-transport-source-manysig-m3-r01，执行a05a69319a46acc35d592077bdc99c66581c173c；3seed/1080仿射拟合，CPU5.759秒，0身份前向/更新/target，V输入/拟合0，全部完成并退出VERIFIED。主conditional_joint的V完整MSE/零 .970960/.942275/.933255，均比shared_RX差；logit1.016413/1.053477/1.022632，margin1.154998/1.195615/1.158049，所有seed级推进项均未过。state对照也不补位；不启动此R训练。独立half A输入/B终点及源V终点排除自包含；父已见源条件，仅辅助cross-TX/day，不是未知RX预测或准确率提升。完整报告/每折/21600关系CSV已保存，原模型和预测留N607。下一需设计直接连接分类有限风险的多解耦目标，先区分crossTX辅助可迁移与已知TX跨RX任务，不能仅因向量拟合变好就推进。84%仍未达到，目标active。
+
+
+## 当前：L/T 策略刷新有限风险源诊断运行中
+
+20261011-phase1-stage2-policy-risk-source-manysig-m3-r01，执行c6e43735df6d21a2742a4df4dd0284dc765a15f4；CPU2 PID3971531，CUDA不可见，远端PID/CWD/argv独立核验VERIFIED，当前无failure。固定B2 E40三seed诊断，coverage/旧冻结策略/B2上fresh_raw/B2上fresh_risk；两个fresh各L/T两遍Ls，每seed400辅助更新/350100身份样本前向，0身份更新/target/V拟合。全部策略先保存后V评分，相同随机半径与物理界限，IQ强度仅测量。7定向checks本地与远端通过，独立P0/P1及随机原生CPU反传检查通过。不能把辅助优化当成身份训练。
+
+已有唯一CPU进程，不重复启动。收集 E:/type10-7/.codex_tmp/collect_policy.py；完整完成并确认进程退出后 finalize_policy.py 生成所有48指标行、分层、配对与1200辅助step CSV，报告/交接/Git提交推送。finalize脚本已准备但未执行；执行前需检查实际结果并补充具体失败/成功解释。primary为每seed V等权LT风险fresh_risk均严格高于old/fresh_raw/coverage，只是推进后续刷新设计的证据，不自动训练或target。原始权重和逐包数据留N607本run sSEED。未来正式身份训练仍从相应E200初始化，不能倒灌B2终点辅助策略。目标84%仍active/未达到。

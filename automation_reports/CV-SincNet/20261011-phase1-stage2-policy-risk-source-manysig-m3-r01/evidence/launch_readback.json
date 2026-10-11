@@ -1,0 +1,47 @@
+{
+  "at": 1791706623.0969296,
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 3971531,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_policy_risk_source_20261011_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_stage2_geometry.policy_audit"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_policy_risk_source_20261011_r01/stdout.log",
+    "commit": "c6e43735df6d21a2742a4df4dd0284dc765a15f4",
+    "run_id": "20261011-phase1-stage2-policy-risk-source-manysig-m3-r01",
+    "cuda_visible_devices": ""
+  },
+  "process": {
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_policy_risk_source_20261011_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_stage2_geometry.policy_audit"
+    ]
+  },
+  "completion": null,
+  "failure": null,
+  "summary": null,
+  "rows": [
+    {
+      "seed": 2026092701,
+      "completion": null
+    },
+    {
+      "seed": 2026092702,
+      "completion": null
+    },
+    {
+      "seed": 2026092703,
+      "completion": null
+    }
+  ],
+  "log_tail": "{\"seed\": 2026092701, \"objective\": \"raw\", \"kind\": \"linear\", \"fit_pass\": 1}\n{\"seed\": 2026092701, \"objective\": \"raw\", \"kind\": \"linear\", \"fit_pass\": 2}\n{\"seed\": 2026092701, \"objective\": \"raw\", \"kind\": \"temporal\", \"fit_pass\": 1}\n{\"seed\": 2026092701, \"objective\": \"raw\", \"kind\": \"temporal\", \"fit_pass\": 2}\n{\"seed\": 2026092701, \"objective\": \"risk\", \"kind\": \"linear\", \"fit_pass\": 1}\n{\"seed\": 2026092701, \"objective\": \"risk\", \"kind\": \"linear\", \"fit_pass\": 2}\n{\"seed\": 2026092701, \"objective\": \"risk\", \"kind\": \"temporal\", \"fit_pass\": 1}\n{\"seed\": 2026092701, \"objective\": \"risk\", \"kind\": \"temporal\", \"fit_pass\": 2}\n",
+  "checks": "{\"seed\": 91, \"objective\": \"raw\", \"kind\": \"linear\", \"fit_pass\": 1}\n{\"seed\": 91, \"objective\": \"raw\", \"kind\": \"linear\", \"fit_pass\": 2}\n{\"seed\": 91, \"objective\": \"raw\", \"kind\": \"temporal\", \"fit_pass\": 1}\n{\"seed\": 91, \"objective\": \"raw\", \"kind\": \"temporal\", \"fit_pass\": 2}\n{\"seed\": 91, \"objective\": \"risk\", \"kind\": \"linear\", \"fit_pass\": 1}\n{\"seed\": 91, \"objective\": \"risk\", \"kind\": \"linear\", \"fit_pass\": 2}\n{\"seed\": 91, \"objective\": \"risk\", \"kind\": \"temporal\", \"fit_pass\": 1}\n{\"seed\": 91, \"objective\": \"risk\", \"kind\": \"temporal\", \"fit_pass\": 2}\n.{\"seed\": 45, \"objective\": \"risk\", \"kind\": \"linear\", \"fit_pass\": 1}\n{\"seed\": 45, \"objective\": \"risk\", \"kind\": \"linear\", \"fit_pass\": 2}\n{\"seed\": 45, \"objective\": \"risk\", \"kind\": \"temporal\", \"fit_pass\": 1}\n{\"seed\": 45, \"objective\": \"risk\", \"kind\": \"temporal\", \"fit_pass\": 2}\n.....{\"seed\": 10, \"objective\": \"risk\", \"kind\": \"linear\", \"fit_pass\": 1}\n{\"seed\": 10, \"objective\": \"risk\", \"kind\": \"linear\", \"fit_pass\": 2}\n{\"seed\": 10, \"objective\": \"risk\", \"kind\": \"temporal\", \"fit_pass\": 1}\n{\"seed\": 10, \"objective\": \"risk\", \"kind\": \"temporal\", \"fit_pass\": 2}\n.\n----------------------------------------------------------------------\nRan 7 tests in 0.522s\n\nOK\n",
+  "status": "VERIFIED"
+}
