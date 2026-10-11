@@ -1,0 +1,471 @@
+{
+  "status": "VERIFIED_SOURCE_WARMUP",
+  "read_at": 1791754917.7715576,
+  "source_only": true,
+  "target_access": false,
+  "rows": [
+    {
+      "row_id": "DELAY_M_SHALLOW-s2026092701",
+      "seed": 2026092701,
+      "reference_row": "DELAY_M_SHALLOW-s2026092701",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.0,
+      "CE_mean_abs_difference": 0.0,
+      "CE_first_difference_over_1e_7": null,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.0,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.38100457191467285,
+      "reference_CE_step444": 0.38100457191467285
+    },
+    {
+      "row_id": "DELAY_M_MIDDLE-s2026092701",
+      "seed": 2026092701,
+      "reference_row": "DELAY_M_SHALLOW-s2026092701",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.037123918533325195,
+      "CE_mean_abs_difference": 0.006144708744040481,
+      "CE_first_difference_over_1e_7": 5,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.006844282150268555,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.3741602897644043,
+      "reference_CE_step444": 0.38100457191467285
+    },
+    {
+      "row_id": "DELAY_M_BOTH-s2026092701",
+      "seed": 2026092701,
+      "reference_row": "DELAY_M_SHALLOW-s2026092701",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.03794926404953003,
+      "CE_mean_abs_difference": 0.006348686510915155,
+      "CE_first_difference_over_1e_7": 6,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.00907936692237854,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.3719252049922943,
+      "reference_CE_step444": 0.38100457191467285
+    },
+    {
+      "row_id": "DELAY_JOINT-s2026092701",
+      "seed": 2026092701,
+      "reference_row": "DELAY_M_SHALLOW-s2026092701",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.036474525928497314,
+      "CE_mean_abs_difference": 0.006033799938253454,
+      "CE_first_difference_over_1e_7": 2,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.008630037307739258,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.3723745346069336,
+      "reference_CE_step444": 0.38100457191467285
+    },
+    {
+      "row_id": "CAP_M_SHALLOW-s2026092701",
+      "seed": 2026092701,
+      "reference_row": "DELAY_M_SHALLOW-s2026092701",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.03579682111740112,
+      "CE_mean_abs_difference": 0.005753098139623264,
+      "CE_first_difference_over_1e_7": 2,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.011959850788116455,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.3690447211265564,
+      "reference_CE_step444": 0.38100457191467285
+    },
+    {
+      "row_id": "CAP_M_MIDDLE-s2026092701",
+      "seed": 2026092701,
+      "reference_row": "DELAY_M_SHALLOW-s2026092701",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.029664218425750732,
+      "CE_mean_abs_difference": 0.005246490240097046,
+      "CE_first_difference_over_1e_7": 2,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.015544533729553223,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.36546003818511963,
+      "reference_CE_step444": 0.38100457191467285
+    },
+    {
+      "row_id": "CAP_M_BOTH-s2026092701",
+      "seed": 2026092701,
+      "reference_row": "DELAY_M_SHALLOW-s2026092701",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.04155468940734863,
+      "CE_mean_abs_difference": 0.006492803494135539,
+      "CE_first_difference_over_1e_7": 2,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.003551691770553589,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.37745288014411926,
+      "reference_CE_step444": 0.38100457191467285
+    },
+    {
+      "row_id": "CAP_JOINT-s2026092701",
+      "seed": 2026092701,
+      "reference_row": "DELAY_M_SHALLOW-s2026092701",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.03816214203834534,
+      "CE_mean_abs_difference": 0.006878541631473077,
+      "CE_first_difference_over_1e_7": 3,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.009467214345932007,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.37153735756874084,
+      "reference_CE_step444": 0.38100457191467285
+    },
+    {
+      "row_id": "DELAYCAP_M_SHALLOW-s2026092701",
+      "seed": 2026092701,
+      "reference_row": "DELAY_M_SHALLOW-s2026092701",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.029013782739639282,
+      "CE_mean_abs_difference": 0.004541426158703126,
+      "CE_first_difference_over_1e_7": 3,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.00528329610824585,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.3862878680229187,
+      "reference_CE_step444": 0.38100457191467285
+    },
+    {
+      "row_id": "DELAYCAP_M_MIDDLE-s2026092701",
+      "seed": 2026092701,
+      "reference_row": "DELAY_M_SHALLOW-s2026092701",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.033241868019104004,
+      "CE_mean_abs_difference": 0.006831704596946905,
+      "CE_first_difference_over_1e_7": 2,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.0050563812255859375,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.3759481906890869,
+      "reference_CE_step444": 0.38100457191467285
+    },
+    {
+      "row_id": "DELAYCAP_M_BOTH-s2026092701",
+      "seed": 2026092701,
+      "reference_row": "DELAY_M_SHALLOW-s2026092701",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.04058292508125305,
+      "CE_mean_abs_difference": 0.005907514275194288,
+      "CE_first_difference_over_1e_7": 3,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.015733152627944946,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.3652714192867279,
+      "reference_CE_step444": 0.38100457191467285
+    },
+    {
+      "row_id": "DELAYCAP_JOINT-s2026092701",
+      "seed": 2026092701,
+      "reference_row": "DELAY_M_SHALLOW-s2026092701",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.0348360538482666,
+      "CE_mean_abs_difference": 0.006029982656777442,
+      "CE_first_difference_over_1e_7": 5,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.009566128253936768,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.3714384436607361,
+      "reference_CE_step444": 0.38100457191467285
+    },
+    {
+      "row_id": "DELAY_M_SHALLOW-s2026092702",
+      "seed": 2026092702,
+      "reference_row": "DELAY_M_SHALLOW-s2026092702",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.0,
+      "CE_mean_abs_difference": 0.0,
+      "CE_first_difference_over_1e_7": null,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.0,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.3220421373844147,
+      "reference_CE_step444": 0.3220421373844147
+    },
+    {
+      "row_id": "DELAY_M_MIDDLE-s2026092702",
+      "seed": 2026092702,
+      "reference_row": "DELAY_M_SHALLOW-s2026092702",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.02927565574645996,
+      "CE_mean_abs_difference": 0.004896292144113833,
+      "CE_first_difference_over_1e_7": 2,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.001955687999725342,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.32399782538414,
+      "reference_CE_step444": 0.3220421373844147
+    },
+    {
+      "row_id": "DELAY_M_BOTH-s2026092702",
+      "seed": 2026092702,
+      "reference_row": "DELAY_M_SHALLOW-s2026092702",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.03182816505432129,
+      "CE_mean_abs_difference": 0.005541733591943173,
+      "CE_first_difference_over_1e_7": 3,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.006543278694152832,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.3285854160785675,
+      "reference_CE_step444": 0.3220421373844147
+    },
+    {
+      "row_id": "DELAY_JOINT-s2026092702",
+      "seed": 2026092702,
+      "reference_row": "DELAY_M_SHALLOW-s2026092702",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.0247688889503479,
+      "CE_mean_abs_difference": 0.004738338190961529,
+      "CE_first_difference_over_1e_7": 6,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.005787909030914307,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.327830046415329,
+      "reference_CE_step444": 0.3220421373844147
+    },
+    {
+      "row_id": "CAP_M_SHALLOW-s2026092702",
+      "seed": 2026092702,
+      "reference_row": "DELAY_M_SHALLOW-s2026092702",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.03049468994140625,
+      "CE_mean_abs_difference": 0.004981862666370632,
+      "CE_first_difference_over_1e_7": 2,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.008883684873580933,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.31315845251083374,
+      "reference_CE_step444": 0.3220421373844147
+    },
+    {
+      "row_id": "CAP_M_MIDDLE-s2026092702",
+      "seed": 2026092702,
+      "reference_row": "DELAY_M_SHALLOW-s2026092702",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.03016042709350586,
+      "CE_mean_abs_difference": 0.004735251737607492,
+      "CE_first_difference_over_1e_7": 2,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.0003490746021270752,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.32239121198654175,
+      "reference_CE_step444": 0.3220421373844147
+    },
+    {
+      "row_id": "CAP_M_BOTH-s2026092702",
+      "seed": 2026092702,
+      "reference_row": "DELAY_M_SHALLOW-s2026092702",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.025756359100341797,
+      "CE_mean_abs_difference": 0.004737258964293712,
+      "CE_first_difference_over_1e_7": 2,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.011556029319763184,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.33359816670417786,
+      "reference_CE_step444": 0.3220421373844147
+    },
+    {
+      "row_id": "CAP_JOINT-s2026092702",
+      "seed": 2026092702,
+      "reference_row": "DELAY_M_SHALLOW-s2026092702",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.038597047328948975,
+      "CE_mean_abs_difference": 0.005237952613078796,
+      "CE_first_difference_over_1e_7": 2,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.017820268869400024,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.3398624062538147,
+      "reference_CE_step444": 0.3220421373844147
+    },
+    {
+      "row_id": "DELAYCAP_M_SHALLOW-s2026092702",
+      "seed": 2026092702,
+      "reference_row": "DELAY_M_SHALLOW-s2026092702",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.024572938680648804,
+      "CE_mean_abs_difference": 0.004248691370358338,
+      "CE_first_difference_over_1e_7": 2,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.009241610765457153,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.3312837481498718,
+      "reference_CE_step444": 0.3220421373844147
+    },
+    {
+      "row_id": "DELAYCAP_M_MIDDLE-s2026092702",
+      "seed": 2026092702,
+      "reference_row": "DELAY_M_SHALLOW-s2026092702",
+      "steps": 444,
+      "flags": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "CE_max_abs_difference": 0.028138577938079834,
+      "CE_mean_abs_difference": 0.004957175402490942,
+      "CE_first_difference_over_1e_7": 2,
+      "CE_step1_difference": 0.0,
+      "CE_step444_difference": 0.00949367880821228,
+      "gradient_step1_difference": 0.0,
+      "CE_step444": 0.3125484585762024,
+      "reference_CE_step444": 0.3220421373844147
+    }
+  ],
+  "scope": "All first444 persisted pure-CE updates for each available row; losses/gradient norms only, no checkpoint equality or test effect inferred"
+}

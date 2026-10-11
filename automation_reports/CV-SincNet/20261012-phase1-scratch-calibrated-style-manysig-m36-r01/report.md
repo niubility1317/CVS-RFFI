@@ -56,3 +56,10 @@ L 6,300、隐藏 TX 的 U 56,700、V 27,000；沿用既有物理 ID 与角色契
 
 
 运行读回 VERIFIED：22/36 行已启动，14 行排队。22 行实际配置/校准状态与训练计数符合登记；每卡总进程为 {'0': 3, '1': 3, '2': 3, '3': 3, '4': 3, '5': 3, '6': 3, '7': 3}。完整时点及PID见 evidence/runtime_contract.json。本批未完成测试，性能增益未获证明。
+
+
+## 实际源机制核验
+
+在训快照覆盖22行、17540条已写入源步骤和1108个限幅辅助步，联合梯度上限均通过。见[source_prefix_audit.md](source_prefix_audit.md)。这不是完整训练或性能提升证明。
+
+第0与444步校准对照见[calibration_effect.md](calibration_effect.md)。同seed纯CE预热存在数值轨迹差异，不能解释为共享同一中间权重，见[warmup_pairing_audit.md](warmup_pairing_audit.md)。现有36行配置、队列和测试规则未改变。

@@ -2,3 +2,4 @@
 {"event": "LOCAL_VERIFIED", "time": 1791754403.5827177, "matrix": 36, "review": "PASS", "CPU_CUDA_multilevel": "PASS", "target_access": false}
 {"event": "LAUNCH_VERIFIED", "time": 1791754627.0616724, "launched": 6, "checked": 3, "matrix": 36, "execution_commit": "994db435e306b8e0f476424796111ebd4e467268"}
 {"event": "RUNTIME_CONTRACT_VERIFIED", "time": 1791754694.619044, "evidence": "evidence/runtime_contract.json", "launched": 22, "pending": 14}
+{"event": "SOURCE_PREFIX_AND_WARMUP_AUDIT_VERIFIED", "time": 1791755047.0435233, "source_prefix_steps": 17540, "cap_steps": 1108, "bound_violations": 0, "target_access": false, "training_changed": false, "evidence": ["source_prefix_audit.md", "calibration_effect.md", "warmup_pairing_audit.md"]}

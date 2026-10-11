@@ -1,0 +1,162 @@
+{
+  "status": "VERIFIED_SOURCE_COMPARISON",
+  "read_at": 1791754696.7107718,
+  "run_id": "20261012-phase1-scratch-calibrated-style-manysig-m36-r01",
+  "source_only": true,
+  "target_access": false,
+  "scope": "Registered source-L calibration at update0 versus444, completed calibration records only; unequal in-training step counts are not performance comparisons",
+  "rows": [
+    {
+      "seed": 2026092701,
+      "level": "time_down",
+      "calibration": {
+        "0": {
+          "rows": [
+            "CAP_M_SHALLOW-s2026092701",
+            "CAP_M_MIDDLE-s2026092701",
+            "CAP_M_BOTH-s2026092701",
+            "CAP_JOINT-s2026092701"
+          ],
+          "count": 4,
+          "coefficient_mean": 0.9464744780177159,
+          "coefficient_min": 0.9464744764998867,
+          "coefficient_max": 0.9464744796691488,
+          "mean_CE_norm": 1.076137579083799,
+          "mean_R_norm": 0.22739917537616347
+        },
+        "444": {
+          "rows": [
+            "DELAY_M_SHALLOW-s2026092701",
+            "DELAY_M_MIDDLE-s2026092701",
+            "DELAY_M_BOTH-s2026092701",
+            "DELAY_JOINT-s2026092701",
+            "DELAYCAP_M_SHALLOW-s2026092701",
+            "DELAYCAP_M_MIDDLE-s2026092701",
+            "DELAYCAP_M_BOTH-s2026092701",
+            "DELAYCAP_JOINT-s2026092701"
+          ],
+          "count": 8,
+          "coefficient_mean": 0.06344768452734237,
+          "coefficient_min": 0.050813151503289494,
+          "coefficient_max": 0.07541147713282909,
+          "mean_CE_norm": 0.80395163886602,
+          "mean_R_norm": 2.5772440994968697
+        }
+      },
+      "coefficient_ratio_after_before": 0.06703581131973721
+    },
+    {
+      "seed": 2026092701,
+      "level": "t2.pool",
+      "calibration": {
+        "0": {
+          "rows": [
+            "CAP_M_SHALLOW-s2026092701",
+            "CAP_M_MIDDLE-s2026092701",
+            "CAP_M_BOTH-s2026092701",
+            "CAP_JOINT-s2026092701"
+          ],
+          "count": 4,
+          "coefficient_mean": 1.031224872366677,
+          "coefficient_min": 1.031224869747185,
+          "coefficient_max": 1.031224876154665,
+          "mean_CE_norm": 3.565314989760835,
+          "mean_R_norm": 0.6914718768513071
+        },
+        "444": {
+          "rows": [
+            "DELAY_M_SHALLOW-s2026092701",
+            "DELAY_M_MIDDLE-s2026092701",
+            "DELAY_M_BOTH-s2026092701",
+            "DELAY_JOINT-s2026092701",
+            "DELAYCAP_M_SHALLOW-s2026092701",
+            "DELAYCAP_M_MIDDLE-s2026092701",
+            "DELAYCAP_M_BOTH-s2026092701",
+            "DELAYCAP_JOINT-s2026092701"
+          ],
+          "count": 8,
+          "coefficient_mean": 0.023851831459572655,
+          "coefficient_min": 0.01786930898409147,
+          "coefficient_max": 0.030074149519614186,
+          "mean_CE_norm": 0.9753885011056743,
+          "mean_R_norm": 8.389448492505123
+        }
+      },
+      "coefficient_ratio_after_before": 0.023129612268595046
+    },
+    {
+      "seed": 2026092702,
+      "level": "time_down",
+      "calibration": {
+        "0": {
+          "rows": [
+            "CAP_M_SHALLOW-s2026092702",
+            "CAP_M_MIDDLE-s2026092702",
+            "CAP_M_BOTH-s2026092702",
+            "CAP_JOINT-s2026092702"
+          ],
+          "count": 4,
+          "coefficient_mean": 1.4207339928740286,
+          "coefficient_min": 1.4207339912837063,
+          "coefficient_max": 1.4207339942472323,
+          "mean_CE_norm": 1.671541239389002,
+          "mean_R_norm": 0.23530671438366968
+        },
+        "444": {
+          "rows": [
+            "DELAY_M_SHALLOW-s2026092702",
+            "DELAY_M_MIDDLE-s2026092702",
+            "DELAY_M_BOTH-s2026092702",
+            "DELAY_JOINT-s2026092702",
+            "DELAYCAP_M_SHALLOW-s2026092702",
+            "DELAYCAP_M_MIDDLE-s2026092702"
+          ],
+          "count": 6,
+          "coefficient_mean": 0.058124228831029405,
+          "coefficient_min": 0.04770577792648722,
+          "coefficient_max": 0.07480455088220879,
+          "mean_CE_norm": 0.7628458401505649,
+          "mean_R_norm": 2.698906074057156
+        }
+      },
+      "coefficient_ratio_after_before": 0.04091140855541075
+    },
+    {
+      "seed": 2026092702,
+      "level": "t2.pool",
+      "calibration": {
+        "0": {
+          "rows": [
+            "CAP_M_SHALLOW-s2026092702",
+            "CAP_M_MIDDLE-s2026092702",
+            "CAP_M_BOTH-s2026092702",
+            "CAP_JOINT-s2026092702"
+          ],
+          "count": 4,
+          "coefficient_mean": 4.518061007484528,
+          "coefficient_min": 4.5180609889341214,
+          "coefficient_max": 4.518061039946911,
+          "mean_CE_norm": 5.9334179478341875,
+          "mean_R_norm": 0.26265329033770984
+        },
+        "444": {
+          "rows": [
+            "DELAY_M_SHALLOW-s2026092702",
+            "DELAY_M_MIDDLE-s2026092702",
+            "DELAY_M_BOTH-s2026092702",
+            "DELAY_JOINT-s2026092702",
+            "DELAYCAP_M_SHALLOW-s2026092702",
+            "DELAYCAP_M_MIDDLE-s2026092702"
+          ],
+          "count": 6,
+          "coefficient_mean": 0.022669062277434877,
+          "coefficient_min": 0.017944023120572337,
+          "coefficient_max": 0.030065855141592584,
+          "mean_CE_norm": 0.8978727310213275,
+          "mean_R_norm": 8.215575469865897
+        }
+      },
+      "coefficient_ratio_after_before": 0.005017431645983038
+    }
+  ]
+}

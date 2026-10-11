@@ -1,0 +1,2829 @@
+{
+  "status": "VERIFIED_SOURCE_PREFIX",
+  "run_id": "20261012-phase1-scratch-calibrated-style-manysig-m36-r01",
+  "read_at": 1791754776.576394,
+  "source_only": true,
+  "target_access": false,
+  "scope": "All complete lines of each captured persisted source gzip prefix; unfinished steps/rows not claimed complete; no target/scorer/stdout read",
+  "rows": [
+    {
+      "row_id": "DELAY_M_SHALLOW-s2026092701",
+      "arm": "DELAY_M_SHALLOW",
+      "model_seed": 2026092701,
+      "live_process": {
+        "pid": 318023,
+        "start_ticks": 100223068,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAY_M_SHALLOW-s2026092701"
+        ],
+        "gpu": "0"
+      },
+      "source_prefix_steps": 888,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 222315,
+      "discarded_trailing_unterminated_bytes": 0,
+      "auxiliary_steps": 111,
+      "cap_steps": 0,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "cap_seconds": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 888,
+          "mean": 0.6028732488619851,
+          "min": 0.08893058449029922,
+          "max": 3.329075574874878,
+          "median": 0.34845519065856934
+        },
+        "weighted_KL": {
+          "count": 888,
+          "mean": 0.005067832583147531,
+          "min": 0.0,
+          "max": 0.030289802700281143,
+          "median": 3.538773307809606e-05
+        },
+        "weighted_fishr": {
+          "count": 888,
+          "mean": 8.302716910109027e-05,
+          "min": 0.0,
+          "max": 0.0024998055305331945,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 888,
+          "mean": 3.5222787666428195,
+          "min": 1.4050885438919067,
+          "max": 13.468209266662598,
+          "median": 3.315839648246765
+        },
+        "weighted_style_CE": {
+          "count": 888,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    },
+    {
+      "row_id": "DELAY_M_MIDDLE-s2026092701",
+      "arm": "DELAY_M_MIDDLE",
+      "model_seed": 2026092701,
+      "live_process": {
+        "pid": 318109,
+        "start_ticks": 100223398,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAY_M_MIDDLE-s2026092701"
+        ],
+        "gpu": "1"
+      },
+      "source_prefix_steps": 1554,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 494350,
+      "discarded_trailing_unterminated_bytes": 0,
+      "auxiliary_steps": 277,
+      "cap_steps": 0,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "cap_seconds": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 1554,
+          "mean": 0.4083142362587739,
+          "min": 0.04760578274726868,
+          "max": 3.329075574874878,
+          "median": 0.2219867706298828
+        },
+        "weighted_KL": {
+          "count": 1554,
+          "mean": 0.01124766251027377,
+          "min": 0.0,
+          "max": 0.045188359916210175,
+          "median": 0.012100061401724815
+        },
+        "weighted_fishr": {
+          "count": 1554,
+          "mean": 0.00017284575217200378,
+          "min": -3.083320189034566e-05,
+          "max": 0.0034645209088921547,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 1554,
+          "mean": 2.9889556518546097,
+          "min": 0.755611002445221,
+          "max": 13.468209266662598,
+          "median": 2.7304216623306274
+        },
+        "weighted_style_CE": {
+          "count": 1554,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    },
+    {
+      "row_id": "DELAY_M_BOTH-s2026092701",
+      "arm": "DELAY_M_BOTH",
+      "model_seed": 2026092701,
+      "live_process": {
+        "pid": 318198,
+        "start_ticks": 100223731,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAY_M_BOTH-s2026092701"
+        ],
+        "gpu": "2"
+      },
+      "source_prefix_steps": 811,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 210408,
+      "discarded_trailing_unterminated_bytes": 7252,
+      "auxiliary_steps": 91,
+      "cap_steps": 0,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "cap_seconds": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 811,
+          "mean": 0.6418996016999061,
+          "min": 0.12193357199430466,
+          "max": 3.329075574874878,
+          "median": 0.38227608799934387
+        },
+        "weighted_KL": {
+          "count": 811,
+          "mean": 0.004090498572407573,
+          "min": 0.0,
+          "max": 0.022532757371664047,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 811,
+          "mean": 0.00011960877668991445,
+          "min": 0.0,
+          "max": 0.002791793318465352,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 811,
+          "mean": 3.577890405966527,
+          "min": 1.341650366783142,
+          "max": 13.468209266662598,
+          "median": 3.3689045906066895
+        },
+        "weighted_style_CE": {
+          "count": 811,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    },
+    {
+      "row_id": "DELAY_JOINT-s2026092701",
+      "arm": "DELAY_JOINT",
+      "model_seed": 2026092701,
+      "live_process": {
+        "pid": 318285,
+        "start_ticks": 100224066,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAY_JOINT-s2026092701"
+        ],
+        "gpu": "3"
+      },
+      "source_prefix_steps": 634,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 210330,
+      "discarded_trailing_unterminated_bytes": 4179,
+      "auxiliary_steps": 47,
+      "cap_steps": 0,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "cap_seconds": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 634,
+          "mean": 0.7577394385020063,
+          "min": 0.14633284509181976,
+          "max": 3.329075336456299,
+          "median": 0.47247448563575745
+        },
+        "weighted_KL": {
+          "count": 634,
+          "mean": 0.0016564416412043947,
+          "min": 0.0,
+          "max": 0.014150257222354412,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 634,
+          "mean": 4.853488984569626e-05,
+          "min": 0.0,
+          "max": 0.001747757662087679,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 634,
+          "mean": 3.9130393330607127,
+          "min": 1.5701287984848022,
+          "max": 13.468209266662598,
+          "median": 3.6613383293151855
+        },
+        "weighted_style_CE": {
+          "count": 634,
+          "mean": 0.008491824924248442,
+          "min": 0.0,
+          "max": 0.087063267827034,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    },
+    {
+      "row_id": "CAP_M_SHALLOW-s2026092701",
+      "arm": "CAP_M_SHALLOW",
+      "model_seed": 2026092701,
+      "live_process": {
+        "pid": 318372,
+        "start_ticks": 100224399,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "CAP_M_SHALLOW-s2026092701"
+        ],
+        "gpu": "5"
+      },
+      "source_prefix_steps": 803,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 216260,
+      "discarded_trailing_unterminated_bytes": 2099,
+      "auxiliary_steps": 89,
+      "cap_steps": 89,
+      "cap_limited_steps": 54,
+      "scalar": {
+        "count": 89,
+        "mean": 0.7236306502350232,
+        "min": 0.12604190747812707,
+        "max": 1.0,
+        "median": 0.7476733055333711
+      },
+      "cap_seconds": {
+        "count": 89,
+        "mean": 0.38171111912665406,
+        "min": 0.2438417449593544,
+        "max": 0.5291077389847487,
+        "median": 0.3780816050712019
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 89,
+          "mean": 0.2996352783608864,
+          "min": 0.003561439907770822,
+          "max": 1.5867738278588026,
+          "median": 0.26377294940244755
+        },
+        "middle": {
+          "count": 89,
+          "mean": 0.2699428578376123,
+          "min": 0.0020464205133507323,
+          "max": 1.483851508992958,
+          "median": 0.2069856000808826
+        },
+        "rest": {
+          "count": 89,
+          "mean": 0.16343679605128822,
+          "min": 0.002019747104729594,
+          "max": 0.5946429722095773,
+          "median": 0.1429817178052203
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 89,
+          "mean": 0.1535942413561145,
+          "min": 0.003561439907770822,
+          "max": 0.19999999999969273,
+          "median": 0.18434527864476602
+        },
+        "middle": {
+          "count": 89,
+          "mean": 0.13430276097340613,
+          "min": 0.0020464205133507323,
+          "max": 0.19999999999973483,
+          "median": 0.14659062574537202
+        },
+        "rest": {
+          "count": 89,
+          "mean": 0.09051451639680322,
+          "min": 0.002019747104729594,
+          "max": 0.1999999999997461,
+          "median": 0.08855479676337111
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 803,
+          "mean": 0.6458103608335386,
+          "min": 0.11172568798065186,
+          "max": 3.329075336456299,
+          "median": 0.3879721462726593
+        },
+        "weighted_KL": {
+          "count": 803,
+          "mean": 0.00397889406536742,
+          "min": 0.0,
+          "max": 0.023972416296601295,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 803,
+          "mean": 0.0005742194410312021,
+          "min": 0.0,
+          "max": 0.01622297801077366,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 803,
+          "mean": 3.592207915310842,
+          "min": 1.4179356098175049,
+          "max": 13.468209266662598,
+          "median": 3.354163885116577
+        },
+        "weighted_style_CE": {
+          "count": 803,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 0
+    },
+    {
+      "row_id": "CAP_M_MIDDLE-s2026092701",
+      "arm": "CAP_M_MIDDLE",
+      "model_seed": 2026092701,
+      "live_process": {
+        "pid": 318516,
+        "start_ticks": 100224734,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "CAP_M_MIDDLE-s2026092701"
+        ],
+        "gpu": "6"
+      },
+      "source_prefix_steps": 1110,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 374170,
+      "discarded_trailing_unterminated_bytes": 0,
+      "auxiliary_steps": 166,
+      "cap_steps": 166,
+      "cap_limited_steps": 154,
+      "scalar": {
+        "count": 166,
+        "mean": 0.2959795734213717,
+        "min": 0.03861811981676268,
+        "max": 1.0,
+        "median": 0.20291823730730757
+      },
+      "cap_seconds": {
+        "count": 166,
+        "mean": 0.19166611131850114,
+        "min": 0.10120963805820793,
+        "max": 0.3672246780479327,
+        "median": 0.16915471653919667
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 166,
+          "mean": 1.2999572881953363,
+          "min": 0.004197481316896789,
+          "max": 5.178916036017779,
+          "median": 0.9442464675896431
+        },
+        "middle": {
+          "count": 166,
+          "mean": 1.2311965986948676,
+          "min": 0.0017007494241978467,
+          "max": 4.851385346833928,
+          "median": 0.8422006872219368
+        },
+        "rest": {
+          "count": 166,
+          "mean": 0.7168992050963632,
+          "min": 0.002848106461578571,
+          "max": 2.525064151038189,
+          "median": 0.5719693149473368
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 166,
+          "mean": 0.18448726475684826,
+          "min": 0.004197481316896789,
+          "max": 0.19999999999993895,
+          "median": 0.1999999999995471
+        },
+        "middle": {
+          "count": 166,
+          "mean": 0.1636471940258929,
+          "min": 0.0017007494241978467,
+          "max": 0.19999999999993906,
+          "median": 0.17048826422114702
+        },
+        "rest": {
+          "count": 166,
+          "mean": 0.11132648582828933,
+          "min": 0.002848106461578571,
+          "max": 0.1999999999998961,
+          "median": 0.10837258300274993
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 1110,
+          "mean": 0.5175643759267824,
+          "min": 0.0868225246667862,
+          "max": 3.329075336456299,
+          "median": 0.29376156628131866
+        },
+        "weighted_KL": {
+          "count": 1110,
+          "mean": 0.0076368180475591555,
+          "min": 0.0,
+          "max": 0.04310399293899536,
+          "median": 0.006387244677171111
+        },
+        "weighted_fishr": {
+          "count": 1110,
+          "mean": 0.0008192194411127308,
+          "min": -0.000843990477733314,
+          "max": 0.026033718138933182,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 1110,
+          "mean": 3.2912985824786865,
+          "min": 0.9874821305274963,
+          "max": 13.468209266662598,
+          "median": 3.059849500656128
+        },
+        "weighted_style_CE": {
+          "count": 1110,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 0
+    },
+    {
+      "row_id": "CAP_M_BOTH-s2026092701",
+      "arm": "CAP_M_BOTH",
+      "model_seed": 2026092701,
+      "live_process": {
+        "pid": 318685,
+        "start_ticks": 100225068,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "CAP_M_BOTH-s2026092701"
+        ],
+        "gpu": "7"
+      },
+      "source_prefix_steps": 723,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 201964,
+      "discarded_trailing_unterminated_bytes": 1799,
+      "auxiliary_steps": 69,
+      "cap_steps": 69,
+      "cap_limited_steps": 56,
+      "scalar": {
+        "count": 69,
+        "mean": 0.4374883458149934,
+        "min": 0.04727112007316693,
+        "max": 1.0,
+        "median": 0.31167393521450726
+      },
+      "cap_seconds": {
+        "count": 69,
+        "mean": 0.44144013305059704,
+        "min": 0.24510136805474758,
+        "max": 0.7719096190994605,
+        "median": 0.44094483996741474
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 69,
+          "mean": 0.781779685719424,
+          "min": 0.007100340791476539,
+          "max": 2.7410166247583234,
+          "median": 0.641696264597597
+        },
+        "middle": {
+          "count": 69,
+          "mean": 0.7278948993423514,
+          "min": 0.004897581499631243,
+          "max": 4.230913075261683,
+          "median": 0.5652920525780217
+        },
+        "rest": {
+          "count": 69,
+          "mean": 0.4100407667926924,
+          "min": 0.006276790598764468,
+          "max": 1.1936011239740656,
+          "median": 0.3830819240319596
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 69,
+          "mean": 0.1753572920155156,
+          "min": 0.007100340791476539,
+          "max": 0.19999999999983528,
+          "median": 0.19999999999933213
+        },
+        "middle": {
+          "count": 69,
+          "mean": 0.15003580564777835,
+          "min": 0.004897581499631243,
+          "max": 0.1999999999999034,
+          "median": 0.16370068436490928
+        },
+        "rest": {
+          "count": 69,
+          "mean": 0.10361581472327278,
+          "min": 0.006276790598764468,
+          "max": 0.19999999999987422,
+          "median": 0.10059264398699305
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 723,
+          "mean": 0.6924278543821509,
+          "min": 0.13785454630851746,
+          "max": 3.329075336456299,
+          "median": 0.41316625475883484
+        },
+        "weighted_KL": {
+          "count": 723,
+          "mean": 0.0028931421462757537,
+          "min": 0.0,
+          "max": 0.023637911304831505,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 723,
+          "mean": 0.0006060361688324465,
+          "min": 0.0,
+          "max": 0.018139878287911415,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 723,
+          "mean": 3.691182310155813,
+          "min": 1.4737112522125244,
+          "max": 13.468209266662598,
+          "median": 3.4756903648376465
+        },
+        "weighted_style_CE": {
+          "count": 723,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 0
+    },
+    {
+      "row_id": "CAP_JOINT-s2026092701",
+      "arm": "CAP_JOINT",
+      "model_seed": 2026092701,
+      "live_process": {
+        "pid": 318772,
+        "start_ticks": 100225395,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "CAP_JOINT-s2026092701"
+        ],
+        "gpu": "7"
+      },
+      "source_prefix_steps": 546,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 139810,
+      "discarded_trailing_unterminated_bytes": 1086,
+      "auxiliary_steps": 25,
+      "cap_steps": 25,
+      "cap_limited_steps": 14,
+      "scalar": {
+        "count": 25,
+        "mean": 0.7478193761026006,
+        "min": 0.25964032905371176,
+        "max": 1.0,
+        "median": 0.9169245250878775
+      },
+      "cap_seconds": {
+        "count": 25,
+        "mean": 0.534871574616991,
+        "min": 0.3602215109858662,
+        "max": 0.7396519569447264,
+        "median": 0.523155453032814
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 25,
+          "mean": 0.28496888859162756,
+          "min": 0.003045076732560077,
+          "max": 0.7628831543859662,
+          "median": 0.2181204608740778
+        },
+        "middle": {
+          "count": 25,
+          "mean": 0.25507597177531177,
+          "min": 0.0020810073519158456,
+          "max": 0.7702963585359718,
+          "median": 0.1823554564181479
+        },
+        "rest": {
+          "count": 25,
+          "mean": 0.16529863004608436,
+          "min": 0.003158764636165765,
+          "max": 0.5817865734805276,
+          "median": 0.13426973218879376
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 25,
+          "mean": 0.1521840576912374,
+          "min": 0.003045076732560077,
+          "max": 0.19999999999967977,
+          "median": 0.1816073353755192
+        },
+        "middle": {
+          "count": 25,
+          "mean": 0.13286431693342993,
+          "min": 0.0020810073519158456,
+          "max": 0.1999999999994089,
+          "median": 0.1602975495743478
+        },
+        "rest": {
+          "count": 25,
+          "mean": 0.09399559309758138,
+          "min": 0.003158764636165765,
+          "max": 0.19999999999985021,
+          "median": 0.0817506664506754
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 546,
+          "mean": 0.8348873888616597,
+          "min": 0.17358461022377014,
+          "max": 3.329075574874878,
+          "median": 0.5429940223693848
+        },
+        "weighted_KL": {
+          "count": 546,
+          "mean": 0.0006334191305644302,
+          "min": 0.0,
+          "max": 0.00856077391654253,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 546,
+          "mean": 0.0002516230438015468,
+          "min": 0.0,
+          "max": 0.015881337225437164,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 546,
+          "mean": 4.024323632647266,
+          "min": 1.8526147603988647,
+          "max": 13.468209266662598,
+          "median": 3.79257333278656
+        },
+        "weighted_style_CE": {
+          "count": 546,
+          "mean": 0.0031495024266758515,
+          "min": 0.0,
+          "max": 0.043912287801504135,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 0
+    },
+    {
+      "row_id": "DELAYCAP_M_SHALLOW-s2026092701",
+      "arm": "DELAYCAP_M_SHALLOW",
+      "model_seed": 2026092701,
+      "live_process": {
+        "pid": 318857,
+        "start_ticks": 100225727,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAYCAP_M_SHALLOW-s2026092701"
+        ],
+        "gpu": "3"
+      },
+      "source_prefix_steps": 807,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 213391,
+      "discarded_trailing_unterminated_bytes": 547,
+      "auxiliary_steps": 90,
+      "cap_steps": 90,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 90,
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "median": 1.0
+      },
+      "cap_seconds": {
+        "count": 90,
+        "mean": 0.35567122714128346,
+        "min": 0.239511503954418,
+        "max": 0.5975812670076266,
+        "median": 0.33122427901253104
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 90,
+          "mean": 0.024720278513710836,
+          "min": 0.00010890000814558435,
+          "max": 0.11526791676517716,
+          "median": 0.021283789775492643
+        },
+        "middle": {
+          "count": 90,
+          "mean": 0.023120463513208487,
+          "min": 6.251621205815636e-05,
+          "max": 0.13779274089197147,
+          "median": 0.017783894506736418
+        },
+        "rest": {
+          "count": 90,
+          "mean": 0.013898865576212968,
+          "min": 0.00011084607612338315,
+          "max": 0.0540561523908709,
+          "median": 0.012561120875165824
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 90,
+          "mean": 0.024720278513710836,
+          "min": 0.00010890000814558435,
+          "max": 0.11526791676517716,
+          "median": 0.021283789775492643
+        },
+        "middle": {
+          "count": 90,
+          "mean": 0.023120463513208487,
+          "min": 6.251621205815636e-05,
+          "max": 0.13779274089197147,
+          "median": 0.017783894506736418
+        },
+        "rest": {
+          "count": 90,
+          "mean": 0.013898865576212968,
+          "min": 0.00011084607612338315,
+          "max": 0.0540561523908709,
+          "median": 0.012561120875165824
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 807,
+          "mean": 0.6440163988255362,
+          "min": 0.11167585104703903,
+          "max": 3.329075574874878,
+          "median": 0.38450685143470764
+        },
+        "weighted_KL": {
+          "count": 807,
+          "mean": 0.004020242940044406,
+          "min": 0.0,
+          "max": 0.023522207513451576,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 807,
+          "mean": 8.1866512226915e-05,
+          "min": 0.0,
+          "max": 0.002469058148562908,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 807,
+          "mean": 3.585724034717092,
+          "min": 1.5091248750686646,
+          "max": 13.468209266662598,
+          "median": 3.3447210788726807
+        },
+        "weighted_style_CE": {
+          "count": 807,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    },
+    {
+      "row_id": "DELAYCAP_M_MIDDLE-s2026092701",
+      "arm": "DELAYCAP_M_MIDDLE",
+      "model_seed": 2026092701,
+      "live_process": {
+        "pid": 318940,
+        "start_ticks": 100226060,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAYCAP_M_MIDDLE-s2026092701"
+        ],
+        "gpu": "5"
+      },
+      "source_prefix_steps": 888,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 252115,
+      "discarded_trailing_unterminated_bytes": 0,
+      "auxiliary_steps": 111,
+      "cap_steps": 111,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 111,
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "median": 1.0
+      },
+      "cap_seconds": {
+        "count": 111,
+        "mean": 0.27422025153803564,
+        "min": 0.10863462497945875,
+        "max": 0.44652706501074135,
+        "median": 0.2708806348964572
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 111,
+          "mean": 0.029414967244191778,
+          "min": 0.000137378777012442,
+          "max": 0.16383577532079427,
+          "median": 0.022158319375123255
+        },
+        "middle": {
+          "count": 111,
+          "mean": 0.027873270116128637,
+          "min": 5.730227471117048e-05,
+          "max": 0.14769049083638316,
+          "median": 0.019649184610944673
+        },
+        "rest": {
+          "count": 111,
+          "mean": 0.016937269532776435,
+          "min": 9.929648080138008e-05,
+          "max": 0.07504166134158739,
+          "median": 0.014213100636352604
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 111,
+          "mean": 0.029414967244191778,
+          "min": 0.000137378777012442,
+          "max": 0.16383577532079427,
+          "median": 0.022158319375123255
+        },
+        "middle": {
+          "count": 111,
+          "mean": 0.027873270116128637,
+          "min": 5.730227471117048e-05,
+          "max": 0.14769049083638316,
+          "median": 0.019649184610944673
+        },
+        "rest": {
+          "count": 111,
+          "mean": 0.016937269532776435,
+          "min": 9.929648080138008e-05,
+          "max": 0.07504166134158739,
+          "median": 0.014213100636352604
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 888,
+          "mean": 0.6029548092015289,
+          "min": 0.09162528812885284,
+          "max": 3.329075336456299,
+          "median": 0.34989456832408905
+        },
+        "weighted_KL": {
+          "count": 888,
+          "mean": 0.005077340244030426,
+          "min": 0.0,
+          "max": 0.032050397247076035,
+          "median": 3.39859034284018e-05
+        },
+        "weighted_fishr": {
+          "count": 888,
+          "mean": 0.00010518304691282817,
+          "min": -7.319456472032471e-06,
+          "max": 0.0033493852242827415,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 888,
+          "mean": 3.4998690706115587,
+          "min": 1.3419742584228516,
+          "max": 13.468209266662598,
+          "median": 3.2733787298202515
+        },
+        "weighted_style_CE": {
+          "count": 888,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    },
+    {
+      "row_id": "DELAYCAP_M_BOTH-s2026092701",
+      "arm": "DELAYCAP_M_BOTH",
+      "model_seed": 2026092701,
+      "live_process": {
+        "pid": 319026,
+        "start_ticks": 100226393,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAYCAP_M_BOTH-s2026092701"
+        ],
+        "gpu": "6"
+      },
+      "source_prefix_steps": 723,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 199032,
+      "discarded_trailing_unterminated_bytes": 9272,
+      "auxiliary_steps": 69,
+      "cap_steps": 69,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 69,
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "median": 1.0
+      },
+      "cap_seconds": {
+        "count": 69,
+        "mean": 0.46037289740153303,
+        "min": 0.3527038840111345,
+        "max": 0.5732160030165687,
+        "median": 0.4736970809753984
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 69,
+          "mean": 0.03005848925141215,
+          "min": 0.00014764710490600396,
+          "max": 0.0966790370854667,
+          "median": 0.0270328617788326
+        },
+        "middle": {
+          "count": 69,
+          "mean": 0.028438224579659287,
+          "min": 9.513066669549036e-05,
+          "max": 0.15581067664232087,
+          "median": 0.02172953944702328
+        },
+        "rest": {
+          "count": 69,
+          "mean": 0.016396144118494063,
+          "min": 0.00015515344192512326,
+          "max": 0.057590727362949345,
+          "median": 0.01495296960016018
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 69,
+          "mean": 0.03005848925141215,
+          "min": 0.00014764710490600396,
+          "max": 0.0966790370854667,
+          "median": 0.0270328617788326
+        },
+        "middle": {
+          "count": 69,
+          "mean": 0.028438224579659287,
+          "min": 9.513066669549036e-05,
+          "max": 0.15581067664232087,
+          "median": 0.02172953944702328
+        },
+        "rest": {
+          "count": 69,
+          "mean": 0.016396144118494063,
+          "min": 0.00015515344192512326,
+          "max": 0.057590727362949345,
+          "median": 0.01495296960016018
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 723,
+          "mean": 0.6922833641081595,
+          "min": 0.13518226146697998,
+          "max": 3.329075574874878,
+          "median": 0.4104715585708618
+        },
+        "weighted_KL": {
+          "count": 723,
+          "mean": 0.0028996427139328673,
+          "min": 0.0,
+          "max": 0.022677021101117134,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 723,
+          "mean": 8.953932604528185e-05,
+          "min": 0.0,
+          "max": 0.002852535340934992,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 723,
+          "mean": 3.6744633238675024,
+          "min": 1.3950221538543701,
+          "max": 13.468209266662598,
+          "median": 3.4583470821380615
+        },
+        "weighted_style_CE": {
+          "count": 723,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    },
+    {
+      "row_id": "DELAYCAP_JOINT-s2026092701",
+      "arm": "DELAYCAP_JOINT",
+      "model_seed": 2026092701,
+      "live_process": {
+        "pid": 319110,
+        "start_ticks": 100226725,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAYCAP_JOINT-s2026092701"
+        ],
+        "gpu": "1"
+      },
+      "source_prefix_steps": 618,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 208908,
+      "discarded_trailing_unterminated_bytes": 4474,
+      "auxiliary_steps": 43,
+      "cap_steps": 43,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 43,
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "median": 1.0
+      },
+      "cap_seconds": {
+        "count": 43,
+        "mean": 0.4106752912400204,
+        "min": 0.2824524099705741,
+        "max": 0.580520985997282,
+        "median": 0.3972087720176205
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 43,
+          "mean": 0.014501004415312635,
+          "min": 0.00015612515308672124,
+          "max": 0.0416537968891706,
+          "median": 0.011990270795017965
+        },
+        "middle": {
+          "count": 43,
+          "mean": 0.012995590207599857,
+          "min": 0.00011686872232745561,
+          "max": 0.04949479222098771,
+          "median": 0.0093911857929991
+        },
+        "rest": {
+          "count": 43,
+          "mean": 0.008657264530459834,
+          "min": 0.00013624160780801968,
+          "max": 0.027138023324969434,
+          "median": 0.006974688415454965
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 43,
+          "mean": 0.014501004415312635,
+          "min": 0.00015612515308672124,
+          "max": 0.0416537968891706,
+          "median": 0.011990270795017965
+        },
+        "middle": {
+          "count": 43,
+          "mean": 0.012995590207599857,
+          "min": 0.00011686872232745561,
+          "max": 0.04949479222098771,
+          "median": 0.0093911857929991
+        },
+        "rest": {
+          "count": 43,
+          "mean": 0.008657264530459834,
+          "min": 0.00013624160780801968,
+          "max": 0.027138023324969434,
+          "median": 0.006974688415454965
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 618,
+          "mean": 0.7696388788931192,
+          "min": 0.1470176875591278,
+          "max": 3.329075574874878,
+          "median": 0.47994527220726013
+        },
+        "weighted_KL": {
+          "count": 618,
+          "mean": 0.0014364596859386763,
+          "min": 0.0,
+          "max": 0.013357594609260559,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 618,
+          "mean": 4.0563545276921e-05,
+          "min": 0.0,
+          "max": 0.001691025448963046,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 618,
+          "mean": 3.9473795485727994,
+          "min": 1.650325059890747,
+          "max": 13.468209266662598,
+          "median": 3.7273188829421997
+        },
+        "weighted_style_CE": {
+          "count": 618,
+          "mean": 0.0074155420690517225,
+          "min": 0.0,
+          "max": 0.06174749881029129,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    },
+    {
+      "row_id": "DELAY_M_SHALLOW-s2026092702",
+      "arm": "DELAY_M_SHALLOW",
+      "model_seed": 2026092702,
+      "live_process": {
+        "pid": 319194,
+        "start_ticks": 100227055,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAY_M_SHALLOW-s2026092702"
+        ],
+        "gpu": "0"
+      },
+      "source_prefix_steps": 666,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 127561,
+      "discarded_trailing_unterminated_bytes": 0,
+      "auxiliary_steps": 55,
+      "cap_steps": 0,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "cap_seconds": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 666,
+          "mean": 0.7726538288476947,
+          "min": 0.14734314382076263,
+          "max": 3.7172741889953613,
+          "median": 0.47024254500865936
+        },
+        "weighted_KL": {
+          "count": 666,
+          "mean": 0.0022822611779581953,
+          "min": 0.0,
+          "max": 0.018227990716695786,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 666,
+          "mean": 5.495109405899427e-05,
+          "min": 0.0,
+          "max": 0.0018532705726101995,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 666,
+          "mean": 4.170332827725568,
+          "min": 1.5825462341308594,
+          "max": 16.270263671875,
+          "median": 3.9517205953598022
+        },
+        "weighted_style_CE": {
+          "count": 666,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    },
+    {
+      "row_id": "DELAY_M_MIDDLE-s2026092702",
+      "arm": "DELAY_M_MIDDLE",
+      "model_seed": 2026092702,
+      "live_process": {
+        "pid": 319278,
+        "start_ticks": 100227387,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAY_M_MIDDLE-s2026092702"
+        ],
+        "gpu": "2"
+      },
+      "source_prefix_steps": 972,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 255783,
+      "discarded_trailing_unterminated_bytes": 1398,
+      "auxiliary_steps": 132,
+      "cap_steps": 0,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "cap_seconds": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 972,
+          "mean": 0.59796043891659,
+          "min": 0.08968351781368256,
+          "max": 3.7172741889953613,
+          "median": 0.3429027497768402
+        },
+        "weighted_KL": {
+          "count": 972,
+          "mean": 0.0063893823018753276,
+          "min": 0.0,
+          "max": 0.029833044856786728,
+          "median": 0.0029537914087995887
+        },
+        "weighted_fishr": {
+          "count": 972,
+          "mean": 0.00010495979845033127,
+          "min": 0.0,
+          "max": 0.0028984781820327044,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 972,
+          "mean": 3.772472947590636,
+          "min": 1.4134907722473145,
+          "max": 16.270263671875,
+          "median": 3.574907064437866
+        },
+        "weighted_style_CE": {
+          "count": 972,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    },
+    {
+      "row_id": "DELAY_M_BOTH-s2026092702",
+      "arm": "DELAY_M_BOTH",
+      "model_seed": 2026092702,
+      "live_process": {
+        "pid": 319362,
+        "start_ticks": 100227719,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAY_M_BOTH-s2026092702"
+        ],
+        "gpu": "2"
+      },
+      "source_prefix_steps": 739,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 176328,
+      "discarded_trailing_unterminated_bytes": 2902,
+      "auxiliary_steps": 73,
+      "cap_steps": 0,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "cap_seconds": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 739,
+          "mean": 0.7214273497845388,
+          "min": 0.14088571071624756,
+          "max": 3.7172741889953613,
+          "median": 0.435878187417984
+        },
+        "weighted_KL": {
+          "count": 739,
+          "mean": 0.003334777434130454,
+          "min": 0.0,
+          "max": 0.022690029814839363,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 739,
+          "mean": 0.00013661103852642058,
+          "min": 0.0,
+          "max": 0.00514856306836009,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 739,
+          "mean": 4.0733296745362235,
+          "min": 1.4785009622573853,
+          "max": 16.270263671875,
+          "median": 3.8811445236206055
+        },
+        "weighted_style_CE": {
+          "count": 739,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    },
+    {
+      "row_id": "DELAY_JOINT-s2026092702",
+      "arm": "DELAY_JOINT",
+      "model_seed": 2026092702,
+      "live_process": {
+        "pid": 319448,
+        "start_ticks": 100228049,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAY_JOINT-s2026092702"
+        ],
+        "gpu": "1"
+      },
+      "source_prefix_steps": 596,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 175136,
+      "discarded_trailing_unterminated_bytes": 498,
+      "auxiliary_steps": 38,
+      "cap_steps": 0,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "cap_seconds": {
+        "count": 0,
+        "mean": null,
+        "min": null,
+        "max": null,
+        "median": null
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "middle": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        },
+        "rest": {
+          "count": 0,
+          "mean": null,
+          "min": null,
+          "max": null,
+          "median": null
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 596,
+          "mean": 0.8308704799953723,
+          "min": 0.13826552033424377,
+          "max": 3.7172741889953613,
+          "median": 0.5160132944583893
+        },
+        "weighted_KL": {
+          "count": 596,
+          "mean": 0.0012685202507037691,
+          "min": 0.0,
+          "max": 0.012193544767796993,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 596,
+          "mean": 4.428535347314448e-05,
+          "min": 0.0,
+          "max": 0.0019166219281032681,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 596,
+          "mean": 4.3121900186442685,
+          "min": 1.8923670053482056,
+          "max": 16.270263671875,
+          "median": 4.086012125015259
+        },
+        "weighted_style_CE": {
+          "count": 596,
+          "mean": 0.00615457039257674,
+          "min": 0.0,
+          "max": 0.06446094810962677,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    },
+    {
+      "row_id": "CAP_M_SHALLOW-s2026092702",
+      "arm": "CAP_M_SHALLOW",
+      "model_seed": 2026092702,
+      "live_process": {
+        "pid": 319941,
+        "start_ticks": 100228383,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "CAP_M_SHALLOW-s2026092702"
+        ],
+        "gpu": "0"
+      },
+      "source_prefix_steps": 647,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 138619,
+      "discarded_trailing_unterminated_bytes": 3241,
+      "auxiliary_steps": 50,
+      "cap_steps": 50,
+      "cap_limited_steps": 21,
+      "scalar": {
+        "count": 50,
+        "mean": 0.8650817094114703,
+        "min": 0.2544999823573392,
+        "max": 1.0,
+        "median": 1.0
+      },
+      "cap_seconds": {
+        "count": 50,
+        "mean": 0.5366884717345237,
+        "min": 0.4289935929700732,
+        "max": 0.7108725600410253,
+        "median": 0.532215560961049
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 50,
+          "mean": 0.1900121495979647,
+          "min": 0.002474250187211107,
+          "max": 0.7858546713722064,
+          "median": 0.1584646687832099
+        },
+        "middle": {
+          "count": 50,
+          "mean": 0.1564028218336509,
+          "min": 0.002340602073787381,
+          "max": 0.6008251788904554,
+          "median": 0.1144128746998807
+        },
+        "rest": {
+          "count": 50,
+          "mean": 0.1120996344354616,
+          "min": 0.002092918301981704,
+          "max": 0.37878654924302363,
+          "median": 0.09586968326852267
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 50,
+          "mean": 0.13710333754813456,
+          "min": 0.002474250187211107,
+          "max": 0.19999999999965917,
+          "median": 0.1509003328432864
+        },
+        "middle": {
+          "count": 50,
+          "mean": 0.1125579688791312,
+          "min": 0.002340602073787381,
+          "max": 0.19999999999971996,
+          "median": 0.11056683122884636
+        },
+        "rest": {
+          "count": 50,
+          "mean": 0.08347757464464219,
+          "min": 0.002092918301981704,
+          "max": 0.17680990454911583,
+          "median": 0.08677507156627962
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 647,
+          "mean": 0.7884163853742608,
+          "min": 0.14650598168373108,
+          "max": 3.7172741889953613,
+          "median": 0.48741525411605835
+        },
+        "weighted_KL": {
+          "count": 647,
+          "mean": 0.0020229484687174794,
+          "min": 0.0,
+          "max": 0.017897117882966995,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 647,
+          "mean": 0.0007203240515239583,
+          "min": 0.0,
+          "max": 0.02503582090139389,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 647,
+          "mean": 4.190377855964201,
+          "min": 1.373842477798462,
+          "max": 16.270263671875,
+          "median": 3.970200538635254
+        },
+        "weighted_style_CE": {
+          "count": 647,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 0
+    },
+    {
+      "row_id": "CAP_M_MIDDLE-s2026092702",
+      "arm": "CAP_M_MIDDLE",
+      "model_seed": 2026092702,
+      "live_process": {
+        "pid": 320025,
+        "start_ticks": 100228716,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "CAP_M_MIDDLE-s2026092702"
+        ],
+        "gpu": "6"
+      },
+      "source_prefix_steps": 957,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 296702,
+      "discarded_trailing_unterminated_bytes": 399,
+      "auxiliary_steps": 128,
+      "cap_steps": 128,
+      "cap_limited_steps": 124,
+      "scalar": {
+        "count": 128,
+        "mean": 0.13685114295257986,
+        "min": 0.008107207149847407,
+        "max": 1.0,
+        "median": 0.06567141481033861
+      },
+      "cap_seconds": {
+        "count": 128,
+        "mean": 0.22092921590865444,
+        "min": 0.10996665805578232,
+        "max": 0.31582700996659696,
+        "median": 0.23256998404394835
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 128,
+          "mean": 4.253707942674654,
+          "min": 0.019780928609416618,
+          "max": 24.66940788650566,
+          "median": 2.791998884600667
+        },
+        "middle": {
+          "count": 128,
+          "mean": 3.748553824899003,
+          "min": 0.01888217112045246,
+          "max": 21.027204713594678,
+          "median": 2.608843405353119
+        },
+        "rest": {
+          "count": 128,
+          "mean": 2.500114059354124,
+          "min": 0.017214375592137298,
+          "max": 10.863448077884964,
+          "median": 1.9972734051748742
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 128,
+          "mean": 0.1857383722207726,
+          "min": 0.019780928609416618,
+          "max": 0.19999999999998885,
+          "median": 0.19999999999979962
+        },
+        "middle": {
+          "count": 128,
+          "mean": 0.16430059239261008,
+          "min": 0.01888217112045246,
+          "max": 0.19999999999998472,
+          "median": 0.1711594068811993
+        },
+        "rest": {
+          "count": 128,
+          "mean": 0.12462530130050682,
+          "min": 0.017214375592137298,
+          "max": 0.19999999999998513,
+          "median": 0.12091124336682676
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 957,
+          "mean": 0.6041274853167489,
+          "min": 0.08112748712301254,
+          "max": 3.7172741889953613,
+          "median": 0.34849631786346436
+        },
+        "weighted_KL": {
+          "count": 957,
+          "mean": 0.006236532368477229,
+          "min": 0.0,
+          "max": 0.027752479538321495,
+          "median": 0.0024551290553063154
+        },
+        "weighted_fishr": {
+          "count": 957,
+          "mean": 0.0011103662824970568,
+          "min": -0.0018006465397775173,
+          "max": 0.047480762004852295,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 957,
+          "mean": 3.7580278865222274,
+          "min": 1.2431838512420654,
+          "max": 16.270263671875,
+          "median": 3.5704827308654785
+        },
+        "weighted_style_CE": {
+          "count": 957,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 0
+    },
+    {
+      "row_id": "CAP_M_BOTH-s2026092702",
+      "arm": "CAP_M_BOTH",
+      "model_seed": 2026092702,
+      "live_process": {
+        "pid": 320109,
+        "start_ticks": 100229050,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "CAP_M_BOTH-s2026092702"
+        ],
+        "gpu": "5"
+      },
+      "source_prefix_steps": 615,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 136091,
+      "discarded_trailing_unterminated_bytes": 430,
+      "auxiliary_steps": 42,
+      "cap_steps": 42,
+      "cap_limited_steps": 37,
+      "scalar": {
+        "count": 42,
+        "mean": 0.28869438646809753,
+        "min": 0.032694725688506614,
+        "max": 1.0,
+        "median": 0.15326477917094333
+      },
+      "cap_seconds": {
+        "count": 42,
+        "mean": 0.5546760323368722,
+        "min": 0.31837840110529214,
+        "max": 0.6966176680289209,
+        "median": 0.564550714509096
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 42,
+          "mean": 1.3574193589538635,
+          "min": 0.0100818939597365,
+          "max": 6.117194617426075,
+          "median": 1.15354587842699
+        },
+        "middle": {
+          "count": 42,
+          "mean": 1.1734223464470301,
+          "min": 0.007969695778835592,
+          "max": 4.082279397744204,
+          "median": 0.9819078110776222
+        },
+        "rest": {
+          "count": 42,
+          "mean": 0.8474768895620653,
+          "min": 0.012353939929035638,
+          "max": 3.172808656300684,
+          "median": 0.7265844920511719
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 42,
+          "mean": 0.17719762393082922,
+          "min": 0.0100818939597365,
+          "max": 0.19999999999995471,
+          "median": 0.1953909581883097
+        },
+        "middle": {
+          "count": 42,
+          "mean": 0.16141529884476957,
+          "min": 0.007969695778835592,
+          "max": 0.19999999999990103,
+          "median": 0.16783321016553868
+        },
+        "rest": {
+          "count": 42,
+          "mean": 0.1217446131019546,
+          "min": 0.012353939929035638,
+          "max": 0.19999999999987392,
+          "median": 0.12524355556102318
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 615,
+          "mean": 0.8143397106872341,
+          "min": 0.14457133412361145,
+          "max": 3.7172741889953613,
+          "median": 0.5036734938621521
+        },
+        "weighted_KL": {
+          "count": 615,
+          "mean": 0.001528375075535652,
+          "min": 0.0,
+          "max": 0.013817367143929005,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 615,
+          "mean": 0.0006793549479310953,
+          "min": 0.0,
+          "max": 0.03904072195291519,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 615,
+          "mean": 4.1876190856220274,
+          "min": 1.5401700735092163,
+          "max": 16.270263671875,
+          "median": 3.943591356277466
+        },
+        "weighted_style_CE": {
+          "count": 615,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 0
+    },
+    {
+      "row_id": "CAP_JOINT-s2026092702",
+      "arm": "CAP_JOINT",
+      "model_seed": 2026092702,
+      "live_process": {
+        "pid": 320195,
+        "start_ticks": 100229383,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "CAP_JOINT-s2026092702"
+        ],
+        "gpu": "3"
+      },
+      "source_prefix_steps": 546,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 138442,
+      "discarded_trailing_unterminated_bytes": 4519,
+      "auxiliary_steps": 25,
+      "cap_steps": 25,
+      "cap_limited_steps": 21,
+      "scalar": {
+        "count": 25,
+        "mean": 0.41977886109756535,
+        "min": 0.0721845677649764,
+        "max": 1.0,
+        "median": 0.2716230820175731
+      },
+      "cap_seconds": {
+        "count": 25,
+        "mean": 0.523952500950545,
+        "min": 0.3008146450156346,
+        "max": 0.7641149769769982,
+        "median": 0.4994420889997855
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 25,
+          "mean": 0.8489143251977458,
+          "min": 0.03336386287365609,
+          "max": 2.5166410355623863,
+          "median": 0.701170802076405
+        },
+        "middle": {
+          "count": 25,
+          "mean": 0.7291455592472031,
+          "min": 0.03526170608554779,
+          "max": 2.7706753145766374,
+          "median": 0.628380033116578
+        },
+        "rest": {
+          "count": 25,
+          "mean": 0.5000228656147195,
+          "min": 0.028625684346964112,
+          "max": 1.147663441386526,
+          "median": 0.48855954659769024
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 25,
+          "mean": 0.17981991683374252,
+          "min": 0.03336386287365609,
+          "max": 0.1999999999999328,
+          "median": 0.1999999999995195
+        },
+        "middle": {
+          "count": 25,
+          "mean": 0.15992100744969331,
+          "min": 0.03526170608554779,
+          "max": 0.19999999999984788,
+          "median": 0.17524436193660922
+        },
+        "rest": {
+          "count": 25,
+          "mean": 0.11932675188225794,
+          "min": 0.028625684346964112,
+          "max": 0.17946530347934658,
+          "median": 0.11964920041059361
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 546,
+          "mean": 0.8828544583130669,
+          "min": 0.2082863301038742,
+          "max": 3.7172741889953613,
+          "median": 0.5554485619068146
+        },
+        "weighted_KL": {
+          "count": 546,
+          "mean": 0.0006753689748830556,
+          "min": 0.0,
+          "max": 0.008979386650025845,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 546,
+          "mean": 0.0004788535775449605,
+          "min": 0.0,
+          "max": 0.030214468017220497,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 546,
+          "mean": 4.394417943098606,
+          "min": 1.995222806930542,
+          "max": 16.270263671875,
+          "median": 4.127448558807373
+        },
+        "weighted_style_CE": {
+          "count": 546,
+          "mean": 0.003341451572551095,
+          "min": 0.0,
+          "max": 0.0455588735640049,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 0
+    },
+    {
+      "row_id": "DELAYCAP_M_SHALLOW-s2026092702",
+      "arm": "DELAYCAP_M_SHALLOW",
+      "model_seed": 2026092702,
+      "live_process": {
+        "pid": 320279,
+        "start_ticks": 100229713,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAYCAP_M_SHALLOW-s2026092702"
+        ],
+        "gpu": "7"
+      },
+      "source_prefix_steps": 666,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 144566,
+      "discarded_trailing_unterminated_bytes": 0,
+      "auxiliary_steps": 55,
+      "cap_steps": 55,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 55,
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "median": 1.0
+      },
+      "cap_seconds": {
+        "count": 55,
+        "mean": 0.42460454824930904,
+        "min": 0.25442550296429545,
+        "max": 0.6241279860259965,
+        "median": 0.42797415901441127
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 55,
+          "mean": 0.010035775500692965,
+          "min": 9.45239586406941e-05,
+          "max": 0.048397298237249274,
+          "median": 0.006437294861869371
+        },
+        "middle": {
+          "count": 55,
+          "mean": 0.008117725638385413,
+          "min": 6.500618563769537e-05,
+          "max": 0.03726893002956161,
+          "median": 0.005627431170668349
+        },
+        "rest": {
+          "count": 55,
+          "mean": 0.0055202799880670625,
+          "min": 8.202156861526228e-05,
+          "max": 0.01865595606452792,
+          "median": 0.004984506029290472
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 55,
+          "mean": 0.010035775500692965,
+          "min": 9.45239586406941e-05,
+          "max": 0.048397298237249274,
+          "median": 0.006437294861869371
+        },
+        "middle": {
+          "count": 55,
+          "mean": 0.008117725638385413,
+          "min": 6.500618563769537e-05,
+          "max": 0.03726893002956161,
+          "median": 0.005627431170668349
+        },
+        "rest": {
+          "count": 55,
+          "mean": 0.0055202799880670625,
+          "min": 8.202156861526228e-05,
+          "max": 0.01865595606452792,
+          "median": 0.004984506029290472
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 666,
+          "mean": 0.7730686094936308,
+          "min": 0.14235351979732513,
+          "max": 3.7172741889953613,
+          "median": 0.4731736183166504
+        },
+        "weighted_KL": {
+          "count": 666,
+          "mean": 0.002268829856046221,
+          "min": 0.0,
+          "max": 0.018585022538900375,
+          "median": 0.0
+        },
+        "weighted_fishr": {
+          "count": 666,
+          "mean": 4.2902757798458936e-05,
+          "min": 0.0,
+          "max": 0.0013405346544459462,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 666,
+          "mean": 4.176238477230072,
+          "min": 1.435322642326355,
+          "max": 16.270263671875,
+          "median": 3.9400192499160767
+        },
+        "weighted_style_CE": {
+          "count": 666,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    },
+    {
+      "row_id": "DELAYCAP_M_MIDDLE-s2026092702",
+      "arm": "DELAYCAP_M_MIDDLE",
+      "model_seed": 2026092702,
+      "live_process": {
+        "pid": 320363,
+        "start_ticks": 100230040,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "DELAYCAP_M_MIDDLE-s2026092702"
+        ],
+        "gpu": "4"
+      },
+      "source_prefix_steps": 1031,
+      "gzip_stream_finished": false,
+      "source_completion_present": false,
+      "captured_compressed_bytes": 323919,
+      "discarded_trailing_unterminated_bytes": 2778,
+      "auxiliary_steps": 146,
+      "cap_steps": 146,
+      "cap_limited_steps": 0,
+      "scalar": {
+        "count": 146,
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "median": 1.0
+      },
+      "cap_seconds": {
+        "count": 146,
+        "mean": 0.17921364511688534,
+        "min": 0.10280397208407521,
+        "max": 0.39926636300515383,
+        "median": 0.15426402201410383
+      },
+      "raw_ratio_to_identity": {
+        "shallow": {
+          "count": 146,
+          "mean": 0.024944513654821903,
+          "min": 0.00011568478504660608,
+          "max": 0.13692618422333286,
+          "median": 0.015871698387265723
+        },
+        "middle": {
+          "count": 146,
+          "mean": 0.02385102225994448,
+          "min": 0.00012356667426211487,
+          "max": 0.1594528554501957,
+          "median": 0.013612893275345374
+        },
+        "rest": {
+          "count": 146,
+          "mean": 0.01463725711412895,
+          "min": 9.940785445063684e-05,
+          "max": 0.06749122266885275,
+          "median": 0.010856990254126252
+        }
+      },
+      "capped_ratio_to_identity": {
+        "shallow": {
+          "count": 146,
+          "mean": 0.024944513654821903,
+          "min": 0.00011568478504660608,
+          "max": 0.13692618422333286,
+          "median": 0.015871698387265723
+        },
+        "middle": {
+          "count": 146,
+          "mean": 0.02385102225994448,
+          "min": 0.00012356667426211487,
+          "max": 0.1594528554501957,
+          "median": 0.013612893275345374
+        },
+        "rest": {
+          "count": 146,
+          "mean": 0.01463725711412895,
+          "min": 9.940785445063684e-05,
+          "max": 0.06749122266885275,
+          "median": 0.010856990254126252
+        }
+      },
+      "bound_violations": [],
+      "metrics": {
+        "CE": {
+          "count": 1031,
+          "mean": 0.5730799619906973,
+          "min": 0.06695015728473663,
+          "max": 3.7172741889953613,
+          "median": 0.32729750871658325
+        },
+        "weighted_KL": {
+          "count": 1031,
+          "mean": 0.007096044327474875,
+          "min": 0.0,
+          "max": 0.03676578029990196,
+          "median": 0.004706950858235359
+        },
+        "weighted_fishr": {
+          "count": 1031,
+          "mean": 0.00012527177499070647,
+          "min": -4.2348557371951756e-07,
+          "max": 0.0031363358721137047,
+          "median": 0.0
+        },
+        "gradient_norm": {
+          "count": 1031,
+          "mean": 3.6892392108095837,
+          "min": 1.192799687385559,
+          "max": 16.270263671875,
+          "median": 3.484409809112549
+        },
+        "weighted_style_CE": {
+          "count": 1031,
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median": 0.0
+        }
+      },
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "calibration_after_updates": 444
+    }
+  ],
+  "total_prefix_steps": 17540,
+  "total_cap_steps": 1108,
+  "errors": []
+}

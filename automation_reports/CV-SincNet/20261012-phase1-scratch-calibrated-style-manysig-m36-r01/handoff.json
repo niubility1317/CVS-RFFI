@@ -18,5 +18,13 @@
   "multilevel": "time_down/t2.pool; margin sensitivities without heads; fixed peer probabilities; independent AB Fishr fixed coefficients at0/444/denominator2; optional joint cap rho0.2; hard/random four-candidate L style with matched dropout; noEMA/noSat",
   "owner": "codex/root/scratch-calibrated-style-20261012",
   "runtime_evidence": "evidence/runtime_contract.json",
-  "reference_report": "python -m experiments.cvs_scratch_calibrated_style.reference_report --output automation_reports/CV-SincNet/20261012-phase1-scratch-calibrated-style-manysig-m36-r01"
+  "reference_report": "python -m experiments.cvs_scratch_calibrated_style.reference_report --output automation_reports/CV-SincNet/20261012-phase1-scratch-calibrated-style-manysig-m36-r01",
+  "latest_source_research": {
+    "prefix_steps": 17540,
+    "cap_steps": 1108,
+    "bound_violations": 0,
+    "calibration_effect": "calibration_effect.md",
+    "numerical_pairing_limit": "warmup_pairing_audit.md",
+    "note": "Only actual written prefixes; do not claim full run or target improvement. No changed training."
+  }
 }
