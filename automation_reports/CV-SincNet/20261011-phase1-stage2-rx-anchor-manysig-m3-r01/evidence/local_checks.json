@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "target_access": false,
+  "checks": [
+    "original_bank_unchanged",
+    "all_frozen_reliability_preserved",
+    "zero_initial_anchor_gradient",
+    "same_8880_sample_stream",
+    "nonzero_displaced_full160_gradient",
+    "unchanged_S3_objective_budget",
+    "capacity_four",
+    "truth_last_boundary",
+    "complete_control_summary"
+  ]
+}
