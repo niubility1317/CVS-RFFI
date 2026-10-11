@@ -1,0 +1,61 @@
+{
+  "status": "PASS",
+  "arms": [
+    {
+      "arm": "CE",
+      "finite_loss": true,
+      "counts": {
+        "RX_L_packets": 0,
+        "RX_U_packets": 0,
+        "critic_packets": 0
+      },
+      "auxiliary_parameters": 0
+    },
+    {
+      "arm": "SSL",
+      "finite_loss": true,
+      "counts": {
+        "RX_L_packets": 0,
+        "RX_U_packets": 0,
+        "critic_packets": 0
+      },
+      "auxiliary_parameters": 0
+    },
+    {
+      "arm": "PHYS",
+      "finite_loss": true,
+      "counts": {
+        "RX_L_packets": 32,
+        "RX_U_packets": 32,
+        "critic_packets": 0
+      },
+      "auxiliary_parameters": 0
+    },
+    {
+      "arm": "ROT",
+      "finite_loss": true,
+      "counts": {
+        "RX_L_packets": 32,
+        "RX_U_packets": 32,
+        "critic_packets": 0
+      },
+      "auxiliary_parameters": 0
+    },
+    {
+      "arm": "CRIT",
+      "finite_loss": true,
+      "counts": {
+        "RX_L_packets": 32,
+        "RX_U_packets": 32,
+        "critic_packets": 32
+      },
+      "auxiliary_parameters": 4753
+    }
+  ],
+  "U_TX_not_used": true,
+  "critic_target_detached": true,
+  "critic_loss_no_identity_gradient": true,
+  "zero_action_critic_identity": true,
+  "all_identity_gradients_finite": true,
+  "target_access": false
+}
