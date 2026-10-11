@@ -84,7 +84,7 @@
   "group_id": "cvs-scratch-identity-style",
   "display_name": "浅中层Fishr与MixStyle：clean恒等候选的匹配对照",
   "description": "源L完整反事实支持的clean-inclusive困难风格；三种校准策略全部保留，各三种子随机学生20轮，自动clean",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "aliases": [],
   "tags": [
     "scratch20",
@@ -232,7 +232,7 @@
       "arm": "DELAY_JOINT",
       "model_seed": 2026092701,
       "row_id": "DELAY_JOINT-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_identity_style",
       "purpose": "源L完整反事实支持的clean-inclusive困难风格；三种校准策略全部保留，各三种子随机学生20轮，自动clean",
       "config": {
@@ -657,13 +657,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 362807,
+      "gpu": 4,
+      "live_epoch": 2
     },
     {
       "arm": "CAP_JOINT",
       "model_seed": 2026092701,
       "row_id": "CAP_JOINT-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_identity_style",
       "purpose": "源L完整反事实支持的clean-inclusive困难风格；三种校准策略全部保留，各三种子随机学生20轮，自动clean",
       "config": {
@@ -1088,13 +1091,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 363011,
+      "gpu": 4,
+      "live_epoch": 2
     },
     {
       "arm": "DELAYCAP_JOINT",
       "model_seed": 2026092701,
       "row_id": "DELAYCAP_JOINT-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_identity_style",
       "purpose": "源L完整反事实支持的clean-inclusive困难风格；三种校准策略全部保留，各三种子随机学生20轮，自动clean",
       "config": {
@@ -1519,13 +1525,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 363116,
+      "gpu": 0,
+      "live_epoch": 2
     },
     {
       "arm": "DELAY_JOINT",
       "model_seed": 2026092702,
       "row_id": "DELAY_JOINT-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_identity_style",
       "purpose": "源L完整反事实支持的clean-inclusive困难风格；三种校准策略全部保留，各三种子随机学生20轮，自动clean",
       "config": {
@@ -1950,13 +1959,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 363200,
+      "gpu": 6,
+      "live_epoch": 2
     },
     {
       "arm": "CAP_JOINT",
       "model_seed": 2026092702,
       "row_id": "CAP_JOINT-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_identity_style",
       "purpose": "源L完整反事实支持的clean-inclusive困难风格；三种校准策略全部保留，各三种子随机学生20轮，自动clean",
       "config": {
@@ -2381,13 +2393,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 363285,
+      "gpu": 5,
+      "live_epoch": 2
     },
     {
       "arm": "DELAYCAP_JOINT",
       "model_seed": 2026092702,
       "row_id": "DELAYCAP_JOINT-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_identity_style",
       "purpose": "源L完整反事实支持的clean-inclusive困难风格；三种校准策略全部保留，各三种子随机学生20轮，自动clean",
       "config": {
@@ -2812,13 +2827,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 363370,
+      "gpu": 4,
+      "live_epoch": 2
     },
     {
       "arm": "DELAY_JOINT",
       "model_seed": 2026092703,
       "row_id": "DELAY_JOINT-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_identity_style",
       "purpose": "源L完整反事实支持的clean-inclusive困难风格；三种校准策略全部保留，各三种子随机学生20轮，自动clean",
       "config": {
@@ -3243,13 +3261,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 363453,
+      "gpu": 0,
+      "live_epoch": 2
     },
     {
       "arm": "CAP_JOINT",
       "model_seed": 2026092703,
       "row_id": "CAP_JOINT-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_identity_style",
       "purpose": "源L完整反事实支持的clean-inclusive困难风格；三种校准策略全部保留，各三种子随机学生20轮，自动clean",
       "config": {
@@ -3674,13 +3695,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 363537,
+      "gpu": 6,
+      "live_epoch": 2
     },
     {
       "arm": "DELAYCAP_JOINT",
       "model_seed": 2026092703,
       "row_id": "DELAYCAP_JOINT-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_identity_style",
       "purpose": "源L完整反事实支持的clean-inclusive困难风格；三种校准策略全部保留，各三种子随机学生20轮，自动clean",
       "config": {
@@ -4105,8 +4129,13 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 363621,
+      "gpu": 5,
+      "live_epoch": 2
     }
   ],
-  "registered_at": "2026-10-11T22:32:16+00:00"
+  "registered_at": "2026-10-11T22:32:16+00:00",
+  "execution_commit": "67ea1c1822c8e77a9dde6aa67914b517749d933c",
+  "delivery_verdict": "VERIFIED"
 }

@@ -1,0 +1,104 @@
+{
+  "status": "VERIFIED_SOURCE_PREFIX",
+  "read_at": 1791758136.9053893,
+  "run_id": "20261012-phase1-scratch-identity-style-manysig-m9-r01",
+  "source_only": true,
+  "target_access": false,
+  "scope": "All complete JSON lines of each captured live source prefix; no final training or performance claim",
+  "rows": [
+    {
+      "row_id": "DELAY_JOINT-s2026092701",
+      "source_prefix_steps": 535,
+      "identity_replays": 91,
+      "styled_replays": 0,
+      "changed_packet_layers": 0,
+      "auxiliary_steps": 22,
+      "gzip_finished": false,
+      "captured_bytes": 104744
+    },
+    {
+      "row_id": "CAP_JOINT-s2026092701",
+      "source_prefix_steps": 526,
+      "identity_replays": 82,
+      "styled_replays": 0,
+      "changed_packet_layers": 0,
+      "auxiliary_steps": 20,
+      "gzip_finished": false,
+      "captured_bytes": 103534
+    },
+    {
+      "row_id": "DELAYCAP_JOINT-s2026092701",
+      "source_prefix_steps": 483,
+      "identity_replays": 39,
+      "styled_replays": 0,
+      "changed_packet_layers": 0,
+      "auxiliary_steps": 9,
+      "gzip_finished": false,
+      "captured_bytes": 67705
+    },
+    {
+      "row_id": "DELAY_JOINT-s2026092702",
+      "source_prefix_steps": 488,
+      "identity_replays": 42,
+      "styled_replays": 2,
+      "changed_packet_layers": 504,
+      "auxiliary_steps": 11,
+      "gzip_finished": false,
+      "captured_bytes": 69171
+    },
+    {
+      "row_id": "CAP_JOINT-s2026092702",
+      "source_prefix_steps": 483,
+      "identity_replays": 38,
+      "styled_replays": 1,
+      "changed_packet_layers": 254,
+      "auxiliary_steps": 9,
+      "gzip_finished": false,
+      "captured_bytes": 67539
+    },
+    {
+      "row_id": "DELAYCAP_JOINT-s2026092702",
+      "source_prefix_steps": 483,
+      "identity_replays": 37,
+      "styled_replays": 2,
+      "changed_packet_layers": 504,
+      "auxiliary_steps": 9,
+      "gzip_finished": false,
+      "captured_bytes": 68659
+    },
+    {
+      "row_id": "DELAY_JOINT-s2026092703",
+      "source_prefix_steps": 488,
+      "identity_replays": 43,
+      "styled_replays": 1,
+      "changed_packet_layers": 249,
+      "auxiliary_steps": 11,
+      "gzip_finished": false,
+      "captured_bytes": 68466
+    },
+    {
+      "row_id": "CAP_JOINT-s2026092703",
+      "source_prefix_steps": 483,
+      "identity_replays": 39,
+      "styled_replays": 0,
+      "changed_packet_layers": 0,
+      "auxiliary_steps": 9,
+      "gzip_finished": false,
+      "captured_bytes": 67565
+    },
+    {
+      "row_id": "DELAYCAP_JOINT-s2026092703",
+      "source_prefix_steps": 483,
+      "identity_replays": 39,
+      "styled_replays": 0,
+      "changed_packet_layers": 0,
+      "auxiliary_steps": 9,
+      "gzip_finished": false,
+      "captured_bytes": 67122
+    }
+  ],
+  "total_steps": 4452,
+  "identity_replays": 450,
+  "styled_replays": 6,
+  "auxiliary_steps": 109
+}
