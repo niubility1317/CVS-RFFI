@@ -55,6 +55,8 @@ def report(v):
         pct=lambda name:'N/A' if g[name]['norm_retention'] is None else f"{g[name]['norm_retention']:.2%}"
         lines.append(f"|{row['row_id']}|{b['shallow']}|{b['middle']}|{b['rest']}|{pct('shallow')}|{pct('middle')}|{pct('rest')}|{s['extra_gradient_seconds']:.2f}|")
     lines+=['','范数保留率＝所有辅助步骤的限幅后梯度范数之和／限幅前范数之和，不能解释为最终权重位移保留率。触发次数按达到最小缩放界的参数组统计，并列时每组分别计数。无触发的步骤不归到任何组。每轮的完整统计保留于同名JSON。','','全参数三组的实际范数上限逐条通过。统计项仍经主身份骨干反向传播；仅凭缩放比例不能判定信息是否有效或辅助学习是否过弱。梯度方向、AdamW状态、与身份错误的关系仍影响更新，当前表不测量这些因果关系。','','CAP和DELAYCAP在各自固定方案下比较；现有完成种子不齐，不进行均值排名。DELAY无运行时限幅，不混入本表。额外求导耗时为实际共享GPU环境下记录，不能单独推算独占GPU成本。','','本分析不读取目标测试结果，不修改训练，不新增训练；继续完成固定36行矩阵。']
+    if v['source_matrix_status']=='COMPLETE':
+        lines=[line.replace('现有完成种子不齐，不进行均值排名。','本批全部三种子完成；此表保留逐种子机制统计，不作目标性能排名。').replace('继续完成固定36行矩阵。','固定36行矩阵源日志已全部核验完成。') for line in lines]
     return '\n'.join(lines)+'\n'
 
 if __name__=='__main__':

@@ -10,8 +10,12 @@ import json
 from pathlib import Path
 
 KEYS=('layer_records','style_records','fishr_budget_records')
+OPTIONAL_KEYS=('joint_cap_records',)
 
-def archive(path):
+def archive(path,additional_fields=()):
+    additional_fields=tuple(additional_fields)
+    if any(key not in OPTIONAL_KEYS for key in additional_fields):
+        raise ValueError('Unsupported optional source record field')
     path=Path(path)
     value=json.loads(path.read_text(encoding='utf-8'))
     if value.get('lossless_expanded_evidence'):
@@ -19,7 +23,11 @@ def archive(path):
         expanded=read_expanded(path)
         compact=_compact(expanded,info)
         if compact!=value:raise ValueError('Compact source evidence differs from immutable archive')
-        return info
+        fields=list(dict.fromkeys([*info.get('fields_moved',KEYS),*additional_fields]))
+        if fields==info.get('fields_moved',list(KEYS)):return info
+        updated=dict(info,fields_moved=fields)
+        _write_compact(path,expanded,updated)
+        return updated
     if value.get('source_only') is not True or not isinstance(value.get('rows'),list):
         raise ValueError('Only completed/partial source-analysis dictionaries are accepted')
     original_bytes=path.stat().st_size
@@ -38,18 +46,26 @@ def archive(path):
               format='gzip UTF-8 JSON; complete original expanded analysis',
               original_bytes=original_bytes,compressed_bytes=target.stat().st_size,
               semantic_roundtrip='VERIFIED',all_records_retained=True,
-              fields_moved=list(KEYS),rows=len(value['rows']),source_only=True)
+              fields_moved=list(dict.fromkeys([*KEYS,*additional_fields])),rows=len(value['rows']),source_only=True)
+    _write_compact(path,value,info)
+    return info
+
+
+def _write_compact(path,value,info):
     compact=_compact(value,info)
     path.write_text(json.dumps(compact,ensure_ascii=False,indent=2,allow_nan=False)+'\n',encoding='utf-8')
     reread=json.loads(path.read_text(encoding='utf-8'))
     if reread!=compact or read_expanded(path)!=value:raise ValueError('Written archive reference failed readback')
-    return info
 
 def _compact(value,info):
     compact=deepcopy(value)
+    fields=info.get('fields_moved',list(KEYS))
+    if (not isinstance(fields,list) or len(fields)!=len(set(fields))
+            or not set(KEYS)<=set(fields) or not set(fields)<=set(KEYS+OPTIONAL_KEYS)):
+        raise ValueError('Unsupported or incomplete expanded record fields')
     for row in compact['rows']:
         refs={}
-        for key in KEYS:
+        for key in fields:
             if key not in row:raise ValueError('Missing full raw source record field: '+key)
             records=row.pop(key)
             if not isinstance(records,list):raise ValueError('Expected expanded record list')
@@ -69,5 +85,5 @@ def read_expanded(path):
     return expanded
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('path',type=Path);a=p.parse_args()
-    print(json.dumps(archive(a.path),ensure_ascii=False))
+    p=argparse.ArgumentParser();p.add_argument('path',type=Path);p.add_argument('--additional-field',action='append',default=[]);a=p.parse_args()
+    print(json.dumps(archive(a.path,a.additional_field),ensure_ascii=False))
