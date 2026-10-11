@@ -15,5 +15,7 @@
   "collector": "python -m experiments.cvs_scratch_bidirectional_style.collect_results --output automation_reports/CV-SincNet/20261012-phase1-scratch-bidirectional-style-manysig-m18-r01",
   "budget": "random native student20; no heads; pretrained peer teacher ancestry retained; fixed12pair calibration at0/444; detached joint full-identity cap",
   "multilevel": "time_down/t2.pool; margin sensitivities without heads; fixed peer probabilities; independent AB Fishr fixed coefficients at0/444/denominator2; optional joint cap rho0.2; bounded POS/BIDIR whole-candidate style search plus clean with matched dropout; noEMA/noSat",
-  "owner": "codex/root/scratch-bidirectional-style-20261012"
+  "owner": "codex/root/scratch-bidirectional-style-20261012",
+  "source_runtime_evidence": "source_prefix_audit.md",
+  "source_runtime_scope": "first captured complete lines,15rows9330steps,660aux; not complete training or target score"
 }

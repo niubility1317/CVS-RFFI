@@ -1,5 +1,5 @@
 {
-  "status": "REPAIRED_PENDING_REMOTE_VERIFICATION",
+  "status": "VERIFIED",
   "failed_layer": "GitHub pre-receive: source_full_analysis.json exceeded100MiB",
   "rejected_commit": "4149c52670ad089931d8c8431c62b1013ec652d4",
   "preserved_local_ref": "codex/local-preserved-calibrated36-overlimit-4149c526",
@@ -11,5 +11,8 @@
   "all_records_retained": true,
   "source_only": true,
   "check": "evidence/archive_joint_cap_checks.json",
-  "time": 1791761314.3275743
+  "time": 1791761314.3275743,
+  "repaired_commit": "2b41ef8c658f3621f81a9d0931faf7c5e37a1b53",
+  "remote_oid": "2b41ef8c658f3621f81a9d0931faf7c5e37a1b53",
+  "verified_at": 1791761383.1870637
 }
