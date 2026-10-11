@@ -136,10 +136,10 @@
     "20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01"
   ],
   "replaces_run_id": null,
-  "status": "LOCAL_VERIFIED",
+  "status": "SOURCE_DIAGNOSTIC_COMPLETE",
   "authorization": "继续用户84%目标与报告3.2/3.3/9.1源判别几何；新诊断不重复既有物理特征读出，不消费target结果。",
   "code": {
-    "commit": "1d0fa81996df88fc6bc12db0adf6fe161942e512",
+    "commit": "7afb2573818ae68e7be53c562c7714c71b840836",
     "commit_note": "Preregistration baseline; exact execution commit read from immutable release",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -207,7 +207,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-soft-metric-source-manysig-m3-r01/s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_soft_metric_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
-      "status": "LOCAL_VERIFIED"
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "s2026092702",
@@ -236,7 +236,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-soft-metric-source-manysig-m3-r01/s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_soft_metric_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
-      "status": "LOCAL_VERIFIED"
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "s2026092703",
@@ -265,12 +265,66 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-soft-metric-source-manysig-m3-r01/s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_soft_metric_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
-      "status": "LOCAL_VERIFIED"
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     }
   ],
   "test_completion_plan": {
     "target_access": false,
     "scope": "source-only diagnostic, no new identity checkpoint or target predictions",
     "automatic_test": false
-  }
+  },
+  "execution_commit": "7afb2573818ae68e7be53c562c7714c71b840836",
+  "completion": {
+    "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+    "rows_completed": 3,
+    "identity_updates": 0,
+    "target_access": false,
+    "new_identity_forwards": 0,
+    "validation_fit": false,
+    "metric_readout_fits": 162,
+    "elapsed_seconds": 8.946584707009606,
+    "execution_commit": "7afb2573818ae68e7be53c562c7714c71b840836"
+  },
+  "source_advancement": {
+    "status": "SOURCE_ADVANCEMENT_NOT_MET",
+    "primary": "packet_LTR",
+    "seeds": [
+      {
+        "seed": 2026092701,
+        "checks": {
+          "held_rx_beats_packet": false,
+          "held_rx_beats_parent": false,
+          "all_V_retained": true,
+          "every_rx_retained": false,
+          "held_day_not_worse": false
+        },
+        "passed": false
+      },
+      {
+        "seed": 2026092702,
+        "checks": {
+          "held_rx_beats_packet": true,
+          "held_rx_beats_parent": false,
+          "all_V_retained": true,
+          "every_rx_retained": true,
+          "held_day_not_worse": false
+        },
+        "passed": false
+      },
+      {
+        "seed": 2026092703,
+        "checks": {
+          "held_rx_beats_packet": true,
+          "held_rx_beats_parent": false,
+          "all_V_retained": true,
+          "every_rx_retained": true,
+          "held_day_not_worse": false
+        },
+        "passed": false
+      }
+    ],
+    "select_other_method": false,
+    "target_access": false
+  },
+  "updated_at_unix": 1791705101.9744155
 }

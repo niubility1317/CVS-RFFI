@@ -1,0 +1,41 @@
+{
+  "status": "SOURCE_ADVANCEMENT_NOT_MET",
+  "primary": "packet_LTR",
+  "seeds": [
+    {
+      "seed": 2026092701,
+      "checks": {
+        "held_rx_beats_packet": false,
+        "held_rx_beats_parent": false,
+        "all_V_retained": true,
+        "every_rx_retained": false,
+        "held_day_not_worse": false
+      },
+      "passed": false
+    },
+    {
+      "seed": 2026092702,
+      "checks": {
+        "held_rx_beats_packet": true,
+        "held_rx_beats_parent": false,
+        "all_V_retained": true,
+        "every_rx_retained": true,
+        "held_day_not_worse": false
+      },
+      "passed": false
+    },
+    {
+      "seed": 2026092703,
+      "checks": {
+        "held_rx_beats_packet": true,
+        "held_rx_beats_parent": false,
+        "all_V_retained": true,
+        "every_rx_retained": true,
+        "held_day_not_worse": false
+      },
+      "passed": false
+    }
+  ],
+  "select_other_method": false,
+  "target_access": false
+}
