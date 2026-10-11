@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "synthetic_only": true,
+  "comparisons": 3,
+  "partial_mean_none": true,
+  "target_access": false,
+  "evidence": "Executed python -m experiments.cvs_scratch_identity_style.reference_report --self-check before registration"
+}
