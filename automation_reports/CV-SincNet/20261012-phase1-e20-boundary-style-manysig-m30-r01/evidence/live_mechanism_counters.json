@@ -1,0 +1,295 @@
+{
+  "status": "PASS",
+  "read_at": 1791750128.6184645,
+  "run_id": "20261012-phase1-e20-boundary-style-manysig-m30-r01",
+  "rows": [
+    {
+      "row_id": "CE-s2026092701",
+      "epoch": 20,
+      "identity_updates": 4440,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": null
+    },
+    {
+      "row_id": "SSL-s2026092701",
+      "epoch": 20,
+      "identity_updates": 4440,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 511488,
+      "live_PID": null
+    },
+    {
+      "row_id": "PROBE_FISH-s2026092701",
+      "epoch": 17,
+      "identity_updates": 3774,
+      "auxiliary_steps": 832,
+      "style_search_forwards": 0,
+      "U_packets": 426240,
+      "live_PID": 257980
+    },
+    {
+      "row_id": "M_SHALLOW-s2026092701",
+      "epoch": 6,
+      "identity_updates": 1332,
+      "auxiliary_steps": 222,
+      "style_search_forwards": 0,
+      "U_packets": 113664,
+      "live_PID": 258069
+    },
+    {
+      "row_id": "M_MIDDLE-s2026092701",
+      "epoch": 10,
+      "identity_updates": 2220,
+      "auxiliary_steps": 444,
+      "style_search_forwards": 0,
+      "U_packets": 227328,
+      "live_PID": 258157
+    },
+    {
+      "row_id": "M_BOTH-s2026092701",
+      "epoch": 6,
+      "identity_updates": 1332,
+      "auxiliary_steps": 222,
+      "style_search_forwards": 0,
+      "U_packets": 113664,
+      "live_PID": 258243
+    },
+    {
+      "row_id": "L_REPLAY-s2026092701",
+      "epoch": 20,
+      "identity_updates": 4440,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 511488,
+      "live_PID": null
+    },
+    {
+      "row_id": "RANDOM_STYLE-s2026092701",
+      "epoch": 9,
+      "identity_updates": 1998,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 7770,
+      "U_packets": 198912,
+      "live_PID": 258417
+    },
+    {
+      "row_id": "HARD_STYLE-s2026092701",
+      "epoch": 9,
+      "identity_updates": 1998,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 7770,
+      "U_packets": 198912,
+      "live_PID": 258913
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "epoch": 4,
+      "identity_updates": 888,
+      "auxiliary_steps": 111,
+      "style_search_forwards": 2220,
+      "U_packets": 56832,
+      "live_PID": 258999
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "epoch": 20,
+      "identity_updates": 4440,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": null
+    },
+    {
+      "row_id": "SSL-s2026092702",
+      "epoch": 20,
+      "identity_updates": 4440,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 511488,
+      "live_PID": null
+    },
+    {
+      "row_id": "PROBE_FISH-s2026092702",
+      "epoch": 16,
+      "identity_updates": 3552,
+      "auxiliary_steps": 777,
+      "style_search_forwards": 0,
+      "U_packets": 397824,
+      "live_PID": 259386
+    },
+    {
+      "row_id": "M_SHALLOW-s2026092702",
+      "epoch": 7,
+      "identity_updates": 1554,
+      "auxiliary_steps": 277,
+      "style_search_forwards": 0,
+      "U_packets": 142080,
+      "live_PID": 259472
+    },
+    {
+      "row_id": "M_MIDDLE-s2026092702",
+      "epoch": 7,
+      "identity_updates": 1554,
+      "auxiliary_steps": 277,
+      "style_search_forwards": 0,
+      "U_packets": 142080,
+      "live_PID": 259556
+    },
+    {
+      "row_id": "M_BOTH-s2026092702",
+      "epoch": 5,
+      "identity_updates": 1110,
+      "auxiliary_steps": 166,
+      "style_search_forwards": 0,
+      "U_packets": 85248,
+      "live_PID": 259640
+    },
+    {
+      "row_id": "L_REPLAY-s2026092702",
+      "epoch": 18,
+      "identity_updates": 3996,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 454656,
+      "live_PID": 259724
+    },
+    {
+      "row_id": "RANDOM_STYLE-s2026092702",
+      "epoch": 6,
+      "identity_updates": 1332,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 4440,
+      "U_packets": 113664,
+      "live_PID": 259809
+    },
+    {
+      "row_id": "HARD_STYLE-s2026092702",
+      "epoch": 8,
+      "identity_updates": 1776,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 6660,
+      "U_packets": 170496,
+      "live_PID": 259894
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "epoch": 4,
+      "identity_updates": 888,
+      "auxiliary_steps": 111,
+      "style_search_forwards": 2220,
+      "U_packets": 56832,
+      "live_PID": 259978
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "epoch": 20,
+      "identity_updates": 4440,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": null
+    },
+    {
+      "row_id": "SSL-s2026092703",
+      "epoch": 20,
+      "identity_updates": 4440,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 511488,
+      "live_PID": null
+    },
+    {
+      "row_id": "PROBE_FISH-s2026092703",
+      "epoch": 18,
+      "identity_updates": 3996,
+      "auxiliary_steps": 888,
+      "style_search_forwards": 0,
+      "U_packets": 454656,
+      "live_PID": 260233
+    },
+    {
+      "row_id": "M_SHALLOW-s2026092703",
+      "epoch": 5,
+      "identity_updates": 1110,
+      "auxiliary_steps": 166,
+      "style_search_forwards": 0,
+      "U_packets": 85248,
+      "live_PID": 260317
+    },
+    {
+      "row_id": "M_MIDDLE-s2026092703",
+      "epoch": 9,
+      "identity_updates": 1998,
+      "auxiliary_steps": 388,
+      "style_search_forwards": 0,
+      "U_packets": 198912,
+      "live_PID": 261749
+    },
+    {
+      "row_id": "M_BOTH-s2026092703",
+      "epoch": 6,
+      "identity_updates": 1332,
+      "auxiliary_steps": 222,
+      "style_search_forwards": 0,
+      "U_packets": 113664,
+      "live_PID": 262145
+    },
+    {
+      "row_id": "L_REPLAY-s2026092703",
+      "epoch": 11,
+      "identity_updates": 2442,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 255744,
+      "live_PID": 262890
+    },
+    {
+      "row_id": "RANDOM_STYLE-s2026092703",
+      "epoch": 5,
+      "identity_updates": 1110,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 3330,
+      "U_packets": 85248,
+      "live_PID": 263221
+    },
+    {
+      "row_id": "HARD_STYLE-s2026092703",
+      "epoch": 4,
+      "identity_updates": 888,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 2220,
+      "U_packets": 56832,
+      "live_PID": 264107
+    },
+    {
+      "row_id": "JOINT-s2026092703",
+      "epoch": 3,
+      "identity_updates": 666,
+      "auxiliary_steps": 55,
+      "style_search_forwards": 1110,
+      "U_packets": 28416,
+      "live_PID": 264765
+    }
+  ],
+  "scope": "All currently completed epoch aggregate counters and resolved configs; not a substitute for final closed step-log audit",
+  "full_step_logs_read": false,
+  "target_access": false,
+  "dispatcher": {
+    "pid": 257476,
+    "start_ticks": 99730414,
+    "state": "S",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_boundary_style_20261012_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_e20_boundary_style.dispatch"
+    ],
+    "gpu": null
+  },
+  "max_GPU_processes": 3,
+  "failures": []
+}
