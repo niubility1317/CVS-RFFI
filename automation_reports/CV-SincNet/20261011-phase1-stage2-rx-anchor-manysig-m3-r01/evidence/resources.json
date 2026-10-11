@@ -1,0 +1,152 @@
+{
+  "rows": [
+    {
+      "row_id": "Z3-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.488247024943121
+        },
+        "wall_seconds": 4.6942078119609505,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 293601280,
+        "peak_process_rss_bytes": 2006016000
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "parent_identity_updates": 44400,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "cumulative_identity_updates": 53280,
+        "elapsed_seconds": 387.4122089809971,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "parameters": 844754,
+        "preparation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/preparation_complete.json",
+        "preparation_audit_run": "20261011-phase1-stage2-geometry-source-manysig-m3-r01",
+        "preparation_reused": true,
+        "source_geometry_preparation_seconds": 52.79911479295697,
+        "source_action_fit_seconds": 13.772139486973174,
+        "source_receiver_fit_seconds": 0.0,
+        "parent_cost_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/completion.json",
+        "measured_training_resources": {
+          "identity_training_including_epoch_validation_seconds": 378.7587364219362,
+          "final_source_diagnostics_seconds": 8.653474251041189,
+          "peak_cuda_memory_bytes": 278938624,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "timing_scope": "shared GPU wall; parent E200 and per-seed shared preparation reported separately"
+        },
+        "training_flops": null,
+        "scope": "Shared-GPU wall measurements; no inferred speedup"
+      }
+    },
+    {
+      "row_id": "Z3-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.6045866360655054
+        },
+        "wall_seconds": 4.817610447993502,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 293601280,
+        "peak_process_rss_bytes": 2006335488
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "parent_identity_updates": 44400,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "cumulative_identity_updates": 53280,
+        "elapsed_seconds": 420.8732193839969,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "parameters": 844754,
+        "preparation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092702/preparation_complete.json",
+        "preparation_audit_run": "20261011-phase1-stage2-geometry-source-manysig-m3-r01",
+        "preparation_reused": true,
+        "source_geometry_preparation_seconds": 43.3606429080246,
+        "source_action_fit_seconds": 12.353320025955327,
+        "source_receiver_fit_seconds": 0.0,
+        "parent_cost_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/completion.json",
+        "measured_training_resources": {
+          "identity_training_including_epoch_validation_seconds": 411.97717054898385,
+          "final_source_diagnostics_seconds": 8.896050506038591,
+          "peak_cuda_memory_bytes": 278938624,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "timing_scope": "shared GPU wall; parent E200 and per-seed shared preparation reported separately"
+        },
+        "training_flops": null,
+        "scope": "Shared-GPU wall measurements; no inferred speedup"
+      }
+    },
+    {
+      "row_id": "Z3-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.483532687998377
+        },
+        "wall_seconds": 4.689738361979835,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 293601280,
+        "peak_process_rss_bytes": 2003689472
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "parent_identity_updates": 44400,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "cumulative_identity_updates": 53280,
+        "elapsed_seconds": 412.31698907201644,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "parameters": 844754,
+        "preparation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092703/preparation_complete.json",
+        "preparation_audit_run": "20261011-phase1-stage2-geometry-source-manysig-m3-r01",
+        "preparation_reused": true,
+        "source_geometry_preparation_seconds": 46.33592097798828,
+        "source_action_fit_seconds": 12.830532036954537,
+        "source_receiver_fit_seconds": 0.0,
+        "parent_cost_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/completion.json",
+        "measured_training_resources": {
+          "identity_training_including_epoch_validation_seconds": 403.6495829120977,
+          "final_source_diagnostics_seconds": 8.667408028966747,
+          "peak_cuda_memory_bytes": 278938624,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "timing_scope": "shared GPU wall; parent E200 and per-seed shared preparation reported separately"
+        },
+        "training_flops": null,
+        "scope": "Shared-GPU wall measurements; no inferred speedup"
+      }
+    }
+  ],
+  "shared_preparation_counted_once_per_seed": true
+}

@@ -1,0 +1,91 @@
+{
+  "status": "VERIFIED",
+  "completion": {
+    "status": "ANALYZED",
+    "trained_models": 3,
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "tested_models": 3,
+    "views": [
+      "clean"
+    ],
+    "independent_recount": "VERIFIED",
+    "all_rows_tested_automatically": true,
+    "preparation_audit_run": "20261011-phase1-stage2-geometry-source-manysig-m3-r01",
+    "preparations_reused": 3,
+    "preparations_launched": 0
+  },
+  "queue": {
+    "active": [],
+    "pending": [],
+    "completed": [
+      {
+        "kind": "train",
+        "identifier": "Z3-s2026092701"
+      },
+      {
+        "kind": "train",
+        "identifier": "Z3-s2026092703"
+      },
+      {
+        "kind": "train",
+        "identifier": "Z3-s2026092702"
+      }
+    ],
+    "failures": [],
+    "total_identity_rows": 3,
+    "preparations_reused": 3,
+    "preparations_launched": 0,
+    "per_gpu_limit": 4,
+    "views": [
+      "clean"
+    ],
+    "updated_at": 1791703248.6378777
+  },
+  "workers": [
+    {
+      "row": "Z3-s2026092701",
+      "pid": 3935966,
+      "process": null,
+      "completion": {
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
+        "independent_recount": "VERIFIED",
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row": "Z3-s2026092702",
+      "pid": 3935971,
+      "process": null,
+      "completion": {
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
+        "independent_recount": "VERIFIED",
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row": "Z3-s2026092703",
+      "pid": 3935984,
+      "process": null,
+      "completion": {
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
+        "independent_recount": "VERIFIED",
+        "target_feedback_forbidden": true
+      }
+    }
+  ],
+  "read_at": 1791703402.0143795,
+  "execution_commit": "58dc55a98e55a481b44bb278e48df08c29a755e4"
+}

@@ -29,7 +29,7 @@
   "replaces_run_id": null,
   "authorization": "继续追求用户三seed clean均值84%目标；依据完整源组差诊断补充严格匹配的方向项消融，维持原E40/8880、4进程/GPU、自动clean契约，不用target调参或重跑。",
   "code": {
-    "commit": "8ae0689da840b80ad7517819e39b47ffc23aa75f",
+    "commit": "58dc55a98e55a481b44bb278e48df08c29a755e4",
     "commit_note": "Preregistration baseline; exact execution commit inserted from immutable release at launch",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -152,7 +152,8 @@
     "gpu_policy": "max4 total processes/GPU, shared capacity lock, minimum12000MB free, no healthy job intervention",
     "command": "python -m experiments.cvs_stage2_rx_anchor.dispatch",
     "launch_command": "python -m experiments.cvs_stage2_rx_anchor.dispatch",
-    "stop_rule": "Technical failures retained; no automatic retry or overwrite"
+    "stop_rule": "Technical failures retained; no automatic retry or overwrite",
+    "release_commit": "58dc55a98e55a481b44bb278e48df08c29a755e4"
   },
   "expected_artifacts": [
     "per-row artifacts listed in rows",
@@ -230,7 +231,15 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "LOCAL_VERIFIED"
+      "status": "ANALYZED",
+      "latest_event": {
+        "at": 1791703209.3569639,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
+        "row_id": "Z3-s2026092701"
+      }
     },
     {
       "row_id": "Z3-s2026092702",
@@ -283,7 +292,15 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "LOCAL_VERIFIED"
+      "status": "ANALYZED",
+      "latest_event": {
+        "at": 1791703243.535348,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
+        "row_id": "Z3-s2026092702"
+      }
     },
     {
       "row_id": "Z3-s2026092703",
@@ -336,7 +353,15 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "LOCAL_VERIFIED"
+      "status": "ANALYZED",
+      "latest_event": {
+        "at": 1791703234.9185479,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
+        "row_id": "Z3-s2026092703"
+      }
     }
   ],
   "notes": [
@@ -346,7 +371,7 @@
     "单向有限margin=log95；weights keep=.1/LT=1/R=1；ramp444；无CE梯度比例校准。",
     "源读出只在L_s拟合，V只读；无target反馈；未达目标不得报告成功。"
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "views": [
       "clean"
@@ -434,5 +459,15 @@
     ],
     "scope": "Fixed source E40/8880 controls; predictions opened only after new predictions freeze, independently rescored",
     "rationale": "S3 only alpha differs; B2 noR; B0 same-budget CE; B3 prior R estimator"
+  },
+  "execution_commit": "58dc55a98e55a481b44bb278e48df08c29a755e4",
+  "updated_at_unix": 1791703255.8060095,
+  "goal_assessment": {
+    "primary_arm": "Z3",
+    "threshold": 0.84,
+    "performance_status": "NOT_MET",
+    "mechanism_increment_status": "POSITIVE",
+    "each_seed_must_be_reported": true,
+    "scores_must_not_control_training": true
   }
 }

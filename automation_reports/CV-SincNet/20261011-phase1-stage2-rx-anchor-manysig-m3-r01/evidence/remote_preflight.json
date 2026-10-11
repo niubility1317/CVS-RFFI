@@ -1,0 +1,95 @@
+{
+  "status": "PASS",
+  "synthetic": {
+    "status": "PASS",
+    "source_only": true,
+    "target_access": false,
+    "checks": [
+      "original_bank_unchanged",
+      "all_frozen_reliability_preserved",
+      "zero_initial_anchor_gradient",
+      "same_8880_sample_stream",
+      "nonzero_displaced_full160_gradient",
+      "unchanged_S3_objective_budget",
+      "capacity_four",
+      "truth_last_boundary",
+      "complete_control_summary"
+    ]
+  },
+  "remote": {
+    "status": "PASS",
+    "source_only": true,
+    "target_access": false,
+    "identity_updates": 0,
+    "formal_parent_models": 3,
+    "formal_parent_forward_backward": [
+      {
+        "seed": 2026092701,
+        "parent": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092701
+        },
+        "loss": 0.0003105546929873526,
+        "receiver_encoder_gradient_norm": 3.176933560666839e-08,
+        "domain_forwards": 0,
+        "optimizer_constructed": false,
+        "parameters_unchanged": true,
+        "target_access": false
+      },
+      {
+        "seed": 2026092702,
+        "parent": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092702
+        },
+        "loss": 0.0006585122901014984,
+        "receiver_encoder_gradient_norm": 5.765064514662299e-08,
+        "domain_forwards": 0,
+        "optimizer_constructed": false,
+        "parameters_unchanged": true,
+        "target_access": false
+      },
+      {
+        "seed": 2026092703,
+        "parent": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092703
+        },
+        "loss": 0.008594416081905365,
+        "receiver_encoder_gradient_norm": 5.812865211396456e-08,
+        "domain_forwards": 0,
+        "optimizer_constructed": false,
+        "parameters_unchanged": true,
+        "target_access": false
+      }
+    ],
+    "elapsed_seconds": 4.351490544970147
+  }
+}

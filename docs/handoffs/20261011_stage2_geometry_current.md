@@ -59,3 +59,17 @@ Run `20261011-phase1-stage2-relation-identifiability-source-manysig-m3-r01`，�
 源结果：S3相对B2在V三seed完整R风险降低37.8731/54.5488/56.6375%，但方向进度全部更小。平均V保持项降低0.000457429，方向交叉项增加0.000033730，净风险降低0.000423699；这是终点损失分解，不是梯度因果分解。S3 V方向进度0.604528，误差/P0为17.137972，约94.76%位移能量偏离每对目标；不能称完全解耦。L_s同向结论。源头交换不能推出部署候选。完整report/geometry_metrics.csv/head_swaps.csv/108记录及每seed全部关系已保存。
 
 下一步：落实Z3匹配保持对照，只对S3固定payload消费时alpha=0；保留原c、关系抽样、方差修正、损失权重和全部LT/keep，不能重拟合可靠度或跳过R。三个原始CE E200独立出发E40/8880，4总进程/GPU，自动clean；实现/登记/检查/审查/推送后再发布，尚未启动。它回答R方向是否有独立增量，不预先承诺性能提升。所有新设计依据源证据，不用target调参。目标仍active，三seed84%未达到。
+
+
+## Z3 匹配保持对照正式启动
+
+当前run 20261011-phase1-stage2-rx-anchor-manysig-m3-r01，执行58dc55a98e55a481b44bb278e48df08c29a755e4；dispatcher3935825；Z3-seed01 GPU1 PID3935966、seed02 GPU3 PID3935971、seed03 GPU5 PID3935984。已核实live cwd/argv/config；全部E1，父模型E200、E40/8880，无U/teacher/satellite，原S3全部c冻结、alpha=0且R保持启用。9项定向检查、独立P0/P1、真实父CPU预检通过。
+
+单owner与自动逐rowclean链路已运行，不重复启动。收集 .codex_tmp/collect_rx_anchor_training.py；完成后 .codex_tmp/collect_rx_anchor_completed.py 全量日志+固定6组结果。输出 \home\szu2070436088\2510044040\CV-SincNet\runs\20261011-phase1-stage2-rx-anchor-manysig-m3-r01，release \home\szu2070436088\2510044040\CV-SincNet\releases\cvs_stage2_rx_anchor_20261011_r01。源依据来自realized r02；控制S3只方向项差，B0/B2/B3/P0固定复用。目标84%仍未达到；不利用target调参或停训练。
+
+Z3源任务证据：八固定源V视图的均值准确率与S3最大绝对差0.006171pp，clean相同。下一源研究待登记：真实cosine中心化头的决策相关R能量/竞争margin，分清方向可预测、学生实现、任务有效三环节；固定原父/B2/S3/Z3全部seed，仅L_s/V。不要因target微增选择Z3初始化或调alpha。
+
+
+## Z3 当前完成状态
+
+20261011-phase1-stage2-rx-anchor-manysig-m3-r01 三seedE40/8880＋自动clean全部完成，所有worker退出，无失败。执行58dc55a98e55a481b44bb278e48df08c29a755e4；完整120epoch/26640step解析与504000新clean预测独立复算VERIFIED。Z3均值80.985714%，vsS3 +0.039087pp，性能状态NOT_MET。全部固定控制都核验并独立复算，不能重复启动。source_only_comparison覆盖全部8源V视图，不用target决定后续机制。报告与CSV见原run/evidence，原始权重/日志/prediction留N607。目标仍active，84%未达到时不得标完成。

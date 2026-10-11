@@ -1,1 +1,14 @@
 {"at": 1791702817.8917413, "status": "LOCAL_VERIFIED", "source_evidence": "20261011-phase1-stage2-realized-geometry-source-manysig-m3-r02", "target_feedback": false}
+{"at": 1791702807.637028, "status": "RUNNING", "job_kind": "train", "identifier": "Z3-s2026092701", "pid": 3935966, "gpu": 1, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-anchor-manysig-m3-r01/logs/train-Z3-s2026092701.log", "row_id": "Z3-s2026092701"}
+{"at": 1791702807.9254575, "status": "RUNNING", "job_kind": "train", "identifier": "Z3-s2026092702", "pid": 3935971, "gpu": 3, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-anchor-manysig-m3-r01/logs/train-Z3-s2026092702.log", "row_id": "Z3-s2026092702"}
+{"at": 1791702808.1959844, "status": "RUNNING", "job_kind": "train", "identifier": "Z3-s2026092703", "pid": 3935984, "gpu": 5, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-anchor-manysig-m3-r01/logs/train-Z3-s2026092703.log", "row_id": "Z3-s2026092703"}
+{"at": 1791703200.1350794, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "Z3-s2026092701"}
+{"at": 1791703204.896492, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "Z3-s2026092701"}
+{"at": 1791703209.3569639, "status": "ANALYZED", "views": ["clean"], "row_id": "Z3-s2026092701"}
+{"at": 1791703225.7533767, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "Z3-s2026092703"}
+{"at": 1791703230.5116637, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "Z3-s2026092703"}
+{"at": 1791703234.063737, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "Z3-s2026092702"}
+{"at": 1791703234.9185479, "status": "ANALYZED", "views": ["clean"], "row_id": "Z3-s2026092703"}
+{"at": 1791703238.9480834, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "Z3-s2026092702"}
+{"at": 1791703243.535348, "status": "ANALYZED", "views": ["clean"], "row_id": "Z3-s2026092702"}
+{"at": 1791703255.8060095, "status": "ANALYZED", "trained_models": 3, "tested_models": 3, "views": ["clean"]}

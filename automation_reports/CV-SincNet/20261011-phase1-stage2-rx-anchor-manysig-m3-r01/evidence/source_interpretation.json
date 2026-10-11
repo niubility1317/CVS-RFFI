@@ -1,0 +1,55 @@
+{
+  "comparisons": [
+    {
+      "view": "LT",
+      "Z3_minus_S3_accuracy_pp": -0.002471605936682497,
+      "Z3_minus_S3_CE": 6.21726115544452e-05,
+      "Z3_minus_S3_tail_risk": 0.00020076831181847776
+    },
+    {
+      "view": "LTL_heldout",
+      "Z3_minus_S3_accuracy_pp": 0.0037034352620479716,
+      "Z3_minus_S3_CE": 9.366869926452637e-05,
+      "Z3_minus_S3_tail_risk": 0.00033066670099890505
+    },
+    {
+      "view": "TL",
+      "Z3_minus_S3_accuracy_pp": -0.0012358029683467997,
+      "Z3_minus_S3_CE": 6.22024138768329e-05,
+      "Z3_minus_S3_tail_risk": 0.00020099679629004275
+    },
+    {
+      "view": "clean",
+      "Z3_minus_S3_accuracy_pp": 0.0,
+      "Z3_minus_S3_CE": -5.708386500677398e-05,
+      "Z3_minus_S3_tail_risk": -0.00022285183270770448
+    },
+    {
+      "view": "curvature_pressure",
+      "Z3_minus_S3_accuracy_pp": 0.0061710675557491435,
+      "Z3_minus_S3_CE": -1.5507141749054876e-05,
+      "Z3_minus_S3_tail_risk": -7.716814676922423e-05
+    },
+    {
+      "view": "linear",
+      "Z3_minus_S3_accuracy_pp": -0.0049372514088985575,
+      "Z3_minus_S3_CE": -3.5740435123443604e-05,
+      "Z3_minus_S3_tail_risk": -0.00010848045349121094
+    },
+    {
+      "view": "noise_fixed_LT",
+      "Z3_minus_S3_accuracy_pp": -0.0012318293253654744,
+      "Z3_minus_S3_CE": 8.876621723175049e-05,
+      "Z3_minus_S3_tail_risk": 0.00033551454544067383
+    },
+    {
+      "view": "temporal",
+      "Z3_minus_S3_accuracy_pp": -0.002471605936682497,
+      "Z3_minus_S3_CE": -3.439188003540039e-05,
+      "Z3_minus_S3_tail_risk": -0.00014970699946087462
+    }
+  ],
+  "max_absolute_mean_accuracy_difference_pp": 0.0061710675557491435,
+  "target_metrics_consumed": false,
+  "conclusion": "No clear task benefit of the fixed directional term on these eight source views; not proof of zero geometric effect"
+}
