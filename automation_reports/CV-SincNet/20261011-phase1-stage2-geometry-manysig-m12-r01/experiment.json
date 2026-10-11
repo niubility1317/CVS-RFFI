@@ -229,15 +229,13 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "latest_event": {
-        "at": 1791696263.916075,
-        "status": "RUNNING",
-        "job_kind": "train",
-        "identifier": "B0-s2026092701",
-        "pid": 3871769,
-        "gpu": 3,
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B0-s2026092701.log",
+        "at": 1791696630.4471323,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
         "row_id": "B0-s2026092701"
       }
     },
@@ -292,15 +290,13 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "latest_event": {
-        "at": 1791696264.2344198,
-        "status": "RUNNING",
-        "job_kind": "train",
-        "identifier": "B1-s2026092701",
-        "pid": 3871774,
-        "gpu": 6,
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B1-s2026092701.log",
+        "at": 1791696732.8941207,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
         "row_id": "B1-s2026092701"
       }
     },
@@ -355,15 +351,13 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "latest_event": {
-        "at": 1791696264.5340466,
-        "status": "RUNNING",
-        "job_kind": "train",
-        "identifier": "B2-s2026092701",
-        "pid": 3871787,
-        "gpu": 3,
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B2-s2026092701.log",
+        "at": 1791696683.2345881,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
         "row_id": "B2-s2026092701"
       }
     },
@@ -418,15 +412,13 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "latest_event": {
-        "at": 1791696264.8286254,
-        "status": "RUNNING",
-        "job_kind": "train",
-        "identifier": "B3-s2026092701",
-        "pid": 3871793,
-        "gpu": 6,
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B3-s2026092701.log",
+        "at": 1791696745.0741682,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
         "row_id": "B3-s2026092701"
       }
     },
@@ -481,15 +473,13 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "latest_event": {
-        "at": 1791696265.1124454,
-        "status": "RUNNING",
-        "job_kind": "train",
-        "identifier": "B0-s2026092702",
-        "pid": 3871799,
-        "gpu": 1,
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B0-s2026092702.log",
+        "at": 1791696596.6639483,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
         "row_id": "B0-s2026092702"
       }
     },
@@ -544,15 +534,13 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "latest_event": {
-        "at": 1791696265.3861554,
-        "status": "RUNNING",
-        "job_kind": "train",
-        "identifier": "B1-s2026092702",
-        "pid": 3871806,
-        "gpu": 5,
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B1-s2026092702.log",
+        "at": 1791696727.0544848,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
         "row_id": "B1-s2026092702"
       }
     },
@@ -607,15 +595,13 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "latest_event": {
-        "at": 1791696265.9252665,
-        "status": "RUNNING",
-        "job_kind": "train",
-        "identifier": "B2-s2026092702",
-        "pid": 3871818,
-        "gpu": 3,
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B2-s2026092702.log",
+        "at": 1791696739.2205575,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
         "row_id": "B2-s2026092702"
       }
     },
@@ -670,15 +656,13 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "latest_event": {
-        "at": 1791696266.8193781,
-        "status": "RUNNING",
-        "job_kind": "train",
-        "identifier": "B3-s2026092702",
-        "pid": 3871835,
-        "gpu": 6,
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B3-s2026092702.log",
+        "at": 1791696739.36853,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
         "row_id": "B3-s2026092702"
       }
     },
@@ -733,15 +717,13 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "latest_event": {
-        "at": 1791696268.215295,
-        "status": "RUNNING",
-        "job_kind": "train",
-        "identifier": "B0-s2026092703",
-        "pid": 3871859,
-        "gpu": 1,
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B0-s2026092703.log",
+        "at": 1791696634.297306,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
         "row_id": "B0-s2026092703"
       }
     },
@@ -796,15 +778,13 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "latest_event": {
-        "at": 1791696269.9844544,
-        "status": "RUNNING",
-        "job_kind": "train",
-        "identifier": "B1-s2026092703",
-        "pid": 3871889,
-        "gpu": 5,
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B1-s2026092703.log",
+        "at": 1791696730.6205301,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
         "row_id": "B1-s2026092703"
       }
     },
@@ -859,15 +839,13 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "latest_event": {
-        "at": 1791696272.2443697,
-        "status": "RUNNING",
-        "job_kind": "train",
-        "identifier": "B2-s2026092703",
-        "pid": 3871993,
-        "gpu": 0,
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B2-s2026092703.log",
+        "at": 1791696734.458259,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
         "row_id": "B2-s2026092703"
       }
     },
@@ -922,15 +900,13 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "latest_event": {
-        "at": 1791696275.0998304,
-        "status": "RUNNING",
-        "job_kind": "train",
-        "identifier": "B3-s2026092703",
-        "pid": 3872372,
-        "gpu": 4,
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B3-s2026092703.log",
+        "at": 1791696743.1784034,
+        "status": "ANALYZED",
+        "views": [
+          "clean"
+        ],
         "row_id": "B3-s2026092703"
       }
     }
@@ -942,7 +918,7 @@
     "单向有限margin=log95；weights keep=.1/LT=1/R=1；ramp444；无CE梯度比例校准。",
     "源读出只在L_s拟合，V只读；无target反馈；未达目标不得报告成功。"
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "views": [
       "clean"
@@ -1023,5 +999,5 @@
   },
   "final_score_ref": "results/summary.json",
   "execution_commit": "24abe2a8a3824068db42949193c7a54da8f188a2",
-  "updated_at_unix": 1791696275.0998304
+  "updated_at_unix": 1791696762.331926
 }

@@ -11,3 +11,40 @@
 {"at": 1791696269.9844544, "status": "RUNNING", "job_kind": "train", "identifier": "B1-s2026092703", "pid": 3871889, "gpu": 5, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B1-s2026092703.log", "row_id": "B1-s2026092703"}
 {"at": 1791696272.2443697, "status": "RUNNING", "job_kind": "train", "identifier": "B2-s2026092703", "pid": 3871993, "gpu": 0, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B2-s2026092703.log", "row_id": "B2-s2026092703"}
 {"at": 1791696275.0998304, "status": "RUNNING", "job_kind": "train", "identifier": "B3-s2026092703", "pid": 3872372, "gpu": 4, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B3-s2026092703.log", "row_id": "B3-s2026092703"}
+{"at": 1791696587.7699, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "B0-s2026092702"}
+{"at": 1791696593.0286763, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "B0-s2026092702"}
+{"at": 1791696596.6639483, "status": "ANALYZED", "views": ["clean"], "row_id": "B0-s2026092702"}
+{"at": 1791696621.2771955, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "B0-s2026092701"}
+{"at": 1791696625.5765681, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "B0-s2026092703"}
+{"at": 1791696626.6987891, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "B0-s2026092701"}
+{"at": 1791696630.4471323, "status": "ANALYZED", "views": ["clean"], "row_id": "B0-s2026092701"}
+{"at": 1791696630.5539987, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "B0-s2026092703"}
+{"at": 1791696634.297306, "status": "ANALYZED", "views": ["clean"], "row_id": "B0-s2026092703"}
+{"at": 1791696674.4061608, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "B2-s2026092701"}
+{"at": 1791696679.4702513, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "B2-s2026092701"}
+{"at": 1791696683.2345881, "status": "ANALYZED", "views": ["clean"], "row_id": "B2-s2026092701"}
+{"at": 1791696718.1952717, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "B1-s2026092702"}
+{"at": 1791696721.84715, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "B1-s2026092703"}
+{"at": 1791696723.4163797, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "B1-s2026092701"}
+{"at": 1791696723.4852045, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "B1-s2026092702"}
+{"at": 1791696725.6792507, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "B2-s2026092703"}
+{"at": 1791696727.0243335, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "B1-s2026092703"}
+{"at": 1791696727.0544848, "status": "ANALYZED", "views": ["clean"], "row_id": "B1-s2026092702"}
+{"at": 1791696729.157269, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "B1-s2026092701"}
+{"at": 1791696730.5935667, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "B2-s2026092702"}
+{"at": 1791696730.6205301, "status": "ANALYZED", "views": ["clean"], "row_id": "B1-s2026092703"}
+{"at": 1791696730.6381514, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "B3-s2026092702"}
+{"at": 1791696730.9735014, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "B2-s2026092703"}
+{"at": 1791696732.8941207, "status": "ANALYZED", "views": ["clean"], "row_id": "B1-s2026092701"}
+{"at": 1791696734.458259, "status": "ANALYZED", "views": ["clean"], "row_id": "B2-s2026092703"}
+{"at": 1791696734.4944465, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "B3-s2026092703"}
+{"at": 1791696735.5391436, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "B2-s2026092702"}
+{"at": 1791696735.7151015, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "B3-s2026092702"}
+{"at": 1791696736.8013752, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "B3-s2026092701"}
+{"at": 1791696739.2205575, "status": "ANALYZED", "views": ["clean"], "row_id": "B2-s2026092702"}
+{"at": 1791696739.36853, "status": "ANALYZED", "views": ["clean"], "row_id": "B3-s2026092702"}
+{"at": 1791696739.6831462, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "B3-s2026092703"}
+{"at": 1791696741.5759516, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "B3-s2026092701"}
+{"at": 1791696743.1784034, "status": "ANALYZED", "views": ["clean"], "row_id": "B3-s2026092703"}
+{"at": 1791696745.0741682, "status": "ANALYZED", "views": ["clean"], "row_id": "B3-s2026092701"}
+{"at": 1791696762.331926, "status": "ANALYZED", "trained_models": 12, "tested_models": 12, "views": ["clean"]}
