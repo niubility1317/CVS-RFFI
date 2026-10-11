@@ -2,3 +2,13 @@
 {"at": 1791700601.0155885, "status": "RUNNING", "job_kind": "train", "identifier": "S3-s2026092701", "pid": 3913802, "gpu": 3, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-stable-rx-manysig-m3-r01/logs/train-S3-s2026092701.log", "row_id": "S3-s2026092701"}
 {"at": 1791700601.3363144, "status": "RUNNING", "job_kind": "train", "identifier": "S3-s2026092702", "pid": 3913807, "gpu": 5, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-stable-rx-manysig-m3-r01/logs/train-S3-s2026092702.log", "row_id": "S3-s2026092702"}
 {"at": 1791700601.6047616, "status": "RUNNING", "job_kind": "train", "identifier": "S3-s2026092703", "pid": 3913818, "gpu": 6, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-stable-rx-manysig-m3-r01/logs/train-S3-s2026092703.log", "row_id": "S3-s2026092703"}
+{"at": 1791701011.162945, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "S3-s2026092701"}
+{"at": 1791701013.3524766, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "S3-s2026092702"}
+{"at": 1791701014.0717423, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "S3-s2026092703"}
+{"at": 1791701015.9406824, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "S3-s2026092701"}
+{"at": 1791701018.069421, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "S3-s2026092702"}
+{"at": 1791701018.90151, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "S3-s2026092703"}
+{"at": 1791701020.4079525, "status": "ANALYZED", "views": ["clean"], "row_id": "S3-s2026092701"}
+{"at": 1791701022.2968218, "status": "ANALYZED", "views": ["clean"], "row_id": "S3-s2026092702"}
+{"at": 1791701023.1549547, "status": "ANALYZED", "views": ["clean"], "row_id": "S3-s2026092703"}
+{"at": 1791701038.3665144, "status": "ANALYZED", "trained_models": 3, "tested_models": 3, "views": ["clean"]}

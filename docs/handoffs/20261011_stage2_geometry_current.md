@@ -43,3 +43,10 @@ Run `20261011-phase1-stage2-relation-identifiability-source-manysig-m3-r01`，�
 执行提交5c9465846a49a90b5cd008584ebff839f9647595，dispatcher3913667；S3-s2026092701 GPU3 PID3913802，seed02 GPU5 PID3913807，seed03 GPU6 PID3913818。最新快照各E3/40，无失败，resolved确认无teacher/U/satellite。新R27折c=.0262至.1021，所有alpha=.25，CPU实际parent梯度预检通过。
 
 远端run `/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-stable-rx-manysig-m3-r01`，不可变release `/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_stable_rx_20261011_r01`；已有唯一owner和自动clean链路，不要重新启动。收集脚本 `.codex_tmp/collect_stable_rx_training.py`，发布读回 `local_artifacts/stable_rx_training_20261011_r01/readback.json`。等待E40/8880固定、各row自动prediction和truth-last评分；完成后收集全部epoch/step日志和完整clean结果，报告与Git登记。目标仍未达成，不能依据逐row测试干预健康训练。
+
+
+## S3 已完成
+
+`20261011-phase1-stage2-stable-rx-manysig-m3-r01` 三行E40/8880和自动clean全部完成，完整120epoch/26640step核验。S3均值80.946627%，相对B0 +0.033333pp（1/3正），性能目标状态NOT_MET。全部按预登记完成，不因结果重跑。报告 automation_reports/CV-SincNet/20261011-phase1-stage2-stable-rx-manysig-m3-r01/report.md，原始权重和日志仍在N607原run；禁止重复发布或预测。报告与测试均为证据，不是之后调参的输入。下一步须由源证据决定，目标未完成时保持active。
+
+源端补充：全部30个审计点R梯度非零，全部关系活跃；八视图固定源V压力日志已完整聚合，S3相比B0在temporal/LTL约+1.08/+1.53pp。下一步应核查真实源组差目标实现率和R锚定分量，而非依据target改权重。目标仍active；未发布新的后续训练或诊断。

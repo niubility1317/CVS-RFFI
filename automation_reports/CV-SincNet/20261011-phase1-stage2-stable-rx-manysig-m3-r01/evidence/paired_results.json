@@ -1,0 +1,110 @@
+{
+  "comparisons": [
+    {
+      "treatment": "B0",
+      "control": "P0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        0.008273809523809517,
+        0.0011785714285714732,
+        0.002154761904761937
+      ],
+      "mean_difference": 0.003869047619047642,
+      "sd_difference": 0.003845735630498063,
+      "positive_seeds": 3,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "S3",
+      "control": "B0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        -6.547619047614361e-05,
+        0.0033333333333332993,
+        -0.002267857142857155
+      ],
+      "mean_difference": 0.00033333333333333365,
+      "sd_difference": 0.0028218115572894867,
+      "positive_seeds": 1,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "S3",
+      "control": "B2",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        0.00017261904761911584,
+        0.0017142857142856682,
+        0.001535714285714307
+      ],
+      "mean_difference": 0.0011408730158730303,
+      "sd_difference": 0.0008432726421834717,
+      "positive_seeds": 3,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "S3",
+      "control": "B3",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        0.00043452380952391234,
+        -0.0004702380952380514,
+        0.0001488095238095788
+      ],
+      "mean_difference": 3.769841269847992e-05,
+      "sd_difference": 0.00046250165982013666,
+      "positive_seeds": 2,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "S3",
+      "control": "P0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        0.008208333333333373,
+        0.0045119047619047725,
+        -0.00011309523809521771
+      ],
+      "mean_difference": 0.004202380952380976,
+      "sd_difference": 0.004169340128706653,
+      "positive_seeds": 2,
+      "complete_three_seeds": true
+    }
+  ],
+  "inferential_significance_claim": false
+}
