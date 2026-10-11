@@ -26,6 +26,8 @@
 
 ## 下一步机制问题
 
+用户进一步要求纳入浅／中层 Fishr 和 MixStyle。本次尚未发布的六方案扩为十方案三种子：保留 CE、SSL、PHYS、FEATURE、MARGIN、BOTH；增加 MULTI（浅中层辅助 CE 对照）、MIX_SM、FISHR_SM、MIX_FISHR_SM。真实层位为时域 `time_down` 和 `t2.pool`，不以最终 embedding 代理浅中层。具体配置与损失见 `experiments/cvs_early_geometry/DESIGN.md`，新 run 为 `20261012-phase1-early-geometry-manysig-m30-r01`。原 m18 仅本地预案保留为 superseded，未启动。
+
 既有跨RX SupCon、同TX特征混合、manifold mix、条件教师和图锚点已实现，避免重复命名。当前一个尚待测量的问题是：高置信概率一致时，接收响应扰动是否仍改变身份特征；中心化分类间隔或单位特征一致性是否提供与概率KL不同、且有用的学习方向。
 
 这是候选机制问题，不是已证实瓶颈，也不宣称这些损失本身是新发明。原E200无标签几何诊断已完成本地实现和静态审查，但因用户改基线未发布，标记LOCAL_ONLY_SUPERSEDED。其算法可复用，E200配置及审查不能直接作为E20启动依据。下一次实际探索应围绕新的早期训练设置重新冻结对照，而非继续旧E200流水线。

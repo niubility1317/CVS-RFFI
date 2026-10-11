@@ -1,0 +1,134 @@
+{
+  "status": "PASS",
+  "scratch_loads_no_checkpoint": true,
+  "identical_seed_initializations": true,
+  "ordinary_CE_exact": true,
+  "U_has_no_y": true,
+  "checkpoint_roundtrip": true,
+  "geometry": {
+    "status": "PASS",
+    "target_stopgrad": true,
+    "logit_shift_invariant": true,
+    "identity_view_zero": true,
+    "exact_energy_partition": true,
+    "KL_saturation_counterexample": true,
+    "rows": 3
+  },
+  "rows": [
+    {
+      "arm": "CE",
+      "forwards": 1,
+      "feature_gradient": false,
+      "margin_gradient": false,
+      "expected": {
+        "identity_updates": 4440,
+        "L_packets": 568320,
+        "U_packets": 0,
+        "weak_forwards": 0,
+        "physical_L": 0,
+        "physical_U": 0,
+        "feature_U": 0,
+        "margin_U": 0,
+        "EMA_updates": 0,
+        "satellite_calls": 0,
+        "auxiliary_steps": 0
+      }
+    },
+    {
+      "arm": "SSL",
+      "forwards": 3,
+      "feature_gradient": false,
+      "margin_gradient": false,
+      "expected": {
+        "identity_updates": 4440,
+        "L_packets": 568320,
+        "U_packets": 511488,
+        "weak_forwards": 3996,
+        "physical_L": 0,
+        "physical_U": 0,
+        "feature_U": 0,
+        "margin_U": 0,
+        "EMA_updates": 0,
+        "satellite_calls": 0,
+        "auxiliary_steps": 0
+      }
+    },
+    {
+      "arm": "PHYS",
+      "forwards": 4,
+      "feature_gradient": false,
+      "margin_gradient": false,
+      "expected": {
+        "identity_updates": 4440,
+        "L_packets": 568320,
+        "U_packets": 511488,
+        "weak_forwards": 3996,
+        "physical_L": 511488,
+        "physical_U": 511488,
+        "feature_U": 0,
+        "margin_U": 0,
+        "EMA_updates": 0,
+        "satellite_calls": 0,
+        "auxiliary_steps": 0
+      }
+    },
+    {
+      "arm": "FEATURE",
+      "forwards": 4,
+      "feature_gradient": true,
+      "margin_gradient": false,
+      "expected": {
+        "identity_updates": 4440,
+        "L_packets": 568320,
+        "U_packets": 511488,
+        "weak_forwards": 3996,
+        "physical_L": 511488,
+        "physical_U": 511488,
+        "feature_U": 511488,
+        "margin_U": 0,
+        "EMA_updates": 0,
+        "satellite_calls": 0,
+        "auxiliary_steps": 0
+      }
+    },
+    {
+      "arm": "MARGIN",
+      "forwards": 4,
+      "feature_gradient": false,
+      "margin_gradient": true,
+      "expected": {
+        "identity_updates": 4440,
+        "L_packets": 568320,
+        "U_packets": 511488,
+        "weak_forwards": 3996,
+        "physical_L": 511488,
+        "physical_U": 511488,
+        "feature_U": 0,
+        "margin_U": 511488,
+        "EMA_updates": 0,
+        "satellite_calls": 0,
+        "auxiliary_steps": 0
+      }
+    },
+    {
+      "arm": "BOTH",
+      "forwards": 4,
+      "feature_gradient": true,
+      "margin_gradient": true,
+      "expected": {
+        "identity_updates": 4440,
+        "L_packets": 568320,
+        "U_packets": 511488,
+        "weak_forwards": 3996,
+        "physical_L": 511488,
+        "physical_U": 511488,
+        "feature_U": 511488,
+        "margin_U": 511488,
+        "EMA_updates": 0,
+        "satellite_calls": 0,
+        "auxiliary_steps": 0
+      }
+    }
+  ],
+  "matrix": 18
+}

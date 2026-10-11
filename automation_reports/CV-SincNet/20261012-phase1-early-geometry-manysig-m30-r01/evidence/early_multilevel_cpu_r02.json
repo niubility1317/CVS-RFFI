@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "source_target_access": false,
+  "analytic_weight_and_bias_autograd_max_error": 2.220446049250313e-16,
+  "real_layer_paths": {
+    "time_down": "id_backbone.encoder.core.id_backbone.time_down",
+    "t2.pool": "id_backbone.encoder.core.id_backbone.t2.pool"
+  },
+  "actual_feature_shapes": {
+    "time_down": [
+      60,
+      48,
+      128
+    ],
+    "t2.pool": [
+      60,
+      96,
+      32
+    ]
+  },
+  "raw_aux_ce": 1.8262237310409546,
+  "raw_fishr": 0.00019399984739720821,
+  "gradient_scales": {
+    "shallow": {
+      "ce": 0.080975621057005,
+      "fishr": 0.00042498106678351205,
+      "fishr_to_auxCE_gradient_ratio_at_equal_weights": 0.005248259429641609
+    },
+    "middle": {
+      "ce": 0.08967079923881564,
+      "fishr": 0.0002650885528321072,
+      "fishr_to_auxCE_gradient_ratio_at_equal_weights": 0.0029562416648714197
+    }
+  },
+  "real_clean_Fishr_same_in_joint": true,
+  "detached_donor_statistics": true,
+  "exact_6TX_5RX_2PID_same_day": true,
+  "private_sampler_rng": true,
+  "native_CPU_CUDA_RNG_preserved": true,
+  "no_EMA": true,
+  "no_inference_change": true,
+  "no_eval_style": true,
+  "context_exception_cleanup": true,
+  "auxiliary_parameters": 876
+}
