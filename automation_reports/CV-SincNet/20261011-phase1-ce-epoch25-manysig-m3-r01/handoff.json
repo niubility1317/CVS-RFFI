@@ -1,0 +1,122 @@
+{
+  "goal": "clean三种子均值>=84 remains active; compression is extra study",
+  "status": "RUNNING",
+  "execution_commit": "f3fdae4ef11968d1056918d94dc70a6820d0b1fa",
+  "run": "20261011-phase1-ce-epoch25-manysig-m3-r01",
+  "rows": [
+    {
+      "row_id": "E25-s2026092701",
+      "pid": 4170691,
+      "gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch25_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_ce_epoch25.dispatch",
+        "--worker",
+        "E25-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch25-manysig-m3-r01/logs/E25-s2026092701.log",
+      "process": {
+        "pid": 4170691,
+        "start_ticks": 97277278,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch25_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch25.dispatch",
+          "--worker",
+          "E25-s2026092701"
+        ],
+        "gpu": "0"
+      },
+      "epoch": 1,
+      "log_bytes": 14807,
+      "log_tail": [
+        "[EPOCH-END] E001/025",
+        "===================================================================================================================================="
+      ],
+      "source_smoke_pass": true
+    },
+    {
+      "row_id": "E25-s2026092702",
+      "pid": 4170774,
+      "gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch25_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_ce_epoch25.dispatch",
+        "--worker",
+        "E25-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch25-manysig-m3-r01/logs/E25-s2026092702.log",
+      "process": {
+        "pid": 4170774,
+        "start_ticks": 97277607,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch25_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch25.dispatch",
+          "--worker",
+          "E25-s2026092702"
+        ],
+        "gpu": "0"
+      },
+      "epoch": null,
+      "log_bytes": 9464,
+      "log_tail": [
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=25 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch25-manysig-m3-r01/E25-s2026092702/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch25-manysig-m3-r01/E25-s2026092702/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch25-manysig-m3-r01/E25-s2026092702/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_smoke_pass": true
+    },
+    {
+      "row_id": "E25-s2026092703",
+      "pid": 4170860,
+      "gpu": 1,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch25_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_ce_epoch25.dispatch",
+        "--worker",
+        "E25-s2026092703"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch25-manysig-m3-r01/logs/E25-s2026092703.log",
+      "process": {
+        "pid": 4170860,
+        "start_ticks": 97277939,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch25_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch25.dispatch",
+          "--worker",
+          "E25-s2026092703"
+        ],
+        "gpu": "1"
+      },
+      "epoch": null,
+      "log_bytes": 9464,
+      "log_tail": [
+        "[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=25 pseudo_epochs=0 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=0 ema=0 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch25-manysig-m3-r01/E25-s2026092703/source",
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch25-manysig-m3-r01/E25-s2026092703/source/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch25-manysig-m3-r01/E25-s2026092703/source/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats"
+      ],
+      "source_smoke_pass": true
+    }
+  ],
+  "next": "Do not relaunch; read existing row completions and collect_results; full3seed E25 vs fixedE200 determines next epoch budget only; passing shorter, failing bracket25..50",
+  "parallel": "15row E200 physical RX stage2 continues; source audit found nearly uniform critic selection; validate ranking before future redesign",
+  "no_target_feedback_to_mechanism": true
+}
