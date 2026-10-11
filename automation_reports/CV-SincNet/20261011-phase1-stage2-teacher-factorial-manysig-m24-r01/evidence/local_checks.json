@@ -1,0 +1,83 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "arm": "O_CE",
+      "reference": "original",
+      "target": "none",
+      "encoder_peak": 0.0001,
+      "head_peak": 0.0003,
+      "target_owned_copy": false,
+      "finite_loss": true
+    },
+    {
+      "arm": "O_EMA",
+      "reference": "original",
+      "target": "EMA",
+      "encoder_peak": 0.0001,
+      "head_peak": 0.0003,
+      "target_owned_copy": true,
+      "finite_loss": true
+    },
+    {
+      "arm": "O_DIRECT",
+      "reference": "original",
+      "target": "current_student",
+      "encoder_peak": 0.0001,
+      "head_peak": 0.0003,
+      "target_owned_copy": false,
+      "finite_loss": true
+    },
+    {
+      "arm": "O_DIRECT_HI",
+      "reference": "original",
+      "target": "current_student",
+      "encoder_peak": 0.0003,
+      "head_peak": 0.0009,
+      "target_owned_copy": false,
+      "finite_loss": true
+    },
+    {
+      "arm": "R_CE",
+      "reference": "report_revised",
+      "target": "none",
+      "encoder_peak": 0.0001,
+      "head_peak": 0.0003,
+      "target_owned_copy": false,
+      "finite_loss": true
+    },
+    {
+      "arm": "R_EMA",
+      "reference": "report_revised",
+      "target": "EMA",
+      "encoder_peak": 0.0001,
+      "head_peak": 0.0003,
+      "target_owned_copy": true,
+      "finite_loss": true
+    },
+    {
+      "arm": "R_DIRECT",
+      "reference": "report_revised",
+      "target": "current_student",
+      "encoder_peak": 0.0001,
+      "head_peak": 0.0003,
+      "target_owned_copy": false,
+      "finite_loss": true
+    },
+    {
+      "arm": "R_DIRECT_HI",
+      "reference": "report_revised",
+      "target": "current_student",
+      "encoder_peak": 0.0003,
+      "head_peak": 0.0009,
+      "target_owned_copy": false,
+      "finite_loss": true
+    }
+  ],
+  "original_logits_exact": true,
+  "live_target_no_copy_or_update": true,
+  "weak_forward_restores_modes": true,
+  "finite_gradients": true,
+  "identity_updates": 0,
+  "target_access": false
+}
