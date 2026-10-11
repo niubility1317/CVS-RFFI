@@ -1,0 +1,78 @@
+{
+  "source_run": "20261012-phase1-scratch-boundary-style-manysig-m27-r01",
+  "source_read_at": 1791752732.9796038,
+  "matrix_status": "PARTIAL",
+  "source_complete_rows": 13,
+  "source_steps": 57720,
+  "source_only": true,
+  "target_scores_read": false,
+  "active_training_changed": false,
+  "style": [
+    {
+      "row_id": "RANDOM_STYLE-s2026092701",
+      "arm": "RANDOM_STYLE",
+      "seed": 2026092701,
+      "active_steps": 3996,
+      "eval_clean_CE": 0.07445921290300421,
+      "eval_selected_CE": 0.059412313084537816,
+      "eval_CE_delta": -0.015046899818466394,
+      "harder_fraction": 0.23273273273273273,
+      "easier_fraction": 0.7672672672672672,
+      "train_prediction_change_pp": 2.0637825325325325,
+      "train_accuracy_delta_pp": 0.3268893893893894,
+      "train_margin_delta": 0.0025957301333621218,
+      "extra_search_forwards": 19980,
+      "extra_search_packets": 2557440
+    }
+  ],
+  "sensitivity": [
+    {
+      "row_id": "M_MIDDLE-s2026092701",
+      "arm": "M_MIDDLE",
+      "seed": 2026092701,
+      "level": "t2.pool",
+      "calls": 999,
+      "raw_term_mean": 0.05309569939378012,
+      "raw_negative_fraction": 0.13013013013013014,
+      "low_norm_A_mean": 0.0,
+      "low_norm_B_mean": 0.0,
+      "weighted_gradient_mean": 0.8725810407098002,
+      "weighted_gradient_min": 0.007046411866514787,
+      "gradient_ratio_median": 1.5516897143792545,
+      "gradient_ratio_q90": 4.564886581887285,
+      "fixed_coefficient": 1.0312248707015579
+    },
+    {
+      "row_id": "M_MIDDLE-s2026092702",
+      "arm": "M_MIDDLE",
+      "seed": 2026092702,
+      "level": "t2.pool",
+      "calls": 999,
+      "raw_term_mean": 0.03596538864192669,
+      "raw_negative_fraction": 0.18218218218218218,
+      "low_norm_A_mean": 0.0,
+      "low_norm_B_mean": 0.0,
+      "weighted_gradient_mean": 2.4854262302232435,
+      "weighted_gradient_min": 0.020704900975285552,
+      "gradient_ratio_median": 3.5057778431630107,
+      "gradient_ratio_q90": 10.612113307725759,
+      "fixed_coefficient": 4.518060988795398
+    },
+    {
+      "row_id": "M_MIDDLE-s2026092703",
+      "arm": "M_MIDDLE",
+      "seed": 2026092703,
+      "level": "t2.pool",
+      "calls": 999,
+      "raw_term_mean": 0.0649049423467608,
+      "raw_negative_fraction": 0.15515515515515516,
+      "low_norm_A_mean": 0.0,
+      "low_norm_B_mean": 0.0,
+      "weighted_gradient_mean": 3.0317316375044423,
+      "weighted_gradient_min": 0.04298707258101262,
+      "gradient_ratio_median": 4.05845177121044,
+      "gradient_ratio_q90": 14.57334415683687,
+      "fixed_coefficient": 1.4648538054934552
+    }
+  ]
+}

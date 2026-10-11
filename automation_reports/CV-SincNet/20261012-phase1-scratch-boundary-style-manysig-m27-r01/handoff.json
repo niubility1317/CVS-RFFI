@@ -22,27 +22,36 @@
   "multilevel": "time_down/t2.pool; margin sensitivities without heads; fixed peer probabilities; independent AB Fishr fixed initial coefficients/denominator2; hard/random four-candidate L style with matched dropout; noEMA/noSat",
   "owner": "codex/root/scratch-boundary-style-20261012",
   "current_progress": {
-    "read_at": 1791752648.756355,
+    "read_at": 1791753423.4024527,
     "launched": 27,
-    "scored_rows": 12,
-    "source_fully_audited_rows": 7,
-    "source_fully_audited_steps": 31080,
+    "scored_rows": 19,
+    "source_fully_audited_rows": 13,
+    "source_fully_audited_steps": 57720,
     "failure": null,
     "final_goal_status": "UNPROVEN"
   },
   "completed_rows": [
     "CE-s2026092701",
     "SSL-s2026092701",
+    "M_SHALLOW-s2026092701",
     "M_MIDDLE-s2026092701",
+    "M_BOTH-s2026092701",
     "L_REPLAY-s2026092701",
+    "RANDOM_STYLE-s2026092701",
     "CE-s2026092702",
     "SSL-s2026092702",
+    "M_SHALLOW-s2026092702",
     "M_MIDDLE-s2026092702",
     "L_REPLAY-s2026092702",
     "CE-s2026092703",
     "SSL-s2026092703",
+    "M_SHALLOW-s2026092703",
     "M_MIDDLE-s2026092703",
-    "L_REPLAY-s2026092703"
+    "M_BOTH-s2026092703",
+    "L_REPLAY-s2026092703",
+    "HARD_STYLE-s2026092703"
   ],
-  "source_fully_audited_steps": 31080
+  "source_fully_audited_steps": 57720,
+  "source_calibration_drift": "source_calibration_drift.md",
+  "next_source_design": "Consider preregistered post-warmup calibration and detached joint gradient cap based only on source norms; details in source_calibration_drift.md. Existing runs immutable; no new variants implemented/released yet."
 }
