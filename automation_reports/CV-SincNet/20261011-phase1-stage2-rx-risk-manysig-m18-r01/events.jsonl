@@ -3,3 +3,4 @@
 {"event": "FULL_AVAILABLE_SOURCE_TRAJECTORY_AUDIT", "time": 1791728404.3890717, "evidence": "evidence/source_trajectory_summary.json", "rows": 15, "steps": 53155, "final": false, "target_access": false}
 {"event": "ALL_ROWS_LAUNCHED_RUNTIME_VERIFIED", "time": 1791728517.6887379, "evidence": "evidence/latest_runtime.json", "launched": 18, "scored": 3}
 {"event": "CLEAN_RESULTS_PROGRESS", "time": 1791728887.730189, "scored_rows": 7, "total_rows": 18, "status": "RUNNING", "evidence": "evidence/test_results_analysis.json"}
+{"event": "MATRIX_ANALYZED", "time": 1791729838.639269, "rows": 18, "source_steps": 159840, "goal_met": false}

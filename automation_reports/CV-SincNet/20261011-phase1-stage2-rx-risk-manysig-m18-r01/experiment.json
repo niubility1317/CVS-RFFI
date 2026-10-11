@@ -60,7 +60,7 @@
   "comparison_group_id": "cvs-stage2-E200-40epoch-three-seed",
   "display_name": "E200续训40轮：预热风险网络的冻结、排序和间隔在线监督六方案三种子",
   "description": "根据独立源机制诊断改进辅助网络监督，固定6arm18row验证其身份学习收益，源V准确率仅检查健康",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "stage2",
@@ -5190,7 +5190,7 @@
       "arm": "RFIX",
       "model_seed": 2026092701,
       "row_id": "RFIX-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_risk_v1",
         "run_id": "20261011-phase1-stage2-rx-risk-manysig-m18-r01",
@@ -5954,7 +5954,7 @@
       "arm": "RANK",
       "model_seed": 2026092701,
       "row_id": "RANK-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_risk_v1",
         "run_id": "20261011-phase1-stage2-rx-risk-manysig-m18-r01",
@@ -6718,7 +6718,7 @@
       "arm": "MARGIN",
       "model_seed": 2026092701,
       "row_id": "MARGIN-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_risk_v1",
         "run_id": "20261011-phase1-stage2-rx-risk-manysig-m18-r01",
@@ -8270,7 +8270,7 @@
       "arm": "PHYS",
       "model_seed": 2026092702,
       "row_id": "PHYS-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_risk_v1",
         "run_id": "20261011-phase1-stage2-rx-risk-manysig-m18-r01",
@@ -8664,7 +8664,7 @@
       "arm": "RFIX",
       "model_seed": 2026092702,
       "row_id": "RFIX-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_risk_v1",
         "run_id": "20261011-phase1-stage2-rx-risk-manysig-m18-r01",
@@ -9428,7 +9428,7 @@
       "arm": "RANK",
       "model_seed": 2026092702,
       "row_id": "RANK-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_risk_v1",
         "run_id": "20261011-phase1-stage2-rx-risk-manysig-m18-r01",
@@ -10192,7 +10192,7 @@
       "arm": "MARGIN",
       "model_seed": 2026092702,
       "row_id": "MARGIN-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_risk_v1",
         "run_id": "20261011-phase1-stage2-rx-risk-manysig-m18-r01",
@@ -11744,7 +11744,7 @@
       "arm": "PHYS",
       "model_seed": 2026092703,
       "row_id": "PHYS-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_risk_v1",
         "run_id": "20261011-phase1-stage2-rx-risk-manysig-m18-r01",
@@ -12138,7 +12138,7 @@
       "arm": "RFIX",
       "model_seed": 2026092703,
       "row_id": "RFIX-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_risk_v1",
         "run_id": "20261011-phase1-stage2-rx-risk-manysig-m18-r01",
@@ -12900,7 +12900,7 @@
       "arm": "RANK",
       "model_seed": 2026092703,
       "row_id": "RANK-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_risk_v1",
         "run_id": "20261011-phase1-stage2-rx-risk-manysig-m18-r01",
@@ -13662,7 +13662,7 @@
       "arm": "MARGIN",
       "model_seed": 2026092703,
       "row_id": "MARGIN-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_risk_v1",
         "run_id": "20261011-phase1-stage2-rx-risk-manysig-m18-r01",
@@ -14506,5 +14506,11 @@
   ],
   "registered_at": "2026-10-11T14:08:59+00:00",
   "execution_commit": "24ecee0baac40de45dac55695b47f9d1ca8f5749",
-  "delivery_verdict": "VERIFIED"
+  "delivery_verdict": "VERIFIED",
+  "results": {
+    "complete_rows": 18,
+    "source_steps": 159840,
+    "goal_met": false,
+    "report": "final_analysis.md"
+  }
 }
