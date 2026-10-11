@@ -5194,7 +5194,7 @@
       "arm": "SSL",
       "model_seed": 2026092701,
       "row_id": "SSL-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -5591,8 +5591,8 @@
       ],
       "pid": 54219,
       "gpu": 6,
-      "live_epoch": 24,
-      "live_identity_updates": 5328
+      "live_epoch": 40,
+      "live_identity_updates": 8880
     },
     {
       "arm": "SAM_SSL",
@@ -8358,7 +8358,7 @@
       "arm": "SSL",
       "model_seed": 2026092702,
       "row_id": "SSL-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -8755,8 +8755,8 @@
       ],
       "pid": 54973,
       "gpu": 0,
-      "live_epoch": 22,
-      "live_identity_updates": 4993
+      "live_epoch": 40,
+      "live_identity_updates": 8880
     },
     {
       "arm": "SAM_SSL",
@@ -11522,7 +11522,7 @@
       "arm": "SSL",
       "model_seed": 2026092703,
       "row_id": "SSL-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -11919,8 +11919,8 @@
       ],
       "pid": 55884,
       "gpu": 1,
-      "live_epoch": 24,
-      "live_identity_updates": 5328
+      "live_epoch": 40,
+      "live_identity_updates": 8880
     },
     {
       "arm": "SAM_SSL",
@@ -14774,5 +14774,27 @@
   ],
   "registered_at": "2026-10-11T15:12:28+00:00",
   "execution_commit": "f73d4aa3046f41d4dd3c4d56005af538e9f703da",
-  "delivery_verdict": "VERIFIED"
+  "delivery_verdict": "VERIFIED",
+  "results": {
+    "complete_rows": 3,
+    "missing_rows": [
+      "SAM_SSL-s2026092701",
+      "PHYS-s2026092701",
+      "SAM_PHYS-s2026092701",
+      "RANK-s2026092701",
+      "SAM_RANK-s2026092701",
+      "SAM_SSL-s2026092702",
+      "PHYS-s2026092702",
+      "SAM_PHYS-s2026092702",
+      "RANK-s2026092702",
+      "SAM_RANK-s2026092702",
+      "SAM_SSL-s2026092703",
+      "PHYS-s2026092703",
+      "SAM_PHYS-s2026092703",
+      "RANK-s2026092703",
+      "SAM_RANK-s2026092703"
+    ],
+    "complete_arms_reaching_84": [],
+    "report": "test_results.md"
+  }
 }

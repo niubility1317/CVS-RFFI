@@ -1,24 +1,6161 @@
 {
   "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
-  "read_at": 1791732052.8253658,
+  "read_at": 1791732233.1688344,
   "status": "PARTIAL",
-  "pairs": [],
-  "interactions": [],
+  "pairs": [
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-SSL",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-PHYS",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-RANK",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-SSL",
+      "coefficients": {
+        "PHYS": 1,
+        "SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-PHYS",
+      "coefficients": {
+        "RANK": 1,
+        "PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-SAM_SSL",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "SAM_SSL": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-SAM_PHYS",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "SAM_PHYS": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.011095238095238047
+        },
+        {
+          "seed": 2026092702,
+          "difference": -0.005488095238095236
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.0034404761904761605
+        }
+      ],
+      "mean_difference": 0.0007222222222222167,
+      "sd_difference": 0.00904144787450671,
+      "positive_seeds": 1,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.027958333333333307
+        },
+        {
+          "seed": 2026092702,
+          "difference": -0.03245833333333337
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.002666666666666706
+        }
+      ],
+      "mean_difference": -0.021027777777777795,
+      "sd_difference": 0.016059585951260558,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.10100000000000009
+        },
+        {
+          "seed": 2026092702,
+          "difference": 0.04662500000000003
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.0355833333333333
+        }
+      ],
+      "mean_difference": 0.061069444444444475,
+      "sd_difference": 0.03501880281971287,
+      "positive_seeds": 3,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.017916666666666692
+        },
+        {
+          "seed": 2026092702,
+          "difference": 0.005374999999999908
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.01520833333333338
+        }
+      ],
+      "mean_difference": 0.012833333333333327,
+      "sd_difference": 0.00659953175948456,
+      "positive_seeds": 3,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.017041666666666733
+        },
+        {
+          "seed": 2026092702,
+          "difference": -0.0032083333333332575
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.008416666666666628
+        }
+      ],
+      "mean_difference": 0.0018055555555556158,
+      "sd_difference": 0.013449386431000137,
+      "positive_seeds": 1,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.004249999999999976
+        },
+        {
+          "seed": 2026092702,
+          "difference": 0.0006249999999999867
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.002291666666666692
+        }
+      ],
+      "mean_difference": -0.001972222222222227,
+      "sd_difference": 0.0024531489589535186,
+      "positive_seeds": 1,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.0019166666666665666
+        },
+        {
+          "seed": 2026092702,
+          "difference": -0.05958333333333343
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.017458333333333353
+        }
+      ],
+      "mean_difference": -0.02631944444444445,
+      "sd_difference": 0.02983706719340407,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.02416666666666667
+        },
+        {
+          "seed": 2026092702,
+          "difference": 0.0042083333333333695
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.044041666666666646
+        }
+      ],
+      "mean_difference": -0.021333333333333315,
+      "sd_difference": 0.024249463052474662,
+      "positive_seeds": 1,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.005285714285714227
+        },
+        {
+          "seed": 2026092702,
+          "difference": 0.009535714285714314
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.00910714285714287
+        }
+      ],
+      "mean_difference": 0.00797619047619047,
+      "sd_difference": 0.0023398536206324125,
+      "positive_seeds": 3,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.10660714285714284
+        },
+        {
+          "seed": 2026092702,
+          "difference": 0.048678571428571404
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.08796428571428577
+        }
+      ],
+      "mean_difference": 0.08108333333333334,
+      "sd_difference": 0.02957093972450786,
+      "positive_seeds": 3,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.08757142857142863
+        },
+        {
+          "seed": 2026092702,
+          "difference": -0.0571071428571428
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.07653571428571426
+        }
+      ],
+      "mean_difference": -0.07373809523809523,
+      "sd_difference": 0.01542362409656403,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.03921428571428576
+        },
+        {
+          "seed": 2026092702,
+          "difference": -0.018142857142857127
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.03303571428571428
+        }
+      ],
+      "mean_difference": -0.003988095238095217,
+      "sd_difference": 0.038148179359379336,
+      "positive_seeds": 1,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -3.571428571436108e-05
+        },
+        {
+          "seed": 2026092702,
+          "difference": 0.00028571428571433355
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.00017857142857136132
+        }
+      ],
+      "mean_difference": 0.00014285714285711126,
+      "sd_difference": 0.00016366341767704893,
+      "positive_seeds": 2,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SSL-P0",
+      "coefficients": {
+        "SSL": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.003071428571428614
+        },
+        {
+          "seed": 2026092702,
+          "difference": -0.016178571428571376
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.00832142857142848
+        }
+      ],
+      "mean_difference": -0.00714285714285708,
+      "sd_difference": 0.009678966781593142,
+      "positive_seeds": 1,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "PHYS-P0",
+      "coefficients": {
+        "PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_PHYS-P0",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "RANK-P0",
+      "coefficients": {
+        "RANK": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_RANK-P0",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    }
+  ],
+  "interactions": [
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_physical",
+      "coefficients": {
+        "SAM_PHYS": 1,
+        "PHYS": -1,
+        "SAM_SSL": -1,
+        "SSL": 1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "overall",
+      "stratum": "ALL",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_by_risk",
+      "coefficients": {
+        "SAM_RANK": 1,
+        "RANK": -1,
+        "SAM_PHYS": -1,
+        "PHYS": 1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 0,
+      "complete_three_seeds": false,
+      "missing_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "per_seed": [],
+      "mean_difference": null,
+      "sd_difference": null,
+      "positive_seeds": 0,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    }
+  ],
   "scope": "prespecified paired seed accuracy contrasts; source training and selection never consume this output",
   "missing_rows": [
-    "SSL-s2026092701",
     "SAM_SSL-s2026092701",
     "PHYS-s2026092701",
     "SAM_PHYS-s2026092701",
     "RANK-s2026092701",
     "SAM_RANK-s2026092701",
-    "SSL-s2026092702",
     "SAM_SSL-s2026092702",
     "PHYS-s2026092702",
     "SAM_PHYS-s2026092702",
     "RANK-s2026092702",
     "SAM_RANK-s2026092702",
-    "SSL-s2026092703",
     "SAM_SSL-s2026092703",
     "PHYS-s2026092703",
     "SAM_PHYS-s2026092703",

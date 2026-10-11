@@ -4,6 +4,21 @@
 
 |比较|种子1|种子2|种子3|配对均值|配对SD|种子数|
 |---|---:|---:|---:|---:|---:|---:|
+|SAM_SSL-SSL|N/A|N/A|N/A|N/A|N/A|0/3|
+|SAM_PHYS-PHYS|N/A|N/A|N/A|N/A|N/A|0/3|
+|SAM_RANK-RANK|N/A|N/A|N/A|N/A|N/A|0/3|
+|PHYS-SSL|N/A|N/A|N/A|N/A|N/A|0/3|
+|RANK-PHYS|N/A|N/A|N/A|N/A|N/A|0/3|
+|SAM_PHYS-SAM_SSL|N/A|N/A|N/A|N/A|N/A|0/3|
+|SAM_RANK-SAM_PHYS|N/A|N/A|N/A|N/A|N/A|0/3|
+|SSL-P0|+1.1095|-0.5488|-0.3440|+0.0722|0.9041|3/3|
+|SAM_SSL-P0|N/A|N/A|N/A|N/A|N/A|0/3|
+|PHYS-P0|N/A|N/A|N/A|N/A|N/A|0/3|
+|SAM_PHYS-P0|N/A|N/A|N/A|N/A|N/A|0/3|
+|RANK-P0|N/A|N/A|N/A|N/A|N/A|0/3|
+|SAM_RANK-P0|N/A|N/A|N/A|N/A|N/A|0/3|
+|SAM_by_physical|N/A|N/A|N/A|N/A|N/A|0/3|
+|SAM_by_risk|N/A|N/A|N/A|N/A|N/A|0/3|
 
 SAM_by_physical = (SAM_PHYS−PHYS)−(SAM_SSL−SSL)。SAM_by_risk = (SAM_RANK−RANK)−(SAM_PHYS−PHYS)。正交互只说明本批中SAM增量随该配方改变，不能单独证明整体超过基座或达到84%，也不等同统计显著。
 
