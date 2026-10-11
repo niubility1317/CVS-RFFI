@@ -1,9 +1,11 @@
 {
   "status": "PASS",
-  "completed_rows": 12,
-  "stratified_correction_records": 168,
+  "completed_rows": 18,
+  "stratified_correction_records": 252,
   "fix_break_net_recount": true,
   "parent_accuracy_delta_recount": true,
-  "partial_matrix_rejected_for_final_report": true,
-  "complete_matrix_render": "PENDING actual18row completion; no fabricated score fixture"
+  "source_complete_steps": 159840,
+  "source_epochs": 720,
+  "complete_matrix_render": "VERIFIED actual scored18 rows; allRX/TX/day and resource coverage",
+  "complete_arms_reaching_84": []
 }

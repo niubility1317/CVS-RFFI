@@ -1,40 +1,29 @@
 {
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "execution_commit": "f73d4aa3046f41d4dd3c4d56005af538e9f703da",
-  "dispatcher_pid": 54143,
-  "workers": 18,
-  "next": "Keep existing unfinished workers. Never resubmit completed rows. Collect automatic clean and frozen source completions; compare full matched SAM pairs only. When all18 complete, run final_report --output same report folder and refresh full source audit. Main goal84 not proven.",
-  "collector": "python -m experiments.cvs_stage2_rx_sam.collect_results --output automation_reports/CV-SincNet/20261011-phase1-stage2-rx-sam-manysig-m18-r01",
-  "compression": "E21 completefails0.3pp, E22 shortest tested pass; no additional budget launch. Main parents remain originalE200.",
-  "goal_status": "ACTIVE_NOT_ACHIEVED",
-  "source_audit": "source_trajectory.md",
-  "source_evidence": {
-    "rows": 18,
-    "steps": 54985,
-    "execution_counts_valid": true,
-    "SAM_rho": 0.05,
-    "source_target_access": false
-  },
   "completed_rows": [
     "SSL-s2026092701",
     "SAM_SSL-s2026092701",
     "PHYS-s2026092701",
+    "SAM_PHYS-s2026092701",
     "RANK-s2026092701",
+    "SAM_RANK-s2026092701",
     "SSL-s2026092702",
     "SAM_SSL-s2026092702",
     "PHYS-s2026092702",
+    "SAM_PHYS-s2026092702",
     "RANK-s2026092702",
+    "SAM_RANK-s2026092702",
     "SSL-s2026092703",
     "SAM_SSL-s2026092703",
     "PHYS-s2026092703",
-    "RANK-s2026092703"
-  ],
-  "remaining_rows": [
-    "SAM_PHYS-s2026092701",
-    "SAM_RANK-s2026092701",
-    "SAM_PHYS-s2026092702",
-    "SAM_RANK-s2026092702",
     "SAM_PHYS-s2026092703",
+    "RANK-s2026092703",
     "SAM_RANK-s2026092703"
-  ]
+  ],
+  "remaining_rows": [],
+  "source_complete_steps": 159840,
+  "final_report": "final_analysis.md",
+  "next": "Never rerun this matrix. Goal84 remains active unless full independent completion audit proves threshold met. Further mechanism design must use source evidence, not target rank or errors. Compression search closed at shortest tested pass22; main parents remain originalE200.",
+  "complete_arms_reaching_84": []
 }
