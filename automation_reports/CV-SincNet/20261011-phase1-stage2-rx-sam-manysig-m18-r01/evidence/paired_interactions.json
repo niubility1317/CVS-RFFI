@@ -1,6 +1,6 @@
 {
   "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
-  "read_at": 1791732763.876986,
+  "read_at": 1791732905.6543887,
   "status": "PARTIAL",
   "pairs": [
     {
@@ -11,21 +11,26 @@
       },
       "dimension": "day",
       "stratum": "2021_03_01",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.02038095238095239
+        },
         {
           "seed": 2026092702,
           "difference": -0.015857142857142792
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.007571428571428562
         }
       ],
-      "mean_difference": -0.015857142857142792,
-      "sd_difference": null,
-      "positive_seeds": 0,
+      "mean_difference": -0.00955555555555554,
+      "sd_difference": 0.015003879568844906,
+      "positive_seeds": 1,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -37,20 +42,25 @@
       },
       "dimension": "day",
       "stratum": "2021_03_08",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.00921428571428562
+        },
         {
           "seed": 2026092702,
           "difference": -0.012880952380952326
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.012166666666666659
         }
       ],
-      "mean_difference": -0.012880952380952326,
-      "sd_difference": null,
+      "mean_difference": -0.011420634920634868,
+      "sd_difference": 0.0019438450647303702,
       "positive_seeds": 0,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
@@ -63,20 +73,25 @@
       },
       "dimension": "day",
       "stratum": "2021_03_15",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.026285714285714357
+        },
         {
           "seed": 2026092702,
           "difference": -0.001095238095238038
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.00890476190476197
         }
       ],
-      "mean_difference": -0.001095238095238038,
-      "sd_difference": null,
+      "mean_difference": -0.012095238095238122,
+      "sd_difference": 0.012894742200495324,
       "positive_seeds": 0,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
@@ -89,21 +104,26 @@
       },
       "dimension": "day",
       "stratum": "2021_03_23",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.008976190476190471
+        },
         {
           "seed": 2026092702,
           "difference": -0.0004761904761905189
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.0024999999999999467
         }
       ],
-      "mean_difference": -0.0004761904761905189,
-      "sd_difference": null,
-      "positive_seeds": 0,
+      "mean_difference": 0.0020000000000000018,
+      "sd_difference": 0.00612571435974886,
+      "positive_seeds": 1,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -115,20 +135,25 @@
       },
       "dimension": "overall",
       "stratum": "ALL",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.01172619047619039
+        },
         {
           "seed": 2026092702,
           "difference": -0.007577380952380919
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.0040000000000000036
         }
       ],
-      "mean_difference": -0.007577380952380919,
-      "sd_difference": null,
+      "mean_difference": -0.007767857142857104,
+      "sd_difference": 0.0038666155359626197,
       "positive_seeds": 0,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
@@ -141,21 +166,26 @@
       },
       "dimension": "receiver",
       "stratum": "1-1",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.00024999999999997247
+        },
         {
           "seed": 2026092702,
           "difference": 0.051416666666666666
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.010500000000000065
         }
       ],
-      "mean_difference": 0.051416666666666666,
-      "sd_difference": null,
-      "positive_seeds": 1,
+      "mean_difference": 0.020722222222222236,
+      "sd_difference": 0.027071706906192945,
+      "positive_seeds": 3,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -167,20 +197,25 @@
       },
       "dimension": "receiver",
       "stratum": "14-7",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.030583333333333407
+        },
         {
           "seed": 2026092702,
           "difference": -0.03829166666666661
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.013666666666666716
         }
       ],
-      "mean_difference": -0.03829166666666661,
-      "sd_difference": null,
+      "mean_difference": -0.02751388888888891,
+      "sd_difference": 0.012596180895340743,
       "positive_seeds": 0,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
@@ -193,20 +228,25 @@
       },
       "dimension": "receiver",
       "stratum": "2-1",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.007124999999999937
+        },
         {
           "seed": 2026092702,
           "difference": -0.01012499999999994
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.015083333333333337
         }
       ],
-      "mean_difference": -0.01012499999999994,
-      "sd_difference": null,
+      "mean_difference": -0.010777777777777739,
+      "sd_difference": 0.004019123845004253,
       "positive_seeds": 0,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
@@ -219,20 +259,25 @@
       },
       "dimension": "receiver",
       "stratum": "20-1",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.004708333333333425
+        },
         {
           "seed": 2026092702,
           "difference": -0.025583333333333402
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.0020416666666667194
         }
       ],
-      "mean_difference": -0.025583333333333402,
-      "sd_difference": null,
+      "mean_difference": -0.01077777777777785,
+      "sd_difference": 0.01289112618273746,
       "positive_seeds": 0,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
@@ -245,21 +290,26 @@
       },
       "dimension": "receiver",
       "stratum": "7-14",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.004333333333333411
+        },
         {
           "seed": 2026092702,
           "difference": -0.006624999999999992
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.014125000000000054
         }
       ],
-      "mean_difference": -0.006624999999999992,
-      "sd_difference": null,
-      "positive_seeds": 0,
+      "mean_difference": -0.005472222222222212,
+      "sd_difference": 0.00928300543007576,
+      "positive_seeds": 1,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -271,20 +321,25 @@
       },
       "dimension": "receiver",
       "stratum": "7-7",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.028291666666666715
+        },
         {
           "seed": 2026092702,
           "difference": 0.0008750000000000702
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.006750000000000034
         }
       ],
-      "mean_difference": 0.0008750000000000702,
-      "sd_difference": null,
+      "mean_difference": -0.011388888888888893,
+      "sd_difference": 0.015126568636135072,
       "positive_seeds": 1,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
@@ -297,21 +352,26 @@
       },
       "dimension": "receiver",
       "stratum": "8-8",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.015958333333333297
+        },
         {
           "seed": 2026092702,
           "difference": -0.024708333333333332
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.01316666666666666
         }
       ],
-      "mean_difference": -0.024708333333333332,
-      "sd_difference": null,
-      "positive_seeds": 0,
+      "mean_difference": -0.009166666666666656,
+      "sd_difference": 0.019829875398835288,
+      "positive_seeds": 1,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -323,21 +383,26 @@
       },
       "dimension": "transmitter",
       "stratum": "14-10",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.0013928571428571956
+        },
         {
           "seed": 2026092702,
           "difference": -0.0034285714285714475
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.009678571428571536
         }
       ],
-      "mean_difference": -0.0034285714285714475,
-      "sd_difference": null,
-      "positive_seeds": 0,
+      "mean_difference": -0.0039047619047619295,
+      "sd_difference": 0.005551054015254491,
+      "positive_seeds": 1,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -349,20 +414,25 @@
       },
       "dimension": "transmitter",
       "stratum": "14-7",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.0709285714285714
+        },
         {
           "seed": 2026092702,
           "difference": -0.08185714285714285
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.06878571428571434
         }
       ],
-      "mean_difference": -0.08185714285714285,
-      "sd_difference": null,
+      "mean_difference": -0.07385714285714286,
+      "sd_difference": 0.007010560547037108,
       "positive_seeds": 0,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
@@ -375,21 +445,26 @@
       },
       "dimension": "transmitter",
       "stratum": "20-15",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.018607142857142822
+        },
         {
           "seed": 2026092702,
           "difference": 0.030107142857142777
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.023749999999999938
         }
       ],
-      "mean_difference": 0.030107142857142777,
-      "sd_difference": null,
-      "positive_seeds": 1,
+      "mean_difference": 0.024154761904761846,
+      "sd_difference": 0.005760674799852844,
+      "positive_seeds": 3,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -401,21 +476,26 @@
       },
       "dimension": "transmitter",
       "stratum": "20-19",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.010750000000000037
+        },
         {
           "seed": 2026092702,
           "difference": 0.005857142857142894
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.02200000000000002
         }
       ],
-      "mean_difference": 0.005857142857142894,
-      "sd_difference": null,
-      "positive_seeds": 1,
+      "mean_difference": 0.005702380952380959,
+      "sd_difference": 0.016375548492657432,
+      "positive_seeds": 2,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -427,21 +507,26 @@
       },
       "dimension": "transmitter",
       "stratum": "6-15",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.00017857142857147235
+        },
         {
           "seed": 2026092702,
           "difference": -7.142857142861114e-05
+        },
+        {
+          "seed": 2026092703,
+          "difference": 3.571428571436108e-05
         }
       ],
-      "mean_difference": -7.142857142861114e-05,
-      "sd_difference": null,
-      "positive_seeds": 0,
+      "mean_difference": 4.7619047619074095e-05,
+      "sd_difference": 0.0001254244494387612,
+      "positive_seeds": 2,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -453,21 +538,26 @@
       },
       "dimension": "transmitter",
       "stratum": "8-20",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.008857142857142897
+        },
         {
           "seed": 2026092702,
           "difference": 0.003928571428571392
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.008678571428571424
         }
       ],
-      "mean_difference": 0.003928571428571392,
-      "sd_difference": null,
-      "positive_seeds": 1,
+      "mean_difference": 0.0012499999999999734,
+      "sd_difference": 0.009069530172562451,
+      "positive_seeds": 2,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -3789,20 +3879,25 @@
       },
       "dimension": "overall",
       "stratum": "ALL",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.0006309523809523432
+        },
         {
           "seed": 2026092702,
           "difference": -0.013065476190476155
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.007440476190476164
         }
       ],
-      "mean_difference": -0.013065476190476155,
-      "sd_difference": null,
+      "mean_difference": -0.007045634920634887,
+      "sd_difference": 0.006226658037316731,
       "positive_seeds": 0,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
@@ -3815,21 +3910,26 @@
       },
       "dimension": "receiver",
       "stratum": "1-1",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.027708333333333335
+        },
         {
           "seed": 2026092702,
           "difference": 0.0189583333333333
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.007833333333333359
         }
       ],
-      "mean_difference": 0.0189583333333333,
-      "sd_difference": null,
-      "positive_seeds": 1,
+      "mean_difference": -0.0003055555555555589,
+      "sd_difference": 0.024374691356070607,
+      "positive_seeds": 2,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -3841,21 +3941,26 @@
       },
       "dimension": "receiver",
       "stratum": "14-7",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.07041666666666668
+        },
         {
           "seed": 2026092702,
           "difference": 0.008333333333333415
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.021916666666666584
         }
       ],
-      "mean_difference": 0.008333333333333415,
-      "sd_difference": null,
-      "positive_seeds": 1,
+      "mean_difference": 0.03355555555555556,
+      "sd_difference": 0.032637139433019706,
+      "positive_seeds": 3,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -3867,21 +3972,26 @@
       },
       "dimension": "receiver",
       "stratum": "2-1",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.010791666666666755
+        },
         {
           "seed": 2026092702,
           "difference": -0.004750000000000032
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.00012500000000004174
         }
       ],
-      "mean_difference": -0.004750000000000032,
-      "sd_difference": null,
-      "positive_seeds": 0,
+      "mean_difference": 0.0020555555555555882,
+      "sd_difference": 0.007948656129136557,
+      "positive_seeds": 2,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -3893,21 +4003,26 @@
       },
       "dimension": "receiver",
       "stratum": "20-1",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.012333333333333307
+        },
         {
           "seed": 2026092702,
           "difference": -0.02879166666666666
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.010458333333333347
         }
       ],
-      "mean_difference": -0.02879166666666666,
-      "sd_difference": null,
-      "positive_seeds": 0,
+      "mean_difference": -0.008972222222222234,
+      "sd_difference": 0.020602737704633462,
+      "positive_seeds": 1,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -3919,21 +4034,26 @@
       },
       "dimension": "receiver",
       "stratum": "7-14",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 8.333333333343518e-05
+        },
         {
           "seed": 2026092702,
           "difference": -0.006000000000000005
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.016416666666666746
         }
       ],
-      "mean_difference": -0.006000000000000005,
-      "sd_difference": null,
-      "positive_seeds": 0,
+      "mean_difference": -0.007444444444444438,
+      "sd_difference": 0.008344298341671172,
+      "positive_seeds": 1,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -3945,20 +4065,25 @@
       },
       "dimension": "receiver",
       "stratum": "7-7",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.03020833333333328
+        },
         {
           "seed": 2026092702,
           "difference": -0.05870833333333336
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.024208333333333387
         }
       ],
-      "mean_difference": -0.05870833333333336,
-      "sd_difference": null,
+      "mean_difference": -0.037708333333333344,
+      "sd_difference": 0.01843230859116677,
       "positive_seeds": 0,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
@@ -3971,20 +4096,25 @@
       },
       "dimension": "receiver",
       "stratum": "8-8",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.040124999999999966
+        },
         {
           "seed": 2026092702,
           "difference": -0.020499999999999963
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.030874999999999986
         }
       ],
-      "mean_difference": -0.020499999999999963,
-      "sd_difference": null,
+      "mean_difference": -0.03049999999999997,
+      "sd_difference": 0.009817872732929472,
       "positive_seeds": 0,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
@@ -3997,21 +4127,26 @@
       },
       "dimension": "transmitter",
       "stratum": "14-10",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.006678571428571423
+        },
         {
           "seed": 2026092702,
           "difference": 0.0061071428571428665
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.0005714285714286671
         }
       ],
-      "mean_difference": 0.0061071428571428665,
-      "sd_difference": null,
-      "positive_seeds": 1,
+      "mean_difference": 0.004071428571428541,
+      "sd_difference": 0.004030970663475035,
+      "positive_seeds": 2,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -4023,21 +4158,26 @@
       },
       "dimension": "transmitter",
       "stratum": "14-7",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.03567857142857145
+        },
         {
           "seed": 2026092702,
           "difference": -0.033178571428571446
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.019178571428571434
         }
       ],
-      "mean_difference": -0.033178571428571446,
-      "sd_difference": null,
-      "positive_seeds": 0,
+      "mean_difference": 0.007226190476190479,
+      "sd_difference": 0.03595095392942134,
+      "positive_seeds": 2,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -4049,20 +4189,25 @@
       },
       "dimension": "transmitter",
       "stratum": "20-15",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.06896428571428581
+        },
         {
           "seed": 2026092702,
           "difference": -0.027000000000000024
+        },
+        {
+          "seed": 2026092703,
+          "difference": -0.052785714285714325
         }
       ],
-      "mean_difference": -0.027000000000000024,
-      "sd_difference": null,
+      "mean_difference": -0.04958333333333339,
+      "sd_difference": 0.021164634457053154,
       "positive_seeds": 0,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
@@ -4075,46 +4220,25 @@
       },
       "dimension": "transmitter",
       "stratum": "20-19",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.02846428571428572
+        },
         {
           "seed": 2026092702,
           "difference": -0.012285714285714233
-        }
-      ],
-      "mean_difference": -0.012285714285714233,
-      "sd_difference": null,
-      "positive_seeds": 0,
-      "unit": "accuracy fraction; multiply by100 for percentage points",
-      "inferential_significance_claim": false
-    },
-    {
-      "name": "SAM_SSL-P0",
-      "coefficients": {
-        "SAM_SSL": 1,
-        "P0": -1
-      },
-      "dimension": "transmitter",
-      "stratum": "6-15",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
-      "per_seed": [
+        },
         {
-          "seed": 2026092702,
-          "difference": 0.0002142857142857224
+          "seed": 2026092703,
+          "difference": -0.01103571428571426
         }
       ],
-      "mean_difference": 0.0002142857142857224,
-      "sd_difference": null,
+      "mean_difference": 0.0017142857142857422,
+      "sd_difference": 0.02317460895031455,
       "positive_seeds": 1,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
@@ -4126,22 +4250,58 @@
         "P0": -1
       },
       "dimension": "transmitter",
-      "stratum": "8-20",
-      "seed_count": 1,
-      "complete_three_seeds": false,
-      "missing_seeds": [
-        2026092701,
-        2026092703
-      ],
+      "stratum": "6-15",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": 0.00014285714285711126
+        },
+        {
+          "seed": 2026092702,
+          "difference": 0.0002142857142857224
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.0002142857142857224
+        }
+      ],
+      "mean_difference": 0.00019047619047618536,
+      "sd_difference": 4.1239304942139054e-05,
+      "positive_seeds": 3,
+      "unit": "accuracy fraction; multiply by100 for percentage points",
+      "inferential_significance_claim": false
+    },
+    {
+      "name": "SAM_SSL-P0",
+      "coefficients": {
+        "SAM_SSL": 1,
+        "P0": -1
+      },
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "seed_count": 3,
+      "complete_three_seeds": true,
+      "missing_seeds": [],
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "difference": -0.005785714285714283
+        },
         {
           "seed": 2026092702,
           "difference": -0.012249999999999983
+        },
+        {
+          "seed": 2026092703,
+          "difference": 0.0003571428571429447
         }
       ],
-      "mean_difference": -0.012249999999999983,
-      "sd_difference": null,
-      "positive_seeds": 0,
+      "mean_difference": -0.005892857142857107,
+      "sd_difference": 0.006304254313475943,
+      "positive_seeds": 1,
       "unit": "accuracy fraction; multiply by100 for percentage points",
       "inferential_significance_claim": false
     },
@@ -6850,12 +7010,10 @@
   ],
   "scope": "prespecified paired seed accuracy contrasts; source training and selection never consume this output",
   "missing_rows": [
-    "SAM_SSL-s2026092701",
     "SAM_PHYS-s2026092701",
     "SAM_RANK-s2026092701",
     "SAM_PHYS-s2026092702",
     "SAM_RANK-s2026092702",
-    "SAM_SSL-s2026092703",
     "SAM_PHYS-s2026092703",
     "SAM_RANK-s2026092703"
   ]

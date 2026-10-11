@@ -1,14 +1,12 @@
 {
   "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
-  "read_at": 1791732763.876986,
+  "read_at": 1791732905.6543887,
   "queue": {
     "active": [
-      "SAM_SSL-s2026092701",
       "SAM_PHYS-s2026092701",
       "SAM_RANK-s2026092701",
       "SAM_PHYS-s2026092702",
       "SAM_RANK-s2026092702",
-      "SAM_SSL-s2026092703",
       "SAM_PHYS-s2026092703",
       "SAM_RANK-s2026092703"
     ],
@@ -23,11 +21,13 @@
       "RANK-s2026092701",
       "SAM_SSL-s2026092702",
       "RANK-s2026092702",
-      "RANK-s2026092703"
+      "RANK-s2026092703",
+      "SAM_SSL-s2026092701",
+      "SAM_SSL-s2026092703"
     ],
     "failures": [],
     "max_total_processes_per_GPU": 3,
-    "updated_at": 1791732762.792135
+    "updated_at": 1791732903.9619486
   },
   "failure": null,
   "completion": null,
@@ -3081,21 +3081,7 @@
     },
     {
       "row_id": "SAM_SSL-s2026092701",
-      "process": {
-        "pid": 54306,
-        "start_ticks": 97929980,
-        "state": "R",
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_stage2_rx_sam.dispatch",
-          "--worker",
-          "SAM_SSL-s2026092701"
-        ],
-        "gpu": "7"
-      },
+      "process": null,
       "launch": {
         "row_id": "SAM_SSL-s2026092701",
         "pid": 54306,
@@ -3111,7 +3097,3034 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SAM_SSL-s2026092701.log"
       },
-      "completion": null
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "SAM_SSL-s2026092701"
+      },
+      "artifacts": {
+        "scores.json": {
+          "status": "SCORED",
+          "results": [
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "overall",
+              "stratum": "ALL",
+              "accuracy": 0.8086488095238096,
+              "macro_f1": 0.8052839227356756,
+              "macro_accuracy": 0.8086488095238096,
+              "query_count": 168000,
+              "confusion": [
+                [
+                  27343,
+                  71,
+                  103,
+                  464,
+                  14,
+                  5
+                ],
+                [
+                  489,
+                  13185,
+                  46,
+                  14197,
+                  76,
+                  7
+                ],
+                [
+                  1415,
+                  762,
+                  20883,
+                  1691,
+                  196,
+                  3053
+                ],
+                [
+                  2850,
+                  5765,
+                  77,
+                  19270,
+                  21,
+                  17
+                ],
+                [
+                  7,
+                  14,
+                  16,
+                  13,
+                  27944,
+                  6
+                ],
+                [
+                  14,
+                  28,
+                  475,
+                  13,
+                  242,
+                  27228
+                ]
+              ],
+              "NLL": 1.052809476852417,
+              "parent_fix_count": 4433,
+              "parent_break_count": 4539,
+              "net_correct_gain": -106
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "1-1",
+              "accuracy": 0.8086666666666666,
+              "macro_f1": 0.7926915333382177,
+              "macro_accuracy": 0.8086666666666668,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3999,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  47,
+                  1296,
+                  3,
+                  2653,
+                  1,
+                  0
+                ],
+                [
+                  746,
+                  0,
+                  2778,
+                  2,
+                  1,
+                  473
+                ],
+                [
+                  116,
+                  75,
+                  0,
+                  3809,
+                  0,
+                  0
+                ],
+                [
+                  3,
+                  6,
+                  3,
+                  2,
+                  3986,
+                  0
+                ],
+                [
+                  4,
+                  0,
+                  449,
+                  6,
+                  1,
+                  3540
+                ]
+              ],
+              "NLL": 1.2780450582504272,
+              "parent_fix_count": 194,
+              "parent_break_count": 859,
+              "net_correct_gain": -665
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "14-7",
+              "accuracy": 0.7497916666666666,
+              "macro_f1": 0.7416020493413683,
+              "macro_accuracy": 0.7497916666666667,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3951,
+                  0,
+                  0,
+                  49,
+                  0,
+                  0
+                ],
+                [
+                  20,
+                  2183,
+                  0,
+                  1795,
+                  2,
+                  0
+                ],
+                [
+                  22,
+                  3,
+                  3053,
+                  1,
+                  2,
+                  919
+                ],
+                [
+                  87,
+                  3030,
+                  56,
+                  818,
+                  1,
+                  8
+                ],
+                [
+                  1,
+                  1,
+                  4,
+                  1,
+                  3993,
+                  0
+                ],
+                [
+                  0,
+                  2,
+                  0,
+                  1,
+                  0,
+                  3997
+                ]
+              ],
+              "NLL": 1.051709532737732,
+              "parent_fix_count": 2228,
+              "parent_break_count": 538,
+              "net_correct_gain": 1690
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "2-1",
+              "accuracy": 0.8946666666666667,
+              "macro_f1": 0.8930782733720104,
+              "macro_accuracy": 0.8946666666666667,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3802,
+                  52,
+                  91,
+                  44,
+                  9,
+                  2
+                ],
+                [
+                  1,
+                  2312,
+                  19,
+                  1639,
+                  24,
+                  5
+                ],
+                [
+                  29,
+                  7,
+                  3913,
+                  40,
+                  6,
+                  5
+                ],
+                [
+                  20,
+                  512,
+                  0,
+                  3464,
+                  2,
+                  2
+                ],
+                [
+                  0,
+                  0,
+                  2,
+                  3,
+                  3995,
+                  0
+                ],
+                [
+                  0,
+                  5,
+                  6,
+                  0,
+                  3,
+                  3986
+                ]
+              ],
+              "NLL": 0.5725187063217163,
+              "parent_fix_count": 446,
+              "parent_break_count": 187,
+              "net_correct_gain": 259
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "20-1",
+              "accuracy": 0.7594166666666666,
+              "macro_f1": 0.764740054568167,
+              "macro_accuracy": 0.7594166666666666,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3983,
+                  3,
+                  6,
+                  3,
+                  3,
+                  2
+                ],
+                [
+                  16,
+                  1565,
+                  1,
+                  2410,
+                  6,
+                  2
+                ],
+                [
+                  72,
+                  570,
+                  2989,
+                  163,
+                  152,
+                  54
+                ],
+                [
+                  17,
+                  1964,
+                  2,
+                  1997,
+                  17,
+                  3
+                ],
+                [
+                  3,
+                  6,
+                  7,
+                  7,
+                  3973,
+                  4
+                ],
+                [
+                  8,
+                  17,
+                  17,
+                  3,
+                  236,
+                  3719
+                ]
+              ],
+              "NLL": 1.4790276288986206,
+              "parent_fix_count": 665,
+              "parent_break_count": 369,
+              "net_correct_gain": 296
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "7-14",
+              "accuracy": 0.8655,
+              "macro_f1": 0.8552827710729178,
+              "macro_accuracy": 0.8655,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3644,
+                  0,
+                  5,
+                  349,
+                  1,
+                  1
+                ],
+                [
+                  3,
+                  1310,
+                  0,
+                  2685,
+                  2,
+                  0
+                ],
+                [
+                  2,
+                  10,
+                  3864,
+                  85,
+                  33,
+                  6
+                ],
+                [
+                  0,
+                  35,
+                  0,
+                  3964,
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  3999,
+                  1
+                ],
+                [
+                  2,
+                  4,
+                  1,
+                  1,
+                  1,
+                  3991
+                ]
+              ],
+              "NLL": 0.7479308247566223,
+              "parent_fix_count": 220,
+              "parent_break_count": 218,
+              "net_correct_gain": 2
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "7-7",
+              "accuracy": 0.7984166666666667,
+              "macro_f1": 0.7917224485337632,
+              "macro_accuracy": 0.7984166666666667,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  4000,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  402,
+                  2474,
+                  23,
+                  1064,
+                  37,
+                  0
+                ],
+                [
+                  537,
+                  2,
+                  3450,
+                  10,
+                  1,
+                  0
+                ],
+                [
+                  2610,
+                  126,
+                  19,
+                  1241,
+                  0,
+                  4
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  4000,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  2,
+                  1,
+                  3997
+                ]
+              ],
+              "NLL": 1.1281013488769531,
+              "parent_fix_count": 440,
+              "parent_break_count": 1165,
+              "net_correct_gain": -725
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "8-8",
+              "accuracy": 0.7840833333333334,
+              "macro_f1": 0.7546767628758668,
+              "macro_accuracy": 0.7840833333333334,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3964,
+                  15,
+                  1,
+                  19,
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  2045,
+                  0,
+                  1951,
+                  4,
+                  0
+                ],
+                [
+                  7,
+                  170,
+                  836,
+                  1390,
+                  1,
+                  1596
+                ],
+                [
+                  0,
+                  23,
+                  0,
+                  3977,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1,
+                  0,
+                  0,
+                  3998,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  2,
+                  0,
+                  0,
+                  3998
+                ]
+              ],
+              "NLL": 1.112332820892334,
+              "parent_fix_count": 240,
+              "parent_break_count": 1203,
+              "net_correct_gain": -963
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "14-10",
+              "accuracy": 0.9765357142857143,
+              "macro_f1": 0.16468809665781278,
+              "macro_accuracy": 0.9765357142857143,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  27343,
+                  71,
+                  103,
+                  464,
+                  14,
+                  5
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 0.10199567675590515,
+              "parent_fix_count": 331,
+              "parent_break_count": 144,
+              "net_correct_gain": 187
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "14-7",
+              "accuracy": 0.47089285714285717,
+              "macro_f1": 0.10671360932378293,
+              "macro_accuracy": 0.47089285714285717,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  489,
+                  13185,
+                  46,
+                  14197,
+                  76,
+                  7
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 3.2253811359405518,
+              "parent_fix_count": 2050,
+              "parent_break_count": 1051,
+              "net_correct_gain": 999
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "20-15",
+              "accuracy": 0.7458214285714285,
+              "macro_f1": 0.14240124378618332,
+              "macro_accuracy": 0.7458214285714285,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  1415,
+                  762,
+                  20883,
+                  1691,
+                  196,
+                  3053
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 0.9916626214981079,
+              "parent_fix_count": 675,
+              "parent_break_count": 2606,
+              "net_correct_gain": -1931
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "20-19",
+              "accuracy": 0.6882142857142857,
+              "macro_f1": 0.1358860447077075,
+              "macro_accuracy": 0.6882142857142857,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  2850,
+                  5765,
+                  77,
+                  19270,
+                  21,
+                  17
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 1.8928974866867065,
+              "parent_fix_count": 1243,
+              "parent_break_count": 446,
+              "net_correct_gain": 797
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "6-15",
+              "accuracy": 0.998,
+              "macro_f1": 0.16649983316649983,
+              "macro_accuracy": 0.998,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  7,
+                  14,
+                  16,
+                  13,
+                  27944,
+                  6
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 0.011033076792955399,
+              "parent_fix_count": 13,
+              "parent_break_count": 9,
+              "net_correct_gain": 4
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "8-20",
+              "accuracy": 0.9724285714285714,
+              "macro_f1": 0.16433693054247847,
+              "macro_accuracy": 0.9724285714285714,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  14,
+                  28,
+                  475,
+                  13,
+                  242,
+                  27228
+                ]
+              ],
+              "NLL": 0.09388615936040878,
+              "parent_fix_count": 121,
+              "parent_break_count": 283,
+              "net_correct_gain": -162
+            }
+          ],
+          "target_feedback_forbidden": true
+        },
+        "day_scores.json": {
+          "results": [
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "day",
+              "stratum": "2021_03_01",
+              "accuracy": 0.7955476190476191,
+              "macro_f1": 0.7898247479514948,
+              "macro_accuracy": 0.7955476190476191,
+              "query_count": 42000,
+              "confusion": [
+                [
+                  6534,
+                  7,
+                  75,
+                  377,
+                  5,
+                  2
+                ],
+                [
+                  216,
+                  3003,
+                  31,
+                  3712,
+                  36,
+                  2
+                ],
+                [
+                  117,
+                  18,
+                  4725,
+                  562,
+                  19,
+                  1559
+                ],
+                [
+                  859,
+                  887,
+                  14,
+                  5231,
+                  7,
+                  2
+                ],
+                [
+                  1,
+                  3,
+                  5,
+                  2,
+                  6987,
+                  2
+                ],
+                [
+                  3,
+                  5,
+                  8,
+                  2,
+                  49,
+                  6933
+                ]
+              ],
+              "NLL": 1.1428850889205933,
+              "parent_fix_count": 1593,
+              "parent_break_count": 1629,
+              "net_correct_gain": -36
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "day",
+              "stratum": "2021_03_08",
+              "accuracy": 0.8287619047619048,
+              "macro_f1": 0.8262906772506552,
+              "macro_accuracy": 0.8287619047619049,
+              "query_count": 42000,
+              "confusion": [
+                [
+                  6926,
+                  28,
+                  20,
+                  18,
+                  6,
+                  2
+                ],
+                [
+                  55,
+                  3737,
+                  4,
+                  3202,
+                  1,
+                  1
+                ],
+                [
+                  207,
+                  89,
+                  6010,
+                  185,
+                  18,
+                  491
+                ],
+                [
+                  789,
+                  2012,
+                  15,
+                  4171,
+                  4,
+                  9
+                ],
+                [
+                  2,
+                  3,
+                  6,
+                  4,
+                  6983,
+                  2
+                ],
+                [
+                  5,
+                  1,
+                  6,
+                  2,
+                  5,
+                  6981
+                ]
+              ],
+              "NLL": 0.9130262136459351,
+              "parent_fix_count": 682,
+              "parent_break_count": 718,
+              "net_correct_gain": -36
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "day",
+              "stratum": "2021_03_15",
+              "accuracy": 0.7569047619047619,
+              "macro_f1": 0.7545014819777043,
+              "macro_accuracy": 0.7569047619047619,
+              "query_count": 42000,
+              "confusion": [
+                [
+                  6950,
+                  12,
+                  6,
+                  31,
+                  1,
+                  0
+                ],
+                [
+                  94,
+                  2754,
+                  2,
+                  4137,
+                  11,
+                  2
+                ],
+                [
+                  1061,
+                  288,
+                  4647,
+                  868,
+                  41,
+                  95
+                ],
+                [
+                  908,
+                  1968,
+                  6,
+                  4109,
+                  9,
+                  0
+                ],
+                [
+                  1,
+                  6,
+                  5,
+                  7,
+                  6979,
+                  2
+                ],
+                [
+                  1,
+                  16,
+                  451,
+                  3,
+                  178,
+                  6351
+                ]
+              ],
+              "NLL": 1.2927820682525635,
+              "parent_fix_count": 643,
+              "parent_break_count": 1466,
+              "net_correct_gain": -823
+            },
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "day",
+              "stratum": "2021_03_23",
+              "accuracy": 0.8533809523809524,
+              "macro_f1": 0.8496939986418305,
+              "macro_accuracy": 0.8533809523809524,
+              "query_count": 42000,
+              "confusion": [
+                [
+                  6933,
+                  24,
+                  2,
+                  38,
+                  2,
+                  1
+                ],
+                [
+                  124,
+                  3691,
+                  9,
+                  3146,
+                  28,
+                  2
+                ],
+                [
+                  30,
+                  367,
+                  5501,
+                  76,
+                  118,
+                  908
+                ],
+                [
+                  294,
+                  898,
+                  42,
+                  5759,
+                  1,
+                  6
+                ],
+                [
+                  3,
+                  2,
+                  0,
+                  0,
+                  6995,
+                  0
+                ],
+                [
+                  5,
+                  6,
+                  10,
+                  6,
+                  10,
+                  6963
+                ]
+              ],
+              "NLL": 0.8625441789627075,
+              "parent_fix_count": 1515,
+              "parent_break_count": 726,
+              "net_correct_gain": 789
+            }
+          ]
+        },
+        "parent_scores.json": {
+          "results": [
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "overall",
+              "stratum": "ALL",
+              "accuracy": 0.8092797619047619,
+              "macro_f1": 0.8041020191994495,
+              "macro_accuracy": 0.8092797619047619,
+              "query_count": 168000,
+              "confusion": [
+                [
+                  27156,
+                  165,
+                  123,
+                  528,
+                  23,
+                  5
+                ],
+                [
+                  706,
+                  12186,
+                  64,
+                  14983,
+                  45,
+                  16
+                ],
+                [
+                  840,
+                  754,
+                  22814,
+                  376,
+                  529,
+                  2687
+                ],
+                [
+                  3334,
+                  5774,
+                  348,
+                  18473,
+                  19,
+                  52
+                ],
+                [
+                  9,
+                  20,
+                  16,
+                  11,
+                  27940,
+                  4
+                ],
+                [
+                  18,
+                  19,
+                  263,
+                  15,
+                  295,
+                  27390
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "1-1",
+              "accuracy": 0.836375,
+              "macro_f1": 0.8225827822199737,
+              "macro_accuracy": 0.836375,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3993,
+                  5,
+                  1,
+                  0,
+                  1,
+                  0
+                ],
+                [
+                  93,
+                  1344,
+                  3,
+                  2560,
+                  0,
+                  0
+                ],
+                [
+                  492,
+                  1,
+                  3229,
+                  2,
+                  1,
+                  275
+                ],
+                [
+                  98,
+                  133,
+                  0,
+                  3769,
+                  0,
+                  0
+                ],
+                [
+                  5,
+                  3,
+                  2,
+                  5,
+                  3985,
+                  0
+                ],
+                [
+                  4,
+                  0,
+                  236,
+                  6,
+                  1,
+                  3753
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "14-7",
+              "accuracy": 0.679375,
+              "macro_f1": 0.6639716262585491,
+              "macro_accuracy": 0.679375,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3987,
+                  0,
+                  0,
+                  13,
+                  0,
+                  0
+                ],
+                [
+                  13,
+                  849,
+                  2,
+                  3134,
+                  2,
+                  0
+                ],
+                [
+                  10,
+                  3,
+                  3213,
+                  0,
+                  2,
+                  772
+                ],
+                [
+                  540,
+                  2830,
+                  314,
+                  272,
+                  3,
+                  41
+                ],
+                [
+                  0,
+                  2,
+                  5,
+                  0,
+                  3993,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  6,
+                  1,
+                  1,
+                  3991
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "2-1",
+              "accuracy": 0.883875,
+              "macro_f1": 0.8831017062310829,
+              "macro_accuracy": 0.8838749999999999,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3717,
+                  118,
+                  80,
+                  71,
+                  12,
+                  2
+                ],
+                [
+                  22,
+                  2351,
+                  8,
+                  1597,
+                  16,
+                  6
+                ],
+                [
+                  134,
+                  5,
+                  3781,
+                  60,
+                  16,
+                  4
+                ],
+                [
+                  27,
+                  580,
+                  2,
+                  3386,
+                  3,
+                  2
+                ],
+                [
+                  1,
+                  1,
+                  1,
+                  1,
+                  3996,
+                  0
+                ],
+                [
+                  1,
+                  6,
+                  8,
+                  1,
+                  2,
+                  3982
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "20-1",
+              "accuracy": 0.7470833333333333,
+              "macro_f1": 0.7525486996151933,
+              "macro_accuracy": 0.7470833333333333,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3971,
+                  3,
+                  7,
+                  9,
+                  8,
+                  2
+                ],
+                [
+                  25,
+                  1390,
+                  21,
+                  2547,
+                  15,
+                  2
+                ],
+                [
+                  28,
+                  708,
+                  3005,
+                  57,
+                  140,
+                  62
+                ],
+                [
+                  47,
+                  2014,
+                  8,
+                  1918,
+                  12,
+                  1
+                ],
+                [
+                  3,
+                  13,
+                  8,
+                  5,
+                  3969,
+                  2
+                ],
+                [
+                  11,
+                  9,
+                  10,
+                  5,
+                  288,
+                  3677
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "7-14",
+              "accuracy": 0.8654166666666666,
+              "macro_f1": 0.8561972190671704,
+              "macro_accuracy": 0.8654166666666665,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3663,
+                  0,
+                  34,
+                  301,
+                  1,
+                  1
+                ],
+                [
+                  9,
+                  1416,
+                  1,
+                  2570,
+                  4,
+                  0
+                ],
+                [
+                  15,
+                  25,
+                  3755,
+                  64,
+                  123,
+                  18
+                ],
+                [
+                  5,
+                  50,
+                  0,
+                  3944,
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  3999,
+                  1
+                ],
+                [
+                  1,
+                  4,
+                  1,
+                  0,
+                  1,
+                  3993
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "7-7",
+              "accuracy": 0.828625,
+              "macro_f1": 0.8172898487080337,
+              "macro_accuracy": 0.8286250000000001,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3996,
+                  3,
+                  0,
+                  1,
+                  0,
+                  0
+                ],
+                [
+                  543,
+                  2745,
+                  29,
+                  676,
+                  4,
+                  3
+                ],
+                [
+                  46,
+                  1,
+                  3938,
+                  14,
+                  1,
+                  0
+                ],
+                [
+                  2615,
+                  141,
+                  24,
+                  1212,
+                  1,
+                  7
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  4000,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  2,
+                  2,
+                  3996
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "8-8",
+              "accuracy": 0.8242083333333333,
+              "macro_f1": 0.8116608095543668,
+              "macro_accuracy": 0.8242083333333334,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3829,
+                  36,
+                  1,
+                  133,
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  2091,
+                  0,
+                  1899,
+                  4,
+                  5
+                ],
+                [
+                  115,
+                  11,
+                  1893,
+                  179,
+                  246,
+                  1556
+                ],
+                [
+                  2,
+                  26,
+                  0,
+                  3972,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1,
+                  0,
+                  0,
+                  3998,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  2,
+                  0,
+                  0,
+                  3998
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "14-10",
+              "accuracy": 0.9698571428571429,
+              "macro_f1": 0.16411632460657047,
+              "macro_accuracy": 0.9698571428571429,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  27156,
+                  165,
+                  123,
+                  528,
+                  23,
+                  5
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "14-7",
+              "accuracy": 0.4352142857142857,
+              "macro_f1": 0.1010799781018265,
+              "macro_accuracy": 0.4352142857142857,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  706,
+                  12186,
+                  64,
+                  14983,
+                  45,
+                  16
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "20-15",
+              "accuracy": 0.8147857142857143,
+              "macro_f1": 0.14965691869694703,
+              "macro_accuracy": 0.8147857142857143,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  840,
+                  754,
+                  22814,
+                  376,
+                  529,
+                  2687
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "20-19",
+              "accuracy": 0.65975,
+              "macro_f1": 0.1324998744790882,
+              "macro_accuracy": 0.65975,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  3334,
+                  5774,
+                  348,
+                  18473,
+                  19,
+                  52
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "6-15",
+              "accuracy": 0.9978571428571429,
+              "macro_f1": 0.16648790370635205,
+              "macro_accuracy": 0.9978571428571429,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  9,
+                  20,
+                  16,
+                  11,
+                  27940,
+                  4
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092701",
+              "arm": "P0",
+              "model_seed": 2026092701,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "8-20",
+              "accuracy": 0.9782142857142857,
+              "macro_f1": 0.16483119696696155,
+              "macro_accuracy": 0.9782142857142857,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  18,
+                  19,
+                  263,
+                  15,
+                  295,
+                  27390
+                ]
+              ]
+            }
+          ],
+          "source": "Reused fixed clean predictions only"
+        },
+        "paired_results.json": {
+          "comparisons": [
+            {
+              "treatment": "SAM_SSL",
+              "control": "P0",
+              "metric": "accuracy",
+              "view": "clean",
+              "seeds": [
+                2026092701
+              ],
+              "seed_count": 1,
+              "differences": [
+                -0.0006309523809523432
+              ],
+              "mean_difference": -0.0006309523809523432,
+              "sd_difference": null,
+              "positive_seeds": 0,
+              "complete_three_seeds": false
+            }
+          ],
+          "inferential_significance_claim": false
+        },
+        "resources.json": {
+          "rows": [
+            {
+              "row_id": "SAM_SSL-s2026092701",
+              "prediction": {
+                "status": "PREDICTIONS_COMPLETE",
+                "count": 168000,
+                "views": [
+                  "clean"
+                ],
+                "truth_read": false,
+                "query_fit": false,
+                "inference_seconds": {
+                  "clean": 5.089244537986815
+                },
+                "wall_seconds": 6.349722257000394,
+                "peak_cuda_allocated_bytes": 91523584,
+                "peak_cuda_reserved_bytes": 130023424,
+                "peak_process_rss_bytes": 1724473344
+              },
+              "source": {
+                "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+                "parent_epochs": 200,
+                "incremental_epochs": 40,
+                "incremental_identity_updates": 8880,
+                "hardware": "NVIDIA GeForce RTX 3090",
+                "measured_training_resources": {
+                  "identity_training_and_source_diagnostics_seconds": 1190.2525410529925,
+                  "peak_cuda_memory_bytes": 333551616,
+                  "trainable_parameters": 177025,
+                  "total_parameters": 844754,
+                  "auxiliary_trainable_parameters": 0,
+                  "teacher_parameters": 0,
+                  "conditional_snapshot_parameters": 0,
+                  "main_L_packets": 1136640,
+                  "U_identity_packets": 1022976,
+                  "parent_training_epochs": 200,
+                  "incremental_epochs": 40,
+                  "optimizer_state_tensor_bytes": 1416468,
+                  "auxiliary_optimizer_state_tensor_bytes": 0,
+                  "checkpoint_bytes": 4947782,
+                  "auxiliary_saved_bytes": 522902,
+                  "conditional_snapshot_saved_bytes": 0,
+                  "frequency_master_and_moment_dtype": null,
+                  "physical_L_packets": 0,
+                  "physical_U_packets": 0,
+                  "RX_L_packets": 0,
+                  "RX_U_packets": 0,
+                  "critic_packets": 0,
+                  "risk_initialization": null,
+                  "critic_target_identity_packets": 0,
+                  "action_state_identity_packets": 0,
+                  "teacher_identity_packets": 1022976,
+                  "teacher_probability_method_batch_calls": 8850,
+                  "teacher_diagnostic_packets": 218700,
+                  "conditional_fit_snapshot_count": 0
+                },
+                "shared_IQ_preparation_reused": true,
+                "source_only_pretrained_auxiliary_reused": false,
+                "training_flops": null,
+                "scope": "Shared GPU measured wall cost; source diagnostic pretraining cost referenced separately"
+              }
+            }
+          ],
+          "shared_preparation_counted_once_per_seed": true
+        },
+        "scoring_complete.json": {
+          "status": "SCORED_COMPLETE",
+          "models": 1,
+          "views": 1,
+          "query_count_per_view": 168000,
+          "prediction_count": 168000,
+          "metric_records": 14,
+          "day_metric_records": 4,
+          "truth_last": true,
+          "independent_recount": "VERIFIED"
+        }
+      },
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 40,
+        "optimizer_steps": 8880,
+        "logged_steps": 8880,
+        "config": {
+          "schema": "stage2_rx_sam_v1",
+          "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
+          "arm": "SAM_SSL",
+          "model_seed": 2026092701,
+          "row_id": "SAM_SSL-s2026092701",
+          "method": "cvs_stage2_rx_sam",
+          "variant": "reference_response",
+          "method_name": "SAM_SSL",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+          "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
+          "checkpoint_sources": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth"
+          ],
+          "parent_contract": {
+            "schema": "stage2_decouple_v1",
+            "run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
+            "stage": "stage2_decouple",
+            "arm": "C0",
+            "model_seed": 2026092701,
+            "row_id": "C0-s2026092701",
+            "method": "cvs_stage2_decouple",
+            "variant": "reference_response",
+            "features": [],
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C0-s2026092701/source",
+            "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+            "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
+            "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092701",
+            "model_initialization": "strict_matched_pure_CE_parent_fresh_optimizer",
+            "checkpoint_sources": [
+              "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth"
+            ],
+            "epochs": 40,
+            "steps_per_epoch": 222,
+            "batch_size": 128,
+            "updates": 8880,
+            "label_smoothing": 0.0,
+            "optimizer": {
+              "name": "AdamW",
+              "weight_decay": 0.0001,
+              "encoder_peak_lr": 3e-05,
+              "fusion_head_peak_lr": 0.0001,
+              "min_lr": 1e-06,
+              "warmup_steps": 444
+            },
+            "losses": {
+              "keep": 0.1,
+              "aug_ce": 0.25,
+              "drop": 0.1,
+              "receiver": 0.1,
+              "delta_keep": 0.5,
+              "delta_drop": 0.5,
+              "huber_delta": 1.0
+            },
+            "schedule": {
+              "action_every": 4,
+              "receiver_every": 8,
+              "relation_batch": 32,
+              "action_batch": 32,
+              "action_order": [
+                "linear",
+                "linear",
+                "temporal",
+                "temporal"
+              ]
+            },
+            "enabled": {
+              "keep": false,
+              "actions": false,
+              "receiver": false
+            },
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "target_access": false,
+            "test_views": [
+              "clean"
+            ],
+            "checkpoint_selection": "final_only",
+            "sampling": "shared seed-private source-L stream; 96 ordinary + 2x2x8 relation slots every8; no difficulty sampling",
+            "auxiliary": {
+              "action_passes": 2,
+              "action_fit_batch": 128,
+              "action_fit_lr": 0.0002,
+              "action_fit_wd": 0.0001,
+              "receiver_fit_steps": 200,
+              "receiver_fit_lr": 0.002,
+              "receiver_fit_wd": 0.0,
+              "fractional_delay_samples": 0.25
+            },
+            "evaluation": {
+              "primary_arm": "C3",
+              "goal_three_seed_mean": 0.84,
+              "truth_last": true,
+              "feedback_to_training": false
+            },
+            "concurrency": {
+              "max_processes_per_gpu": 4,
+              "includes_existing": true
+            },
+            "launch_owner": "codex/root/stage2-decouple-20261011"
+          },
+          "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/SAM_SSL-s2026092701/source",
+          "epochs": 40,
+          "steps_per_epoch": 222,
+          "updates": 8880,
+          "batch_size": 128,
+          "label_smoothing": 0.0,
+          "optimizer": {
+            "name": "AdamW",
+            "weight_decay": 0.0001,
+            "encoder_peak_lr": 0.0001,
+            "fusion_head_peak_lr": 0.0003,
+            "min_lr": 1e-06,
+            "warmup_steps": 444,
+            "frequency": {
+              "peak_lr": 3e-06,
+              "coordinate": "u=f/fs",
+              "master_dtype": "float64",
+              "weight_decay": 0.0,
+              "step_cap": "actual scheduled LR",
+              "raw_parameter_floor_Hz": 1.0
+            }
+          },
+          "enabled": {
+            "contrastive": false,
+            "cross_rx_mix": false,
+            "manifold_mix": false,
+            "sam": false,
+            "averaging": false,
+            "actions": false,
+            "conditional_actions": false,
+            "linear": false,
+            "repetition": false,
+            "condition": false,
+            "nonlinear": false,
+            "frequency": false
+          },
+          "losses": {
+            "ce": 1.0,
+            "soft_identity": 0.25,
+            "linear": 0.05,
+            "linear_identity": 0.1,
+            "repetition": 0.05,
+            "critic": 1.0
+          },
+          "mixing": {
+            "beta": 0.4,
+            "cross_rx_lambda": "Uniform[.25,.75]",
+            "normalized_joint": true,
+            "head_scale": 30.0
+          },
+          "sam": {
+            "enabled": true,
+            "base_recipe": "SSL",
+            "rho": 0.05,
+            "norm": "absolute L2 of trainable dense identity parameters; native Hz parameters excluded",
+            "start_update": 1,
+            "identity_gradient_passes": 17760,
+            "optimizer_steps": 8880,
+            "base_optimizer": "unchanged AdamW",
+            "target_and_actions": "computed once at unperturbed weights; detached q,mask,IQ,noise reused",
+            "dropout": "replay each differentiable forward RNG; global RNG restored to first-pass end",
+            "buffers": "replay from first-pass start; preserve first-pass end buffers",
+            "auxiliary": "one unperturbed objective and update, never SAM-perturbed",
+            "restore": "exact saved parameter copies in finally before optimizer step, including exceptions",
+            "reference": "https://github.com/google-research/sam",
+            "rho_rationale": "fixed initial .05, follows published example scale; no sourceV or target fitting; not claimed optimal"
+          },
+          "averaging": {
+            "start_epoch": 31,
+            "cycle_epochs": 2,
+            "cycle_peak_fraction": 0.5,
+            "snapshot_epochs": [
+              32,
+              34,
+              36,
+              38,
+              40
+            ],
+            "buffers": "fixed final buffers; BatchNorm architecture forbidden",
+            "selection": "fixed five-snapshot mean; no V choice"
+          },
+          "checkpoint_selection": "final_only",
+          "action": {
+            "policy": "coverage",
+            "payload": null,
+            "fit": "fresh original E200, same-scale tanh coordinates, abs noise, first full pass raw margin then full pass finite risk",
+            "every_steps": 4,
+            "batch": 32,
+            "order": [
+              "linear",
+              "linear",
+              "temporal",
+              "temporal"
+            ],
+            "coverage_fraction": 0.5
+          },
+          "sampling": {
+            "L": "RX/day balanced full permutation",
+            "U": "RX/day balanced full permutation",
+            "batch_L": 128,
+            "batch_U": 128,
+            "TX_grouping_or_same_sig_pairing": false
+          },
+          "target_access": false,
+          "unlabeled": true,
+          "teacher": false,
+          "satellite": false,
+          "test_views": [
+            "clean"
+          ],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "concurrency": {
+            "max_processes_per_gpu": 3,
+            "includes_existing": true,
+            "gpu_ids": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "evaluation": {
+            "primary_arm": "SAM_RANK",
+            "goal_three_seed_mean": 0.84,
+            "all_predeclared_arms_reported": true,
+            "truth_last": true,
+            "feedback_to_training": false,
+            "fixed_control_run": null,
+            "fixed_control_arms": [],
+            "control_role": "three paired recipes x two optimizers, all same E200 parents/final40; equal optimizer update counts, SAM doubles gradient passes, measured cost reported"
+          },
+          "launch_owner": "codex/root/stage2-rx-sam-20261011",
+          "semi": {
+            "cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/source_unlabeled/source_cache.pt",
+            "batch_size": 128,
+            "role": "U_s",
+            "count": 56700,
+            "mode": "soft_KL",
+            "ema_decay": null,
+            "L_readapt_updates": 888,
+            "ramp_steps": 888,
+            "confidence_threshold": 0.95,
+            "strong_noise_std": 0.015,
+            "truth_access": false,
+            "teacher_selected_for_test": false,
+            "teacher_init": "after update888: cloned EMA or live stop-gradient student according to target_provider",
+            "identity_denominator": "fixed B_U",
+            "statistics_mask": "separate physical quality, all soft assignments",
+            "conditional_refresh_epochs": [
+              4,
+              12,
+              20,
+              28,
+              36
+            ],
+            "conditional_mix": 0.5,
+            "U_mean_alpha_cap": 0.2,
+            "target_provider": "current_student"
+          },
+          "optimization_scope": "all native identity encoder/fusion/classifier parameters; no frozen identity layers; domain networks frozen",
+          "physical": {
+            "every_steps": 4,
+            "max_L": 32,
+            "max_U": 32,
+            "linear_side_tap_scale": 0.015,
+            "action_targets": "four actual applied tap components / scale",
+            "linear_readout_input": "paired pre-classifier identity160 + PA160 + reference29",
+            "repetition_target": "leave-cycle relative template residual24 + learned diagonal uncertainty",
+            "strict_blindspot": false,
+            "known_linear_scope": "small circular digital filter; interior-only diagnostic required",
+            "old_aux_caches_reused": false
+          },
+          "frontend": {
+            "version": "original_reference_response_v1",
+            "reference_dim": 29,
+            "zero_slot": null,
+            "state_dim": 40,
+            "explicit_frequency_estimator": "inherited original baseline reference response",
+            "raw_IQ_retained": true,
+            "whole_model_frequency_invariant": false
+          },
+          "stage": "phase1_stage2_rx_sam",
+          "reference_mode": "original",
+          "mechanism_scope": "Test robustness to a dense identity weight neighborhood while preserving unlabeled targets and source physical actions. No EMA or satellite. V health only; no source or target accuracy-based selection.",
+          "rx_action": {
+            "enabled": false,
+            "critic": false,
+            "kind": "physical",
+            "taps": 33,
+            "scales": [
+              0.5,
+              1.0
+            ],
+            "max_amplitude_dB": 3.0,
+            "start_after_updates": 888,
+            "ramp_updates": 888,
+            "L_augmented_CE_fraction": 0.5,
+            "critic_every": 4,
+            "critic_batch": 32,
+            "critic_lr": 0.001,
+            "critic_hidden": 48,
+            "critic_uniform_warmup_updates": 0,
+            "critic_uniform_probability": 0.5,
+            "critic_temperature": 1.0,
+            "L_fit": "other five TX AND other two days",
+            "U_fit": "all six L TX, other two days; U TX never read",
+            "critic_fit": "margin(clean)-margin(action); SmoothL1 or all28 pair logistic abs margin difference>.01",
+            "action_selection": "standardized pretrained current-state risk for8candidates; no class labels in risk input; uniform PHYS control"
+          },
+          "risk_learning": {
+            "enabled": false,
+            "online": false,
+            "kind": null,
+            "source_run": null,
+            "source_config": null,
+            "checkpoint": null,
+            "pretrained_steps": 0,
+            "pretrained_identity_updates": 0,
+            "state_dim": 206,
+            "online_lr": 0.001,
+            "online_steps": 0,
+            "online_batch": 32,
+            "all_candidates": 8,
+            "policy": "half uniform plus half softmax(within-packet standardized risk), temperature1, std floor1e-6",
+            "normalization": "reuse fixed L-only E200 mean/std, never V/U fit",
+            "target": "margin(clean)-margin(action); SmoothL1 or all28 pair logistic abs margin difference>.01",
+            "identity_gradient_from_auxiliary": false,
+            "source_execution_commit": null
+          }
+        },
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/SAM_SSL-s2026092701/source/final_ssdg.pth",
+        "checkpoint_selection": "final_only",
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "V_count": 27000,
+          "V_accuracy": 0.9859259259259259,
+          "V_NLL": 0.07400029764374186,
+          "V_RX_accuracy": {
+            "1": 0.9961111111111111,
+            "3": 0.9612962962962963,
+            "4": 0.9874074074074074,
+            "6": 0.9972222222222222,
+            "8": 0.9875925925925926
+          },
+          "V_day_accuracy": {
+            "1": 0.9871111111111112,
+            "2": 0.9876666666666667,
+            "3": 0.983
+          },
+          "V_worst_RX": 0.9612962962962963,
+          "source_selection_score": 0.9736111111111111
+        },
+        "mechanism_execution": {
+          "identity_gradient_passes": 17760,
+          "RX_L_packets": 0,
+          "RX_U_packets": 0,
+          "critic_packets": 0,
+          "identity_updates": 8880,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "teacher_updates": 0,
+          "auxiliary_steps": 0,
+          "accepted_U": 1001870,
+          "linear_steps": 0,
+          "repetition_steps": 0,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "satellite_calls": 0
+        },
+        "parent_provenance": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092701
+        },
+        "elapsed_seconds": 1190.2525402799947,
+        "resources": {
+          "identity_training_and_source_diagnostics_seconds": 1190.2525410529925,
+          "peak_cuda_memory_bytes": 333551616,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4947782,
+          "auxiliary_saved_bytes": 522902,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "RX_L_packets": 0,
+          "RX_U_packets": 0,
+          "critic_packets": 0,
+          "risk_initialization": null,
+          "critic_target_identity_packets": 0,
+          "action_state_identity_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        }
+      },
+      "freeze": {
+        "status": "SOURCE_FROZEN",
+        "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
+        "row_id": "SAM_SSL-s2026092701",
+        "config": {
+          "schema": "stage2_rx_sam_v1",
+          "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
+          "arm": "SAM_SSL",
+          "model_seed": 2026092701,
+          "row_id": "SAM_SSL-s2026092701",
+          "method": "cvs_stage2_rx_sam",
+          "variant": "reference_response",
+          "method_name": "SAM_SSL",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+          "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
+          "checkpoint_sources": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth"
+          ],
+          "parent_contract": {
+            "schema": "stage2_decouple_v1",
+            "run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
+            "stage": "stage2_decouple",
+            "arm": "C0",
+            "model_seed": 2026092701,
+            "row_id": "C0-s2026092701",
+            "method": "cvs_stage2_decouple",
+            "variant": "reference_response",
+            "features": [],
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C0-s2026092701/source",
+            "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+            "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
+            "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092701",
+            "model_initialization": "strict_matched_pure_CE_parent_fresh_optimizer",
+            "checkpoint_sources": [
+              "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth"
+            ],
+            "epochs": 40,
+            "steps_per_epoch": 222,
+            "batch_size": 128,
+            "updates": 8880,
+            "label_smoothing": 0.0,
+            "optimizer": {
+              "name": "AdamW",
+              "weight_decay": 0.0001,
+              "encoder_peak_lr": 3e-05,
+              "fusion_head_peak_lr": 0.0001,
+              "min_lr": 1e-06,
+              "warmup_steps": 444
+            },
+            "losses": {
+              "keep": 0.1,
+              "aug_ce": 0.25,
+              "drop": 0.1,
+              "receiver": 0.1,
+              "delta_keep": 0.5,
+              "delta_drop": 0.5,
+              "huber_delta": 1.0
+            },
+            "schedule": {
+              "action_every": 4,
+              "receiver_every": 8,
+              "relation_batch": 32,
+              "action_batch": 32,
+              "action_order": [
+                "linear",
+                "linear",
+                "temporal",
+                "temporal"
+              ]
+            },
+            "enabled": {
+              "keep": false,
+              "actions": false,
+              "receiver": false
+            },
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "target_access": false,
+            "test_views": [
+              "clean"
+            ],
+            "checkpoint_selection": "final_only",
+            "sampling": "shared seed-private source-L stream; 96 ordinary + 2x2x8 relation slots every8; no difficulty sampling",
+            "auxiliary": {
+              "action_passes": 2,
+              "action_fit_batch": 128,
+              "action_fit_lr": 0.0002,
+              "action_fit_wd": 0.0001,
+              "receiver_fit_steps": 200,
+              "receiver_fit_lr": 0.002,
+              "receiver_fit_wd": 0.0,
+              "fractional_delay_samples": 0.25
+            },
+            "evaluation": {
+              "primary_arm": "C3",
+              "goal_three_seed_mean": 0.84,
+              "truth_last": true,
+              "feedback_to_training": false
+            },
+            "concurrency": {
+              "max_processes_per_gpu": 4,
+              "includes_existing": true
+            },
+            "launch_owner": "codex/root/stage2-decouple-20261011"
+          },
+          "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/SAM_SSL-s2026092701/source",
+          "epochs": 40,
+          "steps_per_epoch": 222,
+          "updates": 8880,
+          "batch_size": 128,
+          "label_smoothing": 0.0,
+          "optimizer": {
+            "name": "AdamW",
+            "weight_decay": 0.0001,
+            "encoder_peak_lr": 0.0001,
+            "fusion_head_peak_lr": 0.0003,
+            "min_lr": 1e-06,
+            "warmup_steps": 444,
+            "frequency": {
+              "peak_lr": 3e-06,
+              "coordinate": "u=f/fs",
+              "master_dtype": "float64",
+              "weight_decay": 0.0,
+              "step_cap": "actual scheduled LR",
+              "raw_parameter_floor_Hz": 1.0
+            }
+          },
+          "enabled": {
+            "contrastive": false,
+            "cross_rx_mix": false,
+            "manifold_mix": false,
+            "sam": false,
+            "averaging": false,
+            "actions": false,
+            "conditional_actions": false,
+            "linear": false,
+            "repetition": false,
+            "condition": false,
+            "nonlinear": false,
+            "frequency": false
+          },
+          "losses": {
+            "ce": 1.0,
+            "soft_identity": 0.25,
+            "linear": 0.05,
+            "linear_identity": 0.1,
+            "repetition": 0.05,
+            "critic": 1.0
+          },
+          "mixing": {
+            "beta": 0.4,
+            "cross_rx_lambda": "Uniform[.25,.75]",
+            "normalized_joint": true,
+            "head_scale": 30.0
+          },
+          "sam": {
+            "enabled": true,
+            "base_recipe": "SSL",
+            "rho": 0.05,
+            "norm": "absolute L2 of trainable dense identity parameters; native Hz parameters excluded",
+            "start_update": 1,
+            "identity_gradient_passes": 17760,
+            "optimizer_steps": 8880,
+            "base_optimizer": "unchanged AdamW",
+            "target_and_actions": "computed once at unperturbed weights; detached q,mask,IQ,noise reused",
+            "dropout": "replay each differentiable forward RNG; global RNG restored to first-pass end",
+            "buffers": "replay from first-pass start; preserve first-pass end buffers",
+            "auxiliary": "one unperturbed objective and update, never SAM-perturbed",
+            "restore": "exact saved parameter copies in finally before optimizer step, including exceptions",
+            "reference": "https://github.com/google-research/sam",
+            "rho_rationale": "fixed initial .05, follows published example scale; no sourceV or target fitting; not claimed optimal"
+          },
+          "averaging": {
+            "start_epoch": 31,
+            "cycle_epochs": 2,
+            "cycle_peak_fraction": 0.5,
+            "snapshot_epochs": [
+              32,
+              34,
+              36,
+              38,
+              40
+            ],
+            "buffers": "fixed final buffers; BatchNorm architecture forbidden",
+            "selection": "fixed five-snapshot mean; no V choice"
+          },
+          "checkpoint_selection": "final_only",
+          "action": {
+            "policy": "coverage",
+            "payload": null,
+            "fit": "fresh original E200, same-scale tanh coordinates, abs noise, first full pass raw margin then full pass finite risk",
+            "every_steps": 4,
+            "batch": 32,
+            "order": [
+              "linear",
+              "linear",
+              "temporal",
+              "temporal"
+            ],
+            "coverage_fraction": 0.5
+          },
+          "sampling": {
+            "L": "RX/day balanced full permutation",
+            "U": "RX/day balanced full permutation",
+            "batch_L": 128,
+            "batch_U": 128,
+            "TX_grouping_or_same_sig_pairing": false
+          },
+          "target_access": false,
+          "unlabeled": true,
+          "teacher": false,
+          "satellite": false,
+          "test_views": [
+            "clean"
+          ],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "concurrency": {
+            "max_processes_per_gpu": 3,
+            "includes_existing": true,
+            "gpu_ids": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "evaluation": {
+            "primary_arm": "SAM_RANK",
+            "goal_three_seed_mean": 0.84,
+            "all_predeclared_arms_reported": true,
+            "truth_last": true,
+            "feedback_to_training": false,
+            "fixed_control_run": null,
+            "fixed_control_arms": [],
+            "control_role": "three paired recipes x two optimizers, all same E200 parents/final40; equal optimizer update counts, SAM doubles gradient passes, measured cost reported"
+          },
+          "launch_owner": "codex/root/stage2-rx-sam-20261011",
+          "semi": {
+            "cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/source_unlabeled/source_cache.pt",
+            "batch_size": 128,
+            "role": "U_s",
+            "count": 56700,
+            "mode": "soft_KL",
+            "ema_decay": null,
+            "L_readapt_updates": 888,
+            "ramp_steps": 888,
+            "confidence_threshold": 0.95,
+            "strong_noise_std": 0.015,
+            "truth_access": false,
+            "teacher_selected_for_test": false,
+            "teacher_init": "after update888: cloned EMA or live stop-gradient student according to target_provider",
+            "identity_denominator": "fixed B_U",
+            "statistics_mask": "separate physical quality, all soft assignments",
+            "conditional_refresh_epochs": [
+              4,
+              12,
+              20,
+              28,
+              36
+            ],
+            "conditional_mix": 0.5,
+            "U_mean_alpha_cap": 0.2,
+            "target_provider": "current_student"
+          },
+          "optimization_scope": "all native identity encoder/fusion/classifier parameters; no frozen identity layers; domain networks frozen",
+          "physical": {
+            "every_steps": 4,
+            "max_L": 32,
+            "max_U": 32,
+            "linear_side_tap_scale": 0.015,
+            "action_targets": "four actual applied tap components / scale",
+            "linear_readout_input": "paired pre-classifier identity160 + PA160 + reference29",
+            "repetition_target": "leave-cycle relative template residual24 + learned diagonal uncertainty",
+            "strict_blindspot": false,
+            "known_linear_scope": "small circular digital filter; interior-only diagnostic required",
+            "old_aux_caches_reused": false
+          },
+          "frontend": {
+            "version": "original_reference_response_v1",
+            "reference_dim": 29,
+            "zero_slot": null,
+            "state_dim": 40,
+            "explicit_frequency_estimator": "inherited original baseline reference response",
+            "raw_IQ_retained": true,
+            "whole_model_frequency_invariant": false
+          },
+          "stage": "phase1_stage2_rx_sam",
+          "reference_mode": "original",
+          "mechanism_scope": "Test robustness to a dense identity weight neighborhood while preserving unlabeled targets and source physical actions. No EMA or satellite. V health only; no source or target accuracy-based selection.",
+          "rx_action": {
+            "enabled": false,
+            "critic": false,
+            "kind": "physical",
+            "taps": 33,
+            "scales": [
+              0.5,
+              1.0
+            ],
+            "max_amplitude_dB": 3.0,
+            "start_after_updates": 888,
+            "ramp_updates": 888,
+            "L_augmented_CE_fraction": 0.5,
+            "critic_every": 4,
+            "critic_batch": 32,
+            "critic_lr": 0.001,
+            "critic_hidden": 48,
+            "critic_uniform_warmup_updates": 0,
+            "critic_uniform_probability": 0.5,
+            "critic_temperature": 1.0,
+            "L_fit": "other five TX AND other two days",
+            "U_fit": "all six L TX, other two days; U TX never read",
+            "critic_fit": "margin(clean)-margin(action); SmoothL1 or all28 pair logistic abs margin difference>.01",
+            "action_selection": "standardized pretrained current-state risk for8candidates; no class labels in risk input; uniform PHYS control"
+          },
+          "risk_learning": {
+            "enabled": false,
+            "online": false,
+            "kind": null,
+            "source_run": null,
+            "source_config": null,
+            "checkpoint": null,
+            "pretrained_steps": 0,
+            "pretrained_identity_updates": 0,
+            "state_dim": 206,
+            "online_lr": 0.001,
+            "online_steps": 0,
+            "online_batch": 32,
+            "all_candidates": 8,
+            "policy": "half uniform plus half softmax(within-packet standardized risk), temperature1, std floor1e-6",
+            "normalization": "reuse fixed L-only E200 mean/std, never V/U fit",
+            "target": "margin(clean)-margin(action); SmoothL1 or all28 pair logistic abs margin difference>.01",
+            "identity_gradient_from_auxiliary": false,
+            "source_execution_commit": null
+          }
+        },
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/SAM_SSL-s2026092701/source/final_ssdg.pth",
+        "epoch": 40,
+        "optimizer_steps": 8880,
+        "target_access": false,
+        "target_scores_consumed": false,
+        "selection": "final_only"
+      },
+      "prediction_completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.089244537986815
+        },
+        "wall_seconds": 6.349722257000394,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1724473344
+      }
     },
     {
       "row_id": "PHYS-s2026092701",
@@ -10008,7 +13021,7 @@
       "process": {
         "pid": 54889,
         "start_ticks": 97931314,
-        "state": "R",
+        "state": "S",
         "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
         "argv": [
           "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -26104,21 +29117,7 @@
     },
     {
       "row_id": "SAM_SSL-s2026092703",
-      "process": {
-        "pid": 55968,
-        "start_ticks": 97933962,
-        "state": "R",
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_stage2_rx_sam.dispatch",
-          "--worker",
-          "SAM_SSL-s2026092703"
-        ],
-        "gpu": "3"
-      },
+      "process": null,
       "launch": {
         "row_id": "SAM_SSL-s2026092703",
         "pid": 55968,
@@ -26134,7 +29133,3034 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/logs/SAM_SSL-s2026092703.log"
       },
-      "completion": null
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "SAM_SSL-s2026092703"
+      },
+      "artifacts": {
+        "scores.json": {
+          "status": "SCORED",
+          "results": [
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "overall",
+              "stratum": "ALL",
+              "accuracy": 0.8085476190476191,
+              "macro_f1": 0.8049644151924463,
+              "macro_accuracy": 0.808547619047619,
+              "query_count": 168000,
+              "confusion": [
+                [
+                  26949,
+                  98,
+                  345,
+                  564,
+                  36,
+                  8
+                ],
+                [
+                  277,
+                  13536,
+                  45,
+                  14014,
+                  110,
+                  18
+                ],
+                [
+                  1326,
+                  719,
+                  22013,
+                  249,
+                  675,
+                  3018
+                ],
+                [
+                  2652,
+                  7096,
+                  226,
+                  17976,
+                  13,
+                  37
+                ],
+                [
+                  5,
+                  9,
+                  18,
+                  9,
+                  27955,
+                  4
+                ],
+                [
+                  7,
+                  7,
+                  290,
+                  16,
+                  273,
+                  27407
+                ]
+              ],
+              "NLL": 1.114482045173645,
+              "parent_fix_count": 2855,
+              "parent_break_count": 4105,
+              "net_correct_gain": -1250
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "1-1",
+              "accuracy": 0.7985416666666667,
+              "macro_f1": 0.7791602603794173,
+              "macro_accuracy": 0.7985416666666666,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3993,
+                  3,
+                  2,
+                  0,
+                  2,
+                  0
+                ],
+                [
+                  48,
+                  1335,
+                  1,
+                  2615,
+                  1,
+                  0
+                ],
+                [
+                  998,
+                  1,
+                  2217,
+                  1,
+                  0,
+                  783
+                ],
+                [
+                  139,
+                  57,
+                  0,
+                  3804,
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  4,
+                  6,
+                  0,
+                  3988,
+                  1
+                ],
+                [
+                  2,
+                  0,
+                  161,
+                  6,
+                  3,
+                  3828
+                ]
+              ],
+              "NLL": 1.18336820602417,
+              "parent_fix_count": 525,
+              "parent_break_count": 337,
+              "net_correct_gain": 188
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "14-7",
+              "accuracy": 0.74825,
+              "macro_f1": 0.727510936348223,
+              "macro_accuracy": 0.74825,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3924,
+                  0,
+                  0,
+                  76,
+                  0,
+                  0
+                ],
+                [
+                  19,
+                  2232,
+                  0,
+                  1746,
+                  3,
+                  0
+                ],
+                [
+                  16,
+                  3,
+                  3766,
+                  0,
+                  2,
+                  213
+                ],
+                [
+                  5,
+                  3749,
+                  170,
+                  45,
+                  3,
+                  28
+                ],
+                [
+                  0,
+                  1,
+                  1,
+                  0,
+                  3998,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  4,
+                  3,
+                  3993
+                ]
+              ],
+              "NLL": 1.4145840406417847,
+              "parent_fix_count": 648,
+              "parent_break_count": 122,
+              "net_correct_gain": 526
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "2-1",
+              "accuracy": 0.8877083333333333,
+              "macro_f1": 0.8862319135034588,
+              "macro_accuracy": 0.8877083333333333,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3668,
+                  91,
+                  152,
+                  62,
+                  21,
+                  6
+                ],
+                [
+                  3,
+                  2336,
+                  16,
+                  1576,
+                  59,
+                  10
+                ],
+                [
+                  12,
+                  4,
+                  3952,
+                  20,
+                  6,
+                  6
+                ],
+                [
+                  21,
+                  607,
+                  0,
+                  3366,
+                  3,
+                  3
+                ],
+                [
+                  0,
+                  0,
+                  2,
+                  2,
+                  3996,
+                  0
+                ],
+                [
+                  0,
+                  4,
+                  5,
+                  1,
+                  3,
+                  3987
+                ]
+              ],
+              "NLL": 0.5542633533477783,
+              "parent_fix_count": 302,
+              "parent_break_count": 299,
+              "net_correct_gain": 3
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "20-1",
+              "accuracy": 0.7687083333333333,
+              "macro_f1": 0.7745035323113919,
+              "macro_accuracy": 0.7687083333333334,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3983,
+                  1,
+                  2,
+                  2,
+                  11,
+                  1
+                ],
+                [
+                  10,
+                  2013,
+                  2,
+                  1963,
+                  9,
+                  3
+                ],
+                [
+                  45,
+                  691,
+                  2974,
+                  135,
+                  96,
+                  59
+                ],
+                [
+                  12,
+                  2084,
+                  23,
+                  1875,
+                  6,
+                  0
+                ],
+                [
+                  4,
+                  3,
+                  8,
+                  7,
+                  3977,
+                  1
+                ],
+                [
+                  5,
+                  2,
+                  120,
+                  5,
+                  241,
+                  3627
+                ]
+              ],
+              "NLL": 1.662904977798462,
+              "parent_fix_count": 543,
+              "parent_break_count": 794,
+              "net_correct_gain": -251
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "7-14",
+              "accuracy": 0.8381666666666666,
+              "macro_f1": 0.8276409111298437,
+              "macro_accuracy": 0.8381666666666668,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3451,
+                  0,
+                  189,
+                  358,
+                  1,
+                  1
+                ],
+                [
+                  5,
+                  1377,
+                  3,
+                  2615,
+                  0,
+                  0
+                ],
+                [
+                  17,
+                  7,
+                  3356,
+                  7,
+                  567,
+                  46
+                ],
+                [
+                  0,
+                  42,
+                  0,
+                  3957,
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  0,
+                  3998,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  3,
+                  0,
+                  20,
+                  3977
+                ]
+              ],
+              "NLL": 0.8075848817825317,
+              "parent_fix_count": 172,
+              "parent_break_count": 566,
+              "net_correct_gain": -394
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "7-7",
+              "accuracy": 0.8016666666666666,
+              "macro_f1": 0.7885012006749247,
+              "macro_accuracy": 0.8016666666666666,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  4000,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  192,
+                  2407,
+                  18,
+                  1345,
+                  36,
+                  2
+                ],
+                [
+                  236,
+                  1,
+                  3761,
+                  0,
+                  2,
+                  0
+                ],
+                [
+                  2475,
+                  411,
+                  33,
+                  1075,
+                  0,
+                  6
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  4000,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  3,
+                  3997
+                ]
+              ],
+              "NLL": 1.2488317489624023,
+              "parent_fix_count": 378,
+              "parent_break_count": 959,
+              "net_correct_gain": -581
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "8-8",
+              "accuracy": 0.8167916666666667,
+              "macro_f1": 0.8050893562508424,
+              "macro_accuracy": 0.8167916666666667,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3930,
+                  3,
+                  0,
+                  66,
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  1836,
+                  5,
+                  2154,
+                  2,
+                  3
+                ],
+                [
+                  2,
+                  12,
+                  1987,
+                  86,
+                  2,
+                  1911
+                ],
+                [
+                  0,
+                  146,
+                  0,
+                  3854,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1,
+                  0,
+                  0,
+                  3998,
+                  1
+                ],
+                [
+                  0,
+                  1,
+                  1,
+                  0,
+                  0,
+                  3998
+                ]
+              ],
+              "NLL": 0.9298365712165833,
+              "parent_fix_count": 287,
+              "parent_break_count": 1028,
+              "net_correct_gain": -741
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "14-10",
+              "accuracy": 0.9624642857142857,
+              "macro_f1": 0.16347886221769278,
+              "macro_accuracy": 0.9624642857142857,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  26949,
+                  98,
+                  345,
+                  564,
+                  36,
+                  8
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 0.17273932695388794,
+              "parent_fix_count": 456,
+              "parent_break_count": 472,
+              "net_correct_gain": -16
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "14-7",
+              "accuracy": 0.48342857142857143,
+              "macro_f1": 0.1086286594761171,
+              "macro_accuracy": 0.48342857142857143,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  277,
+                  13536,
+                  45,
+                  14014,
+                  110,
+                  18
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 2.9203875064849854,
+              "parent_fix_count": 1173,
+              "parent_break_count": 636,
+              "net_correct_gain": 537
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "20-15",
+              "accuracy": 0.7861785714285714,
+              "macro_f1": 0.14671518738461334,
+              "macro_accuracy": 0.7861785714285714,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  1326,
+                  719,
+                  22013,
+                  249,
+                  675,
+                  3018
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 0.8274100422859192,
+              "parent_fix_count": 674,
+              "parent_break_count": 2152,
+              "net_correct_gain": -1478
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "20-19",
+              "accuracy": 0.642,
+              "macro_f1": 0.13032886723507917,
+              "macro_accuracy": 0.642,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  2652,
+                  7096,
+                  226,
+                  17976,
+                  13,
+                  37
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 2.688220500946045,
+              "parent_fix_count": 384,
+              "parent_break_count": 693,
+              "net_correct_gain": -309
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "6-15",
+              "accuracy": 0.9983928571428572,
+              "macro_f1": 0.16653263038751379,
+              "macro_accuracy": 0.9983928571428572,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  5,
+                  9,
+                  18,
+                  9,
+                  27955,
+                  4
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 0.008147768676280975,
+              "parent_fix_count": 13,
+              "parent_break_count": 7,
+              "net_correct_gain": 6
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "8-20",
+              "accuracy": 0.9788214285714286,
+              "macro_f1": 0.1648828968662203,
+              "macro_accuracy": 0.9788214285714286,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  7,
+                  7,
+                  290,
+                  16,
+                  273,
+                  27407
+                ]
+              ],
+              "NLL": 0.0699869692325592,
+              "parent_fix_count": 155,
+              "parent_break_count": 145,
+              "net_correct_gain": 10
+            }
+          ],
+          "target_feedback_forbidden": true
+        },
+        "day_scores.json": {
+          "results": [
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "day",
+              "stratum": "2021_03_01",
+              "accuracy": 0.8154523809523809,
+              "macro_f1": 0.8123648746372784,
+              "macro_accuracy": 0.8154523809523809,
+              "query_count": 42000,
+              "confusion": [
+                [
+                  6387,
+                  9,
+                  294,
+                  297,
+                  12,
+                  1
+                ],
+                [
+                  107,
+                  3596,
+                  13,
+                  3207,
+                  74,
+                  3
+                ],
+                [
+                  60,
+                  20,
+                  5769,
+                  65,
+                  48,
+                  1038
+                ],
+                [
+                  709,
+                  1545,
+                  61,
+                  4675,
+                  9,
+                  1
+                ],
+                [
+                  1,
+                  1,
+                  5,
+                  2,
+                  6989,
+                  2
+                ],
+                [
+                  0,
+                  3,
+                  105,
+                  3,
+                  56,
+                  6833
+                ]
+              ],
+              "NLL": 1.0293145179748535,
+              "parent_fix_count": 743,
+              "parent_break_count": 802,
+              "net_correct_gain": -59
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "day",
+              "stratum": "2021_03_08",
+              "accuracy": 0.8276666666666667,
+              "macro_f1": 0.8247356845299064,
+              "macro_accuracy": 0.8276666666666667,
+              "query_count": 42000,
+              "confusion": [
+                [
+                  6797,
+                  16,
+                  40,
+                  124,
+                  20,
+                  3
+                ],
+                [
+                  27,
+                  3521,
+                  3,
+                  3445,
+                  2,
+                  2
+                ],
+                [
+                  17,
+                  69,
+                  6502,
+                  76,
+                  6,
+                  330
+                ],
+                [
+                  777,
+                  2119,
+                  109,
+                  3974,
+                  1,
+                  20
+                ],
+                [
+                  1,
+                  3,
+                  6,
+                  4,
+                  6986,
+                  0
+                ],
+                [
+                  2,
+                  1,
+                  7,
+                  2,
+                  6,
+                  6982
+                ]
+              ],
+              "NLL": 1.1023460626602173,
+              "parent_fix_count": 393,
+              "parent_break_count": 678,
+              "net_correct_gain": -285
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "day",
+              "stratum": "2021_03_15",
+              "accuracy": 0.7573095238095238,
+              "macro_f1": 0.750466156907379,
+              "macro_accuracy": 0.7573095238095237,
+              "query_count": 42000,
+              "confusion": [
+                [
+                  6972,
+                  10,
+                  6,
+                  7,
+                  3,
+                  2
+                ],
+                [
+                  83,
+                  2457,
+                  5,
+                  4434,
+                  15,
+                  6
+                ],
+                [
+                  1000,
+                  244,
+                  4944,
+                  97,
+                  43,
+                  672
+                ],
+                [
+                  904,
+                  2272,
+                  16,
+                  3803,
+                  2,
+                  3
+                ],
+                [
+                  2,
+                  5,
+                  6,
+                  2,
+                  6983,
+                  2
+                ],
+                [
+                  0,
+                  2,
+                  156,
+                  6,
+                  188,
+                  6648
+                ]
+              ],
+              "NLL": 1.4011914730072021,
+              "parent_fix_count": 519,
+              "parent_break_count": 1228,
+              "net_correct_gain": -709
+            },
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "arm": "SAM_SSL",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "day",
+              "stratum": "2021_03_23",
+              "accuracy": 0.8337619047619048,
+              "macro_f1": 0.8295596672869028,
+              "macro_accuracy": 0.8337619047619048,
+              "query_count": 42000,
+              "confusion": [
+                [
+                  6793,
+                  63,
+                  5,
+                  136,
+                  1,
+                  2
+                ],
+                [
+                  60,
+                  3962,
+                  24,
+                  2928,
+                  19,
+                  7
+                ],
+                [
+                  249,
+                  386,
+                  4798,
+                  11,
+                  578,
+                  978
+                ],
+                [
+                  262,
+                  1160,
+                  40,
+                  5524,
+                  1,
+                  13
+                ],
+                [
+                  1,
+                  0,
+                  1,
+                  1,
+                  6997,
+                  0
+                ],
+                [
+                  5,
+                  1,
+                  22,
+                  5,
+                  23,
+                  6944
+                ]
+              ],
+              "NLL": 0.9250757098197937,
+              "parent_fix_count": 1200,
+              "parent_break_count": 1397,
+              "net_correct_gain": -197
+            }
+          ]
+        },
+        "parent_scores.json": {
+          "results": [
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "overall",
+              "stratum": "ALL",
+              "accuracy": 0.8159880952380952,
+              "macro_f1": 0.8109206599264764,
+              "macro_accuracy": 0.8159880952380951,
+              "query_count": 168000,
+              "confusion": [
+                [
+                  26965,
+                  214,
+                  200,
+                  585,
+                  22,
+                  14
+                ],
+                [
+                  534,
+                  12999,
+                  215,
+                  14118,
+                  111,
+                  23
+                ],
+                [
+                  1068,
+                  299,
+                  23491,
+                  61,
+                  279,
+                  2802
+                ],
+                [
+                  2680,
+                  5959,
+                  975,
+                  18285,
+                  16,
+                  85
+                ],
+                [
+                  10,
+                  9,
+                  19,
+                  7,
+                  27949,
+                  6
+                ],
+                [
+                  15,
+                  3,
+                  299,
+                  14,
+                  272,
+                  27397
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "1-1",
+              "accuracy": 0.7907083333333333,
+              "macro_f1": 0.7682748744976284,
+              "macro_accuracy": 0.7907083333333333,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3993,
+                  4,
+                  2,
+                  1,
+                  0,
+                  0
+                ],
+                [
+                  123,
+                  1227,
+                  3,
+                  2647,
+                  0,
+                  0
+                ],
+                [
+                  843,
+                  0,
+                  2142,
+                  2,
+                  2,
+                  1011
+                ],
+                [
+                  159,
+                  35,
+                  0,
+                  3806,
+                  0,
+                  0
+                ],
+                [
+                  3,
+                  4,
+                  6,
+                  1,
+                  3986,
+                  0
+                ],
+                [
+                  3,
+                  0,
+                  165,
+                  6,
+                  3,
+                  3823
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "14-7",
+              "accuracy": 0.7263333333333334,
+              "macro_f1": 0.7012225109189184,
+              "macro_accuracy": 0.7263333333333333,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3966,
+                  1,
+                  0,
+                  33,
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  1897,
+                  20,
+                  2079,
+                  2,
+                  0
+                ],
+                [
+                  4,
+                  4,
+                  3518,
+                  0,
+                  2,
+                  472
+                ],
+                [
+                  45,
+                  2934,
+                  898,
+                  60,
+                  3,
+                  60
+                ],
+                [
+                  0,
+                  1,
+                  4,
+                  0,
+                  3995,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  3,
+                  1,
+                  3996
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "2-1",
+              "accuracy": 0.8875833333333333,
+              "macro_f1": 0.8860473238551108,
+              "macro_accuracy": 0.8875833333333335,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3701,
+                  148,
+                  72,
+                  60,
+                  10,
+                  9
+                ],
+                [
+                  9,
+                  2311,
+                  42,
+                  1567,
+                  54,
+                  17
+                ],
+                [
+                  12,
+                  5,
+                  3951,
+                  10,
+                  15,
+                  7
+                ],
+                [
+                  17,
+                  621,
+                  2,
+                  3353,
+                  3,
+                  4
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  2,
+                  3997,
+                  0
+                ],
+                [
+                  1,
+                  1,
+                  6,
+                  2,
+                  1,
+                  3989
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "20-1",
+              "accuracy": 0.7791666666666667,
+              "macro_f1": 0.7805524854414241,
+              "macro_accuracy": 0.7791666666666668,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3911,
+                  4,
+                  1,
+                  72,
+                  10,
+                  2
+                ],
+                [
+                  15,
+                  1736,
+                  111,
+                  2119,
+                  14,
+                  5
+                ],
+                [
+                  17,
+                  227,
+                  3573,
+                  43,
+                  69,
+                  71
+                ],
+                [
+                  30,
+                  2044,
+                  17,
+                  1903,
+                  6,
+                  0
+                ],
+                [
+                  7,
+                  4,
+                  7,
+                  4,
+                  3974,
+                  4
+                ],
+                [
+                  11,
+                  1,
+                  124,
+                  3,
+                  258,
+                  3603
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "7-14",
+              "accuracy": 0.8545833333333334,
+              "macro_f1": 0.843657005606086,
+              "macro_accuracy": 0.8545833333333333,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3671,
+                  1,
+                  124,
+                  200,
+                  1,
+                  3
+                ],
+                [
+                  5,
+                  1417,
+                  6,
+                  2565,
+                  7,
+                  0
+                ],
+                [
+                  185,
+                  60,
+                  3489,
+                  4,
+                  187,
+                  75
+                ],
+                [
+                  4,
+                  49,
+                  0,
+                  3942,
+                  4,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  0,
+                  3998,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  7,
+                  3993
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "7-7",
+              "accuracy": 0.825875,
+              "macro_f1": 0.8138487638651123,
+              "macro_accuracy": 0.8258749999999999,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3958,
+                  39,
+                  0,
+                  3,
+                  0,
+                  0
+                ],
+                [
+                  380,
+                  2594,
+                  26,
+                  970,
+                  29,
+                  1
+                ],
+                [
+                  4,
+                  1,
+                  3992,
+                  0,
+                  2,
+                  1
+                ],
+                [
+                  2424,
+                  218,
+                  58,
+                  1280,
+                  0,
+                  20
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  4000,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  0,
+                  2,
+                  3997
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "8-8",
+              "accuracy": 0.8476666666666667,
+              "macro_f1": 0.8410941062791985,
+              "macro_accuracy": 0.8476666666666666,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3765,
+                  17,
+                  1,
+                  216,
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  1817,
+                  7,
+                  2171,
+                  5,
+                  0
+                ],
+                [
+                  3,
+                  2,
+                  2826,
+                  2,
+                  2,
+                  1165
+                ],
+                [
+                  1,
+                  58,
+                  0,
+                  3941,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  3999,
+                  1
+                ],
+                [
+                  0,
+                  1,
+                  3,
+                  0,
+                  0,
+                  3996
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "14-10",
+              "accuracy": 0.9630357142857143,
+              "macro_f1": 0.163528305891628,
+              "macro_accuracy": 0.9630357142857143,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  26965,
+                  214,
+                  200,
+                  585,
+                  22,
+                  14
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "14-7",
+              "accuracy": 0.46425,
+              "macro_f1": 0.1056855045245006,
+              "macro_accuracy": 0.46425,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  534,
+                  12999,
+                  215,
+                  14118,
+                  111,
+                  23
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "20-15",
+              "accuracy": 0.8389642857142857,
+              "macro_f1": 0.15207188311225908,
+              "macro_accuracy": 0.8389642857142857,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  1068,
+                  299,
+                  23491,
+                  61,
+                  279,
+                  2802
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "20-19",
+              "accuracy": 0.6530357142857143,
+              "macro_f1": 0.13168413092794642,
+              "macro_accuracy": 0.6530357142857143,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  2680,
+                  5959,
+                  975,
+                  18285,
+                  16,
+                  85
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "6-15",
+              "accuracy": 0.9981785714285715,
+              "macro_f1": 0.16651474259295668,
+              "macro_accuracy": 0.9981785714285715,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  10,
+                  9,
+                  19,
+                  7,
+                  27949,
+                  6
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092703",
+              "arm": "P0",
+              "model_seed": 2026092703,
+              "stage": "phase1_stage2_rx_sam",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "8-20",
+              "accuracy": 0.9784642857142857,
+              "macro_f1": 0.16485248900361632,
+              "macro_accuracy": 0.9784642857142857,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  15,
+                  3,
+                  299,
+                  14,
+                  272,
+                  27397
+                ]
+              ]
+            }
+          ],
+          "source": "Reused fixed clean predictions only"
+        },
+        "paired_results.json": {
+          "comparisons": [
+            {
+              "treatment": "SAM_SSL",
+              "control": "P0",
+              "metric": "accuracy",
+              "view": "clean",
+              "seeds": [
+                2026092703
+              ],
+              "seed_count": 1,
+              "differences": [
+                -0.007440476190476164
+              ],
+              "mean_difference": -0.007440476190476164,
+              "sd_difference": null,
+              "positive_seeds": 0,
+              "complete_three_seeds": false
+            }
+          ],
+          "inferential_significance_claim": false
+        },
+        "resources.json": {
+          "rows": [
+            {
+              "row_id": "SAM_SSL-s2026092703",
+              "prediction": {
+                "status": "PREDICTIONS_COMPLETE",
+                "count": 168000,
+                "views": [
+                  "clean"
+                ],
+                "truth_read": false,
+                "query_fit": false,
+                "inference_seconds": {
+                  "clean": 5.1657676519826055
+                },
+                "wall_seconds": 6.478696236968972,
+                "peak_cuda_allocated_bytes": 91523584,
+                "peak_cuda_reserved_bytes": 130023424,
+                "peak_process_rss_bytes": 1746976768
+              },
+              "source": {
+                "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+                "parent_epochs": 200,
+                "incremental_epochs": 40,
+                "incremental_identity_updates": 8880,
+                "hardware": "NVIDIA GeForce RTX 3090",
+                "measured_training_resources": {
+                  "identity_training_and_source_diagnostics_seconds": 1156.2306988369673,
+                  "peak_cuda_memory_bytes": 333551616,
+                  "trainable_parameters": 177025,
+                  "total_parameters": 844754,
+                  "auxiliary_trainable_parameters": 0,
+                  "teacher_parameters": 0,
+                  "conditional_snapshot_parameters": 0,
+                  "main_L_packets": 1136640,
+                  "U_identity_packets": 1022976,
+                  "parent_training_epochs": 200,
+                  "incremental_epochs": 40,
+                  "optimizer_state_tensor_bytes": 1416468,
+                  "auxiliary_optimizer_state_tensor_bytes": 0,
+                  "checkpoint_bytes": 4947782,
+                  "auxiliary_saved_bytes": 522902,
+                  "conditional_snapshot_saved_bytes": 0,
+                  "frequency_master_and_moment_dtype": null,
+                  "physical_L_packets": 0,
+                  "physical_U_packets": 0,
+                  "RX_L_packets": 0,
+                  "RX_U_packets": 0,
+                  "critic_packets": 0,
+                  "risk_initialization": null,
+                  "critic_target_identity_packets": 0,
+                  "action_state_identity_packets": 0,
+                  "teacher_identity_packets": 1022976,
+                  "teacher_probability_method_batch_calls": 8850,
+                  "teacher_diagnostic_packets": 218700,
+                  "conditional_fit_snapshot_count": 0
+                },
+                "shared_IQ_preparation_reused": true,
+                "source_only_pretrained_auxiliary_reused": false,
+                "training_flops": null,
+                "scope": "Shared GPU measured wall cost; source diagnostic pretraining cost referenced separately"
+              }
+            }
+          ],
+          "shared_preparation_counted_once_per_seed": true
+        },
+        "scoring_complete.json": {
+          "status": "SCORED_COMPLETE",
+          "models": 1,
+          "views": 1,
+          "query_count_per_view": 168000,
+          "prediction_count": 168000,
+          "metric_records": 14,
+          "day_metric_records": 4,
+          "truth_last": true,
+          "independent_recount": "VERIFIED"
+        }
+      },
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 40,
+        "optimizer_steps": 8880,
+        "logged_steps": 8880,
+        "config": {
+          "schema": "stage2_rx_sam_v1",
+          "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
+          "arm": "SAM_SSL",
+          "model_seed": 2026092703,
+          "row_id": "SAM_SSL-s2026092703",
+          "method": "cvs_stage2_rx_sam",
+          "variant": "reference_response",
+          "method_name": "SAM_SSL",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+          "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/prediction/predictions.npz",
+          "checkpoint_sources": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth"
+          ],
+          "parent_contract": {
+            "schema": "stage2_decouple_v1",
+            "run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
+            "stage": "stage2_decouple",
+            "arm": "C0",
+            "model_seed": 2026092703,
+            "row_id": "C0-s2026092703",
+            "method": "cvs_stage2_decouple",
+            "variant": "reference_response",
+            "features": [],
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C0-s2026092703/source",
+            "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+            "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/prediction/predictions.npz",
+            "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092703",
+            "model_initialization": "strict_matched_pure_CE_parent_fresh_optimizer",
+            "checkpoint_sources": [
+              "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth"
+            ],
+            "epochs": 40,
+            "steps_per_epoch": 222,
+            "batch_size": 128,
+            "updates": 8880,
+            "label_smoothing": 0.0,
+            "optimizer": {
+              "name": "AdamW",
+              "weight_decay": 0.0001,
+              "encoder_peak_lr": 3e-05,
+              "fusion_head_peak_lr": 0.0001,
+              "min_lr": 1e-06,
+              "warmup_steps": 444
+            },
+            "losses": {
+              "keep": 0.1,
+              "aug_ce": 0.25,
+              "drop": 0.1,
+              "receiver": 0.1,
+              "delta_keep": 0.5,
+              "delta_drop": 0.5,
+              "huber_delta": 1.0
+            },
+            "schedule": {
+              "action_every": 4,
+              "receiver_every": 8,
+              "relation_batch": 32,
+              "action_batch": 32,
+              "action_order": [
+                "linear",
+                "linear",
+                "temporal",
+                "temporal"
+              ]
+            },
+            "enabled": {
+              "keep": false,
+              "actions": false,
+              "receiver": false
+            },
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "target_access": false,
+            "test_views": [
+              "clean"
+            ],
+            "checkpoint_selection": "final_only",
+            "sampling": "shared seed-private source-L stream; 96 ordinary + 2x2x8 relation slots every8; no difficulty sampling",
+            "auxiliary": {
+              "action_passes": 2,
+              "action_fit_batch": 128,
+              "action_fit_lr": 0.0002,
+              "action_fit_wd": 0.0001,
+              "receiver_fit_steps": 200,
+              "receiver_fit_lr": 0.002,
+              "receiver_fit_wd": 0.0,
+              "fractional_delay_samples": 0.25
+            },
+            "evaluation": {
+              "primary_arm": "C3",
+              "goal_three_seed_mean": 0.84,
+              "truth_last": true,
+              "feedback_to_training": false
+            },
+            "concurrency": {
+              "max_processes_per_gpu": 4,
+              "includes_existing": true
+            },
+            "launch_owner": "codex/root/stage2-decouple-20261011"
+          },
+          "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092703",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/SAM_SSL-s2026092703/source",
+          "epochs": 40,
+          "steps_per_epoch": 222,
+          "updates": 8880,
+          "batch_size": 128,
+          "label_smoothing": 0.0,
+          "optimizer": {
+            "name": "AdamW",
+            "weight_decay": 0.0001,
+            "encoder_peak_lr": 0.0001,
+            "fusion_head_peak_lr": 0.0003,
+            "min_lr": 1e-06,
+            "warmup_steps": 444,
+            "frequency": {
+              "peak_lr": 3e-06,
+              "coordinate": "u=f/fs",
+              "master_dtype": "float64",
+              "weight_decay": 0.0,
+              "step_cap": "actual scheduled LR",
+              "raw_parameter_floor_Hz": 1.0
+            }
+          },
+          "enabled": {
+            "contrastive": false,
+            "cross_rx_mix": false,
+            "manifold_mix": false,
+            "sam": false,
+            "averaging": false,
+            "actions": false,
+            "conditional_actions": false,
+            "linear": false,
+            "repetition": false,
+            "condition": false,
+            "nonlinear": false,
+            "frequency": false
+          },
+          "losses": {
+            "ce": 1.0,
+            "soft_identity": 0.25,
+            "linear": 0.05,
+            "linear_identity": 0.1,
+            "repetition": 0.05,
+            "critic": 1.0
+          },
+          "mixing": {
+            "beta": 0.4,
+            "cross_rx_lambda": "Uniform[.25,.75]",
+            "normalized_joint": true,
+            "head_scale": 30.0
+          },
+          "sam": {
+            "enabled": true,
+            "base_recipe": "SSL",
+            "rho": 0.05,
+            "norm": "absolute L2 of trainable dense identity parameters; native Hz parameters excluded",
+            "start_update": 1,
+            "identity_gradient_passes": 17760,
+            "optimizer_steps": 8880,
+            "base_optimizer": "unchanged AdamW",
+            "target_and_actions": "computed once at unperturbed weights; detached q,mask,IQ,noise reused",
+            "dropout": "replay each differentiable forward RNG; global RNG restored to first-pass end",
+            "buffers": "replay from first-pass start; preserve first-pass end buffers",
+            "auxiliary": "one unperturbed objective and update, never SAM-perturbed",
+            "restore": "exact saved parameter copies in finally before optimizer step, including exceptions",
+            "reference": "https://github.com/google-research/sam",
+            "rho_rationale": "fixed initial .05, follows published example scale; no sourceV or target fitting; not claimed optimal"
+          },
+          "averaging": {
+            "start_epoch": 31,
+            "cycle_epochs": 2,
+            "cycle_peak_fraction": 0.5,
+            "snapshot_epochs": [
+              32,
+              34,
+              36,
+              38,
+              40
+            ],
+            "buffers": "fixed final buffers; BatchNorm architecture forbidden",
+            "selection": "fixed five-snapshot mean; no V choice"
+          },
+          "checkpoint_selection": "final_only",
+          "action": {
+            "policy": "coverage",
+            "payload": null,
+            "fit": "fresh original E200, same-scale tanh coordinates, abs noise, first full pass raw margin then full pass finite risk",
+            "every_steps": 4,
+            "batch": 32,
+            "order": [
+              "linear",
+              "linear",
+              "temporal",
+              "temporal"
+            ],
+            "coverage_fraction": 0.5
+          },
+          "sampling": {
+            "L": "RX/day balanced full permutation",
+            "U": "RX/day balanced full permutation",
+            "batch_L": 128,
+            "batch_U": 128,
+            "TX_grouping_or_same_sig_pairing": false
+          },
+          "target_access": false,
+          "unlabeled": true,
+          "teacher": false,
+          "satellite": false,
+          "test_views": [
+            "clean"
+          ],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "concurrency": {
+            "max_processes_per_gpu": 3,
+            "includes_existing": true,
+            "gpu_ids": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "evaluation": {
+            "primary_arm": "SAM_RANK",
+            "goal_three_seed_mean": 0.84,
+            "all_predeclared_arms_reported": true,
+            "truth_last": true,
+            "feedback_to_training": false,
+            "fixed_control_run": null,
+            "fixed_control_arms": [],
+            "control_role": "three paired recipes x two optimizers, all same E200 parents/final40; equal optimizer update counts, SAM doubles gradient passes, measured cost reported"
+          },
+          "launch_owner": "codex/root/stage2-rx-sam-20261011",
+          "semi": {
+            "cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/source_unlabeled/source_cache.pt",
+            "batch_size": 128,
+            "role": "U_s",
+            "count": 56700,
+            "mode": "soft_KL",
+            "ema_decay": null,
+            "L_readapt_updates": 888,
+            "ramp_steps": 888,
+            "confidence_threshold": 0.95,
+            "strong_noise_std": 0.015,
+            "truth_access": false,
+            "teacher_selected_for_test": false,
+            "teacher_init": "after update888: cloned EMA or live stop-gradient student according to target_provider",
+            "identity_denominator": "fixed B_U",
+            "statistics_mask": "separate physical quality, all soft assignments",
+            "conditional_refresh_epochs": [
+              4,
+              12,
+              20,
+              28,
+              36
+            ],
+            "conditional_mix": 0.5,
+            "U_mean_alpha_cap": 0.2,
+            "target_provider": "current_student"
+          },
+          "optimization_scope": "all native identity encoder/fusion/classifier parameters; no frozen identity layers; domain networks frozen",
+          "physical": {
+            "every_steps": 4,
+            "max_L": 32,
+            "max_U": 32,
+            "linear_side_tap_scale": 0.015,
+            "action_targets": "four actual applied tap components / scale",
+            "linear_readout_input": "paired pre-classifier identity160 + PA160 + reference29",
+            "repetition_target": "leave-cycle relative template residual24 + learned diagonal uncertainty",
+            "strict_blindspot": false,
+            "known_linear_scope": "small circular digital filter; interior-only diagnostic required",
+            "old_aux_caches_reused": false
+          },
+          "frontend": {
+            "version": "original_reference_response_v1",
+            "reference_dim": 29,
+            "zero_slot": null,
+            "state_dim": 40,
+            "explicit_frequency_estimator": "inherited original baseline reference response",
+            "raw_IQ_retained": true,
+            "whole_model_frequency_invariant": false
+          },
+          "stage": "phase1_stage2_rx_sam",
+          "reference_mode": "original",
+          "mechanism_scope": "Test robustness to a dense identity weight neighborhood while preserving unlabeled targets and source physical actions. No EMA or satellite. V health only; no source or target accuracy-based selection.",
+          "rx_action": {
+            "enabled": false,
+            "critic": false,
+            "kind": "physical",
+            "taps": 33,
+            "scales": [
+              0.5,
+              1.0
+            ],
+            "max_amplitude_dB": 3.0,
+            "start_after_updates": 888,
+            "ramp_updates": 888,
+            "L_augmented_CE_fraction": 0.5,
+            "critic_every": 4,
+            "critic_batch": 32,
+            "critic_lr": 0.001,
+            "critic_hidden": 48,
+            "critic_uniform_warmup_updates": 0,
+            "critic_uniform_probability": 0.5,
+            "critic_temperature": 1.0,
+            "L_fit": "other five TX AND other two days",
+            "U_fit": "all six L TX, other two days; U TX never read",
+            "critic_fit": "margin(clean)-margin(action); SmoothL1 or all28 pair logistic abs margin difference>.01",
+            "action_selection": "standardized pretrained current-state risk for8candidates; no class labels in risk input; uniform PHYS control"
+          },
+          "risk_learning": {
+            "enabled": false,
+            "online": false,
+            "kind": null,
+            "source_run": null,
+            "source_config": null,
+            "checkpoint": null,
+            "pretrained_steps": 0,
+            "pretrained_identity_updates": 0,
+            "state_dim": 206,
+            "online_lr": 0.001,
+            "online_steps": 0,
+            "online_batch": 32,
+            "all_candidates": 8,
+            "policy": "half uniform plus half softmax(within-packet standardized risk), temperature1, std floor1e-6",
+            "normalization": "reuse fixed L-only E200 mean/std, never V/U fit",
+            "target": "margin(clean)-margin(action); SmoothL1 or all28 pair logistic abs margin difference>.01",
+            "identity_gradient_from_auxiliary": false,
+            "source_execution_commit": null
+          }
+        },
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/SAM_SSL-s2026092703/source/final_ssdg.pth",
+        "checkpoint_selection": "final_only",
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "V_count": 27000,
+          "V_accuracy": 0.9855925925925926,
+          "V_NLL": 0.07357650625736054,
+          "V_RX_accuracy": {
+            "1": 0.9966666666666667,
+            "3": 0.9601851851851851,
+            "4": 0.9874074074074074,
+            "6": 0.9983333333333333,
+            "8": 0.9853703703703703
+          },
+          "V_day_accuracy": {
+            "1": 0.986,
+            "2": 0.9875555555555555,
+            "3": 0.9832222222222222
+          },
+          "V_worst_RX": 0.9601851851851851,
+          "source_selection_score": 0.9728888888888889
+        },
+        "mechanism_execution": {
+          "identity_gradient_passes": 17760,
+          "RX_L_packets": 0,
+          "RX_U_packets": 0,
+          "critic_packets": 0,
+          "identity_updates": 8880,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "teacher_updates": 0,
+          "auxiliary_steps": 0,
+          "accepted_U": 999678,
+          "linear_steps": 0,
+          "repetition_steps": 0,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "satellite_calls": 0
+        },
+        "parent_provenance": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092703
+        },
+        "elapsed_seconds": 1156.2306981550064,
+        "resources": {
+          "identity_training_and_source_diagnostics_seconds": 1156.2306988369673,
+          "peak_cuda_memory_bytes": 333551616,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4947782,
+          "auxiliary_saved_bytes": 522902,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "RX_L_packets": 0,
+          "RX_U_packets": 0,
+          "critic_packets": 0,
+          "risk_initialization": null,
+          "critic_target_identity_packets": 0,
+          "action_state_identity_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        }
+      },
+      "freeze": {
+        "status": "SOURCE_FROZEN",
+        "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
+        "row_id": "SAM_SSL-s2026092703",
+        "config": {
+          "schema": "stage2_rx_sam_v1",
+          "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
+          "arm": "SAM_SSL",
+          "model_seed": 2026092703,
+          "row_id": "SAM_SSL-s2026092703",
+          "method": "cvs_stage2_rx_sam",
+          "variant": "reference_response",
+          "method_name": "SAM_SSL",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+          "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/prediction/predictions.npz",
+          "checkpoint_sources": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth"
+          ],
+          "parent_contract": {
+            "schema": "stage2_decouple_v1",
+            "run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
+            "stage": "stage2_decouple",
+            "arm": "C0",
+            "model_seed": 2026092703,
+            "row_id": "C0-s2026092703",
+            "method": "cvs_stage2_decouple",
+            "variant": "reference_response",
+            "features": [],
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C0-s2026092703/source",
+            "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+            "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/prediction/predictions.npz",
+            "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092703",
+            "model_initialization": "strict_matched_pure_CE_parent_fresh_optimizer",
+            "checkpoint_sources": [
+              "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth"
+            ],
+            "epochs": 40,
+            "steps_per_epoch": 222,
+            "batch_size": 128,
+            "updates": 8880,
+            "label_smoothing": 0.0,
+            "optimizer": {
+              "name": "AdamW",
+              "weight_decay": 0.0001,
+              "encoder_peak_lr": 3e-05,
+              "fusion_head_peak_lr": 0.0001,
+              "min_lr": 1e-06,
+              "warmup_steps": 444
+            },
+            "losses": {
+              "keep": 0.1,
+              "aug_ce": 0.25,
+              "drop": 0.1,
+              "receiver": 0.1,
+              "delta_keep": 0.5,
+              "delta_drop": 0.5,
+              "huber_delta": 1.0
+            },
+            "schedule": {
+              "action_every": 4,
+              "receiver_every": 8,
+              "relation_batch": 32,
+              "action_batch": 32,
+              "action_order": [
+                "linear",
+                "linear",
+                "temporal",
+                "temporal"
+              ]
+            },
+            "enabled": {
+              "keep": false,
+              "actions": false,
+              "receiver": false
+            },
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "target_access": false,
+            "test_views": [
+              "clean"
+            ],
+            "checkpoint_selection": "final_only",
+            "sampling": "shared seed-private source-L stream; 96 ordinary + 2x2x8 relation slots every8; no difficulty sampling",
+            "auxiliary": {
+              "action_passes": 2,
+              "action_fit_batch": 128,
+              "action_fit_lr": 0.0002,
+              "action_fit_wd": 0.0001,
+              "receiver_fit_steps": 200,
+              "receiver_fit_lr": 0.002,
+              "receiver_fit_wd": 0.0,
+              "fractional_delay_samples": 0.25
+            },
+            "evaluation": {
+              "primary_arm": "C3",
+              "goal_three_seed_mean": 0.84,
+              "truth_last": true,
+              "feedback_to_training": false
+            },
+            "concurrency": {
+              "max_processes_per_gpu": 4,
+              "includes_existing": true
+            },
+            "launch_owner": "codex/root/stage2-decouple-20261011"
+          },
+          "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092703",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/SAM_SSL-s2026092703/source",
+          "epochs": 40,
+          "steps_per_epoch": 222,
+          "updates": 8880,
+          "batch_size": 128,
+          "label_smoothing": 0.0,
+          "optimizer": {
+            "name": "AdamW",
+            "weight_decay": 0.0001,
+            "encoder_peak_lr": 0.0001,
+            "fusion_head_peak_lr": 0.0003,
+            "min_lr": 1e-06,
+            "warmup_steps": 444,
+            "frequency": {
+              "peak_lr": 3e-06,
+              "coordinate": "u=f/fs",
+              "master_dtype": "float64",
+              "weight_decay": 0.0,
+              "step_cap": "actual scheduled LR",
+              "raw_parameter_floor_Hz": 1.0
+            }
+          },
+          "enabled": {
+            "contrastive": false,
+            "cross_rx_mix": false,
+            "manifold_mix": false,
+            "sam": false,
+            "averaging": false,
+            "actions": false,
+            "conditional_actions": false,
+            "linear": false,
+            "repetition": false,
+            "condition": false,
+            "nonlinear": false,
+            "frequency": false
+          },
+          "losses": {
+            "ce": 1.0,
+            "soft_identity": 0.25,
+            "linear": 0.05,
+            "linear_identity": 0.1,
+            "repetition": 0.05,
+            "critic": 1.0
+          },
+          "mixing": {
+            "beta": 0.4,
+            "cross_rx_lambda": "Uniform[.25,.75]",
+            "normalized_joint": true,
+            "head_scale": 30.0
+          },
+          "sam": {
+            "enabled": true,
+            "base_recipe": "SSL",
+            "rho": 0.05,
+            "norm": "absolute L2 of trainable dense identity parameters; native Hz parameters excluded",
+            "start_update": 1,
+            "identity_gradient_passes": 17760,
+            "optimizer_steps": 8880,
+            "base_optimizer": "unchanged AdamW",
+            "target_and_actions": "computed once at unperturbed weights; detached q,mask,IQ,noise reused",
+            "dropout": "replay each differentiable forward RNG; global RNG restored to first-pass end",
+            "buffers": "replay from first-pass start; preserve first-pass end buffers",
+            "auxiliary": "one unperturbed objective and update, never SAM-perturbed",
+            "restore": "exact saved parameter copies in finally before optimizer step, including exceptions",
+            "reference": "https://github.com/google-research/sam",
+            "rho_rationale": "fixed initial .05, follows published example scale; no sourceV or target fitting; not claimed optimal"
+          },
+          "averaging": {
+            "start_epoch": 31,
+            "cycle_epochs": 2,
+            "cycle_peak_fraction": 0.5,
+            "snapshot_epochs": [
+              32,
+              34,
+              36,
+              38,
+              40
+            ],
+            "buffers": "fixed final buffers; BatchNorm architecture forbidden",
+            "selection": "fixed five-snapshot mean; no V choice"
+          },
+          "checkpoint_selection": "final_only",
+          "action": {
+            "policy": "coverage",
+            "payload": null,
+            "fit": "fresh original E200, same-scale tanh coordinates, abs noise, first full pass raw margin then full pass finite risk",
+            "every_steps": 4,
+            "batch": 32,
+            "order": [
+              "linear",
+              "linear",
+              "temporal",
+              "temporal"
+            ],
+            "coverage_fraction": 0.5
+          },
+          "sampling": {
+            "L": "RX/day balanced full permutation",
+            "U": "RX/day balanced full permutation",
+            "batch_L": 128,
+            "batch_U": 128,
+            "TX_grouping_or_same_sig_pairing": false
+          },
+          "target_access": false,
+          "unlabeled": true,
+          "teacher": false,
+          "satellite": false,
+          "test_views": [
+            "clean"
+          ],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "concurrency": {
+            "max_processes_per_gpu": 3,
+            "includes_existing": true,
+            "gpu_ids": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "evaluation": {
+            "primary_arm": "SAM_RANK",
+            "goal_three_seed_mean": 0.84,
+            "all_predeclared_arms_reported": true,
+            "truth_last": true,
+            "feedback_to_training": false,
+            "fixed_control_run": null,
+            "fixed_control_arms": [],
+            "control_role": "three paired recipes x two optimizers, all same E200 parents/final40; equal optimizer update counts, SAM doubles gradient passes, measured cost reported"
+          },
+          "launch_owner": "codex/root/stage2-rx-sam-20261011",
+          "semi": {
+            "cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/source_unlabeled/source_cache.pt",
+            "batch_size": 128,
+            "role": "U_s",
+            "count": 56700,
+            "mode": "soft_KL",
+            "ema_decay": null,
+            "L_readapt_updates": 888,
+            "ramp_steps": 888,
+            "confidence_threshold": 0.95,
+            "strong_noise_std": 0.015,
+            "truth_access": false,
+            "teacher_selected_for_test": false,
+            "teacher_init": "after update888: cloned EMA or live stop-gradient student according to target_provider",
+            "identity_denominator": "fixed B_U",
+            "statistics_mask": "separate physical quality, all soft assignments",
+            "conditional_refresh_epochs": [
+              4,
+              12,
+              20,
+              28,
+              36
+            ],
+            "conditional_mix": 0.5,
+            "U_mean_alpha_cap": 0.2,
+            "target_provider": "current_student"
+          },
+          "optimization_scope": "all native identity encoder/fusion/classifier parameters; no frozen identity layers; domain networks frozen",
+          "physical": {
+            "every_steps": 4,
+            "max_L": 32,
+            "max_U": 32,
+            "linear_side_tap_scale": 0.015,
+            "action_targets": "four actual applied tap components / scale",
+            "linear_readout_input": "paired pre-classifier identity160 + PA160 + reference29",
+            "repetition_target": "leave-cycle relative template residual24 + learned diagonal uncertainty",
+            "strict_blindspot": false,
+            "known_linear_scope": "small circular digital filter; interior-only diagnostic required",
+            "old_aux_caches_reused": false
+          },
+          "frontend": {
+            "version": "original_reference_response_v1",
+            "reference_dim": 29,
+            "zero_slot": null,
+            "state_dim": 40,
+            "explicit_frequency_estimator": "inherited original baseline reference response",
+            "raw_IQ_retained": true,
+            "whole_model_frequency_invariant": false
+          },
+          "stage": "phase1_stage2_rx_sam",
+          "reference_mode": "original",
+          "mechanism_scope": "Test robustness to a dense identity weight neighborhood while preserving unlabeled targets and source physical actions. No EMA or satellite. V health only; no source or target accuracy-based selection.",
+          "rx_action": {
+            "enabled": false,
+            "critic": false,
+            "kind": "physical",
+            "taps": 33,
+            "scales": [
+              0.5,
+              1.0
+            ],
+            "max_amplitude_dB": 3.0,
+            "start_after_updates": 888,
+            "ramp_updates": 888,
+            "L_augmented_CE_fraction": 0.5,
+            "critic_every": 4,
+            "critic_batch": 32,
+            "critic_lr": 0.001,
+            "critic_hidden": 48,
+            "critic_uniform_warmup_updates": 0,
+            "critic_uniform_probability": 0.5,
+            "critic_temperature": 1.0,
+            "L_fit": "other five TX AND other two days",
+            "U_fit": "all six L TX, other two days; U TX never read",
+            "critic_fit": "margin(clean)-margin(action); SmoothL1 or all28 pair logistic abs margin difference>.01",
+            "action_selection": "standardized pretrained current-state risk for8candidates; no class labels in risk input; uniform PHYS control"
+          },
+          "risk_learning": {
+            "enabled": false,
+            "online": false,
+            "kind": null,
+            "source_run": null,
+            "source_config": null,
+            "checkpoint": null,
+            "pretrained_steps": 0,
+            "pretrained_identity_updates": 0,
+            "state_dim": 206,
+            "online_lr": 0.001,
+            "online_steps": 0,
+            "online_batch": 32,
+            "all_candidates": 8,
+            "policy": "half uniform plus half softmax(within-packet standardized risk), temperature1, std floor1e-6",
+            "normalization": "reuse fixed L-only E200 mean/std, never V/U fit",
+            "target": "margin(clean)-margin(action); SmoothL1 or all28 pair logistic abs margin difference>.01",
+            "identity_gradient_from_auxiliary": false,
+            "source_execution_commit": null
+          }
+        },
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-sam-manysig-m18-r01/SAM_SSL-s2026092703/source/final_ssdg.pth",
+        "epoch": 40,
+        "optimizer_steps": 8880,
+        "target_access": false,
+        "target_scores_consumed": false,
+        "selection": "final_only"
+      },
+      "prediction_completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.1657676519826055
+        },
+        "wall_seconds": 6.478696236968972,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1746976768
+      }
     },
     {
       "row_id": "PHYS-s2026092703",
@@ -29188,7 +35214,7 @@
       "process": {
         "pid": 56136,
         "start_ticks": 97934627,
-        "state": "S",
+        "state": "R",
         "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
         "argv": [
           "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -33031,7 +39057,7 @@
       "process": {
         "pid": 56304,
         "start_ticks": 97935291,
-        "state": "R",
+        "state": "S",
         "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_sam_20261011_r01",
         "argv": [
           "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
