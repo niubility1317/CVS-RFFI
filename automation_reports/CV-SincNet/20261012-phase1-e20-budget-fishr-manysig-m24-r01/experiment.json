@@ -244,7 +244,7 @@
     {
       "row_id": "CE-s2026092701",
       "model_seed": 2026092701,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -626,12 +626,13 @@
       "arm": "CE",
       "pid": 135262,
       "gpu": 0,
-      "live_epoch": 14
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "SSL-s2026092701",
       "model_seed": 2026092701,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -1013,12 +1014,13 @@
       "arm": "SSL",
       "pid": 135349,
       "gpu": 1,
-      "live_epoch": 7
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "MULTI-s2026092701",
       "model_seed": 2026092701,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -1400,12 +1402,13 @@
       "arm": "MULTI",
       "pid": 135436,
       "gpu": 2,
-      "live_epoch": 6
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "MIX_L-s2026092701",
       "model_seed": 2026092701,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -1787,12 +1790,13 @@
       "arm": "MIX_L",
       "pid": 135523,
       "gpu": 3,
-      "live_epoch": 6
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "MIX_U-s2026092701",
       "model_seed": 2026092701,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -2174,12 +2178,13 @@
       "arm": "MIX_U",
       "pid": 135664,
       "gpu": 4,
-      "live_epoch": 6
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "FISHR_RAW-s2026092701",
       "model_seed": 2026092701,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -2561,12 +2566,13 @@
       "arm": "FISHR_RAW",
       "pid": 135831,
       "gpu": 5,
-      "live_epoch": 5
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "FISHR_BUDGET-s2026092701",
       "model_seed": 2026092701,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -2948,12 +2954,13 @@
       "arm": "FISHR_BUDGET",
       "pid": 135919,
       "gpu": 6,
-      "live_epoch": 5
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "JOINT-s2026092701",
       "model_seed": 2026092701,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -3335,12 +3342,13 @@
       "arm": "JOINT",
       "pid": 136006,
       "gpu": 7,
-      "live_epoch": 4
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "CE-s2026092702",
       "model_seed": 2026092702,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -3722,12 +3730,13 @@
       "arm": "CE",
       "pid": 136093,
       "gpu": 7,
-      "live_epoch": 9
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "SSL-s2026092702",
       "model_seed": 2026092702,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -4109,12 +4118,13 @@
       "arm": "SSL",
       "pid": 136180,
       "gpu": 0,
-      "live_epoch": 6
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "MULTI-s2026092702",
       "model_seed": 2026092702,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -4496,12 +4506,13 @@
       "arm": "MULTI",
       "pid": 136670,
       "gpu": 5,
-      "live_epoch": 5
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "MIX_L-s2026092702",
       "model_seed": 2026092702,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -4883,12 +4894,13 @@
       "arm": "MIX_L",
       "pid": 136754,
       "gpu": 6,
-      "live_epoch": 4
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "MIX_U-s2026092702",
       "model_seed": 2026092702,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -5270,12 +5282,13 @@
       "arm": "MIX_U",
       "pid": 136841,
       "gpu": 1,
-      "live_epoch": 4
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "FISHR_RAW-s2026092702",
       "model_seed": 2026092702,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -5657,12 +5670,13 @@
       "arm": "FISHR_RAW",
       "pid": 136926,
       "gpu": 2,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "FISHR_BUDGET-s2026092702",
       "model_seed": 2026092702,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -6044,12 +6058,13 @@
       "arm": "FISHR_BUDGET",
       "pid": 137010,
       "gpu": 4,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "JOINT-s2026092702",
       "model_seed": 2026092702,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -6431,12 +6446,13 @@
       "arm": "JOINT",
       "pid": 137094,
       "gpu": 3,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "CE-s2026092703",
       "model_seed": 2026092703,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -6818,12 +6834,13 @@
       "arm": "CE",
       "pid": 137188,
       "gpu": 3,
-      "live_epoch": 5
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "SSL-s2026092703",
       "model_seed": 2026092703,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -7205,12 +7222,13 @@
       "arm": "SSL",
       "pid": 137272,
       "gpu": 1,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "MULTI-s2026092703",
       "model_seed": 2026092703,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -7592,12 +7610,13 @@
       "arm": "MULTI",
       "pid": 137356,
       "gpu": 0,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "MIX_L-s2026092703",
       "model_seed": 2026092703,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -7979,12 +7998,13 @@
       "arm": "MIX_L",
       "pid": 137440,
       "gpu": 4,
-      "live_epoch": 2
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "MIX_U-s2026092703",
       "model_seed": 2026092703,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -8366,12 +8386,13 @@
       "arm": "MIX_U",
       "pid": 137524,
       "gpu": 7,
-      "live_epoch": 2
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "FISHR_RAW-s2026092703",
       "model_seed": 2026092703,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -8753,12 +8774,13 @@
       "arm": "FISHR_RAW",
       "pid": 137608,
       "gpu": 5,
-      "live_epoch": 2
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "FISHR_BUDGET-s2026092703",
       "model_seed": 2026092703,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -9140,12 +9162,13 @@
       "arm": "FISHR_BUDGET",
       "pid": 137694,
       "gpu": 2,
-      "live_epoch": 2
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "row_id": "JOINT-s2026092703",
       "model_seed": 2026092703,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "e20_budget_fishr_v1",
         "run_id": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
@@ -9527,7 +9550,8 @@
       "arm": "JOINT",
       "pid": 137779,
       "gpu": 6,
-      "live_epoch": 1
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     }
   ],
   "notes": [
@@ -9542,7 +9566,7 @@
     "Source V health only; final incremental20 frozen; all24 rows clean168000 truth-last, results never change training.",
     "Eight GPUs max3 total processes each, including existing owners; technical failures preserve artifacts and stop pending only."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "independent_review": {
     "reviewer": "stage2_release_review",
     "status": "PASS",
@@ -9551,5 +9575,11 @@
   },
   "registered_at": "2026-10-11T17:05:44+00:00",
   "execution_commit": "3d7847080c96484245c1c1b518e799b10f1c7435",
-  "delivery_verdict": "VERIFIED"
+  "delivery_verdict": "VERIFIED",
+  "results": {
+    "complete_rows": 24,
+    "source_steps": 106560,
+    "complete_arms_reaching_84": [],
+    "report": "final_analysis.md"
+  }
 }

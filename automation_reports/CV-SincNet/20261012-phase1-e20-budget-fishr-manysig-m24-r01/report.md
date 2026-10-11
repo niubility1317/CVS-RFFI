@@ -57,3 +57,8 @@ lambda 停止梯度，最终正则 `mean_l(lambda_l*F_l)`。分母过小、缺�
 
 
 发布 VERIFIED：执行提交 `3d7847080c96484245c1c1b518e799b10f1c7435`，dispatcher PID 135160。已启动 24/24 行，24 行的实际配置、E20 继承、进程和首轮日志核实通过，待运行 0 行；每卡总进程不超过 3。训练完成后逐行自动 clean 测试。当前无本批最终测试成绩，84% 目标待验证。
+
+
+## 完整矩阵完成
+
+24/24 行全部完成。三种子、配对差、RX/TX/day、纠错／破坏与成本见[完整分析](final_analysis.md)，机制执行与源日志见[source_trajectory.md](source_trajectory.md)。完整核验106560个主训练step、480个epoch与全部源训练stdout段；预测/评分stdout未混入源分析。没有完整方案达到84%，目标保持未完成。

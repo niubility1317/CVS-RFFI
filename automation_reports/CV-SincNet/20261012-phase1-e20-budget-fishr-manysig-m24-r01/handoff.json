@@ -1,12 +1,7 @@
 {
-  "status": "RUNNING",
-  "goal": "clean three-seed mean>=.84 not yet demonstrated",
-  "run": "20261012-phase1-e20-budget-fishr-manysig-m24-r01",
+  "status": "ANALYZED",
   "execution_commit": "3d7847080c96484245c1c1b518e799b10f1c7435",
-  "dispatcher": 135160,
-  "matrix": 24,
-  "launched": 24,
-  "checked": [
+  "completed_rows": [
     "CE-s2026092701",
     "SSL-s2026092701",
     "MULTI-s2026092701",
@@ -32,10 +27,9 @@
     "FISHR_BUDGET-s2026092703",
     "JOINT-s2026092703"
   ],
-  "pending": 0,
-  "next": "Read existing dispatcher/workers, never republish. Auto clean each final incremental20 row. Collect all24 fixed results and source trajectory without target-driven adjustment.",
-  "collector": "python -m experiments.cvs_e20_budget_fishr.collect_results --output automation_reports/CV-SincNet/20261012-phase1-e20-budget-fishr-manysig-m24-r01",
-  "budget": "original native E20 +20=total40; auxiliary heads200 warmup steps separate",
-  "multilevel": "time_down/t2.pool; U main-path MixStyle; backbone-only readout Fishr with source gradient budget; noEMA/noSat",
-  "owner": "codex/root/e20-budget-fishr-20261012"
+  "remaining_rows": [],
+  "source_complete_steps": 106560,
+  "final_report": "final_analysis.md",
+  "complete_arms_reaching_84": [],
+  "next": "No reruns of completed fixed matrix. Goal84 active unless full achievement audit passes. Further design must use source evidence, never target ranking/errors; original E20+20 or scratch20 permitted, three seeds and <=3 total GPU processes each."
 }
