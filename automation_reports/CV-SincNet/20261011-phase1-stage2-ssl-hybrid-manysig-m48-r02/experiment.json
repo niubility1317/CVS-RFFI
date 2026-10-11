@@ -15804,5 +15804,13 @@
   "updated_at_unix": 1791710998.4415658,
   "delivery_verdict": "VERIFIED",
   "runtime_evidence_ref": "evidence/runtime_training.json",
-  "target_evaluation_status": "PENDING_AUTOMATIC_CLEAN"
+  "target_evaluation_status": "PENDING_AUTOMATIC_CLEAN",
+  "latest_observation": {
+    "source_completed": 18,
+    "clean_analyzed": 18,
+    "active": 24,
+    "pending": 6,
+    "target_scores_read": false,
+    "observed_at": 1791712284.2997708
+  }
 }

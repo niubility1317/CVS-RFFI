@@ -24,3 +24,4 @@
 {"at": 1791710996.8206878, "status": "RUNNING", "job_kind": "train", "identifier": "S6-s2026092702", "pid": 4020802, "gpu": 1, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S6-s2026092702.log", "row_id": "S6-s2026092702"}
 {"at": 1791710998.4415658, "status": "RUNNING", "job_kind": "train", "identifier": "S7-s2026092702", "pid": 4020960, "gpu": 3, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S7-s2026092702.log", "row_id": "S7-s2026092702"}
 {"at": 1791711166.5816653, "status": "RUNNING", "delivery_verdict": "VERIFIED", "active": 24, "pending": 24, "execution_commit": "eb2a5495d2e8b44b2888ed933e810f589ff69052"}
+{"at": 1791712422.5965195, "event": "VERIFIED_PARTIAL_CLEAN_PROGRESS", "source_completed": 18, "clean_analyzed": 18, "target_scores_read": false, "evidence": "evidence/optimizer_audit_time_progress.json"}

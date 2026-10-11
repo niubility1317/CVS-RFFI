@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "reviewer": "stochastic_forward_audit",
+  "finding": "P1 normalized roundtrip falsely included in update",
+  "resolution": "mapped_after-minus-mapped_before; roundtrip and coordinate_changed separate",
+  "targeted_readback": "Reviewer confirmed P1 closed after execution; no new target reads or runs",
+  "execution_commit": "ad20545a0b4366fe24589b2c0c7bdf9373da6c26"
+}

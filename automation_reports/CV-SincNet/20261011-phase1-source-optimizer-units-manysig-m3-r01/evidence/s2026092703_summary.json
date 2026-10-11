@@ -1,0 +1,217 @@
+{
+  "seed": 2026092703,
+  "parent_provenance": {
+    "status": "VERIFIED",
+    "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+    "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+    "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+    "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+    "epoch": 200,
+    "optimizer_steps": 44400,
+    "source_roles": "EXACT_MATCH",
+    "target_training_or_selection": false,
+    "ancestors": [],
+    "seed": 2026092703
+  },
+  "source_count": 6300,
+  "source_batches": 50,
+  "source_CE": 0.00032150126223433247,
+  "frequency_parameters": [
+    {
+      "name": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+      "shape": [
+        24,
+        1
+      ],
+      "sample_rate": 25000000.0,
+      "norm": 11165026.0,
+      "min": 30.000686645507812,
+      "max": 8327119.5,
+      "min_float32_spacing_Hz": 1.9073486328125e-06,
+      "max_float32_spacing_Hz": 0.5,
+      "comparisons": [
+        {
+          "lr": 3e-05,
+          "coordinate": "raw_Hz",
+          "parameter_batch_occurrences": 1200,
+          "zero_update_fraction": 1.0,
+          "nonzero_gradient_but_zero_update_fraction": 1.0,
+          "mean_abs_delta_Hz": 0.0,
+          "max_abs_delta_Hz": 0.0,
+          "mean_first_order_CE_change": 0.0,
+          "coordinate_change_fraction": 0.0,
+          "initialization_roundtrip_mean_abs_Hz": 0.0,
+          "initialization_roundtrip_max_abs_Hz": 0.0
+        },
+        {
+          "lr": 3e-05,
+          "coordinate": "frequency_over_fs",
+          "parameter_batch_occurrences": 1200,
+          "zero_update_fraction": 0.0,
+          "nonzero_gradient_but_zero_update_fraction": 0.0,
+          "mean_abs_delta_Hz": 735.7041320800781,
+          "max_abs_delta_Hz": 750.5,
+          "mean_first_order_CE_change": -5.919967326501463e-06,
+          "coordinate_change_fraction": 1.0,
+          "initialization_roundtrip_mean_abs_Hz": 0.0261255893856287,
+          "initialization_roundtrip_max_abs_Hz": 0.5
+        },
+        {
+          "lr": 0.0001,
+          "coordinate": "raw_Hz",
+          "parameter_batch_occurrences": 1200,
+          "zero_update_fraction": 1.0,
+          "nonzero_gradient_but_zero_update_fraction": 1.0,
+          "mean_abs_delta_Hz": 0.0,
+          "max_abs_delta_Hz": 0.0,
+          "mean_first_order_CE_change": 0.0,
+          "coordinate_change_fraction": 0.0,
+          "initialization_roundtrip_mean_abs_Hz": 0.0,
+          "initialization_roundtrip_max_abs_Hz": 0.0
+        },
+        {
+          "lr": 0.0001,
+          "coordinate": "frequency_over_fs",
+          "parameter_batch_occurrences": 1200,
+          "zero_update_fraction": 0.0,
+          "nonzero_gradient_but_zero_update_fraction": 0.0,
+          "mean_abs_delta_Hz": 2452.357932128906,
+          "max_abs_delta_Hz": 2500.125,
+          "mean_first_order_CE_change": -1.973322017764678e-05,
+          "coordinate_change_fraction": 1.0,
+          "initialization_roundtrip_mean_abs_Hz": 0.0261255893856287,
+          "initialization_roundtrip_max_abs_Hz": 0.5
+        },
+        {
+          "lr": 0.0003,
+          "coordinate": "raw_Hz",
+          "parameter_batch_occurrences": 1200,
+          "zero_update_fraction": 0.0,
+          "nonzero_gradient_but_zero_update_fraction": 0.0,
+          "mean_abs_delta_Hz": 0.08034142106771469,
+          "max_abs_delta_Hz": 0.5,
+          "mean_first_order_CE_change": -3.436946311008455e-10,
+          "coordinate_change_fraction": 1.0,
+          "initialization_roundtrip_mean_abs_Hz": 0.0,
+          "initialization_roundtrip_max_abs_Hz": 0.0
+        },
+        {
+          "lr": 0.0003,
+          "coordinate": "frequency_over_fs",
+          "parameter_batch_occurrences": 1200,
+          "zero_update_fraction": 0.0,
+          "nonzero_gradient_but_zero_update_fraction": 0.0,
+          "mean_abs_delta_Hz": 7357.078916015625,
+          "max_abs_delta_Hz": 7500.5,
+          "mean_first_order_CE_change": -5.919966048502978e-05,
+          "coordinate_change_fraction": 1.0,
+          "initialization_roundtrip_mean_abs_Hz": 0.0261255893856287,
+          "initialization_roundtrip_max_abs_Hz": 0.5
+        }
+      ]
+    },
+    {
+      "name": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+      "shape": [
+        24,
+        1
+      ],
+      "sample_rate": 25000000.0,
+      "norm": 5595217.5,
+      "min": 365.7796325683594,
+      "max": 4172798.5,
+      "min_float32_spacing_Hz": 3.0517578125e-05,
+      "max_float32_spacing_Hz": 0.25,
+      "comparisons": [
+        {
+          "lr": 3e-05,
+          "coordinate": "raw_Hz",
+          "parameter_batch_occurrences": 1200,
+          "zero_update_fraction": 1.0,
+          "nonzero_gradient_but_zero_update_fraction": 1.0,
+          "mean_abs_delta_Hz": 0.0,
+          "max_abs_delta_Hz": 0.0,
+          "mean_first_order_CE_change": 0.0,
+          "coordinate_change_fraction": 0.0,
+          "initialization_roundtrip_mean_abs_Hz": 0.0,
+          "initialization_roundtrip_max_abs_Hz": 0.0
+        },
+        {
+          "lr": 3e-05,
+          "coordinate": "frequency_over_fs",
+          "parameter_batch_occurrences": 1200,
+          "zero_update_fraction": 0.041666666666666664,
+          "nonzero_gradient_but_zero_update_fraction": 0.0,
+          "mean_abs_delta_Hz": 701.2497344970703,
+          "max_abs_delta_Hz": 750.125,
+          "mean_first_order_CE_change": -3.116231965790556e-06,
+          "coordinate_change_fraction": 0.9583333333333334,
+          "initialization_roundtrip_mean_abs_Hz": 0.0052490234375,
+          "initialization_roundtrip_max_abs_Hz": 0.125
+        },
+        {
+          "lr": 0.0001,
+          "coordinate": "raw_Hz",
+          "parameter_batch_occurrences": 1200,
+          "zero_update_fraction": 1.0,
+          "nonzero_gradient_but_zero_update_fraction": 1.0,
+          "mean_abs_delta_Hz": 0.0,
+          "max_abs_delta_Hz": 0.0,
+          "mean_first_order_CE_change": 0.0,
+          "coordinate_change_fraction": 0.0,
+          "initialization_roundtrip_mean_abs_Hz": 0.0,
+          "initialization_roundtrip_max_abs_Hz": 0.0
+        },
+        {
+          "lr": 0.0001,
+          "coordinate": "frequency_over_fs",
+          "parameter_batch_occurrences": 1200,
+          "zero_update_fraction": 0.041666666666666664,
+          "nonzero_gradient_but_zero_update_fraction": 0.0,
+          "mean_abs_delta_Hz": 2337.5126806640624,
+          "max_abs_delta_Hz": 2500.125,
+          "mean_first_order_CE_change": -1.0387491697997909e-05,
+          "coordinate_change_fraction": 0.9583333333333334,
+          "initialization_roundtrip_mean_abs_Hz": 0.0052490234375,
+          "initialization_roundtrip_max_abs_Hz": 0.125
+        },
+        {
+          "lr": 0.0003,
+          "coordinate": "raw_Hz",
+          "parameter_batch_occurrences": 1200,
+          "zero_update_fraction": 0.0,
+          "nonzero_gradient_but_zero_update_fraction": 0.0,
+          "mean_abs_delta_Hz": 0.040187835693359375,
+          "max_abs_delta_Hz": 0.25,
+          "mean_first_order_CE_change": -7.389223829456486e-11,
+          "coordinate_change_fraction": 1.0,
+          "initialization_roundtrip_mean_abs_Hz": 0.0,
+          "initialization_roundtrip_max_abs_Hz": 0.0
+        },
+        {
+          "lr": 0.0003,
+          "coordinate": "frequency_over_fs",
+          "parameter_batch_occurrences": 1200,
+          "zero_update_fraction": 0.0,
+          "nonzero_gradient_but_zero_update_fraction": 0.0,
+          "mean_abs_delta_Hz": 7012.540439453125,
+          "max_abs_delta_Hz": 7500.25,
+          "mean_first_order_CE_change": -3.1162533269646354e-05,
+          "coordinate_change_fraction": 1.0,
+          "initialization_roundtrip_mean_abs_Hz": 0.0052490234375,
+          "initialization_roundtrip_max_abs_Hz": 0.125
+        }
+      ]
+    }
+  ],
+  "all_identity_parameters_l2_norm": 12488565.0,
+  "non_frequency_identity_l2_norm": 64.75785064697266,
+  "identity_state_exactly_unchanged": true,
+  "identity_updates": 0,
+  "optimizer_state_attached_to_live_model": false,
+  "U_truth_read": false,
+  "U_samples_read": 0,
+  "V_forward_or_fit": false,
+  "target_access": false,
+  "domain_forwards": 0
+}
