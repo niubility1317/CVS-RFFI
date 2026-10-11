@@ -1,0 +1,9 @@
+{
+  "goal": "clean three-seed mean >=84%; not yet achieved",
+  "status": "ANALYZED",
+  "run": "20261011-phase1-rx-critic-ranking-manysig-m3-r01",
+  "execution_commit": "477f53cc8df1dc0dd77e3e152a157f04a50dd211",
+  "finding": "CE critic ranking near chance and MSE near zero predictor; do not amplify current ranking",
+  "next": "Source-only test margin/pairwise supervision and detached current identity-state conditioning. No second TX classifier. L fit,V readonly, no target feedback. Then new preregistered40epoch stage2 if supported.",
+  "parallel": "E25 three-seed compression running, collect only when3seeds complete before next budget; no new stage2 parent from compression."
+}

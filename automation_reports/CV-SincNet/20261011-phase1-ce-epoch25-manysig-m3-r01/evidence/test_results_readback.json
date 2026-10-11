@@ -1,0 +1,122 @@
+{
+  "run_id": "20261011-phase1-ce-epoch25-manysig-m3-r01",
+  "read_at": 1791725864.1523669,
+  "queue": {
+    "active": [
+      "E25-s2026092701",
+      "E25-s2026092702",
+      "E25-s2026092703"
+    ],
+    "pending": [],
+    "completed": [],
+    "failures": [],
+    "max_total_processes_per_GPU": 3,
+    "updated_at": 1791725861.9883676
+  },
+  "failure": null,
+  "completion": null,
+  "rows": [
+    {
+      "row_id": "E25-s2026092701",
+      "process": {
+        "pid": 4170691,
+        "start_ticks": 97277278,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch25_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch25.dispatch",
+          "--worker",
+          "E25-s2026092701"
+        ],
+        "gpu": "0"
+      },
+      "launch": {
+        "row_id": "E25-s2026092701",
+        "pid": 4170691,
+        "gpu": 0,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch25_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch25.dispatch",
+          "--worker",
+          "E25-s2026092701"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch25-manysig-m3-r01/logs/E25-s2026092701.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "E25-s2026092702",
+      "process": {
+        "pid": 4170774,
+        "start_ticks": 97277607,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch25_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch25.dispatch",
+          "--worker",
+          "E25-s2026092702"
+        ],
+        "gpu": "0"
+      },
+      "launch": {
+        "row_id": "E25-s2026092702",
+        "pid": 4170774,
+        "gpu": 0,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch25_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch25.dispatch",
+          "--worker",
+          "E25-s2026092702"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch25-manysig-m3-r01/logs/E25-s2026092702.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "E25-s2026092703",
+      "process": {
+        "pid": 4170860,
+        "start_ticks": 97277939,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch25_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch25.dispatch",
+          "--worker",
+          "E25-s2026092703"
+        ],
+        "gpu": "1"
+      },
+      "launch": {
+        "row_id": "E25-s2026092703",
+        "pid": 4170860,
+        "gpu": 1,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch25_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch25.dispatch",
+          "--worker",
+          "E25-s2026092703"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch25-manysig-m3-r01/logs/E25-s2026092703.log"
+      },
+      "completion": null
+    }
+  ]
+}

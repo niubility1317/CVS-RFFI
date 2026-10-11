@@ -418,7 +418,7 @@
     {
       "row_id": "CRIT-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "config": {
         "run_id": "20261011-phase1-rx-critic-ranking-manysig-m3-r01",
         "row_id": "CRIT-s2026092701",
@@ -808,12 +808,14 @@
         "V_actions.pt",
         "resolved_config.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4178722,
+      "gpu": 2
     },
     {
       "row_id": "CRIT-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "config": {
         "run_id": "20261011-phase1-rx-critic-ranking-manysig-m3-r01",
         "row_id": "CRIT-s2026092702",
@@ -1203,12 +1205,14 @@
         "V_actions.pt",
         "resolved_config.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4178808,
+      "gpu": 3
     },
     {
       "row_id": "CRIT-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "config": {
         "run_id": "20261011-phase1-rx-critic-ranking-manysig-m3-r01",
         "row_id": "CRIT-s2026092703",
@@ -1598,7 +1602,9 @@
         "V_actions.pt",
         "resolved_config.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4178946,
+      "gpu": 4
     }
   ],
   "notes": [
@@ -1608,7 +1614,7 @@
     "Candidate ranking on CE and logit margin, zero-predictor calibration control, actual policy expected difficulty versus uniform. Oracle is diagnostic upper bound, not deployed rule.",
     "No candidate or hyperparameter selection in this diagnostic; report every fixed row and stratum."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "independent_review": {
     "reviewer": "stage2_release_review",
     "status": "PASS",
@@ -1616,5 +1622,7 @@
     "evidence": "stage2_release_review P0/P1=0 after focused closure: POSIX paths match all registrations; tied maxima use permutation-invariant expected hit/regret; source roles, freeze, transport reviewed"
   },
   "registered_at": "2026-10-11T13:31:13+00:00",
-  "updated_at": "2026-10-11T12:26:21.077516+00:00"
+  "updated_at": "2026-10-11T12:26:21.077516+00:00",
+  "execution_commit": "477f53cc8df1dc0dd77e3e152a157f04a50dd211",
+  "delivery_verdict": "VERIFIED"
 }
