@@ -356,3 +356,5 @@
 - [20261011-phase1-stage2-counterfactual-source-manysig-m3-r01](../automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/report.md)：三父模型全 L_s 随机前向混杂诊断，无身份更新或目标访问。
 
 - [可辨识特征几何与 B0–B3 三种子](by_method/source_geometry.md)
+
+- [CE＋旧门控＋cos：E15/E12各三种子压缩](../automation_reports/CV-SincNet/20261011-phase1-ce-epoch12-15-manysig-m6-r01/report.md)
