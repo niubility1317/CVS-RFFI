@@ -71,7 +71,7 @@
   "group_id": "cvs-e20-error-gradient-audit",
   "display_name": "E20浅中层机制：固定源样本纠错与同权重梯度方向诊断",
   "description": "三种子全部L/V配对错误迁移及L-only梯度；八个固定终点；0身份更新、无目标访问",
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "source_only",
@@ -148,7 +148,7 @@
     {
       "row_id": "E20-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_e20_error_audit",
       "purpose": "三种子全部L/V配对错误迁移及L-only梯度；八个固定终点；0身份更新、无目标访问",
       "config": {
@@ -566,12 +566,14 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L balanced sampler seed+step*99991,U stream seed+901337; arm-paired RNG seed+step*137; no randomized evaluation. None not inferred zero."
+      "seed_notes": "Fixed physical split;L balanced sampler seed+step*99991,U stream seed+901337; arm-paired RNG seed+step*137; no randomized evaluation. None not inferred zero.",
+      "pid": 157138,
+      "gpu": 0
     },
     {
       "row_id": "E20-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_e20_error_audit",
       "purpose": "三种子全部L/V配对错误迁移及L-only梯度；八个固定终点；0身份更新、无目标访问",
       "config": {
@@ -989,12 +991,14 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L balanced sampler seed+step*99991,U stream seed+901337; arm-paired RNG seed+step*137; no randomized evaluation. None not inferred zero."
+      "seed_notes": "Fixed physical split;L balanced sampler seed+step*99991,U stream seed+901337; arm-paired RNG seed+step*137; no randomized evaluation. None not inferred zero.",
+      "pid": 157226,
+      "gpu": 1
     },
     {
       "row_id": "E20-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_e20_error_audit",
       "purpose": "三种子全部L/V配对错误迁移及L-only梯度；八个固定终点；0身份更新、无目标访问",
       "config": {
@@ -1412,8 +1416,30 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L balanced sampler seed+step*99991,U stream seed+901337; arm-paired RNG seed+step*137; no randomized evaluation. None not inferred zero."
+      "seed_notes": "Fixed physical split;L balanced sampler seed+step*99991,U stream seed+901337; arm-paired RNG seed+step*137; no randomized evaluation. None not inferred zero.",
+      "pid": 157313,
+      "gpu": 2
     }
   ],
-  "registered_at": "2026-10-11T17:37:33+00:00"
+  "registered_at": "2026-10-11T17:37:33+00:00",
+  "execution_commit": "455c204875d58058b47d21503da55bd1212b0927",
+  "delivery_verdict": "VERIFIED",
+  "results": {
+    "scope": "source-only diagnostic",
+    "seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "source_readout_packets": 899100,
+    "gradient_records": 576,
+    "paired_readouts": 90,
+    "head_updates": 600,
+    "identity_updates": 0,
+    "target_packets": 0,
+    "analysis": "analysis.md",
+    "reflection": "reflection.md",
+    "summary": "summary.json",
+    "goal_achieved": false
+  }
 }

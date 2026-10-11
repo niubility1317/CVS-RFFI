@@ -1,2 +1,4 @@
 {"at": "2026-10-11T17:37:33+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"event": "LOCAL_VERIFIED", "time": 1791740635.91141, "review": "PASS", "CPU_CUDA": "PASS", "target_access": false}
+{"event": "LAUNCH_VERIFIED", "time": 1791740733.8119888, "execution_commit": "455c204875d58058b47d21503da55bd1212b0927", "checked": ["E20-s2026092701", "E20-s2026092702", "E20-s2026092703"]}
+{"event": "SOURCE_DIAGNOSTIC_ANALYZED", "time": 1791740914.4397817, "rows": 3, "source_readout_packets": 899100, "gradient_records": 576, "identity_updates": 0, "target_access": false}

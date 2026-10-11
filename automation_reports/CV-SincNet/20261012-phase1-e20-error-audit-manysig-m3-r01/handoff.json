@@ -1,0 +1,18 @@
+{
+  "status": "ANALYZED",
+  "run": "20261012-phase1-e20-error-audit-manysig-m3-r01",
+  "execution_commit": "455c204875d58058b47d21503da55bd1212b0927",
+  "owner": "codex/root/e20-error-audit-20261012",
+  "identity_updates": 0,
+  "target_access": false,
+  "remaining_rows": [],
+  "goal": "three-seed clean mean84% unachieved",
+  "next": "Use source-only fixed-cohort corrections and shallow/middle gradient diagnostics to design the next registered comparison; do not increase Fishr scale solely from gradient magnitude or use target errors for tuning.",
+  "evidence": [
+    "analysis.md",
+    "reflection.md",
+    "summary.json",
+    "evidence/source_results.json",
+    "evidence/final_checks.json"
+  ]
+}

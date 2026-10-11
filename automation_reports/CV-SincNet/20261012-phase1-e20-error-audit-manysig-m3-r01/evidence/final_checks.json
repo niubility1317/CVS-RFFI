@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "seed": 2026092701,
+      "paired_records": 30,
+      "gradient_records": 192,
+      "source_readout_packets": 299700,
+      "status": "PASS"
+    },
+    {
+      "seed": 2026092702,
+      "paired_records": 30,
+      "gradient_records": 192,
+      "source_readout_packets": 299700,
+      "status": "PASS"
+    },
+    {
+      "seed": 2026092703,
+      "paired_records": 30,
+      "gradient_records": 192,
+      "source_readout_packets": 299700,
+      "status": "PASS"
+    }
+  ],
+  "source_strata_recount": true,
+  "paired_aggregation_recount": true,
+  "gradient_negative_recount": true,
+  "source_only": true,
+  "target_access": false
+}
