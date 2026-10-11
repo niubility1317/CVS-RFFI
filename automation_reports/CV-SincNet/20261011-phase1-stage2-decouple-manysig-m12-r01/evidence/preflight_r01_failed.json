@@ -1,0 +1,9 @@
+{
+  "release_exists": true,
+  "run_exists": false,
+  "logs": {
+    "preflight.log": "Traceback (most recent call last):\n  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 196, in _run_module_as_main\n    return _run_code(code, main_globals, None,\n  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 86, in _run_code\n    exec(code, run_globals)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_decouple_20261011_r01/experiments/cvs_stage2_decouple/control_checks.py\", line 158, in <module>\n    result = remote_preflight() if args.remote_preflight else checks()\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_decouple_20261011_r01/experiments/cvs_stage2_decouple/control_checks.py\", line 139, in remote_preflight\n    provenance = verify_parent(c)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_decouple_20261011_r01/experiments/cvs_stage2_decouple/common.py\", line 37, in verify_parent\n    ck=torch.load(c['parent_checkpoint'],map_location='cpu',weights_only=False)\n  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/serialization.py\", line 1014, in load\n    return _load(opened_zipfile,\n  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/serialization.py\", line 1422, in _load\n    result = unpickler.load()\n  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/serialization.py\", line 1415, in find_class\n    return super().find_class(mod_name, name)\nModuleNotFoundError: No module named 'baseline_origin_sat_view'\n",
+    "submit.json": null,
+    "dispatcher.stdout.log": null
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "status": "EXPECTED_FAILURE",
+      "missing_module": "baseline_origin_sat_view",
+      "initially_cold": true
+    },
+    {
+      "status": "PASS",
+      "mode": "cold_build_model",
+      "initially_cold": true,
+      "strict_state_identical": true,
+      "no_query_logits_identical": true,
+      "native_object_deserialized": true
+    },
+    {
+      "status": "PASS",
+      "mode": "cold_verify_parent",
+      "initially_cold": true,
+      "parent_epoch": 200,
+      "native_object_deserialized": true
+    }
+  ],
+  "source_data_read": false,
+  "target_access": false,
+  "scope": "Synthetic real architecture checkpoint and strict provenance fixtures; independent fresh processes"
+}

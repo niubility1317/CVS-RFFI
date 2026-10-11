@@ -6,7 +6,7 @@ from experiments.cvs_phase1_stack.design import args_from_validated_config
 
 ROOT=Path(__file__).resolve().parents[2]
 RUN='20261011-phase1-stage2-decouple-manysig-m12-r01'
-RELEASE='cvs_stage2_decouple_20261011_r01'
+RELEASE='cvs_stage2_decouple_20261011_r02'
 BASE=Path(PROJECT)/'runs'/RUN
 OWNER='codex/root/stage2-decouple-20261011'
 SEEDS=(2026092701,2026092702,2026092703)

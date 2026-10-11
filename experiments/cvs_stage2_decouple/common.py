@@ -34,6 +34,10 @@ def verify_parent(c):
             not actual['a1_periodic_target_start'],not actual['a1_periodic_target_interval'],not actual['a1_final_weak_reference'],
             actual['checkpoint_selection']=='final_only',actual['wisig_pkl']==c['dataset']]
     if not all(checks):raise ValueError('CHECKPOINT_PROVENANCE_UNVERIFIED: parent source/config/CE contract')
+    # Historical args include SatViewStage objects. Register the native
+    # code directory before deserializing; no data or satellite generator runs.
+    from experiments.cvs_phase1_overlay.model import native_modules
+    native_modules()
     ck=torch.load(c['parent_checkpoint'],map_location='cpu',weights_only=False)
     if (ck['epoch']!=200 or ck['run_id']!=d.PARENT_ORIGIN or ck['candidate_id']!=old['row_id'] or
         ck['checkpoint_selection']!='final_only' or ck['a1_ema_successful_updates']!=44400):
@@ -52,6 +56,8 @@ def build_model(c,device,checkpoint=None):
     """Strict load precedes creation of any action/reference/cache state."""
     d.validate(c)
     path=checkpoint or c['parent_checkpoint']
+    from experiments.cvs_phase1_overlay.model import native_modules
+    native_modules()
     ck=torch.load(path,map_location='cpu',weights_only=False)
     from experiments.cvs_phase1_stack.runtime import installed
     with installed(c) as native:

@@ -34,7 +34,7 @@
     "checkpoint_origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_decouple_20261011_r01"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_decouple_20261011_r02"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -152,7 +152,7 @@
     "launch_command": "python -X utf8 -m experiments.cvs_stage2_decouple.publish --output local_artifacts/cvs_stage2_decouple_20261011_r01",
     "stop_rule": "Technical exception records FAILED and retains artifacts; no automatic retry, no metric-based stopping; healthy jobs finish untouched",
     "release_commit": null,
-    "release_commit_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_decouple_20261011_r01/release_commit.txt",
+    "release_commit_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_decouple_20261011_r02/release_commit.txt",
     "remote_launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_stage2_decouple.dispatch",
     "preparation_jobs": 3,
     "identity_training_rows": 12,
@@ -2236,7 +2236,8 @@
     "Identity gradient audit every888updates reports weighted/unweighted absolute norms and ratios only if CE norm>1e-12; no automatic parameter tuning.",
     "Record parent cost, shared preparation once per seed, each40epoch run and test separately; measured shared-GPU wall and peak memory, no inferred speedup.",
     "No healthy existing experiment is stopped or modified. Technical failures preserve outputs and receive no automatic rerun.",
-    "84% target remains unverified until all three C3 independent clean scores exist; no best-arm replacement or feedback into training."
+    "84% target remains unverified until all three C3 independent clean scores exist; no best-arm replacement or feedback into training.",
+    "首次发布r01在CPU父checkpoint反序列化预检失败，尚未创建run或训练进程；修复native模块导入顺序后改用不可覆盖的release r02，实验run/矩阵/数据/预算不变。"
   ],
   "status": "PLANNED",
   "test_completion_plan": {

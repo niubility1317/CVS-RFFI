@@ -1,2 +1,4 @@
 {"at": "2026-10-11T03:43:22+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-11T03:44:14+00:00", "status": "LOCAL_VERIFIED", "note": "设计逐项实现，CPU/CUDA与独立P0/P1通过，待发布；84%未验证", "evidence": ["E:\\type10-7\\automation_reports\\CV-SincNet\\20261011-phase1-stage2-decouple-manysig-m12-r01\\evidence\\review.json"], "row_id": null}
+{"status": "LOCAL_VERIFIED", "event": "PREFLIGHT_FAILED_BEFORE_LAUNCH", "release": "cvs_stage2_decouple_20261011_r01", "evidence": "evidence/preflight_r01_failed.json", "training_started": false, "at": "2026-10-11T03:47:22.589282+00:00", "row_id": null}
+{"at": "2026-10-11T03:47:22+00:00", "status": "LOCAL_VERIFIED", "note": "冷进程checkpoint加载顺序修复通过；三真实父模型只读来源、严格加载与零输入推理通过；准备release r02", "evidence": ["E:\\type10-7\\automation_reports\\CV-SincNet\\20261011-phase1-stage2-decouple-manysig-m12-r01\\evidence\\stage2_cold_checkpoint_r01.json"], "row_id": null}
