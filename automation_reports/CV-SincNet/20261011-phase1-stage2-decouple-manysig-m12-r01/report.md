@@ -74,3 +74,6 @@ R 用固定三个双 TX 留出折，在另四个 TX 上拟合物理状态到条�
 发布后的只读状态工具曾使用系统 Python 缺少 torch；已改用项目 Python 完成独立读回，该问题不在训练进程中，不重启或修改健康实验。
 
 历史总结见 [多解耦实验回顾](../../../docs/CVS_MULTI_DISENTANGLE_RETROSPECTIVE_20261011.md)，逐项实现见 [设计追溯](../../../docs/CVS_STAGE2_IMPLEMENTATION_TRACE_20261011.md)。
+
+
+测试技术异常：12 行 source 均已完成 E40，但首批 clean IQ 的 `torch.from_numpy` 在 N607 报 TypeError。原目录只有 provenance/resolved metadata，无 prediction/complete，也未评分。新恢复 run `20261011-phase1-stage2-clean-recovery-manysig-m12-r01` 仅修复字节缓冲区转换并复用全部原权重；不重新训练、不改参数。旧失败证据保留。

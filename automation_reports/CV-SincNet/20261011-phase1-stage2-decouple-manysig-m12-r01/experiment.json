@@ -2266,7 +2266,7 @@
     "84% target remains unverified until all three C3 independent clean scores exist; no best-arm replacement or feedback into training.",
     "首次发布r01在CPU父checkpoint反序列化预检失败，尚未创建run或训练进程；修复native模块导入顺序后改用不可覆盖的release r02，实验run/矩阵/数据/预算不变。"
   ],
-  "status": "RUNNING",
+  "status": "TRAINING_COMPLETE",
   "test_completion_plan": {
     "views": [
       "clean"
@@ -2363,5 +2363,6 @@
     },
     "online_fit": false,
     "frozen_during_identity_training": true
-  }
+  },
+  "test_recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
 }

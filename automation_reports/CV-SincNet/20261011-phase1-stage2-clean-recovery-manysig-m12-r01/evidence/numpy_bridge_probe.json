@@ -1,0 +1,169 @@
+{
+  "rows": [
+    {
+      "row": "C0-s2026092701",
+      "source": "SOURCE_TRAINED",
+      "failure": {
+        "status": "FAILED",
+        "error": "TypeError('expected np.ndarray (got numpy.ndarray)')",
+        "automatic_retry": false
+      },
+      "prediction_files": [
+        "provenance.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row": "C0-s2026092702",
+      "source": "SOURCE_TRAINED",
+      "failure": {
+        "status": "FAILED",
+        "error": "TypeError('expected np.ndarray (got numpy.ndarray)')",
+        "automatic_retry": false
+      },
+      "prediction_files": [
+        "provenance.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row": "C0-s2026092703",
+      "source": "SOURCE_TRAINED",
+      "failure": {
+        "status": "FAILED",
+        "error": "TypeError('expected np.ndarray (got numpy.ndarray)')",
+        "automatic_retry": false
+      },
+      "prediction_files": [
+        "provenance.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row": "C1-s2026092701",
+      "source": "SOURCE_TRAINED",
+      "failure": {
+        "status": "FAILED",
+        "error": "TypeError('expected np.ndarray (got numpy.ndarray)')",
+        "automatic_retry": false
+      },
+      "prediction_files": [
+        "provenance.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row": "C1-s2026092702",
+      "source": "SOURCE_TRAINED",
+      "failure": {
+        "status": "FAILED",
+        "error": "TypeError('expected np.ndarray (got numpy.ndarray)')",
+        "automatic_retry": false
+      },
+      "prediction_files": [
+        "provenance.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row": "C1-s2026092703",
+      "source": "SOURCE_TRAINED",
+      "failure": {
+        "status": "FAILED",
+        "error": "TypeError('expected np.ndarray (got numpy.ndarray)')",
+        "automatic_retry": false
+      },
+      "prediction_files": [
+        "provenance.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row": "C2-s2026092701",
+      "source": "SOURCE_TRAINED",
+      "failure": {
+        "status": "FAILED",
+        "error": "TypeError('expected np.ndarray (got numpy.ndarray)')",
+        "automatic_retry": false
+      },
+      "prediction_files": [
+        "provenance.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row": "C2-s2026092702",
+      "source": "SOURCE_TRAINED",
+      "failure": {
+        "status": "FAILED",
+        "error": "TypeError('expected np.ndarray (got numpy.ndarray)')",
+        "automatic_retry": false
+      },
+      "prediction_files": [
+        "provenance.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row": "C2-s2026092703",
+      "source": "SOURCE_TRAINED",
+      "failure": {
+        "status": "FAILED",
+        "error": "TypeError('expected np.ndarray (got numpy.ndarray)')",
+        "automatic_retry": false
+      },
+      "prediction_files": [
+        "provenance.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row": "C3-s2026092701",
+      "source": "SOURCE_TRAINED",
+      "failure": {
+        "status": "FAILED",
+        "error": "TypeError('expected np.ndarray (got numpy.ndarray)')",
+        "automatic_retry": false
+      },
+      "prediction_files": [
+        "provenance.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row": "C3-s2026092702",
+      "source": "SOURCE_TRAINED",
+      "failure": {
+        "status": "FAILED",
+        "error": "TypeError('expected np.ndarray (got numpy.ndarray)')",
+        "automatic_retry": false
+      },
+      "prediction_files": [
+        "provenance.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row": "C3-s2026092703",
+      "source": "SOURCE_TRAINED",
+      "failure": {
+        "status": "FAILED",
+        "error": "TypeError('expected np.ndarray (got numpy.ndarray)')",
+        "automatic_retry": false
+      },
+      "prediction_files": [
+        "provenance.json",
+        "resolved_config.json"
+      ]
+    }
+  ],
+  "old_bridge": {
+    "status": "FAILED",
+    "error": "TypeError('expected np.ndarray (got numpy.ndarray)')"
+  },
+  "buffer_route": "PASS",
+  "max_abs_error": 0.0,
+  "torch": "2.1.0+cu121",
+  "numpy": "2.2.5",
+  "target_access": false
+}

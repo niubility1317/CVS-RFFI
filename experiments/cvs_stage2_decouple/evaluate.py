@@ -66,6 +66,14 @@ def physical_ids():
     return ids
 
 
+def iq_tensor(values, device):
+    """Copy clean float32 IQ through the buffer API, independent of NumPy ABI."""
+    import torch
+    if values.dtype.name != 'float32' or values.ndim != 3 or values.shape[1:] != (2, 256):
+        raise ValueError('Clean IQ tensor contract differs')
+    return torch.frombuffer(bytearray(values.tobytes(order='C')), dtype=torch.float32).reshape(values.shape).to(device)
+
+
 def predict(row):
     import numpy as np
     import torch
@@ -112,7 +120,7 @@ def predict(row):
         with torch.no_grad():
             for begin in range(0, COUNT, 256):
                 values = np.array(array[begin:begin + 256], dtype=np.float32, copy=True)
-                logits = model(torch.from_numpy(values).to(device))
+                logits = model(iq_tensor(values, device))
                 if logits.shape != (len(values), 6) or not torch.isfinite(logits).all():
                     raise ValueError('Nonfinite or malformed clean classifier output')
                 predictions.extend(logits.argmax(1).cpu().tolist())
