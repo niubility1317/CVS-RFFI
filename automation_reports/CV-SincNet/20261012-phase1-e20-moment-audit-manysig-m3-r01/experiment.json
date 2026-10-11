@@ -71,7 +71,7 @@
   "group_id": "cvs-e20-moment-audit",
   "display_name": "浅中层Fishr有限样本可靠性与MixStyle统计诊断",
   "description": "三seed原E20及CE+20；全L统计与独立批次估计；无身份更新、无目标访问",
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "source_only",
@@ -153,7 +153,7 @@
     {
       "row_id": "MOMENT-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_e20_moment_audit",
       "purpose": "三seed原E20及CE+20；全L统计与独立批次估计；无身份更新、无目标访问",
       "config": {
@@ -615,12 +615,14 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split; private deterministic per-cell sampling/shuffle/style generators derived from modelseed; None not inferred zero."
+      "seed_notes": "Fixed physical split; private deterministic per-cell sampling/shuffle/style generators derived from modelseed; None not inferred zero.",
+      "pid": 210535,
+      "gpu": 0
     },
     {
       "row_id": "MOMENT-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_e20_moment_audit",
       "purpose": "三seed原E20及CE+20；全L统计与独立批次估计；无身份更新、无目标访问",
       "config": {
@@ -1082,12 +1084,14 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split; private deterministic per-cell sampling/shuffle/style generators derived from modelseed; None not inferred zero."
+      "seed_notes": "Fixed physical split; private deterministic per-cell sampling/shuffle/style generators derived from modelseed; None not inferred zero.",
+      "pid": 210621,
+      "gpu": 1
     },
     {
       "row_id": "MOMENT-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_e20_moment_audit",
       "purpose": "三seed原E20及CE+20；全L统计与独立批次估计；无身份更新、无目标访问",
       "config": {
@@ -1549,8 +1553,21 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split; private deterministic per-cell sampling/shuffle/style generators derived from modelseed; None not inferred zero."
+      "seed_notes": "Fixed physical split; private deterministic per-cell sampling/shuffle/style generators derived from modelseed; None not inferred zero.",
+      "pid": 210708,
+      "gpu": 2
     }
   ],
-  "registered_at": "2026-10-11T18:57:03+00:00"
+  "registered_at": "2026-10-11T18:57:03+00:00",
+  "delivery_verdict": "VERIFIED",
+  "execution_commit": "e9730c342413f3f281007b73c60d3487569e0994",
+  "results": {
+    "identity_updates": 0,
+    "head_updates": 1200,
+    "L_model_readouts": 75600,
+    "Fishr_estimates": 7776,
+    "MixStyle_rounds": 432,
+    "target_access": false,
+    "goal_achieved": false
+  }
 }

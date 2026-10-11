@@ -39,3 +39,6 @@
 [Fishr 原论文](https://proceedings.mlr.press/v162/rame22a.html)提出跨域梯度方差约束；[官方实现](https://github.com/alexrame/fishr)提供其训练实现。本项目采用浅中层线性头和特定采样布局，因此需要单独验证其估计与梯度，不能直接继承论文效果。
 
 [MixStyle 原论文](https://arxiv.org/abs/2104.02008)以实例特征统计混合扩展训练分布。本项目加入同身份、同日期、跨 RX 限制，实际覆盖和变化幅度以本项目诊断为准。
+
+
+三种子源诊断已全部完成，VERIFIED / ANALYZED；详见 [analysis.md](analysis.md) 和 [源证据归纳](reflection.md)。共六个固定模型，身份0更新，75600次L模型读出、7776个Fishr估计及432次局部MixStyle试验。没有新的目标测试成绩，84%目标未完成。
