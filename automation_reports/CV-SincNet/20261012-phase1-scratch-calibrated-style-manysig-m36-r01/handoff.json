@@ -28,19 +28,21 @@
     "note": "Only actual written prefixes; do not claim full run or target improvement. No changed training."
   },
   "progress": {
-    "read_at": 1791755956.8794484,
-    "launched": 29,
+    "read_at": 1791756532.2513604,
+    "launched": 31,
     "active_processes_verified": 24,
-    "pending": 7,
-    "scored_rows": 5,
-    "source_fully_audited_rows": 5,
-    "source_fully_audited_steps": 22200,
+    "pending": 5,
+    "scored_rows": 7,
+    "source_fully_audited_rows": 7,
+    "source_fully_audited_steps": 31080,
     "failures": [],
     "goal_status": "UNPROVEN"
   },
   "completed_rows": [
     "DELAY_M_MIDDLE-s2026092701",
     "CAP_M_MIDDLE-s2026092701",
+    "DELAYCAP_M_SHALLOW-s2026092701",
+    "DELAYCAP_M_MIDDLE-s2026092701",
     "DELAY_M_MIDDLE-s2026092702",
     "CAP_M_MIDDLE-s2026092702",
     "DELAYCAP_M_MIDDLE-s2026092702"

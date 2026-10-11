@@ -19,6 +19,8 @@
       "completed_rows": [
         "DELAY_M_MIDDLE-s2026092701",
         "CAP_M_MIDDLE-s2026092701",
+        "DELAYCAP_M_SHALLOW-s2026092701",
+        "DELAYCAP_M_MIDDLE-s2026092701",
         "DELAY_M_MIDDLE-s2026092702",
         "CAP_M_MIDDLE-s2026092702",
         "DELAYCAP_M_MIDDLE-s2026092702"
@@ -40,9 +42,7 @@
         "DELAYCAP_M_BOTH-s2026092701",
         "DELAYCAP_M_BOTH-s2026092702",
         "DELAYCAP_M_BOTH-s2026092703",
-        "DELAYCAP_M_MIDDLE-s2026092701",
         "DELAYCAP_M_MIDDLE-s2026092703",
-        "DELAYCAP_M_SHALLOW-s2026092701",
         "DELAYCAP_M_SHALLOW-s2026092702",
         "DELAYCAP_M_SHALLOW-s2026092703",
         "DELAY_JOINT-s2026092701",
@@ -454,15 +454,17 @@
       "view": "clean",
       "status": "PARTIAL",
       "complete_three_seeds": false,
-      "paired_seeds": [],
-      "paired_seed_count": 0,
+      "paired_seeds": [
+        2026092701
+      ],
+      "paired_seed_count": 1,
       "per_seed": [
         {
           "seed": 2026092701,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.8127678571428572,
           "reference_accuracy": 0.8104404761904762,
-          "difference": null,
-          "status": "MISSING",
+          "difference": 0.002327380952380942,
+          "status": "COMPLETE",
           "treatment_row": "DELAYCAP_M_SHALLOW-s2026092701",
           "reference_row": "M_SHALLOW-s2026092701"
         },
@@ -487,7 +489,7 @@
       ],
       "mean_difference": null,
       "sd_difference": null,
-      "available_pair_mean": null,
+      "available_pair_mean": 0.002327380952380942,
       "available_pair_sd": null
     },
     {
@@ -498,16 +500,17 @@
       "status": "PARTIAL",
       "complete_three_seeds": false,
       "paired_seeds": [
+        2026092701,
         2026092702
       ],
-      "paired_seed_count": 1,
+      "paired_seed_count": 2,
       "per_seed": [
         {
           "seed": 2026092701,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.8129047619047619,
           "reference_accuracy": 0.8200416666666667,
-          "difference": null,
-          "status": "MISSING",
+          "difference": -0.007136904761904761,
+          "status": "COMPLETE",
           "treatment_row": "DELAYCAP_M_MIDDLE-s2026092701",
           "reference_row": "M_MIDDLE-s2026092701"
         },
@@ -532,8 +535,8 @@
       ],
       "mean_difference": null,
       "sd_difference": null,
-      "available_pair_mean": 0.015958333333333297,
-      "available_pair_sd": null
+      "available_pair_mean": 0.004410714285714268,
+      "available_pair_sd": 0.016330799470260712
     },
     {
       "treatment": "DELAYCAP_M_BOTH",
@@ -1328,15 +1331,17 @@
       "view": "clean",
       "status": "PARTIAL",
       "complete_three_seeds": false,
-      "paired_seeds": [],
-      "paired_seed_count": 0,
+      "paired_seeds": [
+        2026092701
+      ],
+      "paired_seed_count": 1,
       "per_seed": [
         {
           "seed": 2026092701,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.8127678571428572,
           "reference_accuracy": 0.8106309523809524,
-          "difference": null,
-          "status": "MISSING",
+          "difference": 0.0021369047619047565,
+          "status": "COMPLETE",
           "treatment_row": "DELAYCAP_M_SHALLOW-s2026092701",
           "reference_row": "CE-s2026092701"
         },
@@ -1361,7 +1366,7 @@
       ],
       "mean_difference": null,
       "sd_difference": null,
-      "available_pair_mean": null,
+      "available_pair_mean": 0.0021369047619047565,
       "available_pair_sd": null
     },
     {
@@ -1371,15 +1376,17 @@
       "view": "clean",
       "status": "PARTIAL",
       "complete_three_seeds": false,
-      "paired_seeds": [],
-      "paired_seed_count": 0,
+      "paired_seeds": [
+        2026092701
+      ],
+      "paired_seed_count": 1,
       "per_seed": [
         {
           "seed": 2026092701,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.8127678571428572,
           "reference_accuracy": 0.8130119047619048,
-          "difference": null,
-          "status": "MISSING",
+          "difference": -0.00024404761904761596,
+          "status": "COMPLETE",
           "treatment_row": "DELAYCAP_M_SHALLOW-s2026092701",
           "reference_row": "SSL-s2026092701"
         },
@@ -1404,7 +1411,7 @@
       ],
       "mean_difference": null,
       "sd_difference": null,
-      "available_pair_mean": null,
+      "available_pair_mean": -0.00024404761904761596,
       "available_pair_sd": null
     },
     {
@@ -1415,16 +1422,17 @@
       "status": "PARTIAL",
       "complete_three_seeds": false,
       "paired_seeds": [
+        2026092701,
         2026092702
       ],
-      "paired_seed_count": 1,
+      "paired_seed_count": 2,
       "per_seed": [
         {
           "seed": 2026092701,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.8129047619047619,
           "reference_accuracy": 0.8106309523809524,
-          "difference": null,
-          "status": "MISSING",
+          "difference": 0.0022738095238095113,
+          "status": "COMPLETE",
           "treatment_row": "DELAYCAP_M_MIDDLE-s2026092701",
           "reference_row": "CE-s2026092701"
         },
@@ -1449,8 +1457,8 @@
       ],
       "mean_difference": null,
       "sd_difference": null,
-      "available_pair_mean": 0.007529761904761956,
-      "available_pair_sd": null
+      "available_pair_mean": 0.0049017857142857335,
+      "available_pair_sd": 0.003716519570165054
     },
     {
       "treatment": "DELAYCAP_M_MIDDLE",
@@ -1460,16 +1468,17 @@
       "status": "PARTIAL",
       "complete_three_seeds": false,
       "paired_seeds": [
+        2026092701,
         2026092702
       ],
-      "paired_seed_count": 1,
+      "paired_seed_count": 2,
       "per_seed": [
         {
           "seed": 2026092701,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.8129047619047619,
           "reference_accuracy": 0.8130119047619048,
-          "difference": null,
-          "status": "MISSING",
+          "difference": -0.0001071428571428612,
+          "status": "COMPLETE",
           "treatment_row": "DELAYCAP_M_MIDDLE-s2026092701",
           "reference_row": "SSL-s2026092701"
         },
@@ -1494,8 +1503,8 @@
       ],
       "mean_difference": null,
       "sd_difference": null,
-      "available_pair_mean": 0.0012559523809524409,
-      "available_pair_sd": null
+      "available_pair_mean": 0.0005744047619047898,
+      "available_pair_sd": 0.0009638538862602797
     },
     {
       "treatment": "DELAYCAP_M_BOTH",
