@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "source_role": "synthetic L_s",
+  "target_access": false,
+  "zero_RX_difference": true,
+  "known_RX_mu_offset_MSE": 2.0,
+  "within_mu_MSE": 0.0125,
+  "known_scale_log_sigma_signal": true,
+  "mean_noise_denominator_verified": true,
+  "rounds": 36,
+  "balanced_batch": 60,
+  "fixed_seed_reproducible": true,
+  "donor_rules_verified": true,
+  "disabled_rounds_retained": true,
+  "input_unchanged": true,
+  "global_RNG_unchanged": true,
+  "JSON_finite": true,
+  "float32_cached_maps_supported": true,
+  "no_autograd_graph_or_gradient": true,
+  "illegal_inputs_rejected": [
+    "floating labels",
+    "target RX",
+    "non-source day",
+    "duplicate PID",
+    "empty PID",
+    "metadata length",
+    "nonfinite maps",
+    "complex maps",
+    "cell has fewer than two PID",
+    "empty cache"
+  ]
+}
