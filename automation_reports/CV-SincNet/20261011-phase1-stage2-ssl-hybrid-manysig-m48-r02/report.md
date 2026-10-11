@@ -31,3 +31,10 @@ LR warmup444后cosine；平均变体E31–40固定2epoch循环并平均E32/34/36
 
 
 技术恢复 20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02：仅调整原生bootstrap/导入顺序；沿用原冻结48行与全部科学参数。旧发布未启动训练，原记录和远端目录保留。
+
+
+## 发布及真实执行核验
+
+VERIFIED：执行提交 `eb2a5495d2e8b44b2888ed933e810f589ff69052`，dispatcher PID 4019153。source U56700缓存、三个真实E200来源、三seed×16真实Ls/隐藏TX Us网络前后向与SAM预检PASS；身份更新0/target0。旧r01入口失败记录保留，新r02仅修正原生bootstrap顺序。独立P0/P1合并审查无未解决项。
+
+24行已启动，24行排队，八卡每卡3总进程。实际resolved与48行冻结配置逐字段一致；teacher/U真执行，satellite/R前向与在线辅助拟合关闭。已有 24 行epoch日志；每行teacher调用与EMA更新等于identity更新，U计数=256×更新，首epoch已遍历56700 distinct U。强LR变体已按各档写入优化器，记录E200权重位移。当前无技术failure，完整40epoch与clean成绩尚未产生，84%未达到或证明。该状态仅代表本次观测时间。

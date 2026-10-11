@@ -1,0 +1,660 @@
+{
+  "status": "VERIFIED",
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 4019153,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_stage2_ssl.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/dispatcher.stdout.log",
+    "commit": "eb2a5495d2e8b44b2888ed933e810f589ff69052",
+    "run_id": "20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02"
+  },
+  "dispatcher": {
+    "pid": 4019153,
+    "start_ticks": 95867387,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/experiments/cvs_stage2_ssl/dispatch.py"
+    ],
+    "launch_owner": "codex/root/stage2-ssl-hybrid-20261011",
+    "commit": "eb2a5495d2e8b44b2888ed933e810f589ff69052"
+  },
+  "dispatcher_process": {
+    "pid": 4019153,
+    "start_ticks": 95867387,
+    "state": "S",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_stage2_ssl.dispatch"
+    ],
+    "gpu": null
+  },
+  "workers": [
+    {
+      "identifier": "S0-s2026092701",
+      "pid": 4019286,
+      "gpu": 0,
+      "process": {
+        "pid": 4019286,
+        "start_ticks": 95867569,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S0-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "0"
+      }
+    },
+    {
+      "identifier": "S1-s2026092701",
+      "pid": 4019293,
+      "gpu": 1,
+      "process": {
+        "pid": 4019293,
+        "start_ticks": 95867600,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S1-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "1"
+      }
+    },
+    {
+      "identifier": "S2-s2026092701",
+      "pid": 4019305,
+      "gpu": 2,
+      "process": {
+        "pid": 4019305,
+        "start_ticks": 95867634,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S2-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "2"
+      }
+    },
+    {
+      "identifier": "S3-s2026092701",
+      "pid": 4019313,
+      "gpu": 3,
+      "process": {
+        "pid": 4019313,
+        "start_ticks": 95867668,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S3-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "3"
+      }
+    },
+    {
+      "identifier": "S4-s2026092701",
+      "pid": 4019319,
+      "gpu": 4,
+      "process": {
+        "pid": 4019319,
+        "start_ticks": 95867701,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S4-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "4"
+      }
+    },
+    {
+      "identifier": "S5-s2026092701",
+      "pid": 4019332,
+      "gpu": 5,
+      "process": {
+        "pid": 4019332,
+        "start_ticks": 95867763,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S5-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "5"
+      }
+    },
+    {
+      "identifier": "S6-s2026092701",
+      "pid": 4019347,
+      "gpu": 6,
+      "process": {
+        "pid": 4019347,
+        "start_ticks": 95867852,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S6-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "6"
+      }
+    },
+    {
+      "identifier": "S7-s2026092701",
+      "pid": 4019368,
+      "gpu": 7,
+      "process": {
+        "pid": 4019368,
+        "start_ticks": 95867975,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S7-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "7"
+      }
+    },
+    {
+      "identifier": "S8-s2026092701",
+      "pid": 4019392,
+      "gpu": 0,
+      "process": {
+        "pid": 4019392,
+        "start_ticks": 95868124,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S8-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "0"
+      }
+    },
+    {
+      "identifier": "S9-s2026092701",
+      "pid": 4019425,
+      "gpu": 1,
+      "process": {
+        "pid": 4019425,
+        "start_ticks": 95868316,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S9-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "1"
+      }
+    },
+    {
+      "identifier": "S10-s2026092701",
+      "pid": 4019669,
+      "gpu": 3,
+      "process": {
+        "pid": 4019669,
+        "start_ticks": 95868584,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S10-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "3"
+      }
+    },
+    {
+      "identifier": "S11-s2026092701",
+      "pid": 4019913,
+      "gpu": 6,
+      "process": {
+        "pid": 4019913,
+        "start_ticks": 95868831,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S11-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "6"
+      }
+    },
+    {
+      "identifier": "S12-s2026092701",
+      "pid": 4020005,
+      "gpu": 7,
+      "process": {
+        "pid": 4020005,
+        "start_ticks": 95868968,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S12-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "7"
+      }
+    },
+    {
+      "identifier": "S13-s2026092701",
+      "pid": 4020093,
+      "gpu": 2,
+      "process": {
+        "pid": 4020093,
+        "start_ticks": 95869073,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S13-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "2"
+      }
+    },
+    {
+      "identifier": "S14-s2026092701",
+      "pid": 4020176,
+      "gpu": 4,
+      "process": {
+        "pid": 4020176,
+        "start_ticks": 95869169,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S14-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "4"
+      }
+    },
+    {
+      "identifier": "S15-s2026092701",
+      "pid": 4020260,
+      "gpu": 5,
+      "process": {
+        "pid": 4020260,
+        "start_ticks": 95869263,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S15-s2026092701",
+          "--train-stage2"
+        ],
+        "gpu": "5"
+      }
+    },
+    {
+      "identifier": "S0-s2026092702",
+      "pid": 4020274,
+      "gpu": 2,
+      "process": {
+        "pid": 4020274,
+        "start_ticks": 95869345,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S0-s2026092702",
+          "--train-stage2"
+        ],
+        "gpu": "2"
+      }
+    },
+    {
+      "identifier": "S1-s2026092702",
+      "pid": 4020362,
+      "gpu": 4,
+      "process": {
+        "pid": 4020362,
+        "start_ticks": 95869463,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S1-s2026092702",
+          "--train-stage2"
+        ],
+        "gpu": "4"
+      }
+    },
+    {
+      "identifier": "S2-s2026092702",
+      "pid": 4020445,
+      "gpu": 5,
+      "process": {
+        "pid": 4020445,
+        "start_ticks": 95869552,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S2-s2026092702",
+          "--train-stage2"
+        ],
+        "gpu": "5"
+      }
+    },
+    {
+      "identifier": "S3-s2026092702",
+      "pid": 4020518,
+      "gpu": 7,
+      "process": {
+        "pid": 4020518,
+        "start_ticks": 95869671,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S3-s2026092702",
+          "--train-stage2"
+        ],
+        "gpu": "7"
+      }
+    },
+    {
+      "identifier": "S4-s2026092702",
+      "pid": 4020612,
+      "gpu": 6,
+      "process": {
+        "pid": 4020612,
+        "start_ticks": 95869805,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S4-s2026092702",
+          "--train-stage2"
+        ],
+        "gpu": "6"
+      }
+    },
+    {
+      "identifier": "S5-s2026092702",
+      "pid": 4020706,
+      "gpu": 0,
+      "process": {
+        "pid": 4020706,
+        "start_ticks": 95869963,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S5-s2026092702",
+          "--train-stage2"
+        ],
+        "gpu": "0"
+      }
+    },
+    {
+      "identifier": "S6-s2026092702",
+      "pid": 4020802,
+      "gpu": 1,
+      "process": {
+        "pid": 4020802,
+        "start_ticks": 95870124,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S6-s2026092702",
+          "--train-stage2"
+        ],
+        "gpu": "1"
+      }
+    },
+    {
+      "identifier": "S7-s2026092702",
+      "pid": 4020960,
+      "gpu": 3,
+      "process": {
+        "pid": 4020960,
+        "start_ticks": 95870286,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_ssl.dispatch",
+          "--worker",
+          "train",
+          "--identifier",
+          "S7-s2026092702",
+          "--train-stage2"
+        ],
+        "gpu": "3"
+      }
+    }
+  ],
+  "capacity": {
+    "0": {
+      "pids": [
+        4019286,
+        4019392,
+        4020706
+      ],
+      "free_mb": 21355
+    },
+    "1": {
+      "pids": [
+        4019293,
+        4019425,
+        4020802
+      ],
+      "free_mb": 21441
+    },
+    "2": {
+      "pids": [
+        4019305,
+        4020093,
+        4020274
+      ],
+      "free_mb": 21423
+    },
+    "3": {
+      "pids": [
+        4019313,
+        4019669,
+        4020960
+      ],
+      "free_mb": 21381
+    },
+    "4": {
+      "pids": [
+        4019319,
+        4020176,
+        4020362
+      ],
+      "free_mb": 21415
+    },
+    "5": {
+      "pids": [
+        4019332,
+        4020260,
+        4020445
+      ],
+      "free_mb": 21423
+    },
+    "6": {
+      "pids": [
+        4019347,
+        4019913,
+        4020612
+      ],
+      "free_mb": 21449
+    },
+    "7": {
+      "pids": [
+        4019368,
+        4020005,
+        4020518
+      ],
+      "free_mb": 21449
+    }
+  }
+}

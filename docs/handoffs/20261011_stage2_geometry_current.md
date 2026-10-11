@@ -115,3 +115,8 @@ Z3源任务证据：八固定源V视图的均值准确率与S3最大绝对差0.0
 ## 2026-10-11 半监督与权重调优更新
 
 H0–H10共33行已完成source40＋clean独立评分，最高H0三seed80.886%，84%未达。完整报告 20261011-phase1-stage2-hybrid-manysig-m33-r01，大resources原件保留远端与本地，Git用compact引用。用户恢复合法源U半监督并增加权重更新力度。新S0–S15×3共48行已预登记，在读取H成绩前冻结：原CE E200→E40/8880，L128/U256，EMA.999，原/约3倍/10倍LR，身份全参数，无星地增强，8GPU最多3总进程/卡，逐行自动clean。主S13，84%目标未完成。代码16方案实际架构前后向与cache-safe EMA/全U排列/真标签隔离/SAM检查PASS。下一步独立审查后Git不可变发布，source真实U与父权重预检后自动队列，不更改H产物或基于H结果调S。
+
+
+## 当前权威运行：半监督＋更强全身份权重更新
+
+20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02，release cvs_stage2_ssl_hybrid_20261011_r02，commit eb2a5495d2e8b44b2888ed933e810f589ff69052，dispatcher 4019153。r01预检导入失败、0训练/0U读取，原产物保留；r02只修入口并沿用冻结48行。真实U56700与三个E200、48真实图检查PASS，独立P0/P1 PASS；24active/24pending，8GPU×3，teacher/U已在epoch计数核验，3档真实LR。自动逐行clean/独立truth-last，当前未完整评分，84%目标active。只读恢复优先核实此run/进程，禁止重复启动或热改。H33全部完成报告保留，无H目标成绩回流S设计。

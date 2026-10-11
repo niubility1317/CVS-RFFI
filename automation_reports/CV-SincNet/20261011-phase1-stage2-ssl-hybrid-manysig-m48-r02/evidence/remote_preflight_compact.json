@@ -1,0 +1,532 @@
+{
+  "status": "PASS",
+  "source_unlabeled": {
+    "status": "SOURCE_UNLABELED_READY",
+    "role": "U_s",
+    "count": 56700,
+    "source_contract": {
+      "schema": "core90_game_source_roles_v1",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "num_classes": 6,
+      "domain_kind": "rx_day",
+      "domain_map": [
+        [
+          1,
+          1,
+          0
+        ],
+        [
+          1,
+          2,
+          1
+        ],
+        [
+          1,
+          3,
+          2
+        ],
+        [
+          3,
+          1,
+          3
+        ],
+        [
+          3,
+          2,
+          4
+        ],
+        [
+          3,
+          3,
+          5
+        ],
+        [
+          4,
+          1,
+          6
+        ],
+        [
+          4,
+          2,
+          7
+        ],
+        [
+          4,
+          3,
+          8
+        ],
+        [
+          6,
+          1,
+          9
+        ],
+        [
+          6,
+          2,
+          10
+        ],
+        [
+          6,
+          3,
+          11
+        ],
+        [
+          8,
+          1,
+          12
+        ],
+        [
+          8,
+          2,
+          13
+        ],
+        [
+          8,
+          3,
+          14
+        ]
+      ],
+      "counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "ratios": [
+        0.07,
+        0.63,
+        0.3
+      ],
+      "split_rule": "per_tx_rx_day_eq_contiguous_signal_index",
+      "split_seed": 392005,
+      "role_ids": {
+        "L_s": {
+          "list_count": 6300,
+          "original_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/preflight.json"
+        },
+        "U_s": {
+          "list_count": 56700,
+          "original_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/preflight.json"
+        },
+        "V": {
+          "list_count": 27000,
+          "original_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/preflight.json"
+        }
+      },
+      "checkpoint_init": "scratch_only",
+      "target_access_before_freeze": false,
+      "capture_group_granularity": "whole_tx_rx_day_container; no signal-window split"
+    },
+    "TX_truth_exposed": false,
+    "target_loaders_constructed": false,
+    "identity_updates": 0,
+    "V_fit": false,
+    "elapsed_seconds": 9.69344111601822,
+    "cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/source_unlabeled/source_cache.pt"
+  },
+  "parents": [
+    {
+      "seed": 2026092701,
+      "parent": {
+        "status": "VERIFIED",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+        "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+        "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+        "epoch": 200,
+        "optimizer_steps": 44400,
+        "source_roles": "EXACT_MATCH",
+        "target_training_or_selection": false,
+        "ancestors": [],
+        "seed": 2026092701
+      },
+      "checks": [
+        {
+          "arm": "S0",
+          "loss": 0.0025026851799339056,
+          "accepted": 253,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S1",
+          "loss": 0.0012922828318551183,
+          "accepted": 253,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S2",
+          "loss": 0.1296665221452713,
+          "accepted": 252,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S3",
+          "loss": 0.003504629945382476,
+          "accepted": 254,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S4",
+          "loss": 0.20281924307346344,
+          "accepted": 255,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S5",
+          "loss": 0.13716596364974976,
+          "accepted": 251,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S6",
+          "loss": 0.004140011500567198,
+          "accepted": 253,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S7",
+          "loss": 0.0015670863213017583,
+          "accepted": 251,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S8",
+          "loss": 0.13895153999328613,
+          "accepted": 251,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S9",
+          "loss": 0.13684561848640442,
+          "accepted": 255,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S10",
+          "loss": 0.13750986754894257,
+          "accepted": 251,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S11",
+          "loss": 0.23404157161712646,
+          "accepted": 253,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S12",
+          "loss": 0.001395577215589583,
+          "accepted": 253,
+          "encoder_peak": 0.0001,
+          "fusion_peak": 0.0003
+        },
+        {
+          "arm": "S13",
+          "loss": 0.13310696184635162,
+          "accepted": 252,
+          "encoder_peak": 0.0001,
+          "fusion_peak": 0.0003
+        },
+        {
+          "arm": "S14",
+          "loss": 0.13494077324867249,
+          "accepted": 254,
+          "encoder_peak": 0.0001,
+          "fusion_peak": 0.0003
+        },
+        {
+          "arm": "S15",
+          "loss": 0.13702274858951569,
+          "accepted": 249,
+          "encoder_peak": 0.0003,
+          "fusion_peak": 0.001
+        }
+      ]
+    },
+    {
+      "seed": 2026092702,
+      "parent": {
+        "status": "VERIFIED",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+        "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+        "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+        "epoch": 200,
+        "optimizer_steps": 44400,
+        "source_roles": "EXACT_MATCH",
+        "target_training_or_selection": false,
+        "ancestors": [],
+        "seed": 2026092702
+      },
+      "checks": [
+        {
+          "arm": "S0",
+          "loss": 0.0015639634802937508,
+          "accepted": 253,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S1",
+          "loss": 0.0019544127862900496,
+          "accepted": 254,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S2",
+          "loss": 0.13484346866607666,
+          "accepted": 255,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S3",
+          "loss": 0.0031190752051770687,
+          "accepted": 255,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S4",
+          "loss": 0.057287611067295074,
+          "accepted": 254,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S5",
+          "loss": 0.13962987065315247,
+          "accepted": 252,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S6",
+          "loss": 0.002323305234313011,
+          "accepted": 251,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S7",
+          "loss": 0.03446240350604057,
+          "accepted": 250,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S8",
+          "loss": 0.14759445190429688,
+          "accepted": 253,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S9",
+          "loss": 0.13455526530742645,
+          "accepted": 254,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S10",
+          "loss": 0.13164860010147095,
+          "accepted": 253,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S11",
+          "loss": 0.2253444492816925,
+          "accepted": 254,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S12",
+          "loss": 0.002058194950222969,
+          "accepted": 253,
+          "encoder_peak": 0.0001,
+          "fusion_peak": 0.0003
+        },
+        {
+          "arm": "S13",
+          "loss": 0.13497552275657654,
+          "accepted": 250,
+          "encoder_peak": 0.0001,
+          "fusion_peak": 0.0003
+        },
+        {
+          "arm": "S14",
+          "loss": 0.13709403574466705,
+          "accepted": 255,
+          "encoder_peak": 0.0001,
+          "fusion_peak": 0.0003
+        },
+        {
+          "arm": "S15",
+          "loss": 0.13962453603744507,
+          "accepted": 251,
+          "encoder_peak": 0.0003,
+          "fusion_peak": 0.001
+        }
+      ]
+    },
+    {
+      "seed": 2026092703,
+      "parent": {
+        "status": "VERIFIED",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+        "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+        "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+        "epoch": 200,
+        "optimizer_steps": 44400,
+        "source_roles": "EXACT_MATCH",
+        "target_training_or_selection": false,
+        "ancestors": [],
+        "seed": 2026092703
+      },
+      "checks": [
+        {
+          "arm": "S0",
+          "loss": 0.0025863635819405317,
+          "accepted": 253,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S1",
+          "loss": 0.006425158120691776,
+          "accepted": 255,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S2",
+          "loss": 0.13652701675891876,
+          "accepted": 252,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S3",
+          "loss": 0.003348334226757288,
+          "accepted": 253,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S4",
+          "loss": 0.1987151950597763,
+          "accepted": 254,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S5",
+          "loss": 0.13225245475769043,
+          "accepted": 249,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S6",
+          "loss": 0.0027760998345911503,
+          "accepted": 252,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S7",
+          "loss": 0.004064634442329407,
+          "accepted": 252,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S8",
+          "loss": 0.13556797802448273,
+          "accepted": 250,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S9",
+          "loss": 0.14073963463306427,
+          "accepted": 253,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S10",
+          "loss": 0.1431729644536972,
+          "accepted": 255,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S11",
+          "loss": 0.22780025005340576,
+          "accepted": 255,
+          "encoder_peak": 3e-05,
+          "fusion_peak": 0.0001
+        },
+        {
+          "arm": "S12",
+          "loss": 0.0017300876788794994,
+          "accepted": 255,
+          "encoder_peak": 0.0001,
+          "fusion_peak": 0.0003
+        },
+        {
+          "arm": "S13",
+          "loss": 0.12639835476875305,
+          "accepted": 254,
+          "encoder_peak": 0.0001,
+          "fusion_peak": 0.0003
+        },
+        {
+          "arm": "S14",
+          "loss": 0.1524709016084671,
+          "accepted": 255,
+          "encoder_peak": 0.0001,
+          "fusion_peak": 0.0003
+        },
+        {
+          "arm": "S15",
+          "loss": 0.13538670539855957,
+          "accepted": 251,
+          "encoder_peak": 0.0003,
+          "fusion_peak": 0.001
+        }
+      ]
+    }
+  ],
+  "identity_updates": 0,
+  "target_access": false,
+  "elapsed_seconds": 57.73560485104099
+}

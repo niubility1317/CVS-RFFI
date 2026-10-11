@@ -105,7 +105,7 @@
   "run_id": "20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02",
   "group_id": "cvs-stage2-source-ssl-hybrid",
   "comparison_group_id": "20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02",
-  "status": "PREREGISTERED",
+  "status": "RUNNING",
   "display_name": "S0–S15 半监督混合机制及更强权重调优，三种子 E40（48 实验）",
   "description": "合法 source U_s EMA 伪标签＋跨RX对比/混合/LT/SAM/平均；原学习率、约3倍及10倍学习率配对比较，原CE E200→E40，自动clean。",
   "aliases": [
@@ -126,7 +126,7 @@
   ],
   "authorization": "用户恢复半监督，允许混合方法、多方案利用八卡；进一步明确增加权重调优力度。每卡最多3总进程，原始纯CE E200→E40，自动clean。",
   "code": {
-    "commit": "INSERT_EXACT_COMMITTED_RELEASE_AT_LAUNCH",
+    "commit": "eb2a5495d2e8b44b2888ed933e810f589ff69052",
     "commit_note": "Exact execution commit inserted from immutable release at launch",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -148,7 +148,8 @@
     "gpu_policy": "All 8 GPUs; <=3 total processes/GPU including unrelated owners; >=12000MB free before launch, fewer if unavailable",
     "command": "python -m experiments.cvs_stage2_ssl.dispatch",
     "launch_command": "python -m experiments.cvs_stage2_ssl.publish --output local_artifacts/ssl_delivery_20261011_r01",
-    "stop_rule": "Technical failure retained; stop new pending submissions, healthy active rows complete; no automatic retry or low-performance stop"
+    "stop_rule": "Technical failure retained; stop new pending submissions, healthy active rows complete; no automatic retry or low-performance stop",
+    "release_commit": "eb2a5495d2e8b44b2888ed933e810f589ff69052"
   },
   "metrics_plan": {
     "views": [
@@ -677,7 +678,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S0-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S0-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -692,7 +693,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710971.2645652,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S0-s2026092701",
+        "pid": 4019286,
+        "gpu": 0,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S0-s2026092701.log",
+        "row_id": "S0-s2026092701"
+      }
     },
     {
       "row_id": "S1-s2026092701",
@@ -992,7 +1003,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S1-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S1-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -1007,7 +1018,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710971.580983,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S1-s2026092701",
+        "pid": 4019293,
+        "gpu": 1,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S1-s2026092701.log",
+        "row_id": "S1-s2026092701"
+      }
     },
     {
       "row_id": "S2-s2026092701",
@@ -1307,7 +1328,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S2-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S2-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -1322,7 +1343,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710971.9154937,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S2-s2026092701",
+        "pid": 4019305,
+        "gpu": 2,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S2-s2026092701.log",
+        "row_id": "S2-s2026092701"
+      }
     },
     {
       "row_id": "S3-s2026092701",
@@ -1622,7 +1653,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S3-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S3-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -1637,7 +1668,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710972.2584205,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S3-s2026092701",
+        "pid": 4019313,
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S3-s2026092701.log",
+        "row_id": "S3-s2026092701"
+      }
     },
     {
       "row_id": "S4-s2026092701",
@@ -1937,7 +1978,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S4-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S4-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -1952,7 +1993,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710972.5883873,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S4-s2026092701",
+        "pid": 4019319,
+        "gpu": 4,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S4-s2026092701.log",
+        "row_id": "S4-s2026092701"
+      }
     },
     {
       "row_id": "S5-s2026092701",
@@ -2252,7 +2303,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S5-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S5-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -2267,7 +2318,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710973.2121615,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S5-s2026092701",
+        "pid": 4019332,
+        "gpu": 5,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S5-s2026092701.log",
+        "row_id": "S5-s2026092701"
+      }
     },
     {
       "row_id": "S6-s2026092701",
@@ -2567,7 +2628,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S6-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S6-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -2582,7 +2643,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710974.103731,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S6-s2026092701",
+        "pid": 4019347,
+        "gpu": 6,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S6-s2026092701.log",
+        "row_id": "S6-s2026092701"
+      }
     },
     {
       "row_id": "S7-s2026092701",
@@ -2882,7 +2953,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S7-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S7-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -2897,7 +2968,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710975.3253615,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S7-s2026092701",
+        "pid": 4019368,
+        "gpu": 7,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S7-s2026092701.log",
+        "row_id": "S7-s2026092701"
+      }
     },
     {
       "row_id": "S8-s2026092701",
@@ -3197,7 +3278,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S8-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S8-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -3212,7 +3293,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710976.8212593,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S8-s2026092701",
+        "pid": 4019392,
+        "gpu": 0,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S8-s2026092701.log",
+        "row_id": "S8-s2026092701"
+      }
     },
     {
       "row_id": "S9-s2026092701",
@@ -3512,7 +3603,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S9-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S9-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -3527,7 +3618,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710978.7345183,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S9-s2026092701",
+        "pid": 4019425,
+        "gpu": 1,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S9-s2026092701.log",
+        "row_id": "S9-s2026092701"
+      }
     },
     {
       "row_id": "S10-s2026092701",
@@ -3827,7 +3928,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S10-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S10-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -3842,7 +3943,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710981.4216957,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S10-s2026092701",
+        "pid": 4019669,
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S10-s2026092701.log",
+        "row_id": "S10-s2026092701"
+      }
     },
     {
       "row_id": "S11-s2026092701",
@@ -4142,7 +4253,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S11-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S11-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -4157,7 +4268,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710983.8941953,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S11-s2026092701",
+        "pid": 4019913,
+        "gpu": 6,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S11-s2026092701.log",
+        "row_id": "S11-s2026092701"
+      }
     },
     {
       "row_id": "S12-s2026092701",
@@ -4457,7 +4578,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S12-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S12-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -4472,7 +4593,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710985.260087,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S12-s2026092701",
+        "pid": 4020005,
+        "gpu": 7,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S12-s2026092701.log",
+        "row_id": "S12-s2026092701"
+      }
     },
     {
       "row_id": "S13-s2026092701",
@@ -4772,7 +4903,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S13-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S13-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -4787,7 +4918,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710986.3121507,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S13-s2026092701",
+        "pid": 4020093,
+        "gpu": 2,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S13-s2026092701.log",
+        "row_id": "S13-s2026092701"
+      }
     },
     {
       "row_id": "S14-s2026092701",
@@ -5087,7 +5228,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S14-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S14-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -5102,7 +5243,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710987.2681537,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S14-s2026092701",
+        "pid": 4020176,
+        "gpu": 4,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S14-s2026092701.log",
+        "row_id": "S14-s2026092701"
+      }
     },
     {
       "row_id": "S15-s2026092701",
@@ -5402,7 +5553,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S15-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S15-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -5417,7 +5568,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710988.2087297,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S15-s2026092701",
+        "pid": 4020260,
+        "gpu": 5,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S15-s2026092701.log",
+        "row_id": "S15-s2026092701"
+      }
     },
     {
       "row_id": "S0-s2026092702",
@@ -5717,7 +5878,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S0-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S0-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -5732,7 +5893,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710989.0326672,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S0-s2026092702",
+        "pid": 4020274,
+        "gpu": 2,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S0-s2026092702.log",
+        "row_id": "S0-s2026092702"
+      }
     },
     {
       "row_id": "S1-s2026092702",
@@ -6032,7 +6203,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S1-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S1-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -6047,7 +6218,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710990.2146893,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S1-s2026092702",
+        "pid": 4020362,
+        "gpu": 4,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S1-s2026092702.log",
+        "row_id": "S1-s2026092702"
+      }
     },
     {
       "row_id": "S2-s2026092702",
@@ -6347,7 +6528,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S2-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S2-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -6362,7 +6543,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710991.1042497,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S2-s2026092702",
+        "pid": 4020445,
+        "gpu": 5,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S2-s2026092702.log",
+        "row_id": "S2-s2026092702"
+      }
     },
     {
       "row_id": "S3-s2026092702",
@@ -6662,7 +6853,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S3-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S3-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -6677,7 +6868,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710992.2941775,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S3-s2026092702",
+        "pid": 4020518,
+        "gpu": 7,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S3-s2026092702.log",
+        "row_id": "S3-s2026092702"
+      }
     },
     {
       "row_id": "S4-s2026092702",
@@ -6977,7 +7178,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S4-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S4-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -6992,7 +7193,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710993.625622,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S4-s2026092702",
+        "pid": 4020612,
+        "gpu": 6,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S4-s2026092702.log",
+        "row_id": "S4-s2026092702"
+      }
     },
     {
       "row_id": "S5-s2026092702",
@@ -7292,7 +7503,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S5-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S5-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -7307,7 +7518,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710995.2144728,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S5-s2026092702",
+        "pid": 4020706,
+        "gpu": 0,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S5-s2026092702.log",
+        "row_id": "S5-s2026092702"
+      }
     },
     {
       "row_id": "S6-s2026092702",
@@ -7607,7 +7828,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S6-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S6-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -7622,7 +7843,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710996.8206878,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S6-s2026092702",
+        "pid": 4020802,
+        "gpu": 1,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S6-s2026092702.log",
+        "row_id": "S6-s2026092702"
+      }
     },
     {
       "row_id": "S7-s2026092702",
@@ -7922,7 +8153,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/S7-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S7-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_ssl.dispatch",
-      "status": "PREREGISTERED",
+      "status": "RUNNING",
       "expected_artifacts": [
         "source/resolved_config.json",
         "source/initialization.json",
@@ -7937,7 +8168,17 @@
         "prediction/predictions.npz",
         "prediction/complete.json",
         "completion.json"
-      ]
+      ],
+      "latest_event": {
+        "at": 1791710998.4415658,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S7-s2026092702",
+        "pid": 4020960,
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02/logs/train-S7-s2026092702.log",
+        "row_id": "S7-s2026092702"
+      }
     },
     {
       "row_id": "S8-s2026092702",
@@ -15558,5 +15799,10 @@
   },
   "technical_recovery_from": "20261011-phase1-stage2-ssl-hybrid-manysig-m48-r01",
   "scientific_matrix_unchanged": true,
-  "original_design_frozen_before_H_target_scores": true
+  "original_design_frozen_before_H_target_scores": true,
+  "execution_commit": "eb2a5495d2e8b44b2888ed933e810f589ff69052",
+  "updated_at_unix": 1791710998.4415658,
+  "delivery_verdict": "VERIFIED",
+  "runtime_evidence_ref": "evidence/runtime_training.json",
+  "target_evaluation_status": "PENDING_AUTOMATIC_CLEAN"
 }
