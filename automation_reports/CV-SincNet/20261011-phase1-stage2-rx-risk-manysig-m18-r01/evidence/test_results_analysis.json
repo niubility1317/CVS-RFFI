@@ -1,0 +1,6543 @@
+{
+  "run_id": "20261011-phase1-stage2-rx-risk-manysig-m18-r01",
+  "read_at": 1791728369.8384502,
+  "status": "PARTIAL",
+  "completed_rows": [
+    "CE-s2026092701",
+    "CE-s2026092702",
+    "CE-s2026092703"
+  ],
+  "missing_rows": [
+    "SSL-s2026092701",
+    "PHYS-s2026092701",
+    "RFIX-s2026092701",
+    "RANK-s2026092701",
+    "MARGIN-s2026092701",
+    "SSL-s2026092702",
+    "PHYS-s2026092702",
+    "RFIX-s2026092702",
+    "RANK-s2026092702",
+    "MARGIN-s2026092702",
+    "SSL-s2026092703",
+    "PHYS-s2026092703",
+    "RFIX-s2026092703",
+    "RANK-s2026092703",
+    "MARGIN-s2026092703"
+  ],
+  "summary": [
+    {
+      "arm": "P0",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "accuracy_mean": 0.8052638888888889,
+      "accuracy_sd": 0.013198594197656307,
+      "complete_three_seeds": true,
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "accuracy": 0.8092797619047619
+        },
+        {
+          "seed": 2026092702,
+          "accuracy": 0.7905238095238095
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8159880952380952
+        }
+      ]
+    },
+    {
+      "arm": "CE",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "accuracy_mean": 0.8056626984126984,
+      "accuracy_sd": 0.01250888903516931,
+      "complete_three_seeds": true,
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "accuracy": 0.8121309523809523
+        },
+        {
+          "seed": 2026092702,
+          "accuracy": 0.7912440476190477
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8136130952380952
+        }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8121309523809523,
+      "macro_f1": 0.8075121009385474,
+      "macro_accuracy": 0.8121309523809525,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27338,
+          82,
+          110,
+          451,
+          14,
+          5
+        ],
+        [
+          535,
+          13240,
+          86,
+          14073,
+          54,
+          12
+        ],
+        [
+          1039,
+          694,
+          21193,
+          739,
+          320,
+          4015
+        ],
+        [
+          2871,
+          5476,
+          381,
+          19198,
+          18,
+          56
+        ],
+        [
+          10,
+          18,
+          15,
+          10,
+          27945,
+          2
+        ],
+        [
+          21,
+          28,
+          157,
+          16,
+          254,
+          27524
+        ]
+      ],
+      "NLL": 1.5572260618209839,
+      "parent_fix_count": 3754,
+      "parent_break_count": 3275,
+      "net_correct_gain": 479
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8107083333333334,
+      "macro_f1": 0.7907196180732502,
+      "macro_accuracy": 0.8107083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3999,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          118,
+          1213,
+          4,
+          2665,
+          0,
+          0
+        ],
+        [
+          747,
+          2,
+          2526,
+          1,
+          1,
+          723
+        ],
+        [
+          70,
+          56,
+          0,
+          3874,
+          0,
+          0
+        ],
+        [
+          5,
+          6,
+          3,
+          2,
+          3984,
+          0
+        ],
+        [
+          5,
+          0,
+          128,
+          6,
+          0,
+          3861
+        ]
+      ],
+      "NLL": 2.079752206802368,
+      "parent_fix_count": 256,
+      "parent_break_count": 872,
+      "net_correct_gain": -616
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7373333333333333,
+      "macro_f1": 0.7228219135365811,
+      "macro_accuracy": 0.7373333333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3990,
+          0,
+          0,
+          10,
+          0,
+          0
+        ],
+        [
+          14,
+          2078,
+          0,
+          1906,
+          2,
+          0
+        ],
+        [
+          4,
+          3,
+          3046,
+          1,
+          2,
+          944
+        ],
+        [
+          148,
+          2858,
+          350,
+          601,
+          2,
+          41
+        ],
+        [
+          0,
+          2,
+          5,
+          1,
+          3992,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          2,
+          7,
+          3989
+        ]
+      ],
+      "NLL": 1.505827784538269,
+      "parent_fix_count": 1710,
+      "parent_break_count": 319,
+      "net_correct_gain": 1391
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8970833333333333,
+      "macro_f1": 0.896098047817853,
+      "macro_accuracy": 0.8970833333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3799,
+          57,
+          82,
+          51,
+          9,
+          2
+        ],
+        [
+          2,
+          2415,
+          57,
+          1500,
+          20,
+          6
+        ],
+        [
+          38,
+          7,
+          3835,
+          111,
+          5,
+          4
+        ],
+        [
+          19,
+          475,
+          1,
+          3503,
+          1,
+          1
+        ],
+        [
+          1,
+          0,
+          1,
+          2,
+          3996,
+          0
+        ],
+        [
+          1,
+          10,
+          5,
+          1,
+          1,
+          3982
+        ]
+      ],
+      "NLL": 0.885500967502594,
+      "parent_fix_count": 493,
+      "parent_break_count": 176,
+      "net_correct_gain": 317
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7625416666666667,
+      "macro_f1": 0.7676879737470622,
+      "macro_accuracy": 0.7625416666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3979,
+          4,
+          7,
+          5,
+          3,
+          2
+        ],
+        [
+          14,
+          1502,
+          4,
+          2468,
+          9,
+          3
+        ],
+        [
+          24,
+          576,
+          3087,
+          130,
+          130,
+          53
+        ],
+        [
+          23,
+          1906,
+          5,
+          2051,
+          14,
+          1
+        ],
+        [
+          4,
+          9,
+          6,
+          5,
+          3975,
+          1
+        ],
+        [
+          13,
+          11,
+          21,
+          5,
+          243,
+          3707
+        ]
+      ],
+      "NLL": 2.3451642990112305,
+      "parent_fix_count": 525,
+      "parent_break_count": 154,
+      "net_correct_gain": 371
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8650416666666667,
+      "macro_f1": 0.8574833244526582,
+      "macro_accuracy": 0.8650416666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3616,
+          0,
+          17,
+          365,
+          1,
+          1
+        ],
+        [
+          3,
+          1508,
+          0,
+          2487,
+          2,
+          0
+        ],
+        [
+          3,
+          10,
+          3692,
+          60,
+          164,
+          71
+        ],
+        [
+          2,
+          41,
+          0,
+          3955,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          1,
+          5,
+          1,
+          0,
+          2,
+          3991
+        ]
+      ],
+      "NLL": 0.9645189046859741,
+      "parent_fix_count": 216,
+      "parent_break_count": 225,
+      "net_correct_gain": -9
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8187083333333334,
+      "macro_f1": 0.809904033768504,
+      "macro_accuracy": 0.8187083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          384,
+          2602,
+          21,
+          973,
+          19,
+          1
+        ],
+        [
+          209,
+          3,
+          3783,
+          4,
+          1,
+          0
+        ],
+        [
+          2608,
+          87,
+          25,
+          1268,
+          0,
+          12
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          2,
+          1,
+          3996
+        ]
+      ],
+      "NLL": 1.5265671014785767,
+      "parent_fix_count": 351,
+      "parent_break_count": 589,
+      "net_correct_gain": -238
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7935,
+      "macro_f1": 0.770871037090056,
+      "macro_accuracy": 0.7935,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3955,
+          20,
+          4,
+          20,
+          1,
+          0
+        ],
+        [
+          0,
+          1922,
+          0,
+          2074,
+          2,
+          2
+        ],
+        [
+          14,
+          93,
+          1224,
+          432,
+          17,
+          2220
+        ],
+        [
+          1,
+          53,
+          0,
+          3946,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          3999,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          0,
+          3998
+        ]
+      ],
+      "NLL": 1.5932508707046509,
+      "parent_fix_count": 203,
+      "parent_break_count": 940,
+      "net_correct_gain": -737
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9763571428571428,
+      "macro_f1": 0.16467285891551314,
+      "macro_accuracy": 0.9763571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27338,
+          82,
+          110,
+          451,
+          14,
+          5
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.14914149045944214,
+      "parent_fix_count": 285,
+      "parent_break_count": 103,
+      "net_correct_gain": 182
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.47285714285714286,
+      "macro_f1": 0.10701584222437761,
+      "macro_accuracy": 0.47285714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          535,
+          13240,
+          86,
+          14073,
+          54,
+          12
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 5.090470314025879,
+      "parent_fix_count": 1852,
+      "parent_break_count": 798,
+      "net_correct_gain": 1054
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7568928571428571,
+      "macro_f1": 0.14360444236646136,
+      "macro_accuracy": 0.7568928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1039,
+          694,
+          21193,
+          739,
+          320,
+          4015
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 1.2165111303329468,
+      "parent_fix_count": 455,
+      "parent_break_count": 2076,
+      "net_correct_gain": -1621
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6856428571428571,
+      "macro_f1": 0.1355848411655861,
+      "macro_accuracy": 0.6856428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2871,
+          5476,
+          381,
+          19198,
+          18,
+          56
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.7979369163513184,
+      "parent_fix_count": 988,
+      "parent_break_count": 263,
+      "net_correct_gain": 725
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9980357142857142,
+      "macro_f1": 0.16650281526499242,
+      "macro_accuracy": 0.9980357142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          10,
+          18,
+          15,
+          10,
+          27945,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.015302557498216629,
+      "parent_fix_count": 10,
+      "parent_break_count": 5,
+      "net_correct_gain": 5
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.983,
+      "macro_f1": 0.16523785510169778,
+      "macro_accuracy": 0.983,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          21,
+          28,
+          157,
+          16,
+          254,
+          27524
+        ]
+      ],
+      "NLL": 0.07399406284093857,
+      "parent_fix_count": 164,
+      "parent_break_count": 30,
+      "net_correct_gain": 134
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7912440476190477,
+      "macro_f1": 0.7852753722706464,
+      "macro_accuracy": 0.7912440476190477,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27420,
+          79,
+          93,
+          384,
+          21,
+          3
+        ],
+        [
+          817,
+          13776,
+          45,
+          13090,
+          257,
+          15
+        ],
+        [
+          2443,
+          761,
+          18444,
+          959,
+          962,
+          4431
+        ],
+        [
+          3088,
+          6633,
+          101,
+          18116,
+          13,
+          49
+        ],
+        [
+          9,
+          14,
+          10,
+          12,
+          27951,
+          4
+        ],
+        [
+          219,
+          19,
+          105,
+          6,
+          429,
+          27222
+        ]
+      ],
+      "NLL": 1.9514864683151245,
+      "parent_fix_count": 3793,
+      "parent_break_count": 3672,
+      "net_correct_gain": 121
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7811666666666667,
+      "macro_f1": 0.7570224578668272,
+      "macro_accuracy": 0.7811666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3998,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          122,
+          1337,
+          1,
+          2537,
+          3,
+          0
+        ],
+        [
+          1412,
+          3,
+          1754,
+          3,
+          0,
+          828
+        ],
+        [
+          276,
+          2,
+          0,
+          3722,
+          0,
+          0
+        ],
+        [
+          3,
+          8,
+          3,
+          1,
+          3984,
+          1
+        ],
+        [
+          2,
+          2,
+          32,
+          3,
+          8,
+          3953
+        ]
+      ],
+      "NLL": 2.1698737144470215,
+      "parent_fix_count": 255,
+      "parent_break_count": 684,
+      "net_correct_gain": -429
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6477916666666667,
+      "macro_f1": 0.6210259616784032,
+      "macro_accuracy": 0.6477916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          21,
+          1985,
+          0,
+          1992,
+          2,
+          0
+        ],
+        [
+          248,
+          556,
+          1389,
+          0,
+          2,
+          1805
+        ],
+        [
+          70,
+          3628,
+          77,
+          179,
+          4,
+          42
+        ],
+        [
+          0,
+          2,
+          1,
+          0,
+          3997,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          2,
+          3997
+        ]
+      ],
+      "NLL": 3.31368088722229,
+      "parent_fix_count": 2080,
+      "parent_break_count": 318,
+      "net_correct_gain": 1762
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8907083333333333,
+      "macro_f1": 0.8886447483252732,
+      "macro_accuracy": 0.8907083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3834,
+          65,
+          42,
+          42,
+          14,
+          3
+        ],
+        [
+          8,
+          2371,
+          6,
+          1446,
+          161,
+          8
+        ],
+        [
+          152,
+          8,
+          3808,
+          20,
+          5,
+          7
+        ],
+        [
+          23,
+          595,
+          0,
+          3379,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          2,
+          3,
+          5,
+          0,
+          2,
+          3988
+        ]
+      ],
+      "NLL": 0.9794641137123108,
+      "parent_fix_count": 300,
+      "parent_break_count": 288,
+      "net_correct_gain": 12
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7409583333333334,
+      "macro_f1": 0.7403468154896086,
+      "macro_accuracy": 0.7409583333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3982,
+          5,
+          7,
+          1,
+          5,
+          0
+        ],
+        [
+          17,
+          1607,
+          15,
+          2348,
+          9,
+          4
+        ],
+        [
+          290,
+          111,
+          2965,
+          97,
+          59,
+          478
+        ],
+        [
+          32,
+          2193,
+          13,
+          1755,
+          5,
+          2
+        ],
+        [
+          6,
+          4,
+          3,
+          9,
+          3976,
+          2
+        ],
+        [
+          16,
+          8,
+          67,
+          3,
+          408,
+          3498
+        ]
+      ],
+      "NLL": 2.8673672676086426,
+      "parent_fix_count": 455,
+      "parent_break_count": 525,
+      "net_correct_gain": -70
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.85075,
+      "macro_f1": 0.8459806258880261,
+      "macro_accuracy": 0.85075,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3622,
+          0,
+          44,
+          333,
+          1,
+          0
+        ],
+        [
+          4,
+          1884,
+          0,
+          2109,
+          3,
+          0
+        ],
+        [
+          12,
+          10,
+          2969,
+          70,
+          892,
+          47
+        ],
+        [
+          2,
+          39,
+          0,
+          3958,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          1,
+          6,
+          1,
+          0,
+          6,
+          3986
+        ]
+      ],
+      "NLL": 1.016958475112915,
+      "parent_fix_count": 316,
+      "parent_break_count": 276,
+      "net_correct_gain": 40
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8072083333333333,
+      "macro_f1": 0.7991991665403578,
+      "macro_accuracy": 0.8072083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3999,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          643,
+          2744,
+          22,
+          511,
+          78,
+          2
+        ],
+        [
+          306,
+          2,
+          3676,
+          6,
+          1,
+          9
+        ],
+        [
+          2685,
+          145,
+          11,
+          1154,
+          0,
+          5
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          196,
+          0,
+          0,
+          0,
+          3,
+          3801
+        ]
+      ],
+      "NLL": 1.5929189920425415,
+      "parent_fix_count": 150,
+      "parent_break_count": 1416,
+      "net_correct_gain": -1266
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.820125,
+      "macro_f1": 0.8079560739380015,
+      "macro_accuracy": 0.820125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3985,
+          6,
+          0,
+          8,
+          1,
+          0
+        ],
+        [
+          2,
+          1848,
+          1,
+          2147,
+          1,
+          1
+        ],
+        [
+          23,
+          71,
+          1883,
+          763,
+          3,
+          1257
+        ],
+        [
+          0,
+          31,
+          0,
+          3969,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "NLL": 1.7201405763626099,
+      "parent_fix_count": 237,
+      "parent_break_count": 165,
+      "net_correct_gain": 72
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9792857142857143,
+      "macro_f1": 0.16492241068206423,
+      "macro_accuracy": 0.9792857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27420,
+          79,
+          93,
+          384,
+          21,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.12168537825345993,
+      "parent_fix_count": 287,
+      "parent_break_count": 79,
+      "net_correct_gain": 208
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.492,
+      "macro_f1": 0.10991957104557641,
+      "macro_accuracy": 0.492,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          817,
+          13776,
+          45,
+          13090,
+          257,
+          15
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 4.931634426116943,
+      "parent_fix_count": 2604,
+      "parent_break_count": 597,
+      "net_correct_gain": 2007
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6587142857142857,
+      "macro_f1": 0.13237447248299025,
+      "macro_accuracy": 0.6587142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2443,
+          761,
+          18444,
+          959,
+          962,
+          4431
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.408374071121216,
+      "parent_fix_count": 642,
+      "parent_break_count": 1392,
+      "net_correct_gain": -750
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.647,
+      "macro_f1": 0.1309451528030763,
+      "macro_accuracy": 0.647,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3088,
+          6633,
+          101,
+          18116,
+          13,
+          49
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 4.115323543548584,
+      "parent_fix_count": 198,
+      "parent_break_count": 1190,
+      "net_correct_gain": -992
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.99825,
+      "macro_f1": 0.16652070561741525,
+      "macro_accuracy": 0.99825,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          9,
+          14,
+          10,
+          12,
+          27951,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.012596983462572098,
+      "parent_fix_count": 13,
+      "parent_break_count": 7,
+      "net_correct_gain": 6
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9722142857142857,
+      "macro_f1": 0.1643185686863931,
+      "macro_accuracy": 0.9722142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          219,
+          19,
+          105,
+          6,
+          429,
+          27222
+        ]
+      ],
+      "NLL": 0.11930316686630249,
+      "parent_fix_count": 49,
+      "parent_break_count": 407,
+      "net_correct_gain": -358
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8136130952380952,
+      "macro_f1": 0.8092447698487737,
+      "macro_accuracy": 0.8136130952380952,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27165,
+          76,
+          344,
+          388,
+          18,
+          9
+        ],
+        [
+          420,
+          14056,
+          54,
+          13311,
+          138,
+          21
+        ],
+        [
+          922,
+          299,
+          22525,
+          201,
+          694,
+          3359
+        ],
+        [
+          3083,
+          6738,
+          447,
+          17671,
+          13,
+          48
+        ],
+        [
+          7,
+          13,
+          12,
+          12,
+          27949,
+          7
+        ],
+        [
+          9,
+          8,
+          309,
+          18,
+          335,
+          27321
+        ]
+      ],
+      "NLL": 1.6692019701004028,
+      "parent_fix_count": 3062,
+      "parent_break_count": 3461,
+      "net_correct_gain": -399
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7966666666666666,
+      "macro_f1": 0.7754258678985786,
+      "macro_accuracy": 0.7966666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3994,
+          2,
+          2,
+          2,
+          0,
+          0
+        ],
+        [
+          117,
+          1169,
+          2,
+          2712,
+          0,
+          0
+        ],
+        [
+          829,
+          1,
+          2364,
+          2,
+          0,
+          804
+        ],
+        [
+          255,
+          14,
+          0,
+          3731,
+          0,
+          0
+        ],
+        [
+          2,
+          9,
+          4,
+          2,
+          3980,
+          3
+        ],
+        [
+          1,
+          2,
+          105,
+          6,
+          4,
+          3882
+        ]
+      ],
+      "NLL": 2.055943250656128,
+      "parent_fix_count": 453,
+      "parent_break_count": 310,
+      "net_correct_gain": 143
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7585416666666667,
+      "macro_f1": 0.7292479846980703,
+      "macro_accuracy": 0.7585416666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3968,
+          0,
+          0,
+          32,
+          0,
+          0
+        ],
+        [
+          14,
+          2664,
+          1,
+          1318,
+          3,
+          0
+        ],
+        [
+          2,
+          3,
+          3479,
+          1,
+          2,
+          513
+        ],
+        [
+          8,
+          3454,
+          395,
+          111,
+          3,
+          29
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          4,
+          11,
+          3985
+        ]
+      ],
+      "NLL": 2.133997917175293,
+      "parent_fix_count": 927,
+      "parent_break_count": 154,
+      "net_correct_gain": 773
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8932083333333334,
+      "macro_f1": 0.8918139195736811,
+      "macro_accuracy": 0.8932083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3753,
+          63,
+          127,
+          45,
+          6,
+          6
+        ],
+        [
+          5,
+          2423,
+          12,
+          1464,
+          85,
+          11
+        ],
+        [
+          9,
+          6,
+          3949,
+          18,
+          7,
+          11
+        ],
+        [
+          22,
+          643,
+          1,
+          3329,
+          3,
+          2
+        ],
+        [
+          0,
+          0,
+          2,
+          2,
+          3996,
+          0
+        ],
+        [
+          0,
+          3,
+          6,
+          2,
+          2,
+          3987
+        ]
+      ],
+      "NLL": 0.8495221138000488,
+      "parent_fix_count": 363,
+      "parent_break_count": 228,
+      "net_correct_gain": 135
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7831666666666667,
+      "macro_f1": 0.7857567211787702,
+      "macro_accuracy": 0.7831666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3978,
+          5,
+          0,
+          4,
+          11,
+          2
+        ],
+        [
+          8,
+          2047,
+          17,
+          1911,
+          12,
+          5
+        ],
+        [
+          24,
+          275,
+          3400,
+          121,
+          113,
+          67
+        ],
+        [
+          16,
+          2063,
+          18,
+          1897,
+          6,
+          0
+        ],
+        [
+          5,
+          3,
+          4,
+          8,
+          3978,
+          2
+        ],
+        [
+          8,
+          2,
+          195,
+          5,
+          294,
+          3496
+        ]
+      ],
+      "NLL": 2.4111979007720947,
+      "parent_fix_count": 508,
+      "parent_break_count": 412,
+      "net_correct_gain": 96
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8467083333333333,
+      "macro_f1": 0.8375897146949166,
+      "macro_accuracy": 0.8467083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3536,
+          1,
+          214,
+          248,
+          0,
+          1
+        ],
+        [
+          4,
+          1519,
+          4,
+          2471,
+          2,
+          0
+        ],
+        [
+          43,
+          8,
+          3351,
+          15,
+          569,
+          14
+        ],
+        [
+          1,
+          57,
+          0,
+          3941,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          22,
+          3976
+        ]
+      ],
+      "NLL": 0.8907684683799744,
+      "parent_fix_count": 253,
+      "parent_break_count": 442,
+      "net_correct_gain": -189
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.801875,
+      "macro_f1": 0.787333055232779,
+      "macro_accuracy": 0.8018749999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3999,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          272,
+          2257,
+          13,
+          1422,
+          34,
+          2
+        ],
+        [
+          11,
+          2,
+          3985,
+          0,
+          2,
+          0
+        ],
+        [
+          2781,
+          162,
+          33,
+          1007,
+          0,
+          17
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          2,
+          3997
+        ]
+      ],
+      "NLL": 1.9409050941467285,
+      "parent_fix_count": 205,
+      "parent_break_count": 781,
+      "net_correct_gain": -576
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.815125,
+      "macro_f1": 0.805408177305706,
+      "macro_accuracy": 0.815125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3937,
+          4,
+          1,
+          57,
+          1,
+          0
+        ],
+        [
+          0,
+          1977,
+          5,
+          2013,
+          2,
+          3
+        ],
+        [
+          4,
+          4,
+          1997,
+          44,
+          1,
+          1950
+        ],
+        [
+          0,
+          345,
+          0,
+          3655,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          0,
+          3998
+        ]
+      ],
+      "NLL": 1.4020776748657227,
+      "parent_fix_count": 353,
+      "parent_break_count": 1134,
+      "net_correct_gain": -781
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9701785714285714,
+      "macro_f1": 0.1641439318408411,
+      "macro_accuracy": 0.9701785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27165,
+          76,
+          344,
+          388,
+          18,
+          9
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.18517807126045227,
+      "parent_fix_count": 467,
+      "parent_break_count": 267,
+      "net_correct_gain": 200
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.502,
+      "macro_f1": 0.1114070128717266,
+      "macro_accuracy": 0.502,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          420,
+          14056,
+          54,
+          13311,
+          138,
+          21
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 4.5660810470581055,
+      "parent_fix_count": 1645,
+      "parent_break_count": 588,
+      "net_correct_gain": 1057
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8044642857142857,
+      "macro_f1": 0.14860630051129803,
+      "macro_accuracy": 0.8044642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          922,
+          299,
+          22525,
+          201,
+          694,
+          3359
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.998501181602478,
+      "parent_fix_count": 496,
+      "parent_break_count": 1462,
+      "net_correct_gain": -966
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6311071428571429,
+      "macro_f1": 0.12897316313050586,
+      "macro_accuracy": 0.6311071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3083,
+          6738,
+          447,
+          17671,
+          13,
+          48
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 4.158215045928955,
+      "parent_fix_count": 336,
+      "parent_break_count": 950,
+      "net_correct_gain": -614
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9981785714285715,
+      "macro_f1": 0.16651474259295668,
+      "macro_accuracy": 0.9981785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          7,
+          13,
+          12,
+          12,
+          27949,
+          7
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.012293348088860512,
+      "parent_fix_count": 10,
+      "parent_break_count": 10,
+      "net_correct_gain": 0
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.97575,
+      "macro_f1": 0.16462102998861192,
+      "macro_accuracy": 0.97575,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          9,
+          8,
+          309,
+          18,
+          335,
+          27321
+        ]
+      ],
+      "NLL": 0.0949418768286705,
+      "parent_fix_count": 108,
+      "parent_break_count": 184,
+      "net_correct_gain": -76
+    }
+  ],
+  "day_records": [
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7943809523809524,
+      "macro_f1": 0.7874610435782828,
+      "macro_accuracy": 0.7943809523809523,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6525,
+          8,
+          81,
+          380,
+          4,
+          2
+        ],
+        [
+          251,
+          2899,
+          70,
+          3758,
+          19,
+          3
+        ],
+        [
+          49,
+          24,
+          4940,
+          198,
+          21,
+          1768
+        ],
+        [
+          830,
+          1026,
+          90,
+          5045,
+          8,
+          1
+        ],
+        [
+          2,
+          4,
+          4,
+          1,
+          6987,
+          2
+        ],
+        [
+          5,
+          9,
+          8,
+          4,
+          6,
+          6968
+        ]
+      ],
+      "NLL": 1.6814942359924316,
+      "parent_fix_count": 1117,
+      "parent_break_count": 1202,
+      "net_correct_gain": -85
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8323333333333334,
+      "macro_f1": 0.8285229302290151,
+      "macro_accuracy": 0.8323333333333335,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6927,
+          37,
+          17,
+          12,
+          5,
+          2
+        ],
+        [
+          51,
+          3893,
+          5,
+          3047,
+          3,
+          1
+        ],
+        [
+          44,
+          56,
+          5950,
+          95,
+          27,
+          828
+        ],
+        [
+          864,
+          1679,
+          198,
+          4225,
+          3,
+          31
+        ],
+        [
+          0,
+          6,
+          8,
+          3,
+          6983,
+          0
+        ],
+        [
+          6,
+          2,
+          5,
+          3,
+          4,
+          6980
+        ]
+      ],
+      "NLL": 1.3468700647354126,
+      "parent_fix_count": 724,
+      "parent_break_count": 610,
+      "net_correct_gain": 114
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.773,
+      "macro_f1": 0.7681909907329643,
+      "macro_accuracy": 0.773,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6961,
+          9,
+          11,
+          17,
+          2,
+          0
+        ],
+        [
+          120,
+          2953,
+          2,
+          3914,
+          9,
+          2
+        ],
+        [
+          899,
+          259,
+          4818,
+          387,
+          59,
+          578
+        ],
+        [
+          914,
+          1927,
+          15,
+          4133,
+          6,
+          5
+        ],
+        [
+          5,
+          6,
+          2,
+          5,
+          6982,
+          0
+        ],
+        [
+          3,
+          9,
+          133,
+          3,
+          233,
+          6619
+        ]
+      ],
+      "NLL": 1.8746730089187622,
+      "parent_fix_count": 801,
+      "parent_break_count": 948,
+      "net_correct_gain": -147
+    },
+    {
+      "row_id": "CE-s2026092701",
+      "arm": "CE",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8488095238095238,
+      "macro_f1": 0.8442536382349001,
+      "macro_accuracy": 0.8488095238095239,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6925,
+          28,
+          1,
+          42,
+          3,
+          1
+        ],
+        [
+          113,
+          3495,
+          9,
+          3354,
+          23,
+          6
+        ],
+        [
+          47,
+          355,
+          5485,
+          59,
+          213,
+          841
+        ],
+        [
+          263,
+          844,
+          78,
+          5795,
+          1,
+          19
+        ],
+        [
+          3,
+          2,
+          1,
+          1,
+          6993,
+          0
+        ],
+        [
+          7,
+          8,
+          11,
+          6,
+          11,
+          6957
+        ]
+      ],
+      "NLL": 1.3258672952651978,
+      "parent_fix_count": 1112,
+      "parent_break_count": 515,
+      "net_correct_gain": 597
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7680476190476191,
+      "macro_f1": 0.7607811216537842,
+      "macro_accuracy": 0.7680476190476191,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6568,
+          23,
+          44,
+          356,
+          9,
+          0
+        ],
+        [
+          315,
+          3071,
+          32,
+          3414,
+          165,
+          3
+        ],
+        [
+          492,
+          57,
+          4459,
+          137,
+          69,
+          1786
+        ],
+        [
+          749,
+          1551,
+          17,
+          4675,
+          7,
+          1
+        ],
+        [
+          2,
+          1,
+          7,
+          0,
+          6988,
+          2
+        ],
+        [
+          198,
+          4,
+          63,
+          3,
+          235,
+          6497
+        ]
+      ],
+      "NLL": 2.1261816024780273,
+      "parent_fix_count": 1062,
+      "parent_break_count": 1623,
+      "net_correct_gain": -561
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8225238095238095,
+      "macro_f1": 0.8180540530459931,
+      "macro_accuracy": 0.8225238095238095,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6907,
+          28,
+          43,
+          12,
+          8,
+          2
+        ],
+        [
+          183,
+          3863,
+          0,
+          2945,
+          6,
+          3
+        ],
+        [
+          72,
+          41,
+          5777,
+          40,
+          72,
+          998
+        ],
+        [
+          894,
+          1944,
+          72,
+          4055,
+          2,
+          33
+        ],
+        [
+          2,
+          5,
+          2,
+          7,
+          6983,
+          1
+        ],
+        [
+          9,
+          3,
+          4,
+          0,
+          23,
+          6961
+        ]
+      ],
+      "NLL": 1.719567894935608,
+      "parent_fix_count": 557,
+      "parent_break_count": 446,
+      "net_correct_gain": 111
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7558333333333334,
+      "macro_f1": 0.749307721922093,
+      "macro_accuracy": 0.7558333333333334,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6978,
+          11,
+          3,
+          5,
+          3,
+          0
+        ],
+        [
+          146,
+          3089,
+          5,
+          3743,
+          13,
+          4
+        ],
+        [
+          1436,
+          78,
+          3964,
+          778,
+          200,
+          544
+        ],
+        [
+          987,
+          2147,
+          7,
+          3855,
+          3,
+          1
+        ],
+        [
+          2,
+          5,
+          1,
+          4,
+          6987,
+          1
+        ],
+        [
+          3,
+          9,
+          34,
+          1,
+          81,
+          6872
+        ]
+      ],
+      "NLL": 2.4356319904327393,
+      "parent_fix_count": 794,
+      "parent_break_count": 693,
+      "net_correct_gain": 101
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "arm": "CE",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8185714285714286,
+      "macro_f1": 0.8105374377391127,
+      "macro_accuracy": 0.8185714285714286,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6967,
+          17,
+          3,
+          11,
+          1,
+          1
+        ],
+        [
+          173,
+          3753,
+          8,
+          2988,
+          73,
+          5
+        ],
+        [
+          443,
+          585,
+          4244,
+          4,
+          621,
+          1103
+        ],
+        [
+          458,
+          991,
+          5,
+          5531,
+          1,
+          14
+        ],
+        [
+          3,
+          3,
+          0,
+          1,
+          6993,
+          0
+        ],
+        [
+          9,
+          3,
+          4,
+          2,
+          90,
+          6892
+        ]
+      ],
+      "NLL": 1.5245640277862549,
+      "parent_fix_count": 1380,
+      "parent_break_count": 910,
+      "net_correct_gain": 470
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8030238095238095,
+      "macro_f1": 0.7982705546434795,
+      "macro_accuracy": 0.8030238095238095,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6433,
+          12,
+          313,
+          234,
+          7,
+          1
+        ],
+        [
+          173,
+          3435,
+          26,
+          3271,
+          91,
+          4
+        ],
+        [
+          21,
+          14,
+          5527,
+          42,
+          54,
+          1342
+        ],
+        [
+          862,
+          1452,
+          117,
+          4560,
+          9,
+          0
+        ],
+        [
+          1,
+          1,
+          4,
+          4,
+          6988,
+          2
+        ],
+        [
+          0,
+          2,
+          175,
+          5,
+          34,
+          6784
+        ]
+      ],
+      "NLL": 1.6536763906478882,
+      "parent_fix_count": 385,
+      "parent_break_count": 966,
+      "net_correct_gain": -581
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8347380952380953,
+      "macro_f1": 0.8307598160806328,
+      "macro_accuracy": 0.8347380952380951,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6887,
+          19,
+          23,
+          59,
+          9,
+          3
+        ],
+        [
+          43,
+          3698,
+          4,
+          3247,
+          6,
+          2
+        ],
+        [
+          12,
+          44,
+          6543,
+          91,
+          6,
+          304
+        ],
+        [
+          946,
+          1865,
+          182,
+          3973,
+          1,
+          33
+        ],
+        [
+          1,
+          8,
+          3,
+          4,
+          6983,
+          1
+        ],
+        [
+          4,
+          1,
+          7,
+          2,
+          11,
+          6975
+        ]
+      ],
+      "NLL": 1.649228572845459,
+      "parent_fix_count": 517,
+      "parent_break_count": 505,
+      "net_correct_gain": 12
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7697619047619048,
+      "macro_f1": 0.7639041448125033,
+      "macro_accuracy": 0.7697619047619048,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6972,
+          12,
+          3,
+          10,
+          0,
+          3
+        ],
+        [
+          137,
+          2916,
+          4,
+          3918,
+          19,
+          6
+        ],
+        [
+          786,
+          209,
+          5160,
+          49,
+          45,
+          751
+        ],
+        [
+          962,
+          2330,
+          23,
+          3677,
+          2,
+          6
+        ],
+        [
+          2,
+          4,
+          5,
+          4,
+          6983,
+          2
+        ],
+        [
+          0,
+          3,
+          94,
+          6,
+          275,
+          6622
+        ]
+      ],
+      "NLL": 2.0253520011901855,
+      "parent_fix_count": 907,
+      "parent_break_count": 1093,
+      "net_correct_gain": -186
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "arm": "CE",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8469285714285715,
+      "macro_f1": 0.8430485399621861,
+      "macro_accuracy": 0.8469285714285714,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6873,
+          33,
+          5,
+          85,
+          2,
+          2
+        ],
+        [
+          67,
+          4007,
+          20,
+          2875,
+          22,
+          9
+        ],
+        [
+          103,
+          32,
+          5295,
+          19,
+          589,
+          962
+        ],
+        [
+          313,
+          1091,
+          125,
+          5461,
+          1,
+          9
+        ],
+        [
+          3,
+          0,
+          0,
+          0,
+          6995,
+          2
+        ],
+        [
+          5,
+          2,
+          33,
+          5,
+          15,
+          6940
+        ]
+      ],
+      "NLL": 1.34855055809021,
+      "parent_fix_count": 1253,
+      "parent_break_count": 897,
+      "net_correct_gain": 356
+    }
+  ],
+  "parent_records": [
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8092797619047619,
+      "macro_f1": 0.8041020191994495,
+      "macro_accuracy": 0.8092797619047619,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27156,
+          165,
+          123,
+          528,
+          23,
+          5
+        ],
+        [
+          706,
+          12186,
+          64,
+          14983,
+          45,
+          16
+        ],
+        [
+          840,
+          754,
+          22814,
+          376,
+          529,
+          2687
+        ],
+        [
+          3334,
+          5774,
+          348,
+          18473,
+          19,
+          52
+        ],
+        [
+          9,
+          20,
+          16,
+          11,
+          27940,
+          4
+        ],
+        [
+          18,
+          19,
+          263,
+          15,
+          295,
+          27390
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.836375,
+      "macro_f1": 0.8225827822199737,
+      "macro_accuracy": 0.836375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3993,
+          5,
+          1,
+          0,
+          1,
+          0
+        ],
+        [
+          93,
+          1344,
+          3,
+          2560,
+          0,
+          0
+        ],
+        [
+          492,
+          1,
+          3229,
+          2,
+          1,
+          275
+        ],
+        [
+          98,
+          133,
+          0,
+          3769,
+          0,
+          0
+        ],
+        [
+          5,
+          3,
+          2,
+          5,
+          3985,
+          0
+        ],
+        [
+          4,
+          0,
+          236,
+          6,
+          1,
+          3753
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.679375,
+      "macro_f1": 0.6639716262585491,
+      "macro_accuracy": 0.679375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3987,
+          0,
+          0,
+          13,
+          0,
+          0
+        ],
+        [
+          13,
+          849,
+          2,
+          3134,
+          2,
+          0
+        ],
+        [
+          10,
+          3,
+          3213,
+          0,
+          2,
+          772
+        ],
+        [
+          540,
+          2830,
+          314,
+          272,
+          3,
+          41
+        ],
+        [
+          0,
+          2,
+          5,
+          0,
+          3993,
+          0
+        ],
+        [
+          1,
+          0,
+          6,
+          1,
+          1,
+          3991
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.883875,
+      "macro_f1": 0.8831017062310829,
+      "macro_accuracy": 0.8838749999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3717,
+          118,
+          80,
+          71,
+          12,
+          2
+        ],
+        [
+          22,
+          2351,
+          8,
+          1597,
+          16,
+          6
+        ],
+        [
+          134,
+          5,
+          3781,
+          60,
+          16,
+          4
+        ],
+        [
+          27,
+          580,
+          2,
+          3386,
+          3,
+          2
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          3996,
+          0
+        ],
+        [
+          1,
+          6,
+          8,
+          1,
+          2,
+          3982
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7470833333333333,
+      "macro_f1": 0.7525486996151933,
+      "macro_accuracy": 0.7470833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3971,
+          3,
+          7,
+          9,
+          8,
+          2
+        ],
+        [
+          25,
+          1390,
+          21,
+          2547,
+          15,
+          2
+        ],
+        [
+          28,
+          708,
+          3005,
+          57,
+          140,
+          62
+        ],
+        [
+          47,
+          2014,
+          8,
+          1918,
+          12,
+          1
+        ],
+        [
+          3,
+          13,
+          8,
+          5,
+          3969,
+          2
+        ],
+        [
+          11,
+          9,
+          10,
+          5,
+          288,
+          3677
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8654166666666666,
+      "macro_f1": 0.8561972190671704,
+      "macro_accuracy": 0.8654166666666665,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3663,
+          0,
+          34,
+          301,
+          1,
+          1
+        ],
+        [
+          9,
+          1416,
+          1,
+          2570,
+          4,
+          0
+        ],
+        [
+          15,
+          25,
+          3755,
+          64,
+          123,
+          18
+        ],
+        [
+          5,
+          50,
+          0,
+          3944,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          1,
+          4,
+          1,
+          0,
+          1,
+          3993
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.828625,
+      "macro_f1": 0.8172898487080337,
+      "macro_accuracy": 0.8286250000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3996,
+          3,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          543,
+          2745,
+          29,
+          676,
+          4,
+          3
+        ],
+        [
+          46,
+          1,
+          3938,
+          14,
+          1,
+          0
+        ],
+        [
+          2615,
+          141,
+          24,
+          1212,
+          1,
+          7
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          2,
+          3996
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8242083333333333,
+      "macro_f1": 0.8116608095543668,
+      "macro_accuracy": 0.8242083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3829,
+          36,
+          1,
+          133,
+          1,
+          0
+        ],
+        [
+          1,
+          2091,
+          0,
+          1899,
+          4,
+          5
+        ],
+        [
+          115,
+          11,
+          1893,
+          179,
+          246,
+          1556
+        ],
+        [
+          2,
+          26,
+          0,
+          3972,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          3998
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9698571428571429,
+      "macro_f1": 0.16411632460657047,
+      "macro_accuracy": 0.9698571428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27156,
+          165,
+          123,
+          528,
+          23,
+          5
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4352142857142857,
+      "macro_f1": 0.1010799781018265,
+      "macro_accuracy": 0.4352142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          706,
+          12186,
+          64,
+          14983,
+          45,
+          16
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8147857142857143,
+      "macro_f1": 0.14965691869694703,
+      "macro_accuracy": 0.8147857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          840,
+          754,
+          22814,
+          376,
+          529,
+          2687
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.65975,
+      "macro_f1": 0.1324998744790882,
+      "macro_accuracy": 0.65975,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3334,
+          5774,
+          348,
+          18473,
+          19,
+          52
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9978571428571429,
+      "macro_f1": 0.16648790370635205,
+      "macro_accuracy": 0.9978571428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          9,
+          20,
+          16,
+          11,
+          27940,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092701",
+      "arm": "P0",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9782142857142857,
+      "macro_f1": 0.16483119696696155,
+      "macro_accuracy": 0.9782142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          18,
+          19,
+          263,
+          15,
+          295,
+          27390
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7905238095238095,
+      "macro_f1": 0.7834808708524273,
+      "macro_accuracy": 0.7905238095238096,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27212,
+          176,
+          65,
+          512,
+          32,
+          3
+        ],
+        [
+          647,
+          11769,
+          57,
+          15445,
+          67,
+          15
+        ],
+        [
+          1361,
+          716,
+          19194,
+          299,
+          872,
+          5558
+        ],
+        [
+          2405,
+          6193,
+          209,
+          19108,
+          15,
+          70
+        ],
+        [
+          10,
+          15,
+          14,
+          7,
+          27945,
+          9
+        ],
+        [
+          37,
+          9,
+          175,
+          5,
+          194,
+          27580
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7990416666666667,
+      "macro_f1": 0.7769816569813361,
+      "macro_accuracy": 0.7990416666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3995,
+          4,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          91,
+          1362,
+          1,
+          2546,
+          0,
+          0
+        ],
+        [
+          889,
+          2,
+          2008,
+          3,
+          1,
+          1097
+        ],
+        [
+          111,
+          9,
+          0,
+          3880,
+          0,
+          0
+        ],
+        [
+          3,
+          4,
+          5,
+          1,
+          3986,
+          1
+        ],
+        [
+          3,
+          1,
+          43,
+          3,
+          4,
+          3946
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.574375,
+      "macro_f1": 0.5544852797343333,
+      "macro_accuracy": 0.574375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3997,
+          0,
+          0,
+          3,
+          0,
+          0
+        ],
+        [
+          16,
+          242,
+          0,
+          3740,
+          2,
+          0
+        ],
+        [
+          164,
+          468,
+          1179,
+          0,
+          3,
+          2186
+        ],
+        [
+          211,
+          3197,
+          159,
+          374,
+          3,
+          56
+        ],
+        [
+          0,
+          2,
+          2,
+          0,
+          3996,
+          0
+        ],
+        [
+          1,
+          0,
+          2,
+          0,
+          0,
+          3997
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8902083333333334,
+      "macro_f1": 0.8891965807580192,
+      "macro_accuracy": 0.8902083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3747,
+          111,
+          40,
+          79,
+          20,
+          3
+        ],
+        [
+          9,
+          2358,
+          5,
+          1595,
+          27,
+          6
+        ],
+        [
+          96,
+          4,
+          3866,
+          16,
+          13,
+          5
+        ],
+        [
+          18,
+          564,
+          2,
+          3410,
+          4,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          2,
+          1,
+          7,
+          0,
+          3,
+          3987
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.743875,
+      "macro_f1": 0.7443202410685014,
+      "macro_accuracy": 0.7438750000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3928,
+          3,
+          9,
+          50,
+          10,
+          0
+        ],
+        [
+          22,
+          1409,
+          20,
+          2528,
+          16,
+          5
+        ],
+        [
+          146,
+          135,
+          3080,
+          119,
+          39,
+          481
+        ],
+        [
+          31,
+          2153,
+          18,
+          1791,
+          4,
+          3
+        ],
+        [
+          7,
+          9,
+          4,
+          4,
+          3971,
+          5
+        ],
+        [
+          14,
+          5,
+          121,
+          2,
+          184,
+          3674
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8490833333333333,
+      "macro_f1": 0.8418836379643767,
+      "macro_accuracy": 0.8490833333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3674,
+          0,
+          14,
+          311,
+          1,
+          0
+        ],
+        [
+          7,
+          1661,
+          0,
+          2327,
+          5,
+          0
+        ],
+        [
+          9,
+          8,
+          3098,
+          14,
+          813,
+          58
+        ],
+        [
+          4,
+          42,
+          0,
+          3953,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          4,
+          2,
+          1,
+          0,
+          0,
+          3993
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8599583333333334,
+      "macro_f1": 0.8533119920986044,
+      "macro_accuracy": 0.8599583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3972,
+          28,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          501,
+          2996,
+          29,
+          453,
+          17,
+          4
+        ],
+        [
+          19,
+          2,
+          3972,
+          5,
+          1,
+          1
+        ],
+        [
+          2029,
+          213,
+          30,
+          1716,
+          3,
+          9
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          12,
+          0,
+          0,
+          0,
+          3,
+          3985
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.817125,
+      "macro_f1": 0.8036271797715901,
+      "macro_accuracy": 0.817125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3899,
+          30,
+          1,
+          69,
+          1,
+          0
+        ],
+        [
+          1,
+          1741,
+          2,
+          2256,
+          0,
+          0
+        ],
+        [
+          38,
+          97,
+          1991,
+          142,
+          2,
+          1730
+        ],
+        [
+          1,
+          15,
+          0,
+          3984,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          1,
+          0,
+          1,
+          0,
+          0,
+          3998
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9718571428571429,
+      "macro_f1": 0.1642879567243836,
+      "macro_accuracy": 0.9718571428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27212,
+          176,
+          65,
+          512,
+          32,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.42032142857142857,
+      "macro_f1": 0.09864467298649703,
+      "macro_accuracy": 0.42032142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          647,
+          11769,
+          57,
+          15445,
+          67,
+          15
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6855,
+      "macro_f1": 0.1355680806882231,
+      "macro_accuracy": 0.6855,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1361,
+          716,
+          19194,
+          299,
+          872,
+          5558
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6824285714285714,
+      "macro_f1": 0.13520704197447,
+      "macro_accuracy": 0.6824285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2405,
+          6193,
+          209,
+          19108,
+          15,
+          70
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9980357142857142,
+      "macro_f1": 0.16650281526499242,
+      "macro_accuracy": 0.9980357142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          10,
+          15,
+          14,
+          7,
+          27945,
+          9
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092702",
+      "arm": "P0",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.985,
+      "macro_f1": 0.16540722082283796,
+      "macro_accuracy": 0.985,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          37,
+          9,
+          175,
+          5,
+          194,
+          27580
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8159880952380952,
+      "macro_f1": 0.8109206599264764,
+      "macro_accuracy": 0.8159880952380951,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26965,
+          214,
+          200,
+          585,
+          22,
+          14
+        ],
+        [
+          534,
+          12999,
+          215,
+          14118,
+          111,
+          23
+        ],
+        [
+          1068,
+          299,
+          23491,
+          61,
+          279,
+          2802
+        ],
+        [
+          2680,
+          5959,
+          975,
+          18285,
+          16,
+          85
+        ],
+        [
+          10,
+          9,
+          19,
+          7,
+          27949,
+          6
+        ],
+        [
+          15,
+          3,
+          299,
+          14,
+          272,
+          27397
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7907083333333333,
+      "macro_f1": 0.7682748744976284,
+      "macro_accuracy": 0.7907083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3993,
+          4,
+          2,
+          1,
+          0,
+          0
+        ],
+        [
+          123,
+          1227,
+          3,
+          2647,
+          0,
+          0
+        ],
+        [
+          843,
+          0,
+          2142,
+          2,
+          2,
+          1011
+        ],
+        [
+          159,
+          35,
+          0,
+          3806,
+          0,
+          0
+        ],
+        [
+          3,
+          4,
+          6,
+          1,
+          3986,
+          0
+        ],
+        [
+          3,
+          0,
+          165,
+          6,
+          3,
+          3823
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7263333333333334,
+      "macro_f1": 0.7012225109189184,
+      "macro_accuracy": 0.7263333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3966,
+          1,
+          0,
+          33,
+          0,
+          0
+        ],
+        [
+          2,
+          1897,
+          20,
+          2079,
+          2,
+          0
+        ],
+        [
+          4,
+          4,
+          3518,
+          0,
+          2,
+          472
+        ],
+        [
+          45,
+          2934,
+          898,
+          60,
+          3,
+          60
+        ],
+        [
+          0,
+          1,
+          4,
+          0,
+          3995,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          3,
+          1,
+          3996
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8875833333333333,
+      "macro_f1": 0.8860473238551108,
+      "macro_accuracy": 0.8875833333333335,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3701,
+          148,
+          72,
+          60,
+          10,
+          9
+        ],
+        [
+          9,
+          2311,
+          42,
+          1567,
+          54,
+          17
+        ],
+        [
+          12,
+          5,
+          3951,
+          10,
+          15,
+          7
+        ],
+        [
+          17,
+          621,
+          2,
+          3353,
+          3,
+          4
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          1,
+          1,
+          6,
+          2,
+          1,
+          3989
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7791666666666667,
+      "macro_f1": 0.7805524854414241,
+      "macro_accuracy": 0.7791666666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3911,
+          4,
+          1,
+          72,
+          10,
+          2
+        ],
+        [
+          15,
+          1736,
+          111,
+          2119,
+          14,
+          5
+        ],
+        [
+          17,
+          227,
+          3573,
+          43,
+          69,
+          71
+        ],
+        [
+          30,
+          2044,
+          17,
+          1903,
+          6,
+          0
+        ],
+        [
+          7,
+          4,
+          7,
+          4,
+          3974,
+          4
+        ],
+        [
+          11,
+          1,
+          124,
+          3,
+          258,
+          3603
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8545833333333334,
+      "macro_f1": 0.843657005606086,
+      "macro_accuracy": 0.8545833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3671,
+          1,
+          124,
+          200,
+          1,
+          3
+        ],
+        [
+          5,
+          1417,
+          6,
+          2565,
+          7,
+          0
+        ],
+        [
+          185,
+          60,
+          3489,
+          4,
+          187,
+          75
+        ],
+        [
+          4,
+          49,
+          0,
+          3942,
+          4,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          7,
+          3993
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.825875,
+      "macro_f1": 0.8138487638651123,
+      "macro_accuracy": 0.8258749999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3958,
+          39,
+          0,
+          3,
+          0,
+          0
+        ],
+        [
+          380,
+          2594,
+          26,
+          970,
+          29,
+          1
+        ],
+        [
+          4,
+          1,
+          3992,
+          0,
+          2,
+          1
+        ],
+        [
+          2424,
+          218,
+          58,
+          1280,
+          0,
+          20
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          2,
+          3997
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8476666666666667,
+      "macro_f1": 0.8410941062791985,
+      "macro_accuracy": 0.8476666666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3765,
+          17,
+          1,
+          216,
+          1,
+          0
+        ],
+        [
+          0,
+          1817,
+          7,
+          2171,
+          5,
+          0
+        ],
+        [
+          3,
+          2,
+          2826,
+          2,
+          2,
+          1165
+        ],
+        [
+          1,
+          58,
+          0,
+          3941,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          1,
+          3,
+          0,
+          0,
+          3996
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9630357142857143,
+      "macro_f1": 0.163528305891628,
+      "macro_accuracy": 0.9630357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26965,
+          214,
+          200,
+          585,
+          22,
+          14
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.46425,
+      "macro_f1": 0.1056855045245006,
+      "macro_accuracy": 0.46425,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          534,
+          12999,
+          215,
+          14118,
+          111,
+          23
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8389642857142857,
+      "macro_f1": 0.15207188311225908,
+      "macro_accuracy": 0.8389642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1068,
+          299,
+          23491,
+          61,
+          279,
+          2802
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6530357142857143,
+      "macro_f1": 0.13168413092794642,
+      "macro_accuracy": 0.6530357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2680,
+          5959,
+          975,
+          18285,
+          16,
+          85
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9981785714285715,
+      "macro_f1": 0.16651474259295668,
+      "macro_accuracy": 0.9981785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          10,
+          9,
+          19,
+          7,
+          27949,
+          6
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_risk",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9784642857142857,
+      "macro_f1": 0.16485248900361632,
+      "macro_accuracy": 0.9784642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          15,
+          3,
+          299,
+          14,
+          272,
+          27397
+        ]
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "row_id": "CE-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.4432033019838855
+        },
+        "wall_seconds": 6.761845628963783,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1596723200
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 306.9017872819677,
+          "peak_cuda_memory_bytes": 184968192,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 0,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4946822,
+          "auxiliary_saved_bytes": 60422,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "RX_L_packets": 0,
+          "RX_U_packets": 0,
+          "critic_packets": 0,
+          "risk_initialization": null,
+          "critic_target_identity_packets": 0,
+          "action_state_identity_packets": 0,
+          "teacher_identity_packets": 0,
+          "teacher_probability_method_batch_calls": 0,
+          "teacher_diagnostic_packets": 0,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "source_only_pretrained_auxiliary_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost; source diagnostic pretraining cost referenced separately"
+      }
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.6094594589667395
+        },
+        "wall_seconds": 6.914004520978779,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1596895232
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 321.1490815640427,
+          "peak_cuda_memory_bytes": 184968192,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 0,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4946822,
+          "auxiliary_saved_bytes": 60422,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "RX_L_packets": 0,
+          "RX_U_packets": 0,
+          "critic_packets": 0,
+          "risk_initialization": null,
+          "critic_target_identity_packets": 0,
+          "action_state_identity_packets": 0,
+          "teacher_identity_packets": 0,
+          "teacher_probability_method_batch_calls": 0,
+          "teacher_diagnostic_packets": 0,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "source_only_pretrained_auxiliary_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost; source diagnostic pretraining cost referenced separately"
+      }
+    },
+    {
+      "row_id": "CE-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.312220096006058
+        },
+        "wall_seconds": 6.580212539061904,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1596964864
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 311.9435461949324,
+          "peak_cuda_memory_bytes": 184968192,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 0,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4946822,
+          "auxiliary_saved_bytes": 60422,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "RX_L_packets": 0,
+          "RX_U_packets": 0,
+          "critic_packets": 0,
+          "risk_initialization": null,
+          "critic_target_identity_packets": 0,
+          "action_state_identity_packets": 0,
+          "teacher_identity_packets": 0,
+          "teacher_probability_method_batch_calls": 0,
+          "teacher_diagnostic_packets": 0,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "source_only_pretrained_auxiliary_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost; source diagnostic pretraining cost referenced separately"
+      }
+    }
+  ],
+  "complete_arms_reaching_84": [],
+  "checks": {
+    "confusion_recount": true,
+    "source_config_budget": true,
+    "row_aggregate_agreement": false
+  },
+  "target_feedback_to_training": false
+}

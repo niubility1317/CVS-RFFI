@@ -379,7 +379,7 @@
     {
       "row_id": "E19-s2026092702",
       "model_seed": 2026092702,
-      "status": "QUEUED",
+      "status": "RUNNING",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch19-manysig-m3-r01",
@@ -612,12 +612,14 @@
       ],
       "observed_epoch": 5,
       "remote_process_verified": true,
-      "completion_verified": false
+      "completion_verified": false,
+      "pid": 15137,
+      "gpu": 1
     },
     {
       "row_id": "E19-s2026092703",
       "model_seed": 2026092703,
-      "status": "QUEUED",
+      "status": "RUNNING",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch19-manysig-m3-r01",
@@ -850,7 +852,9 @@
       ],
       "observed_epoch": 5,
       "remote_process_verified": true,
-      "completion_verified": false
+      "completion_verified": false,
+      "pid": 15786,
+      "gpu": 7
     }
   ],
   "notes": [

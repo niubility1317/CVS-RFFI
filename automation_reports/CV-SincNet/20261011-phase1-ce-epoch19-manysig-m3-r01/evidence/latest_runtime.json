@@ -1,0 +1,880 @@
+{
+  "status": "VERIFIED",
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 12890,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch19_20261011_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_ce_epoch19.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch19_20261011_r01/dispatcher.stdout.log",
+    "commit": "24ecee0baac40de45dac55695b47f9d1ca8f5749",
+    "run_id": "20261011-phase1-ce-epoch19-manysig-m3-r01"
+  },
+  "process": {
+    "pid": 12890,
+    "start_ticks": 97571410,
+    "state": "S",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch19_20261011_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_ce_epoch19.dispatch"
+    ],
+    "gpu": null
+  },
+  "workers": [
+    {
+      "row_id": "E19-s2026092701",
+      "pid": 12962,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch19_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_ce_epoch19.dispatch",
+        "--worker",
+        "E19-s2026092701"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch19-manysig-m3-r01/logs/E19-s2026092701.log",
+      "process": {
+        "pid": 12962,
+        "start_ticks": 97571586,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch19_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch19.dispatch",
+          "--worker",
+          "E19-s2026092701"
+        ],
+        "gpu": "7"
+      },
+      "resolved": {
+        "schema": "ce_epoch_compression_v1",
+        "run_id": "20261011-phase1-ce-epoch19-manysig-m3-r01",
+        "stage": "ce_epoch_compression",
+        "arm": "native",
+        "model_seed": 2026092701,
+        "row_id": "E19-s2026092701",
+        "features": [],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch19-manysig-m3-r01/E19-s2026092701/source",
+        "epochs": 19,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_ce_epoch19",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "risk_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "reference_refresh_steps": 888,
+          "gradient_audit_every_steps": 888,
+          "epochs": 19,
+          "steps_per_epoch": 222,
+          "hidden": 48,
+          "branch_weights": {
+            "linear": 0.015,
+            "temporal": 0.015,
+            "joint": 0.02,
+            "receiver": 0.01
+          },
+          "proposal_candidates": 4,
+          "random_fraction": 0.25,
+          "receiver_tail_alpha": 0.25,
+          "proposal_risk_relative_tolerance": 0.25,
+          "proposal_risk_error_ema": 0.9,
+          "proposal_quality_bins": 4,
+          "proposal_min_distinct_audit_ids": 16,
+          "receiver_live_audit_reencode_max": 32,
+          "auxiliary_batch_scope": "at most32 fresh source-L packets; R may separately re-encode at most32 cached audit IQ packets; count both",
+          "receiver_max_age_steps": 888,
+          "resume": false,
+          "source_selection": "fixed final epoch; all three rows tested",
+          "deployment": "identity_only",
+          "reference": "periodically frozen own student; no EMA teacher",
+          "action_scope": "bounded post-receive linear/phase increments; no satellite simulator in training",
+          "source_u_scope": "No U access in any arm"
+        },
+        "arm_plan": {
+          "paths": [],
+          "action_mode": "proposal",
+          "shared": false,
+          "r_target": "distribution",
+          "consistency_weight": 0.0,
+          "action_label_free": false,
+          "source_u_fit": false,
+          "replacements": [],
+          "conditional_edges": true
+        },
+        "source_stress": {
+          "seed": 2026101007,
+          "physical_selection": "all existing source V",
+          "batch_size": 256,
+          "views": [
+            "clean",
+            "linear",
+            "temporal",
+            "LT",
+            "TL",
+            "noise_fixed_LT",
+            "LTL_heldout",
+            "curvature_pressure"
+          ],
+          "clean_noninferiority_pp": 0.5,
+          "noise_tie_pp": 0.0,
+          "tail_alpha": 0.25,
+          "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
+          "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
+        },
+        "feature_plan": {
+          "relation": "none",
+          "style": false,
+          "fishr": "none",
+          "fishr_ratio": 0.0,
+          "r_identity": true,
+          "selection_required": false
+        },
+        "feature_recipe": {
+          "relation_every": 8,
+          "relation_weight": 0.1,
+          "relation_batch": 48,
+          "relation_calls": 5550,
+          "relation_packet_occurrences": 266400,
+          "positive_fishr_calls": 4995,
+          "relation_blocks": 30,
+          "source_rx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "source_days": [
+            0,
+            1,
+            2
+          ],
+          "source_classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "style_probability": 0.15,
+          "style_eta": 0.2,
+          "style_alpha": 0.1,
+          "style_location": "time_down",
+          "fishr_beta": 0.9,
+          "fishr_scale": 30.0,
+          "fishr_coordinates": 960,
+          "fishr_scene_weights": {
+            "clean": 1.0
+          },
+          "warmup_epochs": 20,
+          "ramp_epochs": 20,
+          "calibration_epoch": 20,
+          "calibration_target_ratios": [
+            0.03,
+            0.05,
+            0.1
+          ],
+          "calibration_scope": "mature source-L relation buckets; fixed once, no later weight adaptation",
+          "style_scope": "native labeled clean CE only; no extra CE or KL",
+          "statistical_ema": "gradient statistics only, not an EMA teacher",
+          "shared_hidden": 50,
+          "independent_hidden": 48,
+          "capacity_relative_tolerance": 0.002,
+          "deferred": [
+            "hard_resampling",
+            "DSU_alternative",
+            "fourth_interaction_network"
+          ]
+        },
+        "source_selection": {
+          "rule": "fixed final epoch; every predeclared row tested; no source V epoch selection",
+          "future_compression": "USER EXPLICIT EXCEPTION: clean three-seed mean no more than 0.003 below fixed original E200 permits shorter epoch exploration",
+          "benchmark_role": "exposed development benchmark for epoch budget only; not independent blind test",
+          "target_samples_or_labels_in_training": false,
+          "noninferiority_accuracy_margin": 0.003
+        },
+        "budget_arm": "E19",
+        "updates": 4218,
+        "checkpoint_selection": "final_only",
+        "test_views": [
+          "clean"
+        ],
+        "launch_owner": "codex/root/ce-epoch19-20261011",
+        "concurrency": {
+          "max_processes_per_gpu": 3,
+          "includes_existing": true,
+          "gpu_ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "reference_E200": {
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+          "prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
+          "role": "comparison only; never loaded for initialization"
+        },
+        "pid": 12962,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch19_20261011_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "24ecee0baac40de45dac55695b47f9d1ca8f5749",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "7",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch19-manysig-m3-r01/E19-s2026092701/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "source_completion": null,
+      "completion": null
+    },
+    {
+      "row_id": "E19-s2026092702",
+      "pid": 15137,
+      "gpu": 1,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch19_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_ce_epoch19.dispatch",
+        "--worker",
+        "E19-s2026092702"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch19-manysig-m3-r01/logs/E19-s2026092702.log",
+      "process": {
+        "pid": 15137,
+        "start_ticks": 97588886,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch19_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch19.dispatch",
+          "--worker",
+          "E19-s2026092702"
+        ],
+        "gpu": "1"
+      },
+      "resolved": {
+        "schema": "ce_epoch_compression_v1",
+        "run_id": "20261011-phase1-ce-epoch19-manysig-m3-r01",
+        "stage": "ce_epoch_compression",
+        "arm": "native",
+        "model_seed": 2026092702,
+        "row_id": "E19-s2026092702",
+        "features": [],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch19-manysig-m3-r01/E19-s2026092702/source",
+        "epochs": 19,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_ce_epoch19",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "risk_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "reference_refresh_steps": 888,
+          "gradient_audit_every_steps": 888,
+          "epochs": 19,
+          "steps_per_epoch": 222,
+          "hidden": 48,
+          "branch_weights": {
+            "linear": 0.015,
+            "temporal": 0.015,
+            "joint": 0.02,
+            "receiver": 0.01
+          },
+          "proposal_candidates": 4,
+          "random_fraction": 0.25,
+          "receiver_tail_alpha": 0.25,
+          "proposal_risk_relative_tolerance": 0.25,
+          "proposal_risk_error_ema": 0.9,
+          "proposal_quality_bins": 4,
+          "proposal_min_distinct_audit_ids": 16,
+          "receiver_live_audit_reencode_max": 32,
+          "auxiliary_batch_scope": "at most32 fresh source-L packets; R may separately re-encode at most32 cached audit IQ packets; count both",
+          "receiver_max_age_steps": 888,
+          "resume": false,
+          "source_selection": "fixed final epoch; all three rows tested",
+          "deployment": "identity_only",
+          "reference": "periodically frozen own student; no EMA teacher",
+          "action_scope": "bounded post-receive linear/phase increments; no satellite simulator in training",
+          "source_u_scope": "No U access in any arm"
+        },
+        "arm_plan": {
+          "paths": [],
+          "action_mode": "proposal",
+          "shared": false,
+          "r_target": "distribution",
+          "consistency_weight": 0.0,
+          "action_label_free": false,
+          "source_u_fit": false,
+          "replacements": [],
+          "conditional_edges": true
+        },
+        "source_stress": {
+          "seed": 2026101007,
+          "physical_selection": "all existing source V",
+          "batch_size": 256,
+          "views": [
+            "clean",
+            "linear",
+            "temporal",
+            "LT",
+            "TL",
+            "noise_fixed_LT",
+            "LTL_heldout",
+            "curvature_pressure"
+          ],
+          "clean_noninferiority_pp": 0.5,
+          "noise_tie_pp": 0.0,
+          "tail_alpha": 0.25,
+          "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
+          "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
+        },
+        "feature_plan": {
+          "relation": "none",
+          "style": false,
+          "fishr": "none",
+          "fishr_ratio": 0.0,
+          "r_identity": true,
+          "selection_required": false
+        },
+        "feature_recipe": {
+          "relation_every": 8,
+          "relation_weight": 0.1,
+          "relation_batch": 48,
+          "relation_calls": 5550,
+          "relation_packet_occurrences": 266400,
+          "positive_fishr_calls": 4995,
+          "relation_blocks": 30,
+          "source_rx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "source_days": [
+            0,
+            1,
+            2
+          ],
+          "source_classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "style_probability": 0.15,
+          "style_eta": 0.2,
+          "style_alpha": 0.1,
+          "style_location": "time_down",
+          "fishr_beta": 0.9,
+          "fishr_scale": 30.0,
+          "fishr_coordinates": 960,
+          "fishr_scene_weights": {
+            "clean": 1.0
+          },
+          "warmup_epochs": 20,
+          "ramp_epochs": 20,
+          "calibration_epoch": 20,
+          "calibration_target_ratios": [
+            0.03,
+            0.05,
+            0.1
+          ],
+          "calibration_scope": "mature source-L relation buckets; fixed once, no later weight adaptation",
+          "style_scope": "native labeled clean CE only; no extra CE or KL",
+          "statistical_ema": "gradient statistics only, not an EMA teacher",
+          "shared_hidden": 50,
+          "independent_hidden": 48,
+          "capacity_relative_tolerance": 0.002,
+          "deferred": [
+            "hard_resampling",
+            "DSU_alternative",
+            "fourth_interaction_network"
+          ]
+        },
+        "source_selection": {
+          "rule": "fixed final epoch; every predeclared row tested; no source V epoch selection",
+          "future_compression": "USER EXPLICIT EXCEPTION: clean three-seed mean no more than 0.003 below fixed original E200 permits shorter epoch exploration",
+          "benchmark_role": "exposed development benchmark for epoch budget only; not independent blind test",
+          "target_samples_or_labels_in_training": false,
+          "noninferiority_accuracy_margin": 0.003
+        },
+        "budget_arm": "E19",
+        "updates": 4218,
+        "checkpoint_selection": "final_only",
+        "test_views": [
+          "clean"
+        ],
+        "launch_owner": "codex/root/ce-epoch19-20261011",
+        "concurrency": {
+          "max_processes_per_gpu": 3,
+          "includes_existing": true,
+          "gpu_ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "reference_E200": {
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+          "prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/prediction/predictions.npz",
+          "role": "comparison only; never loaded for initialization"
+        },
+        "pid": 15137,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch19_20261011_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "24ecee0baac40de45dac55695b47f9d1ca8f5749",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "1",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch19-manysig-m3-r01/E19-s2026092702/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "source_completion": null,
+      "completion": null
+    },
+    {
+      "row_id": "E19-s2026092703",
+      "pid": 15786,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch19_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_ce_epoch19.dispatch",
+        "--worker",
+        "E19-s2026092703"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch19-manysig-m3-r01/logs/E19-s2026092703.log",
+      "process": {
+        "pid": 15786,
+        "start_ticks": 97591211,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch19_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch19.dispatch",
+          "--worker",
+          "E19-s2026092703"
+        ],
+        "gpu": "7"
+      },
+      "resolved": {
+        "schema": "ce_epoch_compression_v1",
+        "run_id": "20261011-phase1-ce-epoch19-manysig-m3-r01",
+        "stage": "ce_epoch_compression",
+        "arm": "native",
+        "model_seed": 2026092703,
+        "row_id": "E19-s2026092703",
+        "features": [],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch19-manysig-m3-r01/E19-s2026092703/source",
+        "epochs": 19,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_ce_epoch19",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "risk_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "reference_refresh_steps": 888,
+          "gradient_audit_every_steps": 888,
+          "epochs": 19,
+          "steps_per_epoch": 222,
+          "hidden": 48,
+          "branch_weights": {
+            "linear": 0.015,
+            "temporal": 0.015,
+            "joint": 0.02,
+            "receiver": 0.01
+          },
+          "proposal_candidates": 4,
+          "random_fraction": 0.25,
+          "receiver_tail_alpha": 0.25,
+          "proposal_risk_relative_tolerance": 0.25,
+          "proposal_risk_error_ema": 0.9,
+          "proposal_quality_bins": 4,
+          "proposal_min_distinct_audit_ids": 16,
+          "receiver_live_audit_reencode_max": 32,
+          "auxiliary_batch_scope": "at most32 fresh source-L packets; R may separately re-encode at most32 cached audit IQ packets; count both",
+          "receiver_max_age_steps": 888,
+          "resume": false,
+          "source_selection": "fixed final epoch; all three rows tested",
+          "deployment": "identity_only",
+          "reference": "periodically frozen own student; no EMA teacher",
+          "action_scope": "bounded post-receive linear/phase increments; no satellite simulator in training",
+          "source_u_scope": "No U access in any arm"
+        },
+        "arm_plan": {
+          "paths": [],
+          "action_mode": "proposal",
+          "shared": false,
+          "r_target": "distribution",
+          "consistency_weight": 0.0,
+          "action_label_free": false,
+          "source_u_fit": false,
+          "replacements": [],
+          "conditional_edges": true
+        },
+        "source_stress": {
+          "seed": 2026101007,
+          "physical_selection": "all existing source V",
+          "batch_size": 256,
+          "views": [
+            "clean",
+            "linear",
+            "temporal",
+            "LT",
+            "TL",
+            "noise_fixed_LT",
+            "LTL_heldout",
+            "curvature_pressure"
+          ],
+          "clean_noninferiority_pp": 0.5,
+          "noise_tie_pp": 0.0,
+          "tail_alpha": 0.25,
+          "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
+          "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
+        },
+        "feature_plan": {
+          "relation": "none",
+          "style": false,
+          "fishr": "none",
+          "fishr_ratio": 0.0,
+          "r_identity": true,
+          "selection_required": false
+        },
+        "feature_recipe": {
+          "relation_every": 8,
+          "relation_weight": 0.1,
+          "relation_batch": 48,
+          "relation_calls": 5550,
+          "relation_packet_occurrences": 266400,
+          "positive_fishr_calls": 4995,
+          "relation_blocks": 30,
+          "source_rx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "source_days": [
+            0,
+            1,
+            2
+          ],
+          "source_classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "style_probability": 0.15,
+          "style_eta": 0.2,
+          "style_alpha": 0.1,
+          "style_location": "time_down",
+          "fishr_beta": 0.9,
+          "fishr_scale": 30.0,
+          "fishr_coordinates": 960,
+          "fishr_scene_weights": {
+            "clean": 1.0
+          },
+          "warmup_epochs": 20,
+          "ramp_epochs": 20,
+          "calibration_epoch": 20,
+          "calibration_target_ratios": [
+            0.03,
+            0.05,
+            0.1
+          ],
+          "calibration_scope": "mature source-L relation buckets; fixed once, no later weight adaptation",
+          "style_scope": "native labeled clean CE only; no extra CE or KL",
+          "statistical_ema": "gradient statistics only, not an EMA teacher",
+          "shared_hidden": 50,
+          "independent_hidden": 48,
+          "capacity_relative_tolerance": 0.002,
+          "deferred": [
+            "hard_resampling",
+            "DSU_alternative",
+            "fourth_interaction_network"
+          ]
+        },
+        "source_selection": {
+          "rule": "fixed final epoch; every predeclared row tested; no source V epoch selection",
+          "future_compression": "USER EXPLICIT EXCEPTION: clean three-seed mean no more than 0.003 below fixed original E200 permits shorter epoch exploration",
+          "benchmark_role": "exposed development benchmark for epoch budget only; not independent blind test",
+          "target_samples_or_labels_in_training": false,
+          "noninferiority_accuracy_margin": 0.003
+        },
+        "budget_arm": "E19",
+        "updates": 4218,
+        "checkpoint_selection": "final_only",
+        "test_views": [
+          "clean"
+        ],
+        "launch_owner": "codex/root/ce-epoch19-20261011",
+        "concurrency": {
+          "max_processes_per_gpu": 3,
+          "includes_existing": true,
+          "gpu_ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "reference_E200": {
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+          "prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/prediction/predictions.npz",
+          "role": "comparison only; never loaded for initialization"
+        },
+        "pid": 15786,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch19_20261011_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "24ecee0baac40de45dac55695b47f9d1ca8f5749",
+        "torch_version": "2.1.0+cu121",
+        "cuda_visible_devices": "7",
+        "total_parameters": 844754,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "native_args_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch19-manysig-m3-r01/E19-s2026092703/source/resolved_native_args.json",
+        "execution_policy": {
+          "a1_gradient_snapshot": true,
+          "source_validation_reuse": true,
+          "native_epoch_telemetry": "incremental",
+          "scalar_readback": "batched_same_dtype",
+          "compact_epoch_telemetry": "original_full_history",
+          "a1_runtime_fast": false
+        }
+      },
+      "source_completion": null,
+      "completion": null
+    }
+  ],
+  "queue": {
+    "active": [
+      "E19-s2026092701",
+      "E19-s2026092702",
+      "E19-s2026092703"
+    ],
+    "pending": [],
+    "completed": [],
+    "failures": [],
+    "max_total_processes_per_GPU": 3,
+    "updated_at": 1791728405.9043212
+  },
+  "completion": null,
+  "failure": null,
+  "preflight": {
+    "status": "PASS",
+    "rows": [
+      {
+        "row_id": "E19-s2026092701",
+        "epochs": 19,
+        "updates": 4218,
+        "batch_size": 128,
+        "peak_lr": 0.0002,
+        "min_lr": 1e-06,
+        "weight_decay": 0.0001
+      },
+      {
+        "row_id": "E19-s2026092702",
+        "epochs": 19,
+        "updates": 4218,
+        "batch_size": 128,
+        "peak_lr": 0.0002,
+        "min_lr": 1e-06,
+        "weight_decay": 0.0001
+      },
+      {
+        "row_id": "E19-s2026092703",
+        "epochs": 19,
+        "updates": 4218,
+        "batch_size": 128,
+        "peak_lr": 0.0002,
+        "min_lr": 1e-06,
+        "weight_decay": 0.0001
+      }
+    ],
+    "original_scratch_state_identical": true,
+    "pure_CE_no_auxiliary_objects": true,
+    "cosine_compressed_to_each_budget": true,
+    "native_pair_count": 222,
+    "query_access": false,
+    "reference_E200_provenance": [
+      {
+        "status": "VERIFIED",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+        "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+        "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+        "epoch": 200,
+        "optimizer_steps": 44400,
+        "source_roles": "EXACT_MATCH",
+        "target_training_or_selection": false,
+        "ancestors": [],
+        "seed": 2026092701
+      },
+      {
+        "status": "VERIFIED",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+        "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+        "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+        "epoch": 200,
+        "optimizer_steps": 44400,
+        "source_roles": "EXACT_MATCH",
+        "target_training_or_selection": false,
+        "ancestors": [],
+        "seed": 2026092702
+      },
+      {
+        "status": "VERIFIED",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+        "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+        "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+        "epoch": 200,
+        "optimizer_steps": 44400,
+        "source_roles": "EXACT_MATCH",
+        "target_training_or_selection": false,
+        "ancestors": [],
+        "seed": 2026092703
+      }
+    ],
+    "reference_role": "comparison only; no weights loaded into new training",
+    "identity_updates": 0
+  },
+  "read_at": 1791728407.4183877
+}

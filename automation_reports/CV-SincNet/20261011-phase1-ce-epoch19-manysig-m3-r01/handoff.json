@@ -6,5 +6,8 @@
   "goal": "clean three-seed mean >=84%; not achieved",
   "next": "Collect all three clean results; E19 pass ->16; fail ->22. Compression only; original E200 remains stage2 parent.",
   "source_V_role": "health and mechanism diagnostics only; no small accuracy optimization",
-  "no_target_feedback_to_mechanism": true
+  "no_target_feedback_to_mechanism": true,
+  "latest_runtime": "evidence/latest_runtime.json",
+  "all_rows_launched": true,
+  "scored_rows": 0
 }
