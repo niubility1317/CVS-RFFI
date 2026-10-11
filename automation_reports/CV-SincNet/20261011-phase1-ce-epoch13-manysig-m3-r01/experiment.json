@@ -138,7 +138,7 @@
     {
       "row_id": "E13-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch13-manysig-m3-r01",
@@ -371,12 +371,15 @@
       ],
       "observed_epoch": 5,
       "remote_process_verified": true,
-      "completion_verified": false
+      "completion_verified": false,
+      "pid": 4191812,
+      "gpu": 3,
+      "live_epoch": 1
     },
     {
       "row_id": "E13-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch13-manysig-m3-r01",
@@ -609,12 +612,15 @@
       ],
       "observed_epoch": 5,
       "remote_process_verified": true,
-      "completion_verified": false
+      "completion_verified": false,
+      "pid": 4191897,
+      "gpu": 4,
+      "live_epoch": 1
     },
     {
       "row_id": "E13-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch13-manysig-m3-r01",
@@ -847,7 +853,10 @@
       ],
       "observed_epoch": 5,
       "remote_process_verified": true,
-      "completion_verified": false
+      "completion_verified": false,
+      "pid": 4191995,
+      "gpu": 5,
+      "live_epoch": 1
     }
   ],
   "notes": [
@@ -855,7 +864,7 @@
     "Three seeds clean auto truth-last; no125,U,EMA,satellite oraux.",
     "Pass permitsceil(13/2)=7; failure brackets13..25, next midpoint19. No adaptive rule runs before complete three-seed scoring."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "independent_review": {
     "reviewer": "stage2_release_review",
     "status": "PASS",
@@ -879,5 +888,7 @@
     "rounding": "ceil(25/2)",
     "target_feedback_exception": "epoch budget only; fixed E200 comparator; no mechanism feedback",
     "benchmark_role": "exposed development benchmark, not blind confirmation"
-  }
+  },
+  "execution_commit": "7a34e048f8fddec6ed8bd4e69d952d9c5ed938ea",
+  "delivery_verdict": "VERIFIED"
 }

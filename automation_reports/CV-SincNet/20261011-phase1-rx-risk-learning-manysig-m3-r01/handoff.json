@@ -1,0 +1,10 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+  "run": "20261011-phase1-rx-risk-learning-manysig-m3-r01",
+  "execution_commit": "7a34e048f8fddec6ed8bd4e69d952d9c5ed938ea",
+  "evidence": "evidence/launch_progress.json",
+  "goal": "clean three-seed mean >=84%; not achieved",
+  "next": "Read existing artifacts; never relaunch. Collect six-arm source diagnostic, then design any new E200 40-epoch matrix only from source mechanism evidence.",
+  "source_V_role": "health and mechanism diagnostics only; no small accuracy optimization",
+  "no_target_feedback_to_mechanism": true
+}
