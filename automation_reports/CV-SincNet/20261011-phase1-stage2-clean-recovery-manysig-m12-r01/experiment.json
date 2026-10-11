@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "延续用户严格实现并完成 12 行训练后自动 clean 测试的授权；原训练完成，仅测试入口技术恢复。",
   "code": {
-    "commit": "release_commit.txt at recovery launch",
+    "commit": "ca7d521096d039ecc4bb8f3705a0c71b43ecfea5",
     "commit_role": "test_recovery_execution_commit",
     "base_commit": "9a7e184c37f5936e5a4cafc12175183a8a0e7b2a",
     "base_commit_role": "design/source checkout before this implementation; not execution commit",
@@ -95,7 +95,7 @@
     "target_feedback_to_training": false
   },
   "checkpoint": {
-    "initialization": "strict same-seed matched pure CE parent, then fresh optimizer/LR; not exact optimizer resume",
+    "initialization": "TEST_ONLY: no training initialization; strictly evaluate each original source-run E40 checkpoint; E200 parent lineage retained below",
     "sources": [
       {
         "model_seed": 2026092701,
@@ -139,7 +139,57 @@
     ],
     "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s<seed>/parent_provenance.json",
     "provenance_verdict": "SOURCE_AUDIT_VERIFIED; runtime rechecks actual parent files and exact physical roles before use",
-    "selection_rule": "Final E40 only for each row; P0 fixed final E200 reused; no cross-arm target selection"
+    "selection_rule": "Final E40 only for each row; P0 fixed final E200 reused; no cross-arm target selection",
+    "evaluation_sources": [
+      {
+        "row_id": "C0-s2026092701",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C0-s2026092701/source/final_ssdg.pth"
+      },
+      {
+        "row_id": "C1-s2026092701",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C1-s2026092701/source/final_ssdg.pth"
+      },
+      {
+        "row_id": "C2-s2026092701",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C2-s2026092701/source/final_ssdg.pth"
+      },
+      {
+        "row_id": "C3-s2026092701",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C3-s2026092701/source/final_ssdg.pth"
+      },
+      {
+        "row_id": "C0-s2026092702",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C0-s2026092702/source/final_ssdg.pth"
+      },
+      {
+        "row_id": "C1-s2026092702",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C1-s2026092702/source/final_ssdg.pth"
+      },
+      {
+        "row_id": "C2-s2026092702",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C2-s2026092702/source/final_ssdg.pth"
+      },
+      {
+        "row_id": "C3-s2026092702",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C3-s2026092702/source/final_ssdg.pth"
+      },
+      {
+        "row_id": "C0-s2026092703",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C0-s2026092703/source/final_ssdg.pth"
+      },
+      {
+        "row_id": "C1-s2026092703",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C1-s2026092703/source/final_ssdg.pth"
+      },
+      {
+        "row_id": "C2-s2026092703",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C2-s2026092703/source/final_ssdg.pth"
+      },
+      {
+        "row_id": "C3-s2026092703",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C3-s2026092703/source/final_ssdg.pth"
+      }
+    ]
   },
   "execution": {
     "host": "N607 / dell-DSS8440",
@@ -150,7 +200,7 @@
     "local_artifact_root": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01",
     "launch_command": "python -X utf8 -m experiments.cvs_stage2_decouple.publish --output local_artifacts/cvs_stage2_decouple_20261011_r01",
     "stop_rule": "Technical exception records FAILED and retains artifacts; no automatic retry, no metric-based stopping; healthy jobs finish untouched",
-    "release_commit": "pending",
+    "release_commit": "ca7d521096d039ecc4bb8f3705a0c71b43ecfea5",
     "release_commit_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_decouple_20261011_r02/release_commit.txt",
     "remote_launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_stage2_decouple.dispatch",
     "preparation_jobs": 3,
@@ -162,7 +212,11 @@
     "command": "python -u -m experiments.cvs_stage2_decouple.test_recovery",
     "kind": "TEST_ONLY",
     "original_training_run": "20261011-phase1-stage2-decouple-manysig-m12-r01",
-    "original_training_commit": "43779e2716e7c7154989b31f4cde9d4f991e37c0"
+    "original_training_commit": "43779e2716e7c7154989b31f4cde9d4f991e37c0",
+    "training_updates_in_this_recovery": 0,
+    "training_budget_fields_describe_inherited_source_only": true,
+    "launch_verification": "VERIFIED",
+    "completion_verification": "VERIFIED"
   },
   "expected_artifacts": [
     "experiment.json",
@@ -408,9 +462,12 @@
       "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
       "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
       "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092701",
-      "status": "SOURCE_FROZEN_TEST_RECOVERY_PENDING",
+      "status": "ANALYZED",
       "source_run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
-      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
+      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+      "pid": 3822445,
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C0-s2026092701.log"
     },
     {
       "row_id": "C1-s2026092701",
@@ -575,9 +632,12 @@
       "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
       "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
       "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092701",
-      "status": "SOURCE_FROZEN_TEST_RECOVERY_PENDING",
+      "status": "ANALYZED",
       "source_run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
-      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
+      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+      "pid": 3822450,
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C1-s2026092701.log"
     },
     {
       "row_id": "C2-s2026092701",
@@ -742,9 +802,12 @@
       "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
       "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
       "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092701",
-      "status": "SOURCE_FROZEN_TEST_RECOVERY_PENDING",
+      "status": "ANALYZED",
       "source_run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
-      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
+      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+      "pid": 3822458,
+      "gpu": 1,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C2-s2026092701.log"
     },
     {
       "row_id": "C3-s2026092701",
@@ -909,9 +972,12 @@
       "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
       "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
       "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092701",
-      "status": "SOURCE_FROZEN_TEST_RECOVERY_PENDING",
+      "status": "ANALYZED",
       "source_run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
-      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
+      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+      "pid": 3822463,
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C3-s2026092701.log"
     },
     {
       "row_id": "C0-s2026092702",
@@ -1076,9 +1142,12 @@
       "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
       "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/prediction/predictions.npz",
       "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092702",
-      "status": "SOURCE_FROZEN_TEST_RECOVERY_PENDING",
+      "status": "ANALYZED",
       "source_run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
-      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
+      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+      "pid": 3822469,
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C0-s2026092702.log"
     },
     {
       "row_id": "C1-s2026092702",
@@ -1243,9 +1312,12 @@
       "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
       "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/prediction/predictions.npz",
       "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092702",
-      "status": "SOURCE_FROZEN_TEST_RECOVERY_PENDING",
+      "status": "ANALYZED",
       "source_run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
-      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
+      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+      "pid": 3822475,
+      "gpu": 1,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C1-s2026092702.log"
     },
     {
       "row_id": "C2-s2026092702",
@@ -1410,9 +1482,12 @@
       "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
       "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/prediction/predictions.npz",
       "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092702",
-      "status": "SOURCE_FROZEN_TEST_RECOVERY_PENDING",
+      "status": "ANALYZED",
       "source_run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
-      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
+      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+      "pid": 3822488,
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C2-s2026092702.log"
     },
     {
       "row_id": "C3-s2026092702",
@@ -1577,9 +1652,12 @@
       "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
       "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/prediction/predictions.npz",
       "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092702",
-      "status": "SOURCE_FROZEN_TEST_RECOVERY_PENDING",
+      "status": "ANALYZED",
       "source_run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
-      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
+      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+      "pid": 3822505,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C3-s2026092702.log"
     },
     {
       "row_id": "C0-s2026092703",
@@ -1744,9 +1822,12 @@
       "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
       "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/prediction/predictions.npz",
       "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092703",
-      "status": "SOURCE_FROZEN_TEST_RECOVERY_PENDING",
+      "status": "ANALYZED",
       "source_run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
-      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
+      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+      "pid": 3822529,
+      "gpu": 2,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C0-s2026092703.log"
     },
     {
       "row_id": "C1-s2026092703",
@@ -1911,9 +1992,12 @@
       "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
       "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/prediction/predictions.npz",
       "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092703",
-      "status": "SOURCE_FROZEN_TEST_RECOVERY_PENDING",
+      "status": "ANALYZED",
       "source_run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
-      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
+      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+      "pid": 3822559,
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C1-s2026092703.log"
     },
     {
       "row_id": "C2-s2026092703",
@@ -2078,9 +2162,12 @@
       "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
       "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/prediction/predictions.npz",
       "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092703",
-      "status": "SOURCE_FROZEN_TEST_RECOVERY_PENDING",
+      "status": "ANALYZED",
       "source_run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
-      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
+      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+      "pid": 3822724,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C2-s2026092703.log"
     },
     {
       "row_id": "C3-s2026092703",
@@ -2245,9 +2332,12 @@
       "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
       "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/prediction/predictions.npz",
       "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092703",
-      "status": "SOURCE_FROZEN_TEST_RECOVERY_PENDING",
+      "status": "ANALYZED",
       "source_run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
-      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
+      "recovery_run_id": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+      "pid": 3823030,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C3-s2026092703.log"
     }
   ],
   "notes": [
@@ -2267,7 +2357,7 @@
     "84% target remains unverified until all three C3 independent clean scores exist; no best-arm replacement or feedback into training.",
     "首次发布r01在CPU父checkpoint反序列化预检失败，尚未创建run或训练进程；修复native模块导入顺序后改用不可覆盖的release r02，实验run/矩阵/数据/预算不变。"
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "views": [
       "clean"
@@ -2372,5 +2462,18 @@
     "old_failure_preserved": true,
     "old_prediction_policy": "Only metadata-only failed directories are archived; completed prediction reused; never overwrite partial predictions",
     "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01"
-  }
+  },
+  "latest_event": {
+    "at": 1791691083.7361097,
+    "status": "ANALYZED",
+    "scope": "TEST_ONLY",
+    "source_run": "20261011-phase1-stage2-decouple-manysig-m12-r01",
+    "recovery_run": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+    "execution_commit": "ca7d521096d039ecc4bb8f3705a0c71b43ecfea5",
+    "rows": 12,
+    "views": [
+      "clean"
+    ]
+  },
+  "execution_commit": "ca7d521096d039ecc4bb8f3705a0c71b43ecfea5"
 }

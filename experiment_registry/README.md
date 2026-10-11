@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-10T15:51:06.021619+00:00
+更新：2026-10-11T04:05:40.304520+00:00（本轮两个 run 及登记规模；其余历史定位表保留）
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -8,13 +8,15 @@
 - [完整目录CSV](catalog.csv) · [结构化目录](catalog.jsonl) · [覆盖与缺项](coverage.json)
 - 通过show的`--section artifacts/facts`读取该条目的路径或配置出处；细目按记录压缩保存于details/，不扫描全库。
 
-- [第二阶段多解耦 C0–C3 三种子，E40，clean-only](../automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/report.md)（2026-10-11，状态以原记录为准）
+- [第二阶段多解耦 C0–C3 三种子，E40，clean-only](../automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/report.md)（2026-10-11，12 行已完成；C3 均值 79.670%，84% 未达标）
+
+- [第二阶段 clean 测试技术恢复，12/12 完成](../automation_reports/CV-SincNet/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/report.md)（原权重复用，无重训）
 
 ## 登记规模
 
 |记录类型|数量|
 |---|---:|
-|managed_run|133|
+|managed_run|135|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。

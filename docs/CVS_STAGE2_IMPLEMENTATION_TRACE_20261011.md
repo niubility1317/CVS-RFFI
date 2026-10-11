@@ -4,15 +4,15 @@
 
 | ID | 设计条款 | 实现位置 | 验证要求 | 当前状态 |
 |---|---|---|---|---|
-| D01 | §2 合规同 seed 纯 CE 父权重，先加载后辅助构造 | common.py/source.py/data.py | 父来源读取证据；data_checks 的角色/顺序/预处理与 U 零读取 | implemented；发布前远端严格加载再次核实 |
+| D01 | §2 合规同 seed 纯 CE 父权重，先加载后辅助构造 | common.py/source.py/data.py | 父来源读取证据；data_checks 的角色/顺序/预处理与 U 零读取 | verified；三个实际父权重远端严格加载及零 IQ 前向通过，来源与角色完全匹配 |
 | D02 | §5.1 独立 L/T，有界真实 IQ，分别两遍 L_s，随后冻结 | actions.py | stage2_actions_cpu_checks.json / stage2_actions_cuda_checks.json | verified；CUDA 拟合重复误差 <1e-6 |
 | D03 | §5.2 条件组均值、双向 Huber、三折 TX 留出 | receiver.py | receiver_checks：9 项，留出 TX 不影响拟合/标准化 | verified |
 | D04 | §5.3 单向 R 裕量修复、c 单次使用、固定关系分母 | receiver.py | receiver_checks + stage2_runtime_cuda_r03.json；实际 R→E 范数 1.834516 | verified；synthetic 梯度证据不是成绩 |
 | D05 | §6 CE/keep/aug/drop/R 与固定权重日程 | source.py | runtime_checks 的手算损失、停止梯度、共享 8880 步采样 | verified |
-| D06 | §6 E40/8880、两组 LR、新 AdamW、最终权重 | source.py | runtime_checks：参数覆盖、LR 边界、L/T 各1110次、完整CUDA一步 | verified；正式完整预算由结束标记核实 |
-| D07 | §7 源 V 只读、8 源压力、详细日志 | source.py/data.py | data_checks；既有只读源验证；epoch/step、CUDA分段耗时、原始/加权梯度与父参考轨迹 | implemented；等待正式训练完整日志 |
-| D08 | §8 12 行固定测试、clean-only、truth-last | evaluate.py/dispatch.py | stage2_control_checks_r03.json：完整合成 12×168000 预测、168＋48 条评分 | verified；实际 clean 结果待训练完成 |
-| D09 | 发布与资源 | publish.py/registration.py | control_checks 的容量/独占输出/源冻结边界；远端父 metadata 只读核实 | implemented；待 Git/发布独立读回 |
+| D06 | §6 E40/8880、两组 LR、新 AdamW、最终权重 | source.py | runtime_checks：参数覆盖、LR 边界、L/T 各1110次、完整CUDA一步 | verified；12 行均完成 E40/8880，480 个 epoch 与 106560 条连续 step 已全量审核 |
+| D07 | §7 源 V 只读、8 源压力、详细日志 | source.py/data.py | data_checks；既有只读源验证；epoch/step、CUDA分段耗时、原始/加权梯度与父参考轨迹 | verified；12 行均完成八视图源诊断，完整源报告与紧凑证据归档 |
+| D08 | §8 12 行固定测试、clean-only、truth-last | evaluate.py/dispatch.py/test_recovery.py | 合成控制测试；12×168000 实际预测及 168＋48 条独立评分 | verified；转换兼容修复后仅恢复测试，C3=79.670%，84% 未达成 |
+| D09 | 发布与资源 | publish.py/registration.py | control_checks 的容量/独占输出/源冻结边界；远端进程、配置与终态独立读回 | verified；训练 43779e271、测试恢复 ca7d52109；每卡总进程未超过4 |
 | D10 | 用户追加历史回顾 | CVS_MULTI_DISENTANGLE_RETROSPECTIVE_20261011.md | 已核对历史四 seed 配对报告、7800 个源 epoch 汇总，所有文档引用检查 | verified；纯 CE 后续目标缺项明确 N/A |
 
 ## 固定工程细节
@@ -23,4 +23,6 @@
 
 独立 P0/P1 审查已关闭：参考响应融合门控学习率分组、源缓存角色实比字段、真实 R 单项至身份编码器的梯度探针均已修复并核实。未发现未关闭的 P0/P1；不构成准确率收益或 84% 达标证明。
 
-全部程序位置均相对于 `experiments/cvs_stage2_decouple/`，测试证据位于本工作树 `local_artifacts/`，发布后正式证据登记在对应 run 的 `evidence/`。当前没有主动延后或删除任何本轮机制要求；正式训练和真实测试仍须由产物证明。
+全部程序位置均相对于 `experiments/cvs_stage2_decouple/`，测试证据位于本工作树 `local_artifacts/`，正式证据登记在对应 run 的 `evidence/`。本轮机制要求、完整训练与真实测试均已执行；实现验收通过不表示性能达标。
+
+最终产物：[完整实验报告](../automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/report.md)、[独立测试恢复记录](../automation_reports/CV-SincNet/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/report.md)。恢复保留原 E40 权重、旧失败记录与配置，只更换数值等价的 float32 输入转换接口。

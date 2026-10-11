@@ -1,0 +1,99 @@
+{
+  "active": [],
+  "pending": [],
+  "completed": [
+    {
+      "kind": "prepare",
+      "identifier": "2026092701"
+    },
+    {
+      "kind": "prepare",
+      "identifier": "2026092702"
+    },
+    {
+      "kind": "prepare",
+      "identifier": "2026092703"
+    }
+  ],
+  "failures": [
+    {
+      "kind": "train",
+      "identifier": "C0-s2026092702",
+      "exit_code": 1,
+      "artifact_valid": false
+    },
+    {
+      "kind": "train",
+      "identifier": "C0-s2026092703",
+      "exit_code": 1,
+      "artifact_valid": false
+    },
+    {
+      "kind": "train",
+      "identifier": "C0-s2026092701",
+      "exit_code": 1,
+      "artifact_valid": false
+    },
+    {
+      "kind": "train",
+      "identifier": "C1-s2026092701",
+      "exit_code": 1,
+      "artifact_valid": false
+    },
+    {
+      "kind": "train",
+      "identifier": "C1-s2026092702",
+      "exit_code": 1,
+      "artifact_valid": false
+    },
+    {
+      "kind": "train",
+      "identifier": "C1-s2026092703",
+      "exit_code": 1,
+      "artifact_valid": false
+    },
+    {
+      "kind": "train",
+      "identifier": "C2-s2026092702",
+      "exit_code": 1,
+      "artifact_valid": false
+    },
+    {
+      "kind": "train",
+      "identifier": "C3-s2026092702",
+      "exit_code": 1,
+      "artifact_valid": false
+    },
+    {
+      "kind": "train",
+      "identifier": "C2-s2026092703",
+      "exit_code": 1,
+      "artifact_valid": false
+    },
+    {
+      "kind": "train",
+      "identifier": "C2-s2026092701",
+      "exit_code": 1,
+      "artifact_valid": false
+    },
+    {
+      "kind": "train",
+      "identifier": "C3-s2026092701",
+      "exit_code": 1,
+      "artifact_valid": false
+    },
+    {
+      "kind": "train",
+      "identifier": "C3-s2026092703",
+      "exit_code": 1,
+      "artifact_valid": false
+    }
+  ],
+  "total_identity_rows": 12,
+  "total_preparations": 3,
+  "per_gpu_limit": 4,
+  "views": [
+    "clean"
+  ],
+  "updated_at": 1791690869.6476781
+}

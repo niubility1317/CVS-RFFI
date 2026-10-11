@@ -1,0 +1,22 @@
+{
+  "status": "ANALYZED",
+  "scope": "TEST_ONLY",
+  "recovery_run": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01",
+  "source_run": "20261011-phase1-stage2-decouple-manysig-m12-r01",
+  "trained_models": 12,
+  "tested_models": 12,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "views": [
+    "clean"
+  ],
+  "technical_recovery": true,
+  "all_rows_tested_automatically": true,
+  "retraining": false,
+  "execution_commit": "ca7d521096d039ecc4bb8f3705a0c71b43ecfea5",
+  "independent_recount": "VERIFIED",
+  "old_failure_preserved": true
+}

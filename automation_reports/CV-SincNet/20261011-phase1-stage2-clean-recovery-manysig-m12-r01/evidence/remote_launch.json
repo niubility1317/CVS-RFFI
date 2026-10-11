@@ -1,0 +1,208 @@
+{
+  "rows": [
+    {
+      "row_id": "C0-s2026092701",
+      "pid": 3822445,
+      "start_ticks": 93875160,
+      "gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_clean_recovery_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.test_recovery",
+        "--worker",
+        "C0-s2026092701",
+        "--train-stage2"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C0-s2026092701.log"
+    },
+    {
+      "row_id": "C1-s2026092701",
+      "pid": 3822450,
+      "start_ticks": 93875192,
+      "gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_clean_recovery_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.test_recovery",
+        "--worker",
+        "C1-s2026092701",
+        "--train-stage2"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C1-s2026092701.log"
+    },
+    {
+      "row_id": "C2-s2026092701",
+      "pid": 3822458,
+      "start_ticks": 93875223,
+      "gpu": 1,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_clean_recovery_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.test_recovery",
+        "--worker",
+        "C2-s2026092701",
+        "--train-stage2"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C2-s2026092701.log"
+    },
+    {
+      "row_id": "C3-s2026092701",
+      "pid": 3822463,
+      "start_ticks": 93875249,
+      "gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_clean_recovery_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.test_recovery",
+        "--worker",
+        "C3-s2026092701",
+        "--train-stage2"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C3-s2026092701.log"
+    },
+    {
+      "row_id": "C0-s2026092702",
+      "pid": 3822469,
+      "start_ticks": 93875275,
+      "gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_clean_recovery_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.test_recovery",
+        "--worker",
+        "C0-s2026092702",
+        "--train-stage2"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C0-s2026092702.log"
+    },
+    {
+      "row_id": "C1-s2026092702",
+      "pid": 3822475,
+      "start_ticks": 93875301,
+      "gpu": 1,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_clean_recovery_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.test_recovery",
+        "--worker",
+        "C1-s2026092702",
+        "--train-stage2"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C1-s2026092702.log"
+    },
+    {
+      "row_id": "C2-s2026092702",
+      "pid": 3822488,
+      "start_ticks": 93875354,
+      "gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_clean_recovery_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.test_recovery",
+        "--worker",
+        "C2-s2026092702",
+        "--train-stage2"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C2-s2026092702.log"
+    },
+    {
+      "row_id": "C3-s2026092702",
+      "pid": 3822505,
+      "start_ticks": 93875438,
+      "gpu": 5,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_clean_recovery_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.test_recovery",
+        "--worker",
+        "C3-s2026092702",
+        "--train-stage2"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C3-s2026092702.log"
+    },
+    {
+      "row_id": "C0-s2026092703",
+      "pid": 3822529,
+      "start_ticks": 93875584,
+      "gpu": 2,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_clean_recovery_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.test_recovery",
+        "--worker",
+        "C0-s2026092703",
+        "--train-stage2"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C0-s2026092703.log"
+    },
+    {
+      "row_id": "C1-s2026092703",
+      "pid": 3822559,
+      "start_ticks": 93875760,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_clean_recovery_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.test_recovery",
+        "--worker",
+        "C1-s2026092703",
+        "--train-stage2"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C1-s2026092703.log"
+    },
+    {
+      "row_id": "C2-s2026092703",
+      "pid": 3822724,
+      "start_ticks": 93875986,
+      "gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_clean_recovery_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.test_recovery",
+        "--worker",
+        "C2-s2026092703",
+        "--train-stage2"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C2-s2026092703.log"
+    },
+    {
+      "row_id": "C3-s2026092703",
+      "pid": 3823030,
+      "start_ticks": 93876285,
+      "gpu": 4,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_clean_recovery_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.test_recovery",
+        "--worker",
+        "C3-s2026092703",
+        "--train-stage2"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-clean-recovery-manysig-m12-r01/logs/C3-s2026092703.log"
+    }
+  ]
+}

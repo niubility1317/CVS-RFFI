@@ -1,0 +1,56 @@
+{"at": 1791690407.7586815, "status": "RUNNING", "job_kind": "prepare", "identifier": "2026092701", "pid": 3812916, "gpu": 2, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/prepare-2026092701.log"}
+{"at": 1791690408.0771801, "status": "RUNNING", "job_kind": "prepare", "identifier": "2026092702", "pid": 3812921, "gpu": 6, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/prepare-2026092702.log"}
+{"at": 1791690408.3397841, "status": "RUNNING", "job_kind": "prepare", "identifier": "2026092703", "pid": 3812928, "gpu": 1, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/prepare-2026092703.log"}
+{"at": 1791690436.7958755, "status": "PREPARATION_COMPLETE", "model_seed": 2026092702}
+{"at": 1791690437.1694026, "status": "PREPARATION_COMPLETE", "model_seed": 2026092703}
+{"at": 1791690437.7127936, "status": "PREPARATION_COMPLETE", "model_seed": 2026092701}
+{"at": 1791690438.6874201, "status": "RUNNING", "job_kind": "train", "identifier": "C0-s2026092701", "pid": 3813768, "gpu": 2, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/train-C0-s2026092701.log", "row_id": "C0-s2026092701"}
+{"at": 1791690439.0007145, "status": "RUNNING", "job_kind": "train", "identifier": "C1-s2026092701", "pid": 3813773, "gpu": 6, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/train-C1-s2026092701.log", "row_id": "C1-s2026092701"}
+{"at": 1791690439.2792268, "status": "RUNNING", "job_kind": "train", "identifier": "C2-s2026092701", "pid": 3813778, "gpu": 1, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/train-C2-s2026092701.log", "row_id": "C2-s2026092701"}
+{"at": 1791690439.5580583, "status": "RUNNING", "job_kind": "train", "identifier": "C3-s2026092701", "pid": 3813784, "gpu": 3, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/train-C3-s2026092701.log", "row_id": "C3-s2026092701"}
+{"at": 1791690439.8875442, "status": "RUNNING", "job_kind": "train", "identifier": "C0-s2026092702", "pid": 3813792, "gpu": 2, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/train-C0-s2026092702.log", "row_id": "C0-s2026092702"}
+{"at": 1791690440.4568806, "status": "RUNNING", "job_kind": "train", "identifier": "C1-s2026092702", "pid": 3813803, "gpu": 6, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/train-C1-s2026092702.log", "row_id": "C1-s2026092702"}
+{"at": 1791690441.0233438, "status": "RUNNING", "job_kind": "train", "identifier": "C2-s2026092702", "pid": 3813815, "gpu": 1, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/train-C2-s2026092702.log", "row_id": "C2-s2026092702"}
+{"at": 1791690441.8497272, "status": "RUNNING", "job_kind": "train", "identifier": "C3-s2026092702", "pid": 3813832, "gpu": 3, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/train-C3-s2026092702.log", "row_id": "C3-s2026092702"}
+{"at": 1791690443.2410266, "status": "RUNNING", "job_kind": "train", "identifier": "C0-s2026092703", "pid": 3813856, "gpu": 7, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/train-C0-s2026092703.log", "row_id": "C0-s2026092703"}
+{"at": 1791690445.00635, "status": "RUNNING", "job_kind": "train", "identifier": "C1-s2026092703", "pid": 3813884, "gpu": 5, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/train-C1-s2026092703.log", "row_id": "C1-s2026092703"}
+{"at": 1791690447.310003, "status": "RUNNING", "job_kind": "train", "identifier": "C2-s2026092703", "pid": 3814055, "gpu": 0, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/train-C2-s2026092703.log", "row_id": "C2-s2026092703"}
+{"at": 1791690449.2103765, "status": "RUNNING", "job_kind": "train", "identifier": "C3-s2026092703", "pid": 3814288, "gpu": 4, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/logs/train-C3-s2026092703.log", "row_id": "C3-s2026092703"}
+{"at": 1791690784.1106427, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "C0-s2026092702"}
+{"at": 1791690784.5052965, "status": "FAILED", "job_kind": "train", "error": "TypeError('expected np.ndarray (got numpy.ndarray)')", "row_id": "C0-s2026092702"}
+{"at": 1791690784.678553, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "C0-s2026092703"}
+{"at": 1791690784.9643784, "status": "FAILED", "job_kind": "train", "error": "TypeError('expected np.ndarray (got numpy.ndarray)')", "row_id": "C0-s2026092703"}
+{"at": 1791690789.7214305, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "C0-s2026092701"}
+{"at": 1791690789.9983275, "status": "FAILED", "job_kind": "train", "error": "TypeError('expected np.ndarray (got numpy.ndarray)')", "row_id": "C0-s2026092701"}
+{"at": 1791690801.5128086, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "C1-s2026092701"}
+{"at": 1791690801.7976608, "status": "FAILED", "job_kind": "train", "error": "TypeError('expected np.ndarray (got numpy.ndarray)')", "row_id": "C1-s2026092701"}
+{"at": 1791690805.1161451, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "C1-s2026092703"}
+{"at": 1791690805.460267, "status": "FAILED", "job_kind": "train", "error": "TypeError('expected np.ndarray (got numpy.ndarray)')", "row_id": "C1-s2026092703"}
+{"at": 1791690806.354969, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "C1-s2026092702"}
+{"at": 1791690806.6017537, "status": "FAILED", "job_kind": "train", "error": "TypeError('expected np.ndarray (got numpy.ndarray)')", "row_id": "C1-s2026092702"}
+{"at": 1791690851.8784852, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "C3-s2026092702"}
+{"at": 1791690852.2366548, "status": "FAILED", "job_kind": "train", "error": "TypeError('expected np.ndarray (got numpy.ndarray)')", "row_id": "C3-s2026092702"}
+{"at": 1791690854.2165544, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "C2-s2026092703"}
+{"at": 1791690854.5806756, "status": "FAILED", "job_kind": "train", "error": "TypeError('expected np.ndarray (got numpy.ndarray)')", "row_id": "C2-s2026092703"}
+{"at": 1791690857.7574267, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "C2-s2026092702"}
+{"at": 1791690858.1459863, "status": "FAILED", "job_kind": "train", "error": "TypeError('expected np.ndarray (got numpy.ndarray)')", "row_id": "C2-s2026092702"}
+{"at": 1791690865.397424, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "C2-s2026092701"}
+{"at": 1791690865.7188714, "status": "FAILED", "job_kind": "train", "error": "TypeError('expected np.ndarray (got numpy.ndarray)')", "row_id": "C2-s2026092701"}
+{"at": 1791690866.4357076, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "C3-s2026092701"}
+{"at": 1791690866.7327435, "status": "FAILED", "job_kind": "train", "error": "TypeError('expected np.ndarray (got numpy.ndarray)')", "row_id": "C3-s2026092701"}
+{"at": 1791690868.2220702, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "C3-s2026092703"}
+{"at": 1791690868.5871215, "status": "FAILED", "job_kind": "train", "error": "TypeError('expected np.ndarray (got numpy.ndarray)')", "row_id": "C3-s2026092703"}
+{"at": 1791690869.6489706, "status": "FAILED", "error": "RuntimeError(\"Technical failures retained; no automatic retry: [{'kind': 'train', 'identifier': 'C0-s2026092702', 'exit_code': 1, 'artifact_valid': False}, {'kind': 'train', 'identifier': 'C0-s2026092703', 'exit_code': 1, 'artifact_valid': False}, {'kind': 'train', 'identifier': 'C0-s2026092701', 'exit_code': 1, 'artifact_valid': False}, {'kind': 'train', 'identifier': 'C1-s2026092701', 'exit_code': 1, 'artifact_valid': False}, {'kind': 'train', 'identifier': 'C1-s2026092702', 'exit_code': 1, 'artifact_valid': False}, {'kind': 'train', 'identifier': 'C1-s2026092703', 'exit_code': 1, 'artifact_valid': False}, {'kind': 'train', 'identifier': 'C2-s2026092702', 'exit_code': 1, 'artifact_valid': False}, {'kind': 'train', 'identifier': 'C3-s2026092702', 'exit_code': 1, 'artifact_valid': False}, {'kind': 'train', 'identifier': 'C2-s2026092703', 'exit_code': 1, 'artifact_valid': False}, {'kind': 'train', 'identifier': 'C2-s2026092701', 'exit_code': 1, 'artifact_valid': False}, {'kind': 'train', 'identifier': 'C3-s2026092701', 'exit_code': 1, 'artifact_valid': False}, {'kind': 'train', 'identifier': 'C3-s2026092703', 'exit_code': 1, 'artifact_valid': False}]\")"}
+{"at": 1791691065.334086, "status": "ANALYZED", "technical_recovery": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01", "views": ["clean"], "row_id": "C1-s2026092701"}
+{"at": 1791691065.474161, "status": "ANALYZED", "technical_recovery": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01", "views": ["clean"], "row_id": "C0-s2026092701"}
+{"at": 1791691066.066499, "status": "ANALYZED", "technical_recovery": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01", "views": ["clean"], "row_id": "C2-s2026092701"}
+{"at": 1791691066.7131312, "status": "ANALYZED", "technical_recovery": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01", "views": ["clean"], "row_id": "C3-s2026092701"}
+{"at": 1791691067.709833, "status": "ANALYZED", "technical_recovery": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01", "views": ["clean"], "row_id": "C0-s2026092702"}
+{"at": 1791691067.8799384, "status": "ANALYZED", "technical_recovery": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01", "views": ["clean"], "row_id": "C1-s2026092702"}
+{"at": 1791691068.7926707, "status": "ANALYZED", "technical_recovery": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01", "views": ["clean"], "row_id": "C2-s2026092702"}
+{"at": 1791691069.5585546, "status": "ANALYZED", "technical_recovery": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01", "views": ["clean"], "row_id": "C3-s2026092702"}
+{"at": 1791691070.077553, "status": "ANALYZED", "technical_recovery": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01", "views": ["clean"], "row_id": "C0-s2026092703"}
+{"at": 1791691071.0670748, "status": "ANALYZED", "technical_recovery": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01", "views": ["clean"], "row_id": "C1-s2026092703"}
+{"at": 1791691072.004132, "status": "ANALYZED", "technical_recovery": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01", "views": ["clean"], "row_id": "C2-s2026092703"}
+{"at": 1791691073.2039695, "status": "ANALYZED", "technical_recovery": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01", "views": ["clean"], "row_id": "C3-s2026092703"}
+{"at": 1791691083.723791, "status": "ANALYZED", "technical_recovery": "20261011-phase1-stage2-clean-recovery-manysig-m12-r01", "trained_models": 12, "tested_models": 12, "views": ["clean"]}
