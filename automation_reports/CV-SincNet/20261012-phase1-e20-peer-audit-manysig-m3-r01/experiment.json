@@ -1,0 +1,209 @@
+{
+  "schema": "experiment_record_v1",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center crop/pad 256; per-packet complex RMS; center=False; fs=25MHz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#class_txs",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/manifest.json; all six registered class names",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000,
+      "L_s_fraction": 0.07,
+      "U_s_fraction": 0.63,
+      "V_fraction": 0.3,
+      "U_use": "none; U is not loaded"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": "inherited deterministic physical source roles (historical protocol label 392005)",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": "N/A: source-only; no target/query loader",
+    "leo_config_ref": null,
+    "train_ratio_definition": "rho_label=L_s/(L_s+U_s)=0.1 unchanged; U_s TX truth never visible",
+    "diagnostic_access": "Existing original P0 L6300/V27000 probabilities and visible source labels only; no new IQ/model forward; no U; no target"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "claim_scope": "known-source diagnosis only; not unseen RX, not benefit on U or target, not deployment oracle",
+    "external_method_exception": null,
+    "target_feedback_to_training": false
+  },
+  "run_id": "20261012-phase1-e20-peer-audit-manysig-m3-r01",
+  "group_id": "cvs-e20-independent-peer-source-audit",
+  "display_name": "E20独立种子教师：源域纠错与高置信错误互补性",
+  "description": "复用三个原E20固定L/V预测，LOO2与单个ALL3均匀教师；0训练、0新模型前向、无target/U",
+  "status": "LOCAL_VERIFIED",
+  "aliases": [],
+  "tags": [
+    "source_only",
+    "E20",
+    "independent_teacher",
+    "peer",
+    "calibration",
+    "error_correction"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261012-phase1-e20-error-audit-manysig-m3-r01",
+    "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续84%目标内的源域机制研发；新方案使用已授权E20来源，源证据先核验；不按目标成绩选择教师",
+  "checkpoint": {
+    "initialization": "No checkpoint load; only original E20 parent saved source readouts",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092702/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092703/source/final_ssdg.pth"
+    ],
+    "selection_rule": "all original three fixed E20 seeds; uniform means and fixed .95 threshold before analysis",
+    "source_check": "Current readback of completed source audit configs and provenance; same original source contract; strict actual physical IDs across seeds",
+    "inheritance": "original scratch native E20/final20 source readouts; no endpoint consumed",
+    "identity_updates": 0,
+    "target_access": false,
+    "provenance_evidence": "evidence/source_input_readback.json"
+  },
+  "code": {
+    "commit": "resolved local Git HEAD before execution",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+    "cwd": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011"
+  },
+  "execution": {
+    "host": "local Windows CPU; N607 source artifacts read-only",
+    "user": "lh594",
+    "launch_owner": "codex/root/e20-peer-audit-20261012",
+    "gpu_policy": "CPU only, no new GPU process",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\20261012-phase1-e20-peer-audit-manysig-m3-r01",
+    "launch_command": "python -m experiments.cvs_e20_peer_audit.run download THEN python -m experiments.cvs_e20_peer_audit.run analyze",
+    "stop_rule": "Fail closed on role/PID/metadata mismatch; preserve partial artifacts; never overwrite or automatic rerun",
+    "max_total_processes_per_gpu": 0
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "source_readback.json",
+    "download_complete.json",
+    "analysis.json",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "L/V accuracy NLL ECE15",
+      "RX/day/TX",
+      "student confidence/correct cohorts",
+      "fixed/broken/net errors",
+      "teacher confidence and dual-teacher consensus coverage",
+      "teacher changed prediction precision and selection risk",
+      "high-confidence-error correction",
+      "pairwise and all-three error overlap",
+      "nondeployable oracle ceiling"
+    ],
+    "prediction_ref": "existing source only /home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-e20-error-audit-manysig-m3-r01",
+    "scorer_ref": "local source visible-label aggregation; no target scorer",
+    "primary_arm": "LOO2 peers versus each student",
+    "pairs": "all three student comparisons; ALL3 once, not three independent replicates"
+  },
+  "independent_review": {
+    "reviewer": "stage2_release_review",
+    "status": "PASS",
+    "scope": "fixed source-only inputs and means; PID/label integrity; correct denominators; no fitting/target/U; output protection"
+  },
+  "rows": [
+    {
+      "row_id": "fixed-peer-matrix",
+      "status": "PLANNED",
+      "method": "cvs_e20_peer_audit",
+      "purpose": "复用三个原E20固定L/V预测，LOO2与单个ALL3均匀教师；0训练、0新模型前向、无target/U",
+      "config": {
+        "run_id": "20261012-phase1-e20-peer-audit-manysig-m3-r01",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "roles": {
+          "L": 6300,
+          "V": 27000
+        },
+        "input_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-e20-error-audit-manysig-m3-r01",
+        "input_run": "20261012-phase1-e20-error-audit-manysig-m3-r01",
+        "launch_owner": "codex/root/e20-peer-audit-20261012",
+        "inputs": {
+          "2026092701": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-e20-error-audit-manysig-m3-r01/E20-s2026092701/source_predictions.pt",
+          "2026092702": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-e20-error-audit-manysig-m3-r01/E20-s2026092702/source_predictions.pt",
+          "2026092703": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-e20-error-audit-manysig-m3-r01/E20-s2026092703/source_predictions.pt"
+        },
+        "readouts": "only L/V.parent original native E20; endpoints are not consumed",
+        "teachers": [
+          "LOO2 uniform probability mean of the other two seeds per student",
+          "ALL3 uniform probability mean, one teacher only"
+        ],
+        "confidence": 0.95,
+        "ece_bins": 15,
+        "consensus": "other two teachers argmax agree and each confidence>=.95",
+        "training_updates": 0,
+        "teacher_fitting": false,
+        "V_backward": false,
+        "target_access": false,
+        "U_access": false,
+        "identity_parameters_updated": 0,
+        "GPU_processes": 0,
+        "claims": "known-source diagnosis only; not unseen RX, not benefit on U or target, not deployment oracle",
+        "output": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\20261012-phase1-e20-peer-audit-manysig-m3-r01",
+        "selection": "all fixed three seeds; no weighting, threshold fit, ranking or selection"
+      },
+      "config_ref": "experiment.json#rows/fixed-peer-matrix",
+      "resolved_config_ref": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\20261012-phase1-e20-peer-audit-manysig-m3-r01\\resolved_config.json",
+      "epochs": 0,
+      "budget_ref": "99900 original source P0 readouts reused; no new model forwards or gradients",
+      "output_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\20261012-phase1-e20-peer-audit-manysig-m3-r01",
+      "log_path": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\20261012-phase1-e20-peer-audit-manysig-m3-r01\\analysis.json",
+      "command": "python -m experiments.cvs_e20_peer_audit.run download THEN python -m experiments.cvs_e20_peer_audit.run analyze",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "source_readback.json",
+        "download_complete.json",
+        "analysis.json",
+        "completion.json"
+      ],
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "One deterministic joint diagnostic of model seeds2026092701/02/03; LOO2 paired three times, ALL3 one teacher. Physical split inherited unchanged; no random draw or fitted threshold. Null means not applicable, not zero."
+    }
+  ],
+  "notes": [
+    "No identity candidate, no target test scheduled for this source-only diagnostic.",
+    "All five RX seen by E20; V cannot establish unseen-RX generalization.",
+    "Other endpoint readouts reside in same source pt files but are not consumed.",
+    "Raw tensors remain outside Git; aggregate evidence and report versioned."
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "target_access": false,
+  "endpoint_poison_not_accessed": true,
+  "all_three_seed_P0_pairing": true,
+  "LOO_excludes_student": true,
+  "ALL3_single_teacher": true,
+  "repair_break_and_high_confidence_error_counts": true,
+  "consensus_both_peers_q095": true,
+  "accepted_disagreement_risk": true,
+  "pairwise_overlap_and_oracle": true,
+  "ECE15_and_zero_probability_NLL": true,
+  "empty_cohorts_JSON_null": true,
+  "input_and_RNG_unchanged": true,
+  "rejected_cases": [
+    "PID order",
+    "duplicate PID",
+    "role contamination",
+    "extra source role",
+    "L V overlap",
+    "truth mismatch",
+    "RX mismatch",
+    "day mismatch",
+    "NaN probability",
+    "negative probability",
+    "not simplex",
+    "wrong shape",
+    "missing seed"
+  ]
+}
