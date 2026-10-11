@@ -40,3 +40,12 @@ SAM、循环平均、SupCon与Manifold Mixup分别参考原始论文，但本任
 |逐行自动clean|dispatch/evaluate|完整prediction后truth-last|
 
 本地验证：11方案真实同构网络前后向、SAM恢复与RNG、固定五快照均值及来源、源诊断接口、pure CE分支、每卡3上限、truth-last负测均PASS。独立P0/P1审查PASS。真实父权重与源物理角色、辅助拟合和远端图由不可变发布preflight继续验证。
+
+
+## 发布与启动核验
+
+VERIFIED：执行提交 `30589464f5fbaaa4b0af434924ba16368dd82ca1`，dispatcher PID 3991961。三个父来源与源角色严格核对通过，真实网络33组前后向及SAM均PASS；source-only预检143.50秒，身份更新0，target访问0。新L/T三seed各200辅助更新、600总更新；三seed非零梯度步160/174/155（各200），其余零梯度完整保留，不据此宣称测试提升。
+
+当前24个训练进程、9行排队，八卡各3进程，所有24行已有epoch日志，未观察到failure。resolved config与冻结配置逐字段一致；实际teacher/U/satellite/R损失/在线辅助优化均关闭。全部33行完成后各自自动clean168000预测并独立truth-last，完整目标成绩尚未产生，84%尚未达到或证明。
+
+已规范化报告元数据的远端路径分隔符，训练配置与运行进程均未改变。运行信息为本次读回时间点，不能据此推断后续完成。

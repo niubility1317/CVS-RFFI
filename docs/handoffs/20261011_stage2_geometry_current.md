@@ -105,3 +105,8 @@ Z3源任务证据：八固定源V视图的均值准确率与S3最大绝对差0.0
 ## 新授权与混合机制矩阵
 
 用户扩大方法范围，H0–H10 共33行、匹配原始CE E200→E40。最新上限每GPU3进程（含其他任务），8GPU；只L_s、无U/teacher/satellite、自动clean truth-last。本地11方案实际网络前后向/SAM/fixed-average/source接口检查PASS，尚未发布。新run 20261011-phase1-stage2-hybrid-manysig-m33-r01，唯一owner codex/root/stage2-hybrid-20261011。下一步独立P0/P1审查、提交push、不可变发布，CPU source-only拟合和父权重预检后自动八卡队列。
+
+
+## 当前：八卡混合机制正式运行
+
+20261011-phase1-stage2-hybrid-manysig-m33-r01，执行30589464f5fbaaa4b0af434924ba16368dd82ca1，release cvs_stage2_hybrid_20261011_r01，dispatcher3991961，唯一owner codex/root/stage2-hybrid-20261011。VERIFIED：3父权重及物理角色，CPU预检143.50秒身份0/target0，600辅助更新；33原生配置前后向与SAM全部通过。最新24active/9pending，八GPU各3进程、全部24已有epoch日志、无failure。只原始E200→E40，所有固定H0-H10都测clean，H9主方案，三seed均值84%目标仍active未达成。逐行自动freeze→prediction→独立CPU truth-last，禁止反馈改训练/排序/重跑。下次从此run实时queue/PID/产物恢复，不能重复启动。报告路径 E:\type10-7\code\worktrees\receiver_residual_dg_20261008\automation_reports\CV-SincNet\20261011-phase1-stage2-hybrid-manysig-m33-r01。shell工具实际忽略shell选择、宿主为内置pwsh，后续任务载荷继续使用已验证Python/原生可执行文件，复杂PowerShell须显式原生powershell.exe子进程。

@@ -105,7 +105,7 @@
   "run_id": "20261011-phase1-stage2-hybrid-manysig-m33-r01",
   "group_id": "cvs-stage2-source-hybrid",
   "comparison_group_id": "20261011-phase1-stage2-hybrid-manysig-m33-r01",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "display_name": "H0–H10 混合机制三种子 E40（33 实验）",
   "description": "匹配原始 CE 旧门控 cosine E200，混合跨接收机对比、特征混合、SAM、尾部权重平均及有限 L/T；只用 L_s，逐行自动 clean。",
   "aliases": [
@@ -126,11 +126,11 @@
   ],
   "authorization": "用户明确允许混合其他合规方法，每批多方案利用八卡；最新容量覆盖为每卡最多 3 进程（含其他任务），必要时减少。",
   "code": {
-    "commit": "c75e8a3c599ef56a31ef2f8efebc8954a6fd8d0b",
+    "commit": "30589464f5fbaaa4b0af434924ba16368dd82ca1",
     "commit_note": "Exact execution commit inserted from immutable release at launch",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "cwd": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\releases\\cvs_stage2_hybrid_20261011_r01"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_hybrid_20261011_r01"
   },
   "permissions": {
     "regime": "source_training_then_frozen_clean_truth_last",
@@ -142,13 +142,14 @@
     "host": "N607",
     "user": "szu2070436088",
     "launch_owner": "codex/root/stage2-hybrid-20261011",
-    "run_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01",
     "local_root": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\automation_reports\\CV-SincNet\\20261011-phase1-stage2-hybrid-manysig-m33-r01",
-    "release_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\releases\\cvs_stage2_hybrid_20261011_r01",
+    "release_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_hybrid_20261011_r01",
     "gpu_policy": "All 8 GPUs; <=3 total processes/GPU including unrelated owners; >=12000MB free before launch, fewer if unavailable",
     "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
     "launch_command": "python -m experiments.cvs_stage2_hybrid.publish --output local_artifacts/hybrid_delivery_20261011_r01",
-    "stop_rule": "Technical failure retained; stop new pending submissions, healthy active rows complete; no automatic retry or low-performance stop"
+    "stop_rule": "Technical failure retained; stop new pending submissions, healthy active rows complete; no automatic retry or low-performance stop",
+    "release_commit": "30589464f5fbaaa4b0af434924ba16368dd82ca1"
   },
   "metrics_plan": {
     "views": [
@@ -333,7 +334,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H0-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H0-s2026092701\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H0-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -365,8 +366,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H0-s2026092701",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H0-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H0-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H0-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -379,7 +380,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H0",
       "model_seed": 2026092701,
       "config": {
@@ -605,6 +606,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708553.8818626,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H0-s2026092701",
+        "pid": 3992097,
+        "gpu": 0,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H0-s2026092701.log",
+        "row_id": "H0-s2026092701"
       }
     },
     {
@@ -612,7 +623,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H1-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H1-s2026092701\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H1-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -644,8 +655,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H1-s2026092701",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H1-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H1-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H1-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -658,7 +669,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H1",
       "model_seed": 2026092701,
       "config": {
@@ -884,6 +895,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708554.1999187,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H1-s2026092701",
+        "pid": 3992104,
+        "gpu": 1,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H1-s2026092701.log",
+        "row_id": "H1-s2026092701"
       }
     },
     {
@@ -891,7 +912,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H2-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H2-s2026092701\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H2-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -923,8 +944,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H2-s2026092701",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H2-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H2-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H2-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -937,7 +958,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H2",
       "model_seed": 2026092701,
       "config": {
@@ -1163,6 +1184,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708554.4967701,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H2-s2026092701",
+        "pid": 3992116,
+        "gpu": 2,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H2-s2026092701.log",
+        "row_id": "H2-s2026092701"
       }
     },
     {
@@ -1170,7 +1201,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H3-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H3-s2026092701\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H3-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -1202,8 +1233,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H3-s2026092701",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H3-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H3-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H3-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -1216,7 +1247,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H3",
       "model_seed": 2026092701,
       "config": {
@@ -1442,6 +1473,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708554.7896109,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H3-s2026092701",
+        "pid": 3992121,
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H3-s2026092701.log",
+        "row_id": "H3-s2026092701"
       }
     },
     {
@@ -1449,7 +1490,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H4-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H4-s2026092701\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H4-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -1481,8 +1522,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H4-s2026092701",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H4-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H4-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H4-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -1495,7 +1536,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H4",
       "model_seed": 2026092701,
       "config": {
@@ -1721,6 +1762,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708555.0856726,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H4-s2026092701",
+        "pid": 3992129,
+        "gpu": 4,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H4-s2026092701.log",
+        "row_id": "H4-s2026092701"
       }
     },
     {
@@ -1728,7 +1779,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H5-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H5-s2026092701\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H5-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -1760,8 +1811,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H5-s2026092701",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H5-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H5-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H5-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -1774,7 +1825,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H5",
       "model_seed": 2026092701,
       "config": {
@@ -2000,6 +2051,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708555.6662157,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H5-s2026092701",
+        "pid": 3992140,
+        "gpu": 5,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H5-s2026092701.log",
+        "row_id": "H5-s2026092701"
       }
     },
     {
@@ -2007,7 +2068,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H6-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H6-s2026092701\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H6-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -2039,8 +2100,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H6-s2026092701",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H6-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H6-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H6-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -2053,7 +2114,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H6",
       "model_seed": 2026092701,
       "config": {
@@ -2279,6 +2340,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708556.2527258,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H6-s2026092701",
+        "pid": 3992152,
+        "gpu": 6,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H6-s2026092701.log",
+        "row_id": "H6-s2026092701"
       }
     },
     {
@@ -2286,7 +2357,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H7-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H7-s2026092701\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H7-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -2318,8 +2389,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H7-s2026092701",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H7-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H7-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H7-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -2332,7 +2403,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H7",
       "model_seed": 2026092701,
       "config": {
@@ -2558,6 +2629,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708557.1598535,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H7-s2026092701",
+        "pid": 3992169,
+        "gpu": 7,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H7-s2026092701.log",
+        "row_id": "H7-s2026092701"
       }
     },
     {
@@ -2565,7 +2646,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H8-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H8-s2026092701\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H8-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -2597,8 +2678,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H8-s2026092701",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H8-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H8-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H8-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -2611,7 +2692,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H8",
       "model_seed": 2026092701,
       "config": {
@@ -2837,6 +2918,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708558.598917,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H8-s2026092701",
+        "pid": 3992250,
+        "gpu": 0,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H8-s2026092701.log",
+        "row_id": "H8-s2026092701"
       }
     },
     {
@@ -2844,7 +2935,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H9-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H9-s2026092701\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H9-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -2876,8 +2967,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H9-s2026092701",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H9-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H9-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H9-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -2890,7 +2981,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H9",
       "model_seed": 2026092701,
       "config": {
@@ -3116,6 +3207,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708560.2831264,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H9-s2026092701",
+        "pid": 3992278,
+        "gpu": 1,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H9-s2026092701.log",
+        "row_id": "H9-s2026092701"
       }
     },
     {
@@ -3123,7 +3224,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H10-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H10-s2026092701\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H10-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -3155,8 +3256,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H10-s2026092701",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H10-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H10-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H10-s2026092701.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -3169,7 +3270,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H10",
       "model_seed": 2026092701,
       "config": {
@@ -3395,6 +3496,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708563.03038,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H10-s2026092701",
+        "pid": 3992455,
+        "gpu": 2,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H10-s2026092701.log",
+        "row_id": "H10-s2026092701"
       }
     },
     {
@@ -3402,7 +3513,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H0-s2026092702.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H0-s2026092702\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H0-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -3434,8 +3545,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H0-s2026092702",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H0-s2026092702.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H0-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H0-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -3448,7 +3559,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H0",
       "model_seed": 2026092702,
       "config": {
@@ -3674,6 +3785,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708565.6335475,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H0-s2026092702",
+        "pid": 3992705,
+        "gpu": 5,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H0-s2026092702.log",
+        "row_id": "H0-s2026092702"
       }
     },
     {
@@ -3681,7 +3802,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H1-s2026092702.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H1-s2026092702\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H1-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -3713,8 +3834,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H1-s2026092702",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H1-s2026092702.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H1-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H1-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -3727,7 +3848,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H1",
       "model_seed": 2026092702,
       "config": {
@@ -3953,6 +4074,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708567.4408221,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H1-s2026092702",
+        "pid": 3992938,
+        "gpu": 7,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H1-s2026092702.log",
+        "row_id": "H1-s2026092702"
       }
     },
     {
@@ -3960,7 +4091,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H2-s2026092702.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H2-s2026092702\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H2-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -3992,8 +4123,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H2-s2026092702",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H2-s2026092702.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H2-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H2-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -4006,7 +4137,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H2",
       "model_seed": 2026092702,
       "config": {
@@ -4232,6 +4363,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708568.727297,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H2-s2026092702",
+        "pid": 3993029,
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H2-s2026092702.log",
+        "row_id": "H2-s2026092702"
       }
     },
     {
@@ -4239,7 +4380,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H3-s2026092702.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H3-s2026092702\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H3-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -4271,8 +4412,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H3-s2026092702",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H3-s2026092702.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H3-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H3-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -4285,7 +4426,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H3",
       "model_seed": 2026092702,
       "config": {
@@ -4511,6 +4652,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708569.6709604,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H3-s2026092702",
+        "pid": 3993047,
+        "gpu": 4,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H3-s2026092702.log",
+        "row_id": "H3-s2026092702"
       }
     },
     {
@@ -4518,7 +4669,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H4-s2026092702.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H4-s2026092702\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H4-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -4550,8 +4701,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H4-s2026092702",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H4-s2026092702.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H4-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H4-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -4564,7 +4715,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H4",
       "model_seed": 2026092702,
       "config": {
@@ -4790,6 +4941,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708570.5567453,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H4-s2026092702",
+        "pid": 3993129,
+        "gpu": 6,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H4-s2026092702.log",
+        "row_id": "H4-s2026092702"
       }
     },
     {
@@ -4797,7 +4958,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H5-s2026092702.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H5-s2026092702\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H5-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -4829,8 +4990,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H5-s2026092702",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H5-s2026092702.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H5-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H5-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -4843,7 +5004,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H5",
       "model_seed": 2026092702,
       "config": {
@@ -5069,6 +5230,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708571.4601078,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H5-s2026092702",
+        "pid": 3993213,
+        "gpu": 4,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H5-s2026092702.log",
+        "row_id": "H5-s2026092702"
       }
     },
     {
@@ -5076,7 +5247,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H6-s2026092702.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H6-s2026092702\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H6-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -5108,8 +5279,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H6-s2026092702",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H6-s2026092702.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H6-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H6-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -5122,7 +5293,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H6",
       "model_seed": 2026092702,
       "config": {
@@ -5348,6 +5519,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708572.2740326,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H6-s2026092702",
+        "pid": 3993229,
+        "gpu": 5,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H6-s2026092702.log",
+        "row_id": "H6-s2026092702"
       }
     },
     {
@@ -5355,7 +5536,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H7-s2026092702.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H7-s2026092702\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H7-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -5387,8 +5568,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H7-s2026092702",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H7-s2026092702.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H7-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H7-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -5401,7 +5582,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H7",
       "model_seed": 2026092702,
       "config": {
@@ -5627,6 +5808,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708573.5043766,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H7-s2026092702",
+        "pid": 3993317,
+        "gpu": 6,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H7-s2026092702.log",
+        "row_id": "H7-s2026092702"
       }
     },
     {
@@ -5634,7 +5825,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H8-s2026092702.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H8-s2026092702\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H8-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -5666,8 +5857,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H8-s2026092702",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H8-s2026092702.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H8-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H8-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -5680,7 +5871,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H8",
       "model_seed": 2026092702,
       "config": {
@@ -5906,6 +6097,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708574.4973392,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H8-s2026092702",
+        "pid": 3993401,
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H8-s2026092702.log",
+        "row_id": "H8-s2026092702"
       }
     },
     {
@@ -5913,7 +6114,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H9-s2026092702.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H9-s2026092702\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H9-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -5945,8 +6146,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H9-s2026092702",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H9-s2026092702.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H9-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H9-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -5959,7 +6160,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H9",
       "model_seed": 2026092702,
       "config": {
@@ -6185,6 +6386,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708575.7380817,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H9-s2026092702",
+        "pid": 3993489,
+        "gpu": 7,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H9-s2026092702.log",
+        "row_id": "H9-s2026092702"
       }
     },
     {
@@ -6192,7 +6403,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H10-s2026092702.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H10-s2026092702\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H10-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -6224,8 +6435,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H10-s2026092702",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H10-s2026092702.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H10-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H10-s2026092702.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -6238,7 +6449,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H10",
       "model_seed": 2026092702,
       "config": {
@@ -6464,6 +6675,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708576.938413,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H10-s2026092702",
+        "pid": 3993512,
+        "gpu": 2,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H10-s2026092702.log",
+        "row_id": "H10-s2026092702"
       }
     },
     {
@@ -6471,7 +6692,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H0-s2026092703.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H0-s2026092703\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H0-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -6503,8 +6724,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H0-s2026092703",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H0-s2026092703.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H0-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H0-s2026092703.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -6517,7 +6738,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H0",
       "model_seed": 2026092703,
       "config": {
@@ -6743,6 +6964,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708578.2565858,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H0-s2026092703",
+        "pid": 3993597,
+        "gpu": 1,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H0-s2026092703.log",
+        "row_id": "H0-s2026092703"
       }
     },
     {
@@ -6750,7 +6981,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H1-s2026092703.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H1-s2026092703\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H1-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -6782,8 +7013,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H1-s2026092703",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H1-s2026092703.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H1-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H1-s2026092703.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -6796,7 +7027,7 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "arm": "H1",
       "model_seed": 2026092703,
       "config": {
@@ -7022,6 +7253,16 @@
           "feedback_to_training": false
         },
         "launch_owner": "codex/root/stage2-hybrid-20261011"
+      },
+      "latest_event": {
+        "at": 1791708579.8857455,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "H1-s2026092703",
+        "pid": 3993693,
+        "gpu": 0,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H1-s2026092703.log",
+        "row_id": "H1-s2026092703"
       }
     },
     {
@@ -7029,7 +7270,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H2-s2026092703.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H2-s2026092703\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H2-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -7061,8 +7302,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H2-s2026092703",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H2-s2026092703.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H2-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H2-s2026092703.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -7308,7 +7549,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H3-s2026092703.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H3-s2026092703\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H3-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -7340,8 +7581,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H3-s2026092703",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H3-s2026092703.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H3-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H3-s2026092703.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -7587,7 +7828,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H4-s2026092703.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H4-s2026092703\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H4-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -7619,8 +7860,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H4-s2026092703",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H4-s2026092703.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H4-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H4-s2026092703.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -7866,7 +8107,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H5-s2026092703.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H5-s2026092703\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H5-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -7898,8 +8139,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H5-s2026092703",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H5-s2026092703.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H5-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H5-s2026092703.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -8145,7 +8386,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H6-s2026092703.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H6-s2026092703\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H6-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -8177,8 +8418,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H6-s2026092703",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H6-s2026092703.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H6-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H6-s2026092703.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -8424,7 +8665,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H7-s2026092703.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H7-s2026092703\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H7-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -8456,8 +8697,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H7-s2026092703",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H7-s2026092703.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H7-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H7-s2026092703.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -8703,7 +8944,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H8-s2026092703.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H8-s2026092703\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H8-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -8735,8 +8976,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H8-s2026092703",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H8-s2026092703.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H8-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H8-s2026092703.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -8982,7 +9223,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H9-s2026092703.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H9-s2026092703\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H9-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -9014,8 +9255,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H9-s2026092703",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H9-s2026092703.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H9-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H9-s2026092703.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -9261,7 +9502,7 @@
       "method": "stage2_hybrid",
       "purpose": "S3 stable cross-TX/day RX full160 constraint",
       "config_ref": "configs/H10-s2026092703.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H10-s2026092703\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H10-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -9293,8 +9534,8 @@
       "epochs": 40,
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\H10-s2026092703",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-hybrid-manysig-m33-r01\\logs\\train-H10-s2026092703.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H10-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H10-s2026092703.log",
       "command": "python -m experiments.cvs_stage2_hybrid.dispatch",
       "expected_artifacts": [
         "source/resolved_config.json",
@@ -9535,5 +9776,10 @@
         "launch_owner": "codex/root/stage2-hybrid-20261011"
       }
     }
-  ]
+  ],
+  "execution_commit": "30589464f5fbaaa4b0af434924ba16368dd82ca1",
+  "updated_at_unix": 1791708579.8857455,
+  "delivery_verdict": "VERIFIED",
+  "runtime_evidence_ref": "evidence/runtime_training.json",
+  "target_evaluation_status": "PENDING_AUTOMATIC_CLEAN"
 }
