@@ -1,0 +1,20 @@
+{
+  "checks": {
+    "status": "PASS",
+    "device": "cpu",
+    "complete_source_fixture_count": 53,
+    "deterministic_identity_loss_and_gradient_zero": true,
+    "eval_autograd_preserved": true,
+    "train_zero_intervention_noise_measured": true,
+    "initial_train_keep_nonzero": true,
+    "state_and_rng_restored": true,
+    "exception_restores_state": true,
+    "numpy_buffer_conversion": true,
+    "native_forward_caches_counters_and_parameter_versions_restored": true,
+    "normalized_covariant_gradient_scales_one_over_30": true,
+    "old_zero_drop_mean": 7.273222259182251,
+    "initial_keep_train_mean": 9.314690917730331
+  },
+  "independent_p0_p1_review": "PASS; schema/source provenance/no update/state restoration/output protection",
+  "target_access": false
+}

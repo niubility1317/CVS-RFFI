@@ -351,3 +351,6 @@
 |多解耦源端作用验证|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-multi-action-audit-manysig-m4-r02/report.md)|
 |旧门控＋cosine：独立线性、时间、接收机残差与交互多解耦四seed对照|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-multi-disentangle-manysig-m32-r01/report.md)|
 |多解耦状态条件作用：三阶段完整验证|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-multi-state-action-manysig-m36-r01/report.md)|
+
+<!-- stage2-counterfactual-source -->
+- [20261011-phase1-stage2-counterfactual-source-manysig-m3-r01](../automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/report.md)：三父模型全 L_s 随机前向混杂诊断，无身份更新或目标访问。
