@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "read_at": 1791751990.731827,
+  "read_at": 1791752561.5710459,
   "run_id": "20261012-phase1-scratch-boundary-style-manysig-m27-r01",
   "rows": [
     {
@@ -23,29 +23,29 @@
     },
     {
       "row_id": "M_SHALLOW-s2026092701",
-      "epoch": 6,
-      "identity_updates": 1332,
-      "auxiliary_steps": 222,
+      "epoch": 14,
+      "identity_updates": 3108,
+      "auxiliary_steps": 666,
       "style_search_forwards": 0,
-      "U_packets": 113664,
+      "U_packets": 340992,
       "live_PID": 283305
     },
     {
       "row_id": "M_MIDDLE-s2026092701",
+      "epoch": 20,
+      "identity_updates": 4440,
+      "auxiliary_steps": 999,
+      "style_search_forwards": 0,
+      "U_packets": 511488,
+      "live_PID": null
+    },
+    {
+      "row_id": "M_BOTH-s2026092701",
       "epoch": 11,
       "identity_updates": 2442,
       "auxiliary_steps": 499,
       "style_search_forwards": 0,
       "U_packets": 255744,
-      "live_PID": 283393
-    },
-    {
-      "row_id": "M_BOTH-s2026092701",
-      "epoch": 5,
-      "identity_updates": 1110,
-      "auxiliary_steps": 166,
-      "style_search_forwards": 0,
-      "U_packets": 85248,
       "live_PID": 283482
     },
     {
@@ -59,29 +59,29 @@
     },
     {
       "row_id": "RANDOM_STYLE-s2026092701",
-      "epoch": 7,
-      "identity_updates": 1554,
+      "epoch": 18,
+      "identity_updates": 3996,
       "auxiliary_steps": 0,
-      "style_search_forwards": 5550,
-      "U_packets": 142080,
+      "style_search_forwards": 17760,
+      "U_packets": 454656,
       "live_PID": 283655
     },
     {
       "row_id": "HARD_STYLE-s2026092701",
-      "epoch": 5,
-      "identity_updates": 1110,
+      "epoch": 9,
+      "identity_updates": 1998,
       "auxiliary_steps": 0,
-      "style_search_forwards": 3330,
-      "U_packets": 85248,
+      "style_search_forwards": 7770,
+      "U_packets": 198912,
       "live_PID": 284154
     },
     {
       "row_id": "JOINT-s2026092701",
-      "epoch": 3,
-      "identity_updates": 666,
-      "auxiliary_steps": 55,
-      "style_search_forwards": 1110,
-      "U_packets": 28416,
+      "epoch": 5,
+      "identity_updates": 1110,
+      "auxiliary_steps": 166,
+      "style_search_forwards": 3330,
+      "U_packets": 85248,
       "live_PID": 284238
     },
     {
@@ -100,69 +100,69 @@
       "auxiliary_steps": 0,
       "style_search_forwards": 0,
       "U_packets": 511488,
-      "live_PID": 284543
+      "live_PID": null
     },
     {
       "row_id": "M_SHALLOW-s2026092702",
-      "epoch": 5,
-      "identity_updates": 1110,
-      "auxiliary_steps": 166,
+      "epoch": 11,
+      "identity_updates": 2442,
+      "auxiliary_steps": 499,
       "style_search_forwards": 0,
-      "U_packets": 85248,
+      "U_packets": 255744,
       "live_PID": 284694
     },
     {
       "row_id": "M_MIDDLE-s2026092702",
-      "epoch": 8,
-      "identity_updates": 1776,
-      "auxiliary_steps": 333,
+      "epoch": 20,
+      "identity_updates": 4440,
+      "auxiliary_steps": 999,
       "style_search_forwards": 0,
-      "U_packets": 170496,
-      "live_PID": 284781
+      "U_packets": 511488,
+      "live_PID": null
     },
     {
       "row_id": "M_BOTH-s2026092702",
-      "epoch": 4,
-      "identity_updates": 888,
-      "auxiliary_steps": 111,
+      "epoch": 9,
+      "identity_updates": 1998,
+      "auxiliary_steps": 388,
       "style_search_forwards": 0,
-      "U_packets": 56832,
+      "U_packets": 198912,
       "live_PID": 284864
     },
     {
       "row_id": "L_REPLAY-s2026092702",
-      "epoch": 16,
-      "identity_updates": 3552,
+      "epoch": 20,
+      "identity_updates": 4440,
       "auxiliary_steps": 0,
       "style_search_forwards": 0,
-      "U_packets": 397824,
-      "live_PID": 284950
+      "U_packets": 511488,
+      "live_PID": null
     },
     {
       "row_id": "RANDOM_STYLE-s2026092702",
-      "epoch": 5,
-      "identity_updates": 1110,
+      "epoch": 9,
+      "identity_updates": 1998,
       "auxiliary_steps": 0,
-      "style_search_forwards": 3330,
-      "U_packets": 85248,
+      "style_search_forwards": 7770,
+      "U_packets": 198912,
       "live_PID": 285038
     },
     {
       "row_id": "HARD_STYLE-s2026092702",
-      "epoch": 3,
-      "identity_updates": 666,
+      "epoch": 6,
+      "identity_updates": 1332,
       "auxiliary_steps": 0,
-      "style_search_forwards": 1110,
-      "U_packets": 28416,
+      "style_search_forwards": 4440,
+      "U_packets": 113664,
       "live_PID": 285122
     },
     {
       "row_id": "JOINT-s2026092702",
-      "epoch": 3,
-      "identity_updates": 666,
-      "auxiliary_steps": 55,
-      "style_search_forwards": 1110,
-      "U_packets": 28416,
+      "epoch": 5,
+      "identity_updates": 1110,
+      "auxiliary_steps": 166,
+      "style_search_forwards": 3330,
+      "U_packets": 85248,
       "live_PID": 285207
     },
     {
@@ -185,65 +185,65 @@
     },
     {
       "row_id": "M_SHALLOW-s2026092703",
-      "epoch": 5,
-      "identity_updates": 1110,
-      "auxiliary_steps": 166,
+      "epoch": 12,
+      "identity_updates": 2664,
+      "auxiliary_steps": 555,
       "style_search_forwards": 0,
-      "U_packets": 85248,
+      "U_packets": 284160,
       "live_PID": 285461
     },
     {
       "row_id": "M_MIDDLE-s2026092703",
-      "epoch": 8,
-      "identity_updates": 1776,
-      "auxiliary_steps": 333,
+      "epoch": 20,
+      "identity_updates": 4440,
+      "auxiliary_steps": 999,
       "style_search_forwards": 0,
-      "U_packets": 170496,
-      "live_PID": 285667
+      "U_packets": 511488,
+      "live_PID": null
     },
     {
       "row_id": "M_BOTH-s2026092703",
-      "epoch": 5,
-      "identity_updates": 1110,
-      "auxiliary_steps": 166,
+      "epoch": 13,
+      "identity_updates": 2886,
+      "auxiliary_steps": 610,
       "style_search_forwards": 0,
-      "U_packets": 85248,
+      "U_packets": 312576,
       "live_PID": 286431
     },
     {
       "row_id": "L_REPLAY-s2026092703",
-      "epoch": 10,
-      "identity_updates": 2220,
+      "epoch": 20,
+      "identity_updates": 4440,
       "auxiliary_steps": 0,
       "style_search_forwards": 0,
-      "U_packets": 227328,
-      "live_PID": 287752
+      "U_packets": 511488,
+      "live_PID": null
     },
     {
       "row_id": "RANDOM_STYLE-s2026092703",
-      "epoch": 2,
-      "identity_updates": 444,
+      "epoch": 6,
+      "identity_updates": 1332,
       "auxiliary_steps": 0,
-      "style_search_forwards": 0,
-      "U_packets": 0,
+      "style_search_forwards": 4440,
+      "U_packets": 113664,
       "live_PID": 288453
     },
     {
       "row_id": "HARD_STYLE-s2026092703",
-      "epoch": 2,
-      "identity_updates": 444,
+      "epoch": 14,
+      "identity_updates": 3108,
       "auxiliary_steps": 0,
-      "style_search_forwards": 0,
-      "U_packets": 0,
+      "style_search_forwards": 13320,
+      "U_packets": 340992,
       "live_PID": 289858
     },
     {
       "row_id": "JOINT-s2026092703",
-      "epoch": 2,
-      "identity_updates": 444,
-      "auxiliary_steps": 0,
-      "style_search_forwards": 0,
-      "U_packets": 0,
+      "epoch": 4,
+      "identity_updates": 888,
+      "auxiliary_steps": 111,
+      "style_search_forwards": 2220,
+      "U_packets": 56832,
       "live_PID": 289943
     }
   ],
