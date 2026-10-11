@@ -1,0 +1,107 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "target_access": false,
+  "cache": {
+    "PID_reordered_exactly": true,
+    "self_teacher_excluded": true,
+    "provenance_keyed_by_teacher_seed": true,
+    "finite_simplex_and_source_proof_checked": true,
+    "rejected_cases": [
+      "U truth",
+      "U role",
+      "repeated U PID",
+      "student included",
+      "incomplete manifest",
+      "cache PID mismatch",
+      "cache duplicated PID",
+      "cache truth field",
+      "cache role pollution",
+      "nonfinite probability",
+      "non-simplex probability",
+      "incorrect shape",
+      "contaminated teacher",
+      "wrong parent"
+    ]
+  },
+  "SELF_GATE_old_SSL_bitwise_loss_gradient_RNG": true,
+  "KL_full_batch_denominator": true,
+  "KL_same_disagree_loss_and_gradient_sum": true,
+  "audit_keys_not_double_counted": true,
+  "peer_live_diagnostic_RNG_isolated": true,
+  "peer_cached_teacher_no_forward": true,
+  "ALL_KL_does_not_remove_style_q095_gate": true,
+  "U_truth_hidden": true,
+  "model_state_unchanged": true,
+  "repeated_PID": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "seeds": 32,
+    "U_repeated_PID_allowed": true,
+    "same_physical_PID_donor_forbidden": true,
+    "other_PID_legal_donors_used": true,
+    "low_confidence_unique_groups_unmixed": true,
+    "unique_PID_old_new_bitwise_equal": true,
+    "unique_PID_random_draw_trajectory_equal": true,
+    "global_RNG_unchanged": true,
+    "L_uniqueness_preserved": true
+  },
+  "arms": {
+    "CE": {
+      "accepted_U": 0,
+      "weak_forwards": 0,
+      "KL": -0.0,
+      "KL_same": -0.0,
+      "KL_disagree": -0.0
+    },
+    "SELF_GATE": {
+      "accepted_U": 0,
+      "weak_forwards": 1,
+      "KL": 0.0,
+      "KL_same": 0.0,
+      "KL_disagree": 0.0
+    },
+    "SELF_ALL": {
+      "accepted_U": 128,
+      "weak_forwards": 1,
+      "KL": 0.8678860664367676,
+      "KL_same": 0.2169715166091919,
+      "KL_disagree": 0.0
+    },
+    "PEER_GATE": {
+      "accepted_U": 65,
+      "weak_forwards": 1,
+      "KL": 1.7590163946151733,
+      "KL_same": 0.0,
+      "KL_disagree": 0.43975409865379333
+    },
+    "PEER_ALL": {
+      "accepted_U": 128,
+      "weak_forwards": 1,
+      "KL": 3.025153398513794,
+      "KL_same": 0.0,
+      "KL_disagree": 0.7562883496284485
+    },
+    "PEER_FISHR": {
+      "accepted_U": 128,
+      "weak_forwards": 1,
+      "KL": 3.025153398513794,
+      "KL_same": 0.0,
+      "KL_disagree": 0.7562883496284485
+    },
+    "PEER_STYLE": {
+      "accepted_U": 128,
+      "weak_forwards": 1,
+      "KL": 3.025153398513794,
+      "KL_same": 0.0,
+      "KL_disagree": 0.7562883496284485
+    },
+    "PEER_JOINT": {
+      "accepted_U": 128,
+      "weak_forwards": 1,
+      "KL": 3.025153398513794,
+      "KL_same": 0.0,
+      "KL_disagree": 0.7562883496284485
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "synthetic_only": true,
+  "rejected": [
+    "truth",
+    "empty",
+    "duplicate_id",
+    "poison",
+    "wrong_role",
+    "state_mutation",
+    "random_inference"
+  ],
+  "proof": {
+    "eval_mode": true,
+    "no_grad": true,
+    "parameters_and_buffers_unchanged": true,
+    "rng_unchanged": true,
+    "optimizer_updates": 0,
+    "EMA_updates": 0,
+    "auxiliary_forwards": 0,
+    "validation_packets": 0,
+    "target_packets": 0,
+    "physical_packets": 7,
+    "packet_occurrences": 7,
+    "forward_calls": 3,
+    "batch_size": 3,
+    "dtype": "float32",
+    "temperature": 1.0,
+    "inference_seconds": 7.773822399991332
+  }
+}
