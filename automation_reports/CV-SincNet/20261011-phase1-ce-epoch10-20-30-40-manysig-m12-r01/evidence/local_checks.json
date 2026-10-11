@@ -1,0 +1,118 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "row_id": "E30-s2026092701",
+      "epochs": 30,
+      "updates": 6660,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 0.000001,
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "E20-s2026092701",
+      "epochs": 20,
+      "updates": 4440,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 0.000001,
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "E40-s2026092701",
+      "epochs": 40,
+      "updates": 8880,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 0.000001,
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "E10-s2026092701",
+      "epochs": 10,
+      "updates": 2220,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 0.000001,
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "E30-s2026092702",
+      "epochs": 30,
+      "updates": 6660,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 0.000001,
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "E20-s2026092702",
+      "epochs": 20,
+      "updates": 4440,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 0.000001,
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "E40-s2026092702",
+      "epochs": 40,
+      "updates": 8880,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 0.000001,
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "E10-s2026092702",
+      "epochs": 10,
+      "updates": 2220,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 0.000001,
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "E30-s2026092703",
+      "epochs": 30,
+      "updates": 6660,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 0.000001,
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "E20-s2026092703",
+      "epochs": 20,
+      "updates": 4440,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 0.000001,
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "E40-s2026092703",
+      "epochs": 40,
+      "updates": 8880,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 0.000001,
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "E10-s2026092703",
+      "epochs": 10,
+      "updates": 2220,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 0.000001,
+      "weight_decay": 0.0001
+    }
+  ],
+  "original_scratch_state_identical": true,
+  "pure_CE_no_auxiliary_objects": true,
+  "cosine_compressed_to_each_budget": true,
+  "native_pair_count": 222,
+  "query_access": false
+}
