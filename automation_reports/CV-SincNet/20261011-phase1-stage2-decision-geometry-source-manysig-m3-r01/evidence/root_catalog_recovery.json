@@ -1,0 +1,17 @@
+{
+  "status": "RECONSTRUCTED",
+  "reason": "Final report helper copied worktree catalogs across root; repaired missing entries only from existing experiment/event records and remote locator snapshots",
+  "added": 3734,
+  "prior_coverage_counts": {
+    "managed_run": 269,
+    "legacy_evidence_group": 724,
+    "remote_directory_locator": 3608
+  },
+  "repaired_counts": {
+    "managed_run": 272,
+    "legacy_evidence_group": 724,
+    "remote_directory_locator": 3608
+  },
+  "scope": "Root derived catalogs only; no experiment artifact or raw data modified",
+  "limitation": "Missing original derived entries reconstructed, not byte-for-byte restored; preserved all entries present after mirror"
+}

@@ -73,3 +73,8 @@ Z3源任务证据：八固定源V视图的均值准确率与S3最大绝对差0.0
 ## Z3 当前完成状态
 
 20261011-phase1-stage2-rx-anchor-manysig-m3-r01 三seedE40/8880＋自动clean全部完成，所有worker退出，无失败。执行58dc55a98e55a481b44bb278e48df08c29a755e4；完整120epoch/26640step解析与504000新clean预测独立复算VERIFIED。Z3均值80.985714%，vsS3 +0.039087pp，性能状态NOT_MET。全部固定控制都核验并独立复算，不能重复启动。source_only_comparison覆盖全部8源V视图，不用target决定后续机制。报告与CSV见原run/evidence，原始权重/日志/prediction留N607。目标仍active，84%未达到时不得标完成。
+
+
+## 当前：R 决策几何已完成
+
+20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01，执行 9602136badb36099889d533496ebbedc80c70ffd，三seed/299700源前向，CPU144.452秒，0更新/0target，进程退出且无failure。报告已保存完整几何、margin和原始关系。P0可见目标能量8.9890/6.9669/8.2282%；V该空间预测MSE/零为1.013597/1.032868/0.997921，而完整空间均<1。S3−Z3方向确有增量，V可见进度.111994/.078876/.111220，但只改变7/5/4个源V预测；不能称R未生效或单凭完整预测拟合增大R。下一步核验原报告稳健判别与自参考响应的额外源证据/竞争margin可预测性，再决定新特征路径；尚未发布后续新训练。目标仍active，84%未达到。本诊断不自动target，不复跑。

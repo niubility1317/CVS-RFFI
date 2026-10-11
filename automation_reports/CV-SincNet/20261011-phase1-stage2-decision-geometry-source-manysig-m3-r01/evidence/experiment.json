@@ -1,0 +1,345 @@
+{
+  "schema": "experiment_record_v1",
+  "group_id": "cvs-stage2-identifiable-feature-geometry",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center crop/pad 256; per-packet complex RMS; center=False; fs=25MHz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-geometry-source-manysig-m3-r01/sSEED/source_cache.pt#labeled.ids; /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids.L_s",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#class_txs",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/manifest.json; all six registered class names",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000,
+      "L_s_fraction": 0.07,
+      "U_s_fraction": 0.63,
+      "V_fraction": 0.3,
+      "U_use": "index-only exact role audit; no U sample/label/training iterator"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": "inherited deterministic physical source roles (historical protocol label 392005)",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": "Not applicable: source-only audit",
+    "leo_config_ref": null,
+    "train_ratio_definition": "rho_label=L_s/(L_s+U_s)=0.1; only L_s contributes to training",
+    "diagnostic_access": "All L_s6300 and V27000; no fitting, no U, no target observations/predictions/truth. Cached P0 features; actual read-only forward for E40 models."
+  },
+  "checkpoint": {
+    "initialization": "No initialization or training; source-only read of original E200 and fixed E40 B2/S3/Z3",
+    "sources": [
+      {
+        "model_seed": 2026092701,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+        "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+        "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+        "epoch": 200,
+        "identity_updates": 44400,
+        "initialization": "scratch at origin; no upstream checkpoint",
+        "selection": "fixed final E200; no target selection",
+        "actual_training": "L_s clean CE only; no U/EMA/pseudo/satellite; smoothing=0"
+      },
+      {
+        "model_seed": 2026092702,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+        "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+        "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+        "epoch": 200,
+        "identity_updates": 44400,
+        "initialization": "scratch at origin; no upstream checkpoint",
+        "selection": "fixed final E200; no target selection",
+        "actual_training": "L_s clean CE only; no U/EMA/pseudo/satellite; smoothing=0"
+      },
+      {
+        "model_seed": 2026092703,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+        "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+        "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+        "epoch": 200,
+        "identity_updates": 44400,
+        "initialization": "scratch at origin; no upstream checkpoint",
+        "selection": "fixed final E200; no target selection",
+        "actual_training": "L_s clean CE only; no U/EMA/pseudo/satellite; smoothing=0"
+      }
+    ],
+    "contract_check_ref": "experiments/cvs_stage2_decouple/common.py::verify_parent; previous source provenance evidence unchanged",
+    "provenance_verdict": "Runtime original parent and actual E40 source freeze/config/8880 checked",
+    "selection_rule": "All declared arms and seeds; no ranking, no learned coordinate alignment",
+    "diagnostic_sources": [
+      {
+        "seed": 2026092701,
+        "arm": "P0",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "inheritance": "original source-only E200; final E40/8880 for B2/S3/Z3"
+      },
+      {
+        "seed": 2026092701,
+        "arm": "B2",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092701/source/final_ssdg.pth",
+        "inheritance": "original source-only E200; final E40/8880 for B2/S3/Z3"
+      },
+      {
+        "seed": 2026092701,
+        "arm": "S3",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-stable-rx-manysig-m3-r01/S3-s2026092701/source/final_ssdg.pth",
+        "inheritance": "original source-only E200; final E40/8880 for B2/S3/Z3"
+      },
+      {
+        "seed": 2026092701,
+        "arm": "Z3",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-anchor-manysig-m3-r01/Z3-s2026092701/source/final_ssdg.pth",
+        "inheritance": "original source-only E200; final E40/8880 for B2/S3/Z3"
+      },
+      {
+        "seed": 2026092702,
+        "arm": "P0",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "inheritance": "original source-only E200; final E40/8880 for B2/S3/Z3"
+      },
+      {
+        "seed": 2026092702,
+        "arm": "B2",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092702/source/final_ssdg.pth",
+        "inheritance": "original source-only E200; final E40/8880 for B2/S3/Z3"
+      },
+      {
+        "seed": 2026092702,
+        "arm": "S3",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-stable-rx-manysig-m3-r01/S3-s2026092702/source/final_ssdg.pth",
+        "inheritance": "original source-only E200; final E40/8880 for B2/S3/Z3"
+      },
+      {
+        "seed": 2026092702,
+        "arm": "Z3",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-anchor-manysig-m3-r01/Z3-s2026092702/source/final_ssdg.pth",
+        "inheritance": "original source-only E200; final E40/8880 for B2/S3/Z3"
+      },
+      {
+        "seed": 2026092703,
+        "arm": "P0",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "inheritance": "original source-only E200; final E40/8880 for B2/S3/Z3"
+      },
+      {
+        "seed": 2026092703,
+        "arm": "B2",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092703/source/final_ssdg.pth",
+        "inheritance": "original source-only E200; final E40/8880 for B2/S3/Z3"
+      },
+      {
+        "seed": 2026092703,
+        "arm": "S3",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-stable-rx-manysig-m3-r01/S3-s2026092703/source/final_ssdg.pth",
+        "inheritance": "original source-only E200; final E40/8880 for B2/S3/Z3"
+      },
+      {
+        "seed": 2026092703,
+        "arm": "Z3",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-rx-anchor-manysig-m3-r01/Z3-s2026092703/source/final_ssdg.pth",
+        "inheritance": "original source-only E200; final E40/8880 for B2/S3/Z3"
+      }
+    ]
+  },
+  "run_id": "20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01",
+  "display_name": "三种子源域 R 决策几何与方向作用诊断",
+  "description": "固定原始父及B2/S3/Z3，分解R目标决策可见能量和S3-Z3真实margin效应；无拟合、无身份更新、无target。",
+  "aliases": [
+    "decision_geometry",
+    "R decision relevance"
+  ],
+  "tags": [
+    "source_geometry",
+    "source_only",
+    "three_seeds",
+    "decision_R"
+  ],
+  "comparison_group_id": "20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01",
+  "parent_run_ids": [
+    "20261011-phase1-stage2-geometry-source-manysig-m3-r01",
+    "20261011-phase1-stage2-realized-geometry-source-manysig-m3-r02",
+    "20261011-phase1-stage2-stable-rx-manysig-m3-r01",
+    "20261011-phase1-stage2-rx-anchor-manysig-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+  "authorization": "继续用户84%目标；依据Z3与S3固定全源V压力结果几乎相同，核对R作用是否进入分类决策；仅source诊断不按target调参或重跑。",
+  "code": {
+    "commit": "9602136badb36099889d533496ebbedc80c70ffd",
+    "commit_note": "Preregistration baseline; exact execution commit read from immutable release",
+    "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_decision_geometry_source_20261011_r01"
+  },
+  "permissions": {
+    "regime": "source_only_diagnostic",
+    "query_use": "NONE",
+    "external_method_exception": null,
+    "claim_scope": "Population R realization on seen source environments; no unseen target performance or causal identifiability claim",
+    "target_feedback_to_training": false
+  },
+  "execution": {
+    "host": "N607",
+    "user": "szu2070436088",
+    "launch_owner": "codex/root/decision-geometry-source-20261011",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01",
+    "local_root": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\automation_reports\\CV-SincNet\\20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01",
+    "release_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_decision_geometry_source_20261011_r01",
+    "gpu_policy": "CPU2 threads serial; noCUDA; nine full-source E40 forwards",
+    "command": "python -m experiments.cvs_stage2_rx_anchor.decision_audit",
+    "launch_command": "python -m experiments.cvs_stage2_rx_anchor.decision_audit",
+    "stop_rule": "Technical failure preserved; no automatic retry"
+  },
+  "expected_artifacts": [
+    "summary.json",
+    "completion.json",
+    "experiment.json",
+    "events.jsonl",
+    "sSEED/audit.json",
+    "sSEED/group_means_heads.pt"
+  ],
+  "metrics_plan": {
+    "primary": "Frozen S3 target energy and realization visible to fixed P0 centered cosine head, per source role",
+    "secondary": "own head basis; exact symmetric S3-Z3 logit decomposition at fixed parent rival; actual max-rival margin reported separately",
+    "metrics": [
+      "all180 source group pairs",
+      "full/visible/remaining target/update/alignment/error energies",
+      "frozen prediction MSE vs zero by subspace",
+      "target fixed-rival algebraic margin",
+      "S3-Z3 fixed-rival feature/head/total",
+      "actual margin/prediction change counts"
+    ],
+    "fitting": false,
+    "selection": false,
+    "identity_updates": 0,
+    "target_access": false
+  },
+  "rows": [
+    {
+      "row_id": "s2026092701",
+      "method": "decision_source_geometry",
+      "purpose": "source_diagnostic",
+      "config_ref": "configs/s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01/s2026092701/audit.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Matched original parent model seed; source roles and sample order inherited. No new random sampling or augmentation; no support or target evaluation.",
+      "k": null,
+      "scenario": "source_only",
+      "optimizer": "closed_form",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "steps": 0,
+      "command": "python -m experiments.cvs_stage2_rx_anchor.decision_audit",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01/s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_decision_geometry_source_20261011_r01/stdout.log",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
+    },
+    {
+      "row_id": "s2026092702",
+      "method": "decision_source_geometry",
+      "purpose": "source_diagnostic",
+      "config_ref": "configs/s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01/s2026092702/audit.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Matched original parent model seed; source roles and sample order inherited. No new random sampling or augmentation; no support or target evaluation.",
+      "k": null,
+      "scenario": "source_only",
+      "optimizer": "closed_form",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "steps": 0,
+      "command": "python -m experiments.cvs_stage2_rx_anchor.decision_audit",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01/s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_decision_geometry_source_20261011_r01/stdout.log",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
+    },
+    {
+      "row_id": "s2026092703",
+      "method": "decision_source_geometry",
+      "purpose": "source_diagnostic",
+      "config_ref": "configs/s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01/s2026092703/audit.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Matched original parent model seed; source roles and sample order inherited. No new random sampling or augmentation; no support or target evaluation.",
+      "k": null,
+      "scenario": "source_only",
+      "optimizer": "closed_form",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "steps": 0,
+      "command": "python -m experiments.cvs_stage2_rx_anchor.decision_audit",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01/s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_decision_geometry_source_20261011_r01/stdout.log",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
+    }
+  ],
+  "test_completion_plan": {
+    "target_access": false,
+    "scope": "source-only diagnostic, no new identity checkpoint or target predictions",
+    "automatic_test": false
+  },
+  "execution_commit": "9602136badb36099889d533496ebbedc80c70ffd"
+}
