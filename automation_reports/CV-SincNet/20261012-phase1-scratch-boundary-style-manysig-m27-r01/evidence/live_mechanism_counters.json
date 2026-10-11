@@ -1,0 +1,178 @@
+{
+  "status": "PASS",
+  "read_at": 1791751673.8696852,
+  "run_id": "20261012-phase1-scratch-boundary-style-manysig-m27-r01",
+  "rows": [
+    {
+      "row_id": "CE-s2026092701",
+      "epoch": 12,
+      "identity_updates": 2664,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": 283129
+    },
+    {
+      "row_id": "SSL-s2026092701",
+      "epoch": 5,
+      "identity_updates": 1110,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 85248,
+      "live_PID": 283218
+    },
+    {
+      "row_id": "M_SHALLOW-s2026092701",
+      "epoch": 2,
+      "identity_updates": 444,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": 283305
+    },
+    {
+      "row_id": "M_MIDDLE-s2026092701",
+      "epoch": 3,
+      "identity_updates": 666,
+      "auxiliary_steps": 55,
+      "style_search_forwards": 0,
+      "U_packets": 28416,
+      "live_PID": 283393
+    },
+    {
+      "row_id": "M_BOTH-s2026092701",
+      "epoch": 2,
+      "identity_updates": 444,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": 283482
+    },
+    {
+      "row_id": "L_REPLAY-s2026092701",
+      "epoch": 4,
+      "identity_updates": 888,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 56832,
+      "live_PID": 283569
+    },
+    {
+      "row_id": "RANDOM_STYLE-s2026092701",
+      "epoch": 2,
+      "identity_updates": 444,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": 283655
+    },
+    {
+      "row_id": "HARD_STYLE-s2026092701",
+      "epoch": 2,
+      "identity_updates": 444,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": 284154
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "epoch": 2,
+      "identity_updates": 444,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": 284238
+    },
+    {
+      "row_id": "CE-s2026092702",
+      "epoch": 5,
+      "identity_updates": 1110,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": 284323
+    },
+    {
+      "row_id": "SSL-s2026092702",
+      "epoch": 3,
+      "identity_updates": 666,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 28416,
+      "live_PID": 284543
+    },
+    {
+      "row_id": "M_SHALLOW-s2026092702",
+      "epoch": 2,
+      "identity_updates": 444,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": 284694
+    },
+    {
+      "row_id": "M_MIDDLE-s2026092702",
+      "epoch": 2,
+      "identity_updates": 444,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": 284781
+    },
+    {
+      "row_id": "M_BOTH-s2026092702",
+      "epoch": 2,
+      "identity_updates": 444,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": 284864
+    },
+    {
+      "row_id": "L_REPLAY-s2026092702",
+      "epoch": 2,
+      "identity_updates": 444,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": 284950
+    },
+    {
+      "row_id": "RANDOM_STYLE-s2026092702",
+      "epoch": 2,
+      "identity_updates": 444,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": 285038
+    },
+    {
+      "row_id": "HARD_STYLE-s2026092702",
+      "epoch": 1,
+      "identity_updates": 222,
+      "auxiliary_steps": 0,
+      "style_search_forwards": 0,
+      "U_packets": 0,
+      "live_PID": 285122
+    }
+  ],
+  "scope": "All currently completed epoch aggregate counters and resolved configs; not a substitute for final closed step-log audit",
+  "full_step_logs_read": false,
+  "target_access": false,
+  "dispatcher": {
+    "pid": 282727,
+    "start_ticks": 99929796,
+    "state": "R",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_boundary_style_20261012_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_scratch_boundary_style.dispatch"
+    ],
+    "gpu": null
+  },
+  "max_GPU_processes": 3,
+  "failures": []
+}
