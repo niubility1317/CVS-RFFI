@@ -1,0 +1,301 @@
+{
+  "reference_E200": {
+    "arm": "P0",
+    "seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "seed_count": 3,
+    "accuracy_mean": 0.8052638888888889,
+    "accuracy_sd": 0.013198594197656307,
+    "complete_three_seeds": true,
+    "per_seed": [
+      {
+        "seed": 2026092701,
+        "accuracy": 0.8092797619047619
+      },
+      {
+        "seed": 2026092702,
+        "accuracy": 0.7905238095238095
+      },
+      {
+        "seed": 2026092703,
+        "accuracy": 0.8159880952380952
+      }
+    ]
+  },
+  "reference_training_seconds": null,
+  "reference_cost_note": "N/A: historical E200 wall time not retrieved",
+  "rows": [
+    {
+      "epochs": 13,
+      "arm": "E13",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "accuracy_mean": 0.7973095238095238,
+      "accuracy_sd": 0.01979745797832712,
+      "complete_three_seeds": true,
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "accuracy": 0.8068571428571428
+        },
+        {
+          "seed": 2026092702,
+          "accuracy": 0.774547619047619
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8105238095238095
+        }
+      ],
+      "training_seconds_per_seed": [
+        504.33331060409546,
+        436.93954586982727,
+        433.2829921245575
+      ],
+      "training_minutes_mean": 7.636421381102668,
+      "updates": 2886,
+      "run": "20261011-phase1-ce-epoch13-manysig-m3-r01",
+      "evidence": "../20261011-phase1-ce-epoch13-manysig-m3-r01/evidence/test_results_analysis.json",
+      "difference_pp": -0.7954365079365089,
+      "within_margin": false
+    },
+    {
+      "epochs": 19,
+      "arm": "E19",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "accuracy_mean": 0.8012956349206349,
+      "accuracy_sd": 0.01977238170117122,
+      "complete_three_seeds": true,
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "accuracy": 0.8074940476190476
+        },
+        {
+          "seed": 2026092702,
+          "accuracy": 0.7791666666666667
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8172261904761905
+        }
+      ],
+      "training_seconds_per_seed": [
+        822.1126108169556,
+        760.4621441364288,
+        767.5672898292542
+      ],
+      "training_minutes_mean": 13.056344693236882,
+      "updates": 4218,
+      "run": "20261011-phase1-ce-epoch19-manysig-m3-r01",
+      "evidence": "../20261011-phase1-ce-epoch19-manysig-m3-r01/evidence/test_results_analysis.json",
+      "difference_pp": -0.3968253968253954,
+      "within_margin": false
+    },
+    {
+      "epochs": 20,
+      "arm": "E20",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "accuracy_mean": 0.8005039682539683,
+      "accuracy_sd": 0.020433150826128038,
+      "complete_three_seeds": true,
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "accuracy": 0.8074642857142857
+        },
+        {
+          "seed": 2026092702,
+          "accuracy": 0.7775
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8165476190476191
+        }
+      ],
+      "training_seconds_per_seed": [
+        798.520838022232,
+        808.4053475856781,
+        810.3330891132355
+      ],
+      "training_minutes_mean": 13.429218192895254,
+      "updates": 4440,
+      "run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+      "evidence": "evidence/E20_existing_readback.json",
+      "difference_pp": -0.4759920634920589,
+      "within_margin": false
+    },
+    {
+      "epochs": 25,
+      "arm": "E25",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "accuracy_mean": 0.8036646825396826,
+      "accuracy_sd": 0.01915044819332669,
+      "complete_three_seeds": true,
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "accuracy": 0.8048690476190477
+        },
+        {
+          "seed": 2026092702,
+          "accuracy": 0.7839404761904762
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8221845238095238
+        }
+      ],
+      "training_seconds_per_seed": [
+        929.0879867076874,
+        987.4253053665161,
+        840.6578419208527
+      ],
+      "training_minutes_mean": 15.317617411083644,
+      "updates": 5550,
+      "run": "20261011-phase1-ce-epoch25-manysig-m3-r01",
+      "evidence": "../20261011-phase1-ce-epoch25-manysig-m3-r01/evidence/test_results_analysis.json",
+      "difference_pp": -0.15992063492062947,
+      "within_margin": true
+    },
+    {
+      "epochs": 50,
+      "arm": "E50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "accuracy_mean": 0.8104246031746032,
+      "accuracy_sd": 0.01996435167427173,
+      "complete_three_seeds": true,
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "accuracy": 0.8080059523809524
+        },
+        {
+          "seed": 2026092702,
+          "accuracy": 0.791779761904762
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8314880952380952
+        }
+      ],
+      "training_seconds_per_seed": [
+        1783.9783415794373,
+        1623.183804512024,
+        1622.7574472427368
+      ],
+      "training_minutes_mean": 27.943997740745544,
+      "updates": 11100,
+      "run": "20261011-phase1-ce-epoch50-manysig-m3-r01",
+      "evidence": "../20261011-phase1-ce-epoch50-manysig-m3-r01/evidence/test_results_analysis.json",
+      "difference_pp": 0.5160714285714296,
+      "within_margin": true
+    },
+    {
+      "epochs": 100,
+      "arm": "E100",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "accuracy_mean": 0.806313492063492,
+      "accuracy_sd": 0.01585912723236005,
+      "complete_three_seeds": true,
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "accuracy": 0.8060238095238095
+        },
+        {
+          "seed": 2026092702,
+          "accuracy": 0.7906011904761905
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8223154761904762
+        }
+      ],
+      "training_seconds_per_seed": [
+        3407.8300483226776,
+        3352.8791041374207,
+        3451.323335170746
+      ],
+      "training_minutes_mean": 56.73351382017135,
+      "updates": 22200,
+      "run": "20261011-phase1-ce-epoch-compression-manysig-m6-r01",
+      "evidence": "../20261011-phase1-ce-epoch-compression-manysig-m6-r01/evidence/test_results_analysis.json",
+      "difference_pp": 0.10496031746031198,
+      "within_margin": true
+    },
+    {
+      "epochs": 150,
+      "arm": "E150",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "accuracy_mean": 0.8056527777777778,
+      "accuracy_sd": 0.01651745745262169,
+      "complete_three_seeds": true,
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "accuracy": 0.8120535714285714
+        },
+        {
+          "seed": 2026092702,
+          "accuracy": 0.7868928571428572
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8180119047619048
+        }
+      ],
+      "training_seconds_per_seed": [
+        5156.232469320297,
+        4996.457030057907,
+        5152.962925434113
+      ],
+      "training_minutes_mean": 85.03140236006843,
+      "updates": 33300,
+      "run": "20261011-phase1-ce-epoch-compression-manysig-m6-r01",
+      "evidence": "../20261011-phase1-ce-epoch-compression-manysig-m6-r01/evidence/test_results_analysis.json",
+      "difference_pp": 0.03888888888888831,
+      "within_margin": true
+    }
+  ],
+  "current_shortest_verified_pass": 25,
+  "next": 22,
+  "scope": "epoch-only exposed benchmark; no mechanism feedback"
+}

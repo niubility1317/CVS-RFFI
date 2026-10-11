@@ -1,21 +1,17 @@
 {
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "run": "20261011-phase1-ce-epoch19-manysig-m3-r01",
   "execution_commit": "24ecee0baac40de45dac55695b47f9d1ca8f5749",
   "evidence": "evidence/launch_progress.json",
   "goal": "clean three-seed mean >=84%; not achieved",
-  "next": "Collect all three clean results; E19 pass ->16; fail ->22. Compression only; original E200 remains stage2 parent.",
+  "next": "E19 fails tolerance; read-only E20 also fails, E25 passes. E22 registered separately; never repeat completed rows.",
   "source_V_role": "health and mechanism diagnostics only; no small accuracy optimization",
   "no_target_feedback_to_mechanism": true,
   "latest_runtime": "evidence/latest_runtime.json",
   "all_rows_launched": true,
-  "scored_rows": 0,
+  "scored_rows": 3,
   "results": "test_results.md",
   "results_evidence": "evidence/test_results_analysis.json",
-  "remaining_rows": [
-    "E19-s2026092701",
-    "E19-s2026092702",
-    "E19-s2026092703"
-  ],
+  "remaining_rows": [],
   "goal_met": false
 }

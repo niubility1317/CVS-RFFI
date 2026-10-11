@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "row_id": "E22-s2026092701",
+      "epochs": 22,
+      "updates": 4884,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 1e-06,
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "E22-s2026092702",
+      "epochs": 22,
+      "updates": 4884,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 1e-06,
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "E22-s2026092703",
+      "epochs": 22,
+      "updates": 4884,
+      "batch_size": 128,
+      "peak_lr": 0.0002,
+      "min_lr": 1e-06,
+      "weight_decay": 0.0001
+    }
+  ],
+  "original_scratch_state_identical": true,
+  "pure_CE_no_auxiliary_objects": true,
+  "cosine_compressed_to_each_budget": true,
+  "native_pair_count": 222,
+  "query_access": false
+}

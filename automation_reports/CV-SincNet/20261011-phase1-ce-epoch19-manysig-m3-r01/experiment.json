@@ -138,7 +138,7 @@
     {
       "row_id": "E19-s2026092701",
       "model_seed": 2026092701,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch19-manysig-m3-r01",
@@ -379,7 +379,7 @@
     {
       "row_id": "E19-s2026092702",
       "model_seed": 2026092702,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch19-manysig-m3-r01",
@@ -619,7 +619,7 @@
     {
       "row_id": "E19-s2026092703",
       "model_seed": 2026092703,
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch19-manysig-m3-r01",
@@ -862,7 +862,7 @@
     "Three seeds clean auto truth-last; no125,U,EMA,satellite oraux.",
     "Pass brackets13..19 ->16; failure brackets19..25 ->22. No adaptive rule runs before complete three-seed scoring."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "independent_review": {
     "reviewer": "stage2_release_review",
     "status": "PASS",
