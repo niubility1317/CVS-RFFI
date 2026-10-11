@@ -84,7 +84,7 @@
   "group_id": "cvs-scratch-bidirectional-style",
   "display_name": "浅中层Fishr与受限双向统计扰动：三种子方向对照",
   "description": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "aliases": [],
   "tags": [
     "scratch20",
@@ -260,7 +260,7 @@
       "arm": "DELAY_POS",
       "model_seed": 2026092701,
       "row_id": "DELAY_POS-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -691,13 +691,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 391170,
+      "gpu": 1,
+      "live_epoch": 1
     },
     {
       "arm": "DELAY_BIDIR",
       "model_seed": 2026092701,
       "row_id": "DELAY_BIDIR-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -1128,13 +1131,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 391256,
+      "gpu": 2,
+      "live_epoch": 1
     },
     {
       "arm": "CAP_POS",
       "model_seed": 2026092701,
       "row_id": "CAP_POS-s2026092701",
-      "status": "PLANNED",
+      "status": "STARTING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -1565,13 +1571,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 391344,
+      "gpu": 3,
+      "live_epoch": 0
     },
     {
       "arm": "CAP_BIDIR",
       "model_seed": 2026092701,
       "row_id": "CAP_BIDIR-s2026092701",
-      "status": "PLANNED",
+      "status": "STARTING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -2002,13 +2011,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 391432,
+      "gpu": 7,
+      "live_epoch": 0
     },
     {
       "arm": "DELAYCAP_POS",
       "model_seed": 2026092701,
       "row_id": "DELAYCAP_POS-s2026092701",
-      "status": "PLANNED",
+      "status": "STARTING",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -2439,13 +2451,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 391518,
+      "gpu": 7,
+      "live_epoch": 0
     },
     {
       "arm": "DELAYCAP_BIDIR",
       "model_seed": 2026092701,
       "row_id": "DELAYCAP_BIDIR-s2026092701",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -2882,7 +2897,7 @@
       "arm": "DELAY_POS",
       "model_seed": 2026092702,
       "row_id": "DELAY_POS-s2026092702",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -3319,7 +3334,7 @@
       "arm": "DELAY_BIDIR",
       "model_seed": 2026092702,
       "row_id": "DELAY_BIDIR-s2026092702",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -3756,7 +3771,7 @@
       "arm": "CAP_POS",
       "model_seed": 2026092702,
       "row_id": "CAP_POS-s2026092702",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -4193,7 +4208,7 @@
       "arm": "CAP_BIDIR",
       "model_seed": 2026092702,
       "row_id": "CAP_BIDIR-s2026092702",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -4630,7 +4645,7 @@
       "arm": "DELAYCAP_POS",
       "model_seed": 2026092702,
       "row_id": "DELAYCAP_POS-s2026092702",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -5067,7 +5082,7 @@
       "arm": "DELAYCAP_BIDIR",
       "model_seed": 2026092702,
       "row_id": "DELAYCAP_BIDIR-s2026092702",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -5504,7 +5519,7 @@
       "arm": "DELAY_POS",
       "model_seed": 2026092703,
       "row_id": "DELAY_POS-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -5941,7 +5956,7 @@
       "arm": "DELAY_BIDIR",
       "model_seed": 2026092703,
       "row_id": "DELAY_BIDIR-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -6378,7 +6393,7 @@
       "arm": "CAP_POS",
       "model_seed": 2026092703,
       "row_id": "CAP_POS-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -6815,7 +6830,7 @@
       "arm": "CAP_BIDIR",
       "model_seed": 2026092703,
       "row_id": "CAP_BIDIR-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -7252,7 +7267,7 @@
       "arm": "DELAYCAP_POS",
       "model_seed": 2026092703,
       "row_id": "DELAYCAP_POS-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -7689,7 +7704,7 @@
       "arm": "DELAYCAP_BIDIR",
       "model_seed": 2026092703,
       "row_id": "DELAYCAP_BIDIR-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -8123,5 +8138,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
     }
   ],
-  "registered_at": "2026-10-11T23:14:06+00:00"
+  "registered_at": "2026-10-11T23:14:06+00:00",
+  "execution_commit": "f641c0abe526d562a60022a37b40e12fb0bdc9b0",
+  "delivery_verdict": "VERIFIED"
 }

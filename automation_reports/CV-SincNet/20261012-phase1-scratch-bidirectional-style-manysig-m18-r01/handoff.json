@@ -1,0 +1,19 @@
+{
+  "status": "RUNNING",
+  "goal": "clean three-seed mean>=.84 not yet demonstrated",
+  "run": "20261012-phase1-scratch-bidirectional-style-manysig-m18-r01",
+  "execution_commit": "f641c0abe526d562a60022a37b40e12fb0bdc9b0",
+  "dispatcher": 390576,
+  "matrix": 18,
+  "launched": 5,
+  "checked": [
+    "DELAY_POS-s2026092701",
+    "DELAY_BIDIR-s2026092701"
+  ],
+  "pending": 13,
+  "next": "Read existing dispatcher/workers, never republish. Auto clean each final scratch20 row. Collect all18 fixed results and source trajectory without target-driven adjustment.",
+  "collector": "python -m experiments.cvs_scratch_bidirectional_style.collect_results --output automation_reports/CV-SincNet/20261012-phase1-scratch-bidirectional-style-manysig-m18-r01",
+  "budget": "random native student20; no heads; pretrained peer teacher ancestry retained; fixed12pair calibration at0/444; detached joint full-identity cap",
+  "multilevel": "time_down/t2.pool; margin sensitivities without heads; fixed peer probabilities; independent AB Fishr fixed coefficients at0/444/denominator2; optional joint cap rho0.2; bounded POS/BIDIR whole-candidate style search plus clean with matched dropout; noEMA/noSat",
+  "owner": "codex/root/scratch-bidirectional-style-20261012"
+}
