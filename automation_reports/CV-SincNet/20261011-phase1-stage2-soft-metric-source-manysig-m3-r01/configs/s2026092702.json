@@ -1,0 +1,37 @@
+{
+  "run_id": "20261011-phase1-stage2-soft-metric-source-manysig-m3-r01",
+  "methods": [
+    "isotropic",
+    "packet",
+    "packet_L",
+    "packet_T",
+    "packet_R",
+    "packet_LTR"
+  ],
+  "reference": "actual original cosine head",
+  "primary": "packet_LTR",
+  "matched_control": "packet",
+  "outer_fits": [
+    "all L_s; score all V",
+    "leave each source RX out of L_s; score matching V RX",
+    "leave each source day out of L_s; score matching V day"
+  ],
+  "fitting": "L_s complement only for means, covariances, local responses and nested R prediction/reliability",
+  "covariance": "packet within TX/day/RX + named L/T/trustedR + 1e-5 I160",
+  "weights": {
+    "L": 1.0,
+    "T": 1.0,
+    "R": 1.0
+  },
+  "local_response_prior": "I8/6, original physical units and finite differences",
+  "R": "inner held TX pair and held day, shrink=.4; original full-vector c=max(0,1-MSE/zero)",
+  "transform": "unique symmetric full-rank covariance inverse square root; no hard projection",
+  "scores": "30*cos(z*C^-1/2, equal-RX/day TX mean*C^-1/2)",
+  "validation_fit": false,
+  "identity_updates": 0,
+  "new_identity_forwards": 0,
+  "target_access": false,
+  "advancement": "For every seed: macro held-RX V accuracy of primary strictly exceeds both packet and original parent; full-fit V loss vs parent <=0.2pp overall and <=0.5pp per RX; macro held-day V accuracy >= parent. No selection of other methods if primary fails.",
+  "budget": "3 seeds x9 outer fits x6 fixed metric readouts =162 analytic readouts; no identity training or target testing",
+  "model_seed": 2026092702
+}
