@@ -1,0 +1,1262 @@
+{
+  "status": "VERIFIED",
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 165867,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_routed_fishr_20261012_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_e20_routed_fishr.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_routed_fishr_20261012_r01/dispatcher.stdout.log",
+    "commit": "7010b7393dcd91d70366fd50fc18639667aea400",
+    "run_id": "20261012-phase1-e20-routed-fishr-manysig-m24-r01"
+  },
+  "process": {
+    "pid": 165867,
+    "start_ticks": 98926776,
+    "state": "R",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_routed_fishr_20261012_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_e20_routed_fishr.dispatch"
+    ],
+    "gpu": null
+  },
+  "workers": [],
+  "queue": null,
+  "completion": null,
+  "failure": null,
+  "preflight": {
+    "status": "PASS",
+    "rows": [
+      {
+        "row_id": "CE-s2026092701",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 0,
+          "weak_forwards": 0,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 0,
+          "auxiliary_L": 0,
+          "auxiliary_forwards": 0,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "SSL-s2026092701",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 0,
+          "auxiliary_L": 0,
+          "auxiliary_forwards": 0,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "COUPLED-s2026092701",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 3996
+        }
+      },
+      {
+        "row_id": "F_SHALLOW-s2026092701",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "F_MIDDLE-s2026092701",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "F_BOTH-s2026092701",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "STYLE-s2026092701",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 3996
+        }
+      },
+      {
+        "row_id": "JOINT-s2026092701",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 3996
+        }
+      },
+      {
+        "row_id": "CE-s2026092702",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 0,
+          "weak_forwards": 0,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 0,
+          "auxiliary_L": 0,
+          "auxiliary_forwards": 0,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "SSL-s2026092702",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 0,
+          "auxiliary_L": 0,
+          "auxiliary_forwards": 0,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "COUPLED-s2026092702",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 3996
+        }
+      },
+      {
+        "row_id": "F_SHALLOW-s2026092702",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "F_MIDDLE-s2026092702",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "F_BOTH-s2026092702",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "STYLE-s2026092702",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 3996
+        }
+      },
+      {
+        "row_id": "JOINT-s2026092702",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 3996
+        }
+      },
+      {
+        "row_id": "CE-s2026092703",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 0,
+          "weak_forwards": 0,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 0,
+          "auxiliary_L": 0,
+          "auxiliary_forwards": 0,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "SSL-s2026092703",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 0,
+          "auxiliary_L": 0,
+          "auxiliary_forwards": 0,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "COUPLED-s2026092703",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 3996
+        }
+      },
+      {
+        "row_id": "F_SHALLOW-s2026092703",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "F_MIDDLE-s2026092703",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "F_BOTH-s2026092703",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 0
+        }
+      },
+      {
+        "row_id": "STYLE-s2026092703",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 3996
+        }
+      },
+      {
+        "row_id": "JOINT-s2026092703",
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 3996
+        }
+      }
+    ],
+    "parent_weights_exact": true,
+    "own_checkpoint_roundtrip": true,
+    "wrong_parent_rejected": true,
+    "target_access": false,
+    "actual_source_evidence": [
+      {
+        "seed": 2026092701,
+        "L": 6300,
+        "U": 56700,
+        "V": 27000,
+        "U_role": "U_s",
+        "U_truth_hidden": true,
+        "V_backward": false,
+        "real_LU_backward": true,
+        "head_CE_identity_zero": true,
+        "E20_parent": {
+          "status": "VERIFIED",
+          "seed": 2026092701,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+          "source_run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+          "execution_commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
+          "epoch": 20,
+          "optimizer_steps": 4440,
+          "scratch_only": true,
+          "ancestors": [],
+          "source_roles": "EXACT_MATCH",
+          "training_target_access": false,
+          "checkpoint_selection": "fixed final20; all original matrix rows evaluated",
+          "method": "pure CE, original gates/reference_response, cosine schedule",
+          "auxiliary_inheritance": false,
+          "smoke": {
+            "strict_load": true,
+            "finite_logits": true,
+            "shape": [
+              2,
+              6
+            ],
+            "target_access": false
+          },
+          "selection_context": "E20 now explicitly selected by user after target-informed epoch-budget exploration; exposed development benchmark, not a new blind confirmation"
+        },
+        "details": {
+          "L_accuracy": 1.0,
+          "U_packets": 32,
+          "accepted_U": 32,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "ramp": 1.0,
+          "weak_forwards": 1,
+          "auxiliary_steps": 1,
+          "auxiliary_L": 60,
+          "auxiliary_forwards": 1,
+          "fishr_steps": 1,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 1,
+          "mixed_U_packets": 0,
+          "aux_ce_to_backbone": false,
+          "fishr_active_levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "fishr_fixed_denominator": 2,
+          "U_style": {
+            "role": "U_strong",
+            "levels": {
+              "time_down": {
+                "enabled": false,
+                "eligible_packets": 0,
+                "changed_packets": 0,
+                "changed_ratio": 0.0,
+                "movement_mean": 0.0,
+                "delta_ratio": 0.0,
+                "donors": []
+              },
+              "t2.pool": {
+                "enabled": false,
+                "eligible_packets": 0,
+                "changed_packets": 0,
+                "changed_ratio": 0.0,
+                "movement_mean": 0.0,
+                "delta_ratio": 0.0,
+                "donors": []
+              }
+            },
+            "high_confidence": 32,
+            "used_U_truth": false
+          },
+          "U_confidence": 0.9997611045837402,
+          "unit_feature_std": 0.03424101322889328,
+          "multilevel": {
+            "aux_forwards": 1,
+            "auxiliary_packets": 60,
+            "distinct_PID": 60,
+            "day": 3,
+            "fishr_steps": 1,
+            "levels": {
+              "time_down": {
+                "clean_ce": 1.813172698020935,
+                "shape": [
+                  60,
+                  48,
+                  128
+                ],
+                "fishr_computed": true,
+                "domains": [
+                  1,
+                  3,
+                  4,
+                  6,
+                  8
+                ],
+                "variance_mean": 0.02488226257264614,
+                "variance_max": 0.14626899361610413,
+                "raw_fishr": 1.679595334280748e-05,
+                "coordinates": 294,
+                "variance_denominator": "n",
+                "variance_normalized": false,
+                "readout_detached_for_regularizer": true,
+                "gradients": "true linear weight+bias CE parameter-gradient values"
+              },
+              "t2.pool": {
+                "clean_ce": 1.8588452339172363,
+                "shape": [
+                  60,
+                  96,
+                  32
+                ],
+                "fishr_computed": true,
+                "domains": [
+                  1,
+                  3,
+                  4,
+                  6,
+                  8
+                ],
+                "variance_mean": 0.057455066591501236,
+                "variance_max": 0.33087635040283203,
+                "raw_fishr": 0.00011095630907220766,
+                "coordinates": 582,
+                "variance_denominator": "n",
+                "variance_normalized": false,
+                "readout_detached_for_regularizer": true,
+                "gradients": "true linear weight+bias CE parameter-gradient values"
+              }
+            },
+            "native_CPU_CUDA_RNG_preserved": true,
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "EMA": false,
+            "head_Fishr_gradient": false,
+            "aux_ce_to_backbone": false,
+            "aux_ce_routing": "detached feature; head-only CE",
+            "fishr_levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "fishr_active_levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "fishr_fixed_denominator": 2,
+            "aux_ce": 1.8360090255737305,
+            "fishr": 6.387613393599167e-05
+          },
+          "fishr_budget": {
+            "mode": "budget",
+            "levels": {
+              "time_down": {
+                "main_ce_gradient_norm": 0.5149238788243115,
+                "raw_fishr_gradient_norm": 3.063312842265456e-05,
+                "coefficient": 1680.937888257353,
+                "uncapped_coefficient": 1680.937888257353,
+                "coefficient_detached": true,
+                "coefficient_cap": 10000.0,
+                "cap_active": false,
+                "requested_ratio_pre_level_mean": 0.1,
+                "achieved_ratio_pre_level_mean": 0.09999999673556041,
+                "achieved_direct_contribution_ratio": 0.049999998367780206,
+                "parameters": 3,
+                "reason": null,
+                "raw_loss": 1.679595334280748e-05,
+                "active": true,
+                "technical_failure": false
+              },
+              "t2.pool": {
+                "main_ce_gradient_norm": 0.5155457331225404,
+                "raw_fishr_gradient_norm": 0.00016580673382784357,
+                "coefficient": 310.93172038990417,
+                "uncapped_coefficient": 310.93172038990417,
+                "coefficient_detached": true,
+                "coefficient_cap": 10000.0,
+                "cap_active": false,
+                "requested_ratio_pre_level_mean": 0.1,
+                "achieved_ratio_pre_level_mean": 0.09999999939688821,
+                "achieved_direct_contribution_ratio": 0.049999999698444104,
+                "parameters": 4,
+                "reason": null,
+                "raw_loss": 0.00011095630907220766,
+                "active": true,
+                "technical_failure": false
+              }
+            },
+            "level_reduction": "mean",
+            "weighted_loss": 0.03136639669537544,
+            "EMA": false,
+            "combined_group_gradient_ratios": {
+              "time_down": {
+                "gradient_norm": 0.04552345046444692,
+                "ratio_to_main_ce": 0.08840811688202795
+              },
+              "t2.pool": {
+                "gradient_norm": 0.025777286928810032,
+                "ratio_to_main_ce": 0.0500000005289211
+              }
+            },
+            "active_levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "fixed_denominator": 2,
+            "inactive_levels": []
+          }
+        }
+      },
+      {
+        "seed": 2026092702,
+        "L": 6300,
+        "U": 56700,
+        "V": 27000,
+        "U_role": "U_s",
+        "U_truth_hidden": true,
+        "V_backward": false,
+        "real_LU_backward": true,
+        "head_CE_identity_zero": true,
+        "E20_parent": {
+          "status": "VERIFIED",
+          "seed": 2026092702,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092702/source/final_ssdg.pth",
+          "source_run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+          "execution_commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
+          "epoch": 20,
+          "optimizer_steps": 4440,
+          "scratch_only": true,
+          "ancestors": [],
+          "source_roles": "EXACT_MATCH",
+          "training_target_access": false,
+          "checkpoint_selection": "fixed final20; all original matrix rows evaluated",
+          "method": "pure CE, original gates/reference_response, cosine schedule",
+          "auxiliary_inheritance": false,
+          "smoke": {
+            "strict_load": true,
+            "finite_logits": true,
+            "shape": [
+              2,
+              6
+            ],
+            "target_access": false
+          },
+          "selection_context": "E20 now explicitly selected by user after target-informed epoch-budget exploration; exposed development benchmark, not a new blind confirmation"
+        },
+        "details": {
+          "L_accuracy": 1.0,
+          "U_packets": 32,
+          "accepted_U": 32,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "ramp": 1.0,
+          "weak_forwards": 1,
+          "auxiliary_steps": 1,
+          "auxiliary_L": 60,
+          "auxiliary_forwards": 1,
+          "fishr_steps": 1,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 1,
+          "mixed_U_packets": 0,
+          "aux_ce_to_backbone": false,
+          "fishr_active_levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "fishr_fixed_denominator": 2,
+          "U_style": {
+            "role": "U_strong",
+            "levels": {
+              "time_down": {
+                "enabled": false,
+                "eligible_packets": 0,
+                "changed_packets": 0,
+                "changed_ratio": 0.0,
+                "movement_mean": 0.0,
+                "delta_ratio": 0.0,
+                "donors": []
+              },
+              "t2.pool": {
+                "enabled": true,
+                "eligible_packets": 0,
+                "changed_packets": 0,
+                "changed_ratio": 0.0,
+                "movement_mean": 0.0,
+                "delta_ratio": 0.0,
+                "donors": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  8,
+                  9,
+                  10,
+                  11,
+                  12,
+                  13,
+                  14,
+                  15,
+                  16,
+                  17,
+                  18,
+                  19,
+                  20,
+                  21,
+                  22,
+                  23,
+                  24,
+                  25,
+                  26,
+                  27,
+                  28,
+                  29,
+                  30,
+                  31
+                ],
+                "movement_max": 0.0
+              }
+            },
+            "high_confidence": 32,
+            "used_U_truth": false
+          },
+          "U_confidence": 0.9999120235443115,
+          "unit_feature_std": 0.034011680632829666,
+          "multilevel": {
+            "aux_forwards": 1,
+            "auxiliary_packets": 60,
+            "distinct_PID": 60,
+            "day": 3,
+            "fishr_steps": 1,
+            "levels": {
+              "time_down": {
+                "clean_ce": 1.79751455783844,
+                "shape": [
+                  60,
+                  48,
+                  128
+                ],
+                "fishr_computed": true,
+                "domains": [
+                  1,
+                  3,
+                  4,
+                  6,
+                  8
+                ],
+                "variance_mean": 0.024201633408665657,
+                "variance_max": 0.1445065140724182,
+                "raw_fishr": 1.6453206626465544e-05,
+                "coordinates": 294,
+                "variance_denominator": "n",
+                "variance_normalized": false,
+                "readout_detached_for_regularizer": true,
+                "gradients": "true linear weight+bias CE parameter-gradient values"
+              },
+              "t2.pool": {
+                "clean_ce": 1.8165462017059326,
+                "shape": [
+                  60,
+                  96,
+                  32
+                ],
+                "fishr_computed": true,
+                "domains": [
+                  1,
+                  3,
+                  4,
+                  6,
+                  8
+                ],
+                "variance_mean": 0.05962459370493889,
+                "variance_max": 0.3557848036289215,
+                "raw_fishr": 9.040462464326993e-05,
+                "coordinates": 582,
+                "variance_denominator": "n",
+                "variance_normalized": false,
+                "readout_detached_for_regularizer": true,
+                "gradients": "true linear weight+bias CE parameter-gradient values"
+              }
+            },
+            "native_CPU_CUDA_RNG_preserved": true,
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "EMA": false,
+            "head_Fishr_gradient": false,
+            "aux_ce_to_backbone": false,
+            "aux_ce_routing": "detached feature; head-only CE",
+            "fishr_levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "fishr_active_levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "fishr_fixed_denominator": 2,
+            "aux_ce": 1.807030439376831,
+            "fishr": 5.342891381587833e-05
+          },
+          "fishr_budget": {
+            "mode": "budget",
+            "levels": {
+              "time_down": {
+                "main_ce_gradient_norm": 0.3771573248587823,
+                "raw_fishr_gradient_norm": 2.7485686340536974e-05,
+                "coefficient": 1372.1953545710892,
+                "uncapped_coefficient": 1372.1953545710892,
+                "coefficient_detached": true,
+                "coefficient_cap": 10000.0,
+                "cap_active": false,
+                "requested_ratio_pre_level_mean": 0.1,
+                "achieved_ratio_pre_level_mean": 0.09999999636174281,
+                "achieved_direct_contribution_ratio": 0.049999998180871405,
+                "parameters": 3,
+                "reason": null,
+                "raw_loss": 1.6453206626465544e-05,
+                "active": true,
+                "technical_failure": false
+              },
+              "t2.pool": {
+                "main_ce_gradient_norm": 0.40351988317233495,
+                "raw_fishr_gradient_norm": 0.00011436161963526687,
+                "coefficient": 352.8455446248699,
+                "uncapped_coefficient": 352.8455446248699,
+                "coefficient_detached": true,
+                "coefficient_cap": 10000.0,
+                "cap_active": false,
+                "requested_ratio_pre_level_mean": 0.1,
+                "achieved_ratio_pre_level_mean": 0.09999999912558077,
+                "achieved_direct_contribution_ratio": 0.04999999956279039,
+                "parameters": 4,
+                "reason": null,
+                "raw_loss": 9.040462464326993e-05,
+                "active": true,
+                "technical_failure": false
+              }
+            },
+            "level_reduction": "mean",
+            "weighted_loss": 0.027237942442297935,
+            "EMA": false,
+            "combined_group_gradient_ratios": {
+              "time_down": {
+                "gradient_norm": 0.036169092423458546,
+                "ratio_to_main_ce": 0.0958992177521707
+              },
+              "t2.pool": {
+                "gradient_norm": 0.020175995352582844,
+                "ratio_to_main_ce": 0.05000000295887798
+              }
+            },
+            "active_levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "fixed_denominator": 2,
+            "inactive_levels": []
+          }
+        }
+      },
+      {
+        "seed": 2026092703,
+        "L": 6300,
+        "U": 56700,
+        "V": 27000,
+        "U_role": "U_s",
+        "U_truth_hidden": true,
+        "V_backward": false,
+        "real_LU_backward": true,
+        "head_CE_identity_zero": true,
+        "E20_parent": {
+          "status": "VERIFIED",
+          "seed": 2026092703,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092703/source/final_ssdg.pth",
+          "source_run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+          "execution_commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
+          "epoch": 20,
+          "optimizer_steps": 4440,
+          "scratch_only": true,
+          "ancestors": [],
+          "source_roles": "EXACT_MATCH",
+          "training_target_access": false,
+          "checkpoint_selection": "fixed final20; all original matrix rows evaluated",
+          "method": "pure CE, original gates/reference_response, cosine schedule",
+          "auxiliary_inheritance": false,
+          "smoke": {
+            "strict_load": true,
+            "finite_logits": true,
+            "shape": [
+              2,
+              6
+            ],
+            "target_access": false
+          },
+          "selection_context": "E20 now explicitly selected by user after target-informed epoch-budget exploration; exposed development benchmark, not a new blind confirmation"
+        },
+        "details": {
+          "L_accuracy": 1.0,
+          "U_packets": 32,
+          "accepted_U": 32,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "ramp": 1.0,
+          "weak_forwards": 1,
+          "auxiliary_steps": 1,
+          "auxiliary_L": 60,
+          "auxiliary_forwards": 1,
+          "fishr_steps": 1,
+          "mixstyle_steps": 0,
+          "mixstyle_U_steps": 1,
+          "mixed_U_packets": 0,
+          "aux_ce_to_backbone": false,
+          "fishr_active_levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "fishr_fixed_denominator": 2,
+          "U_style": {
+            "role": "U_strong",
+            "levels": {
+              "time_down": {
+                "enabled": false,
+                "eligible_packets": 0,
+                "changed_packets": 0,
+                "changed_ratio": 0.0,
+                "movement_mean": 0.0,
+                "delta_ratio": 0.0,
+                "donors": []
+              },
+              "t2.pool": {
+                "enabled": false,
+                "eligible_packets": 0,
+                "changed_packets": 0,
+                "changed_ratio": 0.0,
+                "movement_mean": 0.0,
+                "delta_ratio": 0.0,
+                "donors": []
+              }
+            },
+            "high_confidence": 32,
+            "used_U_truth": false
+          },
+          "U_confidence": 0.9995641112327576,
+          "unit_feature_std": 0.031987689435482025,
+          "multilevel": {
+            "aux_forwards": 1,
+            "auxiliary_packets": 60,
+            "distinct_PID": 60,
+            "day": 3,
+            "fishr_steps": 1,
+            "levels": {
+              "time_down": {
+                "clean_ce": 1.8250577449798584,
+                "shape": [
+                  60,
+                  48,
+                  128
+                ],
+                "fishr_computed": true,
+                "domains": [
+                  1,
+                  3,
+                  4,
+                  6,
+                  8
+                ],
+                "variance_mean": 0.02502358891069889,
+                "variance_max": 0.14270736277103424,
+                "raw_fishr": 1.766511377354618e-05,
+                "coordinates": 294,
+                "variance_denominator": "n",
+                "variance_normalized": false,
+                "readout_detached_for_regularizer": true,
+                "gradients": "true linear weight+bias CE parameter-gradient values"
+              },
+              "t2.pool": {
+                "clean_ce": 1.8704274892807007,
+                "shape": [
+                  60,
+                  96,
+                  32
+                ],
+                "fishr_computed": true,
+                "domains": [
+                  1,
+                  3,
+                  4,
+                  6,
+                  8
+                ],
+                "variance_mean": 0.06226692348718643,
+                "variance_max": 0.4203421175479889,
+                "raw_fishr": 0.0001457397302147001,
+                "coordinates": 582,
+                "variance_denominator": "n",
+                "variance_normalized": false,
+                "readout_detached_for_regularizer": true,
+                "gradients": "true linear weight+bias CE parameter-gradient values"
+              }
+            },
+            "native_CPU_CUDA_RNG_preserved": true,
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "EMA": false,
+            "head_Fishr_gradient": false,
+            "aux_ce_to_backbone": false,
+            "aux_ce_routing": "detached feature; head-only CE",
+            "fishr_levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "fishr_active_levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "fishr_fixed_denominator": 2,
+            "aux_ce": 1.8477425575256348,
+            "fishr": 8.170241926563904e-05
+          },
+          "fishr_budget": {
+            "mode": "budget",
+            "levels": {
+              "time_down": {
+                "main_ce_gradient_norm": 0.29277294973656176,
+                "raw_fishr_gradient_norm": 3.296418608781248e-05,
+                "coefficient": 888.1546174842751,
+                "uncapped_coefficient": 888.1546174842751,
+                "coefficient_detached": true,
+                "coefficient_cap": 10000.0,
+                "cap_active": false,
+                "requested_ratio_pre_level_mean": 0.1,
+                "achieved_ratio_pre_level_mean": 0.0999999969664048,
+                "achieved_direct_contribution_ratio": 0.0499999984832024,
+                "parameters": 3,
+                "reason": null,
+                "raw_loss": 1.766511377354618e-05,
+                "active": true,
+                "technical_failure": false
+              },
+              "t2.pool": {
+                "main_ce_gradient_norm": 0.32633837547461,
+                "raw_fishr_gradient_norm": 0.00025685448673851347,
+                "coefficient": 127.05184883000116,
+                "uncapped_coefficient": 127.05184883000116,
+                "coefficient_detached": true,
+                "coefficient_cap": 10000.0,
+                "cap_active": false,
+                "requested_ratio_pre_level_mean": 0.1,
+                "achieved_ratio_pre_level_mean": 0.09999999961067452,
+                "achieved_direct_contribution_ratio": 0.04999999980533726,
+                "parameters": 4,
+                "reason": null,
+                "raw_loss": 0.0001457397302147001,
+                "active": true,
+                "technical_failure": false
+              }
+            },
+            "level_reduction": "mean",
+            "weighted_loss": 0.017102926969528198,
+            "EMA": false,
+            "combined_group_gradient_ratios": {
+              "time_down": {
+                "gradient_norm": 0.0292873910112128,
+                "ratio_to_main_ce": 0.10003448418839825
+              },
+              "t2.pool": {
+                "gradient_norm": 0.01631691798335008,
+                "ratio_to_main_ce": 0.04999999757803409
+              }
+            },
+            "active_levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "fixed_denominator": 2,
+            "inactive_levels": []
+          }
+        }
+      }
+    ]
+  },
+  "read_at": 1791741563.6271489
+}
