@@ -1,5 +1,7 @@
-# 当前进展
+# 完整9行结果
 
-已启动9/9行，核实4个活动worker及dispatcher的实际进程；排队0行，无技术失败，每卡总GPU进程不超过3个。
+状态 VERIFIED / ANALYZED。9/9行训练与clean独立评分完成，3方案各3种子；39,960次源更新、180个epoch、1,512,000次clean决策。全部逐行与汇总评分一致，完整源日志无错误。
 
-已收集5行clean独立评分，完整源日志5行、22200次更新。当前结果为PARTIAL，已有1个完整三种子方案，84%目标仍未证明。逐种子见test_results.md；固定对照缺种子处保持N/A。
+预登记主方案DELAYCAP_JOINT：79.9196%；固定E20参考P0：80.0504%。本批描述性最高均值CAP_JOINT：80.0508%，相对P0为+0.0004个百分点。所有完整方案均未达到84%。这不是从测试选择后续候选的依据。
+
+完整每种子、配对差、RX/TX/day、Macro-F1、NLL、成本和来源边界见[final_analysis.md](final_analysis.md)。逐步机制核验见[source_trajectory.md](source_trajectory.md)，3项固定跨批对照见[reference_comparisons.md](reference_comparisons.md)。健康在训批次保持原配置。

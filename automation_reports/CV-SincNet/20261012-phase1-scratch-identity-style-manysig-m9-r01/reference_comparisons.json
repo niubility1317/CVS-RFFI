@@ -1,5 +1,5 @@
 {
-  "status": "PARTIAL",
+  "status": "COMPLETE",
   "run_id": "20261012-phase1-scratch-identity-style-manysig-m9-r01",
   "reference_run_id": "20261012-phase1-scratch-calibrated-style-manysig-m36-r01",
   "comparisons": [
@@ -37,15 +37,15 @@
       "per_seed": [
         {
           "seed": 2026092701,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.8155178571428572,
           "reference_accuracy": 0.8107142857142857,
-          "difference": null
+          "difference": 0.004803571428571463
         },
         {
           "seed": 2026092702,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.778375,
           "reference_accuracy": 0.7799464285714286,
-          "difference": null
+          "difference": -0.001571428571428557
         },
         {
           "seed": 2026092703,
@@ -54,10 +54,10 @@
           "difference": 0.001351190476190478
         }
       ],
-      "paired_seed_count": 1,
-      "complete_three_seeds": false,
-      "mean_difference": null,
-      "sd_difference": null
+      "paired_seed_count": 3,
+      "complete_three_seeds": true,
+      "mean_difference": 0.0015277777777777946,
+      "sd_difference": 0.003191166488341133
     },
     {
       "treatment": "DELAYCAP_JOINT",
@@ -71,42 +71,41 @@
         },
         {
           "seed": 2026092702,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.7783630952380952,
           "reference_accuracy": 0.7797916666666667,
-          "difference": null
+          "difference": -0.0014285714285714457
         },
         {
           "seed": 2026092703,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.8074940476190476,
           "reference_accuracy": 0.80625,
-          "difference": null
+          "difference": 0.0012440476190476168
         }
       ],
-      "paired_seed_count": 1,
-      "complete_three_seeds": false,
-      "mean_difference": null,
-      "sd_difference": null
+      "paired_seed_count": 3,
+      "complete_three_seeds": true,
+      "mean_difference": -0.00014285714285714826,
+      "sd_difference": 0.0013391798899990233
     }
   ],
   "expected_comparisons": 3,
-  "complete_comparisons": 1,
+  "complete_comparisons": 3,
   "inputs": {
     "current": {
-      "status": "PARTIAL",
+      "status": "COMPLETE",
       "run_id": "20261012-phase1-scratch-identity-style-manysig-m9-r01",
       "completed_rows": [
         "DELAY_JOINT-s2026092701",
+        "CAP_JOINT-s2026092701",
         "DELAYCAP_JOINT-s2026092701",
         "DELAY_JOINT-s2026092702",
-        "DELAY_JOINT-s2026092703",
-        "CAP_JOINT-s2026092703"
-      ],
-      "missing_rows": [
-        "CAP_JOINT-s2026092701",
         "CAP_JOINT-s2026092702",
         "DELAYCAP_JOINT-s2026092702",
+        "DELAY_JOINT-s2026092703",
+        "CAP_JOINT-s2026092703",
         "DELAYCAP_JOINT-s2026092703"
       ],
+      "missing_rows": [],
       "actual_config_verification": "Existing collector source_config_budget=true; collector checked source/freeze against design",
       "local_config_verification": "Reconstructed each scored row from the registered local design and validated it"
     },

@@ -45,3 +45,12 @@ V仅第5/10/15/20轮eval/no_grad健康诊断，不拟合、不选模。固定fin
 
 
 发布 VERIFIED：执行提交 `67ea1c1822c8e77a9dde6aa67914b517749d933c`，dispatcher PID 362606。已启动 9/9 行，9 行的实际配置、无学生权重继承、进程和首轮日志核实通过，待运行 0 行；每卡总进程不超过 3。训练完成后逐行自动 clean 测试。当前无本批最终测试成绩，84% 目标待验证。
+
+
+# 完整9行结果
+
+状态 VERIFIED / ANALYZED。9/9行训练与clean独立评分完成，3方案各3种子；39,960次源更新、180个epoch、1,512,000次clean决策。全部逐行与汇总评分一致，完整源日志无错误。
+
+预登记主方案DELAYCAP_JOINT：79.9196%；固定E20参考P0：80.0504%。本批描述性最高均值CAP_JOINT：80.0508%，相对P0为+0.0004个百分点。所有完整方案均未达到84%。这不是从测试选择后续候选的依据。
+
+完整每种子、配对差、RX/TX/day、Macro-F1、NLL、成本和来源边界见[final_analysis.md](final_analysis.md)。逐步机制核验见[source_trajectory.md](source_trajectory.md)，3项固定跨批对照见[reference_comparisons.md](reference_comparisons.md)。健康在训批次保持原配置。
