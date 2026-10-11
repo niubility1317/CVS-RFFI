@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "zero_action_exact": true,
+  "cycle_amplitudes_preserved": true,
+  "nonlinear_descriptor_constant_linear_phase_invariance": true,
+  "zero_IQ_gradient_finite": true,
+  "reference_zero_slot27": true,
+  "no_explicit_frequency_estimator_or_output": true,
+  "parameter_values_unchanged_by_frontend_install": true,
+  "old_feature_caches_marked_incompatible": true,
+  "soft_KL_fixed_batch_denominator": true,
+  "teacher_and_weights_detached": true,
+  "same_view_KL_gradient_zero": true,
+  "identity_and_physical_weights_separate": true,
+  "source_U_domain_balance": true,
+  "complete_UID_traversal_before_reuse": true,
+  "source_U_sampler_resume_exact": true,
+  "source_input": "synthetic native architecture, not original E200",
+  "target_access": false,
+  "full_training_integration_verified": false
+}

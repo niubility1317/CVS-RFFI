@@ -1,0 +1,21 @@
+{
+  "goal": "three-seed clean mean>=84%; unverified",
+  "new_run": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
+  "new_release": "cvs_report_ssl_20261011_r01",
+  "new_status": "LOCAL_IMPLEMENTED_REVIEW_IN_PROGRESS_NOT_RELEASED",
+  "previous_S_run": "20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02",
+  "previous_S_status": "VERIFIED48/48 clean completed; scores not yet read for new design",
+  "old_F_status": "DEFERRED_REPORT_ALIGNMENT_NOT_LAUNCHED",
+  "evidence": [
+    "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\automation_reports\\CV-SincNet\\20261011-phase1-report-physical-ssl-manysig-m24-r01\\evidence\\local_native_graphs.json",
+    "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\automation_reports\\CV-SincNet\\20261011-phase1-report-physical-ssl-manysig-m24-r01\\traceability.md"
+  ],
+  "next": [
+    "close targeted P0/P1 findings",
+    "commit/push/verify OID",
+    "N607 actual-parent preflight then immutable24row dispatch",
+    "post-state PIDs/GPU/resolved config readback",
+    "collect previous48 clean results separately without target feedback"
+  ],
+  "healthy_job_policy": "no stop/restart/hot change"
+}

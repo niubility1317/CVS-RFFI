@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "initial_native_conversion_exact": true,
+  "dense_matches_AdamW": true,
+  "tiny_frequency_gradient_actual_update": true,
+  "physical_step_bound": true,
+  "exact_resume_trajectory": true,
+  "scheduled_dense_lr_resume_exact": true,
+  "no_gradient_no_update": true,
+  "unrestored_SAM_rejected": true,
+  "incompatible_coordinate_rejected": true,
+  "target_access": false,
+  "real_training_updates": 0
+}

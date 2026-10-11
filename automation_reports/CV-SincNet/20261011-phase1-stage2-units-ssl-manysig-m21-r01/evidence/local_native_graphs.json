@@ -1,0 +1,360 @@
+{
+  "status": "PASS",
+  "numerical": {
+    "status": "PASS",
+    "initial_native_conversion_exact": true,
+    "dense_matches_AdamW": true,
+    "tiny_frequency_gradient_actual_update": true,
+    "physical_step_bound": true,
+    "exact_resume_trajectory": true,
+    "scheduled_dense_lr_resume_exact": true,
+    "no_gradient_no_update": true,
+    "unrestored_SAM_rejected": true,
+    "incompatible_coordinate_rejected": true,
+    "target_access": false,
+    "real_training_updates": 0
+  },
+  "graphs": [
+    {
+      "arm": "F1",
+      "loss": 2.9830617904663086,
+      "transient_steps": 2,
+      "frequency": {
+        "step": 1,
+        "frequency": [
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 9.932488451843475e-07,
+            "step_cap_Hz": 24.83122112960869,
+            "mean_abs_delta_Hz": 24.842126846313477,
+            "max_abs_delta_Hz": 25.0,
+            "active_gradient_count": 24,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 0,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          },
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 9.932488451843475e-07,
+            "step_cap_Hz": 24.83122112960869,
+            "mean_abs_delta_Hz": 23.795339584350586,
+            "max_abs_delta_Hz": 24.875,
+            "active_gradient_count": 23,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 0,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          }
+        ],
+        "frequency_weight_decay": 0.0,
+        "initial_native_conversion_exact": true,
+        "coordinate": "u=f/fs",
+        "native_parameter_unit": "Hz"
+      },
+      "filter_max_abs_change": 9.793788194656372e-05,
+      "checkpoint_roundtrip": true,
+      "next_update_exact": true,
+      "teacher_calls": 1,
+      "teacher_updates": 1,
+      "forced_acceptance_for_graph_coverage_only": true
+    },
+    {
+      "arm": "F2",
+      "loss": 3.372849702835083,
+      "transient_steps": 2,
+      "frequency": {
+        "step": 1,
+        "frequency": [
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 2.9797465355530426e-06,
+            "step_cap_Hz": 74.49366338882606,
+            "mean_abs_delta_Hz": 72.60082244873047,
+            "max_abs_delta_Hz": 74.5,
+            "active_gradient_count": 24,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 1,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          },
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 2.9797465355530426e-06,
+            "step_cap_Hz": 74.49366338882606,
+            "mean_abs_delta_Hz": 71.39160919189453,
+            "max_abs_delta_Hz": 74.5,
+            "active_gradient_count": 23,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 0,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          }
+        ],
+        "frequency_weight_decay": 0.0,
+        "initial_native_conversion_exact": true,
+        "coordinate": "u=f/fs",
+        "native_parameter_unit": "Hz"
+      },
+      "filter_max_abs_change": 0.00029391422867774963,
+      "checkpoint_roundtrip": true,
+      "next_update_exact": true,
+      "teacher_calls": 1,
+      "teacher_updates": 1,
+      "forced_acceptance_for_graph_coverage_only": true
+    },
+    {
+      "arm": "F3",
+      "loss": 3.142775058746338,
+      "transient_steps": 2,
+      "frequency": {
+        "step": 1,
+        "frequency": [
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 9.932488451843475e-06,
+            "step_cap_Hz": 248.31221129608687,
+            "mean_abs_delta_Hz": 248.31690979003906,
+            "max_abs_delta_Hz": 248.5,
+            "active_gradient_count": 24,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 0,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          },
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 9.932488451843475e-06,
+            "step_cap_Hz": 248.31221129608687,
+            "mean_abs_delta_Hz": 237.9493865966797,
+            "max_abs_delta_Hz": 248.3125,
+            "active_gradient_count": 23,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 0,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          }
+        ],
+        "frequency_weight_decay": 0.0,
+        "initial_native_conversion_exact": true,
+        "coordinate": "u=f/fs",
+        "native_parameter_unit": "Hz"
+      },
+      "filter_max_abs_change": 0.0008495710790157318,
+      "checkpoint_roundtrip": true,
+      "next_update_exact": true,
+      "teacher_calls": 1,
+      "teacher_updates": 1,
+      "forced_acceptance_for_graph_coverage_only": true
+    },
+    {
+      "arm": "F4",
+      "loss": 3.4803690910339355,
+      "transient_steps": 2,
+      "frequency": {
+        "step": 1,
+        "frequency": [
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 2.97961014858707e-06,
+            "step_cap_Hz": 74.49025371467674,
+            "mean_abs_delta_Hz": 74.49360656738281,
+            "max_abs_delta_Hz": 74.5,
+            "active_gradient_count": 24,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 0,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          },
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 2.97961014858707e-06,
+            "step_cap_Hz": 74.49025371467674,
+            "mean_abs_delta_Hz": 71.38858795166016,
+            "max_abs_delta_Hz": 74.5,
+            "active_gradient_count": 23,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 0,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          }
+        ],
+        "frequency_weight_decay": 0.0,
+        "initial_native_conversion_exact": true,
+        "coordinate": "u=f/fs",
+        "native_parameter_unit": "Hz"
+      },
+      "filter_max_abs_change": 0.00029385462403297424,
+      "checkpoint_roundtrip": true,
+      "next_update_exact": true,
+      "teacher_calls": 1,
+      "teacher_updates": 1,
+      "forced_acceptance_for_graph_coverage_only": true
+    },
+    {
+      "arm": "F5",
+      "loss": 3.3765933513641357,
+      "transient_steps": 2,
+      "frequency": {
+        "step": 1,
+        "frequency": [
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 2.980223889933948e-06,
+            "step_cap_Hz": 74.50559724834869,
+            "mean_abs_delta_Hz": 72.60687255859375,
+            "max_abs_delta_Hz": 74.5078125,
+            "active_gradient_count": 24,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 1,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          },
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 2.980223889933948e-06,
+            "step_cap_Hz": 74.50559724834869,
+            "mean_abs_delta_Hz": 71.39920806884766,
+            "max_abs_delta_Hz": 74.5078125,
+            "active_gradient_count": 23,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 0,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          }
+        ],
+        "frequency_weight_decay": 0.0,
+        "initial_native_conversion_exact": true,
+        "coordinate": "u=f/fs",
+        "native_parameter_unit": "Hz"
+      },
+      "filter_max_abs_change": 0.0002849400043487549,
+      "checkpoint_roundtrip": true,
+      "next_update_exact": true,
+      "teacher_calls": 1,
+      "teacher_updates": 1,
+      "forced_acceptance_for_graph_coverage_only": true
+    },
+    {
+      "arm": "F6",
+      "loss": 3.1531524658203125,
+      "transient_steps": 2,
+      "frequency": {
+        "step": 1,
+        "frequency": [
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 2.9797465355530426e-06,
+            "step_cap_Hz": 74.49366338882606,
+            "mean_abs_delta_Hz": 72.6008071899414,
+            "max_abs_delta_Hz": 74.5,
+            "active_gradient_count": 24,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 1,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          },
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 2.9797465355530426e-06,
+            "step_cap_Hz": 74.49366338882606,
+            "mean_abs_delta_Hz": 71.3917007446289,
+            "max_abs_delta_Hz": 74.5,
+            "active_gradient_count": 23,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 0,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          }
+        ],
+        "frequency_weight_decay": 0.0,
+        "initial_native_conversion_exact": true,
+        "coordinate": "u=f/fs",
+        "native_parameter_unit": "Hz"
+      },
+      "filter_max_abs_change": 0.00029391422867774963,
+      "checkpoint_roundtrip": true,
+      "next_update_exact": true,
+      "teacher_calls": 1,
+      "teacher_updates": 1,
+      "forced_acceptance_for_graph_coverage_only": true
+    },
+    {
+      "arm": "F7",
+      "loss": 3.406608819961548,
+      "transient_steps": 2,
+      "frequency": {
+        "step": 1,
+        "frequency": [
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 2.9797465355530426e-06,
+            "step_cap_Hz": 74.49366338882606,
+            "mean_abs_delta_Hz": 74.49629211425781,
+            "max_abs_delta_Hz": 74.5,
+            "active_gradient_count": 24,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 0,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          },
+          {
+            "name": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+            "sample_rate": 25000000.0,
+            "lr_u": 2.9797465355530426e-06,
+            "step_cap_Hz": 74.49366338882606,
+            "mean_abs_delta_Hz": 71.39144897460938,
+            "max_abs_delta_Hz": 74.5,
+            "active_gradient_count": 23,
+            "active_gradient_zero_update_count": 0,
+            "active_gradient_zero_update_fraction": 0.0,
+            "bounded_coordinates": 0,
+            "master_dtype": "torch.float64",
+            "native_dtype": "torch.float32"
+          }
+        ],
+        "frequency_weight_decay": 0.0,
+        "initial_native_conversion_exact": true,
+        "coordinate": "u=f/fs",
+        "native_parameter_unit": "Hz"
+      },
+      "filter_max_abs_change": 0.00029383599758148193,
+      "checkpoint_roundtrip": true,
+      "next_update_exact": true,
+      "teacher_calls": 1,
+      "teacher_updates": 1,
+      "forced_acceptance_for_graph_coverage_only": true
+    }
+  ],
+  "source_input": "synthetic native architecture; no real checkpoint loaded",
+  "target_access": false,
+  "production_training_updates": 0,
+  "transient_copy_optimizer_updates": 14,
+  "domain_forwards": 0
+}
