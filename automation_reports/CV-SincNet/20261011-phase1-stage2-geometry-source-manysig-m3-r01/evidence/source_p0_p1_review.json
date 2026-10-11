@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "reviewer": "stochastic_forward_audit",
+  "scope": [
+    "geometry_audit.py",
+    "source_audit.py",
+    "design.py"
+  ],
+  "findings": [],
+  "source_only": true,
+  "checked": [
+    "full joint160 plus reference",
+    "explicit physical units and covariance prior",
+    "fixed common reference CFO",
+    "L fit V read-only",
+    "parent state restoration",
+    "new output protection"
+  ],
+  "limitations": [
+    "Sigma identity assumption",
+    "innovation not necessarily thermal noise",
+    "uncalibrated fractional template delay; residual coordinates not independent PA coefficients"
+  ]
+}

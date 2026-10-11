@@ -1,0 +1,238 @@
+{
+  "status": "PASS",
+  "target_access": false,
+  "identity_training_launched": false,
+  "checks": {
+    "geometry": {
+      "status": "PASS",
+      "equal_RX_day_TX_group_weighting": true,
+      "TX_rank": 5,
+      "generalized_eigen_residual": 6.217248937900877e-15,
+      "actual_joint160_reproduces_logits": true,
+      "joint_feature_gradient_to_encoder": true,
+      "target_access": false,
+      "checkpoint_reads": 0
+    },
+    "receiver": {
+      "status": "PASS",
+      "target_access": false,
+      "synthetic_ids": 360,
+      "rank2_recovery_c": [
+        0.9913043804875045,
+        0.9902025217629438,
+        0.9913043757191621
+      ],
+      "rank0_valid": true,
+      "heldout_leakage": false,
+      "vector_rotation_invariant": true,
+      "finite_bag_pairs": 18,
+      "finite_loss_error": 0.0,
+      "finite_gradient_max_error": 1.3552527156068805e-20,
+      "negative_estimate": -0.16666666666666669,
+      "projection_escape_loss": 0.5,
+      "block_alpha": 0.09987492177719123,
+      "block_kappa": 0.2,
+      "matched_sampler": true,
+      "parent_and_r_frozen": true,
+      "equal_block_group_weighting": true,
+      "fp32_initial_control_exact": true
+    },
+    "physics": {
+      "status": "PASS",
+      "device": "cpu",
+      "algebra": {
+        "schema": "stage2_geometry_physics_algebra_v1",
+        "target_access": false,
+        "template_conjugate_delay_error": 2.9083817348740073e-15,
+        "conjugate_delay_identity": "conj(s[n])=-j*s[n-10]; only nuisance models admitting this delay/free-tone response absorb it",
+        "discrete_orders_135_rank": 3,
+        "discrete_four_repeats_rank": 3,
+        "discrete_orders_135_condition": 54.475895015196706,
+        "discrete_orders_135_singular": [
+          9.509107772003317,
+          1.6761037795625875,
+          0.17455624674639372
+        ],
+        "continuous_harmonic_extent": {
+          "1": 6,
+          "3": 18,
+          "5": 30
+        },
+        "continuous_max_frequency_hz": {
+          "1": 7500000.0,
+          "3": 22500000.0,
+          "5": 37500000.0
+        },
+        "strict_inband_harmonics": [
+          -7,
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "original_active_harmonics": [
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "after_linear_tones_and_DC_new_harmonics": [
+          -7,
+          7
+        ],
+        "fifth_to_third_sideband_ratio": 2.125,
+        "sideband_ratio_error": 1.5700924586837752e-16,
+        "sideband_orders_35_complex_rank": 1,
+        "sampled_cubic_sideband_alias_error": 0.0721687836487036,
+        "residual_svd": {
+          "20": {
+            "rank": 1,
+            "nuisance_rank": 14,
+            "singular": [
+              1.282091806652662,
+              1.7512752062842066e-15
+            ],
+            "threshold": 1.2820918066526622e-10,
+            "identity_whitened_complex_gram": {
+              "real": [
+                [
+                  0.2980187015407837,
+                  0.6332897407741656
+                ],
+                [
+                  0.6332897407741656,
+                  1.3457406991451024
+                ]
+              ],
+              "imag": [
+                [
+                  0.0,
+                  3.898791012257874e-16
+                ],
+                [
+                  -3.898791012257874e-16,
+                  0.0
+                ]
+              ]
+            }
+          },
+          "80": {
+            "rank": 1,
+            "nuisance_rank": 14,
+            "singular": [
+              4.280370201309084,
+              8.722842627409206e-15
+            ],
+            "threshold": 4.280370201309084e-10,
+            "identity_whitened_complex_gram": {
+              "real": [
+                [
+                  3.321757563332311,
+                  7.058734822081159
+                ],
+                [
+                  7.058734822081159,
+                  14.999811496922463
+                ]
+              ],
+              "imag": [
+                [
+                  0.0,
+                  5.098392953477304e-16
+                ],
+                [
+                  -5.098392953477304e-16,
+                  0.0
+                ]
+              ]
+            }
+          }
+        },
+        "effective_information_scope": "identity-whitened complex Gram diagnostic; not estimated physical noise Fisher",
+        "linear_action_bound": {
+          "tap_component_limit": 0.06,
+          "delays": [
+            1,
+            3
+          ],
+          "lower": 0.8302943725152285,
+          "upper": 1.1697056274847715,
+          "proof": "triangle/reverse-triangle with each finite causal shift operator norm<=1",
+          "finite_matrix_size": 256,
+          "checked_singular_min": 0.8409991093590321,
+          "checked_singular_max": 1.159680785515969,
+          "deep_zero_possible_within_bound": false
+        },
+        "whitening": "Sigma unknown; identity whitening assumption",
+        "independent_repeats_add_rank": false,
+        "physical_PA_orders_separately_identifiable": false
+      },
+      "oversampled_convolution_errors": {
+        "3": 7.154050091670043e-15,
+        "5": 2.1431618279190542e-14
+      },
+      "oversample_filter_then_decimate_errors": {
+        "3": 5.197930934883577e-15,
+        "5": 7.514331938470827e-15
+      },
+      "common_gain_projector_error": 3.3306690738754696e-16,
+      "periodic_linear_temporal_error": 1.031548306277525e-15,
+      "zero_extended_linear_temporal_change": 0.01146320794273533,
+      "window_linear_commutator_norm": 0.12000000000000001,
+      "common_cfo_temporal_error": 4.99600361081326e-16,
+      "early_only_cfo_preserved_change": 0.020609548371892578,
+      "extension_excluded_from_features": true,
+      "zero_energy_finite_and_masked": true,
+      "negative_repeat_energy_preserved": -0.3333333333333333,
+      "iid_repeat_energy_mean_error": 7.918138972606847e-05,
+      "actual_received_innovation_not_claimed_thermal_noise": true,
+      "physical_feature_dimension": 42,
+      "controlled_actual_packet_L_interface": true,
+      "target_access": false,
+      "model_training": false,
+      "input_unchanged": true
+    },
+    "objectives": {
+      "exact_one_sided_square": true,
+      "log95_margin": true,
+      "clean_and_parent_reference_detached": true,
+      "zero_action_loss_and_gradient_zero": true,
+      "task_complete_stops_pressure": true,
+      "parent_wrong_no_keep": true,
+      "no_augmented_ce": true
+    },
+    "actions": {
+      "fit_apply_same_radial_policy": true,
+      "full_two_pass_fit": true,
+      "parent_preserved": true,
+      "paired_radius_exact": true,
+      "temporal_realization_paired": true,
+      "true_fixed_coverage_component": true,
+      "no_global_rng_consumption": true,
+      "original_physical_bounds_preserved": true,
+      "zero_radius_exact_iq_identity": true,
+      "source_risk_boundary_coverage_diagnostics": true,
+      "stale_policy_rejected": true,
+      "actual_iq_strength_equality_not_claimed": true,
+      "device": "cpu"
+    }
+  }
+}
