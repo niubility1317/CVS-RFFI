@@ -53,7 +53,7 @@
   "group_id": "cvs-e20-independent-peer-source-audit",
   "display_name": "E20独立种子教师：源域纠错与高置信错误互补性",
   "description": "复用三个原E20固定L/V预测，LOO2与单个ALL3均匀教师；0训练、0新模型前向、无target/U",
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "source_only",
@@ -134,7 +134,7 @@
   "rows": [
     {
       "row_id": "fixed-peer-matrix",
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_e20_peer_audit",
       "purpose": "复用三个原E20固定L/V预测，LOO2与单个ALL3均匀教师；0训练、0新模型前向、无target/U",
       "config": {
@@ -197,7 +197,8 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "One deterministic joint diagnostic of model seeds2026092701/02/03; LOO2 paired three times, ALL3 one teacher. Physical split inherited unchanged; no random draw or fitted threshold. Null means not applicable, not zero."
+      "seed_notes": "One deterministic joint diagnostic of model seeds2026092701/02/03; LOO2 paired three times, ALL3 one teacher. Physical split inherited unchanged; no random draw or fitted threshold. Null means not applicable, not zero.",
+      "process_id": 45992
     }
   ],
   "notes": [
@@ -205,5 +206,13 @@
     "All five RX seen by E20; V cannot establish unseen-RX generalization.",
     "Other endpoint readouts reside in same source pt files but are not consumed.",
     "Raw tensors remain outside Git; aggregate evidence and report versioned."
-  ]
+  ],
+  "execution_commit": "a2fbacd876911d0c7158c098dd161e3ccabaebcf",
+  "delivery_verdict": "VERIFIED",
+  "results": {
+    "report": "analysis.md",
+    "source_readouts_reused": 99900,
+    "new_training": false,
+    "new_target_results": false
+  }
 }
