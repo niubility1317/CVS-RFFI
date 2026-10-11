@@ -110,3 +110,8 @@ Z3源任务证据：八固定源V视图的均值准确率与S3最大绝对差0.0
 ## 当前：八卡混合机制正式运行
 
 20261011-phase1-stage2-hybrid-manysig-m33-r01，执行30589464f5fbaaa4b0af434924ba16368dd82ca1，release cvs_stage2_hybrid_20261011_r01，dispatcher3991961，唯一owner codex/root/stage2-hybrid-20261011。VERIFIED：3父权重及物理角色，CPU预检143.50秒身份0/target0，600辅助更新；33原生配置前后向与SAM全部通过。最新24active/9pending，八GPU各3进程、全部24已有epoch日志、无failure。只原始E200→E40，所有固定H0-H10都测clean，H9主方案，三seed均值84%目标仍active未达成。逐行自动freeze→prediction→独立CPU truth-last，禁止反馈改训练/排序/重跑。下次从此run实时queue/PID/产物恢复，不能重复启动。报告路径 E:\type10-7\code\worktrees\receiver_residual_dg_20261008\automation_reports\CV-SincNet\20261011-phase1-stage2-hybrid-manysig-m33-r01。shell工具实际忽略shell选择、宿主为内置pwsh，后续任务载荷继续使用已验证Python/原生可执行文件，复杂PowerShell须显式原生powershell.exe子进程。
+
+
+## 2026-10-11 半监督与权重调优更新
+
+H0–H10共33行已完成source40＋clean独立评分，最高H0三seed80.886%，84%未达。完整报告 20261011-phase1-stage2-hybrid-manysig-m33-r01，大resources原件保留远端与本地，Git用compact引用。用户恢复合法源U半监督并增加权重更新力度。新S0–S15×3共48行已预登记，在读取H成绩前冻结：原CE E200→E40/8880，L128/U256，EMA.999，原/约3倍/10倍LR，身份全参数，无星地增强，8GPU最多3总进程/卡，逐行自动clean。主S13，84%目标未完成。代码16方案实际架构前后向与cache-safe EMA/全U排列/真标签隔离/SAM检查PASS。下一步独立审查后Git不可变发布，source真实U与父权重预检后自动队列，不更改H产物或基于H结果调S。

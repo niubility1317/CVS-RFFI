@@ -1,0 +1,257 @@
+{
+  "schema": "stage2_ssl_hybrid_v1",
+  "run_id": "20261011-phase1-stage2-ssl-hybrid-manysig-m48-r01",
+  "arm": "S7",
+  "model_seed": 2026092702,
+  "row_id": "S7-s2026092702",
+  "method": "cvs_stage2_ssl_hybrid",
+  "variant": "reference_response",
+  "method_name": "Visit-pass SSL + SAM + cyclic-tail weight averaging",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+  "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/prediction/predictions.npz",
+  "checkpoint_sources": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth"
+  ],
+  "parent_contract": {
+    "schema": "stage2_decouple_v1",
+    "run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
+    "stage": "stage2_decouple",
+    "arm": "C0",
+    "model_seed": 2026092702,
+    "row_id": "C0-s2026092702",
+    "method": "cvs_stage2_decouple",
+    "variant": "reference_response",
+    "features": [],
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C0-s2026092702/source",
+    "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+    "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/prediction/predictions.npz",
+    "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092702",
+    "model_initialization": "strict_matched_pure_CE_parent_fresh_optimizer",
+    "checkpoint_sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth"
+    ],
+    "epochs": 40,
+    "steps_per_epoch": 222,
+    "batch_size": 128,
+    "updates": 8880,
+    "label_smoothing": 0.0,
+    "optimizer": {
+      "name": "AdamW",
+      "weight_decay": 0.0001,
+      "encoder_peak_lr": 3e-05,
+      "fusion_head_peak_lr": 0.0001,
+      "min_lr": 1e-06,
+      "warmup_steps": 444
+    },
+    "losses": {
+      "keep": 0.1,
+      "aug_ce": 0.25,
+      "drop": 0.1,
+      "receiver": 0.1,
+      "delta_keep": 0.5,
+      "delta_drop": 0.5,
+      "huber_delta": 1.0
+    },
+    "schedule": {
+      "action_every": 4,
+      "receiver_every": 8,
+      "relation_batch": 32,
+      "action_batch": 32,
+      "action_order": [
+        "linear",
+        "linear",
+        "temporal",
+        "temporal"
+      ]
+    },
+    "enabled": {
+      "keep": false,
+      "actions": false,
+      "receiver": false
+    },
+    "numerical_policy": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "target_access": false,
+    "test_views": [
+      "clean"
+    ],
+    "checkpoint_selection": "final_only",
+    "sampling": "shared seed-private source-L stream; 96 ordinary + 2x2x8 relation slots every8; no difficulty sampling",
+    "auxiliary": {
+      "action_passes": 2,
+      "action_fit_batch": 128,
+      "action_fit_lr": 0.0002,
+      "action_fit_wd": 0.0001,
+      "receiver_fit_steps": 200,
+      "receiver_fit_lr": 0.002,
+      "receiver_fit_wd": 0.0,
+      "fractional_delay_samples": 0.25
+    },
+    "evaluation": {
+      "primary_arm": "C3",
+      "goal_three_seed_mean": 0.84,
+      "truth_last": true,
+      "feedback_to_training": false
+    },
+    "concurrency": {
+      "max_processes_per_gpu": 4,
+      "includes_existing": true
+    },
+    "launch_owner": "codex/root/stage2-decouple-20261011"
+  },
+  "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092702",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-ssl-hybrid-manysig-m48-r01/S7-s2026092702/source",
+  "epochs": 40,
+  "steps_per_epoch": 222,
+  "updates": 8880,
+  "batch_size": 128,
+  "label_smoothing": 0.0,
+  "optimizer": {
+    "name": "AdamW",
+    "weight_decay": 0.0001,
+    "encoder_peak_lr": 3e-05,
+    "fusion_head_peak_lr": 0.0001,
+    "min_lr": 1e-06,
+    "warmup_steps": 444
+  },
+  "enabled": {
+    "contrastive": false,
+    "cross_rx_mix": false,
+    "manifold_mix": false,
+    "sam": true,
+    "averaging": true,
+    "actions": false,
+    "conditional_actions": false
+  },
+  "losses": {
+    "contrastive": 0.05,
+    "cross_rx_mix": 0.25,
+    "manifold_mix": 0.25,
+    "finite_lt": 1.0,
+    "keep": 0.1,
+    "ramp_steps": 444,
+    "margin_required": 4.553876891600541,
+    "temperature": 0.1
+  },
+  "mixing": {
+    "beta": 0.4,
+    "cross_rx_lambda": "Uniform[.25,.75]",
+    "normalized_joint": true,
+    "head_scale": 30.0
+  },
+  "sam": {
+    "rho": 0.02,
+    "adaptive": false,
+    "same_batch_same_global_RNG": true,
+    "base_optimizer": "AdamW",
+    "temporary_perturbation_is_not_update": true
+  },
+  "averaging": {
+    "start_epoch": 31,
+    "cycle_epochs": 2,
+    "cycle_peak_fraction": 0.5,
+    "snapshot_epochs": [
+      32,
+      34,
+      36,
+      38,
+      40
+    ],
+    "buffers": "fixed final buffers; BatchNorm architecture forbidden",
+    "selection": "fixed five-snapshot mean; no V choice"
+  },
+  "checkpoint_selection": "fixed_tail_average",
+  "action": {
+    "policy": "coverage",
+    "payload": null,
+    "fit": "fresh original E200, same-scale tanh coordinates, abs noise, first full pass raw margin then full pass finite risk",
+    "every_steps": 4,
+    "batch": 32,
+    "order": [
+      "linear",
+      "linear",
+      "temporal",
+      "temporal"
+    ],
+    "coverage_fraction": 0.5
+  },
+  "sampling": "Same ordinary permutation and relation replacement streams as B0; no target/sample selection",
+  "target_access": false,
+  "unlabeled": true,
+  "teacher": true,
+  "satellite": false,
+  "test_views": [
+    "clean"
+  ],
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "concurrency": {
+    "max_processes_per_gpu": 3,
+    "includes_existing": true,
+    "gpu_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "evaluation": {
+    "primary_arm": "S13",
+    "goal_three_seed_mean": 0.84,
+    "all_predeclared_arms_reported": true,
+    "truth_last": true,
+    "feedback_to_training": false,
+    "fixed_control_run": "20261011-phase1-stage2-hybrid-manysig-m33-r01",
+    "fixed_control_arms": [
+      "H0"
+    ],
+    "control_role": "H0 fixed clean predictions only; never E40 initialization"
+  },
+  "launch_owner": "codex/root/stage2-ssl-hybrid-20261011",
+  "semi": {
+    "cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r01/source_unlabeled/source_cache.pt",
+    "batch_size": 256,
+    "role": "U_s",
+    "count": 56700,
+    "mode": "visit_pass_bank",
+    "teacher": "clone matched E200 identity; eval/no_grad; cache-safe EMA after one successful optimizer update",
+    "ema_decay": 0.999,
+    "pseudo_weight": 0.16,
+    "entropy_weight": 0.01,
+    "ramp_steps": 444,
+    "tau_min": 0.92,
+    "tau_max": 0.97,
+    "quantile": 0.86,
+    "temporal_window": 2,
+    "temporal_min_conf": 0.8,
+    "min_streak": 2,
+    "strong_noise_std": 0.015,
+    "strong_agreement": true,
+    "domain_gate": false,
+    "warmup": "No extra 130+70 scratch stages: mature original E200; all40 epochs enable semi with444-step ramp",
+    "feature_contrastive_use_accepted_U": false,
+    "truth_access": false,
+    "history_updates_per_optimizer_step": 1,
+    "teacher_selected_for_test": false,
+    "SAM_plan": "teacher/history/strong input fixed once per update; reused for both closures"
+  },
+  "optimization_scope": "all native identity encoder/fusion/classifier parameters; no frozen identity layers; domain networks frozen"
+}

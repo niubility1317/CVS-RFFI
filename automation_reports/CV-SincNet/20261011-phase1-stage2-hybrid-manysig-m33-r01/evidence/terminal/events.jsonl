@@ -1,0 +1,136 @@
+{"at": 1791708212.8637931, "status": "PLANNED", "target_access": false, "rows": 33, "max_processes_per_gpu": 3}
+{"at": 1791708435.2825406, "status": "LOCAL_VERIFIED", "target_access": false, "local_native": "PASS", "independent_P0_P1": "PASS", "rows": 33, "max_processes_per_gpu": 3}
+{"at": 1791708553.8818626, "status": "RUNNING", "job_kind": "train", "identifier": "H0-s2026092701", "pid": 3992097, "gpu": 0, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H0-s2026092701.log", "row_id": "H0-s2026092701"}
+{"at": 1791708554.1999187, "status": "RUNNING", "job_kind": "train", "identifier": "H1-s2026092701", "pid": 3992104, "gpu": 1, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H1-s2026092701.log", "row_id": "H1-s2026092701"}
+{"at": 1791708554.4967701, "status": "RUNNING", "job_kind": "train", "identifier": "H2-s2026092701", "pid": 3992116, "gpu": 2, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H2-s2026092701.log", "row_id": "H2-s2026092701"}
+{"at": 1791708554.7896109, "status": "RUNNING", "job_kind": "train", "identifier": "H3-s2026092701", "pid": 3992121, "gpu": 3, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H3-s2026092701.log", "row_id": "H3-s2026092701"}
+{"at": 1791708555.0856726, "status": "RUNNING", "job_kind": "train", "identifier": "H4-s2026092701", "pid": 3992129, "gpu": 4, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H4-s2026092701.log", "row_id": "H4-s2026092701"}
+{"at": 1791708555.6662157, "status": "RUNNING", "job_kind": "train", "identifier": "H5-s2026092701", "pid": 3992140, "gpu": 5, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H5-s2026092701.log", "row_id": "H5-s2026092701"}
+{"at": 1791708556.2527258, "status": "RUNNING", "job_kind": "train", "identifier": "H6-s2026092701", "pid": 3992152, "gpu": 6, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H6-s2026092701.log", "row_id": "H6-s2026092701"}
+{"at": 1791708557.1598535, "status": "RUNNING", "job_kind": "train", "identifier": "H7-s2026092701", "pid": 3992169, "gpu": 7, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H7-s2026092701.log", "row_id": "H7-s2026092701"}
+{"at": 1791708558.598917, "status": "RUNNING", "job_kind": "train", "identifier": "H8-s2026092701", "pid": 3992250, "gpu": 0, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H8-s2026092701.log", "row_id": "H8-s2026092701"}
+{"at": 1791708560.2831264, "status": "RUNNING", "job_kind": "train", "identifier": "H9-s2026092701", "pid": 3992278, "gpu": 1, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H9-s2026092701.log", "row_id": "H9-s2026092701"}
+{"at": 1791708563.03038, "status": "RUNNING", "job_kind": "train", "identifier": "H10-s2026092701", "pid": 3992455, "gpu": 2, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H10-s2026092701.log", "row_id": "H10-s2026092701"}
+{"at": 1791708565.6335475, "status": "RUNNING", "job_kind": "train", "identifier": "H0-s2026092702", "pid": 3992705, "gpu": 5, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H0-s2026092702.log", "row_id": "H0-s2026092702"}
+{"at": 1791708567.4408221, "status": "RUNNING", "job_kind": "train", "identifier": "H1-s2026092702", "pid": 3992938, "gpu": 7, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H1-s2026092702.log", "row_id": "H1-s2026092702"}
+{"at": 1791708568.727297, "status": "RUNNING", "job_kind": "train", "identifier": "H2-s2026092702", "pid": 3993029, "gpu": 3, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H2-s2026092702.log", "row_id": "H2-s2026092702"}
+{"at": 1791708569.6709604, "status": "RUNNING", "job_kind": "train", "identifier": "H3-s2026092702", "pid": 3993047, "gpu": 4, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H3-s2026092702.log", "row_id": "H3-s2026092702"}
+{"at": 1791708570.5567453, "status": "RUNNING", "job_kind": "train", "identifier": "H4-s2026092702", "pid": 3993129, "gpu": 6, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H4-s2026092702.log", "row_id": "H4-s2026092702"}
+{"at": 1791708571.4601078, "status": "RUNNING", "job_kind": "train", "identifier": "H5-s2026092702", "pid": 3993213, "gpu": 4, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H5-s2026092702.log", "row_id": "H5-s2026092702"}
+{"at": 1791708572.2740326, "status": "RUNNING", "job_kind": "train", "identifier": "H6-s2026092702", "pid": 3993229, "gpu": 5, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H6-s2026092702.log", "row_id": "H6-s2026092702"}
+{"at": 1791708573.5043766, "status": "RUNNING", "job_kind": "train", "identifier": "H7-s2026092702", "pid": 3993317, "gpu": 6, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H7-s2026092702.log", "row_id": "H7-s2026092702"}
+{"at": 1791708574.4973392, "status": "RUNNING", "job_kind": "train", "identifier": "H8-s2026092702", "pid": 3993401, "gpu": 3, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H8-s2026092702.log", "row_id": "H8-s2026092702"}
+{"at": 1791708575.7380817, "status": "RUNNING", "job_kind": "train", "identifier": "H9-s2026092702", "pid": 3993489, "gpu": 7, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H9-s2026092702.log", "row_id": "H9-s2026092702"}
+{"at": 1791708576.938413, "status": "RUNNING", "job_kind": "train", "identifier": "H10-s2026092702", "pid": 3993512, "gpu": 2, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H10-s2026092702.log", "row_id": "H10-s2026092702"}
+{"at": 1791708578.2565858, "status": "RUNNING", "job_kind": "train", "identifier": "H0-s2026092703", "pid": 3993597, "gpu": 1, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H0-s2026092703.log", "row_id": "H0-s2026092703"}
+{"at": 1791708579.8857455, "status": "RUNNING", "job_kind": "train", "identifier": "H1-s2026092703", "pid": 3993693, "gpu": 0, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H1-s2026092703.log", "row_id": "H1-s2026092703"}
+{"at": 1791708698.1252816, "status": "METADATA_PATH_NORMALIZED", "change": "Windows-rendered report path references normalized to Linux POSIX; immutable configs, models, queue, processes unchanged", "target_access": false}
+{"at": 1791708859.327252, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H2-s2026092702"}
+{"at": 1791708864.3594158, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H0-s2026092702"}
+{"at": 1791708864.748886, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H2-s2026092702"}
+{"at": 1791708868.5365057, "status": "ANALYZED", "views": ["clean"], "row_id": "H2-s2026092702"}
+{"at": 1791708869.7854424, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H0-s2026092702"}
+{"at": 1791708870.5947068, "status": "RUNNING", "job_kind": "train", "identifier": "H2-s2026092703", "pid": 3998020, "gpu": 3, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H2-s2026092703.log", "row_id": "H2-s2026092703"}
+{"at": 1791708873.4625275, "status": "ANALYZED", "views": ["clean"], "row_id": "H0-s2026092702"}
+{"at": 1791708881.2267659, "status": "RUNNING", "job_kind": "train", "identifier": "H3-s2026092703", "pid": 3998130, "gpu": 5, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H3-s2026092703.log", "row_id": "H3-s2026092703"}
+{"at": 1791708881.5685682, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H3-s2026092702"}
+{"at": 1791708887.0704489, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H3-s2026092702"}
+{"at": 1791708890.9113739, "status": "ANALYZED", "views": ["clean"], "row_id": "H3-s2026092702"}
+{"at": 1791708891.8897538, "status": "RUNNING", "job_kind": "train", "identifier": "H4-s2026092703", "pid": 3998446, "gpu": 4, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H4-s2026092703.log", "row_id": "H4-s2026092703"}
+{"at": 1791708892.6244595, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H0-s2026092701"}
+{"at": 1791708894.887586, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H2-s2026092701"}
+{"at": 1791708898.0846512, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H0-s2026092701"}
+{"at": 1791708901.3961709, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H2-s2026092701"}
+{"at": 1791708901.9747589, "status": "ANALYZED", "views": ["clean"], "row_id": "H0-s2026092701"}
+{"at": 1791708904.694093, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H3-s2026092701"}
+{"at": 1791708905.0236697, "status": "ANALYZED", "views": ["clean"], "row_id": "H2-s2026092701"}
+{"at": 1791708905.3413947, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H1-s2026092701"}
+{"at": 1791708906.3501413, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H6-s2026092701"}
+{"at": 1791708910.055253, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H3-s2026092701"}
+{"at": 1791708910.7385907, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H1-s2026092701"}
+{"at": 1791708911.7988489, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H6-s2026092701"}
+{"at": 1791708912.8279486, "status": "RUNNING", "job_kind": "train", "identifier": "H5-s2026092703", "pid": 3999010, "gpu": 0, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H5-s2026092703.log", "row_id": "H5-s2026092703"}
+{"at": 1791708913.158655, "status": "RUNNING", "job_kind": "train", "identifier": "H6-s2026092703", "pid": 3999015, "gpu": 2, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H6-s2026092703.log", "row_id": "H6-s2026092703"}
+{"at": 1791708913.7089999, "status": "ANALYZED", "views": ["clean"], "row_id": "H3-s2026092701"}
+{"at": 1791708914.4066122, "status": "ANALYZED", "views": ["clean"], "row_id": "H1-s2026092701"}
+{"at": 1791708915.458123, "status": "ANALYZED", "views": ["clean"], "row_id": "H6-s2026092701"}
+{"at": 1791708923.813274, "status": "RUNNING", "job_kind": "train", "identifier": "H7-s2026092703", "pid": 3999208, "gpu": 6, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H7-s2026092703.log", "row_id": "H7-s2026092703"}
+{"at": 1791708924.147469, "status": "RUNNING", "job_kind": "train", "identifier": "H8-s2026092703", "pid": 3999213, "gpu": 3, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H8-s2026092703.log", "row_id": "H8-s2026092703"}
+{"at": 1791708924.4383597, "status": "RUNNING", "job_kind": "train", "identifier": "H9-s2026092703", "pid": 3999218, "gpu": 1, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H9-s2026092703.log", "row_id": "H9-s2026092703"}
+{"at": 1791708927.021405, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H6-s2026092702"}
+{"at": 1791708931.9635415, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H0-s2026092703"}
+{"at": 1791708932.6459255, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H6-s2026092702"}
+{"at": 1791708936.3359551, "status": "ANALYZED", "views": ["clean"], "row_id": "H6-s2026092702"}
+{"at": 1791708937.3305793, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H0-s2026092703"}
+{"at": 1791708940.8861165, "status": "ANALYZED", "views": ["clean"], "row_id": "H0-s2026092703"}
+{"at": 1791708940.903452, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H4-s2026092701"}
+{"at": 1791708945.3373115, "status": "RUNNING", "job_kind": "train", "identifier": "H10-s2026092703", "pid": 3999516, "gpu": 5, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/logs/train-H10-s2026092703.log", "row_id": "H10-s2026092703"}
+{"at": 1791708946.2762856, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H4-s2026092701"}
+{"at": 1791708949.0003874, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H4-s2026092702"}
+{"at": 1791708949.860468, "status": "ANALYZED", "views": ["clean"], "row_id": "H4-s2026092701"}
+{"at": 1791708954.4554691, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H4-s2026092702"}
+{"at": 1791708958.162438, "status": "ANALYZED", "views": ["clean"], "row_id": "H4-s2026092702"}
+{"at": 1791708962.423652, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H1-s2026092702"}
+{"at": 1791708968.0744703, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H1-s2026092702"}
+{"at": 1791708971.67496, "status": "ANALYZED", "views": ["clean"], "row_id": "H1-s2026092702"}
+{"at": 1791708981.1596053, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H1-s2026092703"}
+{"at": 1791708986.5612564, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H1-s2026092703"}
+{"at": 1791708990.123658, "status": "ANALYZED", "views": ["clean"], "row_id": "H1-s2026092703"}
+{"at": 1791709006.9565647, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H8-s2026092701"}
+{"at": 1791709012.3794932, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H8-s2026092701"}
+{"at": 1791709016.201348, "status": "ANALYZED", "views": ["clean"], "row_id": "H8-s2026092701"}
+{"at": 1791709032.227106, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H10-s2026092701"}
+{"at": 1791709037.5170093, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H10-s2026092701"}
+{"at": 1791709041.3092525, "status": "ANALYZED", "views": ["clean"], "row_id": "H10-s2026092701"}
+{"at": 1791709054.375836, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H8-s2026092702"}
+{"at": 1791709059.7036374, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H10-s2026092702"}
+{"at": 1791709059.7543693, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H8-s2026092702"}
+{"at": 1791709063.5579157, "status": "ANALYZED", "views": ["clean"], "row_id": "H8-s2026092702"}
+{"at": 1791709064.8746789, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H10-s2026092702"}
+{"at": 1791709068.495577, "status": "ANALYZED", "views": ["clean"], "row_id": "H10-s2026092702"}
+{"at": 1791709221.1528473, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H2-s2026092703"}
+{"at": 1791709226.244018, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H2-s2026092703"}
+{"at": 1791709229.9877155, "status": "ANALYZED", "views": ["clean"], "row_id": "H2-s2026092703"}
+{"at": 1791709230.005905, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H3-s2026092703"}
+{"at": 1791709235.3401124, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H3-s2026092703"}
+{"at": 1791709239.1022527, "status": "ANALYZED", "views": ["clean"], "row_id": "H3-s2026092703"}
+{"at": 1791709254.6871486, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H6-s2026092703"}
+{"at": 1791709259.075502, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H7-s2026092701"}
+{"at": 1791709259.3890252, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H6-s2026092703"}
+{"at": 1791709262.9815714, "status": "ANALYZED", "views": ["clean"], "row_id": "H6-s2026092703"}
+{"at": 1791709264.124607, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H7-s2026092701"}
+{"at": 1791709267.8654335, "status": "ANALYZED", "views": ["clean"], "row_id": "H7-s2026092701"}
+{"at": 1791709269.8381333, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H7-s2026092702"}
+{"at": 1791709273.6549895, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H5-s2026092701"}
+{"at": 1791709274.8706088, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H7-s2026092702"}
+{"at": 1791709275.8730955, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H4-s2026092703"}
+{"at": 1791709278.639444, "status": "ANALYZED", "views": ["clean"], "row_id": "H7-s2026092702"}
+{"at": 1791709278.7617464, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H5-s2026092701"}
+{"at": 1791709281.1030948, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H4-s2026092703"}
+{"at": 1791709282.481909, "status": "ANALYZED", "views": ["clean"], "row_id": "H5-s2026092701"}
+{"at": 1791709284.6985395, "status": "ANALYZED", "views": ["clean"], "row_id": "H4-s2026092703"}
+{"at": 1791709286.5815513, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H5-s2026092702"}
+{"at": 1791709291.442757, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H5-s2026092702"}
+{"at": 1791709294.90388, "status": "ANALYZED", "views": ["clean"], "row_id": "H5-s2026092702"}
+{"at": 1791709373.2957878, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H8-s2026092703"}
+{"at": 1791709378.0316782, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H8-s2026092703"}
+{"at": 1791709381.4793906, "status": "ANALYZED", "views": ["clean"], "row_id": "H8-s2026092703"}
+{"at": 1791709400.595532, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H10-s2026092703"}
+{"at": 1791709405.5082378, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H10-s2026092703"}
+{"at": 1791709409.1236694, "status": "ANALYZED", "views": ["clean"], "row_id": "H10-s2026092703"}
+{"at": 1791709512.850157, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H9-s2026092701"}
+{"at": 1791709513.5146468, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H9-s2026092702"}
+{"at": 1791709517.8231082, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H9-s2026092701"}
+{"at": 1791709518.2971003, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H9-s2026092702"}
+{"at": 1791709521.401317, "status": "ANALYZED", "views": ["clean"], "row_id": "H9-s2026092701"}
+{"at": 1791709521.8753233, "status": "ANALYZED", "views": ["clean"], "row_id": "H9-s2026092702"}
+{"at": 1791709544.5951765, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H7-s2026092703"}
+{"at": 1791709549.3638563, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H7-s2026092703"}
+{"at": 1791709550.9303594, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H5-s2026092703"}
+{"at": 1791709552.7644045, "status": "ANALYZED", "views": ["clean"], "row_id": "H7-s2026092703"}
+{"at": 1791709555.7402353, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H5-s2026092703"}
+{"at": 1791709559.1114025, "status": "ANALYZED", "views": ["clean"], "row_id": "H5-s2026092703"}
+{"at": 1791709823.6870086, "status": "SOURCE_FROZEN", "target_access": false, "row_id": "H9-s2026092703"}
+{"at": 1791709828.543168, "status": "PREDICTIONS_COMPLETE", "views": ["clean"], "row_id": "H9-s2026092703"}
+{"at": 1791709831.8904293, "status": "ANALYZED", "views": ["clean"], "row_id": "H9-s2026092703"}
+{"at": 1791709848.7651393, "status": "ANALYZED", "trained_models": 33, "tested_models": 33, "views": ["clean"]}

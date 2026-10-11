@@ -1,0 +1,362 @@
+{
+  "comparisons": [
+    {
+      "treatment": "H0",
+      "control": "P0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        0.008047619047619081,
+        0.0008214285714285285,
+        0.0019285714285713906
+      ],
+      "mean_difference": 0.0035992063492063333,
+      "sd_difference": 0.003892007576827215,
+      "positive_seeds": 3,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H1",
+      "control": "H0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        -0.006000000000000005,
+        0.00038690476190483825,
+        -0.0003214285714285836
+      ],
+      "mean_difference": -0.0019781746031745837,
+      "sd_difference": 0.0035009632488345655,
+      "positive_seeds": 1,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H2",
+      "control": "H0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        4.761904761896307e-05,
+        -0.00019047619047618536,
+        -0.0002738095238095095
+      ],
+      "mean_difference": -0.0001388888888889106,
+      "sd_difference": 0.00016680832981727715,
+      "positive_seeds": 1,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H3",
+      "control": "H0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        -0.013702380952380966,
+        -0.0035476190476190217,
+        -0.012714285714285678
+      ],
+      "mean_difference": -0.009988095238095221,
+      "sd_difference": 0.005599453832290678,
+      "positive_seeds": 0,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H4",
+      "control": "H0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        -0.005880952380952431,
+        0.0004642857142858059,
+        -0.00023809523809514843
+      ],
+      "mean_difference": -0.0018849206349205911,
+      "sd_difference": 0.0034784388793016904,
+      "positive_seeds": 1,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H5",
+      "control": "H0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        -0.002791666666666748,
+        -0.007517857142857132,
+        -0.0022202380952380807
+      ],
+      "mean_difference": -0.00417658730158732,
+      "sd_difference": 0.0029076959550812125,
+      "positive_seeds": 0,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H6",
+      "control": "H0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        -0.001375000000000015,
+        -0.0005654761904760885,
+        -0.0009107142857142092
+      ],
+      "mean_difference": -0.000950396825396771,
+      "sd_difference": 0.00040621820184880467,
+      "positive_seeds": 0,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H7",
+      "control": "H0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        -0.002863095238095248,
+        -0.008327380952380947,
+        -0.0024047619047619095
+      ],
+      "mean_difference": -0.004531746031746035,
+      "sd_difference": 0.0032950949453951265,
+      "positive_seeds": 0,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H8",
+      "control": "H0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        -0.006624999999999992,
+        0.0030000000000000027,
+        -0.001327380952380941
+      ],
+      "mean_difference": -0.0016507936507936434,
+      "sd_difference": 0.004820643430095294,
+      "positive_seeds": 1,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H9",
+      "control": "H0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        -0.004720238095238138,
+        -0.0002202380952380789,
+        -0.002339285714285655
+      ],
+      "mean_difference": -0.0024265873015872907,
+      "sd_difference": 0.0022512699028235535,
+      "positive_seeds": 0,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H10",
+      "control": "H0",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        -0.005833333333333357,
+        0.0033035714285715168,
+        -0.004071428571428504
+      ],
+      "mean_difference": -0.002200396825396781,
+      "sd_difference": 0.004847301001900323,
+      "positive_seeds": 1,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H4",
+      "control": "H1",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        0.00011904761904757422,
+        7.738095238096765e-05,
+        8.333333333343518e-05
+      ],
+      "mean_difference": 9.325396825399235e-05,
+      "sd_difference": 2.2535350578519062e-05,
+      "positive_seeds": 3,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H4",
+      "control": "H2",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        -0.005928571428571394,
+        0.0006547619047619913,
+        3.571428571436108e-05
+      ],
+      "mean_difference": -0.0017460317460316805,
+      "sd_difference": 0.0036353863117523965,
+      "positive_seeds": 2,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H7",
+      "control": "H5",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        -7.142857142850012e-05,
+        -0.0008095238095238155,
+        -0.00018452380952382885
+      ],
+      "mean_difference": -0.00035515873015871485,
+      "sd_difference": 0.00039753408939335064,
+      "positive_seeds": 0,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H8",
+      "control": "H4",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        -0.0007440476190475609,
+        0.0025357142857141968,
+        -0.0010892857142857926
+      ],
+      "mean_difference": 0.00023412698412694777,
+      "sd_difference": 0.00200069373361384,
+      "positive_seeds": 1,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H9",
+      "control": "H8",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        0.0019047619047618536,
+        -0.0032202380952380816,
+        -0.001011904761904714
+      ],
+      "mean_difference": -0.0007757936507936473,
+      "sd_difference": 0.0025706453649993054,
+      "positive_seeds": 1,
+      "complete_three_seeds": true
+    },
+    {
+      "treatment": "H10",
+      "control": "H8",
+      "metric": "accuracy",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "differences": [
+        0.000791666666666635,
+        0.0003035714285715141,
+        -0.0027440476190475627
+      ],
+      "mean_difference": -0.0005496031746031379,
+      "sd_difference": 0.0019160503790812842,
+      "positive_seeds": 2,
+      "complete_three_seeds": true
+    }
+  ],
+  "inferential_significance_claim": false
+}

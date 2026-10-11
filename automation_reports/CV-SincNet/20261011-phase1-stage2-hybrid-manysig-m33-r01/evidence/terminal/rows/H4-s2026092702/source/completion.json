@@ -1,0 +1,286 @@
+{
+  "status": "SOURCE_TRAINED",
+  "epoch": 40,
+  "optimizer_steps": 8880,
+  "logged_steps": 8880,
+  "config": {
+    "schema": "stage2_hybrid_v1",
+    "run_id": "20261011-phase1-stage2-hybrid-manysig-m33-r01",
+    "arm": "H4",
+    "model_seed": 2026092702,
+    "row_id": "H4-s2026092702",
+    "method": "cvs_stage2_hybrid",
+    "variant": "reference_response",
+    "method_name": "CE + cross-RX contrastive + cross-RX feature mix",
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+    "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/prediction/predictions.npz",
+    "checkpoint_sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth"
+    ],
+    "parent_contract": {
+      "schema": "stage2_decouple_v1",
+      "run_id": "20261011-phase1-stage2-decouple-manysig-m12-r01",
+      "stage": "stage2_decouple",
+      "arm": "C0",
+      "model_seed": 2026092702,
+      "row_id": "C0-s2026092702",
+      "method": "cvs_stage2_decouple",
+      "variant": "reference_response",
+      "features": [],
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/C0-s2026092702/source",
+      "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+      "parent_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/prediction/predictions.npz",
+      "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-decouple-manysig-m12-r01/prepared/s2026092702",
+      "model_initialization": "strict_matched_pure_CE_parent_fresh_optimizer",
+      "checkpoint_sources": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth"
+      ],
+      "epochs": 40,
+      "steps_per_epoch": 222,
+      "batch_size": 128,
+      "updates": 8880,
+      "label_smoothing": 0.0,
+      "optimizer": {
+        "name": "AdamW",
+        "weight_decay": 0.0001,
+        "encoder_peak_lr": 3e-05,
+        "fusion_head_peak_lr": 0.0001,
+        "min_lr": 1e-06,
+        "warmup_steps": 444
+      },
+      "losses": {
+        "keep": 0.1,
+        "aug_ce": 0.25,
+        "drop": 0.1,
+        "receiver": 0.1,
+        "delta_keep": 0.5,
+        "delta_drop": 0.5,
+        "huber_delta": 1.0
+      },
+      "schedule": {
+        "action_every": 4,
+        "receiver_every": 8,
+        "relation_batch": 32,
+        "action_batch": 32,
+        "action_order": [
+          "linear",
+          "linear",
+          "temporal",
+          "temporal"
+        ]
+      },
+      "enabled": {
+        "keep": false,
+        "actions": false,
+        "receiver": false
+      },
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "target_access": false,
+      "test_views": [
+        "clean"
+      ],
+      "checkpoint_selection": "final_only",
+      "sampling": "shared seed-private source-L stream; 96 ordinary + 2x2x8 relation slots every8; no difficulty sampling",
+      "auxiliary": {
+        "action_passes": 2,
+        "action_fit_batch": 128,
+        "action_fit_lr": 0.0002,
+        "action_fit_wd": 0.0001,
+        "receiver_fit_steps": 200,
+        "receiver_fit_lr": 0.002,
+        "receiver_fit_wd": 0.0,
+        "fractional_delay_samples": 0.25
+      },
+      "evaluation": {
+        "primary_arm": "C3",
+        "goal_three_seed_mean": 0.84,
+        "truth_last": true,
+        "feedback_to_training": false
+      },
+      "concurrency": {
+        "max_processes_per_gpu": 4,
+        "includes_existing": true
+      },
+      "launch_owner": "codex/root/stage2-decouple-20261011"
+    },
+    "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092702",
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H4-s2026092702/source",
+    "epochs": 40,
+    "steps_per_epoch": 222,
+    "updates": 8880,
+    "batch_size": 128,
+    "label_smoothing": 0.0,
+    "optimizer": {
+      "name": "AdamW",
+      "weight_decay": 0.0001,
+      "encoder_peak_lr": 3e-05,
+      "fusion_head_peak_lr": 0.0001,
+      "min_lr": 1e-06,
+      "warmup_steps": 444
+    },
+    "enabled": {
+      "contrastive": true,
+      "cross_rx_mix": true,
+      "manifold_mix": false,
+      "sam": false,
+      "averaging": false,
+      "actions": false,
+      "conditional_actions": false
+    },
+    "losses": {
+      "contrastive": 0.05,
+      "cross_rx_mix": 0.25,
+      "manifold_mix": 0.25,
+      "finite_lt": 1.0,
+      "keep": 0.1,
+      "ramp_steps": 444,
+      "margin_required": 4.553876891600541,
+      "temperature": 0.1
+    },
+    "mixing": {
+      "beta": 0.4,
+      "cross_rx_lambda": "Uniform[.25,.75]",
+      "normalized_joint": true,
+      "head_scale": 30.0
+    },
+    "sam": {
+      "rho": 0.02,
+      "adaptive": false,
+      "same_batch_same_global_RNG": true,
+      "base_optimizer": "AdamW",
+      "temporary_perturbation_is_not_update": true
+    },
+    "averaging": {
+      "start_epoch": 31,
+      "cycle_epochs": 2,
+      "cycle_peak_fraction": 0.5,
+      "snapshot_epochs": [
+        32,
+        34,
+        36,
+        38,
+        40
+      ],
+      "buffers": "fixed final buffers; BatchNorm architecture forbidden",
+      "selection": "fixed five-snapshot mean; no V choice"
+    },
+    "checkpoint_selection": "final_only",
+    "action": {
+      "policy": "coverage",
+      "payload": null,
+      "fit": "fresh original E200, same-scale tanh coordinates, abs noise, first full pass raw margin then full pass finite risk",
+      "every_steps": 4,
+      "batch": 32,
+      "order": [
+        "linear",
+        "linear",
+        "temporal",
+        "temporal"
+      ],
+      "coverage_fraction": 0.5
+    },
+    "sampling": "Same ordinary permutation and relation replacement streams as B0; no target/sample selection",
+    "target_access": false,
+    "unlabeled": false,
+    "teacher": false,
+    "satellite": false,
+    "test_views": [
+      "clean"
+    ],
+    "numerical_policy": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "concurrency": {
+      "max_processes_per_gpu": 3,
+      "includes_existing": true,
+      "gpu_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    "evaluation": {
+      "primary_arm": "H9",
+      "goal_three_seed_mean": 0.84,
+      "all_predeclared_arms_reported": true,
+      "truth_last": true,
+      "feedback_to_training": false
+    },
+    "launch_owner": "codex/root/stage2-hybrid-20261011"
+  },
+  "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-hybrid-manysig-m33-r01/H4-s2026092702/source/final_ssdg.pth",
+  "checkpoint_selection": "final_only",
+  "target_access": false,
+  "target_evaluated": false,
+  "final_source_metrics": {
+    "source_val_count": 27000,
+    "source_val_accuracy": 0.9856296296296296,
+    "source_val_rx_accuracy": {
+      "1": 0.9966666666666667,
+      "3": 0.9618518518518518,
+      "4": 0.9874074074074074,
+      "6": 0.9974074074074074,
+      "8": 0.9848148148148148
+    },
+    "source_val_worst_rx": 0.9618518518518518
+  },
+  "mechanism_execution": {
+    "identity_updates": 8880,
+    "main_clean_packets": 1136640,
+    "sam_extra_clean_packets": 0,
+    "action_steps": 0,
+    "contrastive_steps": 8880,
+    "cross_rx_mix_steps": 1110,
+    "manifold_mix_steps": 0,
+    "relation_batches": 1110,
+    "teacher_calls": 0,
+    "unlabeled_packets": 0,
+    "satellite_calls": 0,
+    "auxiliary_optimizer_steps": 0
+  },
+  "parent_provenance": {
+    "status": "VERIFIED",
+    "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+    "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+    "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+    "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+    "epoch": 200,
+    "optimizer_steps": 44400,
+    "source_roles": "EXACT_MATCH",
+    "target_training_or_selection": false,
+    "ancestors": [],
+    "seed": 2026092702
+  },
+  "averaging": null,
+  "elapsed_seconds": 370.2627055029152,
+  "resources": {
+    "identity_training_and_epoch_validation_seconds": 360.7111553750001,
+    "final_source_diagnostics_seconds": 9.551551014999859,
+    "peak_cuda_memory_bytes": 208824832,
+    "trainable_parameters": 177025,
+    "total_parameters": 844754,
+    "main_identity_packets": 1136640,
+    "extra_sam_packets": 0,
+    "parent_training_epochs": 200,
+    "incremental_epochs": 40
+  }
+}
