@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "fixture_only": true,
+  "target_access": false,
+  "real_training": false,
+  "policies": {
+    "DELAY": {
+      "after_identity_updates": 444,
+      "ready_events": [
+        444
+      ],
+      "pairs": 12,
+      "fixed_coefficients": {
+        "time_down": 0.0011359632973531578,
+        "t2.pool": 25.58024758538812
+      },
+      "state_RNG_modes_gradients_preserved": true
+    },
+    "CAP": {
+      "after_identity_updates": 0,
+      "ready_events": [
+        0
+      ],
+      "pairs": 12,
+      "fixed_coefficients": {
+        "time_down": 0.0011359562697725626,
+        "t2.pool": 25.580853905754612
+      },
+      "state_RNG_modes_gradients_preserved": true
+    },
+    "DELAYCAP": {
+      "after_identity_updates": 444,
+      "ready_events": [
+        444
+      ],
+      "pairs": 12,
+      "fixed_coefficients": {
+        "time_down": 0.0011359632973531578,
+        "t2.pool": 25.58024758538812
+      },
+      "state_RNG_modes_gradients_preserved": true
+    }
+  },
+  "first_auxiliary_step": 448,
+  "initial_recipe_exact": true,
+  "unique_completion_file_and_event": true,
+  "forbidden_roles_rejected": true,
+  "exception_state_and_RNG_restored": true,
+  "source_loop_order_AST": true,
+  "full_training_budget_unchanged": {
+    "epochs": 20,
+    "steps_per_epoch": 222,
+    "updates": 4440
+  },
+  "evidence_capture": "Preserved stdout from completed calibration_checks run; no unchanged test rerun",
+  "command": "python -m experiments.cvs_scratch_calibrated_style.calibration_checks"
+}

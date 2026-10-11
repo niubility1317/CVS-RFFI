@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "synthetic_only": true,
+  "complete_comparisons": 36,
+  "missing_one_seed_affected_comparisons": 3,
+  "complete_mean": 0.025,
+  "missing_complete_mean": null,
+  "run_and_query_negatives_rejected": true,
+  "target_artifacts_read": false,
+  "evidence_capture": "Preserved stdout from completed reference_report --self-check run; no unchanged test rerun"
+}

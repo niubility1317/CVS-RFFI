@@ -1,0 +1,258 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "target_access": false,
+  "GPU_used": false,
+  "toy": {
+    "complex_norms_and_Hz_covered": true,
+    "complete_disjoint_groups": true,
+    "detached_scalar_gradient_identity": true,
+    "joint_layer_cancellation_measured": true,
+    "zero_cases": true,
+    "nonfinite_rejected": true,
+    "disabled_no_autograd": true,
+    "parameters_grads_RNG_unchanged": true,
+    "detail": {
+      "enabled": true,
+      "applied": true,
+      "reason": null,
+      "scalar": 0.009999999999999658,
+      "scalar_detached": true,
+      "rho": 0.2,
+      "eps": 1e-12,
+      "groups": {
+        "shallow": {
+          "norm_id": 1.5471857536075544,
+          "raw_R": 15.471857536075543,
+          "capped_R": 0.15471857536075015,
+          "norm_bound": 0.3094371507215109,
+          "scalar_bound": 0.01999999999999871,
+          "regularizer_zero": false,
+          "identity_zero": false,
+          "parameter_tensors": 1,
+          "parameter_scalars": 2,
+          "real_coordinates": 2,
+          "parameter_names_sample": [
+            "time_fuse.weight"
+          ],
+          "parameter_names_truncated": false
+        },
+        "middle": {
+          "norm_id": 1.4549823001893163,
+          "raw_R": 29.099646003786326,
+          "capped_R": 0.29099646003785334,
+          "norm_bound": 0.2909964600378633,
+          "scalar_bound": 0.009999999999999658,
+          "regularizer_zero": false,
+          "identity_zero": false,
+          "parameter_tensors": 1,
+          "parameter_scalars": 2,
+          "real_coordinates": 2,
+          "parameter_names_sample": [
+            "t2.weight"
+          ],
+          "parameter_names_truncated": false
+        },
+        "rest": {
+          "norm_id": 8.246211251235321,
+          "raw_R": 124.09673645990857,
+          "capped_R": 1.2409673645990433,
+          "norm_bound": 1.6492422502470643,
+          "scalar_bound": 0.013289972784899667,
+          "regularizer_zero": false,
+          "identity_zero": false,
+          "parameter_tensors": 3,
+          "parameter_scalars": 6,
+          "real_coordinates": 8,
+          "parameter_names_sample": [
+            "low_hz_",
+            "complex_filter",
+            "unused"
+          ],
+          "parameter_names_truncated": false
+        }
+      },
+      "gradient_evaluations": 2,
+      "seconds": 0.08400829997844994,
+      "identity_weighted_loss": 18.12768931250759,
+      "raw_weighted_fishr": 186.5693268597364,
+      "effective_weighted_fishr": 1.8656932685973004,
+      "all_regularizer_groups_zero": false,
+      "zero_identity_positive_regularizer_groups": [],
+      "active_bound_groups": [
+        "middle"
+      ],
+      "complete_disjoint_parameter_coverage": true,
+      "parameter_tensors": 5,
+      "parameter_scalars": 10,
+      "gradient_definition": "actual weighted non-Fishr objective versus joint weighted Fishr; no layerwise clipping",
+      "scope": "current loss gradient; not an AdamW parameter-displacement bound"
+    }
+  },
+  "native": {
+    "raw_disabled_loss_and_gradients_exact": true,
+    "actual_native_backward_finite": true,
+    "complete_identity_group_bound": true,
+    "no_warmup_or_nonaux_cap": true,
+    "audit_KL_not_double_counted": true,
+    "nonzero_JOINT_KL_and_style_in_identity": true,
+    "actual_cap": {
+      "enabled": true,
+      "applied": true,
+      "reason": null,
+      "scalar": 1.0,
+      "scalar_detached": true,
+      "rho": 0.2,
+      "eps": 1e-12,
+      "groups": {
+        "shallow": {
+          "norm_id": 0.7536944807832379,
+          "raw_R": 0.001757930661851288,
+          "capped_R": 0.001757930661851288,
+          "norm_bound": 0.1507388961566476,
+          "scalar_bound": 85.74791904030822,
+          "regularizer_zero": false,
+          "identity_zero": false,
+          "parameter_tensors": 3,
+          "parameter_scalars": 4896,
+          "real_coordinates": 4896,
+          "parameter_names_sample": [
+            "id_backbone.encoder.core.id_backbone.time_fuse.0.weight",
+            "id_backbone.encoder.core.id_backbone.time_fuse.1.weight",
+            "id_backbone.encoder.core.id_backbone.time_fuse.1.bias"
+          ],
+          "parameter_names_truncated": false
+        },
+        "middle": {
+          "norm_id": 2.401532318345077,
+          "raw_R": 0.0028479776274762192,
+          "capped_R": 0.0028479776274762192,
+          "norm_bound": 0.4803064636690154,
+          "scalar_bound": 168.64825722876145,
+          "regularizer_zero": false,
+          "identity_zero": false,
+          "parameter_tensors": 4,
+          "parameter_scalars": 7464,
+          "real_coordinates": 7464,
+          "parameter_names_sample": [
+            "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+            "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "id_backbone.encoder.core.id_backbone.t2.norm.weight"
+          ],
+          "parameter_names_truncated": true
+        },
+        "rest": {
+          "norm_id": 28.768849879139132,
+          "raw_R": 0.015612388670938348,
+          "capped_R": 0.015612388670938348,
+          "norm_bound": 5.753769975827827,
+          "scalar_bound": 368.53873527819815,
+          "regularizer_zero": false,
+          "identity_zero": false,
+          "parameter_tensors": 60,
+          "parameter_scalars": 164665,
+          "real_coordinates": 164665,
+          "parameter_names_sample": [
+            "id_backbone.encoder.response_gain",
+            "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+            "id_backbone.encoder.core.id_backbone.sinc.band_hz_"
+          ],
+          "parameter_names_truncated": true
+        }
+      },
+      "gradient_evaluations": 2,
+      "seconds": 0.2615001000231132,
+      "identity_weighted_loss": 3.257065534591675,
+      "raw_weighted_fishr": 0.0005506473826244473,
+      "effective_weighted_fishr": 0.0005506473826244473,
+      "all_regularizer_groups_zero": false,
+      "zero_identity_positive_regularizer_groups": [],
+      "active_bound_groups": [],
+      "complete_disjoint_parameter_coverage": true,
+      "parameter_tensors": 67,
+      "parameter_scalars": 177025,
+      "gradient_definition": "actual weighted non-Fishr objective versus joint weighted Fishr; no layerwise clipping",
+      "scope": "current loss gradient; not an AdamW parameter-displacement bound"
+    },
+    "joint_cap": {
+      "enabled": true,
+      "applied": true,
+      "reason": null,
+      "scalar": 0.983386157503538,
+      "scalar_detached": true,
+      "rho": 0.2,
+      "eps": 1e-12,
+      "groups": {
+        "shallow": {
+          "norm_id": 1.5236152464983475,
+          "raw_R": 0.30987120061997603,
+          "capped_R": 0.30472304929868615,
+          "norm_bound": 0.30472304929966954,
+          "scalar_bound": 0.983386157503538,
+          "regularizer_zero": false,
+          "identity_zero": false,
+          "parameter_tensors": 3,
+          "parameter_scalars": 4896,
+          "real_coordinates": 4896,
+          "parameter_names_sample": [
+            "id_backbone.encoder.core.id_backbone.time_fuse.0.weight",
+            "id_backbone.encoder.core.id_backbone.time_fuse.1.weight",
+            "id_backbone.encoder.core.id_backbone.time_fuse.1.bias"
+          ],
+          "parameter_names_truncated": false
+        },
+        "middle": {
+          "norm_id": 4.646733597786781,
+          "raw_R": 0.3075065900742771,
+          "capped_R": 0.30239772402015896,
+          "norm_bound": 0.9293467195573563,
+          "scalar_bound": 3.022200985448324,
+          "regularizer_zero": false,
+          "identity_zero": false,
+          "parameter_tensors": 4,
+          "parameter_scalars": 7464,
+          "real_coordinates": 7464,
+          "parameter_names_sample": [
+            "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+            "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "id_backbone.encoder.core.id_backbone.t2.norm.weight"
+          ],
+          "parameter_names_truncated": true
+        },
+        "rest": {
+          "norm_id": 48.460583679643186,
+          "raw_R": 2.0241614293116235,
+          "capped_R": 1.9905323301376268,
+          "norm_bound": 9.692116735928638,
+          "scalar_bound": 4.788213329022845,
+          "regularizer_zero": false,
+          "identity_zero": false,
+          "parameter_tensors": 60,
+          "parameter_scalars": 164665,
+          "real_coordinates": 164665,
+          "parameter_names_sample": [
+            "id_backbone.encoder.response_gain",
+            "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+            "id_backbone.encoder.core.id_backbone.sinc.band_hz_"
+          ],
+          "parameter_names_truncated": true
+        }
+      },
+      "gradient_evaluations": 2,
+      "seconds": 0.336904499999946,
+      "identity_weighted_loss": 5.409613609313965,
+      "raw_weighted_fishr": 0.08866069465875626,
+      "effective_weighted_fishr": 0.08718769997358322,
+      "all_regularizer_groups_zero": false,
+      "zero_identity_positive_regularizer_groups": [],
+      "active_bound_groups": [
+        "shallow"
+      ],
+      "complete_disjoint_parameter_coverage": true,
+      "parameter_tensors": 67,
+      "parameter_scalars": 177025,
+      "gradient_definition": "actual weighted non-Fishr objective versus joint weighted Fishr; no layerwise clipping",
+      "scope": "current loss gradient; not an AdamW parameter-displacement bound"
+    }
+  }
+}

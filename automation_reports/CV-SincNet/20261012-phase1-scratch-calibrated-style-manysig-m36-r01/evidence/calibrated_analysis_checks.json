@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "synthetic_only": true,
+  "remote_access": false,
+  "target_access": false,
+  "GPU_used": false,
+  "complete_4440_step_policies": [
+    "DELAY",
+    "CAP",
+    "DELAYCAP"
+  ],
+  "total_positive_steps": 13320,
+  "absent_source_partial": true,
+  "closed_source_sentinel_ignored": true,
+  "rejected_cases": {
+    "wrong_calibration_time": "Calibration timing or state preservation differs",
+    "wrong_pending_status": "Initial calibration lifecycle differs",
+    "unrelated_initial_resolved": "Calibration changed unrelated resolved configuration",
+    "inconsistent_final_resolved": "Calibration-ready and final resolved evidence differ",
+    "cap_over_bound": "Actual joint auxiliary gradient exceeds group bound",
+    "actual_weighted_mismatch": "Effective Fishr differs from detached joint scaling",
+    "forged_cap_bound": "Joint cap scalar differs from measured group norms",
+    "effective_cap_metadata": "Joint cap raw/effective loss or parameter coverage differs",
+    "raw_budget_mismatch": "Joint cap raw/effective loss or parameter coverage differs",
+    "incomplete_parameter_coverage": "Joint cap raw/effective loss or parameter coverage differs"
+  },
+  "missed_cases": []
+}
