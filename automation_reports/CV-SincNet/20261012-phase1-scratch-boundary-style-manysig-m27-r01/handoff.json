@@ -5,7 +5,7 @@
   "execution_commit": "10fe7ffc480be323696dde6b2c24adaf481ff4b1",
   "dispatcher": 282727,
   "matrix": 27,
-  "launched": 21,
+  "launched": 27,
   "checked": [
     "CE-s2026092701",
     "SSL-s2026092701",
@@ -15,28 +15,29 @@
     "L_REPLAY-s2026092701",
     "RANDOM_STYLE-s2026092701"
   ],
-  "pending": 6,
-  "next": "Read existing dispatcher/workers, never republish. Auto clean each final scratch20 row. Collect all27 fixed results and source trajectory without target-driven adjustment.",
+  "pending": 0,
+  "next": "Continue existing live dispatcher; do not publish/restart. All27 final source logs and clean scores required. No target-driven design or adjustment. Collect completed row evidence; reports currently PARTIAL.",
   "collector": "python -m experiments.cvs_scratch_boundary_style.collect_results --output automation_reports/CV-SincNet/20261012-phase1-scratch-boundary-style-manysig-m27-r01",
   "budget": "random native student20; no heads; pretrained peer teacher ancestry retained; initial12pair calibration separate",
   "multilevel": "time_down/t2.pool; margin sensitivities without heads; fixed peer probabilities; independent AB Fishr fixed initial coefficients/denominator2; hard/random four-candidate L style with matched dropout; noEMA/noSat",
   "owner": "codex/root/scratch-boundary-style-20261012",
   "current_progress": {
-    "read_at": 1791751673.8696852,
-    "launched": 21,
-    "pending": 6,
-    "completed": 0,
-    "checked_epoch_rows": 17,
-    "GPU_processes": {
-      "0": 3,
-      "1": 3,
-      "2": 3,
-      "3": 3,
-      "4": 3,
-      "5": 3,
-      "6": 3,
-      "7": 3
-    },
-    "failure": null
-  }
+    "read_at": 1791752100.009335,
+    "launched": 27,
+    "scored_rows": 7,
+    "source_fully_audited_rows": 7,
+    "source_fully_audited_steps": 31080,
+    "failure": null,
+    "final_goal_status": "UNPROVEN"
+  },
+  "completed_rows": [
+    "CE-s2026092701",
+    "SSL-s2026092701",
+    "L_REPLAY-s2026092701",
+    "CE-s2026092702",
+    "SSL-s2026092702",
+    "CE-s2026092703",
+    "SSL-s2026092703"
+  ],
+  "source_fully_audited_steps": 31080
 }
