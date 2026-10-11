@@ -27,7 +27,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-11用户提交最新Pro设计报告并要求“按照报告，开始追求目标”；按报告先源审计，再B0–B3×三seed，每方案40epoch，4进程/GPU，自动clean。",
   "code": {
-    "commit": "5fb0acbbd685112e0cc5cfdc79f7b44d398c2a0e",
+    "commit": "24abe2a8a3824068db42949193c7a54da8f188a2",
     "commit_note": "preregistration baseline only; exact execution commit replaced from immutable release_commit.txt at launch",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -151,7 +151,8 @@
     "release_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_geometry_20261011_r01",
     "technical_failure_policy": "preserve failure and all artifacts; no automatic rerun; no intervention in unrelated healthy jobs",
     "launch_command": "python -m experiments.cvs_stage2_geometry.dispatch",
-    "stop_rule": "preserve failure and all artifacts; no automatic rerun; no intervention in unrelated healthy jobs"
+    "stop_rule": "preserve failure and all artifacts; no automatic rerun; no intervention in unrelated healthy jobs",
+    "release_commit": "24abe2a8a3824068db42949193c7a54da8f188a2"
   },
   "expected_artifacts": [
     "per-row artifacts listed in rows",
@@ -228,7 +229,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791696263.916075,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "B0-s2026092701",
+        "pid": 3871769,
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B0-s2026092701.log",
+        "row_id": "B0-s2026092701"
+      }
     },
     {
       "row_id": "B1-s2026092701",
@@ -281,7 +292,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791696264.2344198,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "B1-s2026092701",
+        "pid": 3871774,
+        "gpu": 6,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B1-s2026092701.log",
+        "row_id": "B1-s2026092701"
+      }
     },
     {
       "row_id": "B2-s2026092701",
@@ -334,7 +355,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791696264.5340466,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "B2-s2026092701",
+        "pid": 3871787,
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B2-s2026092701.log",
+        "row_id": "B2-s2026092701"
+      }
     },
     {
       "row_id": "B3-s2026092701",
@@ -387,7 +418,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791696264.8286254,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "B3-s2026092701",
+        "pid": 3871793,
+        "gpu": 6,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B3-s2026092701.log",
+        "row_id": "B3-s2026092701"
+      }
     },
     {
       "row_id": "B0-s2026092702",
@@ -440,7 +481,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791696265.1124454,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "B0-s2026092702",
+        "pid": 3871799,
+        "gpu": 1,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B0-s2026092702.log",
+        "row_id": "B0-s2026092702"
+      }
     },
     {
       "row_id": "B1-s2026092702",
@@ -493,7 +544,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791696265.3861554,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "B1-s2026092702",
+        "pid": 3871806,
+        "gpu": 5,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B1-s2026092702.log",
+        "row_id": "B1-s2026092702"
+      }
     },
     {
       "row_id": "B2-s2026092702",
@@ -546,7 +607,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791696265.9252665,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "B2-s2026092702",
+        "pid": 3871818,
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B2-s2026092702.log",
+        "row_id": "B2-s2026092702"
+      }
     },
     {
       "row_id": "B3-s2026092702",
@@ -599,7 +670,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791696266.8193781,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "B3-s2026092702",
+        "pid": 3871835,
+        "gpu": 6,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B3-s2026092702.log",
+        "row_id": "B3-s2026092702"
+      }
     },
     {
       "row_id": "B0-s2026092703",
@@ -652,7 +733,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791696268.215295,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "B0-s2026092703",
+        "pid": 3871859,
+        "gpu": 1,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B0-s2026092703.log",
+        "row_id": "B0-s2026092703"
+      }
     },
     {
       "row_id": "B1-s2026092703",
@@ -705,7 +796,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791696269.9844544,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "B1-s2026092703",
+        "pid": 3871889,
+        "gpu": 5,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B1-s2026092703.log",
+        "row_id": "B1-s2026092703"
+      }
     },
     {
       "row_id": "B2-s2026092703",
@@ -758,7 +859,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791696272.2443697,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "B2-s2026092703",
+        "pid": 3871993,
+        "gpu": 0,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B2-s2026092703.log",
+        "row_id": "B2-s2026092703"
+      }
     },
     {
       "row_id": "B3-s2026092703",
@@ -811,7 +922,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791696275.0998304,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "B3-s2026092703",
+        "pid": 3872372,
+        "gpu": 4,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B3-s2026092703.log",
+        "row_id": "B3-s2026092703"
+      }
     }
   ],
   "notes": [
@@ -821,7 +942,7 @@
     "单向有限margin=log95；weights keep=.1/LT=1/R=1；ramp444；无CE梯度比例校准。",
     "源读出只在L_s拟合，V只读；无target反馈；未达目标不得报告成功。"
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "test_completion_plan": {
     "views": [
       "clean"
@@ -900,5 +1021,7 @@
     "each_seed_must_be_reported": true,
     "scores_must_not_control_training": true
   },
-  "final_score_ref": "results/summary.json"
+  "final_score_ref": "results/summary.json",
+  "execution_commit": "24abe2a8a3824068db42949193c7a54da8f188a2",
+  "updated_at_unix": 1791696275.0998304
 }
