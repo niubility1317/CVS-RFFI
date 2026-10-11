@@ -4,7 +4,14 @@
   "execution_commit": "24ecee0baac40de45dac55695b47f9d1ca8f5749",
   "evidence": "evidence/launch_progress.json",
   "goal": "clean three-seed mean >=84%; not achieved",
-  "next": "Read existing18row train/test artifacts; never relaunch or change healthy runs. All rows freeze final40 and auto clean truth-last. Collect complete source trajectories and all three seed results per arm; goal84 not yet proved.",
+  "next": "Continue existing18row train/test queue; no restart. Capture full final source trajectories and collect every fixed clean row. E19 remains separate epoch-only exploration.",
   "source_V_role": "health and mechanism diagnostics only; no small accuracy optimization",
-  "no_target_feedback_to_mechanism": true
+  "no_target_feedback_to_mechanism": true,
+  "source_audit": "source_trajectory.md",
+  "source_evidence": {
+    "rows": 15,
+    "steps": 53155,
+    "execution_counts_valid": true,
+    "interpretation": "Learned action TV around0.20 and online L ranking around0.80 for active RANK seeds; no inference of target gain"
+  }
 }

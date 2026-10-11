@@ -1,0 +1,33 @@
+{
+  "run_id": "20261011-phase1-ce-epoch19-manysig-m3-r01",
+  "read_at": 1791728264.9121687,
+  "status": "PARTIAL",
+  "completed_rows": [],
+  "missing_rows": [
+    "E19-s2026092701",
+    "E19-s2026092702",
+    "E19-s2026092703"
+  ],
+  "summary": [],
+  "records": [],
+  "day_records": [],
+  "parent_records": [],
+  "resources": [],
+  "complete_arms_reaching_84": [],
+  "checks": {
+    "confusion_recount": true,
+    "source_config_budget": true,
+    "row_aggregate_agreement": false
+  },
+  "target_feedback_scope": "user-authorized epoch-budget search only",
+  "compression_decisions": [
+    {
+      "arm": "E19",
+      "paired_seed_count": 0,
+      "complete_three_seeds": false,
+      "mean_accuracy_difference": null,
+      "margin": 0.003,
+      "within_margin": null
+    }
+  ]
+}
