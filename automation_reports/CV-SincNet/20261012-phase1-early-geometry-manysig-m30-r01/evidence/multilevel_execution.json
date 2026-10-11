@@ -1,0 +1,43 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "arm": "MULTI",
+      "epochs": 5,
+      "auxiliary_steps": 166,
+      "auxiliary_L": 9960,
+      "weighted_fishr": 0.0,
+      "fishr_encoder_gradient_norm": null,
+      "source_step": 1110
+    },
+    {
+      "arm": "MIX_SM",
+      "epochs": 5,
+      "auxiliary_steps": 166,
+      "auxiliary_L": 9960,
+      "weighted_fishr": 0.0,
+      "fishr_encoder_gradient_norm": null,
+      "source_step": 1110
+    },
+    {
+      "arm": "FISHR_SM",
+      "epochs": 4,
+      "auxiliary_steps": 111,
+      "auxiliary_L": 6660,
+      "weighted_fishr": 1.207385821954131e-05,
+      "fishr_encoder_gradient_norm": 0.0001800668251235038,
+      "source_step": 888
+    },
+    {
+      "arm": "MIX_FISHR_SM",
+      "epochs": 4,
+      "auxiliary_steps": 111,
+      "auxiliary_L": 6660,
+      "weighted_fishr": 1.1971139912504015e-05,
+      "fishr_encoder_gradient_norm": 0.0001789470115909353,
+      "source_step": 888
+    }
+  ],
+  "all8GPUs_3processes": true,
+  "read_at": 1791736709.3328726
+}

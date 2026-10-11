@@ -261,7 +261,7 @@
     {
       "row_id": "CE-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -626,12 +626,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "CE"
+      "arm": "CE",
+      "pid": 109152,
+      "gpu": 0,
+      "live_epoch": 15
     },
     {
       "row_id": "SSL-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -996,12 +999,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "SSL"
+      "arm": "SSL",
+      "pid": 109240,
+      "gpu": 1,
+      "live_epoch": 8
     },
     {
       "row_id": "PHYS-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -1366,12 +1372,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "PHYS"
+      "arm": "PHYS",
+      "pid": 109327,
+      "gpu": 2,
+      "live_epoch": 6
     },
     {
       "row_id": "FEATURE-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -1736,12 +1745,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "FEATURE"
+      "arm": "FEATURE",
+      "pid": 109414,
+      "gpu": 3,
+      "live_epoch": 6
     },
     {
       "row_id": "MARGIN-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -2106,12 +2118,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "MARGIN"
+      "arm": "MARGIN",
+      "pid": 109556,
+      "gpu": 4,
+      "live_epoch": 5
     },
     {
       "row_id": "BOTH-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -2476,12 +2491,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "BOTH"
+      "arm": "BOTH",
+      "pid": 110131,
+      "gpu": 5,
+      "live_epoch": 5
     },
     {
       "row_id": "MULTI-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -2846,12 +2864,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "MULTI"
+      "arm": "MULTI",
+      "pid": 110218,
+      "gpu": 6,
+      "live_epoch": 5
     },
     {
       "row_id": "MIX_SM-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -3216,12 +3237,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "MIX_SM"
+      "arm": "MIX_SM",
+      "pid": 110307,
+      "gpu": 7,
+      "live_epoch": 5
     },
     {
       "row_id": "FISHR_SM-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -3586,12 +3610,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "FISHR_SM"
+      "arm": "FISHR_SM",
+      "pid": 110394,
+      "gpu": 7,
+      "live_epoch": 4
     },
     {
       "row_id": "MIX_FISHR_SM-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -3956,12 +3983,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "MIX_FISHR_SM"
+      "arm": "MIX_FISHR_SM",
+      "pid": 110481,
+      "gpu": 0,
+      "live_epoch": 4
     },
     {
       "row_id": "CE-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -4326,12 +4356,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "CE"
+      "arm": "CE",
+      "pid": 110565,
+      "gpu": 5,
+      "live_epoch": 10
     },
     {
       "row_id": "SSL-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -4696,12 +4729,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "SSL"
+      "arm": "SSL",
+      "pid": 110652,
+      "gpu": 1,
+      "live_epoch": 5
     },
     {
       "row_id": "PHYS-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -5066,12 +5102,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "PHYS"
+      "arm": "PHYS",
+      "pid": 110735,
+      "gpu": 2,
+      "live_epoch": 4
     },
     {
       "row_id": "FEATURE-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -5436,12 +5475,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "FEATURE"
+      "arm": "FEATURE",
+      "pid": 110831,
+      "gpu": 3,
+      "live_epoch": 4
     },
     {
       "row_id": "MARGIN-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -5806,12 +5848,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "MARGIN"
+      "arm": "MARGIN",
+      "pid": 110915,
+      "gpu": 4,
+      "live_epoch": 3
     },
     {
       "row_id": "BOTH-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -6176,12 +6221,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "BOTH"
+      "arm": "BOTH",
+      "pid": 111001,
+      "gpu": 6,
+      "live_epoch": 3
     },
     {
       "row_id": "MULTI-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -6546,12 +6594,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "MULTI"
+      "arm": "MULTI",
+      "pid": 111085,
+      "gpu": 6,
+      "live_epoch": 3
     },
     {
       "row_id": "MIX_SM-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -6916,12 +6967,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "MIX_SM"
+      "arm": "MIX_SM",
+      "pid": 111309,
+      "gpu": 3,
+      "live_epoch": 3
     },
     {
       "row_id": "FISHR_SM-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -7286,12 +7340,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "FISHR_SM"
+      "arm": "FISHR_SM",
+      "pid": 111395,
+      "gpu": 4,
+      "live_epoch": 3
     },
     {
       "row_id": "MIX_FISHR_SM-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -7656,12 +7713,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "MIX_FISHR_SM"
+      "arm": "MIX_FISHR_SM",
+      "pid": 111489,
+      "gpu": 5,
+      "live_epoch": 2
     },
     {
       "row_id": "CE-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -8026,12 +8086,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "CE"
+      "arm": "CE",
+      "pid": 111573,
+      "gpu": 1,
+      "live_epoch": 4
     },
     {
       "row_id": "SSL-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -8396,12 +8459,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "SSL"
+      "arm": "SSL",
+      "pid": 111658,
+      "gpu": 0,
+      "live_epoch": 3
     },
     {
       "row_id": "PHYS-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -8766,12 +8832,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "PHYS"
+      "arm": "PHYS",
+      "pid": 111745,
+      "gpu": 2,
+      "live_epoch": 2
     },
     {
       "row_id": "FEATURE-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -9136,12 +9205,15 @@
         "prediction/complete.json",
         "completion.json"
       ],
-      "arm": "FEATURE"
+      "arm": "FEATURE",
+      "pid": 112232,
+      "gpu": 7,
+      "live_epoch": 2
     },
     {
       "row_id": "MARGIN-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "QUEUED",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -9511,7 +9583,7 @@
     {
       "row_id": "BOTH-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "QUEUED",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -9881,7 +9953,7 @@
     {
       "row_id": "MULTI-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "QUEUED",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -10251,7 +10323,7 @@
     {
       "row_id": "MIX_SM-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "QUEUED",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -10621,7 +10693,7 @@
     {
       "row_id": "FISHR_SM-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "QUEUED",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -10991,7 +11063,7 @@
     {
       "row_id": "MIX_FISHR_SM-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "QUEUED",
       "config": {
         "schema": "early_geometry_v1",
         "run_id": "20261012-phase1-early-geometry-manysig-m30-r01",
@@ -11370,7 +11442,7 @@
     "AdamW2e-4/wd1e-4,epoch cosine1e-6; native identity retained. Explicit RX/day stream differs from historical native loop; no exact E20 replay claim.",
     "P0 is user-designated exposed-benchmark E20; never loaded for training. Scratch20 versus future E20+20 differs in total cost."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "independent_review": {
     "reviewer": "stage2_release_review",
     "status": "PASS",
@@ -11378,5 +11450,7 @@
     "evidence": "evidence/independent_review.md",
     "previous_registration_P1": "CLOSED: actual target RX/day/query permissions corrected"
   },
-  "registered_at": "2026-10-11T16:32:22+00:00"
+  "registered_at": "2026-10-11T16:32:22+00:00",
+  "execution_commit": "37f511081365621afc49e76032b503217e6eeb79",
+  "delivery_verdict": "VERIFIED"
 }

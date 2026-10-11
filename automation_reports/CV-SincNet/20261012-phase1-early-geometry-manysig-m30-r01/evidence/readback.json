@@ -1,0 +1,436 @@
+{
+  "status": "VERIFIED",
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 109047,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_early_geometry_20261012_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_early_geometry.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_early_geometry_20261012_r01/dispatcher.stdout.log",
+    "commit": "37f511081365621afc49e76032b503217e6eeb79",
+    "run_id": "20261012-phase1-early-geometry-manysig-m30-r01"
+  },
+  "process": {
+    "pid": 109047,
+    "start_ticks": 98431185,
+    "state": "R",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_early_geometry_20261012_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_early_geometry.dispatch"
+    ],
+    "gpu": null
+  },
+  "workers": [],
+  "queue": null,
+  "completion": null,
+  "failure": null,
+  "preflight": {
+    "status": "PASS",
+    "scratch_loads_no_checkpoint": true,
+    "identical_seed_initializations": true,
+    "ordinary_CE_exact": true,
+    "U_has_no_y": true,
+    "checkpoint_roundtrip": true,
+    "geometry": {
+      "status": "PASS",
+      "target_stopgrad": true,
+      "logit_shift_invariant": true,
+      "identity_view_zero": true,
+      "exact_energy_partition": true,
+      "KL_saturation_counterexample": true,
+      "rows": 3
+    },
+    "multilevel": {
+      "status": "PASS",
+      "device": "cpu",
+      "source_target_access": false,
+      "analytic_weight_and_bias_autograd_max_error": 2.220446049250313e-16,
+      "real_layer_paths": {
+        "time_down": "id_backbone.encoder.core.id_backbone.time_down",
+        "t2.pool": "id_backbone.encoder.core.id_backbone.t2.pool"
+      },
+      "actual_feature_shapes": {
+        "time_down": [
+          60,
+          48,
+          128
+        ],
+        "t2.pool": [
+          60,
+          96,
+          32
+        ]
+      },
+      "raw_aux_ce": 1.8262237310409546,
+      "raw_fishr": 0.00019399980374146253,
+      "gradient_scales": {
+        "shallow": {
+          "ce": 0.08097561152953821,
+          "fishr": 0.0004249810175775982,
+          "fishr_to_auxCE_gradient_ratio_at_equal_weights": 0.005248259439480417
+        },
+        "middle": {
+          "ce": 0.08967078501137975,
+          "fishr": 0.00026508855018114616,
+          "fishr_to_auxCE_gradient_ratio_at_equal_weights": 0.002956242104354332
+        }
+      },
+      "real_clean_Fishr_same_in_joint": true,
+      "detached_donor_statistics": true,
+      "exact_6TX_5RX_2PID_same_day": true,
+      "private_sampler_rng": true,
+      "native_CPU_CUDA_RNG_preserved": true,
+      "no_EMA": true,
+      "no_inference_change": true,
+      "no_eval_style": true,
+      "context_exception_cleanup": true,
+      "auxiliary_parameters": 876
+    },
+    "rows": [
+      {
+        "arm": "CE",
+        "forwards": 1,
+        "feature_gradient": false,
+        "margin_gradient": false,
+        "expected": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 0,
+          "weak_forwards": 0,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 0,
+          "auxiliary_L": 0,
+          "auxiliary_forwards": 0,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0
+        }
+      },
+      {
+        "arm": "SSL",
+        "forwards": 3,
+        "feature_gradient": false,
+        "margin_gradient": false,
+        "expected": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 0,
+          "auxiliary_L": 0,
+          "auxiliary_forwards": 0,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0
+        }
+      },
+      {
+        "arm": "PHYS",
+        "forwards": 4,
+        "feature_gradient": false,
+        "margin_gradient": false,
+        "expected": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 511488,
+          "physical_U": 511488,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 0,
+          "auxiliary_L": 0,
+          "auxiliary_forwards": 0,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0
+        }
+      },
+      {
+        "arm": "FEATURE",
+        "forwards": 4,
+        "feature_gradient": true,
+        "margin_gradient": false,
+        "expected": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 511488,
+          "physical_U": 511488,
+          "feature_U": 511488,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 0,
+          "auxiliary_L": 0,
+          "auxiliary_forwards": 0,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0
+        }
+      },
+      {
+        "arm": "MARGIN",
+        "forwards": 4,
+        "feature_gradient": false,
+        "margin_gradient": true,
+        "expected": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 511488,
+          "physical_U": 511488,
+          "feature_U": 0,
+          "margin_U": 511488,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 0,
+          "auxiliary_L": 0,
+          "auxiliary_forwards": 0,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0
+        }
+      },
+      {
+        "arm": "BOTH",
+        "forwards": 4,
+        "feature_gradient": true,
+        "margin_gradient": true,
+        "expected": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 511488,
+          "physical_U": 511488,
+          "feature_U": 511488,
+          "margin_U": 511488,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 0,
+          "auxiliary_L": 0,
+          "auxiliary_forwards": 0,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0
+        }
+      },
+      {
+        "arm": "MULTI",
+        "forwards": 5,
+        "feature_gradient": false,
+        "margin_gradient": false,
+        "expected": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 511488,
+          "physical_U": 511488,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 0,
+          "mixstyle_steps": 0
+        }
+      },
+      {
+        "arm": "MIX_SM",
+        "forwards": 6,
+        "feature_gradient": false,
+        "margin_gradient": false,
+        "expected": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 511488,
+          "physical_U": 511488,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 1998,
+          "fishr_steps": 0,
+          "mixstyle_steps": 999
+        }
+      },
+      {
+        "arm": "FISHR_SM",
+        "forwards": 5,
+        "feature_gradient": false,
+        "margin_gradient": false,
+        "expected": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 511488,
+          "physical_U": 511488,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 999,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0
+        }
+      },
+      {
+        "arm": "MIX_FISHR_SM",
+        "forwards": 6,
+        "feature_gradient": false,
+        "margin_gradient": false,
+        "expected": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 511488,
+          "physical_U": 511488,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 59940,
+          "auxiliary_forwards": 1998,
+          "fishr_steps": 999,
+          "mixstyle_steps": 999
+        }
+      }
+    ],
+    "matrix": 30,
+    "actual_source_evidence": [
+      {
+        "seed": 2026092701,
+        "L": 6300,
+        "U": 56700,
+        "V": 27000,
+        "real_source_backward": true,
+        "E20_reference": {
+          "status": "VERIFIED",
+          "seed": 2026092701,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+          "source_run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+          "execution_commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
+          "epoch": 20,
+          "optimizer_steps": 4440,
+          "scratch_only": true,
+          "ancestors": [],
+          "source_roles": "EXACT_MATCH",
+          "training_target_access": false,
+          "checkpoint_selection": "fixed final20; all original matrix rows evaluated",
+          "method": "pure CE, original gates/reference_response, cosine schedule",
+          "auxiliary_inheritance": false,
+          "smoke": {
+            "strict_load": true,
+            "finite_logits": true,
+            "shape": [
+              2,
+              6
+            ],
+            "target_access": false
+          },
+          "selection_context": "E20 now explicitly selected by user after target-informed epoch-budget exploration; exposed development benchmark, not a new blind confirmation"
+        },
+        "training_parent_loaded": false
+      },
+      {
+        "seed": 2026092702,
+        "L": 6300,
+        "U": 56700,
+        "V": 27000,
+        "real_source_backward": true,
+        "E20_reference": {
+          "status": "VERIFIED",
+          "seed": 2026092702,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092702/source/final_ssdg.pth",
+          "source_run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+          "execution_commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
+          "epoch": 20,
+          "optimizer_steps": 4440,
+          "scratch_only": true,
+          "ancestors": [],
+          "source_roles": "EXACT_MATCH",
+          "training_target_access": false,
+          "checkpoint_selection": "fixed final20; all original matrix rows evaluated",
+          "method": "pure CE, original gates/reference_response, cosine schedule",
+          "auxiliary_inheritance": false,
+          "smoke": {
+            "strict_load": true,
+            "finite_logits": true,
+            "shape": [
+              2,
+              6
+            ],
+            "target_access": false
+          },
+          "selection_context": "E20 now explicitly selected by user after target-informed epoch-budget exploration; exposed development benchmark, not a new blind confirmation"
+        },
+        "training_parent_loaded": false
+      },
+      {
+        "seed": 2026092703,
+        "L": 6300,
+        "U": 56700,
+        "V": 27000,
+        "real_source_backward": true,
+        "E20_reference": {
+          "status": "VERIFIED",
+          "seed": 2026092703,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092703/source/final_ssdg.pth",
+          "source_run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+          "execution_commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
+          "epoch": 20,
+          "optimizer_steps": 4440,
+          "scratch_only": true,
+          "ancestors": [],
+          "source_roles": "EXACT_MATCH",
+          "training_target_access": false,
+          "checkpoint_selection": "fixed final20; all original matrix rows evaluated",
+          "method": "pure CE, original gates/reference_response, cosine schedule",
+          "auxiliary_inheritance": false,
+          "smoke": {
+            "strict_load": true,
+            "finite_logits": true,
+            "shape": [
+              2,
+              6
+            ],
+            "target_access": false
+          },
+          "selection_context": "E20 now explicitly selected by user after target-informed epoch-budget exploration; exposed development benchmark, not a new blind confirmation"
+        },
+        "training_parent_loaded": false
+      }
+    ],
+    "target_access": false
+  },
+  "read_at": 1791736607.7335086
+}

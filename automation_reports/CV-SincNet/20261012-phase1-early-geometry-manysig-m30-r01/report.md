@@ -74,3 +74,6 @@ Fishr 的梯度对象是真实辅助线性读出的 weight 和 bias。对样本 
 来源：[MixStyle 官方实现](https://github.com/KaiyangZhou/mixstyle-release)、[Fishr 官方实现](https://github.com/alexrame/fishr)。实施以本报告写明的射频层位、源域配对与固定预算为准。
 
 Fishr 固定权重为 2.0，辅助 CE 权重为 0.1；两者都乘既定 ramp。本地原生网络 fixture 的未加权辅助 CE/Fishr 梯度范数分别为：浅层 0.080976/0.00042498，中层 0.089671/0.00026509，对应加权 Fishr/辅助 CE 比约 10.50%/5.91%。这是启动前数值尺度检查，不是正式数据上的普遍比例或性能保证；实际训练保存各损失梯度范数。推理和异常退出后 hooks、模式及 RNG 状态保持一致。
+
+
+发布状态 RUNNING / VERIFIED：执行提交 `37f511081365621afc49e76032b503217e6eeb79`，dispatcher PID 109047。读回已启动 24/30 行，24 行的实际配置、进程归属、首轮日志核实通过，待运行 6 行；每卡总进程不超过 3。固定十方案三种子，20 轮后逐行自动 clean 测试。当前无新的测试成绩，84% 目标仍待验证。
