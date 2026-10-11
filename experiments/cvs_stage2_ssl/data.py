@@ -9,10 +9,10 @@ def build():
  from experiments.cvs_phase1_stack.runtime import installed
  from experiments.cvs_stage2_decouple import design as parent
  from experiments.cvs_stage2_decouple.data import _preprocessing
- from cvsrffi.xuc_fusion.native import role_ids_from_native
- from cvsrffi.game_tracking.data import opaque_id
  expected=d.read(d.SOURCE);started=time.perf_counter();pc=d.parent_config(d.SEEDS[0])
  with installed(pc) as native:
+  from cvsrffi.xuc_fusion.native import role_ids_from_native
+  from cvsrffi.game_tracking.data import opaque_id
   args=parent.make_args(pc,'cpu')
   if not args.a1_source_screen_only or args.use_concat_sat_channel_aug:raise ValueError('Source-only cache required')
   context=native._build_ssdg_wisig_data(args,torch.device('cpu'))

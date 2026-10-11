@@ -105,7 +105,7 @@
   "run_id": "20261011-phase1-stage2-ssl-hybrid-manysig-m48-r01",
   "group_id": "cvs-stage2-source-ssl-hybrid",
   "comparison_group_id": "20261011-phase1-stage2-ssl-hybrid-manysig-m48-r01",
-  "status": "PREREGISTERED",
+  "status": "FAILED_PREFLIGHT",
   "display_name": "S0–S15 半监督混合机制及更强权重调优，三种子 E40（48 实验）",
   "description": "合法 source U_s EMA 伪标签＋跨RX对比/混合/LT/SAM/平均；原学习率、约3倍及10倍学习率配对比较，原CE E200→E40，自动clean。",
   "aliases": [
@@ -15555,5 +15555,9 @@
     "control_reviewer": "/root/stage2_release_review",
     "scope": "new SSL/strong-LR training and changed release/freeze/truth-last only",
     "target_scores_read": false
-  }
+  },
+  "delivery_verdict": "FAILED",
+  "failure_layer": "native_data_import_bootstrap",
+  "identity_rows_started": 0,
+  "U_samples_read": 0
 }

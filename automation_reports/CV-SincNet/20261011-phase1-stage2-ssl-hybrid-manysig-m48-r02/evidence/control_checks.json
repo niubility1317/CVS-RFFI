@@ -1,0 +1,140 @@
+{
+  "status": "PASS",
+  "target_access": false,
+  "core": {
+    "status": "PASS",
+    "device": "cpu",
+    "synthetic_only": true,
+    "target_access": false,
+    "checks": [
+      "full_U_permutation_before_reuse",
+      "per_physical_ID_pass_history",
+      "same_pass_cannot_advance_streak",
+      "prediction_change_resets_streak",
+      "U_truth_schema_rejected",
+      "EMA_versions_increment",
+      "native_cached_vs_fresh_teacher_logits_match",
+      "EMA_no_gradient",
+      "confidence_gate_matches_repaired_native"
+    ]
+  },
+  "graphs": [
+    {
+      "arm": "S0",
+      "loss": 3.462937831878662,
+      "accepted": 108,
+      "encoder_peak": 3e-05,
+      "fusion_peak": 0.0001
+    },
+    {
+      "arm": "S1",
+      "loss": 3.443075656890869,
+      "accepted": 95,
+      "encoder_peak": 3e-05,
+      "fusion_peak": 0.0001
+    },
+    {
+      "arm": "S2",
+      "loss": 3.5369865894317627,
+      "accepted": 84,
+      "encoder_peak": 3e-05,
+      "fusion_peak": 0.0001
+    },
+    {
+      "arm": "S3",
+      "loss": 4.968197345733643,
+      "accepted": 112,
+      "encoder_peak": 3e-05,
+      "fusion_peak": 0.0001
+    },
+    {
+      "arm": "S4",
+      "loss": 4.365318298339844,
+      "accepted": 105,
+      "encoder_peak": 3e-05,
+      "fusion_peak": 0.0001
+    },
+    {
+      "arm": "S5",
+      "loss": 4.809795379638672,
+      "accepted": 94,
+      "encoder_peak": 3e-05,
+      "fusion_peak": 0.0001
+    },
+    {
+      "arm": "S6",
+      "loss": 3.440359115600586,
+      "accepted": 121,
+      "encoder_peak": 3e-05,
+      "fusion_peak": 0.0001
+    },
+    {
+      "arm": "S7",
+      "loss": 3.3358590602874756,
+      "accepted": 88,
+      "encoder_peak": 3e-05,
+      "fusion_peak": 0.0001
+    },
+    {
+      "arm": "S8",
+      "loss": 4.908700466156006,
+      "accepted": 101,
+      "encoder_peak": 3e-05,
+      "fusion_peak": 0.0001
+    },
+    {
+      "arm": "S9",
+      "loss": 5.051831245422363,
+      "accepted": 97,
+      "encoder_peak": 3e-05,
+      "fusion_peak": 0.0001
+    },
+    {
+      "arm": "S10",
+      "loss": 5.4572434425354,
+      "accepted": 98,
+      "encoder_peak": 3e-05,
+      "fusion_peak": 0.0001
+    },
+    {
+      "arm": "S11",
+      "loss": 5.419698238372803,
+      "accepted": 102,
+      "encoder_peak": 3e-05,
+      "fusion_peak": 0.0001
+    },
+    {
+      "arm": "S12",
+      "loss": 3.2195420265197754,
+      "accepted": 109,
+      "encoder_peak": 0.0001,
+      "fusion_peak": 0.0003
+    },
+    {
+      "arm": "S13",
+      "loss": 5.166638374328613,
+      "accepted": 97,
+      "encoder_peak": 0.0001,
+      "fusion_peak": 0.0003
+    },
+    {
+      "arm": "S14",
+      "loss": 5.156437873840332,
+      "accepted": 91,
+      "encoder_peak": 0.0001,
+      "fusion_peak": 0.0003
+    },
+    {
+      "arm": "S15",
+      "loss": 4.373555660247803,
+      "accepted": 105,
+      "encoder_peak": 0.0003,
+      "fusion_peak": 0.001
+    }
+  ],
+  "SAM_teacher_history_once": true,
+  "teacher_no_grad": true,
+  "domain_forwards": 0,
+  "identity_updates": 0,
+  "truth_last": true
+}

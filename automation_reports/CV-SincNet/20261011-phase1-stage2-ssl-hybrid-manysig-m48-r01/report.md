@@ -28,3 +28,6 @@
 LR warmup444后cosine；平均变体E31–40固定2epoch循环并平均E32/34/36/38/40，不以V挑选。已有source-only E200辅助LT和关系采样网络复用，严格核对sourceIDs/seed/parent；训练中冻结，不新增在线辅助拟合。更高LR仅表示更强调优，不能预先认定更高精度；记录实际梯度、权重位移、损失、源V和U接纳/覆盖。
 
 8GPU，每卡≤3总进程（包含其他任务），启动前至少12GB空闲；技术失败保留，不自动重试，不因低分停止健康任务。本记录在任何新目标成绩读取前冻结。当前为预登记，尚未发布，84%未验证。
+
+
+FAILED：原生数据导入顺序，DataAugmentation模块在bootstrap前不可见；远端读回U_ready=false、submit=false、run=false，0训练/0U读取。保留release与日志，不覆盖；新 20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02 仅修复入口导入顺序，科学矩阵不变。
