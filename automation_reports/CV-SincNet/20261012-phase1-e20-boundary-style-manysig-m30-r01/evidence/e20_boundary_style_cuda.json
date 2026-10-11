@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "real_checkpoint_loaded": false,
+  "target_access": false,
+  "synthetic_L_only": true,
+  "headless_native_model": true,
+  "whole_batch_argmax": true,
+  "smallest_index_tie": true,
+  "random_private_uniform_index": true,
+  "candidate_pool_shared_between_arms": true,
+  "clean_plus_four_eval_readouts": true,
+  "selected_complete_candidate_replayed": true,
+  "eval_no_grad_training_replay_grad": true,
+  "duplicate_occurrences_allowed": true,
+  "real_PID_donor_constraints": true,
+  "same_mask_replay_bitwise_equal": true,
+  "main_RNG_restored": true,
+  "model_state_and_training_flags_unchanged": true,
+  "native_gradient_norms": {
+    "time_down": 1.9493542509158364,
+    "t2.pool": 3.002095644025485
+  },
+  "exception_hook_cleanup": true,
+  "selected_train_failure_cleanup": true,
+  "stochastic_eval_rejected": true,
+  "mutating_eval_rejected_and_restored": true,
+  "invalid_inputs_rejected": [
+    "U_role",
+    "bad_PID",
+    "bad_RX",
+    "bad_day",
+    "bad_label",
+    "metadata_length",
+    "bad_candidate_count"
+  ],
+  "hard_selected_index": 2,
+  "random_selected_index": 3,
+  "candidate_losses": [
+    3.6697635650634766,
+    3.7164759635925293,
+    3.761751651763916,
+    3.6488351821899414
+  ]
+}
