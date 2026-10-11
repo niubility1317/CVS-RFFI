@@ -1,0 +1,60 @@
+{
+  "status": "SOURCE_SELECTION_FROZEN",
+  "source_only": true,
+  "target_scores_consumed": false,
+  "rule": {
+    "status": "deferred_until_complete_source_evidence",
+    "score": ".5*mean_V_accuracy+.5*worst_RX_V_accuracy",
+    "eligibility": "three complete seeds; module mean score gain over C1 >0 and no seed loss >0.002; C2/C4 additionally heldout physical prediction MSE below zero baseline in all seeds; C3 additionally lower V pseudo error at fixed90% coverage in all seeds",
+    "target_scores_allowed": false,
+    "combination": "all eligible modules, otherwise C1; future distinct run, same parents and40 epochs",
+    "C8": "fixed exploratory combination, not source-selected C5"
+  },
+  "eligible_modules": [
+    "C2"
+  ],
+  "C5": "C1+C2",
+  "future_run_required": true,
+  "current_C8_selected_by_this_rule": false,
+  "details": {
+    "C2": {
+      "score_differences": [
+        -0.0011296296296297026,
+        0.0007037037037036509,
+        0.0008148148148148238
+      ],
+      "physical_or_teacher_gate": [
+        true,
+        true,
+        true
+      ],
+      "eligible": true
+    },
+    "C3": {
+      "score_differences": [
+        -0.002981481481481474,
+        -0.0004259259259258297,
+        3.703703703705763e-05
+      ],
+      "physical_or_teacher_gate": [
+        false,
+        false,
+        false
+      ],
+      "eligible": false
+    },
+    "C4": {
+      "score_differences": [
+        -0.0007037037037038729,
+        -0.0010555555555555873,
+        0.0010555555555555873
+      ],
+      "physical_or_teacher_gate": [
+        true,
+        true,
+        true
+      ],
+      "eligible": false
+    }
+  }
+}

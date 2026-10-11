@@ -1,0 +1,16 @@
+{
+  "status": "PREDICTIONS_COMPLETE",
+  "count": 168000,
+  "views": [
+    "clean"
+  ],
+  "truth_read": false,
+  "query_fit": false,
+  "inference_seconds": {
+    "clean": 6.836106918985024
+  },
+  "wall_seconds": 7.17836250201799,
+  "peak_cuda_allocated_bytes": 100093440,
+  "peak_cuda_reserved_bytes": 343932928,
+  "peak_process_rss_bytes": 1948925952
+}

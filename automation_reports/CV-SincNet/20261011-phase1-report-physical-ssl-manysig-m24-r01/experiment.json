@@ -105,7 +105,7 @@
   "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
   "group_id": "cvs-report-physical-soft-ssl",
   "comparison_group_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "display_name": "无显式CFO物理软半监督多解耦（三种子24行设计）",
   "description": "先L适应、后软KL EMA；DL/DQ/DR与非线性身份支路及独立Sinc坐标优化。",
   "aliases": [
@@ -597,13 +597,18 @@
       "gpu": 0,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C0-s2026092701.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C0-s2026092701/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C0-s2026092701/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C1",
       "model_seed": 2026092701,
       "row_id": "C1-s2026092701",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -917,13 +922,18 @@
       "gpu": 1,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C1-s2026092701.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C1-s2026092701/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C1-s2026092701/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C2",
       "model_seed": 2026092701,
       "row_id": "C2-s2026092701",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -1237,13 +1247,18 @@
       "gpu": 2,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C2-s2026092701.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C2-s2026092701/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C2-s2026092701/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C3",
       "model_seed": 2026092701,
       "row_id": "C3-s2026092701",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -1557,13 +1572,18 @@
       "gpu": 3,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C3-s2026092701.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C3-s2026092701/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C3-s2026092701/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C4",
       "model_seed": 2026092701,
       "row_id": "C4-s2026092701",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -1877,13 +1897,18 @@
       "gpu": 4,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C4-s2026092701.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C4-s2026092701/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C4-s2026092701/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C6",
       "model_seed": 2026092701,
       "row_id": "C6-s2026092701",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -2197,13 +2222,18 @@
       "gpu": 5,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C6-s2026092701.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C6-s2026092701/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C6-s2026092701/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C7",
       "model_seed": 2026092701,
       "row_id": "C7-s2026092701",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -2517,13 +2547,18 @@
       "gpu": 6,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C7-s2026092701.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C7-s2026092701/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C7-s2026092701/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C8",
       "model_seed": 2026092701,
       "row_id": "C8-s2026092701",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -2837,7 +2872,12 @@
       "gpu": 7,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C8-s2026092701.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C8-s2026092701/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C8-s2026092701/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C0",
@@ -3157,13 +3197,18 @@
       "gpu": 0,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C0-s2026092702.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C0-s2026092702/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C0-s2026092702/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C1",
       "model_seed": 2026092702,
       "row_id": "C1-s2026092702",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -3477,13 +3522,18 @@
       "gpu": 1,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C1-s2026092702.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C1-s2026092702/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C1-s2026092702/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C2",
       "model_seed": 2026092702,
       "row_id": "C2-s2026092702",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -3797,13 +3847,18 @@
       "gpu": 2,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C2-s2026092702.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C2-s2026092702/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C2-s2026092702/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C3",
       "model_seed": 2026092702,
       "row_id": "C3-s2026092702",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -4117,13 +4172,18 @@
       "gpu": 4,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C3-s2026092702.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C3-s2026092702/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C3-s2026092702/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C4",
       "model_seed": 2026092702,
       "row_id": "C4-s2026092702",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -4437,13 +4497,18 @@
       "gpu": 7,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C4-s2026092702.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C4-s2026092702/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C4-s2026092702/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C6",
       "model_seed": 2026092702,
       "row_id": "C6-s2026092702",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -4757,13 +4822,18 @@
       "gpu": 6,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C6-s2026092702.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C6-s2026092702/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C6-s2026092702/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C7",
       "model_seed": 2026092702,
       "row_id": "C7-s2026092702",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -5077,13 +5147,18 @@
       "gpu": 3,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C7-s2026092702.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C7-s2026092702/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C7-s2026092702/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C8",
       "model_seed": 2026092702,
       "row_id": "C8-s2026092702",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -5397,7 +5472,12 @@
       "gpu": 5,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C8-s2026092702.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C8-s2026092702/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C8-s2026092702/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C0",
@@ -5717,13 +5797,18 @@
       "gpu": 5,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C0-s2026092703.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C0-s2026092703/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C0-s2026092703/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C1",
       "model_seed": 2026092703,
       "row_id": "C1-s2026092703",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -6037,13 +6122,18 @@
       "gpu": 6,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C1-s2026092703.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C1-s2026092703/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C1-s2026092703/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C2",
       "model_seed": 2026092703,
       "row_id": "C2-s2026092703",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -6357,13 +6447,18 @@
       "gpu": 3,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C2-s2026092703.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C2-s2026092703/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C2-s2026092703/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C3",
       "model_seed": 2026092703,
       "row_id": "C3-s2026092703",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -6677,13 +6772,18 @@
       "gpu": 7,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C3-s2026092703.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C3-s2026092703/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C3-s2026092703/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C4",
       "model_seed": 2026092703,
       "row_id": "C4-s2026092703",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -6997,13 +7097,18 @@
       "gpu": 1,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C4-s2026092703.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C4-s2026092703/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C4-s2026092703/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C6",
       "model_seed": 2026092703,
       "row_id": "C6-s2026092703",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -7317,13 +7422,18 @@
       "gpu": 4,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C6-s2026092703.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C6-s2026092703/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C6-s2026092703/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C7",
       "model_seed": 2026092703,
       "row_id": "C7-s2026092703",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -7637,13 +7747,18 @@
       "gpu": 0,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C7-s2026092703.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C7-s2026092703/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C7-s2026092703/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     },
     {
       "arm": "C8",
       "model_seed": 2026092703,
       "row_id": "C8-s2026092703",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "report_physical_ssl_v1",
         "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
@@ -7957,7 +8072,12 @@
       "gpu": 2,
       "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/logs/train-C8-s2026092703.log",
       "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C8-s2026092703/source/resolved_config.json"
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/C8-s2026092703/source/resolved_config.json",
+      "source_epoch": 40,
+      "identity_updates": 8880,
+      "clean_queries": 168000,
+      "independent_recount": "VERIFIED",
+      "output_reused_not_retrained": true
     }
   ],
   "semi_supervision": {
@@ -8070,14 +8190,82 @@
     ]
   ],
   "delivery_verdict": "VERIFIED",
-  "target_evaluation_status": "AUTOMATIC_CLEAN_AFTER_EACH_ROW",
+  "target_evaluation_status": "COMPLETE_CLEAN24_INDEPENDENT_SCORED",
   "C5_source_selection": {
-    "status": "deferred_until_complete_source_evidence",
-    "score": ".5*mean_V_accuracy+.5*worst_RX_V_accuracy",
-    "eligibility": "three complete seeds; module mean score gain over C1 >0 and no seed loss >0.002; C2/C4 additionally heldout physical prediction MSE below zero baseline in all seeds; C3 additionally lower V pseudo error at fixed90% coverage in all seeds",
-    "target_scores_allowed": false,
-    "combination": "all eligible modules, otherwise C1; future distinct run, same parents and40 epochs",
-    "C8": "fixed exploratory combination, not source-selected C5"
+    "status": "SOURCE_SELECTION_FROZEN",
+    "source_only": true,
+    "target_scores_consumed": false,
+    "rule": {
+      "status": "deferred_until_complete_source_evidence",
+      "score": ".5*mean_V_accuracy+.5*worst_RX_V_accuracy",
+      "eligibility": "three complete seeds; module mean score gain over C1 >0 and no seed loss >0.002; C2/C4 additionally heldout physical prediction MSE below zero baseline in all seeds; C3 additionally lower V pseudo error at fixed90% coverage in all seeds",
+      "target_scores_allowed": false,
+      "combination": "all eligible modules, otherwise C1; future distinct run, same parents and40 epochs",
+      "C8": "fixed exploratory combination, not source-selected C5"
+    },
+    "eligible_modules": [
+      "C2"
+    ],
+    "C5": "C1+C2",
+    "future_run_required": true,
+    "current_C8_selected_by_this_rule": false,
+    "details": {
+      "C2": {
+        "score_differences": [
+          -0.0011296296296297026,
+          0.0007037037037036509,
+          0.0008148148148148238
+        ],
+        "physical_or_teacher_gate": [
+          true,
+          true,
+          true
+        ],
+        "eligible": true
+      },
+      "C3": {
+        "score_differences": [
+          -0.002981481481481474,
+          -0.0004259259259258297,
+          3.703703703705763e-05
+        ],
+        "physical_or_teacher_gate": [
+          false,
+          false,
+          false
+        ],
+        "eligible": false
+      },
+      "C4": {
+        "score_differences": [
+          -0.0007037037037038729,
+          -0.0010555555555555873,
+          0.0010555555555555873
+        ],
+        "physical_or_teacher_gate": [
+          true,
+          true,
+          true
+        ],
+        "eligible": false
+      }
+    }
   },
-  "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f"
+  "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+  "goal_assessment": {
+    "primary_arm": "C8",
+    "threshold": 0.84,
+    "performance_status": "NOT_MET",
+    "mechanism_increment_status": "POSITIVE",
+    "complete_arms_reaching_goal": [],
+    "each_seed_must_be_reported": true,
+    "scores_must_not_control_training": true
+  },
+  "source_log_analysis": {
+    "epochs": 960,
+    "updates": 213120,
+    "complete_rows": 24,
+    "target_files_read_by_parser": false
+  },
+  "updated_at_unix": 1791717357.846909
 }

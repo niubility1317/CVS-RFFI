@@ -1,0 +1,23 @@
+{
+  "row_id": "C2-s2026092703",
+  "run_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
+  "pid": 4068144,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_report_ssl_20261011_r01",
+  "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+  "evaluation_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+  "views": [
+    "clean"
+  ],
+  "batch_size": 256,
+  "backend_flags": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "parameters": 844754,
+  "trainable_parameters": 0,
+  "hardware": "NVIDIA GeForce RTX 3090",
+  "torch_version": "2.1.0+cu121"
+}

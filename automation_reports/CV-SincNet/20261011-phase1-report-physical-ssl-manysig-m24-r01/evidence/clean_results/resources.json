@@ -1,0 +1,1327 @@
+{
+  "rows": [
+    {
+      "row_id": "C0-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.807241832022555
+        },
+        "wall_seconds": 6.392653584014624,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 230686720,
+        "peak_process_rss_bytes": 1885929472
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 281.8766414890997,
+          "peak_cuda_memory_bytes": 184967680,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 0,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 60422,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 0,
+          "teacher_probability_method_batch_calls": 0,
+          "teacher_diagnostic_packets": 0,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C1-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.743548439932056
+        },
+        "wall_seconds": 6.340742772910744,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 343932928,
+        "peak_process_rss_bytes": 1982955520
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 611.3825496259378,
+          "peak_cuda_memory_bytes": 336979456,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 3984844,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C2-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.81211361894384
+        },
+        "wall_seconds": 6.322914011077955,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 505413632,
+        "peak_process_rss_bytes": 2032250880
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 753.1690749349073,
+          "peak_cuda_memory_bytes": 478646784,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 67492,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 539952,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 4799788,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 71040,
+          "physical_U_packets": 63936,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C3-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.076217594090849
+        },
+        "wall_seconds": 5.404249841929413,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 348127232,
+        "peak_process_rss_bytes": 1986134016
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 774.3857883110177,
+          "peak_cuda_memory_bytes": 340753408,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 844754,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 3984844,
+          "conditional_snapshot_saved_bytes": 18508157,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 5
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C4-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.6660115319537
+        },
+        "wall_seconds": 6.213791581103578,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 438304768,
+        "peak_process_rss_bytes": 1967079424
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 654.3592906710692,
+          "peak_cuda_memory_bytes": 409024000,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 37092,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 296752,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 4434988,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 71040,
+          "physical_U_packets": 63936,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C6-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 7.156434730044566
+        },
+        "wall_seconds": 7.576151076937094,
+        "peak_cuda_allocated_bytes": 100093440,
+        "peak_cuda_reserved_bytes": 343932928,
+        "peak_process_rss_bytes": 1951293440
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 701.2907326599816,
+          "peak_cuda_memory_bytes": 337760768,
+          "trainable_parameters": 189057,
+          "total_parameters": 856786,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 856786,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1512752,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 5099170,
+          "auxiliary_saved_bytes": 4035318,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C7-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.42286513093859
+        },
+        "wall_seconds": 5.856480652000755,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 343932928,
+        "peak_process_rss_bytes": 1945714688
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 667.3380066850223,
+          "peak_cuda_memory_bytes": 336980480,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1417236,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4949384,
+          "auxiliary_saved_bytes": 3984844,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": "float64",
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C8-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.034043129999191
+        },
+        "wall_seconds": 5.3638879200443625,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 576716800,
+        "peak_process_rss_bytes": 2051739648
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 833.3824583080132,
+          "peak_cuda_memory_bytes": 549381120,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 104584,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1417236,
+          "auxiliary_optimizer_state_tensor_bytes": 836704,
+          "checkpoint_bytes": 4949448,
+          "auxiliary_saved_bytes": 5249612,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": "float64",
+          "physical_L_packets": 71040,
+          "physical_U_packets": 63936,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C0-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.460765708005056
+        },
+        "wall_seconds": 5.9133456071140245,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 230686720,
+        "peak_process_rss_bytes": 1888481280
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 306.82897173892707,
+          "peak_cuda_memory_bytes": 184967680,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 0,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 60422,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 0,
+          "teacher_probability_method_batch_calls": 0,
+          "teacher_diagnostic_packets": 0,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C1-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.682262789923698
+        },
+        "wall_seconds": 6.293587411055341,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 343932928,
+        "peak_process_rss_bytes": 1982980096
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 605.4458635610063,
+          "peak_cuda_memory_bytes": 336979456,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 3984844,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C2-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.453118177945726
+        },
+        "wall_seconds": 5.874340604990721,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 505413632,
+        "peak_process_rss_bytes": 2044137472
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 762.3387525309809,
+          "peak_cuda_memory_bytes": 478646784,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 67492,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 539952,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 4799788,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 71040,
+          "physical_U_packets": 63936,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C3-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.07538122695405
+        },
+        "wall_seconds": 5.416949662961997,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 348127232,
+        "peak_process_rss_bytes": 1968934912
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 753.7770967230899,
+          "peak_cuda_memory_bytes": 340753408,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 844754,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 3984844,
+          "conditional_snapshot_saved_bytes": 18508157,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 5
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C4-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.951823721989058
+        },
+        "wall_seconds": 6.524628184968606,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 438304768,
+        "peak_process_rss_bytes": 1974943744
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 692.7191263829591,
+          "peak_cuda_memory_bytes": 409024000,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 37092,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 296752,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 4434988,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 71040,
+          "physical_U_packets": 63936,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C6-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 6.836106918985024
+        },
+        "wall_seconds": 7.17836250201799,
+        "peak_cuda_allocated_bytes": 100093440,
+        "peak_cuda_reserved_bytes": 343932928,
+        "peak_process_rss_bytes": 1948925952
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 706.5511912510265,
+          "peak_cuda_memory_bytes": 337760768,
+          "trainable_parameters": 189057,
+          "total_parameters": 856786,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 856786,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1512752,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 5099170,
+          "auxiliary_saved_bytes": 4035318,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C7-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.6528152209939435
+        },
+        "wall_seconds": 6.1899042159784585,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 343932928,
+        "peak_process_rss_bytes": 1945522176
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 671.0396015630104,
+          "peak_cuda_memory_bytes": 336980480,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1417236,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4949384,
+          "auxiliary_saved_bytes": 3984844,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": "float64",
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C8-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 6.564431876060553
+        },
+        "wall_seconds": 6.934365557041019,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 576716800,
+        "peak_process_rss_bytes": 2041040896
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 800.4866508609848,
+          "peak_cuda_memory_bytes": 549381120,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 104584,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1417236,
+          "auxiliary_optimizer_state_tensor_bytes": 836704,
+          "checkpoint_bytes": 4949448,
+          "auxiliary_saved_bytes": 5249612,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": "float64",
+          "physical_L_packets": 71040,
+          "physical_U_packets": 63936,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C0-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.982138146995567
+        },
+        "wall_seconds": 6.556519011966884,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 230686720,
+        "peak_process_rss_bytes": 1889796096
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 294.2606570220087,
+          "peak_cuda_memory_bytes": 184967680,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 0,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 60422,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 0,
+          "teacher_probability_method_batch_calls": 0,
+          "teacher_diagnostic_packets": 0,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C1-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.832064235000871
+        },
+        "wall_seconds": 6.465482758008875,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 343932928,
+        "peak_process_rss_bytes": 1948147712
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 601.2677559750155,
+          "peak_cuda_memory_bytes": 336979456,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 3984844,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C2-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.4017873459961265
+        },
+        "wall_seconds": 5.8113092969870195,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 505413632,
+        "peak_process_rss_bytes": 2031640576
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 733.267785537988,
+          "peak_cuda_memory_bytes": 478646784,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 67492,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 539952,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 4799788,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 71040,
+          "physical_U_packets": 63936,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C3-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.315153528004885
+        },
+        "wall_seconds": 5.734150909935124,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 348127232,
+        "peak_process_rss_bytes": 1968390144
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 776.3487870109966,
+          "peak_cuda_memory_bytes": 340753408,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 844754,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 3984844,
+          "conditional_snapshot_saved_bytes": 18508157,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 5
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C4-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.166866410989314
+        },
+        "wall_seconds": 5.5093667830806226,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 438304768,
+        "peak_process_rss_bytes": 1980456960
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 680.9692061489914,
+          "peak_cuda_memory_bytes": 409024000,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 37092,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 296752,
+          "checkpoint_bytes": 4946566,
+          "auxiliary_saved_bytes": 4434988,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 71040,
+          "physical_U_packets": 63936,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C6-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 7.04303338797763
+        },
+        "wall_seconds": 7.484996959916316,
+        "peak_cuda_allocated_bytes": 100093440,
+        "peak_cuda_reserved_bytes": 343932928,
+        "peak_process_rss_bytes": 1964265472
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 718.8789629950188,
+          "peak_cuda_memory_bytes": 337760768,
+          "trainable_parameters": 189057,
+          "total_parameters": 856786,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 856786,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1512752,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 5099170,
+          "auxiliary_saved_bytes": 4035318,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C7-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.02037588309031
+        },
+        "wall_seconds": 5.3617370100691915,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 343932928,
+        "peak_process_rss_bytes": 1946853376
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 611.8672466679709,
+          "peak_cuda_memory_bytes": 336980480,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1417236,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4949384,
+          "auxiliary_saved_bytes": 3984844,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": "float64",
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "C8-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.017270153970458
+        },
+        "wall_seconds": 5.348229503957555,
+        "peak_cuda_allocated_bytes": 100043264,
+        "peak_cuda_reserved_bytes": 576716800,
+        "peak_process_rss_bytes": 2047471616
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 821.684476105962,
+          "peak_cuda_memory_bytes": 549381120,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 104584,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1417236,
+          "auxiliary_optimizer_state_tensor_bytes": 836704,
+          "checkpoint_bytes": 4949448,
+          "auxiliary_saved_bytes": 5249612,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": "float64",
+          "physical_L_packets": 71040,
+          "physical_U_packets": 63936,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    }
+  ],
+  "shared_preparation_counted_once_per_seed": true,
+  "original_raw_artifact": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-report-physical-ssl-manysig-m24-r01/resources.json",
+  "only_repeated_physical_ids_replaced_by_reference": true
+}
