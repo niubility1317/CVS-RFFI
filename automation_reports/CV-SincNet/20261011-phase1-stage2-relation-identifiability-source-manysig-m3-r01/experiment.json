@@ -119,11 +119,11 @@
     "20261011-phase1-stage2-geometry-source-manysig-m3-r01"
   ],
   "replaces_run_id": null,
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "authorization": "继续用户最新报告的源域可辨识性研发，依据上一轮源诊断明确的下一步；身份训练和目标测试不属于本 run。",
   "code": {
-    "commit": "14ceb19b19344bf1e5a92f8d9d6dc7f2f09b8d5c",
-    "commit_note": "Preregistration baseline only; actual execution commit inserted from immutable release",
+    "commit": "a0cac7f30f6c0ed49de96480bbc74821857cddce",
+    "commit_note": "Actual immutable execution commit independently read back",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_relation_identifiability_source_20261011_r01"
@@ -145,7 +145,11 @@
     "gpu_policy": "CPU only, 2 threads, sequential three parent seeds",
     "command": "python -m experiments.cvs_stage2_geometry.relation_audit",
     "launch_command": "python -m experiments.cvs_stage2_geometry.relation_audit",
-    "stop_rule": "preserve technical failures and all artifacts; no automatic retry or interference with other runs"
+    "stop_rule": "preserve technical failures and all artifacts; no automatic retry or interference with other runs",
+    "pid": 3897877,
+    "gpu": null,
+    "launch_verified": true,
+    "completion_verified": true
   },
   "expected_artifacts": [
     "experiment.json",
@@ -200,7 +204,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-relation-identifiability-source-manysig-m3-r01/s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_relation_identifiability_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
-      "status": "LOCAL_VERIFIED"
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "s2026092702",
@@ -229,7 +233,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-relation-identifiability-source-manysig-m3-r01/s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_relation_identifiability_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
-      "status": "LOCAL_VERIFIED"
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "s2026092703",
@@ -258,12 +262,23 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-relation-identifiability-source-manysig-m3-r01/s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_relation_identifiability_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
-      "status": "LOCAL_VERIFIED"
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     }
   ],
   "test_completion_plan": {
     "target_access": false,
     "scope": "source-only diagnostic, no new identity checkpoint or target predictions",
     "automatic_test": false
-  }
+  },
+  "execution_commit": "a0cac7f30f6c0ed49de96480bbc74821857cddce",
+  "completion": {
+    "run_id": "20261011-phase1-stage2-relation-identifiability-source-manysig-m3-r01",
+    "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+    "rows_completed": 3,
+    "target_access": false,
+    "identity_updates": 0,
+    "execution_commit": "a0cac7f30f6c0ed49de96480bbc74821857cddce",
+    "elapsed_seconds": 2.9647999950684607
+  },
+  "updated_at_unix": 1791699289.1009479
 }

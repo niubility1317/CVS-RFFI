@@ -1,0 +1,152 @@
+[
+  {
+    "seed": 2026092701,
+    "oracle_box": {
+      "mse_pred": 0.16889153405028426,
+      "mse_zero": 0.22957815836867917,
+      "mse_ratio": 0.7356602877659714,
+      "c": 0.26433971223402863,
+      "prediction_energy": 0.043249036281690974,
+      "direction_cosine_zero_for_zero_prediction": 0.534596744200138,
+      "blocks": 18,
+      "pairs": 180,
+      "weighting": "equal_block_then_equal_RX_pair"
+    },
+    "components": {
+      "total_rx_centered_energy": 0.09183126334747164,
+      "components": {
+        "receiver": {
+          "full_energy": 0.02092946425602598,
+          "full_fraction": 0.22791218908568162,
+          "half_cross_energy": 0.020819478325806162,
+          "half_difference_energy": 0.00010998593021981669,
+          "half_cross_fraction_of_full_total": 0.22671449315718661
+        },
+        "receiver_day": {
+          "full_energy": 0.0018662213120859102,
+          "full_fraction": 0.02032228724791133,
+          "half_cross_energy": 0.001730991342980916,
+          "half_difference_energy": 0.000135229969104994,
+          "half_cross_fraction_of_full_total": 0.01884969540744726
+        },
+        "tx_receiver": {
+          "full_energy": 0.05900716049297199,
+          "full_fraction": 0.642560696020269,
+          "half_cross_energy": 0.058560974060715094,
+          "half_difference_energy": 0.00044618643225691093,
+          "half_cross_fraction_of_full_total": 0.6377019320656817
+        },
+        "tx_receiver_day": {
+          "full_energy": 0.010028417286387772,
+          "full_fraction": 0.10920482764613823,
+          "half_cross_energy": 0.009306317638363575,
+          "half_difference_energy": 0.0007220996480241955,
+          "half_cross_fraction_of_full_total": 0.10134149633932704
+        }
+      },
+      "interpretation": "descriptive second moments; cross-half noise interpretation assumes independent zero-mean packet errors, not guaranteed by disjoint IDs",
+      "negative_cross_energy_retained": true
+    },
+    "elapsed_seconds": 1.2451400220161304
+  },
+  {
+    "seed": 2026092702,
+    "oracle_box": {
+      "mse_pred": 0.16819275555889301,
+      "mse_zero": 0.24873432289161665,
+      "mse_ratio": 0.6761943973135595,
+      "c": 0.32380560268644054,
+      "prediction_energy": 0.05807047872886998,
+      "direction_cosine_zero_for_zero_prediction": 0.5770103247209074,
+      "blocks": 18,
+      "pairs": 180,
+      "weighting": "equal_block_then_equal_RX_pair"
+    },
+    "components": {
+      "total_rx_centered_energy": 0.09949372915664666,
+      "components": {
+        "receiver": {
+          "full_energy": 0.02561594372308479,
+          "full_fraction": 0.2574628968098491,
+          "half_cross_energy": 0.025517266839454145,
+          "half_difference_energy": 9.867688363064062e-05,
+          "half_cross_fraction_of_full_total": 0.2564711068300476
+        },
+        "receiver_day": {
+          "full_energy": 0.0019187726840996964,
+          "full_fraction": 0.019285363010956284,
+          "half_cross_energy": 0.0017594079802732508,
+          "half_difference_energy": 0.00015936470382644545,
+          "half_cross_fraction_of_full_total": 0.017683606747749627
+        },
+        "tx_receiver": {
+          "full_energy": 0.061314701625558174,
+          "full_fraction": 0.61626699637544,
+          "half_cross_energy": 0.0608651198919882,
+          "half_difference_energy": 0.0004495817335699745,
+          "half_cross_fraction_of_full_total": 0.6117483022086736
+        },
+        "tx_receiver_day": {
+          "full_energy": 0.010644311123904009,
+          "full_fraction": 0.10698474380375476,
+          "half_cross_energy": 0.00991836767250301,
+          "half_difference_energy": 0.000725943451401,
+          "half_cross_fraction_of_full_total": 0.09968836987592616
+        }
+      },
+      "interpretation": "descriptive second moments; cross-half noise interpretation assumes independent zero-mean packet errors, not guaranteed by disjoint IDs",
+      "negative_cross_energy_retained": true
+    },
+    "elapsed_seconds": 0.8898574999766424
+  },
+  {
+    "seed": 2026092703,
+    "oracle_box": {
+      "mse_pred": 0.18707791005254557,
+      "mse_zero": 0.2611761628348458,
+      "mse_ratio": 0.71629013927601,
+      "c": 0.28370986072398996,
+      "prediction_energy": 0.05114232124586926,
+      "direction_cosine_zero_for_zero_prediction": 0.5531210444693766,
+      "blocks": 18,
+      "pairs": 180,
+      "weighting": "equal_block_then_equal_RX_pair"
+    },
+    "components": {
+      "total_rx_centered_energy": 0.10447046513393832,
+      "components": {
+        "receiver": {
+          "full_energy": 0.02786508961343095,
+          "full_fraction": 0.2667269603682341,
+          "half_cross_energy": 0.027772947217463578,
+          "half_difference_energy": 9.214239596736911e-05,
+          "half_cross_fraction_of_full_total": 0.2658449656738558
+        },
+        "receiver_day": {
+          "full_energy": 0.002501296378838314,
+          "full_fraction": 0.02394261742427853,
+          "half_cross_energy": 0.0023435869970552213,
+          "half_difference_energy": 0.00015770938178309268,
+          "half_cross_fraction_of_full_total": 0.022433010076585585
+        },
+        "tx_receiver": {
+          "full_energy": 0.06100546282340079,
+          "full_fraction": 0.5839493750237217,
+          "half_cross_energy": 0.060596996849718386,
+          "half_difference_energy": 0.00040846597368239665,
+          "half_cross_fraction_of_full_total": 0.5800395046775074
+        },
+        "tx_receiver_day": {
+          "full_energy": 0.013098616318268272,
+          "full_fraction": 0.12538104718376572,
+          "half_cross_energy": 0.012296463235582438,
+          "half_difference_energy": 0.000802153082685836,
+          "half_cross_fraction_of_full_total": 0.1177027710158802
+        }
+      },
+      "interpretation": "descriptive second moments; cross-half noise interpretation assumes independent zero-mean packet errors, not guaranteed by disjoint IDs",
+      "negative_cross_energy_retained": true
+    },
+    "elapsed_seconds": 0.8083269520429894
+  }
+]
