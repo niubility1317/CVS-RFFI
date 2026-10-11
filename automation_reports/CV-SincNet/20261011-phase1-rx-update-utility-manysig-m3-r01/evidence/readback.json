@@ -1,0 +1,44 @@
+{
+  "status": "VERIFIED",
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 40563,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rx_update_utility_20261011_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_rx_update_utility.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rx_update_utility_20261011_r01/dispatcher.stdout.log",
+    "commit": "53787bafdf0cb06bbc6c9369c07f9459d0559e25",
+    "run_id": "20261011-phase1-rx-update-utility-manysig-m3-r01"
+  },
+  "process": {
+    "pid": 40563,
+    "start_ticks": 97808946,
+    "state": "R",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rx_update_utility_20261011_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_rx_update_utility.dispatch"
+    ],
+    "gpu": null
+  },
+  "workers": [],
+  "queue": null,
+  "completion": null,
+  "failure": null,
+  "preflight": {
+    "status": "PASS",
+    "exact_restore": true,
+    "exception_restore": true,
+    "V_cannot_select": true,
+    "RX_day_disjoint_sampling": true,
+    "rows": 3,
+    "actual_E200_8actions_2scales_restored": true
+  },
+  "read_at": 1791730385.3566852
+}
