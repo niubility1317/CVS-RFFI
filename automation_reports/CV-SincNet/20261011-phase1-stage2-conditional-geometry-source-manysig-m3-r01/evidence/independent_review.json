@@ -1,0 +1,11 @@
+{
+  "status": "PASSED",
+  "reviewer": "/root/stochastic_forward_audit",
+  "p0": 0,
+  "p1": 0,
+  "scope": "conditional_audit.py algebra/source isolation/oracle/bounds",
+  "caveats": [
+    "group-constant action, not per-sample action prediction",
+    "equal-block-group fit versus equal-block-pair evaluation"
+  ]
+}

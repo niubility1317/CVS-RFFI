@@ -1,0 +1,47 @@
+{
+  "run_id": "20261011-phase1-stage2-conditional-geometry-source-manysig-m3-r01",
+  "source_run": "20261011-phase1-stage2-geometry-source-manysig-m3-r01",
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "folds": [
+    [
+      0,
+      1
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      4,
+      5
+    ]
+  ],
+  "methods": [
+    "global_rank2",
+    "global_full",
+    "tangent_state",
+    "global_environment",
+    "tangent_environment"
+  ],
+  "ridge": 0.1,
+  "oracle_rcond": 1e-06,
+  "identity_updates": 0,
+  "target_access": false,
+  "source_count": 6300,
+  "grouping": "existing source TX/day/quality/RX builder",
+  "tangent": "a_g shared within group; mean_i J_i a_g; state centered within TX/day/quality block",
+  "standardization": "state scale fit on four TX packets only; tangent design RMS columns on fit groups only",
+  "weighting": {
+    "fit": "equal block then equal group",
+    "evaluation": "equal block then equal RX pair"
+  },
+  "bound": "one beta=min(1,1/max_group_axis |a_g|) per block then centered potentials",
+  "interpretation": "fixed regularization and normalization differ across parameterizations; improvement is not a pure conditioning causal ablation",
+  "oracle": "unconstrained minimum-norm local span projection; uniformly shrunk version not a box-constrained optimum",
+  "next_step": "Report all folds. Conditional candidate advances to source real-IQ verification only if bounded mean ratio improves global_rank2 for every seed and positive c in a majority of folds per seed. This is a research selection rule, not an extra release gate; no training launch in this run.",
+  "model_seed": 2026092702
+}
