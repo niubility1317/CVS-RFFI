@@ -105,7 +105,7 @@
   "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
   "group_id": "cvs-stage2-teacher-factorial",
   "comparison_group_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "display_name": "E200续训：原/修订参考响应与EMA/直接学生目标三种子因果对照",
   "description": "固定2种参考响应×4种目标/学习率×3seed，40epoch，逐行自动clean；独立于epoch压缩",
   "aliases": [
@@ -123,7 +123,7 @@
   ],
   "authorization": "用户持续授权续训研发、去EMA假设和加大权重调优；压缩epoch为额外探索，不暂停续训",
   "code": {
-    "commit": "resolved from immutable Git release at launch",
+    "commit": "cefa563d861b49a9a7d20dd3682234d28d1ecf88",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_teacher_factorial_20261011_r01"
@@ -144,7 +144,9 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-teacher-factorial-manysig-m24-r01/logs",
     "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_stage2_teacher_factorial_20261011_r01",
     "launch_command": "python -m experiments.cvs_stage2_teacher_factorial.publish --output local_artifacts/cvs_stage2_teacher_factorial_20261011_r01",
-    "stop_rule": "technical failure stops pending; healthy rows finish; no retries/overwrite/performance stops"
+    "stop_rule": "technical failure stops pending; healthy rows finish; no retries/overwrite/performance stops",
+    "pid": 4115088,
+    "last_read_at": 1791720467.4102647
   },
   "metrics_plan": {
     "metric_names": [
@@ -278,7 +280,7 @@
       "arm": "O_CE",
       "model_seed": 2026092701,
       "row_id": "O_CE-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -620,13 +622,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4115162,
+      "gpu": 6,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "O_EMA",
       "model_seed": 2026092701,
       "row_id": "O_EMA-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -968,13 +974,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4115247,
+      "gpu": 7,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "O_DIRECT",
       "model_seed": 2026092701,
       "row_id": "O_DIRECT-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -1316,13 +1326,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4115335,
+      "gpu": 7,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "O_DIRECT_HI",
       "model_seed": 2026092701,
       "row_id": "O_DIRECT_HI-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -1664,13 +1678,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4115419,
+      "gpu": 6,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "R_CE",
       "model_seed": 2026092701,
       "row_id": "R_CE-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -2012,13 +2030,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4115625,
+      "gpu": 0,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "R_EMA",
       "model_seed": 2026092701,
       "row_id": "R_EMA-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -2360,13 +2382,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4115709,
+      "gpu": 1,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "R_DIRECT",
       "model_seed": 2026092701,
       "row_id": "R_DIRECT-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -2708,13 +2734,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4116197,
+      "gpu": 2,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "R_DIRECT_HI",
       "model_seed": 2026092701,
       "row_id": "R_DIRECT_HI-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -3056,13 +3086,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4116283,
+      "gpu": 3,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "O_CE",
       "model_seed": 2026092702,
       "row_id": "O_CE-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -3404,13 +3438,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4116367,
+      "gpu": 4,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "O_EMA",
       "model_seed": 2026092702,
       "row_id": "O_EMA-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -3752,13 +3790,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4116454,
+      "gpu": 5,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "O_DIRECT",
       "model_seed": 2026092702,
       "row_id": "O_DIRECT-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -4100,13 +4142,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4116537,
+      "gpu": 6,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "O_DIRECT_HI",
       "model_seed": 2026092702,
       "row_id": "O_DIRECT_HI-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -4448,13 +4494,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4116621,
+      "gpu": 7,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "R_CE",
       "model_seed": 2026092702,
       "row_id": "R_CE-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -4796,13 +4846,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4116705,
+      "gpu": 3,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "R_EMA",
       "model_seed": 2026092702,
       "row_id": "R_EMA-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -5144,13 +5198,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4116792,
+      "gpu": 4,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "R_DIRECT",
       "model_seed": 2026092702,
       "row_id": "R_DIRECT-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -5492,13 +5550,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4116875,
+      "gpu": 5,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "R_DIRECT_HI",
       "model_seed": 2026092702,
       "row_id": "R_DIRECT_HI-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -5840,13 +5902,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4117014,
+      "gpu": 0,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "O_CE",
       "model_seed": 2026092703,
       "row_id": "O_CE-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -6188,13 +6254,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4117098,
+      "gpu": 1,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "O_EMA",
       "model_seed": 2026092703,
       "row_id": "O_EMA-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -6536,13 +6606,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4117182,
+      "gpu": 2,
+      "process_verified": true,
+      "resolved_config_verified": true
     },
     {
       "arm": "O_DIRECT",
       "model_seed": 2026092703,
       "row_id": "O_DIRECT-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -6890,7 +6964,7 @@
       "arm": "O_DIRECT_HI",
       "model_seed": 2026092703,
       "row_id": "O_DIRECT_HI-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -7238,7 +7312,7 @@
       "arm": "R_CE",
       "model_seed": 2026092703,
       "row_id": "R_CE-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -7586,7 +7660,7 @@
       "arm": "R_EMA",
       "model_seed": 2026092703,
       "row_id": "R_EMA-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -7934,7 +8008,7 @@
       "arm": "R_DIRECT",
       "model_seed": 2026092703,
       "row_id": "R_DIRECT-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -8282,7 +8356,7 @@
       "arm": "R_DIRECT_HI",
       "model_seed": 2026092703,
       "row_id": "R_DIRECT_HI-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -8791,7 +8865,7 @@
       }
     }
   },
-  "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
+  "execution_commit": "cefa563d861b49a9a7d20dd3682234d28d1ecf88",
   "goal_assessment": {
     "primary_arm": "C8",
     "threshold": 0.84,
@@ -8813,5 +8887,6 @@
     "Epoch compression test-feedback exception does not apply here; all fixed24 rows report.",
     "Current goal remains unmet; source-only evidence motivated controls, not target scores."
   ],
-  "registered_at": "2026-10-11T12:06:38+00:00"
+  "registered_at": "2026-10-11T12:06:38+00:00",
+  "updated_at": "2026-10-11T12:09:48.387913+00:00"
 }
