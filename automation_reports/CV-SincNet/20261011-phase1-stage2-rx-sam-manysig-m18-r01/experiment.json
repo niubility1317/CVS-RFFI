@@ -6810,7 +6810,7 @@
       "arm": "RANK",
       "model_seed": 2026092701,
       "row_id": "RANK-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -7577,8 +7577,8 @@
       ],
       "pid": 54804,
       "gpu": 4,
-      "live_epoch": 13,
-      "live_identity_updates": 2886
+      "live_epoch": 40,
+      "live_identity_updates": 8880
     },
     {
       "arm": "SAM_RANK",
@@ -8762,7 +8762,7 @@
       "arm": "SAM_SSL",
       "model_seed": 2026092702,
       "row_id": "SAM_SSL-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -9159,8 +9159,8 @@
       ],
       "pid": 55057,
       "gpu": 1,
-      "live_epoch": 11,
-      "live_identity_updates": 2535
+      "live_epoch": 40,
+      "live_identity_updates": 8880
     },
     {
       "arm": "PHYS",
@@ -9974,7 +9974,7 @@
       "arm": "RANK",
       "model_seed": 2026092702,
       "row_id": "RANK-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -10741,8 +10741,8 @@
       ],
       "pid": 55716,
       "gpu": 6,
-      "live_epoch": 12,
-      "live_identity_updates": 2739
+      "live_epoch": 40,
+      "live_identity_updates": 8880
     },
     {
       "arm": "SAM_RANK",
@@ -13138,7 +13138,7 @@
       "arm": "RANK",
       "model_seed": 2026092703,
       "row_id": "RANK-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_sam_v1",
         "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
@@ -13905,8 +13905,8 @@
       ],
       "pid": 56220,
       "gpu": 0,
-      "live_epoch": 12,
-      "live_identity_updates": 2664
+      "live_epoch": 40,
+      "live_identity_updates": 8880
     },
     {
       "arm": "SAM_RANK",
@@ -14776,19 +14776,15 @@
   "execution_commit": "f73d4aa3046f41d4dd3c4d56005af538e9f703da",
   "delivery_verdict": "VERIFIED",
   "results": {
-    "complete_rows": 6,
+    "complete_rows": 10,
     "missing_rows": [
       "SAM_SSL-s2026092701",
       "SAM_PHYS-s2026092701",
-      "RANK-s2026092701",
       "SAM_RANK-s2026092701",
-      "SAM_SSL-s2026092702",
       "SAM_PHYS-s2026092702",
-      "RANK-s2026092702",
       "SAM_RANK-s2026092702",
       "SAM_SSL-s2026092703",
       "SAM_PHYS-s2026092703",
-      "RANK-s2026092703",
       "SAM_RANK-s2026092703"
     ],
     "complete_arms_reaching_84": [],
