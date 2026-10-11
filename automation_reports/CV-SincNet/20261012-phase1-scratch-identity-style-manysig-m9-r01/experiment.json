@@ -232,7 +232,7 @@
       "arm": "DELAY_JOINT",
       "model_seed": 2026092701,
       "row_id": "DELAY_JOINT-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_identity_style",
       "purpose": "源L完整反事实支持的clean-inclusive困难风格；三种校准策略全部保留，各三种子随机学生20轮，自动clean",
       "config": {
@@ -660,7 +660,9 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 362807,
       "gpu": 4,
-      "live_epoch": 19
+      "live_epoch": 20,
+      "scoring_evidence_collected": true,
+      "live_identity_updates": 4440
     },
     {
       "arm": "CAP_JOINT",
@@ -1094,7 +1096,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 363011,
       "gpu": 4,
-      "live_epoch": 18
+      "live_epoch": 19
     },
     {
       "arm": "DELAYCAP_JOINT",
@@ -2400,7 +2402,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 363285,
       "gpu": 5,
-      "live_epoch": 17
+      "live_epoch": 18
     },
     {
       "arm": "DELAYCAP_JOINT",
@@ -2834,7 +2836,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 363370,
       "gpu": 4,
-      "live_epoch": 18
+      "live_epoch": 19
     },
     {
       "arm": "DELAY_JOINT",
@@ -3276,7 +3278,7 @@
       "arm": "CAP_JOINT",
       "model_seed": 2026092703,
       "row_id": "CAP_JOINT-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_identity_style",
       "purpose": "源L完整反事实支持的clean-inclusive困难风格；三种校准策略全部保留，各三种子随机学生20轮，自动clean",
       "config": {
@@ -3704,7 +3706,9 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 363537,
       "gpu": 6,
-      "live_epoch": 19
+      "live_epoch": 20,
+      "scoring_evidence_collected": true,
+      "live_identity_updates": 4440
     },
     {
       "arm": "DELAYCAP_JOINT",
@@ -4138,20 +4142,20 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 363621,
       "gpu": 5,
-      "live_epoch": 17
+      "live_epoch": 18
     }
   ],
   "registered_at": "2026-10-11T22:32:16+00:00",
   "execution_commit": "67ea1c1822c8e77a9dde6aa67914b517749d933c",
   "delivery_verdict": "VERIFIED",
   "progress": {
-    "read_at": 1791761701.221513,
+    "read_at": 1791761908.4864204,
     "launched": 9,
-    "active_processes_verified": 6,
+    "active_processes_verified": 4,
     "pending": 0,
-    "scored_rows": 3,
-    "source_fully_audited_rows": 3,
-    "source_fully_audited_steps": 13320,
+    "scored_rows": 5,
+    "source_fully_audited_rows": 5,
+    "source_fully_audited_steps": 22200,
     "failures": [],
     "goal_status": "UNPROVEN"
   }
