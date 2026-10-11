@@ -1,0 +1,54 @@
+{
+  "status": "PASS",
+  "rows": 18,
+  "arms": [
+    {
+      "arm": "CE",
+      "online_auxiliary": false,
+      "auxiliary_parameters": 0,
+      "trainable_auxiliary_parameters": 0,
+      "finite_forward_backward": true
+    },
+    {
+      "arm": "SSL",
+      "online_auxiliary": false,
+      "auxiliary_parameters": 0,
+      "trainable_auxiliary_parameters": 0,
+      "finite_forward_backward": true
+    },
+    {
+      "arm": "PHYS",
+      "online_auxiliary": false,
+      "auxiliary_parameters": 0,
+      "trainable_auxiliary_parameters": 0,
+      "finite_forward_backward": true
+    },
+    {
+      "arm": "RFIX",
+      "online_auxiliary": false,
+      "auxiliary_parameters": 12721,
+      "trainable_auxiliary_parameters": 0,
+      "finite_forward_backward": true
+    },
+    {
+      "arm": "RANK",
+      "online_auxiliary": true,
+      "auxiliary_parameters": 12721,
+      "trainable_auxiliary_parameters": 12721,
+      "finite_forward_backward": true
+    },
+    {
+      "arm": "MARGIN",
+      "online_auxiliary": true,
+      "auxiliary_parameters": 12721,
+      "trainable_auxiliary_parameters": 12721,
+      "finite_forward_backward": true
+    }
+  ],
+  "matched_CE_SSL_PHYS_objectives": true,
+  "U_TX_not_used": true,
+  "auxiliary_identity_gradient_zero": true,
+  "delayed_activation": true,
+  "exact_zero_action": true,
+  "target_access": false
+}
