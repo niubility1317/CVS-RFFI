@@ -1,0 +1,79 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "target_access": false,
+  "analytic_parameter_gradient_max_error": 1.1102230246251565e-16,
+  "Fishr_backbone_only": true,
+  "heads_learn_by_CE": true,
+  "actual_real_layer_shapes": {
+    "time_down": [
+      60,
+      48,
+      128
+    ],
+    "t2.pool": [
+      60,
+      96,
+      32
+    ]
+  },
+  "budget": {
+    "mode": "budget",
+    "levels": {
+      "time_down": {
+        "main_ce_gradient_norm": 0.3989914568624274,
+        "raw_fishr_gradient_norm": 0.00019468994763641577,
+        "coefficient": 143.45579818569976,
+        "uncapped_coefficient": 143.45579818569976,
+        "coefficient_detached": true,
+        "coefficient_cap": 10000.0,
+        "cap_active": false,
+        "requested_ratio_pre_level_mean": 0.06999999999999999,
+        "achieved_ratio_pre_level_mean": 0.06999999964045395,
+        "achieved_direct_contribution_ratio": 0.034999999820226974,
+        "parameters": 3,
+        "reason": null,
+        "raw_loss": 0.00012675183825194836
+      },
+      "t2.pool": {
+        "main_ce_gradient_norm": 0.7947654166805909,
+        "raw_fishr_gradient_norm": 0.00042781111095121897,
+        "coefficient": 130.04238930097017,
+        "uncapped_coefficient": 130.04238930097017,
+        "coefficient_detached": true,
+        "coefficient_cap": 10000.0,
+        "cap_active": false,
+        "requested_ratio_pre_level_mean": 0.06999999999999999,
+        "achieved_ratio_pre_level_mean": 0.06999999983637638,
+        "achieved_direct_contribution_ratio": 0.03499999991818819,
+        "parameters": 4,
+        "reason": null,
+        "raw_loss": 0.00023107361630536616
+      }
+    },
+    "level_reduction": "mean",
+    "weighted_loss": 0.02411632612347603,
+    "EMA": false,
+    "combined_group_gradient_ratios": {
+      "time_down": {
+        "gradient_norm": 0.05485592923285333,
+        "ratio_to_main_ce": 0.13748647568603883
+      },
+      "t2.pool": {
+        "gradient_norm": 0.027816811561366468,
+        "ratio_to_main_ce": 0.03500002765287131
+      }
+    }
+  },
+  "cap_behavior": true,
+  "zero_gradient_safe": true,
+  "raw_coefficient_preserved": true,
+  "auxiliary_rng_preserved": true,
+  "U_truth_poison_not_accessed": true,
+  "U_both_donors_confident": true,
+  "main_dropout_unchanged": true,
+  "main_rng_consumption_unchanged": true,
+  "hooks_cleaned": true,
+  "inference_bitwise_unchanged": true,
+  "cached_warm_heads_only": true
+}

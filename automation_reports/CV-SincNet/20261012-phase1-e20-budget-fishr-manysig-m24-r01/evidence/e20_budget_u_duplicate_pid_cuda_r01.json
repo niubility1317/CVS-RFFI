@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "seeds": 32,
+  "U_repeated_PID_allowed": true,
+  "same_physical_PID_donor_forbidden": true,
+  "other_PID_legal_donors_used": true,
+  "low_confidence_unique_groups_unmixed": true,
+  "unique_PID_old_new_bitwise_equal": true,
+  "unique_PID_random_draw_trajectory_equal": true,
+  "global_RNG_unchanged": true,
+  "L_uniqueness_preserved": true
+}
