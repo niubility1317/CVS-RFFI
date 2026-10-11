@@ -61,3 +61,6 @@ clean 与额外训练前向使用相同 dropout RNG，额外流程退出恢复�
 
 
 [源域校准强度诊断与下一步对照](source_calibration_drift.md)基于三个中层方案全部辅助步骤，记录实际梯度比例与边界；没有改变当前训练。
+
+
+源机制汇总扩展到全部已闭合25行、111000步，覆盖7个风格行和14个敏感度参数组；见[source_mechanism_findings.md](source_mechanism_findings.md)。恒等候选反事实覆盖4个困难/联合行的15984个活跃批次，见[source_identity_counterfactual.md](source_identity_counterfactual.md)。仅复算已有源读出，不是新增训练结果。
