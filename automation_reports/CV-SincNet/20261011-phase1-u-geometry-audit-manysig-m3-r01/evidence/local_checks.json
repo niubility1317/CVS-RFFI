@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "target_stopgrad": true,
+  "logit_shift_invariant": true,
+  "identity_view_zero": true,
+  "exact_energy_partition": true,
+  "KL_saturation_counterexample": true,
+  "rows": 3
+}
