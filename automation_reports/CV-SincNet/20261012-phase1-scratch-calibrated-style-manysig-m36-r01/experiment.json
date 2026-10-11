@@ -883,13 +883,13 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 318023,
       "gpu": 0,
-      "live_epoch": 3
+      "live_epoch": 11
     },
     {
       "arm": "DELAY_M_MIDDLE",
       "model_seed": 2026092701,
       "row_id": "DELAY_M_MIDDLE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_calibrated_style",
       "purpose": "源日志梯度漂移驱动的12方案三种子固定对照：浅层/中层/双层/双层加风格×延后校准/联合限幅/二者结合；学生从头20轮，自动clean",
       "config": {
@@ -1312,7 +1312,9 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 318109,
       "gpu": 1,
-      "live_epoch": 4
+      "live_epoch": 20,
+      "scoring_evidence_collected": true,
+      "live_identity_updates": 4440
     },
     {
       "arm": "DELAY_M_BOTH",
@@ -1742,7 +1744,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 318198,
       "gpu": 2,
-      "live_epoch": 2
+      "live_epoch": 12
     },
     {
       "arm": "DELAY_JOINT",
@@ -2175,7 +2177,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 318285,
       "gpu": 3,
-      "live_epoch": 2
+      "live_epoch": 6
     },
     {
       "arm": "CAP_M_SHALLOW",
@@ -2604,13 +2606,13 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 318372,
       "gpu": 5,
-      "live_epoch": 2
+      "live_epoch": 11
     },
     {
       "arm": "CAP_M_MIDDLE",
       "model_seed": 2026092701,
       "row_id": "CAP_M_MIDDLE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_calibrated_style",
       "purpose": "源日志梯度漂移驱动的12方案三种子固定对照：浅层/中层/双层/双层加风格×延后校准/联合限幅/二者结合；学生从头20轮，自动clean",
       "config": {
@@ -3033,7 +3035,9 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 318516,
       "gpu": 6,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "scoring_evidence_collected": true,
+      "live_identity_updates": 4440
     },
     {
       "arm": "CAP_M_BOTH",
@@ -3463,7 +3467,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 318685,
       "gpu": 7,
-      "live_epoch": 2
+      "live_epoch": 9
     },
     {
       "arm": "CAP_JOINT",
@@ -3896,7 +3900,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 318772,
       "gpu": 7,
-      "live_epoch": 2
+      "live_epoch": 5
     },
     {
       "arm": "DELAYCAP_M_SHALLOW",
@@ -4325,7 +4329,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 318857,
       "gpu": 3,
-      "live_epoch": 2
+      "live_epoch": 13
     },
     {
       "arm": "DELAYCAP_M_MIDDLE",
@@ -4754,7 +4758,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 318940,
       "gpu": 5,
-      "live_epoch": 2
+      "live_epoch": 16
     },
     {
       "arm": "DELAYCAP_M_BOTH",
@@ -5184,7 +5188,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 319026,
       "gpu": 6,
-      "live_epoch": 2
+      "live_epoch": 10
     },
     {
       "arm": "DELAYCAP_JOINT",
@@ -5617,7 +5621,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 319110,
       "gpu": 1,
-      "live_epoch": 2
+      "live_epoch": 7
     },
     {
       "arm": "DELAY_M_SHALLOW",
@@ -6046,13 +6050,13 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 319194,
       "gpu": 0,
-      "live_epoch": 2
+      "live_epoch": 10
     },
     {
       "arm": "DELAY_M_MIDDLE",
       "model_seed": 2026092702,
       "row_id": "DELAY_M_MIDDLE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_calibrated_style",
       "purpose": "源日志梯度漂移驱动的12方案三种子固定对照：浅层/中层/双层/双层加风格×延后校准/联合限幅/二者结合；学生从头20轮，自动clean",
       "config": {
@@ -6475,7 +6479,9 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 319278,
       "gpu": 2,
-      "live_epoch": 2
+      "live_epoch": 20,
+      "scoring_evidence_collected": true,
+      "live_identity_updates": 4440
     },
     {
       "arm": "DELAY_M_BOTH",
@@ -6905,7 +6911,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 319362,
       "gpu": 2,
-      "live_epoch": 2
+      "live_epoch": 11
     },
     {
       "arm": "DELAY_JOINT",
@@ -7338,7 +7344,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 319448,
       "gpu": 1,
-      "live_epoch": 2
+      "live_epoch": 7
     },
     {
       "arm": "CAP_M_SHALLOW",
@@ -7767,7 +7773,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 319941,
       "gpu": 0,
-      "live_epoch": 2
+      "live_epoch": 9
     },
     {
       "arm": "CAP_M_MIDDLE",
@@ -8196,7 +8202,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 320025,
       "gpu": 6,
-      "live_epoch": 2
+      "live_epoch": 19
     },
     {
       "arm": "CAP_M_BOTH",
@@ -8626,7 +8632,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 320109,
       "gpu": 5,
-      "live_epoch": 2
+      "live_epoch": 9
     },
     {
       "arm": "CAP_JOINT",
@@ -9059,7 +9065,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 320195,
       "gpu": 3,
-      "live_epoch": 2
+      "live_epoch": 5
     },
     {
       "arm": "DELAYCAP_M_SHALLOW",
@@ -9488,13 +9494,13 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 320279,
       "gpu": 7,
-      "live_epoch": 2
+      "live_epoch": 11
     },
     {
       "arm": "DELAYCAP_M_MIDDLE",
       "model_seed": 2026092702,
       "row_id": "DELAYCAP_M_MIDDLE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_calibrated_style",
       "purpose": "源日志梯度漂移驱动的12方案三种子固定对照：浅层/中层/双层/双层加风格×延后校准/联合限幅/二者结合；学生从头20轮，自动clean",
       "config": {
@@ -9917,13 +9923,15 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
       "pid": 320363,
       "gpu": 4,
-      "live_epoch": 2
+      "live_epoch": 20,
+      "scoring_evidence_collected": true,
+      "live_identity_updates": 4440
     },
     {
       "arm": "DELAYCAP_M_BOTH",
       "model_seed": 2026092702,
       "row_id": "DELAYCAP_M_BOTH-s2026092702",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_calibrated_style",
       "purpose": "源日志梯度漂移驱动的12方案三种子固定对照：浅层/中层/双层/双层加风格×延后校准/联合限幅/二者结合；学生从头20轮，自动clean",
       "config": {
@@ -10344,13 +10352,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
+      "pid": 326327,
+      "gpu": 4,
+      "live_epoch": 6
     },
     {
       "arm": "DELAYCAP_JOINT",
       "model_seed": 2026092702,
       "row_id": "DELAYCAP_JOINT-s2026092702",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_calibrated_style",
       "purpose": "源日志梯度漂移驱动的12方案三种子固定对照：浅层/中层/双层/双层加风格×延后校准/联合限幅/二者结合；学生从头20轮，自动clean",
       "config": {
@@ -10774,13 +10785,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
+      "pid": 329896,
+      "gpu": 1,
+      "live_epoch": 3
     },
     {
       "arm": "DELAY_M_SHALLOW",
       "model_seed": 2026092703,
       "row_id": "DELAY_M_SHALLOW-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_calibrated_style",
       "purpose": "源日志梯度漂移驱动的12方案三种子固定对照：浅层/中层/双层/双层加风格×延后校准/联合限幅/二者结合；学生从头20轮，自动clean",
       "config": {
@@ -11200,13 +11214,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
+      "pid": 330857,
+      "gpu": 4,
+      "live_epoch": 5
     },
     {
       "arm": "DELAY_M_MIDDLE",
       "model_seed": 2026092703,
       "row_id": "DELAY_M_MIDDLE-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_calibrated_style",
       "purpose": "源日志梯度漂移驱动的12方案三种子固定对照：浅层/中层/双层/双层加风格×延后校准/联合限幅/二者结合；学生从头20轮，自动clean",
       "config": {
@@ -11626,13 +11643,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
+      "pid": 335293,
+      "gpu": 4,
+      "live_epoch": 2
     },
     {
       "arm": "DELAY_M_BOTH",
       "model_seed": 2026092703,
       "row_id": "DELAY_M_BOTH-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_calibrated_style",
       "purpose": "源日志梯度漂移驱动的12方案三种子固定对照：浅层/中层/双层/双层加风格×延后校准/联合限幅/二者结合；学生从头20轮，自动clean",
       "config": {
@@ -12053,13 +12073,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
+      "pid": 335504,
+      "gpu": 2,
+      "live_epoch": 2
     },
     {
       "arm": "DELAY_JOINT",
       "model_seed": 2026092703,
       "row_id": "DELAY_JOINT-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_scratch_calibrated_style",
       "purpose": "源日志梯度漂移驱动的12方案三种子固定对照：浅层/中层/双层/双层加风格×延后校准/联合限幅/二者结合；学生从头20轮，自动clean",
       "config": {
@@ -12483,7 +12506,10 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seed. Null not inferred zero.",
+      "pid": 335767,
+      "gpu": 6,
+      "live_epoch": 0
     },
     {
       "arm": "CAP_M_SHALLOW",
@@ -15912,5 +15938,16 @@
     "pending": 14,
     "validated_rows": 22,
     "read_at": 1791754629.7067626
+  },
+  "progress": {
+    "read_at": 1791755849.267833,
+    "launched": 28,
+    "active_processes_verified": 24,
+    "pending": 8,
+    "scored_rows": 4,
+    "source_fully_audited_rows": 4,
+    "source_fully_audited_steps": 17760,
+    "failures": [],
+    "goal_status": "UNPROVEN"
   }
 }

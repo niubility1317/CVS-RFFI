@@ -63,3 +63,8 @@ L 6,300、隐藏 TX 的 U 56,700、V 27,000；沿用既有物理 ID 与角色契
 在训快照覆盖22行、17540条已写入源步骤和1108个限幅辅助步，联合梯度上限均通过。见[source_prefix_audit.md](source_prefix_audit.md)。这不是完整训练或性能提升证明。
 
 第0与444步校准对照见[calibration_effect.md](calibration_effect.md)。同seed纯CE预热存在数值轨迹差异，不能解释为共享同一中间权重，见[warmup_pairing_audit.md](warmup_pairing_audit.md)。现有36行配置、队列和测试规则未改变。
+
+
+## 首行完整训练及测试读回
+
+首行 DELAY_M_MIDDLE-s2026092701 完成20轮、4440次更新、clean168000条预测及独立评分。完整源日志无异常；三种子结果仍不完整。见[当前进展](progress.md)、[测试结果](test_results.md)及[固定对照](reference_comparisons.md)。校准的完整源轨迹对照见[源机制分析](closed_calibration_comparison.md)，不把单seed或源梯度尺度变化当作泛化提升证明。

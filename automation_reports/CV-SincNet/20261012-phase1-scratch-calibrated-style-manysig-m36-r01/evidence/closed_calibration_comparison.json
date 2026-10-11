@@ -1,0 +1,106 @@
+{
+  "status": "VERIFIED",
+  "source_only": true,
+  "target_access": false,
+  "rows": [
+    {
+      "run": "20261012-phase1-scratch-boundary-style-manysig-m27-r01",
+      "row_id": "M_MIDDLE-s2026092701",
+      "seed": 2026092701,
+      "steps": 4440,
+      "calibration_coefficient": 1.0312248707015579,
+      "ratios": {
+        "time_down/ratio_to_main_ce": {
+          "observations": 999,
+          "mean": 2.28047847596931,
+          "min": 0.004777440873234284,
+          "max": 37.65223423563489,
+          "first": 0.004777440873234284,
+          "last": 5.820794649520307,
+          "positive": 999,
+          "zero": 0,
+          "negative": 0,
+          "q10": 0.7149948651699426,
+          "median": 1.7836666217811097,
+          "q90": 4.518126464104521
+        },
+        "t2.pool/ratio_to_main_ce": {
+          "observations": 999,
+          "mean": 2.1593302785914164,
+          "min": 0.0030889267732934237,
+          "max": 32.272420571890855,
+          "first": 0.0030889267732934237,
+          "last": 5.845926628170825,
+          "positive": 999,
+          "zero": 0,
+          "negative": 0,
+          "q10": 0.5489955529535088,
+          "median": 1.5516897143792545,
+          "q90": 4.564886581887285
+        }
+      },
+      "last_CE": 0.06848972195944002,
+      "last_KL": 0.05620256479963794,
+      "last_weight_movement": {
+        "encoder": {
+          "delta_l2": 7.423198223114014,
+          "relative_l2": 0.1423066407442093
+        },
+        "fusion_head": {
+          "delta_l2": 6.56607723236084,
+          "relative_l2": 0.19669127464294434
+        }
+      }
+    },
+    {
+      "run": "20261012-phase1-scratch-calibrated-style-manysig-m36-r01",
+      "row_id": "DELAY_M_MIDDLE-s2026092701",
+      "seed": 2026092701,
+      "steps": 4440,
+      "calibration_coefficient": 0.02007943397309874,
+      "ratios": {
+        "time_down/ratio_to_main_ce": {
+          "observations": 999,
+          "mean": 0.07759318121971327,
+          "min": 5.4919989207410165e-05,
+          "max": 0.9017658042865969,
+          "first": 5.4919989207410165e-05,
+          "last": 0.0981339032339939,
+          "positive": 999,
+          "zero": 0,
+          "negative": 0,
+          "q10": 0.01938399532315552,
+          "median": 0.06033527634370161,
+          "q90": 0.15213746732824077
+        },
+        "t2.pool/ratio_to_main_ce": {
+          "observations": 999,
+          "mean": 0.07728000957010309,
+          "min": 4.291207817146494e-05,
+          "max": 1.1049388009227101,
+          "first": 4.291207817146494e-05,
+          "last": 0.10095110751836922,
+          "positive": 999,
+          "zero": 0,
+          "negative": 0,
+          "q10": 0.01675654347520972,
+          "median": 0.05463947309174308,
+          "q90": 0.15683232946525366
+        }
+      },
+      "last_CE": 0.06215270898128684,
+      "last_KL": 0.05511312316767536,
+      "last_weight_movement": {
+        "encoder": {
+          "delta_l2": 7.479763984680176,
+          "relative_l2": 0.14339104294776917
+        },
+        "fusion_head": {
+          "delta_l2": 6.63387393951416,
+          "relative_l2": 0.19872216880321503
+        }
+      }
+    }
+  ],
+  "scope": "two complete source trajectories of one preregistered seed; not shared intermediate weights or a causal proof; no runtime changes"
+}
