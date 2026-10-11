@@ -1,6 +1,6 @@
 {
   "run_id": "20261012-phase1-scratch-calibrated-style-manysig-m36-r01",
-  "read_at": 1791755864.238167,
+  "read_at": 1791756052.5622466,
   "queue": {
     "active": [
       "DELAY_M_SHALLOW-s2026092701",
@@ -17,7 +17,6 @@
       "DELAY_M_BOTH-s2026092702",
       "DELAY_JOINT-s2026092702",
       "CAP_M_SHALLOW-s2026092702",
-      "CAP_M_MIDDLE-s2026092702",
       "CAP_M_BOTH-s2026092702",
       "CAP_JOINT-s2026092702",
       "DELAYCAP_M_SHALLOW-s2026092702",
@@ -26,14 +25,10 @@
       "DELAY_M_SHALLOW-s2026092703",
       "DELAY_M_MIDDLE-s2026092703",
       "DELAY_M_BOTH-s2026092703",
-      "DELAY_JOINT-s2026092703"
+      "DELAY_JOINT-s2026092703",
+      "CAP_M_SHALLOW-s2026092703"
     ],
     "pending": [
-      {
-        "arm": "CAP_M_SHALLOW",
-        "model_seed": 2026092703,
-        "row_id": "CAP_M_SHALLOW-s2026092703"
-      },
       {
         "arm": "CAP_M_MIDDLE",
         "model_seed": 2026092703,
@@ -74,11 +69,12 @@
       "DELAY_M_MIDDLE-s2026092701",
       "DELAYCAP_M_MIDDLE-s2026092702",
       "DELAY_M_MIDDLE-s2026092702",
-      "CAP_M_MIDDLE-s2026092701"
+      "CAP_M_MIDDLE-s2026092701",
+      "CAP_M_MIDDLE-s2026092702"
     ],
     "failures": [],
     "max_total_processes_per_GPU": 3,
-    "updated_at": 1791755863.4762495
+    "updated_at": 1791756051.8189611
   },
   "failure": null,
   "completion": null,
@@ -4163,7 +4159,7 @@
       "process": {
         "pid": 318198,
         "start_ticks": 100223731,
-        "state": "R",
+        "state": "S",
         "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
         "argv": [
           "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -4197,7 +4193,7 @@
       "process": {
         "pid": 318285,
         "start_ticks": 100224066,
-        "state": "S",
+        "state": "R",
         "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
         "argv": [
           "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -4231,7 +4227,7 @@
       "process": {
         "pid": 318372,
         "start_ticks": 100224399,
-        "state": "S",
+        "state": "R",
         "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
         "argv": [
           "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -8211,7 +8207,7 @@
       "process": {
         "pid": 318940,
         "start_ticks": 100226060,
-        "state": "S",
+        "state": "R",
         "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
         "argv": [
           "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -8245,7 +8241,7 @@
       "process": {
         "pid": 319026,
         "start_ticks": 100226393,
-        "state": "S",
+        "state": "R",
         "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
         "argv": [
           "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -12191,7 +12187,7 @@
       "process": {
         "pid": 319362,
         "start_ticks": 100227719,
-        "state": "R",
+        "state": "S",
         "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
         "argv": [
           "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -12290,21 +12286,7 @@
     },
     {
       "row_id": "CAP_M_MIDDLE-s2026092702",
-      "process": {
-        "pid": 320025,
-        "start_ticks": 100228716,
-        "state": "S",
-        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
-        "argv": [
-          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-          "-u",
-          "-m",
-          "experiments.cvs_scratch_calibrated_style.dispatch",
-          "--worker",
-          "CAP_M_MIDDLE-s2026092702"
-        ],
-        "gpu": "6"
-      },
+      "process": null,
       "launch": {
         "row_id": "CAP_M_MIDDLE-s2026092702",
         "pid": 320025,
@@ -12320,7 +12302,3831 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-calibrated-style-manysig-m36-r01/logs/CAP_M_MIDDLE-s2026092702.log"
       },
-      "completion": null
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "CAP_M_MIDDLE-s2026092702"
+      },
+      "artifacts": {
+        "scores.json": {
+          "status": "SCORED",
+          "results": [
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "overall",
+              "stratum": "ALL",
+              "accuracy": 0.778547619047619,
+              "macro_f1": 0.7730048703400835,
+              "macro_accuracy": 0.778547619047619,
+              "query_count": 168000,
+              "confusion": [
+                [
+                  27300,
+                  72,
+                  255,
+                  348,
+                  21,
+                  4
+                ],
+                [
+                  526,
+                  11524,
+                  71,
+                  15665,
+                  181,
+                  33
+                ],
+                [
+                  2053,
+                  1325,
+                  20430,
+                  1005,
+                  222,
+                  2965
+                ],
+                [
+                  3447,
+                  6481,
+                  519,
+                  17471,
+                  33,
+                  49
+                ],
+                [
+                  4,
+                  6,
+                  21,
+                  7,
+                  27953,
+                  9
+                ],
+                [
+                  23,
+                  128,
+                  399,
+                  19,
+                  1313,
+                  26118
+                ]
+              ],
+              "NLL": 0.992976188659668,
+              "parent_fix_count": 3660,
+              "parent_break_count": 3484,
+              "net_correct_gain": 176
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "1-1",
+              "accuracy": 0.8246666666666667,
+              "macro_f1": 0.8105358992102003,
+              "macro_accuracy": 0.8246666666666665,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3996,
+                  1,
+                  1,
+                  2,
+                  0,
+                  0
+                ],
+                [
+                  44,
+                  1293,
+                  2,
+                  2660,
+                  1,
+                  0
+                ],
+                [
+                  143,
+                  0,
+                  3166,
+                  1,
+                  0,
+                  690
+                ],
+                [
+                  590,
+                  15,
+                  6,
+                  3389,
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  3,
+                  9,
+                  1,
+                  3984,
+                  2
+                ],
+                [
+                  3,
+                  16,
+                  8,
+                  0,
+                  9,
+                  3964
+                ]
+              ],
+              "NLL": 0.8094081878662109,
+              "parent_fix_count": 174,
+              "parent_break_count": 618,
+              "net_correct_gain": -444
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "14-7",
+              "accuracy": 0.6253333333333333,
+              "macro_f1": 0.6167897092458393,
+              "macro_accuracy": 0.6253333333333333,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3963,
+                  0,
+                  0,
+                  37,
+                  0,
+                  0
+                ],
+                [
+                  19,
+                  719,
+                  0,
+                  3260,
+                  2,
+                  0
+                ],
+                [
+                  150,
+                  271,
+                  2504,
+                  3,
+                  20,
+                  1052
+                ],
+                [
+                  18,
+                  3376,
+                  487,
+                  76,
+                  1,
+                  42
+                ],
+                [
+                  1,
+                  1,
+                  0,
+                  1,
+                  3994,
+                  3
+                ],
+                [
+                  1,
+                  2,
+                  229,
+                  0,
+                  16,
+                  3752
+                ]
+              ],
+              "NLL": 1.5814658403396606,
+              "parent_fix_count": 864,
+              "parent_break_count": 409,
+              "net_correct_gain": 455
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "2-1",
+              "accuracy": 0.836875,
+              "macro_f1": 0.8359629350673242,
+              "macro_accuracy": 0.836875,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3556,
+                  58,
+                  202,
+                  164,
+                  18,
+                  2
+                ],
+                [
+                  18,
+                  1869,
+                  7,
+                  1943,
+                  139,
+                  24
+                ],
+                [
+                  52,
+                  93,
+                  3323,
+                  490,
+                  21,
+                  21
+                ],
+                [
+                  56,
+                  580,
+                  6,
+                  3350,
+                  5,
+                  3
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  1,
+                  3998,
+                  0
+                ],
+                [
+                  3,
+                  2,
+                  5,
+                  0,
+                  1,
+                  3989
+                ]
+              ],
+              "NLL": 0.659332811832428,
+              "parent_fix_count": 585,
+              "parent_break_count": 445,
+              "net_correct_gain": 140
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "20-1",
+              "accuracy": 0.702375,
+              "macro_f1": 0.7056982978500467,
+              "macro_accuracy": 0.702375,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3982,
+                  2,
+                  11,
+                  1,
+                  2,
+                  2
+                ],
+                [
+                  39,
+                  1624,
+                  20,
+                  2305,
+                  8,
+                  4
+                ],
+                [
+                  231,
+                  443,
+                  2934,
+                  289,
+                  77,
+                  26
+                ],
+                [
+                  43,
+                  2196,
+                  8,
+                  1737,
+                  13,
+                  3
+                ],
+                [
+                  2,
+                  2,
+                  8,
+                  4,
+                  3981,
+                  3
+                ],
+                [
+                  16,
+                  106,
+                  145,
+                  19,
+                  1115,
+                  2599
+                ]
+              ],
+              "NLL": 1.4924882650375366,
+              "parent_fix_count": 612,
+              "parent_break_count": 570,
+              "net_correct_gain": 42
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "7-14",
+              "accuracy": 0.8774583333333333,
+              "macro_f1": 0.8684821375680672,
+              "macro_accuracy": 0.8774583333333332,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3842,
+                  4,
+                  41,
+                  113,
+                  0,
+                  0
+                ],
+                [
+                  16,
+                  1566,
+                  3,
+                  2413,
+                  2,
+                  0
+                ],
+                [
+                  8,
+                  34,
+                  3871,
+                  28,
+                  53,
+                  6
+                ],
+                [
+                  9,
+                  35,
+                  3,
+                  3947,
+                  6,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  3999,
+                  1
+                ],
+                [
+                  0,
+                  2,
+                  8,
+                  0,
+                  156,
+                  3834
+                ]
+              ],
+              "NLL": 0.3778664469718933,
+              "parent_fix_count": 276,
+              "parent_break_count": 265,
+              "net_correct_gain": 11
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "7-7",
+              "accuracy": 0.748125,
+              "macro_f1": 0.7422353108241557,
+              "macro_accuracy": 0.748125,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  4000,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  385,
+                  2421,
+                  38,
+                  1126,
+                  25,
+                  5
+                ],
+                [
+                  1456,
+                  1,
+                  2541,
+                  1,
+                  1,
+                  0
+                ],
+                [
+                  2730,
+                  258,
+                  9,
+                  1002,
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  0,
+                  3999,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  4,
+                  0,
+                  4,
+                  3992
+                ]
+              ],
+              "NLL": 1.440507173538208,
+              "parent_fix_count": 709,
+              "parent_break_count": 720,
+              "net_correct_gain": -11
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "8-8",
+              "accuracy": 0.835,
+              "macro_f1": 0.8239348099188627,
+              "macro_accuracy": 0.835,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3961,
+                  7,
+                  0,
+                  31,
+                  1,
+                  0
+                ],
+                [
+                  5,
+                  2032,
+                  1,
+                  1958,
+                  4,
+                  0
+                ],
+                [
+                  13,
+                  483,
+                  2091,
+                  193,
+                  50,
+                  1170
+                ],
+                [
+                  1,
+                  21,
+                  0,
+                  3970,
+                  8,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  2,
+                  0,
+                  3998,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  12,
+                  3988
+                ]
+              ],
+              "NLL": 0.5897645354270935,
+              "parent_fix_count": 440,
+              "parent_break_count": 457,
+              "net_correct_gain": -17
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "14-10",
+              "accuracy": 0.975,
+              "macro_f1": 0.16455696202531647,
+              "macro_accuracy": 0.975,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  27300,
+                  72,
+                  255,
+                  348,
+                  21,
+                  4
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 0.08180194348096848,
+              "parent_fix_count": 234,
+              "parent_break_count": 217,
+              "net_correct_gain": 17
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "14-7",
+              "accuracy": 0.4115714285714286,
+              "macro_f1": 0.09718989306075633,
+              "macro_accuracy": 0.4115714285714286,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  526,
+                  11524,
+                  71,
+                  15665,
+                  181,
+                  33
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 2.2856006622314453,
+              "parent_fix_count": 1608,
+              "parent_break_count": 898,
+              "net_correct_gain": 710
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "20-15",
+              "accuracy": 0.7296428571428571,
+              "macro_f1": 0.14061532108197397,
+              "macro_accuracy": 0.7296428571428571,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  2053,
+                  1325,
+                  20430,
+                  1005,
+                  222,
+                  2965
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 1.04533052444458,
+              "parent_fix_count": 885,
+              "parent_break_count": 1623,
+              "net_correct_gain": -738
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "20-19",
+              "accuracy": 0.6239642857142857,
+              "macro_f1": 0.1280743037687024,
+              "macro_accuracy": 0.6239642857142857,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  3447,
+                  6481,
+                  519,
+                  17471,
+                  33,
+                  49
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 2.341651678085327,
+              "parent_fix_count": 639,
+              "parent_break_count": 346,
+              "net_correct_gain": 293
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "6-15",
+              "accuracy": 0.9983214285714286,
+              "macro_f1": 0.1665266682155857,
+              "macro_accuracy": 0.9983214285714286,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  4,
+                  6,
+                  21,
+                  7,
+                  27953,
+                  9
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "NLL": 0.007444682531058788,
+              "parent_fix_count": 8,
+              "parent_break_count": 5,
+              "net_correct_gain": 3
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "8-20",
+              "accuracy": 0.9327857142857143,
+              "macro_f1": 0.16087068997376106,
+              "macro_accuracy": 0.9327857142857143,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  23,
+                  128,
+                  399,
+                  19,
+                  1313,
+                  26118
+                ]
+              ],
+              "NLL": 0.19602760672569275,
+              "parent_fix_count": 286,
+              "parent_break_count": 395,
+              "net_correct_gain": -109
+            }
+          ],
+          "target_feedback_forbidden": true
+        },
+        "day_scores.json": {
+          "results": [
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "day",
+              "stratum": "2021_03_01",
+              "accuracy": 0.7278809523809524,
+              "macro_f1": 0.7178406182278203,
+              "macro_accuracy": 0.7278809523809523,
+              "query_count": 42000,
+              "confusion": [
+                [
+                  6647,
+                  11,
+                  152,
+                  184,
+                  4,
+                  2
+                ],
+                [
+                  75,
+                  2611,
+                  42,
+                  4164,
+                  98,
+                  10
+                ],
+                [
+                  636,
+                  242,
+                  3669,
+                  801,
+                  64,
+                  1588
+                ],
+                [
+                  1071,
+                  1408,
+                  283,
+                  4229,
+                  7,
+                  2
+                ],
+                [
+                  0,
+                  2,
+                  6,
+                  1,
+                  6989,
+                  2
+                ],
+                [
+                  5,
+                  11,
+                  366,
+                  16,
+                  176,
+                  6426
+                ]
+              ],
+              "NLL": 1.1231275796890259,
+              "parent_fix_count": 1254,
+              "parent_break_count": 1231,
+              "net_correct_gain": 23
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "day",
+              "stratum": "2021_03_08",
+              "accuracy": 0.814952380952381,
+              "macro_f1": 0.8114710349102046,
+              "macro_accuracy": 0.814952380952381,
+              "query_count": 42000,
+              "confusion": [
+                [
+                  6832,
+                  15,
+                  95,
+                  48,
+                  8,
+                  2
+                ],
+                [
+                  167,
+                  3296,
+                  4,
+                  3522,
+                  9,
+                  2
+                ],
+                [
+                  510,
+                  130,
+                  6059,
+                  50,
+                  59,
+                  192
+                ],
+                [
+                  757,
+                  1992,
+                  48,
+                  4187,
+                  4,
+                  12
+                ],
+                [
+                  3,
+                  2,
+                  2,
+                  4,
+                  6985,
+                  4
+                ],
+                [
+                  6,
+                  42,
+                  10,
+                  1,
+                  72,
+                  6869
+                ]
+              ],
+              "NLL": 0.922279417514801,
+              "parent_fix_count": 793,
+              "parent_break_count": 604,
+              "net_correct_gain": 189
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "day",
+              "stratum": "2021_03_15",
+              "accuracy": 0.7524761904761905,
+              "macro_f1": 0.7470309475706237,
+              "macro_accuracy": 0.7524761904761905,
+              "query_count": 42000,
+              "confusion": [
+                [
+                  6950,
+                  6,
+                  7,
+                  29,
+                  8,
+                  0
+                ],
+                [
+                  123,
+                  2146,
+                  5,
+                  4700,
+                  17,
+                  9
+                ],
+                [
+                  654,
+                  789,
+                  5212,
+                  46,
+                  26,
+                  273
+                ],
+                [
+                  980,
+                  2145,
+                  11,
+                  3850,
+                  13,
+                  1
+                ],
+                [
+                  0,
+                  1,
+                  9,
+                  2,
+                  6986,
+                  2
+                ],
+                [
+                  4,
+                  11,
+                  13,
+                  1,
+                  511,
+                  6460
+                ]
+              ],
+              "NLL": 1.148062825202942,
+              "parent_fix_count": 605,
+              "parent_break_count": 960,
+              "net_correct_gain": -355
+            },
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "arm": "CAP_M_MIDDLE",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "day",
+              "stratum": "2021_03_23",
+              "accuracy": 0.8188809523809524,
+              "macro_f1": 0.8139940515837408,
+              "macro_accuracy": 0.8188809523809523,
+              "query_count": 42000,
+              "confusion": [
+                [
+                  6871,
+                  40,
+                  1,
+                  87,
+                  1,
+                  0
+                ],
+                [
+                  161,
+                  3471,
+                  20,
+                  3279,
+                  57,
+                  12
+                ],
+                [
+                  253,
+                  164,
+                  5490,
+                  108,
+                  73,
+                  912
+                ],
+                [
+                  639,
+                  936,
+                  177,
+                  5205,
+                  9,
+                  34
+                ],
+                [
+                  1,
+                  1,
+                  4,
+                  0,
+                  6993,
+                  1
+                ],
+                [
+                  8,
+                  64,
+                  10,
+                  1,
+                  554,
+                  6363
+                ]
+              ],
+              "NLL": 0.7784348130226135,
+              "parent_fix_count": 1008,
+              "parent_break_count": 689,
+              "net_correct_gain": 319
+            }
+          ]
+        },
+        "parent_scores.json": {
+          "results": [
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "overall",
+              "stratum": "ALL",
+              "accuracy": 0.7775,
+              "macro_f1": 0.7714982510274956,
+              "macro_accuracy": 0.7775000000000002,
+              "query_count": 168000,
+              "confusion": [
+                [
+                  27283,
+                  247,
+                  156,
+                  255,
+                  52,
+                  7
+                ],
+                [
+                  705,
+                  10814,
+                  49,
+                  16338,
+                  70,
+                  24
+                ],
+                [
+                  1567,
+                  1074,
+                  21168,
+                  545,
+                  137,
+                  3509
+                ],
+                [
+                  3521,
+                  6730,
+                  491,
+                  17178,
+                  22,
+                  58
+                ],
+                [
+                  7,
+                  11,
+                  17,
+                  7,
+                  27950,
+                  8
+                ],
+                [
+                  21,
+                  485,
+                  447,
+                  6,
+                  814,
+                  26227
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "1-1",
+              "accuracy": 0.8431666666666666,
+              "macro_f1": 0.8290731817404825,
+              "macro_accuracy": 0.8431666666666665,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3991,
+                  4,
+                  2,
+                  3,
+                  0,
+                  0
+                ],
+                [
+                  62,
+                  1279,
+                  2,
+                  2656,
+                  1,
+                  0
+                ],
+                [
+                  11,
+                  4,
+                  3501,
+                  2,
+                  1,
+                  481
+                ],
+                [
+                  409,
+                  34,
+                  1,
+                  3556,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  5,
+                  8,
+                  4,
+                  3983,
+                  0
+                ],
+                [
+                  5,
+                  54,
+                  8,
+                  1,
+                  6,
+                  3926
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "14-7",
+              "accuracy": 0.606375,
+              "macro_f1": 0.5958622252642538,
+              "macro_accuracy": 0.606375,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3998,
+                  0,
+                  0,
+                  2,
+                  0,
+                  0
+                ],
+                [
+                  19,
+                  149,
+                  0,
+                  3828,
+                  4,
+                  0
+                ],
+                [
+                  18,
+                  16,
+                  2667,
+                  2,
+                  7,
+                  1290
+                ],
+                [
+                  31,
+                  3403,
+                  464,
+                  49,
+                  1,
+                  52
+                ],
+                [
+                  1,
+                  0,
+                  1,
+                  1,
+                  3993,
+                  4
+                ],
+                [
+                  0,
+                  2,
+                  275,
+                  0,
+                  26,
+                  3697
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "2-1",
+              "accuracy": 0.8310416666666667,
+              "macro_f1": 0.8319963211983339,
+              "macro_accuracy": 0.8310416666666667,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3456,
+                  230,
+                  125,
+                  141,
+                  47,
+                  1
+                ],
+                [
+                  13,
+                  1928,
+                  3,
+                  2008,
+                  32,
+                  16
+                ],
+                [
+                  156,
+                  261,
+                  3434,
+                  134,
+                  12,
+                  3
+                ],
+                [
+                  38,
+                  810,
+                  4,
+                  3146,
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1,
+                  1,
+                  1,
+                  3997,
+                  0
+                ],
+                [
+                  0,
+                  2,
+                  6,
+                  0,
+                  8,
+                  3984
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "20-1",
+              "accuracy": 0.700625,
+              "macro_f1": 0.7078505525488373,
+              "macro_accuracy": 0.7006249999999999,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3978,
+                  3,
+                  14,
+                  0,
+                  3,
+                  2
+                ],
+                [
+                  41,
+                  1488,
+                  25,
+                  2434,
+                  8,
+                  4
+                ],
+                [
+                  224,
+                  553,
+                  2855,
+                  267,
+                  58,
+                  43
+                ],
+                [
+                  27,
+                  2133,
+                  13,
+                  1814,
+                  9,
+                  4
+                ],
+                [
+                  6,
+                  5,
+                  4,
+                  1,
+                  3981,
+                  3
+                ],
+                [
+                  16,
+                  423,
+                  155,
+                  5,
+                  702,
+                  2699
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "7-14",
+              "accuracy": 0.877,
+              "macro_f1": 0.8650496619994605,
+              "macro_accuracy": 0.8769999999999999,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3890,
+                  0,
+                  15,
+                  90,
+                  1,
+                  4
+                ],
+                [
+                  13,
+                  1384,
+                  5,
+                  2594,
+                  4,
+                  0
+                ],
+                [
+                  3,
+                  21,
+                  3898,
+                  15,
+                  50,
+                  13
+                ],
+                [
+                  4,
+                  36,
+                  3,
+                  3950,
+                  7,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  3999,
+                  1
+                ],
+                [
+                  0,
+                  4,
+                  2,
+                  0,
+                  67,
+                  3927
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "7-7",
+              "accuracy": 0.7485833333333334,
+              "macro_f1": 0.7368361133017937,
+              "macro_accuracy": 0.7485833333333334,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3998,
+                  2,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  556,
+                  2324,
+                  12,
+                  1084,
+                  20,
+                  4
+                ],
+                [
+                  1041,
+                  3,
+                  2951,
+                  4,
+                  1,
+                  0
+                ],
+                [
+                  3011,
+                  284,
+                  5,
+                  699,
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  0,
+                  3999,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  0,
+                  4,
+                  3995
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "receiver",
+              "stratum": "8-8",
+              "accuracy": 0.8357083333333334,
+              "macro_f1": 0.823561199315031,
+              "macro_accuracy": 0.8357083333333333,
+              "query_count": 24000,
+              "confusion": [
+                [
+                  3972,
+                  8,
+                  0,
+                  19,
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  2262,
+                  2,
+                  1734,
+                  1,
+                  0
+                ],
+                [
+                  114,
+                  216,
+                  1862,
+                  121,
+                  8,
+                  1679
+                ],
+                [
+                  1,
+                  30,
+                  1,
+                  3964,
+                  4,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  2,
+                  0,
+                  3998,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  3999
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "14-10",
+              "accuracy": 0.9743928571428572,
+              "macro_f1": 0.16450506183335442,
+              "macro_accuracy": 0.9743928571428572,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  27283,
+                  247,
+                  156,
+                  255,
+                  52,
+                  7
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "14-7",
+              "accuracy": 0.38621428571428573,
+              "macro_f1": 0.09287027017742738,
+              "macro_accuracy": 0.38621428571428573,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  705,
+                  10814,
+                  49,
+                  16338,
+                  70,
+                  24
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "20-15",
+              "accuracy": 0.756,
+              "macro_f1": 0.14350797266514806,
+              "macro_accuracy": 0.756,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  1567,
+                  1074,
+                  21168,
+                  545,
+                  137,
+                  3509
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "20-19",
+              "accuracy": 0.6135,
+              "macro_f1": 0.1267431050511311,
+              "macro_accuracy": 0.6135,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  3521,
+                  6730,
+                  491,
+                  17178,
+                  22,
+                  58
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "6-15",
+              "accuracy": 0.9982142857142857,
+              "macro_f1": 0.16651772415847482,
+              "macro_accuracy": 0.9982142857142857,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  7,
+                  11,
+                  17,
+                  7,
+                  27950,
+                  8
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "row_id": "P0-s2026092702",
+              "arm": "P0",
+              "model_seed": 2026092702,
+              "stage": "phase1_scratch_calibrated_style",
+              "view": "clean",
+              "dimension": "transmitter",
+              "stratum": "8-20",
+              "accuracy": 0.9366785714285715,
+              "macro_f1": 0.16121735174974336,
+              "macro_accuracy": 0.9366785714285715,
+              "query_count": 28000,
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  21,
+                  485,
+                  447,
+                  6,
+                  814,
+                  26227
+                ]
+              ]
+            }
+          ],
+          "source": "Reused fixed clean predictions only"
+        },
+        "paired_results.json": {
+          "comparisons": [
+            {
+              "treatment": "CAP_M_MIDDLE",
+              "control": "P0",
+              "metric": "accuracy",
+              "view": "clean",
+              "seeds": [
+                2026092702
+              ],
+              "seed_count": 1,
+              "differences": [
+                0.001047619047619075
+              ],
+              "mean_difference": 0.001047619047619075,
+              "sd_difference": null,
+              "positive_seeds": 1,
+              "complete_three_seeds": false
+            }
+          ],
+          "inferential_significance_claim": false
+        },
+        "resources.json": {
+          "rows": [
+            {
+              "row_id": "CAP_M_MIDDLE-s2026092702",
+              "prediction": {
+                "status": "PREDICTIONS_COMPLETE",
+                "count": 168000,
+                "views": [
+                  "clean"
+                ],
+                "truth_read": false,
+                "query_fit": false,
+                "inference_seconds": {
+                  "clean": 7.6563256699591875
+                },
+                "wall_seconds": 9.092247265973128,
+                "peak_cuda_allocated_bytes": 91517440,
+                "peak_cuda_reserved_bytes": 130023424,
+                "peak_process_rss_bytes": 1806221312
+              },
+              "source": {
+                "parent_checkpoint": null,
+                "parent_epochs": 0,
+                "incremental_epochs": 20,
+                "total_epochs": 20,
+                "incremental_identity_updates": 4440,
+                "hardware": "NVIDIA GeForce RTX 3090",
+                "measured_training_resources": {
+                  "identity_training_and_source_diagnostics_seconds": 1291.1725887689972,
+                  "identity_training_and_source_diagnostics_including_delayed_calibration_seconds": 1291.1725887689972,
+                  "calibration_inside_main_timer_seconds": 0.0,
+                  "calibration_ready_events": 1,
+                  "calibration_after_identity_updates": 0,
+                  "incremental_total_seconds_including_warmup": 1304.1652110290015,
+                  "head_warmup": {
+                    "status": "NOT_APPLICABLE",
+                    "enabled": false,
+                    "source_L_cache_packets": 0,
+                    "cache_forward_calls": 0,
+                    "head_packet_occurrences": 0,
+                    "optimizer_steps": 0,
+                    "seconds": 0.0,
+                    "cache_tensor_bytes": 0,
+                    "optimizer_state_tensor_bytes": 0,
+                    "base_state_unchanged": true,
+                    "backbone_updates": 0,
+                    "peak_cuda_memory_bytes": 0,
+                    "rss_bytes": null,
+                    "auxiliary_inheritance": false
+                  },
+                  "fishr_calibration": {
+                    "status": "FIXED_CALIBRATION_COMPLETE",
+                    "calibration_reference": "own_margin_term",
+                    "fixed_coefficients": {
+                      "time_down": 1.4207339942472323,
+                      "t2.pool": 4.5180609889341214
+                    },
+                    "levels": {
+                      "time_down": {
+                        "mean_CE_gradient_norm": 1.6715412396843565,
+                        "mean_term_gradient_norm": 0.23530671419781282,
+                        "uncapped_coefficient": 1.4207339942472323,
+                        "coefficient": 1.4207339942472323,
+                        "cap_active": false
+                      },
+                      "t2.pool": {
+                        "mean_CE_gradient_norm": 5.933417955341867,
+                        "mean_term_gradient_norm": 0.26265329174846136,
+                        "uncapped_coefficient": 4.5180609889341214,
+                        "coefficient": 4.5180609889341214,
+                        "cap_active": false
+                      }
+                    },
+                    "pairs": 12,
+                    "records": [
+                      {
+                        "pair": 0,
+                        "day": 1,
+                        "cross_batch_PID_overlap": 1,
+                        "levels": {
+                          "time_down": {
+                            "main_ce_gradient_norm": 1.674927201688592,
+                            "term_gradient_norm": 0.29079562744576337,
+                            "raw_term": 0.08064088970422745
+                          },
+                          "t2.pool": {
+                            "main_ce_gradient_norm": 6.00319002998824,
+                            "term_gradient_norm": 0.2799367155132952,
+                            "raw_term": 0.054411016404628754
+                          }
+                        },
+                        "main_ce": 4.215547561645508,
+                        "seconds": 1.9465293739922345
+                      },
+                      {
+                        "pair": 1,
+                        "day": 2,
+                        "cross_batch_PID_overlap": 2,
+                        "levels": {
+                          "time_down": {
+                            "main_ce_gradient_norm": 1.7152750305278808,
+                            "term_gradient_norm": 0.24328427351731952,
+                            "raw_term": 0.039887331426143646
+                          },
+                          "t2.pool": {
+                            "main_ce_gradient_norm": 6.0416615023077895,
+                            "term_gradient_norm": 0.23922936084096016,
+                            "raw_term": 0.014082388021051884
+                          }
+                        },
+                        "main_ce": 4.248413562774658,
+                        "seconds": 0.8232177960453555
+                      },
+                      {
+                        "pair": 2,
+                        "day": 3,
+                        "cross_batch_PID_overlap": 2,
+                        "levels": {
+                          "time_down": {
+                            "main_ce_gradient_norm": 1.684134501884416,
+                            "term_gradient_norm": 0.2238770022279757,
+                            "raw_term": 0.09414398670196533
+                          },
+                          "t2.pool": {
+                            "main_ce_gradient_norm": 5.984337303256261,
+                            "term_gradient_norm": 0.18800371209110936,
+                            "raw_term": 0.028961587697267532
+                          }
+                        },
+                        "main_ce": 4.200224876403809,
+                        "seconds": 0.8374295510584489
+                      },
+                      {
+                        "pair": 3,
+                        "day": 1,
+                        "cross_batch_PID_overlap": 3,
+                        "levels": {
+                          "time_down": {
+                            "main_ce_gradient_norm": 1.6849320571980562,
+                            "term_gradient_norm": 0.2407834046556214,
+                            "raw_term": 0.06076503172516823
+                          },
+                          "t2.pool": {
+                            "main_ce_gradient_norm": 5.971339237181109,
+                            "term_gradient_norm": 0.24816612509552308,
+                            "raw_term": 0.014723323285579681
+                          }
+                        },
+                        "main_ce": 4.229299545288086,
+                        "seconds": 0.9315589760662988
+                      },
+                      {
+                        "pair": 4,
+                        "day": 2,
+                        "cross_batch_PID_overlap": 1,
+                        "levels": {
+                          "time_down": {
+                            "main_ce_gradient_norm": 1.70859488366928,
+                            "term_gradient_norm": 0.193200180299051,
+                            "raw_term": 0.058881815522909164
+                          },
+                          "t2.pool": {
+                            "main_ce_gradient_norm": 5.992577782777052,
+                            "term_gradient_norm": 0.24258300528622403,
+                            "raw_term": 0.04976901039481163
+                          }
+                        },
+                        "main_ce": 4.259173393249512,
+                        "seconds": 0.7625569310039282
+                      },
+                      {
+                        "pair": 5,
+                        "day": 3,
+                        "cross_batch_PID_overlap": 1,
+                        "levels": {
+                          "time_down": {
+                            "main_ce_gradient_norm": 1.6648703986669107,
+                            "term_gradient_norm": 0.2505883595921074,
+                            "raw_term": 0.06579922139644623
+                          },
+                          "t2.pool": {
+                            "main_ce_gradient_norm": 5.854705720446549,
+                            "term_gradient_norm": 0.3249420010890317,
+                            "raw_term": 0.05252857506275177
+                          }
+                        },
+                        "main_ce": 4.177867889404297,
+                        "seconds": 0.7002602390712127
+                      },
+                      {
+                        "pair": 6,
+                        "day": 1,
+                        "cross_batch_PID_overlap": 1,
+                        "levels": {
+                          "time_down": {
+                            "main_ce_gradient_norm": 1.6181091015328342,
+                            "term_gradient_norm": 0.18872514865630527,
+                            "raw_term": 0.0546359159052372
+                          },
+                          "t2.pool": {
+                            "main_ce_gradient_norm": 5.888620114734017,
+                            "term_gradient_norm": 0.46646535421993,
+                            "raw_term": 0.08934469521045685
+                          }
+                        },
+                        "main_ce": 4.23391056060791,
+                        "seconds": 0.8970375190256163
+                      },
+                      {
+                        "pair": 7,
+                        "day": 2,
+                        "cross_batch_PID_overlap": 1,
+                        "levels": {
+                          "time_down": {
+                            "main_ce_gradient_norm": 1.691632196939046,
+                            "term_gradient_norm": 0.11845425980979671,
+                            "raw_term": 0.04099641740322113
+                          },
+                          "t2.pool": {
+                            "main_ce_gradient_norm": 5.901984001330325,
+                            "term_gradient_norm": 0.28709798435789136,
+                            "raw_term": 0.020660540089011192
+                          }
+                        },
+                        "main_ce": 4.212921142578125,
+                        "seconds": 0.6549661220051348
+                      },
+                      {
+                        "pair": 8,
+                        "day": 3,
+                        "cross_batch_PID_overlap": 2,
+                        "levels": {
+                          "time_down": {
+                            "main_ce_gradient_norm": 1.6557651209209814,
+                            "term_gradient_norm": 0.34844299474574786,
+                            "raw_term": 0.16593685746192932
+                          },
+                          "t2.pool": {
+                            "main_ce_gradient_norm": 5.769229791779281,
+                            "term_gradient_norm": 0.20663968520764622,
+                            "raw_term": 0.05619897320866585
+                          }
+                        },
+                        "main_ce": 4.27000093460083,
+                        "seconds": 0.9371775720501319
+                      },
+                      {
+                        "pair": 9,
+                        "day": 1,
+                        "cross_batch_PID_overlap": 2,
+                        "levels": {
+                          "time_down": {
+                            "main_ce_gradient_norm": 1.667565120658628,
+                            "term_gradient_norm": 0.24612332953102345,
+                            "raw_term": 0.07207176834344864
+                          },
+                          "t2.pool": {
+                            "main_ce_gradient_norm": 5.963585181975022,
+                            "term_gradient_norm": 0.28828550466558217,
+                            "raw_term": 0.05522463470697403
+                          }
+                        },
+                        "main_ce": 4.224432945251465,
+                        "seconds": 0.9040865959832445
+                      },
+                      {
+                        "pair": 10,
+                        "day": 2,
+                        "cross_batch_PID_overlap": 1,
+                        "levels": {
+                          "time_down": {
+                            "main_ce_gradient_norm": 1.6844687941629706,
+                            "term_gradient_norm": 0.27271896767005543,
+                            "raw_term": 0.05765964835882187
+                          },
+                          "t2.pool": {
+                            "main_ce_gradient_norm": 5.9940082840250275,
+                            "term_gradient_norm": 0.2171897466826082,
+                            "raw_term": 0.030466096475720406
+                          }
+                        },
+                        "main_ce": 4.219246864318848,
+                        "seconds": 0.7349789768923074
+                      },
+                      {
+                        "pair": 11,
+                        "day": 3,
+                        "cross_batch_PID_overlap": 2,
+                        "levels": {
+                          "time_down": {
+                            "main_ce_gradient_norm": 1.6082204683626804,
+                            "term_gradient_norm": 0.20668702222298654,
+                            "raw_term": 0.07584232091903687
+                          },
+                          "t2.pool": {
+                            "main_ce_gradient_norm": 5.835776514301741,
+                            "term_gradient_norm": 0.1633003059317349,
+                            "raw_term": 0.021322578191757202
+                          }
+                        },
+                        "main_ce": 4.195098400115967,
+                        "seconds": 0.7717849760083482
+                      }
+                    ],
+                    "extra_source_readouts": 1440,
+                    "model_forwards": 24,
+                    "seconds": 11.348388693993911,
+                    "state_unchanged": true,
+                    "RNG_preserved": true,
+                    "parameters_buffers_unchanged": true,
+                    "modes_preserved": true,
+                    "python_numpy_RNG_preserved": true,
+                    "source_role": "L_s only",
+                    "U_access": false,
+                    "V_access": false,
+                    "target_access": false,
+                    "identity_updates": 0,
+                    "head_updates": 0,
+                    "auxiliary_heads": 0,
+                    "all_layers_calibrated": true,
+                    "after_identity_updates": 0,
+                    "scheduled_after_identity_updates": 0,
+                    "coefficient_formula": "min(cap,0.2*mean(pair_main_CE_gradient_norm)/(mean(own_margin_term_gradient_norm)+eps))",
+                    "sampling_namespace": "same twelve source-private calibration pairs as scratch boundary style; own-margin statistic"
+                  },
+                  "peak_cuda_memory_bytes": 497463808,
+                  "trainable_parameters": 177025,
+                  "total_parameters": 843134,
+                  "auxiliary_trainable_parameters": 0,
+                  "teacher_parameters": 0,
+                  "optimizer_state_tensor_bytes": 1416468,
+                  "checkpoint_bytes": 4977990,
+                  "auxiliary_saved_bytes": 526870,
+                  "parent_training_epochs": 0,
+                  "incremental_epochs": 20,
+                  "total_epochs": 20,
+                  "parent_training_cost_reused": false,
+                  "scratch_only": true,
+                  "scratch_scope": "student_identity_only",
+                  "student_initialization_checkpoint_count": 0,
+                  "whole_method_pretrained_teachers": true,
+                  "frozen_teacher_model_count": 2,
+                  "teacher_training_epochs_reused": 40,
+                  "historical_model_epochs_including_teachers": 60,
+                  "teacher_probability_bank_bytes": 1871100,
+                  "teacher_cache_resources_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-calibrated-style-manysig-m36-r01/peer_cache/completion.json",
+                  "teacher_scope": "teacher_parameters=0 means no teacher models resident during student training; extra original E20 training and shared cache forward costs reported separately",
+                  "mixed_U_packets_unit": "U MixStyle disabled",
+                  "mixed_L_packets_unit": "actual changed L packet-layer occurrences; not distinct packets",
+                  "identity_updates": 4440,
+                  "L_packets": 568320,
+                  "U_packets": 511488,
+                  "weak_forwards": 3996,
+                  "physical_L": 0,
+                  "physical_U": 0,
+                  "feature_U": 0,
+                  "margin_U": 0,
+                  "EMA_updates": 0,
+                  "satellite_calls": 0,
+                  "auxiliary_steps": 999,
+                  "auxiliary_L": 119880,
+                  "auxiliary_forwards": 1998,
+                  "fishr_steps": 999,
+                  "mixstyle_steps": 0,
+                  "style_L_packets": 0,
+                  "style_search_forwards": 0,
+                  "style_search_L": 0,
+                  "mixstyle_U_steps": 0,
+                  "mixed_U_packets": 0,
+                  "mixed_L_packets": 0
+                },
+                "shared_IQ_preparation_reused": true,
+                "training_flops": null,
+                "scope": "random student20; pretrained source-U teacher history and initial calibration separately measured; shared GPU wall cost",
+                "P0_role": "fixed score reference only; never loaded into the student"
+              }
+            }
+          ],
+          "shared_preparation_counted_once_per_seed": true
+        },
+        "scoring_complete.json": {
+          "status": "SCORED_COMPLETE",
+          "models": 1,
+          "views": 1,
+          "query_count_per_view": 168000,
+          "prediction_count": 168000,
+          "metric_records": 14,
+          "day_metric_records": 4,
+          "truth_last": true,
+          "independent_recount": "VERIFIED"
+        }
+      },
+      "source_completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 20,
+        "total_epochs": 20,
+        "optimizer_steps": 4440,
+        "logged_steps": 4440,
+        "config": {
+          "schema": "scratch_calibrated_style_v1",
+          "run_id": "20261012-phase1-scratch-calibrated-style-manysig-m36-r01",
+          "arm": "CAP_M_MIDDLE",
+          "model_seed": 2026092702,
+          "row_id": "CAP_M_MIDDLE-s2026092702",
+          "stage": "phase1_scratch_calibrated_style",
+          "method": "cvs_scratch_calibrated_style",
+          "variant": "reference_response",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-calibrated-style-manysig-m36-r01/CAP_M_MIDDLE-s2026092702/source",
+          "launch_owner": "codex/root/scratch-calibrated-style-20261012",
+          "model_initialization": "scratch",
+          "checkpoint_sources": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092703/source/final_ssdg.pth"
+          ],
+          "parent_checkpoint": null,
+          "reference_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092702/source/final_ssdg.pth",
+          "reference_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092702/prediction/predictions.npz",
+          "reference_config": {
+            "schema": "ce_epoch_compression_v1",
+            "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+            "stage": "ce_epoch_compression",
+            "arm": "native",
+            "model_seed": 2026092702,
+            "row_id": "E20-s2026092702",
+            "features": [],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092702/source",
+            "epochs": 20,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_ce_epoch2040",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06,
+            "risk_recipe": {
+              "warmup_epochs": 20,
+              "auxiliary_every_steps": 4,
+              "auxiliary_batch_size": 32,
+              "auxiliary_lr": 0.0002,
+              "auxiliary_lr_min": 1e-06,
+              "reference_refresh_steps": 888,
+              "gradient_audit_every_steps": 888,
+              "epochs": 20,
+              "steps_per_epoch": 222,
+              "hidden": 48,
+              "branch_weights": {
+                "linear": 0.015,
+                "temporal": 0.015,
+                "joint": 0.02,
+                "receiver": 0.01
+              },
+              "proposal_candidates": 4,
+              "random_fraction": 0.25,
+              "receiver_tail_alpha": 0.25,
+              "proposal_risk_relative_tolerance": 0.25,
+              "proposal_risk_error_ema": 0.9,
+              "proposal_quality_bins": 4,
+              "proposal_min_distinct_audit_ids": 16,
+              "receiver_live_audit_reencode_max": 32,
+              "auxiliary_batch_scope": "at most32 fresh source-L packets; R may separately re-encode at most32 cached audit IQ packets; count both",
+              "receiver_max_age_steps": 888,
+              "resume": false,
+              "source_selection": "fixed final epoch; all three rows tested",
+              "deployment": "identity_only",
+              "reference": "periodically frozen own student; no EMA teacher",
+              "action_scope": "bounded post-receive linear/phase increments; no satellite simulator in training",
+              "source_u_scope": "No U access in any arm"
+            },
+            "arm_plan": {
+              "paths": [],
+              "action_mode": "proposal",
+              "shared": false,
+              "r_target": "distribution",
+              "consistency_weight": 0.0,
+              "action_label_free": false,
+              "source_u_fit": false,
+              "replacements": [],
+              "conditional_edges": true
+            },
+            "source_stress": {
+              "seed": 2026101007,
+              "physical_selection": "all existing source V",
+              "batch_size": 256,
+              "views": [
+                "clean",
+                "linear",
+                "temporal",
+                "LT",
+                "TL",
+                "noise_fixed_LT",
+                "LTL_heldout",
+                "curvature_pressure"
+              ],
+              "clean_noninferiority_pp": 0.5,
+              "noise_tie_pp": 0.0,
+              "tail_alpha": 0.25,
+              "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
+              "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
+            },
+            "feature_plan": {
+              "relation": "none",
+              "style": false,
+              "fishr": "none",
+              "fishr_ratio": 0.0,
+              "r_identity": true,
+              "selection_required": false
+            },
+            "feature_recipe": {
+              "relation_every": 8,
+              "relation_weight": 0.1,
+              "relation_batch": 48,
+              "relation_calls": 5550,
+              "relation_packet_occurrences": 266400,
+              "positive_fishr_calls": 4995,
+              "relation_blocks": 30,
+              "source_rx": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "source_days": [
+                0,
+                1,
+                2
+              ],
+              "source_classes": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "style_probability": 0.15,
+              "style_eta": 0.2,
+              "style_alpha": 0.1,
+              "style_location": "time_down",
+              "fishr_beta": 0.9,
+              "fishr_scale": 30.0,
+              "fishr_coordinates": 960,
+              "fishr_scene_weights": {
+                "clean": 1.0
+              },
+              "warmup_epochs": 20,
+              "ramp_epochs": 20,
+              "calibration_epoch": 20,
+              "calibration_target_ratios": [
+                0.03,
+                0.05,
+                0.1
+              ],
+              "calibration_scope": "mature source-L relation buckets; fixed once, no later weight adaptation",
+              "style_scope": "native labeled clean CE only; no extra CE or KL",
+              "statistical_ema": "gradient statistics only, not an EMA teacher",
+              "shared_hidden": 50,
+              "independent_hidden": 48,
+              "capacity_relative_tolerance": 0.002,
+              "deferred": [
+                "hard_resampling",
+                "DSU_alternative",
+                "fourth_interaction_network"
+              ]
+            },
+            "source_selection": {
+              "rule": "fixed final epoch; every predeclared row tested; no source V epoch selection",
+              "future_compression": "USER EXPLICIT EXCEPTION: clean three-seed mean no more than 0.003 below fixed original E200 permits shorter epoch exploration",
+              "benchmark_role": "exposed development benchmark for epoch budget only; not independent blind test",
+              "target_samples_or_labels_in_training": false,
+              "noninferiority_accuracy_margin": 0.003
+            },
+            "budget_arm": "E20",
+            "updates": 4440,
+            "checkpoint_selection": "final_only",
+            "test_views": [
+              "clean"
+            ],
+            "launch_owner": "codex/root/ce-epoch10-40-20261011",
+            "concurrency": {
+              "max_processes_per_gpu": 2,
+              "includes_existing": true,
+              "gpu_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "reference_E200": {
+              "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+              "prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/prediction/predictions.npz",
+              "role": "comparison only; never loaded for initialization"
+            }
+          },
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092702",
+          "unlabeled": true,
+          "unlabeled_cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/source_unlabeled/source_cache.pt",
+          "teacher": {
+            "source": "peer",
+            "selection": "all",
+            "confidence": 0.95,
+            "seeds": [
+              2026092701,
+              2026092703
+            ],
+            "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-calibrated-style-manysig-m36-r01/peer_cache",
+            "temperature": 1.0
+          },
+          "epochs": 20,
+          "steps_per_epoch": 222,
+          "updates": 4440,
+          "batch_size": 128,
+          "optimizer": {
+            "name": "AdamW",
+            "peak_lr": 0.0002,
+            "min_lr": 1e-06,
+            "weight_decay": 0.0001,
+            "schedule": "reset AdamW; epoch cosine20; same LR for all identity parameters; parent20 + incremental20 = total40"
+          },
+          "semi": {
+            "warmup_updates": 444,
+            "ramp_updates": 888,
+            "confidence": 0.95,
+            "noise_std": 0.015,
+            "target_provider": "mean probabilities of the other two fixed original E20 models; no EMA"
+          },
+          "losses": {
+            "ce": 1.0,
+            "KL": 0.25,
+            "feature": 0.0,
+            "margin": 0.0
+          },
+          "multilevel": {
+            "enabled": true,
+            "mixstyle_l": false,
+            "mixstyle_u": false,
+            "fishr_mode": "fixed",
+            "interval": 4,
+            "batch_size": 120,
+            "aux_ce_weight": 0.1,
+            "fishr_raw_weight": 2.0,
+            "fishr_ratio": 0.2,
+            "fishr_cap": 10000.0,
+            "fishr_eps": 1e-12,
+            "mixstyle_p": 1.0,
+            "mixstyle_alpha": 0.1,
+            "mixstyle_strength": 1.0,
+            "style_confidence": 0.95,
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "head_warmup_steps": 0,
+            "head_warmup_lr": 0.003,
+            "head_warmup_weight_decay": 0.0001,
+            "head_warmup_batch": 60,
+            "sampling": "independent A/B, each same-day 6TX x 5RX x2 L, cross-batch overlap allowed",
+            "fishr_scope": "main-margin per-channel affine sensitivity, per-sample RMS normalized; unbiased stratified AB variance cross inner product",
+            "gradient_budget_scope": "fixed 12-pair own-margin calibration at registered update; optional detached single-scalar joint cap on complete identity parameter partition",
+            "fishr_levels": [
+              "t2.pool"
+            ],
+            "style_levels": [],
+            "aux_ce_to_backbone": false,
+            "aux_ce_routing": "only PROBE_FISH fits detached heads; margin has no auxiliary learned parameters or CE",
+            "fishr_fixed_denominator": 2,
+            "routing_control": "all heads warm200 on frozen L; fit both heads every4 active steps; auxiliary capture preserves identity RNG and dropout modes",
+            "fishr_estimator": "cross",
+            "pair_batch_size": 60,
+            "pair_quota": 2,
+            "style_ce_weight": 1.0,
+            "fishr_calibration_pairs": 12,
+            "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
+            "statistic": "margin",
+            "sensitivity_eps": 1e-06,
+            "style_selection": "none",
+            "candidates": 4,
+            "calibration_after_updates": 0,
+            "joint_gradient_cap": {
+              "enabled": true,
+              "rho": 0.2,
+              "eps": 1e-12
+            }
+          },
+          "rx_action": {
+            "enabled": false,
+            "critic": false,
+            "kind": "physical",
+            "taps": 33,
+            "scales": [
+              0.5,
+              1.0
+            ],
+            "max_amplitude_dB": 3.0,
+            "start_after_updates": 888,
+            "ramp_updates": 888,
+            "L_augmented_CE_fraction": 0.5,
+            "critic_every": 4,
+            "critic_batch": 32,
+            "critic_lr": 0.0002,
+            "critic_hidden": 48,
+            "critic_uniform_warmup_updates": 444,
+            "critic_uniform_probability": 0.5,
+            "critic_temperature": 0.25,
+            "L_fit": "other five TX AND other two days",
+            "U_fit": "all six L TX, other two days; U TX never read",
+            "critic_fit": "actual deterministic CE increment on up to32L, identity detached; smoothL1; zero-action anchored",
+            "action_selection": "eight candidates: four other sourceRX times two fixed scales; no identity class prediction in bank lookup"
+          },
+          "checkpoint_selection": "final_only",
+          "test_views": [
+            "clean"
+          ],
+          "target_access": false,
+          "sampling": "same seed-private RX/day-balanced full permutation for L and independently U; no TX grouping/hidden U labels",
+          "validation": {
+            "epochs": [
+              5,
+              10,
+              15,
+              20
+            ],
+            "role": "health only; no epoch/arm selection"
+          },
+          "feature_target": "main identity margin sensitivities and supervised style at time_down/t2.pool",
+          "margin_target": "none",
+          "enabled": {
+            "averaging": false
+          },
+          "evaluation": {
+            "primary_arm": "DELAYCAP_JOINT",
+            "goal_three_seed_mean": 0.84,
+            "truth_last": true,
+            "feedback_to_training": false
+          },
+          "concurrency": {
+            "max_processes_per_gpu": 3,
+            "includes_existing": true,
+            "gpu_ids": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "initialization_checkpoint_sources": [],
+          "scratch_scope": "student_identity_only",
+          "base_arm": "M_MIDDLE",
+          "calibration_policy": "CAP"
+        },
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-calibrated-style-manysig-m36-r01/CAP_M_MIDDLE-s2026092702/source/final_ssdg.pth",
+        "checkpoint_selection": "final_only",
+        "target_access": false,
+        "target_evaluated": false,
+        "parent_checkpoint": null,
+        "checkpoint_sources": [
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092703/source/final_ssdg.pth"
+        ],
+        "teacher_provenance": {
+          "2026092701": {
+            "status": "VERIFIED",
+            "seed": 2026092701,
+            "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+            "source_run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+            "execution_commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
+            "epoch": 20,
+            "optimizer_steps": 4440,
+            "scratch_only": true,
+            "ancestors": [],
+            "source_roles": "EXACT_MATCH",
+            "training_target_access": false,
+            "checkpoint_selection": "fixed final20; all original matrix rows evaluated",
+            "method": "pure CE, original gates/reference_response, cosine schedule",
+            "auxiliary_inheritance": false,
+            "smoke": null,
+            "selection_context": "E20 now explicitly selected by user after target-informed epoch-budget exploration; exposed development benchmark, not a new blind confirmation"
+          },
+          "2026092703": {
+            "status": "VERIFIED",
+            "seed": 2026092703,
+            "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092703/source/final_ssdg.pth",
+            "source_run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+            "execution_commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
+            "epoch": 20,
+            "optimizer_steps": 4440,
+            "scratch_only": true,
+            "ancestors": [],
+            "source_roles": "EXACT_MATCH",
+            "training_target_access": false,
+            "checkpoint_selection": "fixed final20; all original matrix rows evaluated",
+            "method": "pure CE, original gates/reference_response, cosine schedule",
+            "auxiliary_inheritance": false,
+            "smoke": null,
+            "selection_context": "E20 now explicitly selected by user after target-informed epoch-budget exploration; exposed development benchmark, not a new blind confirmation"
+          }
+        },
+        "final_source_metrics": {
+          "V_count": 27000,
+          "V_accuracy": 0.9728148148148148,
+          "V_NLL": 0.10005644082093622,
+          "V_RX_accuracy": {
+            "1": 0.9909259259259259,
+            "3": 0.927962962962963,
+            "4": 0.9838888888888889,
+            "6": 0.9955555555555555,
+            "8": 0.9657407407407408
+          },
+          "V_day_accuracy": {
+            "1": 0.9706666666666667,
+            "2": 0.9801111111111112,
+            "3": 0.9676666666666667
+          },
+          "V_worst_RX": 0.927962962962963,
+          "source_selection_score": 0.950388888888889
+        },
+        "mechanism_execution": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 119880,
+          "auxiliary_forwards": 1998,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "style_L_packets": 0,
+          "style_search_forwards": 0,
+          "style_search_L": 0,
+          "mixstyle_U_steps": 0,
+          "mixed_U_packets": 0,
+          "mixed_L_packets": 0
+        },
+        "initialization": {
+          "status": "SCRATCH_INITIALIZATION",
+          "seed": 2026092702,
+          "checkpoint": null,
+          "parent_checkpoint": null,
+          "initialization_checkpoint_sources": [],
+          "ancestors": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092703/source/final_ssdg.pth"
+          ],
+          "scratch_only": true,
+          "scratch_scope": "student_identity_only",
+          "source_roles": "EXACT_MATCH",
+          "training_target_access": false,
+          "reference_E20_loaded": false,
+          "parent_training_epochs": 0,
+          "auxiliary_inheritance": false,
+          "checkpoint_sources": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092703/source/final_ssdg.pth"
+          ],
+          "teacher_provenance": {
+            "2026092701": {
+              "status": "VERIFIED",
+              "seed": 2026092701,
+              "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+              "source_run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+              "execution_commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
+              "epoch": 20,
+              "optimizer_steps": 4440,
+              "scratch_only": true,
+              "ancestors": [],
+              "source_roles": "EXACT_MATCH",
+              "training_target_access": false,
+              "checkpoint_selection": "fixed final20; all original matrix rows evaluated",
+              "method": "pure CE, original gates/reference_response, cosine schedule",
+              "auxiliary_inheritance": false,
+              "smoke": null,
+              "selection_context": "E20 now explicitly selected by user after target-informed epoch-budget exploration; exposed development benchmark, not a new blind confirmation"
+            },
+            "2026092703": {
+              "status": "VERIFIED",
+              "seed": 2026092703,
+              "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092703/source/final_ssdg.pth",
+              "source_run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+              "execution_commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
+              "epoch": 20,
+              "optimizer_steps": 4440,
+              "scratch_only": true,
+              "ancestors": [],
+              "source_roles": "EXACT_MATCH",
+              "training_target_access": false,
+              "checkpoint_selection": "fixed final20; all original matrix rows evaluated",
+              "method": "pure CE, original gates/reference_response, cosine schedule",
+              "auxiliary_inheritance": false,
+              "smoke": null,
+              "selection_context": "E20 now explicitly selected by user after target-informed epoch-budget exploration; exposed development benchmark, not a new blind confirmation"
+            }
+          },
+          "incremental_epochs": 20,
+          "total_epochs": 20,
+          "target_contact": false,
+          "source_IQ_cache_only": true,
+          "old_features_or_auxiliary_consumed": false,
+          "parent_provenance": {
+            "status": "SCRATCH_INITIALIZATION",
+            "seed": 2026092702,
+            "checkpoint": null,
+            "parent_checkpoint": null,
+            "initialization_checkpoint_sources": [],
+            "ancestors": [],
+            "scratch_only": true,
+            "scratch_scope": "student_identity_only",
+            "source_roles": "EXACT_MATCH",
+            "training_target_access": false,
+            "reference_E20_loaded": false,
+            "parent_training_epochs": 0,
+            "auxiliary_inheritance": false
+          },
+          "source_probability_cache_used": true,
+          "whole_method_pretrained_teachers": true,
+          "student_initialization": "random native identity, no checkpoint loaded"
+        },
+        "resources": {
+          "identity_training_and_source_diagnostics_seconds": 1291.1725887689972,
+          "identity_training_and_source_diagnostics_including_delayed_calibration_seconds": 1291.1725887689972,
+          "calibration_inside_main_timer_seconds": 0.0,
+          "calibration_ready_events": 1,
+          "calibration_after_identity_updates": 0,
+          "incremental_total_seconds_including_warmup": 1304.1652110290015,
+          "head_warmup": {
+            "status": "NOT_APPLICABLE",
+            "enabled": false,
+            "source_L_cache_packets": 0,
+            "cache_forward_calls": 0,
+            "head_packet_occurrences": 0,
+            "optimizer_steps": 0,
+            "seconds": 0.0,
+            "cache_tensor_bytes": 0,
+            "optimizer_state_tensor_bytes": 0,
+            "base_state_unchanged": true,
+            "backbone_updates": 0,
+            "peak_cuda_memory_bytes": 0,
+            "rss_bytes": null,
+            "auxiliary_inheritance": false
+          },
+          "fishr_calibration": {
+            "status": "FIXED_CALIBRATION_COMPLETE",
+            "calibration_reference": "own_margin_term",
+            "fixed_coefficients": {
+              "time_down": 1.4207339942472323,
+              "t2.pool": 4.5180609889341214
+            },
+            "levels": {
+              "time_down": {
+                "mean_CE_gradient_norm": 1.6715412396843565,
+                "mean_term_gradient_norm": 0.23530671419781282,
+                "uncapped_coefficient": 1.4207339942472323,
+                "coefficient": 1.4207339942472323,
+                "cap_active": false
+              },
+              "t2.pool": {
+                "mean_CE_gradient_norm": 5.933417955341867,
+                "mean_term_gradient_norm": 0.26265329174846136,
+                "uncapped_coefficient": 4.5180609889341214,
+                "coefficient": 4.5180609889341214,
+                "cap_active": false
+              }
+            },
+            "pairs": 12,
+            "records": [
+              {
+                "pair": 0,
+                "day": 1,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.674927201688592,
+                    "term_gradient_norm": 0.29079562744576337,
+                    "raw_term": 0.08064088970422745
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 6.00319002998824,
+                    "term_gradient_norm": 0.2799367155132952,
+                    "raw_term": 0.054411016404628754
+                  }
+                },
+                "main_ce": 4.215547561645508,
+                "seconds": 1.9465293739922345
+              },
+              {
+                "pair": 1,
+                "day": 2,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.7152750305278808,
+                    "term_gradient_norm": 0.24328427351731952,
+                    "raw_term": 0.039887331426143646
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 6.0416615023077895,
+                    "term_gradient_norm": 0.23922936084096016,
+                    "raw_term": 0.014082388021051884
+                  }
+                },
+                "main_ce": 4.248413562774658,
+                "seconds": 0.8232177960453555
+              },
+              {
+                "pair": 2,
+                "day": 3,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.684134501884416,
+                    "term_gradient_norm": 0.2238770022279757,
+                    "raw_term": 0.09414398670196533
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.984337303256261,
+                    "term_gradient_norm": 0.18800371209110936,
+                    "raw_term": 0.028961587697267532
+                  }
+                },
+                "main_ce": 4.200224876403809,
+                "seconds": 0.8374295510584489
+              },
+              {
+                "pair": 3,
+                "day": 1,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.6849320571980562,
+                    "term_gradient_norm": 0.2407834046556214,
+                    "raw_term": 0.06076503172516823
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.971339237181109,
+                    "term_gradient_norm": 0.24816612509552308,
+                    "raw_term": 0.014723323285579681
+                  }
+                },
+                "main_ce": 4.229299545288086,
+                "seconds": 0.9315589760662988
+              },
+              {
+                "pair": 4,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.70859488366928,
+                    "term_gradient_norm": 0.193200180299051,
+                    "raw_term": 0.058881815522909164
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.992577782777052,
+                    "term_gradient_norm": 0.24258300528622403,
+                    "raw_term": 0.04976901039481163
+                  }
+                },
+                "main_ce": 4.259173393249512,
+                "seconds": 0.7625569310039282
+              },
+              {
+                "pair": 5,
+                "day": 3,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.6648703986669107,
+                    "term_gradient_norm": 0.2505883595921074,
+                    "raw_term": 0.06579922139644623
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.854705720446549,
+                    "term_gradient_norm": 0.3249420010890317,
+                    "raw_term": 0.05252857506275177
+                  }
+                },
+                "main_ce": 4.177867889404297,
+                "seconds": 0.7002602390712127
+              },
+              {
+                "pair": 6,
+                "day": 1,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.6181091015328342,
+                    "term_gradient_norm": 0.18872514865630527,
+                    "raw_term": 0.0546359159052372
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.888620114734017,
+                    "term_gradient_norm": 0.46646535421993,
+                    "raw_term": 0.08934469521045685
+                  }
+                },
+                "main_ce": 4.23391056060791,
+                "seconds": 0.8970375190256163
+              },
+              {
+                "pair": 7,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.691632196939046,
+                    "term_gradient_norm": 0.11845425980979671,
+                    "raw_term": 0.04099641740322113
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.901984001330325,
+                    "term_gradient_norm": 0.28709798435789136,
+                    "raw_term": 0.020660540089011192
+                  }
+                },
+                "main_ce": 4.212921142578125,
+                "seconds": 0.6549661220051348
+              },
+              {
+                "pair": 8,
+                "day": 3,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.6557651209209814,
+                    "term_gradient_norm": 0.34844299474574786,
+                    "raw_term": 0.16593685746192932
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.769229791779281,
+                    "term_gradient_norm": 0.20663968520764622,
+                    "raw_term": 0.05619897320866585
+                  }
+                },
+                "main_ce": 4.27000093460083,
+                "seconds": 0.9371775720501319
+              },
+              {
+                "pair": 9,
+                "day": 1,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.667565120658628,
+                    "term_gradient_norm": 0.24612332953102345,
+                    "raw_term": 0.07207176834344864
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.963585181975022,
+                    "term_gradient_norm": 0.28828550466558217,
+                    "raw_term": 0.05522463470697403
+                  }
+                },
+                "main_ce": 4.224432945251465,
+                "seconds": 0.9040865959832445
+              },
+              {
+                "pair": 10,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.6844687941629706,
+                    "term_gradient_norm": 0.27271896767005543,
+                    "raw_term": 0.05765964835882187
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.9940082840250275,
+                    "term_gradient_norm": 0.2171897466826082,
+                    "raw_term": 0.030466096475720406
+                  }
+                },
+                "main_ce": 4.219246864318848,
+                "seconds": 0.7349789768923074
+              },
+              {
+                "pair": 11,
+                "day": 3,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.6082204683626804,
+                    "term_gradient_norm": 0.20668702222298654,
+                    "raw_term": 0.07584232091903687
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.835776514301741,
+                    "term_gradient_norm": 0.1633003059317349,
+                    "raw_term": 0.021322578191757202
+                  }
+                },
+                "main_ce": 4.195098400115967,
+                "seconds": 0.7717849760083482
+              }
+            ],
+            "extra_source_readouts": 1440,
+            "model_forwards": 24,
+            "seconds": 11.348388693993911,
+            "state_unchanged": true,
+            "RNG_preserved": true,
+            "parameters_buffers_unchanged": true,
+            "modes_preserved": true,
+            "python_numpy_RNG_preserved": true,
+            "source_role": "L_s only",
+            "U_access": false,
+            "V_access": false,
+            "target_access": false,
+            "identity_updates": 0,
+            "head_updates": 0,
+            "auxiliary_heads": 0,
+            "all_layers_calibrated": true,
+            "after_identity_updates": 0,
+            "scheduled_after_identity_updates": 0,
+            "coefficient_formula": "min(cap,0.2*mean(pair_main_CE_gradient_norm)/(mean(own_margin_term_gradient_norm)+eps))",
+            "sampling_namespace": "same twelve source-private calibration pairs as scratch boundary style; own-margin statistic"
+          },
+          "peak_cuda_memory_bytes": 497463808,
+          "trainable_parameters": 177025,
+          "total_parameters": 843134,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "optimizer_state_tensor_bytes": 1416468,
+          "checkpoint_bytes": 4977990,
+          "auxiliary_saved_bytes": 526870,
+          "parent_training_epochs": 0,
+          "incremental_epochs": 20,
+          "total_epochs": 20,
+          "parent_training_cost_reused": false,
+          "scratch_only": true,
+          "scratch_scope": "student_identity_only",
+          "student_initialization_checkpoint_count": 0,
+          "whole_method_pretrained_teachers": true,
+          "frozen_teacher_model_count": 2,
+          "teacher_training_epochs_reused": 40,
+          "historical_model_epochs_including_teachers": 60,
+          "teacher_probability_bank_bytes": 1871100,
+          "teacher_cache_resources_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-calibrated-style-manysig-m36-r01/peer_cache/completion.json",
+          "teacher_scope": "teacher_parameters=0 means no teacher models resident during student training; extra original E20 training and shared cache forward costs reported separately",
+          "mixed_U_packets_unit": "U MixStyle disabled",
+          "mixed_L_packets_unit": "actual changed L packet-layer occurrences; not distinct packets",
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 119880,
+          "auxiliary_forwards": 1998,
+          "fishr_steps": 999,
+          "mixstyle_steps": 0,
+          "style_L_packets": 0,
+          "style_search_forwards": 0,
+          "style_search_L": 0,
+          "mixstyle_U_steps": 0,
+          "mixed_U_packets": 0,
+          "mixed_L_packets": 0
+        },
+        "distinct_U_visited": 56700
+      },
+      "freeze": {
+        "status": "SOURCE_FROZEN",
+        "run_id": "20261012-phase1-scratch-calibrated-style-manysig-m36-r01",
+        "row_id": "CAP_M_MIDDLE-s2026092702",
+        "config": {
+          "schema": "scratch_calibrated_style_v1",
+          "run_id": "20261012-phase1-scratch-calibrated-style-manysig-m36-r01",
+          "arm": "CAP_M_MIDDLE",
+          "model_seed": 2026092702,
+          "row_id": "CAP_M_MIDDLE-s2026092702",
+          "stage": "phase1_scratch_calibrated_style",
+          "method": "cvs_scratch_calibrated_style",
+          "variant": "reference_response",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-calibrated-style-manysig-m36-r01/CAP_M_MIDDLE-s2026092702/source",
+          "launch_owner": "codex/root/scratch-calibrated-style-20261012",
+          "model_initialization": "scratch",
+          "checkpoint_sources": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092703/source/final_ssdg.pth"
+          ],
+          "parent_checkpoint": null,
+          "reference_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092702/source/final_ssdg.pth",
+          "reference_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092702/prediction/predictions.npz",
+          "reference_config": {
+            "schema": "ce_epoch_compression_v1",
+            "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+            "stage": "ce_epoch_compression",
+            "arm": "native",
+            "model_seed": 2026092702,
+            "row_id": "E20-s2026092702",
+            "features": [],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092702/source",
+            "epochs": 20,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_ce_epoch2040",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06,
+            "risk_recipe": {
+              "warmup_epochs": 20,
+              "auxiliary_every_steps": 4,
+              "auxiliary_batch_size": 32,
+              "auxiliary_lr": 0.0002,
+              "auxiliary_lr_min": 1e-06,
+              "reference_refresh_steps": 888,
+              "gradient_audit_every_steps": 888,
+              "epochs": 20,
+              "steps_per_epoch": 222,
+              "hidden": 48,
+              "branch_weights": {
+                "linear": 0.015,
+                "temporal": 0.015,
+                "joint": 0.02,
+                "receiver": 0.01
+              },
+              "proposal_candidates": 4,
+              "random_fraction": 0.25,
+              "receiver_tail_alpha": 0.25,
+              "proposal_risk_relative_tolerance": 0.25,
+              "proposal_risk_error_ema": 0.9,
+              "proposal_quality_bins": 4,
+              "proposal_min_distinct_audit_ids": 16,
+              "receiver_live_audit_reencode_max": 32,
+              "auxiliary_batch_scope": "at most32 fresh source-L packets; R may separately re-encode at most32 cached audit IQ packets; count both",
+              "receiver_max_age_steps": 888,
+              "resume": false,
+              "source_selection": "fixed final epoch; all three rows tested",
+              "deployment": "identity_only",
+              "reference": "periodically frozen own student; no EMA teacher",
+              "action_scope": "bounded post-receive linear/phase increments; no satellite simulator in training",
+              "source_u_scope": "No U access in any arm"
+            },
+            "arm_plan": {
+              "paths": [],
+              "action_mode": "proposal",
+              "shared": false,
+              "r_target": "distribution",
+              "consistency_weight": 0.0,
+              "action_label_free": false,
+              "source_u_fit": false,
+              "replacements": [],
+              "conditional_edges": true
+            },
+            "source_stress": {
+              "seed": 2026101007,
+              "physical_selection": "all existing source V",
+              "batch_size": 256,
+              "views": [
+                "clean",
+                "linear",
+                "temporal",
+                "LT",
+                "TL",
+                "noise_fixed_LT",
+                "LTL_heldout",
+                "curvature_pressure"
+              ],
+              "clean_noninferiority_pp": 0.5,
+              "noise_tie_pp": 0.0,
+              "tail_alpha": 0.25,
+              "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
+              "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
+            },
+            "feature_plan": {
+              "relation": "none",
+              "style": false,
+              "fishr": "none",
+              "fishr_ratio": 0.0,
+              "r_identity": true,
+              "selection_required": false
+            },
+            "feature_recipe": {
+              "relation_every": 8,
+              "relation_weight": 0.1,
+              "relation_batch": 48,
+              "relation_calls": 5550,
+              "relation_packet_occurrences": 266400,
+              "positive_fishr_calls": 4995,
+              "relation_blocks": 30,
+              "source_rx": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "source_days": [
+                0,
+                1,
+                2
+              ],
+              "source_classes": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "style_probability": 0.15,
+              "style_eta": 0.2,
+              "style_alpha": 0.1,
+              "style_location": "time_down",
+              "fishr_beta": 0.9,
+              "fishr_scale": 30.0,
+              "fishr_coordinates": 960,
+              "fishr_scene_weights": {
+                "clean": 1.0
+              },
+              "warmup_epochs": 20,
+              "ramp_epochs": 20,
+              "calibration_epoch": 20,
+              "calibration_target_ratios": [
+                0.03,
+                0.05,
+                0.1
+              ],
+              "calibration_scope": "mature source-L relation buckets; fixed once, no later weight adaptation",
+              "style_scope": "native labeled clean CE only; no extra CE or KL",
+              "statistical_ema": "gradient statistics only, not an EMA teacher",
+              "shared_hidden": 50,
+              "independent_hidden": 48,
+              "capacity_relative_tolerance": 0.002,
+              "deferred": [
+                "hard_resampling",
+                "DSU_alternative",
+                "fourth_interaction_network"
+              ]
+            },
+            "source_selection": {
+              "rule": "fixed final epoch; every predeclared row tested; no source V epoch selection",
+              "future_compression": "USER EXPLICIT EXCEPTION: clean three-seed mean no more than 0.003 below fixed original E200 permits shorter epoch exploration",
+              "benchmark_role": "exposed development benchmark for epoch budget only; not independent blind test",
+              "target_samples_or_labels_in_training": false,
+              "noninferiority_accuracy_margin": 0.003
+            },
+            "budget_arm": "E20",
+            "updates": 4440,
+            "checkpoint_selection": "final_only",
+            "test_views": [
+              "clean"
+            ],
+            "launch_owner": "codex/root/ce-epoch10-40-20261011",
+            "concurrency": {
+              "max_processes_per_gpu": 2,
+              "includes_existing": true,
+              "gpu_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "reference_E200": {
+              "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+              "prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/prediction/predictions.npz",
+              "role": "comparison only; never loaded for initialization"
+            }
+          },
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092702",
+          "unlabeled": true,
+          "unlabeled_cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/source_unlabeled/source_cache.pt",
+          "teacher": {
+            "source": "peer",
+            "selection": "all",
+            "confidence": 0.95,
+            "seeds": [
+              2026092701,
+              2026092703
+            ],
+            "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-calibrated-style-manysig-m36-r01/peer_cache",
+            "temperature": 1.0
+          },
+          "epochs": 20,
+          "steps_per_epoch": 222,
+          "updates": 4440,
+          "batch_size": 128,
+          "optimizer": {
+            "name": "AdamW",
+            "peak_lr": 0.0002,
+            "min_lr": 1e-06,
+            "weight_decay": 0.0001,
+            "schedule": "reset AdamW; epoch cosine20; same LR for all identity parameters; parent20 + incremental20 = total40"
+          },
+          "semi": {
+            "warmup_updates": 444,
+            "ramp_updates": 888,
+            "confidence": 0.95,
+            "noise_std": 0.015,
+            "target_provider": "mean probabilities of the other two fixed original E20 models; no EMA"
+          },
+          "losses": {
+            "ce": 1.0,
+            "KL": 0.25,
+            "feature": 0.0,
+            "margin": 0.0
+          },
+          "multilevel": {
+            "enabled": true,
+            "mixstyle_l": false,
+            "mixstyle_u": false,
+            "fishr_mode": "fixed",
+            "interval": 4,
+            "batch_size": 120,
+            "aux_ce_weight": 0.1,
+            "fishr_raw_weight": 2.0,
+            "fishr_ratio": 0.2,
+            "fishr_cap": 10000.0,
+            "fishr_eps": 1e-12,
+            "mixstyle_p": 1.0,
+            "mixstyle_alpha": 0.1,
+            "mixstyle_strength": 1.0,
+            "style_confidence": 0.95,
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "head_warmup_steps": 0,
+            "head_warmup_lr": 0.003,
+            "head_warmup_weight_decay": 0.0001,
+            "head_warmup_batch": 60,
+            "sampling": "independent A/B, each same-day 6TX x 5RX x2 L, cross-batch overlap allowed",
+            "fishr_scope": "main-margin per-channel affine sensitivity, per-sample RMS normalized; unbiased stratified AB variance cross inner product",
+            "gradient_budget_scope": "fixed 12-pair own-margin calibration at registered update; optional detached single-scalar joint cap on complete identity parameter partition",
+            "fishr_levels": [
+              "t2.pool"
+            ],
+            "style_levels": [],
+            "aux_ce_to_backbone": false,
+            "aux_ce_routing": "only PROBE_FISH fits detached heads; margin has no auxiliary learned parameters or CE",
+            "fishr_fixed_denominator": 2,
+            "routing_control": "all heads warm200 on frozen L; fit both heads every4 active steps; auxiliary capture preserves identity RNG and dropout modes",
+            "fishr_estimator": "cross",
+            "pair_batch_size": 60,
+            "pair_quota": 2,
+            "style_ce_weight": 1.0,
+            "fishr_calibration_pairs": 12,
+            "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
+            "statistic": "margin",
+            "sensitivity_eps": 1e-06,
+            "style_selection": "none",
+            "candidates": 4,
+            "calibration_after_updates": 0,
+            "joint_gradient_cap": {
+              "enabled": true,
+              "rho": 0.2,
+              "eps": 1e-12
+            }
+          },
+          "rx_action": {
+            "enabled": false,
+            "critic": false,
+            "kind": "physical",
+            "taps": 33,
+            "scales": [
+              0.5,
+              1.0
+            ],
+            "max_amplitude_dB": 3.0,
+            "start_after_updates": 888,
+            "ramp_updates": 888,
+            "L_augmented_CE_fraction": 0.5,
+            "critic_every": 4,
+            "critic_batch": 32,
+            "critic_lr": 0.0002,
+            "critic_hidden": 48,
+            "critic_uniform_warmup_updates": 444,
+            "critic_uniform_probability": 0.5,
+            "critic_temperature": 0.25,
+            "L_fit": "other five TX AND other two days",
+            "U_fit": "all six L TX, other two days; U TX never read",
+            "critic_fit": "actual deterministic CE increment on up to32L, identity detached; smoothL1; zero-action anchored",
+            "action_selection": "eight candidates: four other sourceRX times two fixed scales; no identity class prediction in bank lookup"
+          },
+          "checkpoint_selection": "final_only",
+          "test_views": [
+            "clean"
+          ],
+          "target_access": false,
+          "sampling": "same seed-private RX/day-balanced full permutation for L and independently U; no TX grouping/hidden U labels",
+          "validation": {
+            "epochs": [
+              5,
+              10,
+              15,
+              20
+            ],
+            "role": "health only; no epoch/arm selection"
+          },
+          "feature_target": "main identity margin sensitivities and supervised style at time_down/t2.pool",
+          "margin_target": "none",
+          "enabled": {
+            "averaging": false
+          },
+          "evaluation": {
+            "primary_arm": "DELAYCAP_JOINT",
+            "goal_three_seed_mean": 0.84,
+            "truth_last": true,
+            "feedback_to_training": false
+          },
+          "concurrency": {
+            "max_processes_per_gpu": 3,
+            "includes_existing": true,
+            "gpu_ids": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "initialization_checkpoint_sources": [],
+          "scratch_scope": "student_identity_only",
+          "base_arm": "M_MIDDLE",
+          "calibration_policy": "CAP"
+        },
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-calibrated-style-manysig-m36-r01/CAP_M_MIDDLE-s2026092702/source/final_ssdg.pth",
+        "epoch": 20,
+        "total_epochs": 20,
+        "parent_checkpoint": null,
+        "optimizer_steps": 4440,
+        "target_access": false,
+        "target_scores_consumed": false,
+        "selection": "final_only"
+      },
+      "prediction_completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 7.6563256699591875
+        },
+        "wall_seconds": 9.092247265973128,
+        "peak_cuda_allocated_bytes": 91517440,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1806221312
+      }
     },
     {
       "row_id": "CAP_M_BOTH-s2026092702",
@@ -16307,7 +20113,7 @@
       "process": {
         "pid": 329896,
         "start_ticks": 100308787,
-        "state": "S",
+        "state": "R",
         "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
         "argv": [
           "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -16341,7 +20147,7 @@
       "process": {
         "pid": 330857,
         "start_ticks": 100317062,
-        "state": "S",
+        "state": "R",
         "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
         "argv": [
           "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -16375,7 +20181,7 @@
       "process": {
         "pid": 335293,
         "start_ticks": 100348831,
-        "state": "S",
+        "state": "R",
         "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
         "argv": [
           "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -16443,7 +20249,7 @@
       "process": {
         "pid": 335767,
         "start_ticks": 100354464,
-        "state": "R",
+        "state": "S",
         "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
         "argv": [
           "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -16469,6 +20275,40 @@
           "DELAY_JOINT-s2026092703"
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-calibrated-style-manysig-m36-r01/logs/DELAY_JOINT-s2026092703.log"
+      },
+      "completion": null
+    },
+    {
+      "row_id": "CAP_M_SHALLOW-s2026092703",
+      "process": {
+        "pid": 337271,
+        "start_ticks": 100361091,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "CAP_M_SHALLOW-s2026092703"
+        ],
+        "gpu": "6"
+      },
+      "launch": {
+        "row_id": "CAP_M_SHALLOW-s2026092703",
+        "pid": 337271,
+        "gpu": 6,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_scratch_calibrated_style_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_scratch_calibrated_style.dispatch",
+          "--worker",
+          "CAP_M_SHALLOW-s2026092703"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-calibrated-style-manysig-m36-r01/logs/CAP_M_SHALLOW-s2026092703.log"
       },
       "completion": null
     }

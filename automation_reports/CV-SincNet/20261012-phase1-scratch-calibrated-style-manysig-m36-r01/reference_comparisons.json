@@ -20,6 +20,7 @@
         "DELAY_M_MIDDLE-s2026092701",
         "CAP_M_MIDDLE-s2026092701",
         "DELAY_M_MIDDLE-s2026092702",
+        "CAP_M_MIDDLE-s2026092702",
         "DELAYCAP_M_MIDDLE-s2026092702"
       ],
       "missing_rows": [
@@ -29,7 +30,6 @@
         "CAP_M_BOTH-s2026092701",
         "CAP_M_BOTH-s2026092702",
         "CAP_M_BOTH-s2026092703",
-        "CAP_M_MIDDLE-s2026092702",
         "CAP_M_MIDDLE-s2026092703",
         "CAP_M_SHALLOW-s2026092701",
         "CAP_M_SHALLOW-s2026092702",
@@ -323,9 +323,10 @@
       "status": "PARTIAL",
       "complete_three_seeds": false,
       "paired_seeds": [
-        2026092701
+        2026092701,
+        2026092702
       ],
-      "paired_seed_count": 1,
+      "paired_seed_count": 2,
       "per_seed": [
         {
           "seed": 2026092701,
@@ -338,10 +339,10 @@
         },
         {
           "seed": 2026092702,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.778547619047619,
           "reference_accuracy": 0.7622083333333334,
-          "difference": null,
-          "status": "MISSING",
+          "difference": 0.016339285714285667,
+          "status": "COMPLETE",
           "treatment_row": "CAP_M_MIDDLE-s2026092702",
           "reference_row": "M_MIDDLE-s2026092702"
         },
@@ -357,8 +358,8 @@
       ],
       "mean_difference": null,
       "sd_difference": null,
-      "available_pair_mean": -0.005565476190476204,
-      "available_pair_sd": null
+      "available_pair_mean": 0.005386904761904732,
+      "available_pair_sd": 0.015489005683133874
     },
     {
       "treatment": "CAP_M_BOTH",
@@ -1064,9 +1065,10 @@
       "status": "PARTIAL",
       "complete_three_seeds": false,
       "paired_seeds": [
-        2026092701
+        2026092701,
+        2026092702
       ],
-      "paired_seed_count": 1,
+      "paired_seed_count": 2,
       "per_seed": [
         {
           "seed": 2026092701,
@@ -1079,10 +1081,10 @@
         },
         {
           "seed": 2026092702,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.778547619047619,
           "reference_accuracy": 0.7706369047619047,
-          "difference": null,
-          "status": "MISSING",
+          "difference": 0.007910714285714326,
+          "status": "COMPLETE",
           "treatment_row": "CAP_M_MIDDLE-s2026092702",
           "reference_row": "CE-s2026092702"
         },
@@ -1098,8 +1100,8 @@
       ],
       "mean_difference": null,
       "sd_difference": null,
-      "available_pair_mean": 0.0038452380952380683,
-      "available_pair_sd": null
+      "available_pair_mean": 0.005877976190476197,
+      "available_pair_sd": 0.0028747257830382144
     },
     {
       "treatment": "CAP_M_MIDDLE",
@@ -1109,9 +1111,10 @@
       "status": "PARTIAL",
       "complete_three_seeds": false,
       "paired_seeds": [
-        2026092701
+        2026092701,
+        2026092702
       ],
-      "paired_seed_count": 1,
+      "paired_seed_count": 2,
       "per_seed": [
         {
           "seed": 2026092701,
@@ -1124,10 +1127,10 @@
         },
         {
           "seed": 2026092702,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.778547619047619,
           "reference_accuracy": 0.7769107142857142,
-          "difference": null,
-          "status": "MISSING",
+          "difference": 0.0016369047619048116,
+          "status": "COMPLETE",
           "treatment_row": "CAP_M_MIDDLE-s2026092702",
           "reference_row": "SSL-s2026092702"
         },
@@ -1143,8 +1146,8 @@
       ],
       "mean_difference": null,
       "sd_difference": null,
-      "available_pair_mean": 0.0014642857142856958,
-      "available_pair_sd": null
+      "available_pair_mean": 0.0015505952380952537,
+      "available_pair_sd": 0.00012206009913344037
     },
     {
       "treatment": "CAP_M_BOTH",
