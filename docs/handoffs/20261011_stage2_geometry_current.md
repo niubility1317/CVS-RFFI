@@ -100,3 +100,8 @@ Z3源任务证据：八固定源V视图的均值准确率与S3最大绝对差0.0
 ## 当前：L/T 策略刷新有限风险诊断完成
 
 20261011-phase1-stage2-policy-risk-source-manysig-m3-r01，执行c6e43735df6d21a2742a4df4dd0284dc765a15f4。3seed完成，1200辅助更新、1050300身份样本前向、0身份更新/target/V拟合；独立读回VERIFIED，进程退出。固定B2 E40诊断；old/coverage/fresh_raw/fresh_risk相同物理界限和随机半径，两fresh各2遍Ls，未使用E40初始化新的身份训练。主推进NOT_MET，9/9条件失败。有限风险600步589次零梯度（L100/92/99,T100/100/98），三seed条件T噪声轴100%主导；sigmoid噪声初始化0.5与其余tanh≈0再L∞归一化产生偏置。raw刷新仅1/3提高风险，不支持直接晋级。下一步独立版本对称tanh坐标、噪声abs，保持物理界限；对比未拟合/原目标/有限风险，先验证去偏能否恢复搜索，不改选对照或扩大扰动，不自动启动刷新身份训练。详见完整report与mixture_components.json。目标84%仍active，未达到。
+
+
+## 新授权与混合机制矩阵
+
+用户扩大方法范围，H0–H10 共33行、匹配原始CE E200→E40。最新上限每GPU3进程（含其他任务），8GPU；只L_s、无U/teacher/satellite、自动clean truth-last。本地11方案实际网络前后向/SAM/fixed-average/source接口检查PASS，尚未发布。新run 20261011-phase1-stage2-hybrid-manysig-m33-r01，唯一owner codex/root/stage2-hybrid-20261011。下一步独立P0/P1审查、提交push、不可变发布，CPU source-only拟合和父权重预检后自动八卡队列。

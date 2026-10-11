@@ -1,0 +1,67 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "target_access": false,
+  "synthetic_IQ": true,
+  "native_forward_backward_11_arms": [
+    {
+      "arm": "H0",
+      "loss": 3.200263261795044,
+      "sam": false
+    },
+    {
+      "arm": "H1",
+      "loss": 3.4665133953094482,
+      "sam": false
+    },
+    {
+      "arm": "H2",
+      "loss": 4.754303455352783,
+      "sam": false
+    },
+    {
+      "arm": "H3",
+      "loss": 4.23258113861084,
+      "sam": false
+    },
+    {
+      "arm": "H4",
+      "loss": 5.230180263519287,
+      "sam": false
+    },
+    {
+      "arm": "H5",
+      "loss": 3.4212801456451416,
+      "sam": true
+    },
+    {
+      "arm": "H6",
+      "loss": 3.163494348526001,
+      "sam": false
+    },
+    {
+      "arm": "H7",
+      "loss": 3.4707531929016113,
+      "sam": true
+    },
+    {
+      "arm": "H8",
+      "loss": 5.304021835327148,
+      "sam": false
+    },
+    {
+      "arm": "H9",
+      "loss": 5.351927757263184,
+      "sam": true
+    },
+    {
+      "arm": "H10",
+      "loss": 5.169791221618652,
+      "sam": false
+    }
+  ],
+  "SAM_same_rng_exact_restore": true,
+  "average_checkpoint_provenance": true,
+  "source_diagnostic_interface": true,
+  "domain_forwards": 0
+}

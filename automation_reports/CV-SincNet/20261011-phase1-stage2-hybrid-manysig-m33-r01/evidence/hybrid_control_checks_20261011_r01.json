@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "target_access": false,
+  "checks": [
+    "contrastive_gradient_and_duplicate_exclusion",
+    "soft_mix_endpoint",
+    "cross_RX_same_TX_mix",
+    "SAM_exact_restore_one_update",
+    "fixed_five_snapshot_mean",
+    "33_config_matrix",
+    "capacity_four",
+    "truth_last"
+  ]
+}
