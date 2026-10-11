@@ -69,5 +69,6 @@
   ],
   "source_fully_audited_steps": 124320,
   "source_mechanism_findings": "source_mechanism_findings.md",
-  "source_only_open_question": "Four-candidate maximum L CE can be lower than clean; investigate identity-inclusive search in a future fixed source-only diagnostic, without changing healthy runs."
+  "source_only_open_question": "Identity-inclusive selection adds only 0.00108-0.00147 source eval CE in the three HARD_STYLE recorded trajectories, with 25-35% clean fallback. This exact frozen-state calculation does not establish a worthwhile standalone training variant or generalization benefit. Existing two matrices continue unchanged.",
+  "source_identity_counterfactual": "source_identity_counterfactual.md"
 }
