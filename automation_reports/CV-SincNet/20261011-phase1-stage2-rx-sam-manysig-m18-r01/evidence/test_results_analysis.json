@@ -1,25 +1,25 @@
 {
   "run_id": "20261011-phase1-stage2-rx-sam-manysig-m18-r01",
-  "read_at": 1791732233.1688344,
+  "read_at": 1791732446.5323875,
   "status": "PARTIAL",
   "completed_rows": [
     "SSL-s2026092701",
+    "PHYS-s2026092701",
     "SSL-s2026092702",
-    "SSL-s2026092703"
+    "PHYS-s2026092702",
+    "SSL-s2026092703",
+    "PHYS-s2026092703"
   ],
   "missing_rows": [
     "SAM_SSL-s2026092701",
-    "PHYS-s2026092701",
     "SAM_PHYS-s2026092701",
     "RANK-s2026092701",
     "SAM_RANK-s2026092701",
     "SAM_SSL-s2026092702",
-    "PHYS-s2026092702",
     "SAM_PHYS-s2026092702",
     "RANK-s2026092702",
     "SAM_RANK-s2026092702",
     "SAM_SSL-s2026092703",
-    "PHYS-s2026092703",
     "SAM_PHYS-s2026092703",
     "RANK-s2026092703",
     "SAM_RANK-s2026092703"
@@ -74,6 +74,32 @@
         {
           "seed": 2026092703,
           "accuracy": 0.8125476190476191
+        }
+      ]
+    },
+    {
+      "arm": "PHYS",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_count": 3,
+      "accuracy_mean": 0.8071964285714286,
+      "accuracy_sd": 0.016284357756438637,
+      "complete_three_seeds": true,
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "accuracy": 0.8212261904761905
+        },
+        {
+          "seed": 2026092702,
+          "accuracy": 0.7893392857142857
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8110238095238095
         }
       ]
     }
@@ -1018,6 +1044,944 @@
       "net_correct_gain": 86
     },
     {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8212261904761905,
+      "macro_f1": 0.817744190950567,
+      "macro_accuracy": 0.8212261904761905,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27229,
+          87,
+          112,
+          554,
+          12,
+          6
+        ],
+        [
+          344,
+          14818,
+          89,
+          12665,
+          70,
+          14
+        ],
+        [
+          1215,
+          856,
+          20361,
+          908,
+          845,
+          3815
+        ],
+        [
+          2493,
+          5443,
+          105,
+          19915,
+          15,
+          29
+        ],
+        [
+          12,
+          12,
+          13,
+          10,
+          27950,
+          3
+        ],
+        [
+          39,
+          21,
+          76,
+          10,
+          161,
+          27693
+        ]
+      ],
+      "NLL": 1.378514051437378,
+      "parent_fix_count": 5920,
+      "parent_break_count": 3913,
+      "net_correct_gain": 2007
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8285,
+      "macro_f1": 0.8113378453402459,
+      "macro_accuracy": 0.8285,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3999,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          69,
+          1276,
+          5,
+          2650,
+          0,
+          0
+        ],
+        [
+          886,
+          1,
+          2761,
+          3,
+          0,
+          349
+        ],
+        [
+          48,
+          32,
+          0,
+          3920,
+          0,
+          0
+        ],
+        [
+          7,
+          4,
+          2,
+          2,
+          3985,
+          0
+        ],
+        [
+          5,
+          0,
+          46,
+          6,
+          0,
+          3943
+        ]
+      ],
+      "NLL": 1.8206546306610107,
+      "parent_fix_count": 420,
+      "parent_break_count": 609,
+      "net_correct_gain": -189
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7860833333333334,
+      "macro_f1": 0.7736659160228215,
+      "macro_accuracy": 0.7860833333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3959,
+          0,
+          0,
+          41,
+          0,
+          0
+        ],
+        [
+          18,
+          2903,
+          0,
+          1077,
+          2,
+          0
+        ],
+        [
+          5,
+          3,
+          3045,
+          1,
+          2,
+          944
+        ],
+        [
+          36,
+          2877,
+          94,
+          971,
+          1,
+          21
+        ],
+        [
+          1,
+          1,
+          4,
+          1,
+          3993,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          1,
+          2,
+          3995
+        ]
+      ],
+      "NLL": 1.2822074890136719,
+      "parent_fix_count": 2880,
+      "parent_break_count": 319,
+      "net_correct_gain": 2561
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.9020416666666666,
+      "macro_f1": 0.9007647034783949,
+      "macro_accuracy": 0.9020416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3777,
+          60,
+          93,
+          59,
+          7,
+          4
+        ],
+        [
+          1,
+          2505,
+          75,
+          1369,
+          42,
+          8
+        ],
+        [
+          21,
+          6,
+          3934,
+          32,
+          3,
+          4
+        ],
+        [
+          22,
+          522,
+          0,
+          3452,
+          2,
+          2
+        ],
+        [
+          1,
+          0,
+          1,
+          2,
+          3996,
+          0
+        ],
+        [
+          1,
+          7,
+          6,
+          0,
+          1,
+          3985
+        ]
+      ],
+      "NLL": 0.7619103193283081,
+      "parent_fix_count": 686,
+      "parent_break_count": 250,
+      "net_correct_gain": 436
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7569166666666667,
+      "macro_f1": 0.7618529127264869,
+      "macro_accuracy": 0.7569166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3982,
+          2,
+          7,
+          4,
+          3,
+          2
+        ],
+        [
+          22,
+          1558,
+          0,
+          2409,
+          7,
+          4
+        ],
+        [
+          40,
+          723,
+          2729,
+          187,
+          277,
+          44
+        ],
+        [
+          28,
+          1837,
+          3,
+          2119,
+          11,
+          2
+        ],
+        [
+          3,
+          6,
+          6,
+          5,
+          3979,
+          1
+        ],
+        [
+          20,
+          7,
+          23,
+          1,
+          150,
+          3799
+        ]
+      ],
+      "NLL": 2.0264782905578613,
+      "parent_fix_count": 711,
+      "parent_break_count": 475,
+      "net_correct_gain": 236
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8495,
+      "macro_f1": 0.8425412453311166,
+      "macro_accuracy": 0.8494999999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3583,
+          0,
+          7,
+          409,
+          1,
+          0
+        ],
+        [
+          1,
+          1563,
+          0,
+          2434,
+          2,
+          0
+        ],
+        [
+          4,
+          11,
+          3297,
+          59,
+          555,
+          74
+        ],
+        [
+          0,
+          39,
+          0,
+          3960,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          3,
+          5,
+          0,
+          0,
+          6,
+          3986
+        ]
+      ],
+      "NLL": 0.8815999627113342,
+      "parent_fix_count": 223,
+      "parent_break_count": 605,
+      "net_correct_gain": -382
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8333333333333334,
+      "macro_f1": 0.8276429426426445,
+      "macro_accuracy": 0.8333333333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          231,
+          2755,
+          9,
+          992,
+          12,
+          1
+        ],
+        [
+          252,
+          2,
+          3738,
+          7,
+          1,
+          0
+        ],
+        [
+          2358,
+          110,
+          8,
+          1520,
+          0,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          10,
+          0,
+          0,
+          2,
+          1,
+          3987
+        ]
+      ],
+      "NLL": 1.2831648588180542,
+      "parent_fix_count": 664,
+      "parent_break_count": 551,
+      "net_correct_gain": 113
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7922083333333333,
+      "macro_f1": 0.7631789164867366,
+      "macro_accuracy": 0.7922083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3929,
+          24,
+          5,
+          41,
+          1,
+          0
+        ],
+        [
+          2,
+          2258,
+          0,
+          1734,
+          5,
+          1
+        ],
+        [
+          7,
+          110,
+          857,
+          619,
+          7,
+          2400
+        ],
+        [
+          1,
+          26,
+          0,
+          3973,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          1,
+          3998
+        ]
+      ],
+      "NLL": 1.5935821533203125,
+      "parent_fix_count": 336,
+      "parent_break_count": 1104,
+      "net_correct_gain": -768
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9724642857142857,
+      "macro_f1": 0.16433999046394707,
+      "macro_accuracy": 0.9724642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27229,
+          87,
+          112,
+          554,
+          12,
+          6
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.16221463680267334,
+      "parent_fix_count": 296,
+      "parent_break_count": 223,
+      "net_correct_gain": 73
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5292142857142857,
+      "macro_f1": 0.11535647002039641,
+      "macro_accuracy": 0.5292142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          344,
+          14818,
+          89,
+          12665,
+          70,
+          14
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 4.211132049560547,
+      "parent_fix_count": 3231,
+      "parent_break_count": 599,
+      "net_correct_gain": 2632
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7271785714285715,
+      "macro_f1": 0.14034035689915428,
+      "macro_accuracy": 0.7271785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1215,
+          856,
+          20361,
+          908,
+          845,
+          3815
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 1.5255281925201416,
+      "parent_fix_count": 306,
+      "parent_break_count": 2759,
+      "net_correct_gain": -2453
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.71125,
+      "macro_f1": 0.13854394935476017,
+      "macro_accuracy": 0.71125,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2493,
+          5443,
+          105,
+          19915,
+          15,
+          29
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.3078808784484863,
+      "parent_fix_count": 1715,
+      "parent_break_count": 273,
+      "net_correct_gain": 1442
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9982142857142857,
+      "macro_f1": 0.16651772415847482,
+      "macro_accuracy": 0.9982142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          12,
+          12,
+          13,
+          10,
+          27950,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.014941712841391563,
+      "parent_fix_count": 15,
+      "parent_break_count": 5,
+      "net_correct_gain": 10
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9890357142857142,
+      "macro_f1": 0.16574793959743594,
+      "macro_accuracy": 0.9890357142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          39,
+          21,
+          76,
+          10,
+          161,
+          27693
+        ]
+      ],
+      "NLL": 0.049386344850063324,
+      "parent_fix_count": 357,
+      "parent_break_count": 54,
+      "net_correct_gain": 303
+    },
+    {
       "row_id": "SSL-s2026092702",
       "arm": "SSL",
       "model_seed": 2026092702,
@@ -1956,6 +2920,944 @@
       "net_correct_gain": -453
     },
     {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7893392857142857,
+      "macro_f1": 0.7828852628238209,
+      "macro_accuracy": 0.7893392857142857,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27311,
+          72,
+          93,
+          497,
+          22,
+          5
+        ],
+        [
+          535,
+          12323,
+          30,
+          14754,
+          344,
+          14
+        ],
+        [
+          1878,
+          889,
+          18780,
+          1310,
+          1196,
+          3947
+        ],
+        [
+          3137,
+          5605,
+          108,
+          19092,
+          18,
+          40
+        ],
+        [
+          15,
+          11,
+          9,
+          10,
+          27953,
+          2
+        ],
+        [
+          219,
+          18,
+          120,
+          8,
+          485,
+          27150
+        ]
+      ],
+      "NLL": 1.737239956855774,
+      "parent_fix_count": 4155,
+      "parent_break_count": 4354,
+      "net_correct_gain": -199
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8119583333333333,
+      "macro_f1": 0.7947852752675226,
+      "macro_accuracy": 0.8119583333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3998,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          92,
+          1279,
+          1,
+          2626,
+          2,
+          0
+        ],
+        [
+          1189,
+          3,
+          2502,
+          3,
+          0,
+          303
+        ],
+        [
+          239,
+          1,
+          0,
+          3760,
+          0,
+          0
+        ],
+        [
+          7,
+          5,
+          3,
+          2,
+          3982,
+          1
+        ],
+        [
+          2,
+          0,
+          24,
+          4,
+          4,
+          3966
+        ]
+      ],
+      "NLL": 1.8221015930175781,
+      "parent_fix_count": 786,
+      "parent_break_count": 476,
+      "net_correct_gain": 310
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6320416666666666,
+      "macro_f1": 0.6181995129066334,
+      "macro_accuracy": 0.6320416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          18,
+          938,
+          0,
+          3042,
+          2,
+          0
+        ],
+        [
+          302,
+          491,
+          1348,
+          1,
+          3,
+          1855
+        ],
+        [
+          23,
+          2959,
+          88,
+          889,
+          4,
+          37
+        ],
+        [
+          0,
+          1,
+          1,
+          1,
+          3997,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          1,
+          1,
+          3997
+        ]
+      ],
+      "NLL": 2.6463773250579834,
+      "parent_fix_count": 1484,
+      "parent_break_count": 100,
+      "net_correct_gain": 1384
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.896875,
+      "macro_f1": 0.8945213696489258,
+      "macro_accuracy": 0.8968750000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3807,
+          58,
+          56,
+          57,
+          18,
+          4
+        ],
+        [
+          5,
+          2352,
+          6,
+          1445,
+          186,
+          6
+        ],
+        [
+          27,
+          5,
+          3919,
+          36,
+          5,
+          8
+        ],
+        [
+          30,
+          500,
+          1,
+          3467,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          6,
+          5,
+          5,
+          0,
+          1,
+          3983
+        ]
+      ],
+      "NLL": 0.8408445119857788,
+      "parent_fix_count": 463,
+      "parent_break_count": 303,
+      "net_correct_gain": 160
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7280416666666667,
+      "macro_f1": 0.7282398428742733,
+      "macro_accuracy": 0.7280416666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3986,
+          2,
+          7,
+          1,
+          3,
+          1
+        ],
+        [
+          22,
+          1417,
+          3,
+          2543,
+          9,
+          6
+        ],
+        [
+          284,
+          254,
+          2747,
+          226,
+          136,
+          353
+        ],
+        [
+          35,
+          2007,
+          8,
+          1939,
+          10,
+          1
+        ],
+        [
+          8,
+          5,
+          2,
+          5,
+          3980,
+          0
+        ],
+        [
+          23,
+          6,
+          91,
+          3,
+          473,
+          3404
+        ]
+      ],
+      "NLL": 2.4061999320983887,
+      "parent_fix_count": 707,
+      "parent_break_count": 1087,
+      "net_correct_gain": -380
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.82725,
+      "macro_f1": 0.8198967803552684,
+      "macro_accuracy": 0.8272500000000002,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3541,
+          0,
+          29,
+          429,
+          1,
+          0
+        ],
+        [
+          3,
+          1751,
+          0,
+          2244,
+          2,
+          0
+        ],
+        [
+          11,
+          18,
+          2615,
+          71,
+          1048,
+          237
+        ],
+        [
+          1,
+          38,
+          0,
+          3960,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          4,
+          5,
+          0,
+          0,
+          3,
+          3988
+        ]
+      ],
+      "NLL": 1.1877120733261108,
+      "parent_fix_count": 191,
+      "parent_break_count": 715,
+      "net_correct_gain": -524
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8154583333333333,
+      "macro_f1": 0.8035108482044797,
+      "macro_accuracy": 0.8154583333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3999,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          393,
+          2728,
+          19,
+          717,
+          141,
+          2
+        ],
+        [
+          53,
+          2,
+          3942,
+          2,
+          1,
+          0
+        ],
+        [
+          2808,
+          89,
+          11,
+          1090,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          184,
+          0,
+          0,
+          0,
+          3,
+          3813
+        ]
+      ],
+      "NLL": 1.5626637935638428,
+      "parent_fix_count": 257,
+      "parent_break_count": 1325,
+      "net_correct_gain": -1068
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.81375,
+      "macro_f1": 0.8001408061632805,
+      "macro_accuracy": 0.8137500000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3980,
+          9,
+          1,
+          10,
+          0,
+          0
+        ],
+        [
+          2,
+          1858,
+          1,
+          2137,
+          2,
+          0
+        ],
+        [
+          12,
+          116,
+          1707,
+          971,
+          3,
+          1191
+        ],
+        [
+          1,
+          11,
+          0,
+          3987,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "NLL": 1.6947815418243408,
+      "parent_fix_count": 267,
+      "parent_break_count": 348,
+      "net_correct_gain": -81
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9753928571428572,
+      "macro_f1": 0.16459052750206407,
+      "macro_accuracy": 0.9753928571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27311,
+          72,
+          93,
+          497,
+          22,
+          5
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.17891666293144226,
+      "parent_fix_count": 284,
+      "parent_break_count": 185,
+      "net_correct_gain": 99
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.44010714285714286,
+      "macro_f1": 0.10186907389496482,
+      "macro_accuracy": 0.44010714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          535,
+          12323,
+          30,
+          14754,
+          344,
+          14
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 5.050685882568359,
+      "parent_fix_count": 1575,
+      "parent_break_count": 1021,
+      "net_correct_gain": 554
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6707142857142857,
+      "macro_f1": 0.13381787088499358,
+      "macro_accuracy": 0.6707142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1878,
+          889,
+          18780,
+          1310,
+          1196,
+          3947
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.052272081375122,
+      "parent_fix_count": 1188,
+      "parent_break_count": 1602,
+      "net_correct_gain": -414
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6818571428571428,
+      "macro_f1": 0.13513972649282255,
+      "macro_accuracy": 0.6818571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3137,
+          5605,
+          108,
+          19092,
+          18,
+          40
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.9908761978149414,
+      "parent_fix_count": 1013,
+      "parent_break_count": 1029,
+      "net_correct_gain": -16
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9983214285714286,
+      "macro_f1": 0.1665266682155857,
+      "macro_accuracy": 0.9983214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          15,
+          11,
+          9,
+          10,
+          27953,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.011905048973858356,
+      "parent_fix_count": 17,
+      "parent_break_count": 9,
+      "net_correct_gain": 8
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9696428571428571,
+      "macro_f1": 0.16409791477787852,
+      "macro_accuracy": 0.9696428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          219,
+          18,
+          120,
+          8,
+          485,
+          27150
+        ]
+      ],
+      "NLL": 0.13878481090068817,
+      "parent_fix_count": 78,
+      "parent_break_count": 508,
+      "net_correct_gain": -430
+    },
+    {
       "row_id": "SSL-s2026092703",
       "arm": "SSL",
       "model_seed": 2026092703,
@@ -2892,6 +4794,944 @@
       "parent_fix_count": 125,
       "parent_break_count": 358,
       "net_correct_gain": -233
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8110238095238095,
+      "macro_f1": 0.8067522293616185,
+      "macro_accuracy": 0.8110238095238095,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27166,
+          58,
+          397,
+          354,
+          17,
+          8
+        ],
+        [
+          356,
+          15015,
+          61,
+          12480,
+          67,
+          21
+        ],
+        [
+          1158,
+          502,
+          21359,
+          171,
+          902,
+          3908
+        ],
+        [
+          3304,
+          6881,
+          346,
+          17408,
+          12,
+          49
+        ],
+        [
+          8,
+          10,
+          21,
+          7,
+          27950,
+          4
+        ],
+        [
+          11,
+          7,
+          249,
+          12,
+          367,
+          27354
+        ]
+      ],
+      "NLL": 1.6163932085037231,
+      "parent_fix_count": 4212,
+      "parent_break_count": 5046,
+      "net_correct_gain": -834
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7967083333333334,
+      "macro_f1": 0.7782221849770917,
+      "macro_accuracy": 0.7967083333333335,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3995,
+          2,
+          2,
+          1,
+          0,
+          0
+        ],
+        [
+          88,
+          1306,
+          2,
+          2604,
+          0,
+          0
+        ],
+        [
+          1002,
+          2,
+          2292,
+          1,
+          0,
+          703
+        ],
+        [
+          342,
+          21,
+          0,
+          3637,
+          0,
+          0
+        ],
+        [
+          3,
+          7,
+          8,
+          0,
+          3981,
+          1
+        ],
+        [
+          2,
+          1,
+          76,
+          5,
+          6,
+          3910
+        ]
+      ],
+      "NLL": 1.8882216215133667,
+      "parent_fix_count": 576,
+      "parent_break_count": 432,
+      "net_correct_gain": 144
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7809166666666667,
+      "macro_f1": 0.7495497971700882,
+      "macro_accuracy": 0.7809166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3985,
+          0,
+          0,
+          15,
+          0,
+          0
+        ],
+        [
+          2,
+          2820,
+          0,
+          1176,
+          2,
+          0
+        ],
+        [
+          18,
+          3,
+          3854,
+          1,
+          2,
+          122
+        ],
+        [
+          7,
+          3576,
+          284,
+          94,
+          3,
+          36
+        ],
+        [
+          0,
+          1,
+          2,
+          0,
+          3997,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          3,
+          5,
+          3992
+        ]
+      ],
+      "NLL": 2.062100887298584,
+      "parent_fix_count": 1360,
+      "parent_break_count": 50,
+      "net_correct_gain": 1310
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8989583333333333,
+      "macro_f1": 0.8985219788248209,
+      "macro_accuracy": 0.8989583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3751,
+          49,
+          155,
+          33,
+          7,
+          5
+        ],
+        [
+          3,
+          2673,
+          27,
+          1263,
+          20,
+          14
+        ],
+        [
+          10,
+          4,
+          3952,
+          17,
+          10,
+          7
+        ],
+        [
+          25,
+          747,
+          1,
+          3221,
+          2,
+          4
+        ],
+        [
+          0,
+          0,
+          2,
+          1,
+          3996,
+          1
+        ],
+        [
+          1,
+          4,
+          2,
+          1,
+          10,
+          3982
+        ]
+      ],
+      "NLL": 0.7408500909805298,
+      "parent_fix_count": 576,
+      "parent_break_count": 303,
+      "net_correct_gain": 273
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.75875,
+      "macro_f1": 0.7621625508055615,
+      "macro_accuracy": 0.75875,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3985,
+          1,
+          1,
+          2,
+          9,
+          2
+        ],
+        [
+          13,
+          1929,
+          3,
+          2037,
+          12,
+          6
+        ],
+        [
+          24,
+          482,
+          2930,
+          138,
+          266,
+          160
+        ],
+        [
+          16,
+          2064,
+          20,
+          1894,
+          6,
+          0
+        ],
+        [
+          5,
+          2,
+          7,
+          6,
+          3980,
+          0
+        ],
+        [
+          8,
+          1,
+          168,
+          3,
+          328,
+          3492
+        ]
+      ],
+      "NLL": 2.215409278869629,
+      "parent_fix_count": 515,
+      "parent_break_count": 1005,
+      "net_correct_gain": -490
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8433333333333334,
+      "macro_f1": 0.835458942764831,
+      "macro_accuracy": 0.8433333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3468,
+          1,
+          239,
+          291,
+          0,
+          1
+        ],
+        [
+          4,
+          1635,
+          3,
+          2358,
+          0,
+          0
+        ],
+        [
+          92,
+          6,
+          3220,
+          4,
+          621,
+          57
+        ],
+        [
+          1,
+          60,
+          0,
+          3937,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          16,
+          3982
+        ]
+      ],
+      "NLL": 0.8742890357971191,
+      "parent_fix_count": 321,
+      "parent_break_count": 591,
+      "net_correct_gain": -270
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.809375,
+      "macro_f1": 0.7927664490549239,
+      "macro_accuracy": 0.8093750000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          246,
+          2559,
+          18,
+          1145,
+          31,
+          1
+        ],
+        [
+          11,
+          2,
+          3985,
+          0,
+          2,
+          0
+        ],
+        [
+          2913,
+          153,
+          41,
+          885,
+          0,
+          8
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          2,
+          3997
+        ]
+      ],
+      "NLL": 1.930445671081543,
+      "parent_fix_count": 363,
+      "parent_break_count": 759,
+      "net_correct_gain": -396
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.789125,
+      "macro_f1": 0.7674246497003924,
+      "macro_accuracy": 0.789125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3982,
+          5,
+          0,
+          12,
+          1,
+          0
+        ],
+        [
+          0,
+          2093,
+          8,
+          1897,
+          2,
+          0
+        ],
+        [
+          1,
+          3,
+          1126,
+          10,
+          1,
+          2859
+        ],
+        [
+          0,
+          260,
+          0,
+          3740,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "NLL": 1.6034349203109741,
+      "parent_fix_count": 501,
+      "parent_break_count": 1906,
+      "net_correct_gain": -1405
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9702142857142857,
+      "macro_f1": 0.16414699875527197,
+      "macro_accuracy": 0.9702142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27166,
+          58,
+          397,
+          354,
+          17,
+          8
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.21571378409862518,
+      "parent_fix_count": 535,
+      "parent_break_count": 334,
+      "net_correct_gain": 201
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.53625,
+      "macro_f1": 0.11635475996745322,
+      "macro_accuracy": 0.53625,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          356,
+          15015,
+          61,
+          12480,
+          67,
+          21
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 4.091400623321533,
+      "parent_fix_count": 2444,
+      "parent_break_count": 428,
+      "net_correct_gain": 2016
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7628214285714285,
+      "macro_f1": 0.1442425224714169,
+      "macro_accuracy": 0.7628214285714285,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1158,
+          502,
+          21359,
+          171,
+          902,
+          3908
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 1.3063300848007202,
+      "parent_fix_count": 743,
+      "parent_break_count": 2875,
+      "net_correct_gain": -2132
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6217142857142857,
+      "macro_f1": 0.12778952313836034,
+      "macro_accuracy": 0.6217142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3304,
+          6881,
+          346,
+          17408,
+          12,
+          49
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 3.996020555496216,
+      "parent_fix_count": 289,
+      "parent_break_count": 1166,
+      "net_correct_gain": -877
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9982142857142857,
+      "macro_f1": 0.16651772415847482,
+      "macro_accuracy": 0.9982142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          8,
+          10,
+          21,
+          7,
+          27950,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.01049245148897171,
+      "parent_fix_count": 12,
+      "parent_break_count": 11,
+      "net_correct_gain": 1
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9769285714285715,
+      "macro_f1": 0.16472161000108393,
+      "macro_accuracy": 0.9769285714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          11,
+          7,
+          249,
+          12,
+          367,
+          27354
+        ]
+      ],
+      "NLL": 0.07840141654014587,
+      "parent_fix_count": 189,
+      "parent_break_count": 232,
+      "net_correct_gain": -43
     }
   ],
   "day_records": [
@@ -3164,6 +6004,274 @@
       "net_correct_gain": 412
     },
     {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8242857142857143,
+      "macro_f1": 0.8194537918642156,
+      "macro_accuracy": 0.8242857142857143,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6479,
+          9,
+          85,
+          423,
+          3,
+          1
+        ],
+        [
+          172,
+          3223,
+          77,
+          3514,
+          11,
+          3
+        ],
+        [
+          34,
+          17,
+          5408,
+          137,
+          51,
+          1353
+        ],
+        [
+          641,
+          756,
+          25,
+          5571,
+          6,
+          1
+        ],
+        [
+          2,
+          2,
+          5,
+          2,
+          6988,
+          1
+        ],
+        [
+          18,
+          5,
+          14,
+          2,
+          10,
+          6951
+        ]
+      ],
+      "NLL": 1.3699253797531128,
+      "parent_fix_count": 2047,
+      "parent_break_count": 876,
+      "net_correct_gain": 1171
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.833,
+      "macro_f1": 0.8300821486465381,
+      "macro_accuracy": 0.8329999999999999,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6908,
+          35,
+          20,
+          28,
+          5,
+          4
+        ],
+        [
+          29,
+          4290,
+          3,
+          2674,
+          2,
+          2
+        ],
+        [
+          103,
+          63,
+          5525,
+          153,
+          163,
+          993
+        ],
+        [
+          752,
+          1866,
+          55,
+          4300,
+          3,
+          24
+        ],
+        [
+          1,
+          5,
+          6,
+          3,
+          6984,
+          1
+        ],
+        [
+          8,
+          0,
+          7,
+          2,
+          4,
+          6979
+        ]
+      ],
+      "NLL": 1.0601882934570312,
+      "parent_fix_count": 982,
+      "parent_break_count": 840,
+      "net_correct_gain": 142
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7918571428571428,
+      "macro_f1": 0.7887056818209283,
+      "macro_accuracy": 0.7918571428571429,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6948,
+          11,
+          4,
+          37,
+          0,
+          0
+        ],
+        [
+          69,
+          3641,
+          3,
+          3276,
+          8,
+          3
+        ],
+        [
+          1006,
+          272,
+          4628,
+          518,
+          106,
+          470
+        ],
+        [
+          876,
+          1857,
+          3,
+          4258,
+          6,
+          0
+        ],
+        [
+          6,
+          3,
+          1,
+          4,
+          6985,
+          1
+        ],
+        [
+          4,
+          9,
+          47,
+          2,
+          140,
+          6798
+        ]
+      ],
+      "NLL": 1.6046597957611084,
+      "parent_fix_count": 1625,
+      "parent_break_count": 980,
+      "net_correct_gain": 645
+    },
+    {
+      "row_id": "PHYS-s2026092701",
+      "arm": "PHYS",
+      "model_seed": 2026092701,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8357619047619048,
+      "macro_f1": 0.8307335347571656,
+      "macro_accuracy": 0.8357619047619047,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6894,
+          32,
+          3,
+          66,
+          4,
+          1
+        ],
+        [
+          74,
+          3664,
+          6,
+          3201,
+          49,
+          6
+        ],
+        [
+          72,
+          504,
+          4800,
+          100,
+          525,
+          999
+        ],
+        [
+          224,
+          964,
+          22,
+          5786,
+          0,
+          4
+        ],
+        [
+          3,
+          2,
+          1,
+          1,
+          6993,
+          0
+        ],
+        [
+          9,
+          7,
+          8,
+          4,
+          7,
+          6965
+        ]
+      ],
+      "NLL": 1.4792824983596802,
+      "parent_fix_count": 1266,
+      "parent_break_count": 1217,
+      "net_correct_gain": 49
+    },
+    {
       "row_id": "SSL-s2026092702",
       "arm": "SSL",
       "model_seed": 2026092702,
@@ -3432,6 +6540,274 @@
       "net_correct_gain": -388
     },
     {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7817380952380952,
+      "macro_f1": 0.7737862710340319,
+      "macro_accuracy": 0.7817380952380951,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6483,
+          26,
+          55,
+          429,
+          6,
+          1
+        ],
+        [
+          210,
+          2768,
+          15,
+          3771,
+          233,
+          3
+        ],
+        [
+          328,
+          52,
+          4816,
+          318,
+          74,
+          1412
+        ],
+        [
+          813,
+          818,
+          15,
+          5347,
+          7,
+          0
+        ],
+        [
+          4,
+          1,
+          6,
+          1,
+          6987,
+          1
+        ],
+        [
+          195,
+          3,
+          88,
+          2,
+          280,
+          6432
+        ]
+      ],
+      "NLL": 1.8693981170654297,
+      "parent_fix_count": 1657,
+      "parent_break_count": 1643,
+      "net_correct_gain": 14
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8166428571428571,
+      "macro_f1": 0.8124018506631302,
+      "macro_accuracy": 0.8166428571428571,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6888,
+          19,
+          32,
+          46,
+          12,
+          3
+        ],
+        [
+          66,
+          3933,
+          0,
+          2994,
+          4,
+          3
+        ],
+        [
+          24,
+          66,
+          5458,
+          47,
+          211,
+          1194
+        ],
+        [
+          889,
+          1883,
+          79,
+          4116,
+          4,
+          29
+        ],
+        [
+          3,
+          5,
+          1,
+          4,
+          6987,
+          0
+        ],
+        [
+          8,
+          3,
+          4,
+          1,
+          67,
+          6917
+        ]
+      ],
+      "NLL": 1.4369245767593384,
+      "parent_fix_count": 620,
+      "parent_break_count": 756,
+      "net_correct_gain": -136
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7605238095238095,
+      "macro_f1": 0.7559129095790609,
+      "macro_accuracy": 0.7605238095238095,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6978,
+          9,
+          2,
+          8,
+          3,
+          0
+        ],
+        [
+          111,
+          2859,
+          6,
+          4010,
+          10,
+          4
+        ],
+        [
+          1240,
+          212,
+          4187,
+          942,
+          178,
+          241
+        ],
+        [
+          992,
+          1977,
+          5,
+          4020,
+          5,
+          1
+        ],
+        [
+          5,
+          3,
+          2,
+          3,
+          6986,
+          1
+        ],
+        [
+          5,
+          8,
+          22,
+          3,
+          50,
+          6912
+        ]
+      ],
+      "NLL": 2.1025826930999756,
+      "parent_fix_count": 789,
+      "parent_break_count": 491,
+      "net_correct_gain": 298
+    },
+    {
+      "row_id": "PHYS-s2026092702",
+      "arm": "PHYS",
+      "model_seed": 2026092702,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.7984523809523809,
+      "macro_f1": 0.7867319996765058,
+      "macro_accuracy": 0.7984523809523809,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6962,
+          18,
+          4,
+          14,
+          1,
+          1
+        ],
+        [
+          148,
+          2763,
+          9,
+          3979,
+          97,
+          4
+        ],
+        [
+          286,
+          559,
+          4319,
+          3,
+          733,
+          1100
+        ],
+        [
+          443,
+          927,
+          9,
+          5609,
+          2,
+          10
+        ],
+        [
+          3,
+          2,
+          0,
+          2,
+          6993,
+          0
+        ],
+        [
+          11,
+          4,
+          6,
+          2,
+          88,
+          6889
+        ]
+      ],
+      "NLL": 1.540055274963379,
+      "parent_fix_count": 1089,
+      "parent_break_count": 1464,
+      "net_correct_gain": -375
+    },
+    {
       "row_id": "SSL-s2026092703",
       "arm": "SSL",
       "model_seed": 2026092703,
@@ -3698,6 +7074,274 @@
       "parent_fix_count": 1357,
       "parent_break_count": 1449,
       "net_correct_gain": -92
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8184761904761905,
+      "macro_f1": 0.8148889712852897,
+      "macro_accuracy": 0.8184761904761905,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6402,
+          8,
+          335,
+          248,
+          6,
+          1
+        ],
+        [
+          126,
+          3611,
+          27,
+          3191,
+          38,
+          7
+        ],
+        [
+          29,
+          11,
+          5994,
+          26,
+          63,
+          877
+        ],
+        [
+          851,
+          1496,
+          79,
+          4564,
+          9,
+          1
+        ],
+        [
+          1,
+          0,
+          8,
+          2,
+          6988,
+          1
+        ],
+        [
+          2,
+          1,
+          156,
+          1,
+          23,
+          6817
+        ]
+      ],
+      "NLL": 1.5164461135864258,
+      "parent_fix_count": 913,
+      "parent_break_count": 845,
+      "net_correct_gain": 68
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8287619047619048,
+      "macro_f1": 0.8250177655933572,
+      "macro_accuracy": 0.8287619047619047,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6859,
+          15,
+          52,
+          64,
+          8,
+          2
+        ],
+        [
+          54,
+          4083,
+          0,
+          2856,
+          4,
+          3
+        ],
+        [
+          12,
+          39,
+          5972,
+          100,
+          8,
+          869
+        ],
+        [
+          981,
+          1924,
+          126,
+          3941,
+          0,
+          28
+        ],
+        [
+          1,
+          6,
+          5,
+          4,
+          6984,
+          0
+        ],
+        [
+          3,
+          1,
+          6,
+          1,
+          20,
+          6969
+        ]
+      ],
+      "NLL": 1.5234651565551758,
+      "parent_fix_count": 862,
+      "parent_break_count": 1101,
+      "net_correct_gain": -239
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7735952380952381,
+      "macro_f1": 0.7675618652227693,
+      "macro_accuracy": 0.773595238095238,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6975,
+          9,
+          6,
+          6,
+          2,
+          2
+        ],
+        [
+          100,
+          3453,
+          5,
+          3424,
+          12,
+          6
+        ],
+        [
+          942,
+          189,
+          4743,
+          40,
+          80,
+          1006
+        ],
+        [
+          1000,
+          2285,
+          13,
+          3695,
+          2,
+          5
+        ],
+        [
+          3,
+          4,
+          7,
+          1,
+          6983,
+          2
+        ],
+        [
+          0,
+          3,
+          59,
+          6,
+          290,
+          6642
+        ]
+      ],
+      "NLL": 1.9888293743133545,
+      "parent_fix_count": 1291,
+      "parent_break_count": 1316,
+      "net_correct_gain": -25
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "arm": "PHYS",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_rx_sam",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8232619047619048,
+      "macro_f1": 0.8171646595301398,
+      "macro_accuracy": 0.8232619047619049,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6930,
+          26,
+          4,
+          36,
+          1,
+          3
+        ],
+        [
+          76,
+          3868,
+          29,
+          3009,
+          13,
+          5
+        ],
+        [
+          175,
+          263,
+          4650,
+          5,
+          751,
+          1156
+        ],
+        [
+          472,
+          1176,
+          128,
+          5208,
+          1,
+          15
+        ],
+        [
+          3,
+          0,
+          1,
+          0,
+          6995,
+          1
+        ],
+        [
+          6,
+          2,
+          28,
+          4,
+          34,
+          6926
+        ]
+      ],
+      "NLL": 1.4368315935134888,
+      "parent_fix_count": 1146,
+      "parent_break_count": 1784,
+      "net_correct_gain": -638
     }
   ],
   "parent_records": [
@@ -6411,6 +10055,67 @@
       }
     },
     {
+      "row_id": "PHYS-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.384340686025098
+        },
+        "wall_seconds": 6.718980480916798,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1775587328
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 771.8268478040118,
+          "peak_cuda_memory_bytes": 480960000,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4947718,
+          "auxiliary_saved_bytes": 527727,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "RX_L_packets": 1022976,
+          "RX_U_packets": 1022976,
+          "critic_packets": 0,
+          "risk_initialization": null,
+          "critic_target_identity_packets": 0,
+          "action_state_identity_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "source_only_pretrained_auxiliary_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost; source diagnostic pretraining cost referenced separately"
+      }
+    },
+    {
       "row_id": "SSL-s2026092702",
       "prediction": {
         "status": "PREDICTIONS_COMPLETE",
@@ -6472,6 +10177,67 @@
       }
     },
     {
+      "row_id": "PHYS-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.149387949961238
+        },
+        "wall_seconds": 6.291840234072879,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1778479104
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 743.8399617490359,
+          "peak_cuda_memory_bytes": 480960000,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4947718,
+          "auxiliary_saved_bytes": 527727,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "RX_L_packets": 1022976,
+          "RX_U_packets": 1022976,
+          "critic_packets": 0,
+          "risk_initialization": null,
+          "critic_target_identity_packets": 0,
+          "action_state_identity_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "source_only_pretrained_auxiliary_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost; source diagnostic pretraining cost referenced separately"
+      }
+    },
+    {
       "row_id": "SSL-s2026092703",
       "prediction": {
         "status": "PREDICTIONS_COMPLETE",
@@ -6517,6 +10283,67 @@
           "physical_U_packets": 0,
           "RX_L_packets": 0,
           "RX_U_packets": 0,
+          "critic_packets": 0,
+          "risk_initialization": null,
+          "critic_target_identity_packets": 0,
+          "action_state_identity_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "source_only_pretrained_auxiliary_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost; source diagnostic pretraining cost referenced separately"
+      }
+    },
+    {
+      "row_id": "PHYS-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.219919387018308
+        },
+        "wall_seconds": 6.373288925038651,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1788301312
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 751.950508736074,
+          "peak_cuda_memory_bytes": 480960000,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4947718,
+          "auxiliary_saved_bytes": 527727,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "RX_L_packets": 1022976,
+          "RX_U_packets": 1022976,
           "critic_packets": 0,
           "risk_initialization": null,
           "critic_target_identity_packets": 0,
