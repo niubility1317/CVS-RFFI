@@ -12,3 +12,4 @@
 {"event": "PROGRESS_VERIFIED", "time": 1791751881.9010282, "read_at": 1791751881.854511, "launched": 30, "scored_rows": 28, "source_fully_audited_rows": 28, "source_fully_audited_steps": 124320, "failure": null, "final_goal_status": "UNPROVEN"}
 {"event": "SOURCE_MECHANISM_INTERPRETED", "source_rows": 28, "source_steps": 124320, "target_scores_read": false, "changed_training": false, "time": 1791752027.8284664}
 {"event": "SOURCE_IDENTITY_COUNTERFACTUAL_VERIFIED", "closed_rows": 4, "active_batches": 15984, "target_access": false, "new_training": false, "time": 1791752560.2628376}
+{"event": "FULL30ROW_ANALYZED_VERIFIED", "time": 1791753283.080363, "source_steps": 133200, "test_predictions": 5040000, "report": "final_analysis.md"}

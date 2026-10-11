@@ -84,7 +84,7 @@
   "group_id": "cvs-e20-boundary-style",
   "display_name": "E20续训20轮：主身份敏感度Fishr与受控困难风格",
   "description": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "E20_plus20",
@@ -4086,7 +4086,7 @@
       "arm": "JOINT",
       "model_seed": 2026092701,
       "row_id": "JOINT-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -4499,7 +4499,8 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 258999,
       "gpu": 0,
-      "live_epoch": 14
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "CE",
@@ -8253,7 +8254,7 @@
       "arm": "JOINT",
       "model_seed": 2026092702,
       "row_id": "JOINT-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -8666,7 +8667,8 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 259978,
       "gpu": 0,
-      "live_epoch": 14
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "CE",
@@ -12842,12 +12844,18 @@
   "execution_commit": "a5c2504224f16d3fb22bbfa706dddf176213cc0c",
   "delivery_verdict": "VERIFIED",
   "progress": {
-    "read_at": 1791751881.854511,
+    "read_at": 1791753362.949593,
     "launched": 30,
-    "scored_rows": 28,
-    "source_fully_audited_rows": 28,
-    "source_fully_audited_steps": 124320,
+    "scored_rows": 30,
+    "source_fully_audited_rows": 30,
+    "source_fully_audited_steps": 133200,
     "failure": null,
-    "final_goal_status": "UNPROVEN"
+    "final_goal_status": "NOT_ACHIEVED"
+  },
+  "results": {
+    "complete_rows": 30,
+    "source_steps": 133200,
+    "complete_arms_reaching_84": [],
+    "report": "final_analysis.md"
   }
 }

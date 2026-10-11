@@ -1,6 +1,6 @@
 {
   "run_id": "20261012-phase1-e20-boundary-style-manysig-m30-r01",
-  "read_at": 1791751764.7949524,
+  "read_at": 1791753148.3036551,
   "teacher_cache": {
     "schema": "e20_peer_probability_cache_v1",
     "status": "COMPLETE",
@@ -198,7 +198,7 @@
     "deployment_scope": "Phase1 ground U supervision only; no teacher cache in prediction model",
     "teacher_training_cost": "Three existing original E20 models reused; historical training cost is not zero"
   },
-  "status": "PARTIAL",
+  "status": "COMPLETE",
   "completed_rows": [
     "CE-s2026092701",
     "SSL-s2026092701",
@@ -209,6 +209,7 @@
     "L_REPLAY-s2026092701",
     "RANDOM_STYLE-s2026092701",
     "HARD_STYLE-s2026092701",
+    "JOINT-s2026092701",
     "CE-s2026092702",
     "SSL-s2026092702",
     "PROBE_FISH-s2026092702",
@@ -218,6 +219,7 @@
     "L_REPLAY-s2026092702",
     "RANDOM_STYLE-s2026092702",
     "HARD_STYLE-s2026092702",
+    "JOINT-s2026092702",
     "CE-s2026092703",
     "SSL-s2026092703",
     "PROBE_FISH-s2026092703",
@@ -229,10 +231,7 @@
     "HARD_STYLE-s2026092703",
     "JOINT-s2026092703"
   ],
-  "missing_rows": [
-    "JOINT-s2026092701",
-    "JOINT-s2026092702"
-  ],
+  "missing_rows": [],
   "summary": [
     {
       "arm": "P0",
@@ -497,13 +496,23 @@
     {
       "arm": "JOINT",
       "seeds": [
+        2026092701,
+        2026092702,
         2026092703
       ],
-      "seed_count": 1,
-      "accuracy_mean": 0.812797619047619,
-      "accuracy_sd": null,
-      "complete_three_seeds": false,
+      "seed_count": 3,
+      "accuracy_mean": 0.798936507936508,
+      "accuracy_sd": 0.018127458326262152,
+      "complete_three_seeds": true,
       "per_seed": [
+        {
+          "seed": 2026092701,
+          "accuracy": 0.8055892857142857
+        },
+        {
+          "seed": 2026092702,
+          "accuracy": 0.778422619047619
+        },
         {
           "seed": 2026092703,
           "accuracy": 0.812797619047619
@@ -8955,6 +8964,944 @@
       "net_correct_gain": 1108
     },
     {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8055892857142857,
+      "macro_f1": 0.8016752402943639,
+      "macro_accuracy": 0.8055892857142858,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27558,
+          66,
+          150,
+          173,
+          46,
+          7
+        ],
+        [
+          892,
+          14282,
+          38,
+          12516,
+          259,
+          13
+        ],
+        [
+          1642,
+          1173,
+          21434,
+          801,
+          664,
+          2286
+        ],
+        [
+          3436,
+          6698,
+          166,
+          17677,
+          16,
+          7
+        ],
+        [
+          10,
+          14,
+          18,
+          10,
+          27945,
+          3
+        ],
+        [
+          85,
+          42,
+          746,
+          33,
+          651,
+          26443
+        ]
+      ],
+      "NLL": 1.055155634880066,
+      "parent_fix_count": 4899,
+      "parent_break_count": 5214,
+      "net_correct_gain": -315
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.802375,
+      "macro_f1": 0.7863393376259213,
+      "macro_accuracy": 0.802375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3997,
+          1,
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          67,
+          1206,
+          3,
+          2723,
+          1,
+          0
+        ],
+        [
+          284,
+          1,
+          3099,
+          0,
+          0,
+          616
+        ],
+        [
+          436,
+          13,
+          1,
+          3550,
+          0,
+          0
+        ],
+        [
+          4,
+          7,
+          5,
+          2,
+          3982,
+          0
+        ],
+        [
+          6,
+          19,
+          547,
+          4,
+          1,
+          3423
+        ]
+      ],
+      "NLL": 1.1905572414398193,
+      "parent_fix_count": 1417,
+      "parent_break_count": 809,
+      "net_correct_gain": 608
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.746625,
+      "macro_f1": 0.716551057427528,
+      "macro_accuracy": 0.746625,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3975,
+          0,
+          0,
+          25,
+          0,
+          0
+        ],
+        [
+          20,
+          2756,
+          0,
+          1222,
+          2,
+          0
+        ],
+        [
+          188,
+          2,
+          3243,
+          5,
+          2,
+          560
+        ],
+        [
+          16,
+          3764,
+          153,
+          62,
+          1,
+          4
+        ],
+        [
+          1,
+          2,
+          4,
+          1,
+          3991,
+          1
+        ],
+        [
+          0,
+          7,
+          0,
+          3,
+          98,
+          3892
+        ]
+      ],
+      "NLL": 1.336773157119751,
+      "parent_fix_count": 754,
+      "parent_break_count": 343,
+      "net_correct_gain": 411
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8698333333333333,
+      "macro_f1": 0.8650487717309495,
+      "macro_accuracy": 0.8698333333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3684,
+          59,
+          131,
+          87,
+          39,
+          0
+        ],
+        [
+          8,
+          1922,
+          15,
+          1831,
+          213,
+          11
+        ],
+        [
+          17,
+          4,
+          3951,
+          17,
+          6,
+          5
+        ],
+        [
+          50,
+          603,
+          4,
+          3339,
+          2,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          3,
+          3996,
+          0
+        ],
+        [
+          0,
+          6,
+          10,
+          0,
+          0,
+          3984
+        ]
+      ],
+      "NLL": 0.5900187492370605,
+      "parent_fix_count": 956,
+      "parent_break_count": 334,
+      "net_correct_gain": 622
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7612916666666667,
+      "macro_f1": 0.7641622255386099,
+      "macro_accuracy": 0.7612916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3983,
+          2,
+          5,
+          2,
+          5,
+          3
+        ],
+        [
+          32,
+          2114,
+          3,
+          1840,
+          9,
+          2
+        ],
+        [
+          242,
+          389,
+          2931,
+          247,
+          150,
+          41
+        ],
+        [
+          43,
+          2059,
+          6,
+          1879,
+          12,
+          1
+        ],
+        [
+          5,
+          5,
+          8,
+          3,
+          3979,
+          0
+        ],
+        [
+          21,
+          4,
+          116,
+          24,
+          450,
+          3385
+        ]
+      ],
+      "NLL": 1.4996033906936646,
+      "parent_fix_count": 662,
+      "parent_break_count": 724,
+      "net_correct_gain": -62
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8700833333333333,
+      "macro_f1": 0.8609038393536536,
+      "macro_accuracy": 0.8700833333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3937,
+          3,
+          14,
+          42,
+          1,
+          3
+        ],
+        [
+          12,
+          1611,
+          1,
+          2375,
+          1,
+          0
+        ],
+        [
+          24,
+          28,
+          3493,
+          15,
+          382,
+          58
+        ],
+        [
+          6,
+          41,
+          0,
+          3953,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          6,
+          4,
+          0,
+          101,
+          3889
+        ]
+      ],
+      "NLL": 0.49841293692588806,
+      "parent_fix_count": 369,
+      "parent_break_count": 506,
+      "net_correct_gain": -137
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7485833333333334,
+      "macro_f1": 0.7379095471672185,
+      "macro_accuracy": 0.7485833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          750,
+          1847,
+          16,
+          1358,
+          29,
+          0
+        ],
+        [
+          660,
+          2,
+          3337,
+          0,
+          1,
+          0
+        ],
+        [
+          2884,
+          204,
+          1,
+          911,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          58,
+          0,
+          68,
+          2,
+          1,
+          3871
+        ]
+      ],
+      "NLL": 1.6235047578811646,
+      "parent_fix_count": 494,
+      "parent_break_count": 1202,
+      "net_correct_gain": -708
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8403333333333334,
+      "macro_f1": 0.8203187511514884,
+      "macro_accuracy": 0.8403333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3982,
+          1,
+          0,
+          16,
+          1,
+          0
+        ],
+        [
+          3,
+          2826,
+          0,
+          1167,
+          4,
+          0
+        ],
+        [
+          227,
+          747,
+          1380,
+          517,
+          123,
+          1006
+        ],
+        [
+          1,
+          14,
+          1,
+          3983,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "NLL": 0.6472204327583313,
+      "parent_fix_count": 247,
+      "parent_break_count": 1296,
+      "net_correct_gain": -1049
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9842142857142857,
+      "macro_f1": 0.16534072500809963,
+      "macro_accuracy": 0.9842142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27558,
+          66,
+          150,
+          173,
+          46,
+          7
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.055224183946847916,
+      "parent_fix_count": 711,
+      "parent_break_count": 47,
+      "net_correct_gain": 664
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5100714285714286,
+      "macro_f1": 0.11259322327862131,
+      "macro_accuracy": 0.5100714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          892,
+          14282,
+          38,
+          12516,
+          259,
+          13
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.54933762550354,
+      "parent_fix_count": 1863,
+      "parent_break_count": 844,
+      "net_correct_gain": 1019
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7655,
+      "macro_f1": 0.1445294062116492,
+      "macro_accuracy": 0.7655,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1642,
+          1173,
+          21434,
+          801,
+          664,
+          2286
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.8038725852966309,
+      "parent_fix_count": 332,
+      "parent_break_count": 3673,
+      "net_correct_gain": -3341
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6313214285714286,
+      "macro_f1": 0.1290000072976188,
+      "macro_accuracy": 0.6313214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3436,
+          6698,
+          166,
+          17677,
+          16,
+          7
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.72053599357605,
+      "parent_fix_count": 541,
+      "parent_break_count": 405,
+      "net_correct_gain": 136
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9980357142857142,
+      "macro_f1": 0.16650281526499242,
+      "macro_accuracy": 0.9980357142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          10,
+          14,
+          18,
+          10,
+          27945,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.008384713903069496,
+      "parent_fix_count": 17,
+      "parent_break_count": 9,
+      "net_correct_gain": 8
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9443928571428571,
+      "macro_f1": 0.16190021367913843,
+      "macro_accuracy": 0.9443928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          85,
+          42,
+          746,
+          33,
+          651,
+          26443
+        ]
+      ],
+      "NLL": 0.19357994198799133,
+      "parent_fix_count": 1435,
+      "parent_break_count": 236,
+      "net_correct_gain": 1199
+    },
+    {
       "row_id": "CE-s2026092702",
       "arm": "CE",
       "model_seed": 2026092702,
@@ -17395,6 +18342,944 @@
       "parent_fix_count": 480,
       "parent_break_count": 542,
       "net_correct_gain": -62
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.778422619047619,
+      "macro_f1": 0.7723687572972041,
+      "macro_accuracy": 0.778422619047619,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27367,
+          190,
+          203,
+          206,
+          32,
+          2
+        ],
+        [
+          537,
+          11638,
+          28,
+          15382,
+          380,
+          35
+        ],
+        [
+          2345,
+          715,
+          20195,
+          907,
+          517,
+          3321
+        ],
+        [
+          3550,
+          6628,
+          279,
+          17480,
+          16,
+          47
+        ],
+        [
+          7,
+          12,
+          12,
+          11,
+          27954,
+          4
+        ],
+        [
+          34,
+          347,
+          161,
+          34,
+          1283,
+          26141
+        ]
+      ],
+      "NLL": 1.2058782577514648,
+      "parent_fix_count": 4340,
+      "parent_break_count": 4185,
+      "net_correct_gain": 155
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.817375,
+      "macro_f1": 0.8053895092657305,
+      "macro_accuracy": 0.8173749999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3997,
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          33,
+          1339,
+          0,
+          2626,
+          2,
+          0
+        ],
+        [
+          111,
+          1,
+          3227,
+          2,
+          0,
+          659
+        ],
+        [
+          713,
+          6,
+          1,
+          3280,
+          0,
+          0
+        ],
+        [
+          0,
+          8,
+          5,
+          4,
+          3982,
+          1
+        ],
+        [
+          3,
+          187,
+          8,
+          1,
+          9,
+          3792
+        ]
+      ],
+      "NLL": 1.0412834882736206,
+      "parent_fix_count": 175,
+      "parent_break_count": 794,
+      "net_correct_gain": -619
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6419166666666667,
+      "macro_f1": 0.6347462043696064,
+      "macro_accuracy": 0.6419166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3981,
+          0,
+          0,
+          19,
+          0,
+          0
+        ],
+        [
+          19,
+          626,
+          0,
+          3353,
+          2,
+          0
+        ],
+        [
+          97,
+          90,
+          2769,
+          6,
+          72,
+          966
+        ],
+        [
+          22,
+          3604,
+          251,
+          79,
+          1,
+          43
+        ],
+        [
+          1,
+          1,
+          0,
+          1,
+          3995,
+          2
+        ],
+        [
+          0,
+          2,
+          1,
+          1,
+          40,
+          3956
+        ]
+      ],
+      "NLL": 1.8008787631988525,
+      "parent_fix_count": 1079,
+      "parent_break_count": 226,
+      "net_correct_gain": 853
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.848375,
+      "macro_f1": 0.8449984446319663,
+      "macro_accuracy": 0.848375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3600,
+          179,
+          109,
+          85,
+          27,
+          0
+        ],
+        [
+          9,
+          1876,
+          3,
+          1793,
+          290,
+          29
+        ],
+        [
+          114,
+          98,
+          3516,
+          247,
+          8,
+          17
+        ],
+        [
+          46,
+          562,
+          5,
+          3384,
+          2,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          2,
+          3,
+          3,
+          1,
+          3,
+          3988
+        ]
+      ],
+      "NLL": 0.7053705453872681,
+      "parent_fix_count": 915,
+      "parent_break_count": 499,
+      "net_correct_gain": 416
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.694375,
+      "macro_f1": 0.6972598189905247,
+      "macro_accuracy": 0.694375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3985,
+          2,
+          7,
+          1,
+          3,
+          2
+        ],
+        [
+          35,
+          1409,
+          6,
+          2541,
+          8,
+          1
+        ],
+        [
+          300,
+          358,
+          2990,
+          287,
+          49,
+          16
+        ],
+        [
+          41,
+          2185,
+          8,
+          1753,
+          12,
+          1
+        ],
+        [
+          6,
+          3,
+          4,
+          4,
+          3983,
+          0
+        ],
+        [
+          19,
+          128,
+          139,
+          31,
+          1138,
+          2545
+        ]
+      ],
+      "NLL": 1.8375978469848633,
+      "parent_fix_count": 608,
+      "parent_break_count": 758,
+      "net_correct_gain": -150
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.856125,
+      "macro_f1": 0.8435632761993536,
+      "macro_accuracy": 0.856125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3835,
+          0,
+          86,
+          78,
+          1,
+          0
+        ],
+        [
+          13,
+          1359,
+          3,
+          2622,
+          3,
+          0
+        ],
+        [
+          8,
+          7,
+          3527,
+          6,
+          364,
+          88
+        ],
+        [
+          7,
+          43,
+          1,
+          3949,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          2,
+          27,
+          7,
+          0,
+          86,
+          3878
+        ]
+      ],
+      "NLL": 0.6620688438415527,
+      "parent_fix_count": 166,
+      "parent_break_count": 667,
+      "net_correct_gain": -501
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.74375,
+      "macro_f1": 0.7389783956588168,
+      "macro_accuracy": 0.74375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          423,
+          2512,
+          16,
+          973,
+          71,
+          5
+        ],
+        [
+          1696,
+          0,
+          2296,
+          7,
+          1,
+          0
+        ],
+        [
+          2720,
+          209,
+          13,
+          1056,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          8,
+          0,
+          3,
+          0,
+          3,
+          3986
+        ]
+      ],
+      "NLL": 1.7451376914978027,
+      "parent_fix_count": 930,
+      "parent_break_count": 1046,
+      "net_correct_gain": -116
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8470416666666667,
+      "macro_f1": 0.8368621306789924,
+      "macro_accuracy": 0.8470416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3969,
+          8,
+          0,
+          22,
+          1,
+          0
+        ],
+        [
+          5,
+          2517,
+          0,
+          1474,
+          4,
+          0
+        ],
+        [
+          19,
+          161,
+          1870,
+          352,
+          23,
+          1575
+        ],
+        [
+          1,
+          19,
+          0,
+          3979,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4,
+          3996
+        ]
+      ],
+      "NLL": 0.648810625076294,
+      "parent_fix_count": 467,
+      "parent_break_count": 195,
+      "net_correct_gain": 272
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9773928571428572,
+      "macro_f1": 0.1647611995111408,
+      "macro_accuracy": 0.9773928571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27367,
+          190,
+          203,
+          206,
+          32,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.07709494978189468,
+      "parent_fix_count": 268,
+      "parent_break_count": 184,
+      "net_correct_gain": 84
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.41564285714285715,
+      "macro_f1": 0.09786904821972181,
+      "macro_accuracy": 0.41564285714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          537,
+          11638,
+          28,
+          15382,
+          380,
+          35
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.991241693496704,
+      "parent_fix_count": 1906,
+      "parent_break_count": 1082,
+      "net_correct_gain": 824
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.72125,
+      "macro_f1": 0.13967562333575406,
+      "macro_accuracy": 0.72125,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2345,
+          715,
+          20195,
+          907,
+          517,
+          3321
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 1.2086471319198608,
+      "parent_fix_count": 820,
+      "parent_break_count": 1793,
+      "net_correct_gain": -973
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6242857142857143,
+      "macro_f1": 0.12811492231017296,
+      "macro_accuracy": 0.6242857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3550,
+          6628,
+          279,
+          17480,
+          16,
+          47
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.7040395736694336,
+      "parent_fix_count": 856,
+      "parent_break_count": 554,
+      "net_correct_gain": 302
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9983571428571428,
+      "macro_f1": 0.1665296493548272,
+      "macro_accuracy": 0.9983571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          7,
+          12,
+          12,
+          11,
+          27954,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.007776098325848579,
+      "parent_fix_count": 9,
+      "parent_break_count": 5,
+      "net_correct_gain": 4
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9336071428571429,
+      "macro_f1": 0.1609439549817452,
+      "macro_accuracy": 0.9336071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          34,
+          347,
+          161,
+          34,
+          1283,
+          26141
+        ]
+      ],
+      "NLL": 0.24646975100040436,
+      "parent_fix_count": 481,
+      "parent_break_count": 567,
+      "net_correct_gain": -86
     },
     {
       "row_id": "CE-s2026092703",
@@ -29191,6 +31076,274 @@
       "net_correct_gain": 48
     },
     {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7782142857142857,
+      "macro_f1": 0.7709090571894103,
+      "macro_accuracy": 0.7782142857142857,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6841,
+          14,
+          52,
+          82,
+          5,
+          6
+        ],
+        [
+          272,
+          2860,
+          23,
+          3696,
+          146,
+          3
+        ],
+        [
+          287,
+          37,
+          4803,
+          622,
+          29,
+          1222
+        ],
+        [
+          968,
+          1465,
+          107,
+          4452,
+          4,
+          4
+        ],
+        [
+          1,
+          3,
+          4,
+          1,
+          6990,
+          1
+        ],
+        [
+          51,
+          9,
+          144,
+          3,
+          54,
+          6739
+        ]
+      ],
+      "NLL": 1.137286901473999,
+      "parent_fix_count": 1230,
+      "parent_break_count": 1636,
+      "net_correct_gain": -406
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8240714285714286,
+      "macro_f1": 0.8214220331424902,
+      "macro_accuracy": 0.8240714285714286,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6812,
+          31,
+          93,
+          31,
+          33,
+          0
+        ],
+        [
+          210,
+          4178,
+          3,
+          2604,
+          4,
+          1
+        ],
+        [
+          643,
+          236,
+          5592,
+          71,
+          324,
+          134
+        ],
+        [
+          852,
+          2005,
+          8,
+          4132,
+          2,
+          1
+        ],
+        [
+          5,
+          2,
+          7,
+          3,
+          6982,
+          1
+        ],
+        [
+          18,
+          2,
+          22,
+          2,
+          41,
+          6915
+        ]
+      ],
+      "NLL": 0.9843610525131226,
+      "parent_fix_count": 1192,
+      "parent_break_count": 1137,
+      "net_correct_gain": 55
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7682142857142857,
+      "macro_f1": 0.7652763243434632,
+      "macro_accuracy": 0.7682142857142858,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6951,
+          11,
+          3,
+          28,
+          7,
+          0
+        ],
+        [
+          201,
+          3184,
+          4,
+          3581,
+          24,
+          6
+        ],
+        [
+          630,
+          715,
+          5390,
+          29,
+          42,
+          194
+        ],
+        [
+          965,
+          2166,
+          1,
+          3861,
+          7,
+          0
+        ],
+        [
+          2,
+          6,
+          4,
+          6,
+          6981,
+          1
+        ],
+        [
+          5,
+          24,
+          564,
+          26,
+          483,
+          5898
+        ]
+      ],
+      "NLL": 1.3018550872802734,
+      "parent_fix_count": 1213,
+      "parent_break_count": 1241,
+      "net_correct_gain": -28
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "model_seed": 2026092701,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8518571428571429,
+      "macro_f1": 0.8481938199040067,
+      "macro_accuracy": 0.8518571428571429,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6954,
+          10,
+          2,
+          32,
+          1,
+          1
+        ],
+        [
+          209,
+          4060,
+          8,
+          2635,
+          85,
+          3
+        ],
+        [
+          82,
+          185,
+          5649,
+          79,
+          269,
+          736
+        ],
+        [
+          651,
+          1062,
+          50,
+          5232,
+          3,
+          2
+        ],
+        [
+          2,
+          3,
+          3,
+          0,
+          6992,
+          0
+        ],
+        [
+          11,
+          7,
+          16,
+          2,
+          73,
+          6891
+        ]
+      ],
+      "NLL": 0.7971199750900269,
+      "parent_fix_count": 1264,
+      "parent_break_count": 1200,
+      "net_correct_gain": 64
+    },
+    {
       "row_id": "CE-s2026092702",
       "arm": "CE",
       "model_seed": 2026092702,
@@ -31601,6 +33754,274 @@
       "parent_fix_count": 908,
       "parent_break_count": 1169,
       "net_correct_gain": -261
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7365238095238095,
+      "macro_f1": 0.7252436781008517,
+      "macro_accuracy": 0.7365238095238095,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6663,
+          89,
+          129,
+          110,
+          7,
+          2
+        ],
+        [
+          74,
+          2605,
+          13,
+          4018,
+          282,
+          8
+        ],
+        [
+          792,
+          146,
+          3741,
+          727,
+          41,
+          1553
+        ],
+        [
+          1103,
+          1485,
+          136,
+          4270,
+          4,
+          2
+        ],
+        [
+          1,
+          3,
+          3,
+          1,
+          6991,
+          1
+        ],
+        [
+          10,
+          7,
+          137,
+          28,
+          154,
+          6664
+        ]
+      ],
+      "NLL": 1.387589454650879,
+      "parent_fix_count": 1685,
+      "parent_break_count": 1299,
+      "net_correct_gain": 386
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8238571428571428,
+      "macro_f1": 0.8210359589320246,
+      "macro_accuracy": 0.8238571428571428,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6853,
+          26,
+          69,
+          36,
+          16,
+          0
+        ],
+        [
+          141,
+          3562,
+          0,
+          3289,
+          7,
+          1
+        ],
+        [
+          474,
+          115,
+          6117,
+          72,
+          74,
+          148
+        ],
+        [
+          772,
+          1936,
+          37,
+          4235,
+          2,
+          18
+        ],
+        [
+          4,
+          3,
+          2,
+          3,
+          6986,
+          2
+        ],
+        [
+          10,
+          41,
+          3,
+          1,
+          96,
+          6849
+        ]
+      ],
+      "NLL": 1.0331087112426758,
+      "parent_fix_count": 1079,
+      "parent_break_count": 516,
+      "net_correct_gain": 563
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7455,
+      "macro_f1": 0.7394399229605639,
+      "macro_accuracy": 0.7454999999999999,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6963,
+          7,
+          3,
+          20,
+          7,
+          0
+        ],
+        [
+          151,
+          2515,
+          4,
+          4301,
+          17,
+          12
+        ],
+        [
+          707,
+          342,
+          5028,
+          49,
+          157,
+          717
+        ],
+        [
+          1003,
+          2214,
+          3,
+          3771,
+          7,
+          2
+        ],
+        [
+          1,
+          3,
+          4,
+          6,
+          6985,
+          1
+        ],
+        [
+          6,
+          202,
+          12,
+          3,
+          728,
+          6049
+        ]
+      ],
+      "NLL": 1.4387211799621582,
+      "parent_fix_count": 606,
+      "parent_break_count": 1254,
+      "net_correct_gain": -648
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "arm": "JOINT",
+      "model_seed": 2026092702,
+      "stage": "phase1_E20_plus20",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8078095238095238,
+      "macro_f1": 0.8002770584394447,
+      "macro_accuracy": 0.8078095238095239,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6888,
+          68,
+          2,
+          40,
+          2,
+          0
+        ],
+        [
+          171,
+          2956,
+          11,
+          3774,
+          74,
+          14
+        ],
+        [
+          372,
+          112,
+          5309,
+          59,
+          245,
+          903
+        ],
+        [
+          672,
+          993,
+          103,
+          5204,
+          3,
+          25
+        ],
+        [
+          1,
+          3,
+          3,
+          1,
+          6992,
+          0
+        ],
+        [
+          8,
+          97,
+          9,
+          2,
+          305,
+          6579
+        ]
+      ],
+      "NLL": 0.9640935659408569,
+      "parent_fix_count": 970,
+      "parent_break_count": 1116,
+      "net_correct_gain": -146
     },
     {
       "row_id": "CE-s2026092703",
@@ -38849,6 +41270,365 @@
       }
     },
     {
+      "row_id": "JOINT-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 6.134168648975901
+        },
+        "wall_seconds": 7.187755341990851,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1813024768
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 3126.4176309829345,
+          "incremental_total_seconds_including_warmup": 3133.5616621549707,
+          "head_warmup": {
+            "status": "NOT_APPLICABLE",
+            "enabled": false,
+            "source_L_cache_packets": 0,
+            "cache_forward_calls": 0,
+            "head_packet_occurrences": 0,
+            "optimizer_steps": 0,
+            "seconds": 0.0,
+            "cache_tensor_bytes": 0,
+            "optimizer_state_tensor_bytes": 0,
+            "base_state_unchanged": true,
+            "backbone_updates": 0,
+            "peak_cuda_memory_bytes": 0,
+            "rss_bytes": null,
+            "auxiliary_inheritance": false
+          },
+          "fishr_calibration": {
+            "status": "FIXED_CALIBRATION_COMPLETE",
+            "calibration_reference": "own_margin_term",
+            "fixed_coefficients": {
+              "time_down": 0.05781817016773883,
+              "t2.pool": 0.02229759623056312
+            },
+            "levels": {
+              "time_down": {
+                "mean_CE_gradient_norm": 0.363322847010726,
+                "mean_term_gradient_norm": 1.2567773969891647,
+                "uncapped_coefficient": 0.05781817016773883,
+                "coefficient": 0.05781817016773883,
+                "cap_active": false
+              },
+              "t2.pool": {
+                "mean_CE_gradient_norm": 0.37864875028836176,
+                "mean_term_gradient_norm": 3.3963190145961986,
+                "uncapped_coefficient": 0.02229759623056312,
+                "coefficient": 0.02229759623056312,
+                "cap_active": false
+              }
+            },
+            "pairs": 12,
+            "records": [
+              {
+                "pair": 0,
+                "day": 1,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.23067468061127627,
+                    "term_gradient_norm": 0.3518236313255101,
+                    "raw_term": 0.03113585151731968
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.2436458635501881,
+                    "term_gradient_norm": 2.718288813036511,
+                    "raw_term": 0.1573459357023239
+                  }
+                },
+                "main_ce": 0.02775133214890957,
+                "seconds": 1.0645961629925296
+              },
+              {
+                "pair": 1,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.3483816402249561,
+                    "term_gradient_norm": 0.9449502272052367,
+                    "raw_term": 0.017164362594485283
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.4048402642978874,
+                    "term_gradient_norm": 3.6485909460629244,
+                    "raw_term": 0.11604531109333038
+                  }
+                },
+                "main_ce": 0.037736259400844574,
+                "seconds": 0.40050520305521786
+              },
+              {
+                "pair": 2,
+                "day": 3,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.3925642684854927,
+                    "term_gradient_norm": 0.9293480602399962,
+                    "raw_term": 0.037636179476976395
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.3265811250296473,
+                    "term_gradient_norm": 3.698105703955805,
+                    "raw_term": 0.31299927830696106
+                  }
+                },
+                "main_ce": 0.06810053437948227,
+                "seconds": 0.38790489407256246
+              },
+              {
+                "pair": 3,
+                "day": 1,
+                "cross_batch_PID_overlap": 0,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.43992341106181915,
+                    "term_gradient_norm": 1.6394333046515497,
+                    "raw_term": 0.019849328324198723
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.5485157350267427,
+                    "term_gradient_norm": 1.711413476448063,
+                    "raw_term": 0.18128187954425812
+                  }
+                },
+                "main_ce": 0.06319112330675125,
+                "seconds": 0.3970743300160393
+              },
+              {
+                "pair": 4,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.34150812871096603,
+                    "term_gradient_norm": 0.9815756220371888,
+                    "raw_term": 0.03277178108692169
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.32064223613546705,
+                    "term_gradient_norm": 1.5404229593026053,
+                    "raw_term": 0.14410024881362915
+                  }
+                },
+                "main_ce": 0.03691703826189041,
+                "seconds": 0.3989398468984291
+              },
+              {
+                "pair": 5,
+                "day": 3,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.6238767135865816,
+                    "term_gradient_norm": 1.3674225903704145,
+                    "raw_term": 0.06877937912940979
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.7466385066726016,
+                    "term_gradient_norm": 4.677666857533399,
+                    "raw_term": 0.2456657588481903
+                  }
+                },
+                "main_ce": 0.05509965121746063,
+                "seconds": 0.42860202002339065
+              },
+              {
+                "pair": 6,
+                "day": 1,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.3555328092667238,
+                    "term_gradient_norm": 0.42971724078177476,
+                    "raw_term": 0.053800784051418304
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.35288180662231594,
+                    "term_gradient_norm": 2.017350052598392,
+                    "raw_term": 0.07598292082548141
+                  }
+                },
+                "main_ce": 0.052139412611722946,
+                "seconds": 0.4257998960092664
+              },
+              {
+                "pair": 7,
+                "day": 2,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.14717465855529513,
+                    "term_gradient_norm": 1.4206446300842122,
+                    "raw_term": 0.05168837308883667
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.12408137200732633,
+                    "term_gradient_norm": 1.4172282467339514,
+                    "raw_term": 0.20449519157409668
+                  }
+                },
+                "main_ce": 0.021169964224100113,
+                "seconds": 0.37964202906005085
+              },
+              {
+                "pair": 8,
+                "day": 3,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.2414673411842477,
+                    "term_gradient_norm": 2.167958724266782,
+                    "raw_term": 0.0440245047211647
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.34252698933869424,
+                    "term_gradient_norm": 1.8780013466792764,
+                    "raw_term": 0.18689091503620148
+                  }
+                },
+                "main_ce": 0.05779184028506279,
+                "seconds": 0.40330210397951305
+              },
+              {
+                "pair": 9,
+                "day": 1,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.5109736732320548,
+                    "term_gradient_norm": 2.3776793992973193,
+                    "raw_term": 0.03640001639723778
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.5046189342108032,
+                    "term_gradient_norm": 3.9873571513433927,
+                    "raw_term": 0.24664077162742615
+                  }
+                },
+                "main_ce": 0.06496398895978928,
+                "seconds": 0.3913071269635111
+              },
+              {
+                "pair": 10,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.17379608087818765,
+                    "term_gradient_norm": 1.6298662060384885,
+                    "raw_term": 0.07219000160694122
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.16369599242773156,
+                    "term_gradient_norm": 9.586915944993521,
+                    "raw_term": 0.19530954957008362
+                  }
+                },
+                "main_ce": 0.026098091155290604,
+                "seconds": 0.39005411497782916
+              },
+              {
+                "pair": 11,
+                "day": 3,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.5540007583311114,
+                    "term_gradient_norm": 0.8409091275715015,
+                    "raw_term": 0.027493879199028015
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.4651161781409355,
+                    "term_gradient_norm": 3.8744866764665393,
+                    "raw_term": 0.13133668899536133
+                  }
+                },
+                "main_ce": 0.07193366438150406,
+                "seconds": 0.38469140499364585
+              }
+            ],
+            "extra_source_readouts": 1440,
+            "model_forwards": 24,
+            "seconds": 5.481253084959462,
+            "state_unchanged": true,
+            "RNG_preserved": true,
+            "source_role": "L_s only",
+            "target_access": false,
+            "identity_updates": 0,
+            "head_updates": 0,
+            "auxiliary_heads": 0,
+            "all_layers_calibrated": true,
+            "coefficient_formula": "min(cap,0.2*mean(pair_main_CE_gradient_norm)/(mean(own_margin_term_gradient_norm)+eps))",
+            "sampling_namespace": "same source-private calibration pairs as probe; own-margin statistic, not old-pair probe term"
+          },
+          "peak_cuda_memory_bytes": 658532352,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "optimizer_state_tensor_bytes": 1416468,
+          "checkpoint_bytes": 4952006,
+          "auxiliary_saved_bytes": 526678,
+          "parent_training_epochs": 20,
+          "incremental_epochs": 20,
+          "total_epochs": 40,
+          "parent_training_cost_reused": true,
+          "frozen_teacher_model_count": 2,
+          "teacher_training_epochs_reused": 40,
+          "historical_model_epochs_including_teachers": 80,
+          "teacher_probability_bank_bytes": 1871100,
+          "teacher_cache_resources_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-e20-boundary-style-manysig-m30-r01/peer_cache/completion.json",
+          "teacher_scope": "teacher_parameters=0 means no teacher models resident during student training; extra original E20 training and shared cache forward costs reported separately",
+          "mixed_U_packets_unit": "U MixStyle disabled",
+          "mixed_L_packets_unit": "actual changed L packet-layer occurrences; not distinct packets",
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 119880,
+          "auxiliary_forwards": 1998,
+          "fishr_steps": 999,
+          "mixstyle_steps": 3996,
+          "style_L_packets": 511488,
+          "style_search_forwards": 19980,
+          "style_search_L": 2557440,
+          "mixstyle_U_steps": 0,
+          "mixed_U_packets": 0,
+          "mixed_L_packets": 1008353
+        },
+        "shared_IQ_preparation_reused": true,
+        "training_flops": null,
+        "scope": "E20+20; head warmup separately measured; shared GPU wall cost"
+      }
+    },
+    {
       "row_id": "CE-s2026092702",
       "prediction": {
         "status": "PREDICTIONS_COMPLETE",
@@ -40758,6 +43538,365 @@
           "mixstyle_U_steps": 0,
           "mixed_U_packets": 0,
           "mixed_L_packets": 1008213
+        },
+        "shared_IQ_preparation_reused": true,
+        "training_flops": null,
+        "scope": "E20+20; head warmup separately measured; shared GPU wall cost"
+      }
+    },
+    {
+      "row_id": "JOINT-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.701186781050637
+        },
+        "wall_seconds": 5.730778087046929,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1807908864
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 3117.5386131500127,
+          "incremental_total_seconds_including_warmup": 3127.6724709129194,
+          "head_warmup": {
+            "status": "NOT_APPLICABLE",
+            "enabled": false,
+            "source_L_cache_packets": 0,
+            "cache_forward_calls": 0,
+            "head_packet_occurrences": 0,
+            "optimizer_steps": 0,
+            "seconds": 0.0,
+            "cache_tensor_bytes": 0,
+            "optimizer_state_tensor_bytes": 0,
+            "base_state_unchanged": true,
+            "backbone_updates": 0,
+            "peak_cuda_memory_bytes": 0,
+            "rss_bytes": null,
+            "auxiliary_inheritance": false
+          },
+          "fishr_calibration": {
+            "status": "FIXED_CALIBRATION_COMPLETE",
+            "calibration_reference": "own_margin_term",
+            "fixed_coefficients": {
+              "time_down": 0.03523791050692261,
+              "t2.pool": 0.024790145942781887
+            },
+            "levels": {
+              "time_down": {
+                "mean_CE_gradient_norm": 0.3109680924165991,
+                "mean_term_gradient_norm": 1.764963290631731,
+                "uncapped_coefficient": 0.03523791050692261,
+                "coefficient": 0.03523791050692261,
+                "cap_active": false
+              },
+              "t2.pool": {
+                "mean_CE_gradient_norm": 0.2633104905078862,
+                "mean_term_gradient_norm": 2.124315775433585,
+                "uncapped_coefficient": 0.024790145942781887,
+                "coefficient": 0.024790145942781887,
+                "cap_active": false
+              }
+            },
+            "pairs": 12,
+            "records": [
+              {
+                "pair": 0,
+                "day": 1,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.38909348327002324,
+                    "term_gradient_norm": 5.541582546030138,
+                    "raw_term": 0.13980993628501892
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.3794275697590059,
+                    "term_gradient_norm": 2.460929999815772,
+                    "raw_term": 0.1572805494070053
+                  }
+                },
+                "main_ce": 0.06203925237059593,
+                "seconds": 1.3277604050235823
+              },
+              {
+                "pair": 1,
+                "day": 2,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.39961738573059685,
+                    "term_gradient_norm": 2.6977072311759733,
+                    "raw_term": 0.077387236058712
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.42719145714878154,
+                    "term_gradient_norm": 3.701555410122418,
+                    "raw_term": 0.30037447810173035
+                  }
+                },
+                "main_ce": 0.056150078773498535,
+                "seconds": 0.44726094300858676
+              },
+              {
+                "pair": 2,
+                "day": 3,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.3650322690400198,
+                    "term_gradient_norm": 2.3504420841679936,
+                    "raw_term": 0.1129075139760971
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.2929851297748447,
+                    "term_gradient_norm": 1.6710274382586658,
+                    "raw_term": 0.2150941789150238
+                  }
+                },
+                "main_ce": 0.06383290886878967,
+                "seconds": 0.4298976219724864
+              },
+              {
+                "pair": 3,
+                "day": 1,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.15408958606253878,
+                    "term_gradient_norm": 1.062017362430971,
+                    "raw_term": 0.1567421704530716
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.09998558961564896,
+                    "term_gradient_norm": 2.7648435325093343,
+                    "raw_term": 0.15715523064136505
+                  }
+                },
+                "main_ce": 0.02858441323041916,
+                "seconds": 0.8492649410618469
+              },
+              {
+                "pair": 4,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.05997368933728926,
+                    "term_gradient_norm": 0.8005586848346748,
+                    "raw_term": 0.11604748666286469
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.05398956239288927,
+                    "term_gradient_norm": 1.7425358196606597,
+                    "raw_term": 0.16131526231765747
+                  }
+                },
+                "main_ce": 0.011425069533288479,
+                "seconds": 0.8278954310808331
+              },
+              {
+                "pair": 5,
+                "day": 3,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.6113494095181647,
+                    "term_gradient_norm": 1.3375015697456734,
+                    "raw_term": 0.11427200585603714
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.5669434655467377,
+                    "term_gradient_norm": 2.8777941682212385,
+                    "raw_term": 0.19704820215702057
+                  }
+                },
+                "main_ce": 0.12745290994644165,
+                "seconds": 0.4205712330294773
+              },
+              {
+                "pair": 6,
+                "day": 1,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.2713109832362964,
+                    "term_gradient_norm": 1.2707061237650783,
+                    "raw_term": 0.12913842499256134
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.2140892595079894,
+                    "term_gradient_norm": 2.475964763981553,
+                    "raw_term": 0.18584586679935455
+                  }
+                },
+                "main_ce": 0.03140678629279137,
+                "seconds": 0.45614414499141276
+              },
+              {
+                "pair": 7,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.5551471758077656,
+                    "term_gradient_norm": 0.6061021095548547,
+                    "raw_term": 0.08289077132940292
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.4119134399970022,
+                    "term_gradient_norm": 1.617048585260226,
+                    "raw_term": 0.14666186273097992
+                  }
+                },
+                "main_ce": 0.10871925204992294,
+                "seconds": 0.47706240601837635
+              },
+              {
+                "pair": 8,
+                "day": 3,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.20343118942164826,
+                    "term_gradient_norm": 2.8703288814917305,
+                    "raw_term": 0.0760272815823555
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.16367349888173335,
+                    "term_gradient_norm": 1.795798806679948,
+                    "raw_term": 0.19702567160129547
+                  }
+                },
+                "main_ce": 0.06385812163352966,
+                "seconds": 0.4984057319816202
+              },
+              {
+                "pair": 9,
+                "day": 1,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.1585508494056003,
+                    "term_gradient_norm": 0.9140464512903421,
+                    "raw_term": 0.11507921665906906
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.08894356728075543,
+                    "term_gradient_norm": 1.2056545242413501,
+                    "raw_term": 0.20325064659118652
+                  }
+                },
+                "main_ce": 0.041260894387960434,
+                "seconds": 0.5043969280086458
+              },
+              {
+                "pair": 10,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.344852763778577,
+                    "term_gradient_norm": 0.7797489151098079,
+                    "raw_term": 0.11249253898859024
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.2992910353034398,
+                    "term_gradient_norm": 1.4355258833295044,
+                    "raw_term": 0.1884530484676361
+                  }
+                },
+                "main_ce": 0.04801221564412117,
+                "seconds": 0.7213850959669799
+              },
+              {
+                "pair": 11,
+                "day": 3,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.2191683243906686,
+                    "term_gradient_norm": 0.9488175279835313,
+                    "raw_term": 0.05501483753323555
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.16129231088580587,
+                    "term_gradient_norm": 1.7431103731223565,
+                    "raw_term": 0.19542278349399567
+                  }
+                },
+                "main_ce": 0.05945032462477684,
+                "seconds": 0.8580171460052952
+              }
+            ],
+            "extra_source_readouts": 1440,
+            "model_forwards": 24,
+            "seconds": 8.062936517992057,
+            "state_unchanged": true,
+            "RNG_preserved": true,
+            "source_role": "L_s only",
+            "target_access": false,
+            "identity_updates": 0,
+            "head_updates": 0,
+            "auxiliary_heads": 0,
+            "all_layers_calibrated": true,
+            "coefficient_formula": "min(cap,0.2*mean(pair_main_CE_gradient_norm)/(mean(own_margin_term_gradient_norm)+eps))",
+            "sampling_namespace": "same source-private calibration pairs as probe; own-margin statistic, not old-pair probe term"
+          },
+          "peak_cuda_memory_bytes": 658532352,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "optimizer_state_tensor_bytes": 1416468,
+          "checkpoint_bytes": 4952006,
+          "auxiliary_saved_bytes": 526678,
+          "parent_training_epochs": 20,
+          "incremental_epochs": 20,
+          "total_epochs": 40,
+          "parent_training_cost_reused": true,
+          "frozen_teacher_model_count": 2,
+          "teacher_training_epochs_reused": 40,
+          "historical_model_epochs_including_teachers": 80,
+          "teacher_probability_bank_bytes": 1871100,
+          "teacher_cache_resources_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-e20-boundary-style-manysig-m30-r01/peer_cache/completion.json",
+          "teacher_scope": "teacher_parameters=0 means no teacher models resident during student training; extra original E20 training and shared cache forward costs reported separately",
+          "mixed_U_packets_unit": "U MixStyle disabled",
+          "mixed_L_packets_unit": "actual changed L packet-layer occurrences; not distinct packets",
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 119880,
+          "auxiliary_forwards": 1998,
+          "fishr_steps": 999,
+          "mixstyle_steps": 3996,
+          "style_L_packets": 511488,
+          "style_search_forwards": 19980,
+          "style_search_L": 2557440,
+          "mixstyle_U_steps": 0,
+          "mixed_U_packets": 0,
+          "mixed_L_packets": 1008197
         },
         "shared_IQ_preparation_reused": true,
         "training_flops": null,
@@ -43044,7 +46183,7 @@
   "checks": {
     "confusion_recount": true,
     "source_config_budget": true,
-    "row_aggregate_agreement": false
+    "row_aggregate_agreement": true
   },
   "target_feedback_to_training": false
 }
