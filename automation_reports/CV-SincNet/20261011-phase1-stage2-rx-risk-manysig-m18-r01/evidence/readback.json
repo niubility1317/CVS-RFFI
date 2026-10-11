@@ -1,0 +1,361 @@
+{
+  "status": "VERIFIED",
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 11071,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_risk_20261011_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_stage2_rx_risk.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_risk_20261011_r01/dispatcher.stdout.log",
+    "commit": "24ecee0baac40de45dac55695b47f9d1ca8f5749",
+    "run_id": "20261011-phase1-stage2-rx-risk-manysig-m18-r01"
+  },
+  "process": {
+    "pid": 11071,
+    "start_ticks": 97566945,
+    "state": "R",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_rx_risk_20261011_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_stage2_rx_risk.dispatch"
+    ],
+    "gpu": null
+  },
+  "workers": [],
+  "queue": null,
+  "completion": null,
+  "failure": null,
+  "preflight": {
+    "status": "PASS",
+    "rows": 18,
+    "arms": [
+      {
+        "arm": "CE",
+        "online_auxiliary": false,
+        "auxiliary_parameters": 0,
+        "trainable_auxiliary_parameters": 0,
+        "finite_forward_backward": true
+      },
+      {
+        "arm": "SSL",
+        "online_auxiliary": false,
+        "auxiliary_parameters": 0,
+        "trainable_auxiliary_parameters": 0,
+        "finite_forward_backward": true
+      },
+      {
+        "arm": "PHYS",
+        "online_auxiliary": false,
+        "auxiliary_parameters": 0,
+        "trainable_auxiliary_parameters": 0,
+        "finite_forward_backward": true
+      },
+      {
+        "arm": "RFIX",
+        "online_auxiliary": false,
+        "auxiliary_parameters": 12721,
+        "trainable_auxiliary_parameters": 0,
+        "finite_forward_backward": true
+      },
+      {
+        "arm": "RANK",
+        "online_auxiliary": true,
+        "auxiliary_parameters": 12721,
+        "trainable_auxiliary_parameters": 12721,
+        "finite_forward_backward": true
+      },
+      {
+        "arm": "MARGIN",
+        "online_auxiliary": true,
+        "auxiliary_parameters": 12721,
+        "trainable_auxiliary_parameters": 12721,
+        "finite_forward_backward": true
+      }
+    ],
+    "matched_CE_SSL_PHYS_objectives": true,
+    "U_TX_not_used": true,
+    "auxiliary_identity_gradient_zero": true,
+    "delayed_activation": true,
+    "exact_zero_action": true,
+    "target_access": false,
+    "parents": [
+      {
+        "seed": 2026092701,
+        "arm": "RFIX",
+        "parent": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092701
+        },
+        "auxiliary": {
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-rx-risk-learning-manysig-m3-r01/E200-s2026092701/RANK_STATE_auxiliary.pt",
+          "source_run": "20261011-phase1-rx-risk-learning-manysig-m3-r01",
+          "source_execution_commit": "7a34e048f8fddec6ed8bd4e69d952d9c5ed938ea",
+          "pretrained_steps": 2000,
+          "L_count": 6300,
+          "pretrained_identity_updates": 0,
+          "V_fitted": false,
+          "target_access": false,
+          "online": false,
+          "offline_source_diagnostic_seconds_all_six_arms": 60.51570908201393
+        },
+        "real_U_action_forward": true
+      },
+      {
+        "seed": 2026092701,
+        "arm": "RANK",
+        "parent": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092701
+        },
+        "auxiliary": {
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-rx-risk-learning-manysig-m3-r01/E200-s2026092701/RANK_STATE_auxiliary.pt",
+          "source_run": "20261011-phase1-rx-risk-learning-manysig-m3-r01",
+          "source_execution_commit": "7a34e048f8fddec6ed8bd4e69d952d9c5ed938ea",
+          "pretrained_steps": 2000,
+          "L_count": 6300,
+          "pretrained_identity_updates": 0,
+          "V_fitted": false,
+          "target_access": false,
+          "online": true,
+          "offline_source_diagnostic_seconds_all_six_arms": 60.51570908201393
+        },
+        "real_U_action_forward": true
+      },
+      {
+        "seed": 2026092701,
+        "arm": "MARGIN",
+        "parent": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092701
+        },
+        "auxiliary": {
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-rx-risk-learning-manysig-m3-r01/E200-s2026092701/MARGIN_STATE_auxiliary.pt",
+          "source_run": "20261011-phase1-rx-risk-learning-manysig-m3-r01",
+          "source_execution_commit": "7a34e048f8fddec6ed8bd4e69d952d9c5ed938ea",
+          "pretrained_steps": 2000,
+          "L_count": 6300,
+          "pretrained_identity_updates": 0,
+          "V_fitted": false,
+          "target_access": false,
+          "online": true,
+          "offline_source_diagnostic_seconds_all_six_arms": 60.51570908201393
+        },
+        "real_U_action_forward": true
+      },
+      {
+        "seed": 2026092702,
+        "arm": "RFIX",
+        "parent": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092702
+        },
+        "auxiliary": {
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-rx-risk-learning-manysig-m3-r01/E200-s2026092702/RANK_STATE_auxiliary.pt",
+          "source_run": "20261011-phase1-rx-risk-learning-manysig-m3-r01",
+          "source_execution_commit": "7a34e048f8fddec6ed8bd4e69d952d9c5ed938ea",
+          "pretrained_steps": 2000,
+          "L_count": 6300,
+          "pretrained_identity_updates": 0,
+          "V_fitted": false,
+          "target_access": false,
+          "online": false,
+          "offline_source_diagnostic_seconds_all_six_arms": 68.2406789609231
+        },
+        "real_U_action_forward": true
+      },
+      {
+        "seed": 2026092702,
+        "arm": "RANK",
+        "parent": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092702
+        },
+        "auxiliary": {
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-rx-risk-learning-manysig-m3-r01/E200-s2026092702/RANK_STATE_auxiliary.pt",
+          "source_run": "20261011-phase1-rx-risk-learning-manysig-m3-r01",
+          "source_execution_commit": "7a34e048f8fddec6ed8bd4e69d952d9c5ed938ea",
+          "pretrained_steps": 2000,
+          "L_count": 6300,
+          "pretrained_identity_updates": 0,
+          "V_fitted": false,
+          "target_access": false,
+          "online": true,
+          "offline_source_diagnostic_seconds_all_six_arms": 68.2406789609231
+        },
+        "real_U_action_forward": true
+      },
+      {
+        "seed": 2026092702,
+        "arm": "MARGIN",
+        "parent": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092702
+        },
+        "auxiliary": {
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-rx-risk-learning-manysig-m3-r01/E200-s2026092702/MARGIN_STATE_auxiliary.pt",
+          "source_run": "20261011-phase1-rx-risk-learning-manysig-m3-r01",
+          "source_execution_commit": "7a34e048f8fddec6ed8bd4e69d952d9c5ed938ea",
+          "pretrained_steps": 2000,
+          "L_count": 6300,
+          "pretrained_identity_updates": 0,
+          "V_fitted": false,
+          "target_access": false,
+          "online": true,
+          "offline_source_diagnostic_seconds_all_six_arms": 68.2406789609231
+        },
+        "real_U_action_forward": true
+      },
+      {
+        "seed": 2026092703,
+        "arm": "RFIX",
+        "parent": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092703
+        },
+        "auxiliary": {
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-rx-risk-learning-manysig-m3-r01/E200-s2026092703/RANK_STATE_auxiliary.pt",
+          "source_run": "20261011-phase1-rx-risk-learning-manysig-m3-r01",
+          "source_execution_commit": "7a34e048f8fddec6ed8bd4e69d952d9c5ed938ea",
+          "pretrained_steps": 2000,
+          "L_count": 6300,
+          "pretrained_identity_updates": 0,
+          "V_fitted": false,
+          "target_access": false,
+          "online": false,
+          "offline_source_diagnostic_seconds_all_six_arms": 56.63628642098047
+        },
+        "real_U_action_forward": true
+      },
+      {
+        "seed": 2026092703,
+        "arm": "RANK",
+        "parent": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092703
+        },
+        "auxiliary": {
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-rx-risk-learning-manysig-m3-r01/E200-s2026092703/RANK_STATE_auxiliary.pt",
+          "source_run": "20261011-phase1-rx-risk-learning-manysig-m3-r01",
+          "source_execution_commit": "7a34e048f8fddec6ed8bd4e69d952d9c5ed938ea",
+          "pretrained_steps": 2000,
+          "L_count": 6300,
+          "pretrained_identity_updates": 0,
+          "V_fitted": false,
+          "target_access": false,
+          "online": true,
+          "offline_source_diagnostic_seconds_all_six_arms": 56.63628642098047
+        },
+        "real_U_action_forward": true
+      },
+      {
+        "seed": 2026092703,
+        "arm": "MARGIN",
+        "parent": {
+          "status": "VERIFIED",
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "optimizer_steps": 44400,
+          "source_roles": "EXACT_MATCH",
+          "target_training_or_selection": false,
+          "ancestors": [],
+          "seed": 2026092703
+        },
+        "auxiliary": {
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-rx-risk-learning-manysig-m3-r01/E200-s2026092703/MARGIN_STATE_auxiliary.pt",
+          "source_run": "20261011-phase1-rx-risk-learning-manysig-m3-r01",
+          "source_execution_commit": "7a34e048f8fddec6ed8bd4e69d952d9c5ed938ea",
+          "pretrained_steps": 2000,
+          "L_count": 6300,
+          "pretrained_identity_updates": 0,
+          "V_fitted": false,
+          "target_access": false,
+          "online": true,
+          "offline_source_diagnostic_seconds_all_six_arms": 56.63628642098047
+        },
+        "real_U_action_forward": true
+      }
+    ]
+  },
+  "read_at": 1791727965.3370068
+}
