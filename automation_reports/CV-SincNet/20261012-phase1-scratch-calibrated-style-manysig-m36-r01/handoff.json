@@ -28,13 +28,13 @@
     "note": "Only actual written prefixes; do not claim full run or target improvement. No changed training."
   },
   "progress": {
-    "read_at": 1791758593.5681896,
+    "read_at": 1791759129.650862,
     "launched": 36,
-    "active_processes_verified": 10,
+    "active_processes_verified": 6,
     "pending": 0,
-    "scored_rows": 26,
-    "source_fully_audited_rows": 21,
-    "source_fully_audited_steps": 93240,
+    "scored_rows": 30,
+    "source_fully_audited_rows": 30,
+    "source_fully_audited_steps": 133200,
     "failures": [],
     "goal_status": "UNPROVEN"
   },
@@ -59,12 +59,16 @@
     "DELAYCAP_M_SHALLOW-s2026092702",
     "DELAYCAP_M_MIDDLE-s2026092702",
     "DELAYCAP_M_BOTH-s2026092702",
+    "DELAYCAP_JOINT-s2026092702",
     "DELAY_M_SHALLOW-s2026092703",
     "DELAY_M_MIDDLE-s2026092703",
     "DELAY_M_BOTH-s2026092703",
     "CAP_M_SHALLOW-s2026092703",
     "CAP_M_MIDDLE-s2026092703",
-    "DELAYCAP_M_MIDDLE-s2026092703"
+    "CAP_M_BOTH-s2026092703",
+    "DELAYCAP_M_SHALLOW-s2026092703",
+    "DELAYCAP_M_MIDDLE-s2026092703",
+    "DELAYCAP_M_BOTH-s2026092703"
   ],
   "source_audit": "source_trajectory.md",
   "results": "test_results.md",
