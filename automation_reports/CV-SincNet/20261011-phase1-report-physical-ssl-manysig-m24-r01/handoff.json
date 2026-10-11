@@ -22,8 +22,8 @@
   "active_git_branch": "codex/report-physical-ssl-clean-delivery-20261011",
   "failed_old_commit_preserved": "b731f4d03c251d407588606bb2340cbe9a4d3420",
   "failed_old_worktree_do_not_commit_or_push": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
-  "latest_new_scores_consumed": false,
-  "remaining": "C24training and complete clean scoring, 84% targetunverified",
+  "latest_new_scores_consumed": true,
+  "remaining": "84% goal unmet; source student/EMA diagnostic and separate E100/E150 budget exploration preregistered",
   "source_epochs": 960,
   "source_updates": 213120,
   "clean_scored_models": 24,
@@ -88,5 +88,9 @@
         "eligible": false
       }
     }
-  }
+  },
+  "next_runs": [
+    "20261011-phase1-source-anchor-gradient-manysig-m6-r01",
+    "20261011-phase1-ce-epoch-compression-manysig-m6-r01"
+  ]
 }
