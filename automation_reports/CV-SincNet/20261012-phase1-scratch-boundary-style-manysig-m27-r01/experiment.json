@@ -3252,7 +3252,7 @@
       "arm": "HARD_STYLE",
       "model_seed": 2026092701,
       "row_id": "HARD_STYLE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_boundary_style",
       "purpose": "随机学生CE旧门控cos20；九方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -3665,7 +3665,9 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 284154,
       "gpu": 1,
-      "live_epoch": 19
+      "live_epoch": 20,
+      "live_identity_updates": 4440,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "JOINT",
@@ -4087,7 +4089,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 284238,
       "gpu": 4,
-      "live_epoch": 8
+      "live_epoch": 12
     },
     {
       "arm": "CE",
@@ -5763,7 +5765,7 @@
       "arm": "M_BOTH",
       "model_seed": 2026092702,
       "row_id": "M_BOTH-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_boundary_style",
       "purpose": "随机学生CE旧门控cos20；九方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -6176,7 +6178,9 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 284864,
       "gpu": 2,
-      "live_epoch": 15
+      "live_epoch": 20,
+      "live_identity_updates": 4440,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "L_REPLAY",
@@ -6600,7 +6604,7 @@
       "arm": "RANDOM_STYLE",
       "model_seed": 2026092702,
       "row_id": "RANDOM_STYLE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_boundary_style",
       "purpose": "随机学生CE旧门控cos20；九方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -7013,13 +7017,15 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 285038,
       "gpu": 1,
-      "live_epoch": 17
+      "live_epoch": 20,
+      "live_identity_updates": 4440,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "HARD_STYLE",
       "model_seed": 2026092702,
       "row_id": "HARD_STYLE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_boundary_style",
       "purpose": "随机学生CE旧门控cos20；九方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -7432,13 +7438,15 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 285122,
       "gpu": 2,
-      "live_epoch": 9
+      "live_epoch": 20,
+      "live_identity_updates": 4440,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "JOINT",
       "model_seed": 2026092702,
       "row_id": "JOINT-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_boundary_style",
       "purpose": "随机学生CE旧门控cos20；九方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -7854,7 +7862,9 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 285207,
       "gpu": 5,
-      "live_epoch": 12
+      "live_epoch": 20,
+      "live_identity_updates": 4440,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "CE",
@@ -10369,7 +10379,7 @@
       "arm": "RANDOM_STYLE",
       "model_seed": 2026092703,
       "row_id": "RANDOM_STYLE-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_boundary_style",
       "purpose": "随机学生CE旧门控cos20；九方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -10782,7 +10792,9 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 288453,
       "gpu": 6,
-      "live_epoch": 16
+      "live_epoch": 20,
+      "live_identity_updates": 4440,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "HARD_STYLE",
@@ -11625,18 +11637,18 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 289943,
       "gpu": 4,
-      "live_epoch": 7
+      "live_epoch": 11
     }
   ],
   "registered_at": "2026-10-11T20:41:44+00:00",
   "execution_commit": "10fe7ffc480be323696dde6b2c24adaf481ff4b1",
   "delivery_verdict": "VERIFIED",
   "progress": {
-    "read_at": 1791753423.4024527,
+    "read_at": 1791754412.429875,
     "launched": 27,
-    "scored_rows": 19,
-    "source_fully_audited_rows": 13,
-    "source_fully_audited_steps": 57720,
+    "scored_rows": 25,
+    "source_fully_audited_rows": 25,
+    "source_fully_audited_steps": 111000,
     "failure": null,
     "final_goal_status": "UNPROVEN"
   }
