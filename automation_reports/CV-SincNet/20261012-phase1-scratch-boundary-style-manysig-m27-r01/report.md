@@ -64,3 +64,8 @@ clean 与额外训练前向使用相同 dropout RNG，额外流程退出恢复�
 
 
 源机制汇总扩展到全部已闭合25行、111000步，覆盖7个风格行和14个敏感度参数组；见[source_mechanism_findings.md](source_mechanism_findings.md)。恒等候选反事实覆盖4个困难/联合行的15984个活跃批次，见[source_identity_counterfactual.md](source_identity_counterfactual.md)。仅复算已有源读出，不是新增训练结果。
+
+
+## 完整矩阵完成
+
+27/27 行全部完成。三种子、配对差、RX/TX/day、纠错／破坏与成本见[完整分析](final_analysis.md)，机制执行与源日志见[source_trajectory.md](source_trajectory.md)。完整核验119880个主训练step、540个epoch与全部源训练stdout段；预测/评分stdout未混入源分析。没有完整方案达到84%，目标保持未完成。

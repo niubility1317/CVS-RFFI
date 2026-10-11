@@ -84,7 +84,7 @@
   "group_id": "cvs-scratch-boundary-style",
   "display_name": "从头20轮：浅中层身份敏感度Fishr与困难风格",
   "description": "随机学生CE旧门控cos20；九方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "scratch20",
@@ -3673,7 +3673,7 @@
       "arm": "JOINT",
       "model_seed": 2026092701,
       "row_id": "JOINT-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_boundary_style",
       "purpose": "随机学生CE旧门控cos20；九方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -4089,7 +4089,9 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 284238,
       "gpu": 4,
-      "live_epoch": 12
+      "live_epoch": 20,
+      "live_identity_updates": 4440,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "CE",
@@ -11221,7 +11223,7 @@
       "arm": "JOINT",
       "model_seed": 2026092703,
       "row_id": "JOINT-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_boundary_style",
       "purpose": "随机学生CE旧门控cos20；九方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -11637,19 +11639,26 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 289943,
       "gpu": 4,
-      "live_epoch": 11
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     }
   ],
   "registered_at": "2026-10-11T20:41:44+00:00",
   "execution_commit": "10fe7ffc480be323696dde6b2c24adaf481ff4b1",
   "delivery_verdict": "VERIFIED",
   "progress": {
-    "read_at": 1791754412.429875,
+    "read_at": 1791755608.4725819,
     "launched": 27,
-    "scored_rows": 25,
-    "source_fully_audited_rows": 25,
-    "source_fully_audited_steps": 111000,
+    "scored_rows": 27,
+    "source_fully_audited_rows": 27,
+    "source_fully_audited_steps": 119880,
     "failure": null,
-    "final_goal_status": "UNPROVEN"
+    "final_goal_status": "NOT_ACHIEVED"
+  },
+  "results": {
+    "complete_rows": 27,
+    "source_steps": 119880,
+    "complete_arms_reaching_84": [],
+    "report": "final_analysis.md"
   }
 }

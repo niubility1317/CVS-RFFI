@@ -1,35 +1,6 @@
 {
-  "status": "RUNNING",
-  "goal": "clean three-seed mean>=.84 not yet demonstrated",
-  "run": "20261012-phase1-scratch-boundary-style-manysig-m27-r01",
+  "status": "ANALYZED",
   "execution_commit": "10fe7ffc480be323696dde6b2c24adaf481ff4b1",
-  "dispatcher": 282727,
-  "matrix": 27,
-  "launched": 27,
-  "checked": [
-    "CE-s2026092701",
-    "SSL-s2026092701",
-    "M_SHALLOW-s2026092701",
-    "M_MIDDLE-s2026092701",
-    "M_BOTH-s2026092701",
-    "L_REPLAY-s2026092701",
-    "RANDOM_STYLE-s2026092701"
-  ],
-  "pending": 0,
-  "next": "Continue existing live dispatcher; do not publish/restart. All27 final source logs and clean scores required. No target-driven design or adjustment. Collect completed row evidence; reports currently PARTIAL.",
-  "collector": "python -m experiments.cvs_scratch_boundary_style.collect_results --output automation_reports/CV-SincNet/20261012-phase1-scratch-boundary-style-manysig-m27-r01",
-  "budget": "random native student20; no heads; pretrained peer teacher ancestry retained; initial12pair calibration separate",
-  "multilevel": "time_down/t2.pool; margin sensitivities without heads; fixed peer probabilities; independent AB Fishr fixed initial coefficients/denominator2; hard/random four-candidate L style with matched dropout; noEMA/noSat",
-  "owner": "codex/root/scratch-boundary-style-20261012",
-  "current_progress": {
-    "read_at": 1791754412.429875,
-    "launched": 27,
-    "scored_rows": 25,
-    "source_fully_audited_rows": 25,
-    "source_fully_audited_steps": 111000,
-    "failure": null,
-    "final_goal_status": "UNPROVEN"
-  },
   "completed_rows": [
     "CE-s2026092701",
     "SSL-s2026092701",
@@ -39,6 +10,7 @@
     "L_REPLAY-s2026092701",
     "RANDOM_STYLE-s2026092701",
     "HARD_STYLE-s2026092701",
+    "JOINT-s2026092701",
     "CE-s2026092702",
     "SSL-s2026092702",
     "M_SHALLOW-s2026092702",
@@ -55,9 +27,15 @@
     "M_BOTH-s2026092703",
     "L_REPLAY-s2026092703",
     "RANDOM_STYLE-s2026092703",
-    "HARD_STYLE-s2026092703"
+    "HARD_STYLE-s2026092703",
+    "JOINT-s2026092703"
   ],
-  "source_fully_audited_steps": 111000,
-  "source_calibration_drift": "source_calibration_drift.md",
-  "next_source_design": "Consider preregistered post-warmup calibration and detached joint gradient cap based only on source norms; details in source_calibration_drift.md. Existing runs immutable; no new variants implemented/released yet."
+  "remaining_rows": [],
+  "source_complete_steps": 119880,
+  "final_report": "final_analysis.md",
+  "complete_arms_reaching_84": [],
+  "next": "This27row run is complete. Do not relaunch or rescore. Continue calibrated36 run 20261012-phase1-scratch-calibrated-style-manysig-m36-r01 dispatcher317420, release cvs_scratch_calibrated_style_20261012_r01. Only source evidence may guide further research; target goal requires a full fixed three-seed mean>=84%.",
+  "source_mechanism_findings": "source_mechanism_findings.md",
+  "source_identity_counterfactual": "source_identity_counterfactual.md",
+  "scores_csv": "evidence/test_scores.csv"
 }

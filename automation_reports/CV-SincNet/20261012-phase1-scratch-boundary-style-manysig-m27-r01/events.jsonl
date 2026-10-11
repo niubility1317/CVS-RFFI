@@ -10,3 +10,5 @@
 {"event": "PROGRESS_VERIFIED", "time": 1791753423.4772787, "read_at": 1791753423.4024527, "launched": 27, "scored_rows": 19, "source_fully_audited_rows": 13, "source_fully_audited_steps": 57720, "failure": null, "final_goal_status": "UNPROVEN"}
 {"event": "PROGRESS_VERIFIED", "time": 1791754412.4708557, "read_at": 1791754412.429875, "launched": 27, "scored_rows": 25, "source_fully_audited_rows": 25, "source_fully_audited_steps": 111000, "failure": null, "final_goal_status": "UNPROVEN"}
 {"event": "SOURCE_MECHANISM25_EXPANDED", "time": 1791755047.0435233, "closed_source_rows": 25, "source_steps": 111000, "target_access": false, "training_changed": false}
+{"event": "PROGRESS_VERIFIED", "time": 1791755313.1229355, "read_at": 1791755313.0849342, "launched": 27, "scored_rows": 26, "source_fully_audited_rows": 26, "source_fully_audited_steps": 115440, "failure": null, "final_goal_status": "UNPROVEN"}
+{"event": "FULL27ROW_ANALYZED_VERIFIED", "time": 1791755606.9117415, "source_steps": 119880, "test_predictions": 4536000, "report": "final_analysis.md"}

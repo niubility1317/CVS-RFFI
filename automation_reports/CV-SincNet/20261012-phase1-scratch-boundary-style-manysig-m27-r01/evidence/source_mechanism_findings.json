@@ -1,9 +1,9 @@
 {
   "source_run": "20261012-phase1-scratch-boundary-style-manysig-m27-r01",
-  "source_read_at": 1791754339.6391094,
-  "matrix_status": "PARTIAL",
-  "source_complete_rows": 25,
-  "source_steps": 111000,
+  "source_read_at": 1791755507.8869662,
+  "matrix_status": "COMPLETE",
+  "source_complete_rows": 27,
+  "source_steps": 119880,
   "source_only": true,
   "target_scores_read": false,
   "active_training_changed": false,
@@ -37,6 +37,22 @@
       "train_prediction_change_pp": 2.0788366491491495,
       "train_accuracy_delta_pp": -0.050832082082082085,
       "train_margin_delta": -0.030865346884226298,
+      "extra_search_forwards": 19980,
+      "extra_search_packets": 2557440
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "seed": 2026092701,
+      "active_steps": 3996,
+      "eval_clean_CE": 0.07549660918084919,
+      "eval_selected_CE": 0.07805629715865788,
+      "eval_CE_delta": 0.0025596879778086797,
+      "harder_fraction": 0.494994994994995,
+      "easier_fraction": 0.505005005005005,
+      "train_prediction_change_pp": 2.1556712962962963,
+      "train_accuracy_delta_pp": -0.025220533033033034,
+      "train_margin_delta": -0.03695994114374613,
       "extra_search_forwards": 19980,
       "extra_search_packets": 2557440
     },
@@ -119,6 +135,22 @@
       "train_margin_delta": -0.015246522020887924,
       "extra_search_forwards": 19980,
       "extra_search_packets": 2557440
+    },
+    {
+      "row_id": "JOINT-s2026092703",
+      "arm": "JOINT",
+      "seed": 2026092703,
+      "active_steps": 3996,
+      "eval_clean_CE": 0.0750875654556948,
+      "eval_selected_CE": 0.07889915538528278,
+      "eval_CE_delta": 0.0038115899295879862,
+      "harder_fraction": 0.571071071071071,
+      "easier_fraction": 0.4289289289289289,
+      "train_prediction_change_pp": 1.7986736736736737,
+      "train_accuracy_delta_pp": -0.013294544544544545,
+      "train_margin_delta": -0.0120466008439317,
+      "extra_search_forwards": 19980,
+      "extra_search_packets": 2557440
     }
   ],
   "sensitivity": [
@@ -185,6 +217,38 @@
       "gradient_ratio_median": 2.2665393501024735,
       "gradient_ratio_q90": 6.638325724424838,
       "fixed_coefficient": 1.031224877346617
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "seed": 2026092701,
+      "level": "time_down",
+      "calls": 999,
+      "raw_term_mean": 0.036258364982901956,
+      "raw_negative_fraction": 0.06706706706706707,
+      "low_norm_A_mean": 0.0,
+      "low_norm_B_mean": 0.0,
+      "weighted_gradient_mean": 0.9456611740201176,
+      "weighted_gradient_min": 0.0062641185863098895,
+      "gradient_ratio_median": 1.9939251353645675,
+      "gradient_ratio_q90": 4.477316347482718,
+      "fixed_coefficient": 0.9464744766301869
+    },
+    {
+      "row_id": "JOINT-s2026092701",
+      "arm": "JOINT",
+      "seed": 2026092701,
+      "level": "t2.pool",
+      "calls": 999,
+      "raw_term_mean": 0.05490824850073784,
+      "raw_negative_fraction": 0.08008008008008008,
+      "low_norm_A_mean": 0.0,
+      "low_norm_B_mean": 0.0,
+      "weighted_gradient_mean": 0.8292736759336129,
+      "weighted_gradient_min": 0.004351809087702184,
+      "gradient_ratio_median": 1.7600215343350945,
+      "gradient_ratio_q90": 4.4797632480499505,
+      "fixed_coefficient": 1.031224864884925
     },
     {
       "row_id": "M_SHALLOW-s2026092702",
@@ -345,6 +409,38 @@
       "gradient_ratio_median": 4.393644713240068,
       "gradient_ratio_q90": 15.598373693917537,
       "fixed_coefficient": 1.4648538132294353
+    },
+    {
+      "row_id": "JOINT-s2026092703",
+      "arm": "JOINT",
+      "seed": 2026092703,
+      "level": "time_down",
+      "calls": 999,
+      "raw_term_mean": 0.03515504617598116,
+      "raw_negative_fraction": 0.05305305305305305,
+      "low_norm_A_mean": 0.0,
+      "low_norm_B_mean": 0.0,
+      "weighted_gradient_mean": 1.652483381551232,
+      "weighted_gradient_min": 0.03434657728048632,
+      "gradient_ratio_median": 3.1716065597470435,
+      "gradient_ratio_q90": 8.540602842119824,
+      "fixed_coefficient": 1.3221249989273018
+    },
+    {
+      "row_id": "JOINT-s2026092703",
+      "arm": "JOINT",
+      "seed": 2026092703,
+      "level": "t2.pool",
+      "calls": 999,
+      "raw_term_mean": 0.06379290915509199,
+      "raw_negative_fraction": 0.12512512512512514,
+      "low_norm_A_mean": 0.0,
+      "low_norm_B_mean": 0.0,
+      "weighted_gradient_mean": 1.820226788109693,
+      "weighted_gradient_min": 0.04757018334925481,
+      "gradient_ratio_median": 3.014700989905006,
+      "gradient_ratio_q90": 8.557462513403484,
+      "fixed_coefficient": 1.464853814538024
     }
   ]
 }
