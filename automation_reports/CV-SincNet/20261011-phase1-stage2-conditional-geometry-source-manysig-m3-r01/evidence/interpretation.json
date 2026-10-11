@@ -1,0 +1,152 @@
+{
+  "summary": [
+    {
+      "method": "global_rank2",
+      "bounded": false,
+      "per_seed": [
+        1.003837696741203,
+        1.011422225876138,
+        0.9368231363809831
+      ],
+      "fold_seed_mean": 0.9840276863327747,
+      "positive_folds": 5,
+      "fit_fold_seed_mean": 0.6262249735184815
+    },
+    {
+      "method": "global_full",
+      "bounded": false,
+      "per_seed": [
+        1.2733843982389121,
+        1.393115345135134,
+        1.2076433226292544
+      ],
+      "fold_seed_mean": 1.2913810220011002,
+      "positive_folds": 3,
+      "fit_fold_seed_mean": 0.2257569622407547
+    },
+    {
+      "method": "tangent_state",
+      "bounded": false,
+      "per_seed": [
+        1.0654712666120956,
+        1.0733674451475455,
+        1.1988761720510337
+      ],
+      "fold_seed_mean": 1.1125716279368916,
+      "positive_folds": 0,
+      "fit_fold_seed_mean": 0.8132551492711676
+    },
+    {
+      "method": "tangent_state",
+      "bounded": true,
+      "per_seed": [
+        0.9890049089438938,
+        0.9858438965308357,
+        0.9977543434696213
+      ],
+      "fold_seed_mean": 0.9908677163147835,
+      "positive_folds": 8,
+      "fit_fold_seed_mean": 0.9651139343220079
+    },
+    {
+      "method": "global_environment",
+      "bounded": false,
+      "per_seed": [
+        0.9622588708369265,
+        0.9435808599773551,
+        0.934040542854684
+      ],
+      "fold_seed_mean": 0.9466267578896552,
+      "positive_folds": 9,
+      "fit_fold_seed_mean": 0.7810047990994656
+    },
+    {
+      "method": "tangent_environment",
+      "bounded": false,
+      "per_seed": [
+        1.0645169108984416,
+        1.017908316459781,
+        1.0005858563656505
+      ],
+      "fold_seed_mean": 1.027670361241291,
+      "positive_folds": 3,
+      "fit_fold_seed_mean": 0.8748493736844577
+    },
+    {
+      "method": "tangent_environment",
+      "bounded": true,
+      "per_seed": [
+        0.9982471655648099,
+        0.9937055288339635,
+        0.9839135193170652
+      ],
+      "fold_seed_mean": 0.9919554045719462,
+      "positive_folds": 8,
+      "fit_fold_seed_mean": 0.9735562166377228
+    }
+  ],
+  "selection": [
+    {
+      "method": "tangent_state",
+      "each_seed_improves": [
+        true,
+        true,
+        false
+      ],
+      "positive_folds_per_seed": [
+        3,
+        3,
+        2
+      ],
+      "advance_real_iq": false
+    },
+    {
+      "method": "tangent_environment",
+      "each_seed_improves": [
+        true,
+        true,
+        false
+      ],
+      "positive_folds_per_seed": [
+        2,
+        3,
+        3
+      ],
+      "advance_real_iq": false
+    }
+  ],
+  "bounds": {
+    "tangent_state": {
+      "block_parent_observations": 54,
+      "beta_min": 0.020372362143798253,
+      "beta_median": 0.08561888529766881,
+      "beta_max": 0.7517861807129005,
+      "coefficient_max": 49.086109550846544,
+      "coefficient_median": 11.681813102489922
+    },
+    "tangent_environment": {
+      "block_parent_observations": 54,
+      "beta_min": 0.03568827136486375,
+      "beta_median": 0.1032285512818439,
+      "beta_max": 0.5058072745573091,
+      "coefficient_max": 28.02041011671224,
+      "coefficient_median": 9.68724241096545
+    },
+    "oracle": {
+      "block_parent_observations": 54,
+      "beta_min": 0.01145613726791194,
+      "beta_median": 0.041847210127627175,
+      "beta_max": 0.14560542178501815,
+      "coefficient_max": 87.28945687487084,
+      "coefficient_median": 23.89660537484069
+    }
+  },
+  "oracle": {
+    "raw_mean": 0.6202940604410037,
+    "shrink_mean": 0.9699037594338498
+  },
+  "aggregation": "equal seed then equal fold mean of ratios, NOT ratio of pooled MSE; nine folds share 6300 physical observations across model seeds",
+  "target_access": false,
+  "identity_updates": 0,
+  "status": "SOURCE_DIAGNOSTIC_COMPLETE"
+}

@@ -1,0 +1,260 @@
+[
+  {
+    "seed": 2026092701,
+    "folds": [
+      {
+        "fold": 0,
+        "predictive": {
+          "global_rank2": {
+            "raw": 1.0129289831255617,
+            "bounded": null
+          },
+          "global_full": {
+            "raw": 1.1156442418495345,
+            "bounded": null
+          },
+          "tangent_state": {
+            "raw": 1.0109848615997141,
+            "bounded": 0.9908370664479244
+          },
+          "global_environment": {
+            "raw": 0.9494511667840113,
+            "bounded": null
+          },
+          "tangent_environment": {
+            "raw": 1.0957888300862157,
+            "bounded": 0.9955364073230742
+          }
+        },
+        "oracle": 0.6692384043536458,
+        "oracle_bounded_shrink": 0.9674644596952663
+      },
+      {
+        "fold": 1,
+        "predictive": {
+          "global_rank2": {
+            "raw": 0.8638842323146498,
+            "bounded": null
+          },
+          "global_full": {
+            "raw": 0.9728759949119833,
+            "bounded": null
+          },
+          "tangent_state": {
+            "raw": 1.015937627275741,
+            "bounded": 0.9895396555922994
+          },
+          "global_environment": {
+            "raw": 0.9615586372040621,
+            "bounded": null
+          },
+          "tangent_environment": {
+            "raw": 1.0474350519925821,
+            "bounded": 0.9955681930731488
+          }
+        },
+        "oracle": 0.6794727112130483,
+        "oracle_bounded_shrink": 0.9658396019030496
+      },
+      {
+        "fold": 2,
+        "predictive": {
+          "global_rank2": {
+            "raw": 1.1346998747833976,
+            "bounded": null
+          },
+          "global_full": {
+            "raw": 1.731632957955219,
+            "bounded": null
+          },
+          "tangent_state": {
+            "raw": 1.1694913109608316,
+            "bounded": 0.9866380047914576
+          },
+          "global_environment": {
+            "raw": 0.9757668085227063,
+            "bounded": null
+          },
+          "tangent_environment": {
+            "raw": 1.0503268506165269,
+            "bounded": 1.0036368962982065
+          }
+        },
+        "oracle": 0.6254691090803016,
+        "oracle_bounded_shrink": 0.9774669981505829
+      }
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "folds": [
+      {
+        "fold": 0,
+        "predictive": {
+          "global_rank2": {
+            "raw": 0.9377363439746881,
+            "bounded": null
+          },
+          "global_full": {
+            "raw": 1.0159790143880245,
+            "bounded": null
+          },
+          "tangent_state": {
+            "raw": 1.1078480596741425,
+            "bounded": 0.9941529357925957
+          },
+          "global_environment": {
+            "raw": 0.9308937311925203,
+            "bounded": null
+          },
+          "tangent_environment": {
+            "raw": 1.0568048162726587,
+            "bounded": 0.9966768642893503
+          }
+        },
+        "oracle": 0.603614980476771,
+        "oracle_bounded_shrink": 0.9713279724989035
+      },
+      {
+        "fold": 1,
+        "predictive": {
+          "global_rank2": {
+            "raw": 0.9141562434253989,
+            "bounded": null
+          },
+          "global_full": {
+            "raw": 1.005329263800623,
+            "bounded": null
+          },
+          "tangent_state": {
+            "raw": 1.0185571340999189,
+            "bounded": 0.9705443393606639
+          },
+          "global_environment": {
+            "raw": 0.9542879158328963,
+            "bounded": null
+          },
+          "tangent_environment": {
+            "raw": 0.9759897599311963,
+            "bounded": 0.9866807244781757
+          }
+        },
+        "oracle": 0.5930496499681676,
+        "oracle_bounded_shrink": 0.9725757880732089
+      },
+      {
+        "fold": 2,
+        "predictive": {
+          "global_rank2": {
+            "raw": 1.182374090228327,
+            "bounded": null
+          },
+          "global_full": {
+            "raw": 2.158037757216754,
+            "bounded": null
+          },
+          "tangent_state": {
+            "raw": 1.0936971416685748,
+            "bounded": 0.9928344144392476
+          },
+          "global_environment": {
+            "raw": 0.9455609329066488,
+            "bounded": null
+          },
+          "tangent_environment": {
+            "raw": 1.0209303731754884,
+            "bounded": 0.9977589977343645
+          }
+        },
+        "oracle": 0.5561352426439746,
+        "oracle_bounded_shrink": 0.9742782522765556
+      }
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "folds": [
+      {
+        "fold": 0,
+        "predictive": {
+          "global_rank2": {
+            "raw": 0.9762419870401753,
+            "bounded": null
+          },
+          "global_full": {
+            "raw": 0.9840040527990265,
+            "bounded": null
+          },
+          "tangent_state": {
+            "raw": 1.1056141850880377,
+            "bounded": 0.9999028138548908
+          },
+          "global_environment": {
+            "raw": 0.9238472022134898,
+            "bounded": null
+          },
+          "tangent_environment": {
+            "raw": 1.0554979545713115,
+            "bounded": 0.9826220482973875
+          }
+        },
+        "oracle": 0.6000603864538586,
+        "oracle_bounded_shrink": 0.9664403120704028
+      },
+      {
+        "fold": 1,
+        "predictive": {
+          "global_rank2": {
+            "raw": 0.8231871165372974,
+            "bounded": null
+          },
+          "global_full": {
+            "raw": 0.803463731002645,
+            "bounded": null
+          },
+          "tangent_state": {
+            "raw": 1.1342566548005018,
+            "bounded": 0.9870843628253455
+          },
+          "global_environment": {
+            "raw": 0.935927217016417,
+            "bounded": null
+          },
+          "tangent_environment": {
+            "raw": 0.9541473822861422,
+            "bounded": 0.9777121844895957
+          }
+        },
+        "oracle": 0.6434746047062148,
+        "oracle_bounded_shrink": 0.9751940590800603
+      },
+      {
+        "fold": 2,
+        "predictive": {
+          "global_rank2": {
+            "raw": 1.0110403055654769,
+            "bounded": null
+          },
+          "global_full": {
+            "raw": 1.835462184086092,
+            "bounded": null
+          },
+          "tangent_state": {
+            "raw": 1.3567576762645615,
+            "bounded": 1.0062758537286276
+          },
+          "global_environment": {
+            "raw": 0.9423472093341452,
+            "bounded": null
+          },
+          "tangent_environment": {
+            "raw": 0.9921122322394977,
+            "bounded": 0.9914063251642121
+          }
+        },
+        "oracle": 0.6121314550730502,
+        "oracle_bounded_shrink": 0.9585463911566184
+      }
+    ]
+  }
+]
