@@ -23,3 +23,7 @@ DR使用共享TX原型＋加性RX/日期偏移及50%共享方差收缩；保存L
 完整24row配置、六类seed记录和逐行输出已写入experiment.json。训练日志含各损失/权重、每888步分量梯度、普通权重移动、native频带实际变化、U访问/接受/翻转与RX×日期覆盖。测试保存argmax和log概率，固定后独立评分accuracy/F1/NLL及parent fix/break。历史父预测只有argmax，parent NLL记N/A。
 
 发布状态 **VERIFIED**：实际执行提交 `dfaf47493ac65cf98b96b81dc622d229b103139f`，N607 dispatcher PID 4066843，24/24新row实际进程及resolved config核对通过，8卡各3进程；三份真实E200父权重与24个native图预检PASS。预检在丢弃的内存副本上执行24次更新，正式预算仍每row8880。训练与测试尚未全部完成，clean均值84目标未验证。
+
+最近实际进展：3个C0已完成40epoch/8880并完成自动clean评分；其余21个SSL变体处于第15至22epoch，teacher/U已正常启动，未发现所属row技术错误。当前不读取C24测试数值改变任何训练。
+
+Git旧结果归档的原始resources.json为181.85MB，首次push被GitHub100MB限制拒绝；失败本地commit保留，原始文件不移动/覆盖/删除。另建干净分支`codex/report-physical-ssl-clean-delivery-20261011`，以现有共享OID为父提交，完整评分与数值成本保留，重复role IDs使用源契约路径引用，独立远端OID读回VERIFIED。后续正式交付使用新干净worktree，原实验执行commit不变。

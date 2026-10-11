@@ -13,7 +13,7 @@
 | R05 | 一 | 连续sig索引划分如实记录，不称随机，不推断绝对时间漂移 | `experiments/cvs_report_ssl/design_source.txt/report.md` | verified | 本地 native graph/物理检查通过；生产训练与评分尚未执行 |
 | R06 | 八 | 15个RX×日期轮转、域内UID随机完整遍历；L采样和匹配CE控制一致 | `experiments/cvs_report_ssl/sampling.py/source.py` | verified | 本地 native graph/物理检查通过；生产训练与评分尚未执行 |
 | R07 | 三/九 | 固定BU分母软KL，q/weight停止梯度，tau=.95；无强制onehot和U熵压缩 | `experiments/cvs_report_ssl/objectives.py/source.py` | verified | 本地 native graph/物理检查通过；生产训练与评分尚未执行 |
-| R08 | 末尾四/九 | 前888次L适应；完成step888后克隆EMA=.99，step889开始U，随后888步lambdaU由0到1 | `experiments/cvs_report_ssl/source.py` | implemented | 路径已接入；等N607实际训练/评分产物验证 |
+| R08 | 末尾四/九 | 前888次L适应；完成step888后克隆EMA=.99，step889开始U，随后888步lambdaU由0到1 | `experiments/cvs_report_ssl/source.py` | verified | N60721个SSL row已越过L888；实际teacher_updates=identity_updates−888，U_identity_packets=128×teacher_updates |
 | R09 | 三 | 身份可靠性与物理任务可靠性分别定义；低TX置信U仍可参与物理任务 | `experiments/cvs_report_ssl/objectives.py/auxiliary.py/source.py` | verified | 本地 native graph/物理检查通过；生产训练与评分尚未执行 |
 | R10 | 末尾二/四 | DL已知小幅复滤波，同UID原/作用视图，中段和动作头优化；不使用U margin真标签 | `experiments/cvs_report_ssl/auxiliary.py/model.py` | verified | 本地 native graph/物理检查通过；生产训练与评分尚未执行 |
 | R11 | 四 | 动作监督实际复tap分量与明确范围；确定前向保留梯度 | `experiments/cvs_report_ssl/auxiliary.py/source.py` | verified | 本地 native graph/物理检查通过；生产训练与评分尚未执行 |
@@ -40,4 +40,4 @@
 | R32 | 十 | 目标U、补充TX标注、多包判决不扩展当前权限 | `experiments/cvs_report_ssl/permissions` | rejected | 当前契约不授权；未来独立授权才能研究 |
 | R33 | 六 | 受限低秩TX×RX交互与更复杂条件协方差 | `experiments/cvs_report_ssl/conditional` | deferred | 先验证共享/加性/对角条件教师再做独立增量 |
 
-当前17项verified、10项implemented、5项deferred、1项rejected、0项blocked。verified指局部行为与native图验证，不能代替40轮实验完成。
+当前18项verified、9项implemented、5项deferred、1项rejected、0项blocked。verified指局部行为与native图验证，不能代替40轮实验完成。

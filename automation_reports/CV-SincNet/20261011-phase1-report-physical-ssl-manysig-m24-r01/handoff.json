@@ -2,21 +2,27 @@
   "goal": "three-seed clean mean>=84%; unverified",
   "new_run": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
   "new_release": "cvs_report_ssl_20261011_r01",
-  "new_status": "VERIFIED_RUNNING24",
+  "new_status": "VERIFIED21_RUNNING_3_CLEAN_SCORED",
   "previous_S_run": "20261011-phase1-stage2-ssl-hybrid-manysig-m48-r02",
-  "previous_S_status": "VERIFIED48/48 clean completed; scores not yet read for new design",
+  "previous_S_status": "VERIFIED48/48 clean; bestS15 mean81.1792%, goalNOT_MET",
   "old_F_status": "DEFERRED_REPORT_ALIGNMENT_NOT_LAUNCHED",
   "evidence": [
     "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\automation_reports\\CV-SincNet\\20261011-phase1-report-physical-ssl-manysig-m24-r01\\evidence\\local_native_graphs.json",
     "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\automation_reports\\CV-SincNet\\20261011-phase1-report-physical-ssl-manysig-m24-r01\\traceability.md"
   ],
   "next": [
-    "read same release/dispatcher process; never resubmit",
-    "monitor first888 L updates then EMA/U activation and condition snapshot",
-    "reuse automatic per-row clean prediction and independent CPU score",
-    "collect48 prior clean results separately, no feedback to current training"
+    "Use active clean worktree for all new formal commits; old failed branch retains giant raw artifact",
+    "Inspect same N607 dispatcher4066843; never resubmit",
+    "Collect actual24-row completion, frozen predictions and independent clean scores",
+    "C5 source selection uses source-only files, never current target scores"
   ],
   "healthy_job_policy": "no stop/restart/hot change",
   "execution_commit": "dfaf47493ac65cf98b96b81dc622d229b103139f",
-  "dispatcher_pid": 4066843
+  "dispatcher_pid": 4066843,
+  "active_git_worktree": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+  "active_git_branch": "codex/report-physical-ssl-clean-delivery-20261011",
+  "failed_old_commit_preserved": "b731f4d03c251d407588606bb2340cbe9a4d3420",
+  "failed_old_worktree_do_not_commit_or_push": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
+  "latest_new_scores_consumed": false,
+  "remaining": "C24training and complete clean scoring, 84% targetunverified"
 }
