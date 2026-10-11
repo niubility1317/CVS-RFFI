@@ -1,0 +1,501 @@
+{
+  "server_time": "2026-10-11T23:12:13.276043+08:00",
+  "read_at": 1791731533.2760742,
+  "run_id": "20261011-phase1-ce-epoch12-15-manysig-m6-r01",
+  "dispatcher": {
+    "pid": 51955,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01/experiments/cvs_ce_epoch1215/dispatch.py"
+    ],
+    "owner": "codex/root/ce-epoch12-15-20261011"
+  },
+  "queue": {
+    "active": [
+      "E15-s2026092701",
+      "E12-s2026092701",
+      "E15-s2026092702",
+      "E12-s2026092702",
+      "E15-s2026092703",
+      "E12-s2026092703"
+    ],
+    "pending": [],
+    "completed": [],
+    "failures": [],
+    "max_total_processes_per_GPU": 2,
+    "updated_at": 1791731531.7423832
+  },
+  "failure": null,
+  "workers": [
+    {
+      "launch": {
+        "row_id": "E15-s2026092701",
+        "pid": 52028,
+        "gpu": 0,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch1215.dispatch",
+          "--worker",
+          "E15-s2026092701"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch12-15-manysig-m6-r01/logs/E15-s2026092701.log"
+      },
+      "process": {
+        "pid": 52028,
+        "start_ticks": 97918052,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch1215.dispatch",
+          "--worker",
+          "E15-s2026092701"
+        ],
+        "gpu": "0"
+      },
+      "resolved": {
+        "row_id": "E15-s2026092701",
+        "epochs": 15,
+        "model_seed": 2026092701,
+        "run_id": "20261011-phase1-ce-epoch12-15-manysig-m6-r01",
+        "updates": 3330,
+        "method": "cvs_ce_epoch1215",
+        "commit": "cb1e36f222d7de8ed7a1694aa58a78d589f8fa4a",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "pid": 52028,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch12-15-manysig-m6-r01/E15-s2026092701/source",
+        "model_initialization": "scratch",
+        "checkpoint_sources": []
+      },
+      "native_args": {
+        "epochs": 15,
+        "label_epochs": 15,
+        "pseudo_epochs": 0,
+        "use_unlabeled": false,
+        "use_ema_teacher": false,
+        "use_concat_sat_channel_aug": false,
+        "label_smoothing": 0,
+        "baseline_ckpt": "",
+        "teacher_ckpt": "",
+        "phase1_lr_schedule": "cosine"
+      },
+      "last_metrics": {
+        "epoch": 1,
+        "epoch_time_s": 31.919694185256958,
+        "train_loss": 1.5365875940602105,
+        "lr": 0.0002,
+        "auxiliary_training_seconds": null
+      },
+      "epochs_completed": 1,
+      "log_bytes": 14837,
+      "errors": [],
+      "smoke_pass": true
+    },
+    {
+      "launch": {
+        "row_id": "E12-s2026092701",
+        "pid": 52111,
+        "gpu": 1,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch1215.dispatch",
+          "--worker",
+          "E12-s2026092701"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch12-15-manysig-m6-r01/logs/E12-s2026092701.log"
+      },
+      "process": {
+        "pid": 52111,
+        "start_ticks": 97918385,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch1215.dispatch",
+          "--worker",
+          "E12-s2026092701"
+        ],
+        "gpu": "1"
+      },
+      "resolved": {
+        "row_id": "E12-s2026092701",
+        "epochs": 12,
+        "model_seed": 2026092701,
+        "run_id": "20261011-phase1-ce-epoch12-15-manysig-m6-r01",
+        "updates": 2664,
+        "method": "cvs_ce_epoch1215",
+        "commit": "cb1e36f222d7de8ed7a1694aa58a78d589f8fa4a",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "pid": 52111,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch12-15-manysig-m6-r01/E12-s2026092701/source",
+        "model_initialization": "scratch",
+        "checkpoint_sources": []
+      },
+      "native_args": {
+        "epochs": 12,
+        "label_epochs": 12,
+        "pseudo_epochs": 0,
+        "use_unlabeled": false,
+        "use_ema_teacher": false,
+        "use_concat_sat_channel_aug": false,
+        "label_smoothing": 0,
+        "baseline_ckpt": "",
+        "teacher_ckpt": "",
+        "phase1_lr_schedule": "cosine"
+      },
+      "last_metrics": {
+        "epoch": 1,
+        "epoch_time_s": 31.339425086975098,
+        "train_loss": 1.5366925291112952,
+        "lr": 0.0002,
+        "auxiliary_training_seconds": null
+      },
+      "epochs_completed": 1,
+      "log_bytes": 14836,
+      "errors": [],
+      "smoke_pass": true
+    },
+    {
+      "launch": {
+        "row_id": "E15-s2026092702",
+        "pid": 52198,
+        "gpu": 2,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch1215.dispatch",
+          "--worker",
+          "E15-s2026092702"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch12-15-manysig-m6-r01/logs/E15-s2026092702.log"
+      },
+      "process": {
+        "pid": 52198,
+        "start_ticks": 97918714,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch1215.dispatch",
+          "--worker",
+          "E15-s2026092702"
+        ],
+        "gpu": "2"
+      },
+      "resolved": {
+        "row_id": "E15-s2026092702",
+        "epochs": 15,
+        "model_seed": 2026092702,
+        "run_id": "20261011-phase1-ce-epoch12-15-manysig-m6-r01",
+        "updates": 3330,
+        "method": "cvs_ce_epoch1215",
+        "commit": "cb1e36f222d7de8ed7a1694aa58a78d589f8fa4a",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "pid": 52198,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch12-15-manysig-m6-r01/E15-s2026092702/source",
+        "model_initialization": "scratch",
+        "checkpoint_sources": []
+      },
+      "native_args": {
+        "epochs": 15,
+        "label_epochs": 15,
+        "pseudo_epochs": 0,
+        "use_unlabeled": false,
+        "use_ema_teacher": false,
+        "use_concat_sat_channel_aug": false,
+        "label_smoothing": 0,
+        "baseline_ckpt": "",
+        "teacher_ckpt": "",
+        "phase1_lr_schedule": "cosine"
+      },
+      "last_metrics": {
+        "epoch": 1,
+        "epoch_time_s": 33.49626278877258,
+        "train_loss": 1.5784738743090414,
+        "lr": 0.0002,
+        "auxiliary_training_seconds": null
+      },
+      "epochs_completed": 1,
+      "log_bytes": 14837,
+      "errors": [],
+      "smoke_pass": true
+    },
+    {
+      "launch": {
+        "row_id": "E12-s2026092702",
+        "pid": 52285,
+        "gpu": 3,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch1215.dispatch",
+          "--worker",
+          "E12-s2026092702"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch12-15-manysig-m6-r01/logs/E12-s2026092702.log"
+      },
+      "process": {
+        "pid": 52285,
+        "start_ticks": 97919047,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch1215.dispatch",
+          "--worker",
+          "E12-s2026092702"
+        ],
+        "gpu": "3"
+      },
+      "resolved": {
+        "row_id": "E12-s2026092702",
+        "epochs": 12,
+        "model_seed": 2026092702,
+        "run_id": "20261011-phase1-ce-epoch12-15-manysig-m6-r01",
+        "updates": 2664,
+        "method": "cvs_ce_epoch1215",
+        "commit": "cb1e36f222d7de8ed7a1694aa58a78d589f8fa4a",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "pid": 52285,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch12-15-manysig-m6-r01/E12-s2026092702/source",
+        "model_initialization": "scratch",
+        "checkpoint_sources": []
+      },
+      "native_args": {
+        "epochs": 12,
+        "label_epochs": 12,
+        "pseudo_epochs": 0,
+        "use_unlabeled": false,
+        "use_ema_teacher": false,
+        "use_concat_sat_channel_aug": false,
+        "label_smoothing": 0,
+        "baseline_ckpt": "",
+        "teacher_ckpt": "",
+        "phase1_lr_schedule": "cosine"
+      },
+      "last_metrics": {
+        "epoch": 1,
+        "epoch_time_s": 32.457058906555176,
+        "train_loss": 1.5786032276647586,
+        "lr": 0.0002,
+        "auxiliary_training_seconds": null
+      },
+      "epochs_completed": 1,
+      "log_bytes": 14838,
+      "errors": [],
+      "smoke_pass": true
+    },
+    {
+      "launch": {
+        "row_id": "E15-s2026092703",
+        "pid": 52372,
+        "gpu": 4,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch1215.dispatch",
+          "--worker",
+          "E15-s2026092703"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch12-15-manysig-m6-r01/logs/E15-s2026092703.log"
+      },
+      "process": {
+        "pid": 52372,
+        "start_ticks": 97919382,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch1215.dispatch",
+          "--worker",
+          "E15-s2026092703"
+        ],
+        "gpu": "4"
+      },
+      "resolved": {
+        "row_id": "E15-s2026092703",
+        "epochs": 15,
+        "model_seed": 2026092703,
+        "run_id": "20261011-phase1-ce-epoch12-15-manysig-m6-r01",
+        "updates": 3330,
+        "method": "cvs_ce_epoch1215",
+        "commit": "cb1e36f222d7de8ed7a1694aa58a78d589f8fa4a",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "pid": 52372,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch12-15-manysig-m6-r01/E15-s2026092703/source",
+        "model_initialization": "scratch",
+        "checkpoint_sources": []
+      },
+      "native_args": {
+        "epochs": 15,
+        "label_epochs": 15,
+        "pseudo_epochs": 0,
+        "use_unlabeled": false,
+        "use_ema_teacher": false,
+        "use_concat_sat_channel_aug": false,
+        "label_smoothing": 0,
+        "baseline_ckpt": "",
+        "teacher_ckpt": "",
+        "phase1_lr_schedule": "cosine"
+      },
+      "last_metrics": {
+        "epoch": 1,
+        "epoch_time_s": 37.618043184280396,
+        "train_loss": 1.5399675130307138,
+        "lr": 0.0002,
+        "auxiliary_training_seconds": null
+      },
+      "epochs_completed": 1,
+      "log_bytes": 14837,
+      "errors": [],
+      "smoke_pass": true
+    },
+    {
+      "launch": {
+        "row_id": "E12-s2026092703",
+        "pid": 52459,
+        "gpu": 5,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch1215.dispatch",
+          "--worker",
+          "E12-s2026092703"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch12-15-manysig-m6-r01/logs/E12-s2026092703.log"
+      },
+      "process": {
+        "pid": 52459,
+        "start_ticks": 97919711,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_ce_epoch1215.dispatch",
+          "--worker",
+          "E12-s2026092703"
+        ],
+        "gpu": "5"
+      },
+      "resolved": {
+        "row_id": "E12-s2026092703",
+        "epochs": 12,
+        "model_seed": 2026092703,
+        "run_id": "20261011-phase1-ce-epoch12-15-manysig-m6-r01",
+        "updates": 2664,
+        "method": "cvs_ce_epoch1215",
+        "commit": "cb1e36f222d7de8ed7a1694aa58a78d589f8fa4a",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch12_15_20261011_r01",
+        "pid": 52459,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch12-15-manysig-m6-r01/E12-s2026092703/source",
+        "model_initialization": "scratch",
+        "checkpoint_sources": []
+      },
+      "native_args": {
+        "epochs": 12,
+        "label_epochs": 12,
+        "pseudo_epochs": 0,
+        "use_unlabeled": false,
+        "use_ema_teacher": false,
+        "use_concat_sat_channel_aug": false,
+        "label_smoothing": 0,
+        "baseline_ckpt": "",
+        "teacher_ckpt": "",
+        "phase1_lr_schedule": "cosine"
+      },
+      "last_metrics": {
+        "epoch": 1,
+        "epoch_time_s": 31.68673801422119,
+        "train_loss": 1.5402443564689912,
+        "lr": 0.0002,
+        "auxiliary_training_seconds": null
+      },
+      "epochs_completed": 1,
+      "log_bytes": 14837,
+      "errors": [],
+      "smoke_pass": true
+    }
+  ],
+  "capacity": {
+    "0": {
+      "pids": [
+        52028
+      ],
+      "free_mb": 20769
+    },
+    "1": {
+      "pids": [
+        52111
+      ],
+      "free_mb": 20769
+    },
+    "2": {
+      "pids": [
+        52198
+      ],
+      "free_mb": 20767
+    },
+    "3": {
+      "pids": [
+        52285
+      ],
+      "free_mb": 20767
+    },
+    "4": {
+      "pids": [
+        52372
+      ],
+      "free_mb": 20769
+    },
+    "5": {
+      "pids": [
+        52459
+      ],
+      "free_mb": 20769
+    },
+    "6": {
+      "pids": [],
+      "free_mb": 24124
+    },
+    "7": {
+      "pids": [],
+      "free_mb": 24124
+    }
+  },
+  "gpu": [
+    "0, 53, 18, 3356",
+    "1, 57, 19, 3356",
+    "2, 54, 17, 3358",
+    "3, 41, 15, 3358",
+    "4, 48, 17, 3356",
+    "5, 39, 18, 3356",
+    "6, 28, 0, 1",
+    "7, 31, 0, 1"
+  ]
+}

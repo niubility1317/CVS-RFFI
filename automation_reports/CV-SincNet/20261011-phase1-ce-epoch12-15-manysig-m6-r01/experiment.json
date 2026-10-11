@@ -171,13 +171,13 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "risk_recipe": {
           "warmup_epochs": 20,
           "auxiliary_every_steps": 4,
           "auxiliary_batch_size": 32,
           "auxiliary_lr": 0.0002,
-          "auxiliary_lr_min": 1e-06,
+          "auxiliary_lr_min": 0.000001,
           "reference_refresh_steps": 888,
           "gradient_audit_every_steps": 888,
           "epochs": 15,
@@ -211,7 +211,7 @@
           "action_mode": "proposal",
           "shared": false,
           "r_target": "distribution",
-          "consistency_weight": 0.0,
+          "consistency_weight": 0,
           "action_label_free": false,
           "source_u_fit": false,
           "replacements": [],
@@ -232,7 +232,7 @@
             "curvature_pressure"
           ],
           "clean_noninferiority_pp": 0.5,
-          "noise_tie_pp": 0.0,
+          "noise_tie_pp": 0,
           "tail_alpha": 0.25,
           "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
           "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -241,7 +241,7 @@
           "relation": "none",
           "style": false,
           "fishr": "none",
-          "fishr_ratio": 0.0,
+          "fishr_ratio": 0,
           "r_identity": true,
           "selection_required": false
         },
@@ -278,10 +278,10 @@
           "style_alpha": 0.1,
           "style_location": "time_down",
           "fishr_beta": 0.9,
-          "fishr_scale": 30.0,
+          "fishr_scale": 30,
           "fishr_coordinates": 960,
           "fishr_scene_weights": {
-            "clean": 1.0
+            "clean": 1
           },
           "warmup_epochs": 20,
           "ramp_epochs": 20,
@@ -356,7 +356,7 @@
       "optimizer": "native AdamW, unchanged original E200",
       "lr": {
         "peak": 0.0002,
-        "minimum": 1e-06,
+        "minimum": 0.000001,
         "schedule": "cosine E1 to final"
       },
       "epochs": 15,
@@ -372,7 +372,12 @@
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "pid": 52028,
+      "gpu": 0,
+      "observed_epoch": 1,
+      "remote_process_verified": true,
+      "completion_verified": false
     },
     {
       "row_id": "E12-s2026092701",
@@ -406,13 +411,13 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "risk_recipe": {
           "warmup_epochs": 20,
           "auxiliary_every_steps": 4,
           "auxiliary_batch_size": 32,
           "auxiliary_lr": 0.0002,
-          "auxiliary_lr_min": 1e-06,
+          "auxiliary_lr_min": 0.000001,
           "reference_refresh_steps": 888,
           "gradient_audit_every_steps": 888,
           "epochs": 12,
@@ -446,7 +451,7 @@
           "action_mode": "proposal",
           "shared": false,
           "r_target": "distribution",
-          "consistency_weight": 0.0,
+          "consistency_weight": 0,
           "action_label_free": false,
           "source_u_fit": false,
           "replacements": [],
@@ -467,7 +472,7 @@
             "curvature_pressure"
           ],
           "clean_noninferiority_pp": 0.5,
-          "noise_tie_pp": 0.0,
+          "noise_tie_pp": 0,
           "tail_alpha": 0.25,
           "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
           "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -476,7 +481,7 @@
           "relation": "none",
           "style": false,
           "fishr": "none",
-          "fishr_ratio": 0.0,
+          "fishr_ratio": 0,
           "r_identity": true,
           "selection_required": false
         },
@@ -513,10 +518,10 @@
           "style_alpha": 0.1,
           "style_location": "time_down",
           "fishr_beta": 0.9,
-          "fishr_scale": 30.0,
+          "fishr_scale": 30,
           "fishr_coordinates": 960,
           "fishr_scene_weights": {
-            "clean": 1.0
+            "clean": 1
           },
           "warmup_epochs": 20,
           "ramp_epochs": 20,
@@ -591,7 +596,7 @@
       "optimizer": "native AdamW, unchanged original E200",
       "lr": {
         "peak": 0.0002,
-        "minimum": 1e-06,
+        "minimum": 0.000001,
         "schedule": "cosine E1 to final"
       },
       "epochs": 12,
@@ -607,7 +612,12 @@
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "pid": 52111,
+      "gpu": 1,
+      "observed_epoch": 1,
+      "remote_process_verified": true,
+      "completion_verified": false
     },
     {
       "row_id": "E15-s2026092702",
@@ -641,13 +651,13 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "risk_recipe": {
           "warmup_epochs": 20,
           "auxiliary_every_steps": 4,
           "auxiliary_batch_size": 32,
           "auxiliary_lr": 0.0002,
-          "auxiliary_lr_min": 1e-06,
+          "auxiliary_lr_min": 0.000001,
           "reference_refresh_steps": 888,
           "gradient_audit_every_steps": 888,
           "epochs": 15,
@@ -681,7 +691,7 @@
           "action_mode": "proposal",
           "shared": false,
           "r_target": "distribution",
-          "consistency_weight": 0.0,
+          "consistency_weight": 0,
           "action_label_free": false,
           "source_u_fit": false,
           "replacements": [],
@@ -702,7 +712,7 @@
             "curvature_pressure"
           ],
           "clean_noninferiority_pp": 0.5,
-          "noise_tie_pp": 0.0,
+          "noise_tie_pp": 0,
           "tail_alpha": 0.25,
           "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
           "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -711,7 +721,7 @@
           "relation": "none",
           "style": false,
           "fishr": "none",
-          "fishr_ratio": 0.0,
+          "fishr_ratio": 0,
           "r_identity": true,
           "selection_required": false
         },
@@ -748,10 +758,10 @@
           "style_alpha": 0.1,
           "style_location": "time_down",
           "fishr_beta": 0.9,
-          "fishr_scale": 30.0,
+          "fishr_scale": 30,
           "fishr_coordinates": 960,
           "fishr_scene_weights": {
-            "clean": 1.0
+            "clean": 1
           },
           "warmup_epochs": 20,
           "ramp_epochs": 20,
@@ -826,7 +836,7 @@
       "optimizer": "native AdamW, unchanged original E200",
       "lr": {
         "peak": 0.0002,
-        "minimum": 1e-06,
+        "minimum": 0.000001,
         "schedule": "cosine E1 to final"
       },
       "epochs": 15,
@@ -842,7 +852,12 @@
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "pid": 52198,
+      "gpu": 2,
+      "observed_epoch": 1,
+      "remote_process_verified": true,
+      "completion_verified": false
     },
     {
       "row_id": "E12-s2026092702",
@@ -876,13 +891,13 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "risk_recipe": {
           "warmup_epochs": 20,
           "auxiliary_every_steps": 4,
           "auxiliary_batch_size": 32,
           "auxiliary_lr": 0.0002,
-          "auxiliary_lr_min": 1e-06,
+          "auxiliary_lr_min": 0.000001,
           "reference_refresh_steps": 888,
           "gradient_audit_every_steps": 888,
           "epochs": 12,
@@ -916,7 +931,7 @@
           "action_mode": "proposal",
           "shared": false,
           "r_target": "distribution",
-          "consistency_weight": 0.0,
+          "consistency_weight": 0,
           "action_label_free": false,
           "source_u_fit": false,
           "replacements": [],
@@ -937,7 +952,7 @@
             "curvature_pressure"
           ],
           "clean_noninferiority_pp": 0.5,
-          "noise_tie_pp": 0.0,
+          "noise_tie_pp": 0,
           "tail_alpha": 0.25,
           "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
           "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -946,7 +961,7 @@
           "relation": "none",
           "style": false,
           "fishr": "none",
-          "fishr_ratio": 0.0,
+          "fishr_ratio": 0,
           "r_identity": true,
           "selection_required": false
         },
@@ -983,10 +998,10 @@
           "style_alpha": 0.1,
           "style_location": "time_down",
           "fishr_beta": 0.9,
-          "fishr_scale": 30.0,
+          "fishr_scale": 30,
           "fishr_coordinates": 960,
           "fishr_scene_weights": {
-            "clean": 1.0
+            "clean": 1
           },
           "warmup_epochs": 20,
           "ramp_epochs": 20,
@@ -1061,7 +1076,7 @@
       "optimizer": "native AdamW, unchanged original E200",
       "lr": {
         "peak": 0.0002,
-        "minimum": 1e-06,
+        "minimum": 0.000001,
         "schedule": "cosine E1 to final"
       },
       "epochs": 12,
@@ -1077,7 +1092,12 @@
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "pid": 52285,
+      "gpu": 3,
+      "observed_epoch": 1,
+      "remote_process_verified": true,
+      "completion_verified": false
     },
     {
       "row_id": "E15-s2026092703",
@@ -1111,13 +1131,13 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "risk_recipe": {
           "warmup_epochs": 20,
           "auxiliary_every_steps": 4,
           "auxiliary_batch_size": 32,
           "auxiliary_lr": 0.0002,
-          "auxiliary_lr_min": 1e-06,
+          "auxiliary_lr_min": 0.000001,
           "reference_refresh_steps": 888,
           "gradient_audit_every_steps": 888,
           "epochs": 15,
@@ -1151,7 +1171,7 @@
           "action_mode": "proposal",
           "shared": false,
           "r_target": "distribution",
-          "consistency_weight": 0.0,
+          "consistency_weight": 0,
           "action_label_free": false,
           "source_u_fit": false,
           "replacements": [],
@@ -1172,7 +1192,7 @@
             "curvature_pressure"
           ],
           "clean_noninferiority_pp": 0.5,
-          "noise_tie_pp": 0.0,
+          "noise_tie_pp": 0,
           "tail_alpha": 0.25,
           "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
           "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -1181,7 +1201,7 @@
           "relation": "none",
           "style": false,
           "fishr": "none",
-          "fishr_ratio": 0.0,
+          "fishr_ratio": 0,
           "r_identity": true,
           "selection_required": false
         },
@@ -1218,10 +1238,10 @@
           "style_alpha": 0.1,
           "style_location": "time_down",
           "fishr_beta": 0.9,
-          "fishr_scale": 30.0,
+          "fishr_scale": 30,
           "fishr_coordinates": 960,
           "fishr_scene_weights": {
-            "clean": 1.0
+            "clean": 1
           },
           "warmup_epochs": 20,
           "ramp_epochs": 20,
@@ -1296,7 +1316,7 @@
       "optimizer": "native AdamW, unchanged original E200",
       "lr": {
         "peak": 0.0002,
-        "minimum": 1e-06,
+        "minimum": 0.000001,
         "schedule": "cosine E1 to final"
       },
       "epochs": 15,
@@ -1312,7 +1332,12 @@
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "pid": 52372,
+      "gpu": 4,
+      "observed_epoch": 1,
+      "remote_process_verified": true,
+      "completion_verified": false
     },
     {
       "row_id": "E12-s2026092703",
@@ -1346,13 +1371,13 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "risk_recipe": {
           "warmup_epochs": 20,
           "auxiliary_every_steps": 4,
           "auxiliary_batch_size": 32,
           "auxiliary_lr": 0.0002,
-          "auxiliary_lr_min": 1e-06,
+          "auxiliary_lr_min": 0.000001,
           "reference_refresh_steps": 888,
           "gradient_audit_every_steps": 888,
           "epochs": 12,
@@ -1386,7 +1411,7 @@
           "action_mode": "proposal",
           "shared": false,
           "r_target": "distribution",
-          "consistency_weight": 0.0,
+          "consistency_weight": 0,
           "action_label_free": false,
           "source_u_fit": false,
           "replacements": [],
@@ -1407,7 +1432,7 @@
             "curvature_pressure"
           ],
           "clean_noninferiority_pp": 0.5,
-          "noise_tie_pp": 0.0,
+          "noise_tie_pp": 0,
           "tail_alpha": 0.25,
           "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
           "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -1416,7 +1441,7 @@
           "relation": "none",
           "style": false,
           "fishr": "none",
-          "fishr_ratio": 0.0,
+          "fishr_ratio": 0,
           "r_identity": true,
           "selection_required": false
         },
@@ -1453,10 +1478,10 @@
           "style_alpha": 0.1,
           "style_location": "time_down",
           "fishr_beta": 0.9,
-          "fishr_scale": 30.0,
+          "fishr_scale": 30,
           "fishr_coordinates": 960,
           "fishr_scene_weights": {
-            "clean": 1.0
+            "clean": 1
           },
           "warmup_epochs": 20,
           "ramp_epochs": 20,
@@ -1531,7 +1556,7 @@
       "optimizer": "native AdamW, unchanged original E200",
       "lr": {
         "peak": 0.0002,
-        "minimum": 1e-06,
+        "minimum": 0.000001,
         "schedule": "cosine E1 to final"
       },
       "epochs": 12,
@@ -1547,7 +1572,12 @@
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
       ],
-      "status": "PLANNED"
+      "status": "RUNNING",
+      "pid": 52459,
+      "gpu": 5,
+      "observed_epoch": 1,
+      "remote_process_verified": true,
+      "completion_verified": false
     }
   ],
   "notes": [
@@ -1556,6 +1586,8 @@
     "No automatic launch of further budgets; report all six rows including negative results.",
     "Actual shared-GPU wall costs are measured, not inferred from epoch ratios."
   ],
-  "status": "PLANNED",
-  "registered_at": "2026-10-11T15:09:26+00:00"
+  "status": "RUNNING",
+  "registered_at": "2026-10-11T15:09:26+00:00",
+  "execution_commit": "cb1e36f222d7de8ed7a1694aa58a78d589f8fa4a",
+  "delivery_verdict": "VERIFIED"
 }

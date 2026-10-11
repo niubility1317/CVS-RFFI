@@ -1,2 +1,3 @@
 {"at": "2026-10-11T15:09:26+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-11T15:11:19+00:00", "status": "LOCAL_VERIFIED", "note": "六行预算与实际纯CE前后向验证通过，独立P0/P1无阻断问题，尚未发布", "evidence": ["evidence/local_checks.json", "evidence/independent_review.json"], "row_id": null}
+{"at": "2026-10-11T15:13:51+00:00", "status": "RUNNING", "note": "6/6行PID/CWD/argv/GPU及实际配置核实，六行smoke PASS并完成首轮，无失败；训练和评分未完成", "evidence": ["evidence/launch_readback.json"], "row_id": null}

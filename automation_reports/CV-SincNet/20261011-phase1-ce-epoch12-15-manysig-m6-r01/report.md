@@ -21,3 +21,14 @@ run_id：`20261011-phase1-ce-epoch12-15-manysig-m6-r01`。状态 LOCAL_VERIFIED�
 ## 结果与交接
 
 训练、预测、评分尚未完成，暂无性能结果。本次授权仅这六行，不自动启动后续预算。恢复先核实原 run 进程和产物，不重复发布。
+
+## 实际启动核实
+
+服务器 2026-10-11T23:12:13.276043+08:00 独立快照：6/6 行已启动，pending=0，failure=0。所有 PID/CWD/argv/GPU 与 resolved config 相符；六行 own-scratch checkpoint smoke PASS，实际 U/EMA/星地增强关闭，无继承 checkpoint，预算分别 12/15。各行已完成第 1 轮，loss 有限，未发现报错。执行提交 `cb1e36f222d7de8ed7a1694aa58a78d589f8fa4a`，dispatcher PID51955，发布与运行状态 VERIFIED，训练及测试尚未完成。
+
+|预算|seed01 GPU|seed02 GPU|seed03 GPU|
+|---|---:|---:|---:|
+|E15|0|2|4|
+|E12|1|3|5|
+
+独立证据：[launch_readback.json](evidence/launch_readback.json)。源训练后逐行自动 clean 测试及评分，无须再发测试指令。
