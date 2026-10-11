@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "models": {
+    "P0": {
+      "inactive": 292,
+      "active_counts": {
+        "t2.pool@0.3": 55,
+        "time_down@1.0": 48,
+        "t2.pool@1.0": 55,
+        "time_down+t2.pool@0.3": 75,
+        "time_down@0.3": 48,
+        "time_down+t2.pool@1.0": 75
+      },
+      "max_inactive_increment_ratio": 1.7372447094707454e-07
+    },
+    "CE20": {
+      "inactive": 292,
+      "active_counts": {
+        "t2.pool@0.3": 55,
+        "time_down@1.0": 48,
+        "t2.pool@1.0": 55,
+        "time_down+t2.pool@0.3": 75,
+        "time_down@0.3": 48,
+        "time_down+t2.pool@1.0": 75
+      },
+      "max_inactive_increment_ratio": 1.8243652684509547e-07
+    }
+  },
+  "raw_rows_retained": 3888,
+  "rerun": false
+}

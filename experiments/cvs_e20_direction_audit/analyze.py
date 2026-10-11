@@ -45,14 +45,27 @@ def report(raw):
    rows=[r for r in baselines if r['model']==name and r['group']==group]
    lines.append(f"|{name}|{group}|{fmt(mean([r['fishr_CE_cos'] for r in rows]))}|{fmt(mean([r['fishr_shallow_middle_cos'] for r in rows]))}|{fmt(mean([r['fishr_norm']/r['CE_norm'] for r in rows if r['CE_norm']>0]))}|{len(rows)}|")
  lines+=['','## 主 eval 对照：身份变化及风格独有梯度','',
-  '主对照关闭 dropout，clean 与 styled 都用相同的 120 个样本出现位置；没有混入 split60/combined120 数值差。修复／破坏按样本出现次数统计，不是独立物理样本总数。增量梯度是 ∇CE_style−∇CE_clean；零增量 cosine 为 N/A。','',
-  '|模型|位置@强度|准确率变化（百分点）|margin 变化|修复／破坏|风格增量／CE 范数比|增量与 CE cosine|增量与 Fishr cosine|有效增量 cosine 数／108|',
+  '主对照关闭 dropout，clean 与 styled 都用相同的 120 个样本出现位置；没有混入 split60/combined120 数值差。修复／破坏按样本出现次数统计，不是独立物理样本总数。增量梯度是 ∇CE_style−∇CE_clean。准确率、margin、修复／破坏保留全部108对；梯度方向与范数比分布只解释实际发生扰动的行（changed_packets>0），未扰动行单列数值控制。','',
+  '|模型|位置@强度|准确率变化（百分点）|margin 变化|修复／破坏|有效增量／CE 范数比中位数／最大|有效增量与 CE cosine|有效增量与 Fishr cosine|实际扰动数／108|',
   '|---|---|---:|---:|---:|---:|---:|---:|---:|']
  variants=sorted({r['variant'] for r in records})
  for name in ('P0','CE20'):
   for variant in variants:
    rows=[r for r in records if r['model']==name and r['variant']==variant and r['group']=='full_identity']
-   lines.append(f"|{name}|{variant}|{fmt(mean([r['accuracy_delta_pp'] for r in rows]))}|{fmt(mean([r['margin_delta'] for r in rows]))}|{sum(r['repaired'] for r in rows)}／{sum(r['broken'] for r in rows)}|{fmt(mean([r['increment_CE_norm_ratio'] for r in rows]))}|{fmt(mean([r['increment_CE_cos'] for r in rows]))}|{fmt(mean([r['increment_Fishr_cos'] for r in rows]))}|{sum(r['increment_CE_cos'] is not None for r in rows)}/108|")
+   active=[r for r in rows if r['active_layers']>0];ratios=[r['increment_CE_norm_ratio'] for r in active if r['increment_CE_norm_ratio'] is not None]
+   lines.append(f"|{name}|{variant}|{fmt(mean([r['accuracy_delta_pp'] for r in rows]))}|{fmt(mean([r['margin_delta'] for r in rows]))}|{sum(r['repaired'] for r in rows)}／{sum(r['broken'] for r in rows)}|{fmt(st.median(ratios) if ratios else None)}／{fmt(max(ratios) if ratios else None)}|{fmt(mean([r['increment_CE_cos'] for r in active]))}|{fmt(mean([r['increment_Fishr_cos'] for r in active]))}|{len(active)}/108|")
+ lines+=['','### 未实际扰动的数值控制','',
+  '不改变或删除原始梯度记录。未扰动行 logits 和 CE 均严格相同；重复反传存在微小浮点残差，其归一化方向不具有风格含义。下面单列残差范数，原始 cosine 保留于 CSV，但不进入有效风格方向均值。','',
+  '|模型|未扰动行数|增量／CE 范数比最大值|logits 最大绝对差|CE 最大绝对差|',
+  '|---|---:|---:|---:|---:|']
+ for name in ('P0','CE20'):
+  rows=[r for r in records if r['model']==name and r['group']=='full_identity' and r['active_layers']==0]
+  deltas=[]
+  for row in v['rows']:
+   for r in row['models'][name]['audit']['records']:
+    for q in r['styles']:
+     if not any(layer.get('changed_packets',0)>0 for layer in q['style']['levels'].values()):deltas.append(q['comparison']['max_abs_logit_delta'])
+  lines.append(f"|{name}|{len(rows)}|{max(r['increment_CE_norm_ratio'] for r in rows):.4g}|{max(deltas):.4g}|{max(abs(r['ce_increase']) for r in rows):.4g}|")
  lines+=['','## 每个种子的独立结果','',
   '|模型|seed|位置@强度|准确率变化（百分点）|增量与 CE cosine|增量与 Fishr cosine|',
   '|---|---:|---|---:|---:|---:|']
@@ -60,7 +73,8 @@ def report(raw):
   for seed in d.SEEDS:
    for variant in variants:
     rows=[r for r in records if r['model']==name and r['seed']==seed and r['variant']==variant and r['group']=='full_identity']
-    lines.append(f"|{name}|{seed}|{variant}|{fmt(mean([r['accuracy_delta_pp'] for r in rows]))}|{fmt(mean([r['increment_CE_cos'] for r in rows]))}|{fmt(mean([r['increment_Fishr_cos'] for r in rows]))}|")
+    active=[r for r in rows if r['active_layers']>0]
+    lines.append(f"|{name}|{seed}|{variant}|{fmt(mean([r['accuracy_delta_pp'] for r in rows]))}|{fmt(mean([r['increment_CE_cos'] for r in active]))}|{fmt(mean([r['increment_Fishr_cos'] for r in active]))}|")
  lines+=['','## 同随机数 dropout 对照','',
   '每个模型每 day 一组；仅 dropout 模块使用训练模式，具有持久统计的模块保持 eval。风格与 dropout 的增量分别测量，并记录交互；不假设两者可以线性相加。单一模型／天的结果只用于这一固定局部对照。','',
   '|模型|位置@强度|风格同 mask 改判次数|独立 mask 改判次数|风格 delta RMS|mask delta RMS|交互 delta RMS|',

@@ -43,7 +43,7 @@
     "diagnostic_access": "L6300 forward/gradient/head warmup only; packed source V co-deserialized then discarded; U not loaded; no target loader"
   },
   "code": {
-    "commit": "resolved from immutable Git release at launch",
+    "commit": "6056d6fc41fd13b0ef37101f88e4fcd0b6dcddb3",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_direction_audit_20261012_r01"
@@ -71,7 +71,7 @@
   "group_id": "cvs-e20-direction-audit",
   "display_name": "E20浅中层真实梯度方向与受控MixStyle源诊断",
   "description": "三seed原E20及固定CE+20：隔离dropout的身份难度与全骨干梯度相互作用；身份0更新、无目标访问",
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "source_only",
@@ -150,7 +150,7 @@
     {
       "row_id": "DIRECTION-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_e20_direction_audit",
       "purpose": "三seed原E20及固定CE+20：隔离dropout的身份难度与全骨干梯度相互作用；身份0更新、无目标访问",
       "config": {
@@ -633,12 +633,14 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split inherited explicitly; private sample/style/dropout generators derive from model seed; null means not independently varied or not applicable."
+      "seed_notes": "Fixed physical split inherited explicitly; private sample/style/dropout generators derive from model seed; null means not independently varied or not applicable.",
+      "pid": 244412,
+      "gpu": 0
     },
     {
       "row_id": "DIRECTION-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_e20_direction_audit",
       "purpose": "三seed原E20及固定CE+20：隔离dropout的身份难度与全骨干梯度相互作用；身份0更新、无目标访问",
       "config": {
@@ -1121,12 +1123,14 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split inherited explicitly; private sample/style/dropout generators derive from model seed; null means not independently varied or not applicable."
+      "seed_notes": "Fixed physical split inherited explicitly; private sample/style/dropout generators derive from model seed; null means not independently varied or not applicable.",
+      "pid": 244498,
+      "gpu": 1
     },
     {
       "row_id": "DIRECTION-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_e20_direction_audit",
       "purpose": "三seed原E20及固定CE+20：隔离dropout的身份难度与全骨干梯度相互作用；身份0更新、无目标访问",
       "config": {
@@ -1609,7 +1613,9 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split inherited explicitly; private sample/style/dropout generators derive from model seed; null means not independently varied or not applicable."
+      "seed_notes": "Fixed physical split inherited explicitly; private sample/style/dropout generators derive from model seed; null means not independently varied or not applicable.",
+      "pid": 244585,
+      "gpu": 2
     }
   ],
   "registered_at": "2026-10-11T19:44:49+00:00",
@@ -1619,5 +1625,18 @@
     "CUDA_core_earlier": "PASS before metadata/replay-boundary adjustment; latest native CUDA covers current code",
     "config_transport": "PASS",
     "fixture_initial_failure": "local helper incorrectly shifted already-1/2/3 fixture days; corrected helper, formal loader unchanged"
-  }
+  },
+  "execution_commit": "6056d6fc41fd13b0ef37101f88e4fcd0b6dcddb3",
+  "delivery_verdict": "VERIFIED",
+  "results": {
+    "models": 6,
+    "gradient_pairs": 216,
+    "style_trials": 1296,
+    "dropout_controls": 18,
+    "identity_updates": 0,
+    "head_updates": 1200,
+    "total_L_readouts_excluding_preflight": 286200,
+    "target_access": false
+  },
+  "analysis_note": "All raw trials retained; direction summaries conditional on actual changed_packets>0; zero-change repeated backward residuals separately reported; no data/model/rerun changes."
 }
