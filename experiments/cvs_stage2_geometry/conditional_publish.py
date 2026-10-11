@@ -28,8 +28,8 @@ with tarfile.open(archive) as tar:
 python='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'
 env=dict(os.environ,PYTHONPATH=str(release)+os.pathsep+str(release/'code'),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONUNBUFFERED='1')
 with (release/'checks.log').open('x') as log:
- subprocess.run([python,'-m','experiments.cvs_stage2_geometry.conditional_checks'],cwd=release,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
-command=[python,'-u','-m','experiments.cvs_stage2_geometry.conditional_audit']
+ subprocess.run([python,'-m',c['checks_module']],cwd=release,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
+command=[python,'-u','-m',c['module']]
 logpath=release/'stdout.log'
 with logpath.open('x') as log:
  child=subprocess.Popen(command,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
@@ -69,17 +69,19 @@ def inspect(output):
     print(json.dumps(result));return result
 
 
-def publish(output):
+def publish(output,run_id=RUN,release_name=RELEASE,
+            module='experiments.cvs_stage2_geometry.conditional_audit',
+            checks_module='experiments.cvs_stage2_geometry.conditional_checks'):
     out=Path(output);out.mkdir(parents=True,exist_ok=False)
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=d.ROOT,text=True).strip()
     branch=subprocess.check_output(['git','branch','--show-current'],cwd=d.ROOT,text=True).strip()
     remote=subprocess.check_output(['git','-c','http.sslBackend=openssl','-c','http.version=HTTP/1.1',
         'ls-remote','origin','refs/heads/'+branch],cwd=d.ROOT,text=True).split()[0]
     if remote!=commit:raise ValueError('Remote differs from HEAD')
-    record='automation_reports/CV-SincNet/'+RUN
+    record='automation_reports/CV-SincNet/'+run_id
     dirty=subprocess.check_output(['git','status','--porcelain','--',*PATHS,record],cwd=d.ROOT,text=True)
     if dirty.strip():raise ValueError('Uncommitted release paths')
-    archive=out/(RELEASE+'.tar.gz')
+    archive=out/(release_name+'.tar.gz')
     blob=subprocess.check_output(['git','archive','--format=tar',commit,'--',*PATHS],cwd=d.ROOT)
     with tarfile.open(fileobj=io.BytesIO(blob)) as source,tarfile.open(archive,'w:gz') as target:
         for member in source.getmembers():
@@ -90,7 +92,8 @@ def publish(output):
             entries['registration/'+name]=subprocess.check_output(['git','show',commit+':'+record+'/'+name],cwd=d.ROOT)
         for name,value in entries.items():
             member=tarfile.TarInfo(name);member.size=len(value);target.addfile(member,io.BytesIO(value))
-    config=dict(project=d.PROJECT,run=RUN,release=RELEASE,commit=commit,archive=archive.name,
+    config=dict(project=d.PROJECT,run=run_id,release=release_name,commit=commit,archive=archive.name,
+        module=module,checks_module=checks_module,
         sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),seeds=list(d.SEEDS))
     d.write(out/'package.json',config)
     before=json.loads(ssh("from pathlib import Path\nimport json\nc="+repr(config)+

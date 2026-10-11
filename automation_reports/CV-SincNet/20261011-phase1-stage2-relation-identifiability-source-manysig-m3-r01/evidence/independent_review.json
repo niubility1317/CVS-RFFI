@@ -1,0 +1,13 @@
+{
+  "status": "PASSED",
+  "reviewer": "/root/stochastic_forward_audit",
+  "p0": 0,
+  "p1_remaining": 0,
+  "closed_p1": "Torch/NumPy ABI bridge replaced with list conversions; independently rechecked",
+  "scope": [
+    "box oracle feasibility and convex gap",
+    "balanced components and disjoint halves",
+    "TX/day heldout isolation",
+    "source-only release"
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "run_id": "20261011-phase1-stage2-relation-identifiability-source-manysig-m3-r01",
+  "source_run": "20261011-phase1-stage2-geometry-source-manysig-m3-r01",
+  "source_count": 6300,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "oracle": {
+    "bounds": [
+      -1,
+      1
+    ],
+    "solver": "scipy.optimize.lsq_linear bvls",
+    "tolerance": 1e-10,
+    "max_iterations": 1000,
+    "numerical_evidence": [
+      "feasibility",
+      "projected gradient",
+      "convex first-order suboptimality bound"
+    ],
+    "scope": "group-constant 8D local linear representation only"
+  },
+  "factors": [
+    "RX",
+    "RX x day",
+    "TX x RX",
+    "TX x RX x day"
+  ],
+  "data_split": {
+    "method": "SHA256 physical ID ordering, equal disjoint halves per original group",
+    "salt": "source-relation-split-v1",
+    "same_for_all_model_seeds": true,
+    "statistical_independence_not_assumed_as_verified": true
+  },
+  "transfer": {
+    "tx_folds": [
+      [
+        0,
+        1
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        4,
+        5
+      ]
+    ],
+    "days": [
+      1,
+      2,
+      3
+    ],
+    "modes": [
+      "RX/day same source days",
+      "RX-only same source days",
+      "RX-only held source day"
+    ],
+    "fit_evaluation_pairs": [
+      "full/full",
+      "half_A/half_B",
+      "half_B/half_A"
+    ],
+    "scales": [
+      1.0,
+      0.4
+    ],
+    "shrink_note": "0.4 predeclared from preceding balanced RX/day ridge .1 effective shrink, no retuning",
+    "no_target_receivers": true
+  },
+  "identity_updates": 0,
+  "target_access": false,
+  "next_step": "Consider stable RX-component training only if fixed scale .4 held-TX/held-day full prediction improves zero on >=2/3 folds for every held day and model seed, and shared-RX half-cross-energy >0 in all three seeds. Check real-source V identity preservation before training. Oracle alone cannot trigger training.",
+  "model_seed": 2026092703
+}
