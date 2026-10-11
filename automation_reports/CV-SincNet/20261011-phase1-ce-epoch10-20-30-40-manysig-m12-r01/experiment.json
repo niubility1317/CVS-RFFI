@@ -28,7 +28,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确要求：启动E30压缩三行和E20压缩三行和E40压缩三行；再加一个E10压缩三行；沿用已授权的epoch开发clean比较",
   "code": {
-    "commit": "resolved from immutable Git release at launch",
+    "commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch10_40_20261011_r01"
@@ -109,6 +109,8 @@
   },
   "execution": {
     "host": "N607",
+    "controller_pid": 2637,
+    "launch_verified_at": "2026-10-11T22:03:55.912105+08:00",
     "user": "szu2070436088",
     "launch_owner": "codex/root/ce-epoch10-40-20261011",
     "gpu_policy": "<=2 total CUDA/reserved processes per GPU including other owners; >=12000MB free; 8-card pool",
@@ -146,6 +148,9 @@
     {
       "row_id": "E30-s2026092701",
       "model_seed": 2026092701,
+      "pid": 2753,
+      "gpu": 0,
+      "remote_process_verified": true,
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
@@ -381,6 +386,9 @@
     {
       "row_id": "E20-s2026092701",
       "model_seed": 2026092701,
+      "pid": 2948,
+      "gpu": 1,
+      "remote_process_verified": true,
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
@@ -616,6 +624,9 @@
     {
       "row_id": "E40-s2026092701",
       "model_seed": 2026092701,
+      "pid": 3094,
+      "gpu": 2,
+      "remote_process_verified": true,
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
@@ -851,6 +862,9 @@
     {
       "row_id": "E10-s2026092701",
       "model_seed": 2026092701,
+      "pid": 3181,
+      "gpu": 6,
+      "remote_process_verified": true,
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
@@ -1086,6 +1100,9 @@
     {
       "row_id": "E30-s2026092702",
       "model_seed": 2026092702,
+      "pid": 3268,
+      "gpu": 7,
+      "remote_process_verified": true,
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
@@ -1321,6 +1338,9 @@
     {
       "row_id": "E20-s2026092702",
       "model_seed": 2026092702,
+      "pid": 3358,
+      "gpu": 7,
+      "remote_process_verified": true,
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
@@ -1556,6 +1576,9 @@
     {
       "row_id": "E40-s2026092702",
       "model_seed": 2026092702,
+      "pid": 3442,
+      "gpu": 6,
+      "remote_process_verified": true,
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
@@ -1791,6 +1814,9 @@
     {
       "row_id": "E10-s2026092702",
       "model_seed": 2026092702,
+      "pid": 3777,
+      "gpu": 2,
+      "remote_process_verified": true,
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
@@ -2026,6 +2052,9 @@
     {
       "row_id": "E30-s2026092703",
       "model_seed": 2026092703,
+      "pid": 3873,
+      "gpu": 1,
+      "remote_process_verified": true,
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
@@ -2261,6 +2290,9 @@
     {
       "row_id": "E20-s2026092703",
       "model_seed": 2026092703,
+      "pid": 3961,
+      "gpu": 0,
+      "remote_process_verified": true,
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
@@ -2496,6 +2528,9 @@
     {
       "row_id": "E40-s2026092703",
       "model_seed": 2026092703,
+      "pid": 4047,
+      "gpu": 5,
+      "remote_process_verified": true,
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
@@ -2731,6 +2766,9 @@
     {
       "row_id": "E10-s2026092703",
       "model_seed": 2026092703,
+      "pid": 4187,
+      "gpu": 3,
+      "remote_process_verified": true,
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",

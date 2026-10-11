@@ -41,3 +41,19 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 实际启动读回
+
+2026-10-11T22:03:55.912105（北京时间），12/12行已启动，pending=0，failure=0。所有PID/CWD/argv/GPU与实际resolved config已核实；全部scratch、无继承权重，实际预算分别为10/20/30/40轮。最早9行已完成第1轮，后启动3行进入第1轮，日志在增长。
+
+|预算|seed 01 的 GPU|seed 02 的 GPU|seed 03 的 GPU|
+|---|---:|---:|---:|
+|E10|6|2|3|
+|E20|1|7|0|
+|E30|0|7|1|
+|E40|2|6|5|
+
+执行提交 `83b1903fed01854f5abb75646a02e9a5e190a90e`，dispatcher PID2637。验证状态VERIFIED，运行与测试尚未完成。完整独立证据见[evidence/launch_readback.json](evidence/launch_readback.json)。
+
+远端日志目录：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/logs/`。每行自动训练→固定最终轮→clean预测→独立truth-last评分；不需要再次发测试指令。
+
