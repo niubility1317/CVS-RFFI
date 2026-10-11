@@ -1,15 +1,15 @@
 {
-  "read_at": 1791720507.242288,
+  "read_at": 1791721170.4019256,
   "rows": [
     {
       "row_id": "O_CE-s2026092701",
       "gpu": 6,
-      "alive": true,
-      "epoch": 14,
-      "optimizer_steps": 3108,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
       "counts": {
-        "identity_updates": 3108,
-        "main_L_packets": 397824,
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
         "U_identity_packets": 0,
         "teacher_updates": 0,
         "auxiliary_steps": 0,
@@ -21,21 +21,21 @@
         "satellite_calls": 0
       },
       "U_scan_complete": false,
-      "step_log_bytes": 244092
+      "step_log_bytes": 707117
     },
     {
       "row_id": "O_EMA-s2026092701",
       "gpu": 7,
-      "alive": true,
-      "epoch": 8,
-      "optimizer_steps": 1776,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
       "counts": {
-        "identity_updates": 1776,
-        "main_L_packets": 227328,
-        "U_identity_packets": 113664,
-        "teacher_updates": 888,
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 1022976,
+        "teacher_updates": 7992,
         "auxiliary_steps": 0,
-        "accepted_U": 112038,
+        "accepted_U": 1012620,
         "linear_steps": 0,
         "repetition_steps": 0,
         "physical_L_packets": 0,
@@ -43,21 +43,21 @@
         "satellite_calls": 0
       },
       "U_scan_complete": true,
-      "step_log_bytes": 289448
+      "step_log_bytes": 1779953
     },
     {
       "row_id": "O_DIRECT-s2026092701",
       "gpu": 7,
-      "alive": true,
-      "epoch": 8,
-      "optimizer_steps": 1776,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
       "counts": {
-        "identity_updates": 1776,
-        "main_L_packets": 227328,
-        "U_identity_packets": 113664,
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 1022976,
         "teacher_updates": 0,
         "auxiliary_steps": 0,
-        "accepted_U": 111898,
+        "accepted_U": 1011831,
         "linear_steps": 0,
         "repetition_steps": 0,
         "physical_L_packets": 0,
@@ -65,21 +65,21 @@
         "satellite_calls": 0
       },
       "U_scan_complete": true,
-      "step_log_bytes": 264737
+      "step_log_bytes": 1783722
     },
     {
       "row_id": "O_DIRECT_HI-s2026092701",
       "gpu": 6,
-      "alive": true,
-      "epoch": 8,
-      "optimizer_steps": 1776,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
       "counts": {
-        "identity_updates": 1776,
-        "main_L_packets": 227328,
-        "U_identity_packets": 113664,
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 1022976,
         "teacher_updates": 0,
         "auxiliary_steps": 0,
-        "accepted_U": 111811,
+        "accepted_U": 1012537,
         "linear_steps": 0,
         "repetition_steps": 0,
         "physical_L_packets": 0,
@@ -87,43 +87,439 @@
         "satellite_calls": 0
       },
       "U_scan_complete": true,
-      "step_log_bytes": 266501
+      "step_log_bytes": 1784882
     },
     {
       "row_id": "R_CE-s2026092701",
       "gpu": 0,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 0,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 0,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": false,
+      "step_log_bytes": 707141
+    },
+    {
+      "row_id": "R_EMA-s2026092701",
+      "gpu": 1,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 1022976,
+        "teacher_updates": 7992,
+        "auxiliary_steps": 0,
+        "accepted_U": 1012898,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1777826
+    },
+    {
+      "row_id": "R_DIRECT-s2026092701",
+      "gpu": 2,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 1022976,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 1011756,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1781366
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092701",
+      "gpu": 3,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 1022976,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 1012512,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1784463
+    },
+    {
+      "row_id": "O_CE-s2026092702",
+      "gpu": 4,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 0,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 0,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": false,
+      "step_log_bytes": 707093
+    },
+    {
+      "row_id": "O_EMA-s2026092702",
+      "gpu": 5,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 1022976,
+        "teacher_updates": 7992,
+        "auxiliary_steps": 0,
+        "accepted_U": 1012642,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1778715
+    },
+    {
+      "row_id": "O_DIRECT-s2026092702",
+      "gpu": 6,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 1022976,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 1011345,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1785776
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092702",
+      "gpu": 7,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 1022976,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 1012080,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1784685
+    },
+    {
+      "row_id": "R_CE-s2026092702",
+      "gpu": 3,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 0,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 0,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": false,
+      "step_log_bytes": 706645
+    },
+    {
+      "row_id": "R_EMA-s2026092702",
+      "gpu": 4,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 1022976,
+        "teacher_updates": 7992,
+        "auxiliary_steps": 0,
+        "accepted_U": 1012483,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1781557
+    },
+    {
+      "row_id": "R_DIRECT-s2026092702",
+      "gpu": 5,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 1022976,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 1011359,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1784605
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092702",
+      "gpu": 0,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 1022976,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 1011748,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1785555
+    },
+    {
+      "row_id": "O_CE-s2026092703",
+      "gpu": 1,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 0,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 0,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": false,
+      "step_log_bytes": 707299
+    },
+    {
+      "row_id": "O_EMA-s2026092703",
+      "gpu": 2,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 1022976,
+        "teacher_updates": 7992,
+        "auxiliary_steps": 0,
+        "accepted_U": 1012406,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1781951
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "gpu": 3,
+      "alive": true,
+      "epoch": 33,
+      "optimizer_steps": 7326,
+      "counts": {
+        "identity_updates": 7326,
+        "main_L_packets": 937728,
+        "U_identity_packets": 824064,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 814115,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1478665
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "gpu": 6,
+      "alive": true,
+      "epoch": 33,
+      "optimizer_steps": 7326,
+      "counts": {
+        "identity_updates": 7326,
+        "main_L_packets": 937728,
+        "U_identity_packets": 824064,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 814123,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1457527
+    },
+    {
+      "row_id": "R_CE-s2026092703",
+      "gpu": 0,
+      "alive": false,
+      "epoch": 40,
+      "optimizer_steps": 8880,
+      "counts": {
+        "identity_updates": 8880,
+        "main_L_packets": 1136640,
+        "U_identity_packets": 0,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 0,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": false,
+      "step_log_bytes": 707026
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "gpu": 4,
+      "alive": true,
+      "epoch": 27,
+      "optimizer_steps": 5994,
+      "counts": {
+        "identity_updates": 5994,
+        "main_L_packets": 767232,
+        "U_identity_packets": 653568,
+        "teacher_updates": 5106,
+        "auxiliary_steps": 0,
+        "accepted_U": 645739,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1191876
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "gpu": 1,
+      "alive": true,
+      "epoch": 28,
+      "optimizer_steps": 6216,
+      "counts": {
+        "identity_updates": 6216,
+        "main_L_packets": 795648,
+        "U_identity_packets": 681984,
+        "teacher_updates": 0,
+        "auxiliary_steps": 0,
+        "accepted_U": 673186,
+        "linear_steps": 0,
+        "repetition_steps": 0,
+        "physical_L_packets": 0,
+        "physical_U_packets": 0,
+        "satellite_calls": 0
+      },
+      "U_scan_complete": true,
+      "step_log_bytes": 1215917
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "gpu": 6,
       "alive": true,
       "epoch": 12,
       "optimizer_steps": 2664,
       "counts": {
         "identity_updates": 2664,
         "main_L_packets": 340992,
-        "U_identity_packets": 0,
+        "U_identity_packets": 227328,
         "teacher_updates": 0,
         "auxiliary_steps": 0,
-        "accepted_U": 0,
-        "linear_steps": 0,
-        "repetition_steps": 0,
-        "physical_L_packets": 0,
-        "physical_U_packets": 0,
-        "satellite_calls": 0
-      },
-      "U_scan_complete": false,
-      "step_log_bytes": 208641
-    },
-    {
-      "row_id": "R_EMA-s2026092701",
-      "gpu": 1,
-      "alive": true,
-      "epoch": 7,
-      "optimizer_steps": 1554,
-      "counts": {
-        "identity_updates": 1554,
-        "main_L_packets": 198912,
-        "U_identity_packets": 85248,
-        "teacher_updates": 666,
-        "auxiliary_steps": 0,
-        "accepted_U": 83995,
+        "accepted_U": 223522,
         "linear_steps": 0,
         "repetition_steps": 0,
         "physical_L_packets": 0,
@@ -131,396 +527,94 @@
         "satellite_calls": 0
       },
       "U_scan_complete": true,
-      "step_log_bytes": 215312
-    },
-    {
-      "row_id": "R_DIRECT-s2026092701",
-      "gpu": 2,
-      "alive": true,
-      "epoch": 7,
-      "optimizer_steps": 1554,
-      "counts": {
-        "identity_updates": 1554,
-        "main_L_packets": 198912,
-        "U_identity_packets": 85248,
-        "teacher_updates": 0,
-        "auxiliary_steps": 0,
-        "accepted_U": 84002,
-        "linear_steps": 0,
-        "repetition_steps": 0,
-        "physical_L_packets": 0,
-        "physical_U_packets": 0,
-        "satellite_calls": 0
-      },
-      "U_scan_complete": true,
-      "step_log_bytes": 215250
-    },
-    {
-      "row_id": "R_DIRECT_HI-s2026092701",
-      "gpu": 3,
-      "alive": true,
-      "epoch": 7,
-      "optimizer_steps": 1554,
-      "counts": {
-        "identity_updates": 1554,
-        "main_L_packets": 198912,
-        "U_identity_packets": 85248,
-        "teacher_updates": 0,
-        "auxiliary_steps": 0,
-        "accepted_U": 83830,
-        "linear_steps": 0,
-        "repetition_steps": 0,
-        "physical_L_packets": 0,
-        "physical_U_packets": 0,
-        "satellite_calls": 0
-      },
-      "U_scan_complete": true,
-      "step_log_bytes": 216866
-    },
-    {
-      "row_id": "O_CE-s2026092702",
-      "gpu": 4,
-      "alive": true,
-      "epoch": 10,
-      "optimizer_steps": 2220,
-      "counts": {
-        "identity_updates": 2220,
-        "main_L_packets": 284160,
-        "U_identity_packets": 0,
-        "teacher_updates": 0,
-        "auxiliary_steps": 0,
-        "accepted_U": 0,
-        "linear_steps": 0,
-        "repetition_steps": 0,
-        "physical_L_packets": 0,
-        "physical_U_packets": 0,
-        "satellite_calls": 0
-      },
-      "U_scan_complete": false,
-      "step_log_bytes": 173202
-    },
-    {
-      "row_id": "O_EMA-s2026092702",
-      "gpu": 5,
-      "alive": true,
-      "epoch": 7,
-      "optimizer_steps": 1554,
-      "counts": {
-        "identity_updates": 1554,
-        "main_L_packets": 198912,
-        "U_identity_packets": 85248,
-        "teacher_updates": 666,
-        "auxiliary_steps": 0,
-        "accepted_U": 83955,
-        "linear_steps": 0,
-        "repetition_steps": 0,
-        "physical_L_packets": 0,
-        "physical_U_packets": 0,
-        "satellite_calls": 0
-      },
-      "U_scan_complete": true,
-      "step_log_bytes": 215515
-    },
-    {
-      "row_id": "O_DIRECT-s2026092702",
-      "gpu": 6,
-      "alive": true,
-      "epoch": 6,
-      "optimizer_steps": 1332,
-      "counts": {
-        "identity_updates": 1332,
-        "main_L_packets": 170496,
-        "U_identity_packets": 56832,
-        "teacher_updates": 0,
-        "auxiliary_steps": 0,
-        "accepted_U": 55899,
-        "linear_steps": 0,
-        "repetition_steps": 0,
-        "physical_L_packets": 0,
-        "physical_U_packets": 0,
-        "satellite_calls": 0
-      },
-      "U_scan_complete": true,
-      "step_log_bytes": 192198
-    },
-    {
-      "row_id": "O_DIRECT_HI-s2026092702",
-      "gpu": 7,
-      "alive": true,
-      "epoch": 6,
-      "optimizer_steps": 1332,
-      "counts": {
-        "identity_updates": 1332,
-        "main_L_packets": 170496,
-        "U_identity_packets": 56832,
-        "teacher_updates": 0,
-        "auxiliary_steps": 0,
-        "accepted_U": 55792,
-        "linear_steps": 0,
-        "repetition_steps": 0,
-        "physical_L_packets": 0,
-        "physical_U_packets": 0,
-        "satellite_calls": 0
-      },
-      "U_scan_complete": true,
-      "step_log_bytes": 168156
-    },
-    {
-      "row_id": "R_CE-s2026092702",
-      "gpu": 3,
-      "alive": true,
-      "epoch": 8,
-      "optimizer_steps": 1776,
-      "counts": {
-        "identity_updates": 1776,
-        "main_L_packets": 227328,
-        "U_identity_packets": 0,
-        "teacher_updates": 0,
-        "auxiliary_steps": 0,
-        "accepted_U": 0,
-        "linear_steps": 0,
-        "repetition_steps": 0,
-        "physical_L_packets": 0,
-        "physical_U_packets": 0,
-        "satellite_calls": 0
-      },
-      "U_scan_complete": false,
-      "step_log_bytes": 138251
-    },
-    {
-      "row_id": "R_EMA-s2026092702",
-      "gpu": 4,
-      "alive": true,
-      "epoch": 5,
-      "optimizer_steps": 1110,
-      "counts": {
-        "identity_updates": 1110,
-        "main_L_packets": 142080,
-        "U_identity_packets": 28416,
-        "teacher_updates": 222,
-        "auxiliary_steps": 0,
-        "accepted_U": 27989,
-        "linear_steps": 0,
-        "repetition_steps": 0,
-        "physical_L_packets": 0,
-        "physical_U_packets": 0,
-        "satellite_calls": 0
-      },
-      "U_scan_complete": true,
-      "step_log_bytes": 142479
-    },
-    {
-      "row_id": "R_DIRECT-s2026092702",
-      "gpu": 5,
-      "alive": true,
-      "epoch": 5,
-      "optimizer_steps": 1110,
-      "counts": {
-        "identity_updates": 1110,
-        "main_L_packets": 142080,
-        "U_identity_packets": 28416,
-        "teacher_updates": 0,
-        "auxiliary_steps": 0,
-        "accepted_U": 27943,
-        "linear_steps": 0,
-        "repetition_steps": 0,
-        "physical_L_packets": 0,
-        "physical_U_packets": 0,
-        "satellite_calls": 0
-      },
-      "U_scan_complete": true,
-      "step_log_bytes": 142633
-    },
-    {
-      "row_id": "R_DIRECT_HI-s2026092702",
-      "gpu": 0,
-      "alive": true,
-      "epoch": 5,
-      "optimizer_steps": 1110,
-      "counts": {
-        "identity_updates": 1110,
-        "main_L_packets": 142080,
-        "U_identity_packets": 28416,
-        "teacher_updates": 0,
-        "auxiliary_steps": 0,
-        "accepted_U": 27891,
-        "linear_steps": 0,
-        "repetition_steps": 0,
-        "physical_L_packets": 0,
-        "physical_U_packets": 0,
-        "satellite_calls": 0
-      },
-      "U_scan_complete": true,
-      "step_log_bytes": 144114
-    },
-    {
-      "row_id": "O_CE-s2026092703",
-      "gpu": 1,
-      "alive": true,
-      "epoch": 7,
-      "optimizer_steps": 1554,
-      "counts": {
-        "identity_updates": 1554,
-        "main_L_packets": 198912,
-        "U_identity_packets": 0,
-        "teacher_updates": 0,
-        "auxiliary_steps": 0,
-        "accepted_U": 0,
-        "linear_steps": 0,
-        "repetition_steps": 0,
-        "physical_L_packets": 0,
-        "physical_U_packets": 0,
-        "satellite_calls": 0
-      },
-      "U_scan_complete": false,
-      "step_log_bytes": 120525
-    },
-    {
-      "row_id": "O_EMA-s2026092703",
-      "gpu": 2,
-      "alive": true,
-      "epoch": 4,
-      "optimizer_steps": 888,
-      "counts": {
-        "identity_updates": 888,
-        "main_L_packets": 113664,
-        "U_identity_packets": 0,
-        "teacher_updates": 0,
-        "auxiliary_steps": 0,
-        "accepted_U": 0,
-        "linear_steps": 0,
-        "repetition_steps": 0,
-        "physical_L_packets": 0,
-        "physical_U_packets": 0,
-        "satellite_calls": 0
-      },
-      "U_scan_complete": true,
-      "step_log_bytes": 117187
+      "step_log_bytes": 482992
     }
   ],
   "capacity": {
     "0": {
       "pids": [
-        4102560,
-        4115625,
-        4117014
+        4102560
       ],
-      "free_mb": 19521
+      "free_mb": 20767
     },
     "1": {
       "pids": [
         4102643,
-        4115709,
-        4117098
+        4121827
       ],
-      "free_mb": 19517
+      "free_mb": 20092
     },
     "2": {
       "pids": [
-        4102730,
-        4116197,
-        4117182
+        4102730
       ],
-      "free_mb": 19413
+      "free_mb": 20767
     },
     "3": {
       "pids": [
         4102817,
-        4116283,
-        4116705
+        4120089
       ],
-      "free_mb": 19521
+      "free_mb": 20092
     },
     "4": {
       "pids": [
         4103063,
-        4116367,
-        4116792
+        4121119
       ],
-      "free_mb": 19517
+      "free_mb": 20088
     },
     "5": {
       "pids": [
-        4103159,
-        4116454,
-        4116875
+        4103159
       ],
-      "free_mb": 19413
+      "free_mb": 20767
     },
     "6": {
       "pids": [
-        4115162,
-        4115419,
-        4116537
+        4120274,
+        4124285
       ],
-      "free_mb": 22199
+      "free_mb": 22770
     },
     "7": {
-      "pids": [
-        4115247,
-        4115335,
-        4116621
-      ],
-      "free_mb": 22091
+      "pids": [],
+      "free_mb": 24124
     }
   },
   "queue": {
     "active": [
-      "O_CE-s2026092701",
-      "O_EMA-s2026092701",
-      "O_DIRECT-s2026092701",
-      "O_DIRECT_HI-s2026092701",
-      "R_CE-s2026092701",
-      "R_EMA-s2026092701",
-      "R_DIRECT-s2026092701",
-      "R_DIRECT_HI-s2026092701",
-      "O_CE-s2026092702",
-      "O_EMA-s2026092702",
-      "O_DIRECT-s2026092702",
-      "O_DIRECT_HI-s2026092702",
+      "O_DIRECT-s2026092703",
+      "O_DIRECT_HI-s2026092703",
+      "R_EMA-s2026092703",
+      "R_DIRECT-s2026092703",
+      "R_DIRECT_HI-s2026092703"
+    ],
+    "pending": [],
+    "completed": [
       "R_CE-s2026092702",
-      "R_EMA-s2026092702",
-      "R_DIRECT-s2026092702",
-      "R_DIRECT_HI-s2026092702",
+      "O_CE-s2026092701",
+      "R_CE-s2026092701",
+      "O_CE-s2026092702",
       "O_CE-s2026092703",
-      "O_EMA-s2026092703"
+      "O_DIRECT-s2026092701",
+      "O_DIRECT-s2026092702",
+      "O_DIRECT_HI-s2026092701",
+      "R_EMA-s2026092701",
+      "R_DIRECT_HI-s2026092701",
+      "O_DIRECT_HI-s2026092702",
+      "R_DIRECT_HI-s2026092702",
+      "R_DIRECT-s2026092701",
+      "O_EMA-s2026092702",
+      "R_DIRECT-s2026092702",
+      "O_EMA-s2026092701",
+      "O_EMA-s2026092703",
+      "R_CE-s2026092703",
+      "R_EMA-s2026092702"
     ],
-    "pending": [
-      {
-        "arm": "O_DIRECT",
-        "model_seed": 2026092703,
-        "row_id": "O_DIRECT-s2026092703"
-      },
-      {
-        "arm": "O_DIRECT_HI",
-        "model_seed": 2026092703,
-        "row_id": "O_DIRECT_HI-s2026092703"
-      },
-      {
-        "arm": "R_CE",
-        "model_seed": 2026092703,
-        "row_id": "R_CE-s2026092703"
-      },
-      {
-        "arm": "R_EMA",
-        "model_seed": 2026092703,
-        "row_id": "R_EMA-s2026092703"
-      },
-      {
-        "arm": "R_DIRECT",
-        "model_seed": 2026092703,
-        "row_id": "R_DIRECT-s2026092703"
-      },
-      {
-        "arm": "R_DIRECT_HI",
-        "model_seed": 2026092703,
-        "row_id": "R_DIRECT_HI-s2026092703"
-      }
-    ],
-    "completed": [],
     "failures": [],
     "max_total_processes_per_GPU": 3,
-    "updated_at": 1791720504.0852132
+    "updated_at": 1791721167.7343168
   },
   "failure": null
 }
