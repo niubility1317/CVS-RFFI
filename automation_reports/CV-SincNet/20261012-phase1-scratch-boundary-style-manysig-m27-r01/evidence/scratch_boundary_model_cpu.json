@@ -1,0 +1,164 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "rows": [
+    {
+      "row": "CE-s2026092701",
+      "teacher_count": 0,
+      "head_parameters": 0
+    },
+    {
+      "row": "SSL-s2026092701",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "M_SHALLOW-s2026092701",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "M_MIDDLE-s2026092701",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "M_BOTH-s2026092701",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "L_REPLAY-s2026092701",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "RANDOM_STYLE-s2026092701",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "HARD_STYLE-s2026092701",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "JOINT-s2026092701",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "CE-s2026092702",
+      "teacher_count": 0,
+      "head_parameters": 0
+    },
+    {
+      "row": "SSL-s2026092702",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "M_SHALLOW-s2026092702",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "M_MIDDLE-s2026092702",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "M_BOTH-s2026092702",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "L_REPLAY-s2026092702",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "RANDOM_STYLE-s2026092702",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "HARD_STYLE-s2026092702",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "JOINT-s2026092702",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "CE-s2026092703",
+      "teacher_count": 0,
+      "head_parameters": 0
+    },
+    {
+      "row": "SSL-s2026092703",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "M_SHALLOW-s2026092703",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "M_MIDDLE-s2026092703",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "M_BOTH-s2026092703",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "L_REPLAY-s2026092703",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "RANDOM_STYLE-s2026092703",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "HARD_STYLE-s2026092703",
+      "teacher_count": 2,
+      "head_parameters": 0
+    },
+    {
+      "row": "JOINT-s2026092703",
+      "teacher_count": 2,
+      "head_parameters": 0
+    }
+  ],
+  "torch_load_forbidden_initial_build": true,
+  "paired_scratch_weights_identical_per_seed": true,
+  "seeds_distinct": true,
+  "empty_optimizer_groups_removed": true,
+  "own_checkpoint_roundtrip": true,
+  "rejected_checkpoint_fields": [
+    "epoch",
+    "total_epochs",
+    "parent_training_epochs",
+    "parent_checkpoint",
+    "model_seed",
+    "checkpoint_sources",
+    "teacher_provenance",
+    "reference_E20_loaded",
+    "parent_provenance"
+  ],
+  "student_epoch_budget": 20,
+  "student_optimizer_steps": 4440,
+  "historical_epochs": {
+    "CE": 20,
+    "nonCE": 60
+  },
+  "target_access": false
+}
