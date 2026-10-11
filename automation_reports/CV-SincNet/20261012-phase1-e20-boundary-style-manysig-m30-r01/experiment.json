@@ -338,7 +338,7 @@
       "arm": "CE",
       "model_seed": 2026092701,
       "row_id": "CE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -742,13 +742,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 257673,
       "gpu": 0,
-      "live_epoch": 13
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "SSL",
       "model_seed": 2026092701,
       "row_id": "SSL-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -1155,7 +1156,8 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 257894,
       "gpu": 1,
-      "live_epoch": 8
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PROBE_FISH",
@@ -1571,7 +1573,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 257980,
       "gpu": 2,
-      "live_epoch": 4
+      "live_epoch": 13
     },
     {
       "arm": "M_SHALLOW",
@@ -1986,7 +1988,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 258069,
       "gpu": 3,
-      "live_epoch": 2
+      "live_epoch": 5
     },
     {
       "arm": "M_MIDDLE",
@@ -2401,7 +2403,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 258157,
       "gpu": 4,
-      "live_epoch": 3
+      "live_epoch": 8
     },
     {
       "arm": "M_BOTH",
@@ -2817,7 +2819,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 258243,
       "gpu": 5,
-      "live_epoch": 2
+      "live_epoch": 4
     },
     {
       "arm": "L_REPLAY",
@@ -3230,7 +3232,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 258330,
       "gpu": 6,
-      "live_epoch": 5
+      "live_epoch": 17
     },
     {
       "arm": "RANDOM_STYLE",
@@ -3646,7 +3648,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 258417,
       "gpu": 7,
-      "live_epoch": 3
+      "live_epoch": 6
     },
     {
       "arm": "HARD_STYLE",
@@ -4062,7 +4064,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 258913,
       "gpu": 7,
-      "live_epoch": 3
+      "live_epoch": 6
     },
     {
       "arm": "JOINT",
@@ -4481,13 +4483,13 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 258999,
       "gpu": 0,
-      "live_epoch": 2
+      "live_epoch": 3
     },
     {
       "arm": "CE",
       "model_seed": 2026092702,
       "row_id": "CE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -4891,13 +4893,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 259083,
       "gpu": 6,
-      "live_epoch": 9
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "SSL",
       "model_seed": 2026092702,
       "row_id": "SSL-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -5304,7 +5307,8 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 259223,
       "gpu": 1,
-      "live_epoch": 5
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PROBE_FISH",
@@ -5720,7 +5724,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 259386,
       "gpu": 2,
-      "live_epoch": 3
+      "live_epoch": 12
     },
     {
       "arm": "M_SHALLOW",
@@ -6135,7 +6139,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 259472,
       "gpu": 4,
-      "live_epoch": 2
+      "live_epoch": 5
     },
     {
       "arm": "M_MIDDLE",
@@ -6550,7 +6554,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 259556,
       "gpu": 3,
-      "live_epoch": 2
+      "live_epoch": 5
     },
     {
       "arm": "M_BOTH",
@@ -6966,7 +6970,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 259640,
       "gpu": 5,
-      "live_epoch": 2
+      "live_epoch": 4
     },
     {
       "arm": "L_REPLAY",
@@ -7379,7 +7383,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 259724,
       "gpu": 5,
-      "live_epoch": 2
+      "live_epoch": 12
     },
     {
       "arm": "RANDOM_STYLE",
@@ -7795,7 +7799,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 259809,
       "gpu": 6,
-      "live_epoch": 2
+      "live_epoch": 4
     },
     {
       "arm": "HARD_STYLE",
@@ -8211,7 +8215,7 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 259894,
       "gpu": 1,
-      "live_epoch": 2
+      "live_epoch": 6
     },
     {
       "arm": "JOINT",
@@ -8630,13 +8634,13 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 259978,
       "gpu": 0,
-      "live_epoch": 2
+      "live_epoch": 3
     },
     {
       "arm": "CE",
       "model_seed": 2026092703,
       "row_id": "CE-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -9040,13 +9044,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 260062,
       "gpu": 4,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "SSL",
       "model_seed": 2026092703,
       "row_id": "SSL-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -9453,7 +9458,8 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 260149,
       "gpu": 2,
-      "live_epoch": 2
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PROBE_FISH",
@@ -9869,13 +9875,13 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 260233,
       "gpu": 7,
-      "live_epoch": 2
+      "live_epoch": 12
     },
     {
       "arm": "M_SHALLOW",
       "model_seed": 2026092703,
       "row_id": "M_SHALLOW-s2026092703",
-      "status": "STARTING",
+      "status": "RUNNING",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -10284,13 +10290,13 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 260317,
       "gpu": 3,
-      "live_epoch": 0
+      "live_epoch": 4
     },
     {
       "arm": "M_MIDDLE",
       "model_seed": 2026092703,
       "row_id": "M_MIDDLE-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -10696,13 +10702,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero."
+      "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
+      "pid": 261749,
+      "gpu": 0,
+      "live_epoch": 5
     },
     {
       "arm": "M_BOTH",
       "model_seed": 2026092703,
       "row_id": "M_BOTH-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -11109,13 +11118,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero."
+      "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
+      "pid": 262145,
+      "gpu": 6,
+      "live_epoch": 3
     },
     {
       "arm": "L_REPLAY",
       "model_seed": 2026092703,
       "row_id": "L_REPLAY-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -11519,13 +11531,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero."
+      "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
+      "pid": 262890,
+      "gpu": 4,
+      "live_epoch": 5
     },
     {
       "arm": "RANDOM_STYLE",
       "model_seed": 2026092703,
       "row_id": "RANDOM_STYLE-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -11932,13 +11947,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero."
+      "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
+      "pid": 263221,
+      "gpu": 1,
+      "live_epoch": 3
     },
     {
       "arm": "HARD_STYLE",
       "model_seed": 2026092703,
       "row_id": "HARD_STYLE-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -12345,13 +12363,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero."
+      "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
+      "pid": 264107,
+      "gpu": 1,
+      "live_epoch": 2
     },
     {
       "arm": "JOINT",
       "model_seed": 2026092703,
       "row_id": "JOINT-s2026092703",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_e20_boundary_style",
       "purpose": "原生CE旧门控cos E20+20；十方案三种子；固定双批统计、层位和额外监督对照；逐行自动clean测试",
       "config": {
@@ -12761,10 +12782,22 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero."
+      "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
+      "pid": 264765,
+      "gpu": 2,
+      "live_epoch": 1
     }
   ],
   "registered_at": "2026-10-11T20:09:38+00:00",
   "execution_commit": "a5c2504224f16d3fb22bbfa706dddf176213cc0c",
-  "delivery_verdict": "VERIFIED"
+  "delivery_verdict": "VERIFIED",
+  "progress": {
+    "read_at": 1791750052.7988377,
+    "launched": 30,
+    "scored_rows": 6,
+    "source_fully_audited_rows": 6,
+    "source_fully_audited_steps": 26640,
+    "failure": null,
+    "final_goal_status": "UNPROVEN"
+  }
 }

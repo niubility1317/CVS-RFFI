@@ -5,7 +5,7 @@
   "execution_commit": "a5c2504224f16d3fb22bbfa706dddf176213cc0c",
   "dispatcher": 257476,
   "matrix": 30,
-  "launched": 24,
+  "launched": 30,
   "checked": [
     "CE-s2026092701",
     "SSL-s2026092701",
@@ -31,10 +31,19 @@
     "SSL-s2026092703",
     "PROBE_FISH-s2026092703"
   ],
-  "pending": 6,
-  "next": "Read existing dispatcher/workers, never republish. Auto clean each final incremental20 row. Collect all30 fixed results and source trajectory without target-driven adjustment.",
+  "pending": 0,
+  "next": "Continue existing live dispatcher257476; do not publish/restart. All30 final source logs and clean scores required. No target-driven design or adjustment. Collect completed row evidence; reports currently PARTIAL.",
   "collector": "python -m experiments.cvs_e20_boundary_style.collect_results --output automation_reports/CV-SincNet/20261012-phase1-e20-boundary-style-manysig-m30-r01",
   "budget": "original native E20 +20=total40; only PROBE_FISH heads200; margin headless; 12-pair calibration separate",
   "multilevel": "time_down/t2.pool; margin sensitivities without heads; PROBE_FISH control only has heads; fixed peer probabilities; independent AB Fishr fixed initial coefficients/denominator2; hard/random four-candidate L style with matched dropout; noEMA/noSat",
-  "owner": "codex/root/e20-boundary-style-20261012"
+  "owner": "codex/root/e20-boundary-style-20261012",
+  "completed_rows": [
+    "CE-s2026092701",
+    "SSL-s2026092701",
+    "CE-s2026092702",
+    "SSL-s2026092702",
+    "CE-s2026092703",
+    "SSL-s2026092703"
+  ],
+  "source_fully_audited_steps": 26640
 }

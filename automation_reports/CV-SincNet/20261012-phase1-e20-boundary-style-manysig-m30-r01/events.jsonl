@@ -1,3 +1,5 @@
 {"at": "2026-10-11T20:09:38+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"event": "LOCAL_VERIFIED", "time": 1791749470.3085814, "matrix": 30, "review": "PASS", "CPU_CUDA_multilevel": "PASS", "target_access": false}
 {"event": "LAUNCH_VERIFIED", "time": 1791749789.6989453, "launched": 24, "checked": 23, "matrix": 30, "execution_commit": "a5c2504224f16d3fb22bbfa706dddf176213cc0c"}
+{"event": "PROGRESS_VERIFIED", "time": 1791750005.6217544, "read_at": 1791750005.5792396, "launched": 27, "scored_rows": 4, "source_fully_audited_rows": 6, "source_fully_audited_steps": 26640, "failure": null, "final_goal_status": "UNPROVEN"}
+{"event": "PROGRESS_VERIFIED", "time": 1791750052.8493543, "read_at": 1791750052.7988377, "launched": 30, "scored_rows": 6, "source_fully_audited_rows": 6, "source_fully_audited_steps": 26640, "failure": null, "final_goal_status": "UNPROVEN"}
