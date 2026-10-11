@@ -3,10 +3,757 @@
   "source_only": true,
   "target_access": false,
   "source_matrix_status": "PARTIAL",
-  "closed_source_rows": 7,
-  "closed_cap_rows": 5,
-  "cap_steps": 4995,
+  "closed_source_rows": 9,
+  "closed_cap_rows": 7,
+  "cap_steps": 6993,
   "rows": [
+    {
+      "row_id": "CAP_M_SHALLOW-s2026092701",
+      "seed": 2026092701,
+      "full": {
+        "steps": 999,
+        "clipped": 961,
+        "scalar_below_point1": 319,
+        "scalar_below_point01": 1,
+        "zero_scalar": 0,
+        "scalar_mean": 0.21892539079796072,
+        "scalar_min": 0.009695571251192489,
+        "binding_group_counts": {
+          "shallow": 593,
+          "middle": 337,
+          "rest": 31
+        },
+        "bound_violations": 0,
+        "groups": {
+          "shallow": {
+            "sum_raw_norm": 730.6188144880098,
+            "sum_capped_norm": 103.71881920232946,
+            "norm_retention": 0.14196023582421938,
+            "mean_capped_to_identity_ratio": 0.18654382833801436,
+            "max_capped_to_identity_ratio": 0.1999999999999512
+          },
+          "middle": {
+            "sum_raw_norm": 684.5079914398705,
+            "sum_capped_norm": 95.40375886293118,
+            "norm_retention": 0.1393756684450802,
+            "mean_capped_to_identity_ratio": 0.17252554588916677,
+            "max_capped_to_identity_ratio": 0.19999999999993556
+          },
+          "rest": {
+            "sum_raw_norm": 1321.735366657317,
+            "sum_capped_norm": 195.9766115248969,
+            "norm_retention": 0.14827220067548308,
+            "mean_capped_to_identity_ratio": 0.11271856902475381,
+            "max_capped_to_identity_ratio": 0.19999999999992163
+          }
+        },
+        "extra_gradient_seconds": 402.3881849015597
+      },
+      "epochs": {
+        "3": {
+          "steps": 55,
+          "clipped": 25,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.8170310388276816,
+          "scalar_min": 0.1347843761909571,
+          "binding_group_counts": {
+            "shallow": 15,
+            "middle": 10,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 7.966042886778321,
+              "sum_capped_norm": 5.309776863467633,
+              "norm_retention": 0.6665513780098474,
+              "mean_capped_to_identity_ratio": 0.1323501340058248,
+              "max_capped_to_identity_ratio": 0.19999999999956297
+            },
+            "middle": {
+              "sum_raw_norm": 8.263500099729542,
+              "sum_capped_norm": 5.530405449237671,
+              "norm_retention": 0.6692570197244478,
+              "mean_capped_to_identity_ratio": 0.12148874498005884,
+              "max_capped_to_identity_ratio": 0.199999999999668
+            },
+            "rest": {
+              "sum_raw_norm": 14.84838226976292,
+              "sum_capped_norm": 10.154102702505538,
+              "norm_retention": 0.6838524573268321,
+              "mean_capped_to_identity_ratio": 0.07501396516612888,
+              "max_capped_to_identity_ratio": 0.17428694206438017
+            }
+          },
+          "extra_gradient_seconds": 20.480219355900772
+        },
+        "4": {
+          "steps": 56,
+          "clipped": 49,
+          "scalar_below_point1": 1,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.522427890997262,
+          "scalar_min": 0.0786404712800653,
+          "binding_group_counts": {
+            "shallow": 37,
+            "middle": 11,
+            "rest": 1
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 19.50386023464768,
+              "sum_capped_norm": 8.542784472100605,
+              "norm_retention": 0.43800480362983507,
+              "mean_capped_to_identity_ratio": 0.19003730993982335,
+              "max_capped_to_identity_ratio": 0.19999999999978102
+            },
+            "middle": {
+              "sum_raw_norm": 18.753541144900243,
+              "sum_capped_norm": 7.978401469580052,
+              "norm_retention": 0.4254343970525089,
+              "mean_capped_to_identity_ratio": 0.1610322076598995,
+              "max_capped_to_identity_ratio": 0.19999999999973483
+            },
+            "rest": {
+              "sum_raw_norm": 36.76404563228685,
+              "sum_capped_norm": 16.908007867523295,
+              "norm_retention": 0.45990607335865064,
+              "mean_capped_to_identity_ratio": 0.11521338213112954,
+              "max_capped_to_identity_ratio": 0.1999999999997461
+            }
+          },
+          "extra_gradient_seconds": 23.25198638229631
+        },
+        "5": {
+          "steps": 55,
+          "clipped": 55,
+          "scalar_below_point1": 5,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.3172540452945468,
+          "scalar_min": 0.051751373193229123,
+          "binding_group_counts": {
+            "shallow": 33,
+            "middle": 21,
+            "rest": 1
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 26.719412739229384,
+              "sum_capped_norm": 7.116349047373422,
+              "norm_retention": 0.2663362820442986,
+              "mean_capped_to_identity_ratio": 0.19229745371624873,
+              "max_capped_to_identity_ratio": 0.19999999999979204
+            },
+            "middle": {
+              "sum_raw_norm": 26.030145324428585,
+              "sum_capped_norm": 6.728888081219272,
+              "norm_retention": 0.2585036693938237,
+              "mean_capped_to_identity_ratio": 0.17467077901145073,
+              "max_capped_to_identity_ratio": 0.19999999999983742
+            },
+            "rest": {
+              "sum_raw_norm": 50.264591414669276,
+              "sum_capped_norm": 13.671813202461399,
+              "norm_retention": 0.2719969031414707,
+              "mean_capped_to_identity_ratio": 0.11361936273793165,
+              "max_capped_to_identity_ratio": 0.19999999999972057
+            }
+          },
+          "extra_gradient_seconds": 22.192940791719593
+        },
+        "6": {
+          "steps": 56,
+          "clipped": 56,
+          "scalar_below_point1": 8,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.22784523517669258,
+          "scalar_min": 0.03668615521661215,
+          "binding_group_counts": {
+            "shallow": 42,
+            "middle": 13,
+            "rest": 1
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 41.0756786818064,
+              "sum_capped_norm": 7.528774255998186,
+              "norm_retention": 0.1832903191769512,
+              "mean_capped_to_identity_ratio": 0.1935477018397495,
+              "max_capped_to_identity_ratio": 0.19999999999989537
+            },
+            "middle": {
+              "sum_raw_norm": 38.490725230043886,
+              "sum_capped_norm": 6.74225818243448,
+              "norm_retention": 0.1751657871380355,
+              "mean_capped_to_identity_ratio": 0.16993790578922824,
+              "max_capped_to_identity_ratio": 0.19999999999990967
+            },
+            "rest": {
+              "sum_raw_norm": 75.80583055824465,
+              "sum_capped_norm": 14.58347657672576,
+              "norm_retention": 0.19237935221250155,
+              "mean_capped_to_identity_ratio": 0.12117139991114034,
+              "max_capped_to_identity_ratio": 0.19999999999981224
+            }
+          },
+          "extra_gradient_seconds": 23.05260733771138
+        },
+        "7": {
+          "steps": 55,
+          "clipped": 54,
+          "scalar_below_point1": 15,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.18140209332575422,
+          "scalar_min": 0.017747250896499294,
+          "binding_group_counts": {
+            "shallow": 32,
+            "middle": 22,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 49.05853003577723,
+              "sum_capped_norm": 6.807880847341869,
+              "norm_retention": 0.13877058367580605,
+              "mean_capped_to_identity_ratio": 0.18659960869929904,
+              "max_capped_to_identity_ratio": 0.19999999999988494
+            },
+            "middle": {
+              "sum_raw_norm": 49.25562779407141,
+              "sum_capped_norm": 6.594295318951045,
+              "norm_retention": 0.13387902285035455,
+              "mean_capped_to_identity_ratio": 0.18324289368536248,
+              "max_capped_to_identity_ratio": 0.19999999999993556
+            },
+            "rest": {
+              "sum_raw_norm": 89.42695558960284,
+              "sum_capped_norm": 12.84938863179789,
+              "norm_retention": 0.14368585564699482,
+              "mean_capped_to_identity_ratio": 0.10956672241628694,
+              "max_capped_to_identity_ratio": 0.1979840573915982
+            }
+          },
+          "extra_gradient_seconds": 22.32887836266309
+        },
+        "8": {
+          "steps": 56,
+          "clipped": 56,
+          "scalar_below_point1": 18,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.17541864312722064,
+          "scalar_min": 0.015170577309546938,
+          "binding_group_counts": {
+            "shallow": 35,
+            "middle": 17,
+            "rest": 4
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 44.43378583375325,
+              "sum_capped_norm": 6.5266151894065,
+              "norm_retention": 0.14688406731367656,
+              "mean_capped_to_identity_ratio": 0.1899608889501135,
+              "max_capped_to_identity_ratio": 0.19999999999987142
+            },
+            "middle": {
+              "sum_raw_norm": 42.35442747100637,
+              "sum_capped_norm": 5.982117173265676,
+              "norm_retention": 0.14123947673146384,
+              "mean_capped_to_identity_ratio": 0.1738629048094305,
+              "max_capped_to_identity_ratio": 0.19999999999989884
+            },
+            "rest": {
+              "sum_raw_norm": 79.83796172640751,
+              "sum_capped_norm": 12.212192417875105,
+              "norm_retention": 0.1529622269131121,
+              "mean_capped_to_identity_ratio": 0.11501480115467258,
+              "max_capped_to_identity_ratio": 0.19999999999992163
+            }
+          },
+          "extra_gradient_seconds": 22.81572751281783
+        },
+        "9": {
+          "steps": 55,
+          "clipped": 55,
+          "scalar_below_point1": 18,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.1728465391522131,
+          "scalar_min": 0.017176463642134456,
+          "binding_group_counts": {
+            "shallow": 40,
+            "middle": 14,
+            "rest": 1
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 47.58372029470969,
+              "sum_capped_norm": 6.274909874140317,
+              "norm_retention": 0.1318709389530006,
+              "mean_capped_to_identity_ratio": 0.19107183774883707,
+              "max_capped_to_identity_ratio": 0.19999999999994117
+            },
+            "middle": {
+              "sum_raw_norm": 44.48408714923514,
+              "sum_capped_norm": 5.726811895124854,
+              "norm_retention": 0.1287384379927266,
+              "mean_capped_to_identity_ratio": 0.17792252595348182,
+              "max_capped_to_identity_ratio": 0.1999999999999078
+            },
+            "rest": {
+              "sum_raw_norm": 83.6713581199735,
+              "sum_capped_norm": 11.438010891346625,
+              "norm_retention": 0.13670162823156345,
+              "mean_capped_to_identity_ratio": 0.10987512055018461,
+              "max_capped_to_identity_ratio": 0.199999999999729
+            }
+          },
+          "extra_gradient_seconds": 23.45348720799666
+        },
+        "10": {
+          "steps": 56,
+          "clipped": 56,
+          "scalar_below_point1": 16,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.18214224625639322,
+          "scalar_min": 0.035878022091892704,
+          "binding_group_counts": {
+            "shallow": 39,
+            "middle": 17,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 43.58779233062038,
+              "sum_capped_norm": 6.386810488798891,
+              "norm_retention": 0.1465275056913622,
+              "mean_capped_to_identity_ratio": 0.1938032205225607,
+              "max_capped_to_identity_ratio": 0.1999999999999378
+            },
+            "middle": {
+              "sum_raw_norm": 39.744140879677474,
+              "sum_capped_norm": 5.626203864696274,
+              "norm_retention": 0.141560585791229,
+              "mean_capped_to_identity_ratio": 0.17089055121007696,
+              "max_capped_to_identity_ratio": 0.19999999999985563
+            },
+            "rest": {
+              "sum_raw_norm": 75.97568153019027,
+              "sum_capped_norm": 11.593108537319944,
+              "norm_retention": 0.15258972744737037,
+              "mean_capped_to_identity_ratio": 0.1168898591292841,
+              "max_capped_to_identity_ratio": 0.19816023850576192
+            }
+          },
+          "extra_gradient_seconds": 22.276144566363655
+        },
+        "11": {
+          "steps": 55,
+          "clipped": 55,
+          "scalar_below_point1": 22,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.15292425713855415,
+          "scalar_min": 0.032750717626793234,
+          "binding_group_counts": {
+            "shallow": 39,
+            "middle": 16,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 45.56208115770692,
+              "sum_capped_norm": 5.775845894492534,
+              "norm_retention": 0.12676870212535357,
+              "mean_capped_to_identity_ratio": 0.1917797604894152,
+              "max_capped_to_identity_ratio": 0.19999999999985724
+            },
+            "middle": {
+              "sum_raw_norm": 42.60630811036036,
+              "sum_capped_norm": 5.268223713887366,
+              "norm_retention": 0.12364891368295576,
+              "mean_capped_to_identity_ratio": 0.1685983149919983,
+              "max_capped_to_identity_ratio": 0.19999999999993145
+            },
+            "rest": {
+              "sum_raw_norm": 79.34070859877575,
+              "sum_capped_norm": 10.359014785893866,
+              "norm_retention": 0.1305636787072218,
+              "mean_capped_to_identity_ratio": 0.10341598772635925,
+              "max_capped_to_identity_ratio": 0.1993636125418479
+            }
+          },
+          "extra_gradient_seconds": 24.176206037169322
+        },
+        "12": {
+          "steps": 56,
+          "clipped": 56,
+          "scalar_below_point1": 23,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.13995942445819984,
+          "scalar_min": 0.03790647707929304,
+          "binding_group_counts": {
+            "shallow": 30,
+            "middle": 23,
+            "rest": 3
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 43.189739388472375,
+              "sum_capped_norm": 4.973809272054824,
+              "norm_retention": 0.11516182645414079,
+              "mean_capped_to_identity_ratio": 0.1868692800519054,
+              "max_capped_to_identity_ratio": 0.19999999999991427
+            },
+            "middle": {
+              "sum_raw_norm": 41.190915156437775,
+              "sum_capped_norm": 4.577972998129576,
+              "norm_retention": 0.11114035657481816,
+              "mean_capped_to_identity_ratio": 0.18003998512008604,
+              "max_capped_to_identity_ratio": 0.19999999999989998
+            },
+            "rest": {
+              "sum_raw_norm": 79.58590435989476,
+              "sum_capped_norm": 9.513999114887444,
+              "norm_retention": 0.11954377086505504,
+              "mean_capped_to_identity_ratio": 0.1168600156514709,
+              "max_capped_to_identity_ratio": 0.19999999999985102
+            }
+          },
+          "extra_gradient_seconds": 22.255335113266483
+        },
+        "13": {
+          "steps": 55,
+          "clipped": 55,
+          "scalar_below_point1": 22,
+          "scalar_below_point01": 1,
+          "zero_scalar": 0,
+          "scalar_mean": 0.15058174209340416,
+          "scalar_min": 0.009695571251192489,
+          "binding_group_counts": {
+            "shallow": 30,
+            "middle": 21,
+            "rest": 4
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 46.954255604004196,
+              "sum_capped_norm": 5.779372233255159,
+              "norm_retention": 0.12308516361107642,
+              "mean_capped_to_identity_ratio": 0.18943561457728064,
+              "max_capped_to_identity_ratio": 0.19999999999990478
+            },
+            "middle": {
+              "sum_raw_norm": 43.999823754041216,
+              "sum_capped_norm": 5.278381570435765,
+              "norm_retention": 0.11996369803528964,
+              "mean_capped_to_identity_ratio": 0.1765385092526825,
+              "max_capped_to_identity_ratio": 0.19999999999992807
+            },
+            "rest": {
+              "sum_raw_norm": 82.03720859425243,
+              "sum_capped_norm": 10.417632645912791,
+              "norm_retention": 0.1269866786598911,
+              "mean_capped_to_identity_ratio": 0.11825700895872777,
+              "max_capped_to_identity_ratio": 0.19999999999985138
+            }
+          },
+          "extra_gradient_seconds": 20.639711249736138
+        },
+        "14": {
+          "steps": 56,
+          "clipped": 56,
+          "scalar_below_point1": 16,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.15027522700187,
+          "scalar_min": 0.03690102087630504,
+          "binding_group_counts": {
+            "shallow": 29,
+            "middle": 23,
+            "rest": 4
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 39.59502462091578,
+              "sum_capped_norm": 5.2724368354005495,
+              "norm_retention": 0.13315907455239778,
+              "mean_capped_to_identity_ratio": 0.18746987122499775,
+              "max_capped_to_identity_ratio": 0.19999999999983584
+            },
+            "middle": {
+              "sum_raw_norm": 36.36021635635755,
+              "sum_capped_norm": 4.701767155515079,
+              "norm_retention": 0.12931075847938348,
+              "mean_capped_to_identity_ratio": 0.17993989088636642,
+              "max_capped_to_identity_ratio": 0.1999999999998692
+            },
+            "rest": {
+              "sum_raw_norm": 74.23437392844733,
+              "sum_capped_norm": 10.094429851620877,
+              "norm_retention": 0.1359805345883384,
+              "mean_capped_to_identity_ratio": 0.11907019952149357,
+              "max_capped_to_identity_ratio": 0.19999999999986653
+            }
+          },
+          "extra_gradient_seconds": 21.981058544595726
+        },
+        "15": {
+          "steps": 55,
+          "clipped": 55,
+          "scalar_below_point1": 20,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.13613940430364052,
+          "scalar_min": 0.034229932278124375,
+          "binding_group_counts": {
+            "shallow": 37,
+            "middle": 16,
+            "rest": 2
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 37.323530656120404,
+              "sum_capped_norm": 4.381644994395667,
+              "norm_retention": 0.11739631587284345,
+              "mean_capped_to_identity_ratio": 0.18974793189284409,
+              "max_capped_to_identity_ratio": 0.1999999999998553
+            },
+            "middle": {
+              "sum_raw_norm": 33.87195521080372,
+              "sum_capped_norm": 3.889547967549315,
+              "norm_retention": 0.11483092556489666,
+              "mean_capped_to_identity_ratio": 0.17487445836489648,
+              "max_capped_to_identity_ratio": 0.19999999999988965
+            },
+            "rest": {
+              "sum_raw_norm": 70.76590031983316,
+              "sum_capped_norm": 8.41713627247391,
+              "norm_retention": 0.11894339271360736,
+              "mean_capped_to_identity_ratio": 0.11738163666905002,
+              "max_capped_to_identity_ratio": 0.1999999999998076
+            }
+          },
+          "extra_gradient_seconds": 21.75531906040851
+        },
+        "16": {
+          "steps": 56,
+          "clipped": 56,
+          "scalar_below_point1": 20,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.13949639018851967,
+          "scalar_min": 0.01700472493358334,
+          "binding_group_counts": {
+            "shallow": 35,
+            "middle": 19,
+            "rest": 2
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 47.116520057087264,
+              "sum_capped_norm": 4.829889275065118,
+              "norm_retention": 0.10250946524092044,
+              "mean_capped_to_identity_ratio": 0.1883649171147296,
+              "max_capped_to_identity_ratio": 0.19999999999994103
+            },
+            "middle": {
+              "sum_raw_norm": 43.457555934396154,
+              "sum_capped_norm": 4.350260753486951,
+              "norm_retention": 0.10010366804921418,
+              "mean_capped_to_identity_ratio": 0.17595583777185972,
+              "max_capped_to_identity_ratio": 0.19999999999990511
+            },
+            "rest": {
+              "sum_raw_norm": 87.23883953517449,
+              "sum_capped_norm": 9.524013531682572,
+              "norm_retention": 0.10917171276496075,
+              "mean_capped_to_identity_ratio": 0.11948708319646592,
+              "max_capped_to_identity_ratio": 0.1999999999998941
+            }
+          },
+          "extra_gradient_seconds": 23.079002397833392
+        },
+        "17": {
+          "steps": 55,
+          "clipped": 55,
+          "scalar_below_point1": 26,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.13256534880164011,
+          "scalar_min": 0.019311262631718545,
+          "binding_group_counts": {
+            "shallow": 28,
+            "middle": 26,
+            "rest": 1
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 47.92641155361536,
+              "sum_capped_norm": 5.053111276371945,
+              "norm_retention": 0.10543479289533332,
+              "mean_capped_to_identity_ratio": 0.187973293147362,
+              "max_capped_to_identity_ratio": 0.19999999999992332
+            },
+            "middle": {
+              "sum_raw_norm": 43.822365731859556,
+              "sum_capped_norm": 4.5390666079320185,
+              "norm_retention": 0.10357876696355635,
+              "mean_capped_to_identity_ratio": 0.17871471979663123,
+              "max_capped_to_identity_ratio": 0.19999999999989282
+            },
+            "rest": {
+              "sum_raw_norm": 84.36330213983348,
+              "sum_capped_norm": 9.290168398941368,
+              "norm_retention": 0.1101209668576364,
+              "mean_capped_to_identity_ratio": 0.12146264484941519,
+              "max_capped_to_identity_ratio": 0.19999999999983079
+            }
+          },
+          "extra_gradient_seconds": 21.492558894329704
+        },
+        "18": {
+          "steps": 56,
+          "clipped": 56,
+          "scalar_below_point1": 33,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.11187887747786132,
+          "scalar_min": 0.01689864533975469,
+          "binding_group_counts": {
+            "shallow": 27,
+            "middle": 26,
+            "rest": 3
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 52.017684352340716,
+              "sum_capped_norm": 4.427528033391684,
+              "norm_retention": 0.0851158233688742,
+              "mean_capped_to_identity_ratio": 0.18825446649875663,
+              "max_capped_to_identity_ratio": 0.1999999999999512
+            },
+            "middle": {
+              "sum_raw_norm": 49.200813544789646,
+              "sum_capped_norm": 4.163757870336546,
+              "norm_retention": 0.08462782564654334,
+              "mean_capped_to_identity_ratio": 0.18443858458084517,
+              "max_capped_to_identity_ratio": 0.19999999999990062
+            },
+            "rest": {
+              "sum_raw_norm": 92.55157565541255,
+              "sum_capped_norm": 8.383573332003051,
+              "norm_retention": 0.09058271858295226,
+              "mean_capped_to_identity_ratio": 0.11117733782760196,
+              "max_capped_to_identity_ratio": 0.1999999999998523
+            }
+          },
+          "extra_gradient_seconds": 22.54005424992647
+        },
+        "19": {
+          "steps": 55,
+          "clipped": 55,
+          "scalar_below_point1": 24,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.12154185349807806,
+          "scalar_min": 0.019524060771025798,
+          "binding_group_counts": {
+            "shallow": 33,
+            "middle": 19,
+            "rest": 3
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 40.73972611005493,
+              "sum_capped_norm": 4.090027297573551,
+              "norm_retention": 0.10039407939377618,
+              "mean_capped_to_identity_ratio": 0.1908273276181031,
+              "max_capped_to_identity_ratio": 0.19999999999984372
+            },
+            "middle": {
+              "sum_raw_norm": 36.13982577855499,
+              "sum_capped_norm": 3.5697408332988037,
+              "norm_retention": 0.09877581743675842,
+              "mean_capped_to_identity_ratio": 0.17404266834740184,
+              "max_capped_to_identity_ratio": 0.1999999999999346
+            },
+            "rest": {
+              "sum_raw_norm": 76.26017886899288,
+              "sum_capped_norm": 8.095845997355974,
+              "norm_retention": 0.10616085770351788,
+              "mean_capped_to_identity_ratio": 0.1122627977136861,
+              "max_capped_to_identity_ratio": 0.19999999999984683
+            }
+          },
+          "extra_gradient_seconds": 22.08980502106715
+        },
+        "20": {
+          "steps": 56,
+          "clipped": 56,
+          "scalar_below_point1": 32,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.1127117380518658,
+          "scalar_min": 0.01730804929515282,
+          "binding_group_counts": {
+            "shallow": 32,
+            "middle": 23,
+            "rest": 1
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 50.265017950369504,
+              "sum_capped_norm": 4.641253051700998,
+              "norm_retention": 0.09233564894542885,
+              "mean_capped_to_identity_ratio": 0.1869195153830697,
+              "max_capped_to_identity_ratio": 0.19999999999993417
+            },
+            "middle": {
+              "sum_raw_norm": 46.482016769176816,
+              "sum_capped_norm": 4.155657957850437,
+              "norm_retention": 0.08940356393068856,
+              "mean_capped_to_identity_ratio": 0.17886412417505723,
+              "max_capped_to_identity_ratio": 0.1999999999999211
+            },
+            "rest": {
+              "sum_raw_norm": 88.76256781556236,
+              "sum_capped_norm": 8.470696766569475,
+              "norm_retention": 0.09543095670880697,
+              "mean_capped_to_identity_ratio": 0.11259470509105687,
+              "max_capped_to_identity_ratio": 0.1999999999998185
+            }
+          },
+          "extra_gradient_seconds": 22.527142815757543
+        }
+      }
+    },
     {
       "row_id": "CAP_M_MIDDLE-s2026092701",
       "seed": 2026092701,
@@ -2992,6 +3739,753 @@
             }
           },
           "extra_gradient_seconds": 11.26023232343141
+        }
+      }
+    },
+    {
+      "row_id": "DELAYCAP_M_SHALLOW-s2026092702",
+      "seed": 2026092702,
+      "full": {
+        "steps": 999,
+        "clipped": 94,
+        "scalar_below_point1": 0,
+        "scalar_below_point01": 0,
+        "zero_scalar": 0,
+        "scalar_mean": 0.9743062571004136,
+        "scalar_min": 0.19021302778756966,
+        "binding_group_counts": {
+          "shallow": 74,
+          "middle": 20,
+          "rest": 0
+        },
+        "bound_violations": 0,
+        "groups": {
+          "shallow": {
+            "sum_raw_norm": 38.65410551005053,
+            "sum_capped_norm": 35.87174733885031,
+            "norm_retention": 0.928019077547228,
+            "mean_capped_to_identity_ratio": 0.0802701302263757,
+            "max_capped_to_identity_ratio": 0.1999999999993628
+          },
+          "middle": {
+            "sum_raw_norm": 33.05664851119856,
+            "sum_capped_norm": 30.816681051615078,
+            "norm_retention": 0.9322385190130618,
+            "mean_capped_to_identity_ratio": 0.06879470702124023,
+            "max_capped_to_identity_ratio": 0.19999999999885168
+          },
+          "rest": {
+            "sum_raw_norm": 72.56378975596901,
+            "sum_capped_norm": 68.1755777858301,
+            "norm_retention": 0.9395261467889645,
+            "mean_capped_to_identity_ratio": 0.044498476556867804,
+            "max_capped_to_identity_ratio": 0.14475075328398135
+          }
+        },
+        "extra_gradient_seconds": 409.98019736784045
+      },
+      "epochs": {
+        "3": {
+          "steps": 55,
+          "clipped": 0,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 1.0,
+          "scalar_min": 1.0,
+          "binding_group_counts": {
+            "shallow": 0,
+            "middle": 0,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 0.4908420515033009,
+              "sum_capped_norm": 0.4908420515033009,
+              "norm_retention": 1.0,
+              "mean_capped_to_identity_ratio": 0.010035775500692965,
+              "max_capped_to_identity_ratio": 0.048397298237249274
+            },
+            "middle": {
+              "sum_raw_norm": 0.49179923463088726,
+              "sum_capped_norm": 0.49179923463088726,
+              "norm_retention": 1.0,
+              "mean_capped_to_identity_ratio": 0.008117725638385413,
+              "max_capped_to_identity_ratio": 0.03726893002956161
+            },
+            "rest": {
+              "sum_raw_norm": 0.9035960108537386,
+              "sum_capped_norm": 0.9035960108537386,
+              "norm_retention": 1.0,
+              "mean_capped_to_identity_ratio": 0.0055202799880670625,
+              "max_capped_to_identity_ratio": 0.01865595606452792
+            }
+          },
+          "extra_gradient_seconds": 23.353250153711997
+        },
+        "4": {
+          "steps": 56,
+          "clipped": 0,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 1.0,
+          "scalar_min": 1.0,
+          "binding_group_counts": {
+            "shallow": 0,
+            "middle": 0,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 1.1482668798242022,
+              "sum_capped_norm": 1.1482668798242022,
+              "norm_retention": 1.0,
+              "mean_capped_to_identity_ratio": 0.02953414645056112,
+              "max_capped_to_identity_ratio": 0.10153564312753519
+            },
+            "middle": {
+              "sum_raw_norm": 1.1199441936313481,
+              "sum_capped_norm": 1.1199441936313481,
+              "norm_retention": 1.0,
+              "mean_capped_to_identity_ratio": 0.023876408014746307,
+              "max_capped_to_identity_ratio": 0.06919792655009745
+            },
+            "rest": {
+              "sum_raw_norm": 2.2873746209794303,
+              "sum_capped_norm": 2.2873746209794303,
+              "norm_retention": 1.0,
+              "mean_capped_to_identity_ratio": 0.01720990677755542,
+              "max_capped_to_identity_ratio": 0.04672624394390268
+            }
+          },
+          "extra_gradient_seconds": 22.93592053418979
+        },
+        "5": {
+          "steps": 55,
+          "clipped": 1,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.999101320397822,
+          "scalar_min": 0.9505726218802092,
+          "binding_group_counts": {
+            "shallow": 1,
+            "middle": 0,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 1.9778105262445282,
+              "sum_capped_norm": 1.9728901809423556,
+              "norm_retention": 0.9975122261526662,
+              "mean_capped_to_identity_ratio": 0.06119885988820836,
+              "max_capped_to_identity_ratio": 0.1999999999979909
+            },
+            "middle": {
+              "sum_raw_norm": 1.7287505188529175,
+              "sum_capped_norm": 1.7244569002337589,
+              "norm_retention": 0.9975163457234953,
+              "mean_capped_to_identity_ratio": 0.04810110681717927,
+              "max_capped_to_identity_ratio": 0.16055468385184812
+            },
+            "rest": {
+              "sum_raw_norm": 3.5434746098107763,
+              "sum_capped_norm": 3.5363409752301664,
+              "norm_retention": 0.9979868249765755,
+              "mean_capped_to_identity_ratio": 0.029715713359028405,
+              "max_capped_to_identity_ratio": 0.07804870059477449
+            }
+          },
+          "extra_gradient_seconds": 22.93423706269823
+        },
+        "6": {
+          "steps": 56,
+          "clipped": 4,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9813112299237471,
+          "scalar_min": 0.6776205619921101,
+          "binding_group_counts": {
+            "shallow": 3,
+            "middle": 1,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.4965960226670854,
+              "sum_capped_norm": 2.34926505144034,
+              "norm_retention": 0.9409872602979823,
+              "mean_capped_to_identity_ratio": 0.07045022351077249,
+              "max_capped_to_identity_ratio": 0.19999999999893675
+            },
+            "middle": {
+              "sum_raw_norm": 2.246630755160577,
+              "sum_capped_norm": 2.1165200060415983,
+              "norm_retention": 0.9420862779430441,
+              "mean_capped_to_identity_ratio": 0.05851132098398931,
+              "max_capped_to_identity_ratio": 0.19999999999885168
+            },
+            "rest": {
+              "sum_raw_norm": 4.590260821755851,
+              "sum_capped_norm": 4.340827915249695,
+              "norm_retention": 0.9456604066322436,
+              "mean_capped_to_identity_ratio": 0.038625294223156866,
+              "max_capped_to_identity_ratio": 0.10172930982584018
+            }
+          },
+          "extra_gradient_seconds": 22.619098321418278
+        },
+        "7": {
+          "steps": 55,
+          "clipped": 5,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9709039919066442,
+          "scalar_min": 0.2858897945461252,
+          "binding_group_counts": {
+            "shallow": 4,
+            "middle": 1,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.4006488801326844,
+              "sum_capped_norm": 2.2363422789368923,
+              "norm_retention": 0.9315574207642099,
+              "mean_capped_to_identity_ratio": 0.07584794266967351,
+              "max_capped_to_identity_ratio": 0.19999999999829055
+            },
+            "middle": {
+              "sum_raw_norm": 2.163482247587389,
+              "sum_capped_norm": 2.0218829228288326,
+              "norm_retention": 0.9345502719440102,
+              "mean_capped_to_identity_ratio": 0.06716505999599699,
+              "max_capped_to_identity_ratio": 0.19999999999708074
+            },
+            "rest": {
+              "sum_raw_norm": 4.506117904564633,
+              "sum_capped_norm": 4.236663951116002,
+              "norm_retention": 0.9402026402425738,
+              "mean_capped_to_identity_ratio": 0.04196670260498834,
+              "max_capped_to_identity_ratio": 0.1061536461407863
+            }
+          },
+          "extra_gradient_seconds": 24.116379035054706
+        },
+        "8": {
+          "steps": 56,
+          "clipped": 1,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9995476550622553,
+          "scalar_min": 0.9746686834862965,
+          "binding_group_counts": {
+            "shallow": 0,
+            "middle": 1,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.4419871960731685,
+              "sum_capped_norm": 2.4397152378954376,
+              "norm_retention": 0.999069627317709,
+              "mean_capped_to_identity_ratio": 0.07858126788444553,
+              "max_capped_to_identity_ratio": 0.1966792460086035
+            },
+            "middle": {
+              "sum_raw_norm": 2.01458985435219,
+              "sum_capped_norm": 2.0124682377254235,
+              "norm_retention": 0.9989468741629057,
+              "mean_capped_to_identity_ratio": 0.061173457100154004,
+              "max_capped_to_identity_ratio": 0.19999999999761212
+            },
+            "rest": {
+              "sum_raw_norm": 4.517885725001861,
+              "sum_capped_norm": 4.514313782254419,
+              "norm_retention": 0.9992093773581578,
+              "mean_capped_to_identity_ratio": 0.0428550800968933,
+              "max_capped_to_identity_ratio": 0.08935612200391155
+            }
+          },
+          "extra_gradient_seconds": 22.787558583077043
+        },
+        "9": {
+          "steps": 55,
+          "clipped": 5,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9710292378078974,
+          "scalar_min": 0.3683272273095092,
+          "binding_group_counts": {
+            "shallow": 2,
+            "middle": 3,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.4627259161999406,
+              "sum_capped_norm": 2.203786416762213,
+              "norm_retention": 0.8948565499171427,
+              "mean_capped_to_identity_ratio": 0.08422516059604288,
+              "max_capped_to_identity_ratio": 0.19999999999916113
+            },
+            "middle": {
+              "sum_raw_norm": 2.1353811045198867,
+              "sum_capped_norm": 1.9250116664639485,
+              "norm_retention": 0.9014838908096281,
+              "mean_capped_to_identity_ratio": 0.07582913413310305,
+              "max_capped_to_identity_ratio": 0.19999999999782078
+            },
+            "rest": {
+              "sum_raw_norm": 4.584840497682155,
+              "sum_capped_norm": 4.188477440836864,
+              "norm_retention": 0.9135492157152095,
+              "mean_capped_to_identity_ratio": 0.04531164000110199,
+              "max_capped_to_identity_ratio": 0.12595262123918335
+            }
+          },
+          "extra_gradient_seconds": 22.353400957770646
+        },
+        "10": {
+          "steps": 56,
+          "clipped": 5,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9743326531644566,
+          "scalar_min": 0.6173908092477626,
+          "binding_group_counts": {
+            "shallow": 4,
+            "middle": 1,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.1085335434400263,
+              "sum_capped_norm": 1.9967945645146734,
+              "norm_retention": 0.9470063071687951,
+              "mean_capped_to_identity_ratio": 0.06863932955991138,
+              "max_capped_to_identity_ratio": 0.19999999999790855
+            },
+            "middle": {
+              "sum_raw_norm": 1.858655583792891,
+              "sum_capped_norm": 1.7562578704302234,
+              "norm_retention": 0.9449076449367191,
+              "mean_capped_to_identity_ratio": 0.05876441154335759,
+              "max_capped_to_identity_ratio": 0.19999999999707033
+            },
+            "rest": {
+              "sum_raw_norm": 3.9751931508096994,
+              "sum_capped_norm": 3.7824527894234197,
+              "norm_retention": 0.9515142147628673,
+              "mean_capped_to_identity_ratio": 0.04148314478129634,
+              "max_capped_to_identity_ratio": 0.11210145986289162
+            }
+          },
+          "extra_gradient_seconds": 22.199173661065288
+        },
+        "11": {
+          "steps": 55,
+          "clipped": 7,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9772501184136454,
+          "scalar_min": 0.6177947214675698,
+          "binding_group_counts": {
+            "shallow": 4,
+            "middle": 3,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.5136398239460744,
+              "sum_capped_norm": 2.38848195000793,
+              "norm_retention": 0.9502085092916521,
+              "mean_capped_to_identity_ratio": 0.09205256168093673,
+              "max_capped_to_identity_ratio": 0.19999999999868537
+            },
+            "middle": {
+              "sum_raw_norm": 2.0831628030867693,
+              "sum_capped_norm": 1.9743816337776363,
+              "norm_retention": 0.9477807643512335,
+              "mean_capped_to_identity_ratio": 0.07888359029410177,
+              "max_capped_to_identity_ratio": 0.19999999999692814
+            },
+            "rest": {
+              "sum_raw_norm": 4.532707743265105,
+              "sum_capped_norm": 4.333169640887572,
+              "norm_retention": 0.9559781672061219,
+              "mean_capped_to_identity_ratio": 0.0501686314269894,
+              "max_capped_to_identity_ratio": 0.11425196027564091
+            }
+          },
+          "extra_gradient_seconds": 22.628361511742696
+        },
+        "12": {
+          "steps": 56,
+          "clipped": 6,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9654324228189637,
+          "scalar_min": 0.35903977602442166,
+          "binding_group_counts": {
+            "shallow": 5,
+            "middle": 1,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.349962343300427,
+              "sum_capped_norm": 2.1518293699812543,
+              "norm_retention": 0.915686745413587,
+              "mean_capped_to_identity_ratio": 0.08651613022117362,
+              "max_capped_to_identity_ratio": 0.19999999999892096
+            },
+            "middle": {
+              "sum_raw_norm": 1.9208179130391672,
+              "sum_capped_norm": 1.7613790553848971,
+              "norm_retention": 0.9169942884372617,
+              "mean_capped_to_identity_ratio": 0.07162757150405495,
+              "max_capped_to_identity_ratio": 0.19999999999644572
+            },
+            "rest": {
+              "sum_raw_norm": 4.252595355487371,
+              "sum_capped_norm": 3.9346094740271877,
+              "norm_retention": 0.92522545530934,
+              "mean_capped_to_identity_ratio": 0.04762313135712751,
+              "max_capped_to_identity_ratio": 0.14475075328398135
+            }
+          },
+          "extra_gradient_seconds": 22.674730237340555
+        },
+        "13": {
+          "steps": 55,
+          "clipped": 5,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9622348387378431,
+          "scalar_min": 0.4243692097791902,
+          "binding_group_counts": {
+            "shallow": 4,
+            "middle": 1,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.2793219642722846,
+              "sum_capped_norm": 2.061803780259082,
+              "norm_retention": 0.9045689080249577,
+              "mean_capped_to_identity_ratio": 0.09112430541833785,
+              "max_capped_to_identity_ratio": 0.19999999999849366
+            },
+            "middle": {
+              "sum_raw_norm": 1.9157790233909466,
+              "sum_capped_norm": 1.740859338348872,
+              "norm_retention": 0.908695270745545,
+              "mean_capped_to_identity_ratio": 0.08072726896301627,
+              "max_capped_to_identity_ratio": 0.19999999999688303
+            },
+            "rest": {
+              "sum_raw_norm": 4.3044755446222975,
+              "sum_capped_norm": 3.9790940375518566,
+              "norm_retention": 0.9244085594871252,
+              "mean_capped_to_identity_ratio": 0.05144636300909986,
+              "max_capped_to_identity_ratio": 0.09445619404748229
+            }
+          },
+          "extra_gradient_seconds": 22.446996581275016
+        },
+        "14": {
+          "steps": 56,
+          "clipped": 7,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.969882881035163,
+          "scalar_min": 0.5169356817583832,
+          "binding_group_counts": {
+            "shallow": 6,
+            "middle": 1,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.0576652958899264,
+              "sum_capped_norm": 1.9378164946466259,
+              "norm_retention": 0.9417549581641427,
+              "mean_capped_to_identity_ratio": 0.0857546966356986,
+              "max_capped_to_identity_ratio": 0.19999999999804682
+            },
+            "middle": {
+              "sum_raw_norm": 1.7079009015635864,
+              "sum_capped_norm": 1.618003732829748,
+              "norm_retention": 0.9473639432759025,
+              "mean_capped_to_identity_ratio": 0.07308806554671057,
+              "max_capped_to_identity_ratio": 0.1999999999967694
+            },
+            "rest": {
+              "sum_raw_norm": 4.005452355374637,
+              "sum_capped_norm": 3.8045943138918137,
+              "norm_retention": 0.9498538432960496,
+              "mean_capped_to_identity_ratio": 0.04849315040821151,
+              "max_capped_to_identity_ratio": 0.11163282796048891
+            }
+          },
+          "extra_gradient_seconds": 23.842474055709317
+        },
+        "15": {
+          "steps": 55,
+          "clipped": 6,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9644215513640584,
+          "scalar_min": 0.321393183458714,
+          "binding_group_counts": {
+            "shallow": 5,
+            "middle": 1,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.1784508347887845,
+              "sum_capped_norm": 1.916096233503545,
+              "norm_retention": 0.8795682706740193,
+              "mean_capped_to_identity_ratio": 0.09564269660586522,
+              "max_capped_to_identity_ratio": 0.19999999999892915
+            },
+            "middle": {
+              "sum_raw_norm": 1.8514670180086463,
+              "sum_capped_norm": 1.6386417568863765,
+              "norm_retention": 0.8850504713007661,
+              "mean_capped_to_identity_ratio": 0.084900419273785,
+              "max_capped_to_identity_ratio": 0.19999999999535514
+            },
+            "rest": {
+              "sum_raw_norm": 3.992901688179773,
+              "sum_capped_norm": 3.6178114907217633,
+              "norm_retention": 0.906060748109979,
+              "mean_capped_to_identity_ratio": 0.0499984144157693,
+              "max_capped_to_identity_ratio": 0.11550333289014698
+            }
+          },
+          "extra_gradient_seconds": 22.7866544254357
+        },
+        "16": {
+          "steps": 56,
+          "clipped": 5,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9736349632647414,
+          "scalar_min": 0.27627717757418596,
+          "binding_group_counts": {
+            "shallow": 5,
+            "middle": 0,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.1631717727026647,
+              "sum_capped_norm": 1.9901332773703466,
+              "norm_retention": 0.920007048207677,
+              "mean_capped_to_identity_ratio": 0.09912531199868577,
+              "max_capped_to_identity_ratio": 0.19999999999872603
+            },
+            "middle": {
+              "sum_raw_norm": 1.8499979422192694,
+              "sum_capped_norm": 1.7043616653303582,
+              "norm_retention": 0.9212776006041363,
+              "mean_capped_to_identity_ratio": 0.08767352825372174,
+              "max_capped_to_identity_ratio": 0.18149184596874396
+            },
+            "rest": {
+              "sum_raw_norm": 4.210985386321357,
+              "sum_capped_norm": 3.932633173452519,
+              "norm_retention": 0.9338985564345542,
+              "mean_capped_to_identity_ratio": 0.055428187204679756,
+              "max_capped_to_identity_ratio": 0.12805117122034182
+            }
+          },
+          "extra_gradient_seconds": 22.216845290386118
+        },
+        "17": {
+          "steps": 55,
+          "clipped": 11,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9381595117381716,
+          "scalar_min": 0.19613778271365823,
+          "binding_group_counts": {
+            "shallow": 8,
+            "middle": 3,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.4585728653520458,
+              "sum_capped_norm": 2.178798853870355,
+              "norm_retention": 0.8862047102917042,
+              "mean_capped_to_identity_ratio": 0.11240837590119183,
+              "max_capped_to_identity_ratio": 0.1999999999984488
+            },
+            "middle": {
+              "sum_raw_norm": 2.032822287210985,
+              "sum_capped_norm": 1.8186759534940689,
+              "norm_retention": 0.8946556543264177,
+              "mean_capped_to_identity_ratio": 0.09497491713969618,
+              "max_capped_to_identity_ratio": 0.19999999999741114
+            },
+            "rest": {
+              "sum_raw_norm": 4.680658383572032,
+              "sum_capped_norm": 4.192838050932456,
+              "norm_retention": 0.8957795479474198,
+              "mean_capped_to_identity_ratio": 0.05968192272914027,
+              "max_capped_to_identity_ratio": 0.1403337547091387
+            }
+          },
+          "extra_gradient_seconds": 21.463753425399773
+        },
+        "18": {
+          "steps": 56,
+          "clipped": 6,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9712927963043442,
+          "scalar_min": 0.42494843018502304,
+          "binding_group_counts": {
+            "shallow": 6,
+            "middle": 0,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.141920663140645,
+              "sum_capped_norm": 2.0163719065698373,
+              "norm_retention": 0.9413849640972609,
+              "mean_capped_to_identity_ratio": 0.08741045595003488,
+              "max_capped_to_identity_ratio": 0.19999999999768686
+            },
+            "middle": {
+              "sum_raw_norm": 1.8242008620655696,
+              "sum_capped_norm": 1.7303505098676175,
+              "norm_retention": 0.9485526215069957,
+              "mean_capped_to_identity_ratio": 0.07773445951042945,
+              "max_capped_to_identity_ratio": 0.1827786802237531
+            },
+            "rest": {
+              "sum_raw_norm": 4.261748204635037,
+              "sum_capped_norm": 4.047669905689692,
+              "norm_retention": 0.9497674924312715,
+              "mean_capped_to_identity_ratio": 0.05310153983780517,
+              "max_capped_to_identity_ratio": 0.11980253085025226
+            }
+          },
+          "extra_gradient_seconds": 23.549144287826493
+        },
+        "19": {
+          "steps": 55,
+          "clipped": 8,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9633686024036026,
+          "scalar_min": 0.19021302778756966,
+          "binding_group_counts": {
+            "shallow": 7,
+            "middle": 1,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.197648655188226,
+              "sum_capped_norm": 1.8583563207153502,
+              "norm_retention": 0.8456112019217122,
+              "mean_capped_to_identity_ratio": 0.09848960614179549,
+              "max_capped_to_identity_ratio": 0.1999999999993628
+            },
+            "middle": {
+              "sum_raw_norm": 1.8526236173101154,
+              "sum_capped_norm": 1.5916959648423192,
+              "norm_retention": 0.8591577641406486,
+              "mean_capped_to_identity_ratio": 0.08408685577623157,
+              "max_capped_to_identity_ratio": 0.19999999999421386
+            },
+            "rest": {
+              "sum_raw_norm": 4.346630704835113,
+              "sum_capped_norm": 3.8569981928308206,
+              "norm_retention": 0.8873535514623696,
+              "mean_capped_to_identity_ratio": 0.05804045713057842,
+              "max_capped_to_identity_ratio": 0.13591864333592418
+            }
+          },
+          "extra_gradient_seconds": 22.663956284173764
+        },
+        "20": {
+          "steps": 56,
+          "clipped": 12,
+          "scalar_below_point1": 0,
+          "scalar_below_point01": 0,
+          "zero_scalar": 0,
+          "scalar_mean": 0.9552108688009824,
+          "scalar_min": 0.48461000814208177,
+          "binding_group_counts": {
+            "shallow": 10,
+            "middle": 2,
+            "rest": 0
+          },
+          "bound_violations": 0,
+          "groups": {
+            "shallow": {
+              "sum_raw_norm": 2.786340275384511,
+              "sum_capped_norm": 2.5341564901065716,
+              "norm_retention": 0.9094928255870909,
+              "mean_capped_to_identity_ratio": 0.11780039232440162,
+              "max_capped_to_identity_ratio": 0.19999999999888993
+            },
+            "middle": {
+              "sum_raw_norm": 2.258642650775418,
+              "sum_capped_norm": 2.0699904088671626,
+              "norm_retention": 0.9164753920486319,
+              "mean_capped_to_identity_ratio": 0.10313431365867054,
+              "max_capped_to_identity_ratio": 0.1999999999964606
+            },
+            "rest": {
+              "sum_raw_norm": 5.0668910482181495,
+              "sum_capped_norm": 4.686112019900691,
+              "norm_retention": 0.9248495725102743,
+              "mean_capped_to_identity_ratio": 0.0641488014516486,
+              "max_capped_to_identity_ratio": 0.11670649376100159
+            }
+          },
+          "extra_gradient_seconds": 22.408262959565036
         }
       }
     },
