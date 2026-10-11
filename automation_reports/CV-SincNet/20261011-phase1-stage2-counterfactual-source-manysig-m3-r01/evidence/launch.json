@@ -1,0 +1,52 @@
+{
+  "rows": [
+    {
+      "seed": 2026092701,
+      "pid": 3833684,
+      "start_ticks": 93975572,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.counterfactual_control",
+        "--worker",
+        "2026092701"
+      ],
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/logs/s2026092701.log"
+    },
+    {
+      "seed": 2026092702,
+      "pid": 3833693,
+      "start_ticks": 93975604,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.counterfactual_control",
+        "--worker",
+        "2026092702"
+      ],
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/logs/s2026092702.log"
+    },
+    {
+      "seed": 2026092703,
+      "pid": 3833698,
+      "start_ticks": 93975631,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.counterfactual_control",
+        "--worker",
+        "2026092703"
+      ],
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/logs/s2026092703.log"
+    }
+  ]
+}

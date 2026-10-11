@@ -1,0 +1,165 @@
+{
+  "run_id": "20261011-phase1-stage2-counterfactual-source-manysig-m3-r01",
+  "read_at": 1791692068.3030274,
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 3833547,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_stage2_decouple.counterfactual_control"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01/dispatcher.stdout.log",
+    "commit": "3e3e8064f2114bc8ef9af78119137051c32f57b7",
+    "run_id": "20261011-phase1-stage2-counterfactual-source-manysig-m3-r01"
+  },
+  "controller": {
+    "pid": 3833547,
+    "start_ticks": 93975417,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01/experiments/cvs_stage2_decouple/counterfactual_control.py"
+    ],
+    "launch_owner": "codex/root/stage2-decouple-20261011",
+    "commit": "3e3e8064f2114bc8ef9af78119137051c32f57b7",
+    "target_access": false
+  },
+  "controller_process": null,
+  "queue": {
+    "active": [],
+    "pending": [],
+    "completed": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "failures": [],
+    "per_gpu_limit": 4,
+    "target_access": false
+  },
+  "failure": null,
+  "completion": {
+    "status": "ANALYZED",
+    "rows": 3,
+    "source_count_per_seed": 6300,
+    "target_access": false,
+    "identity_updates": 0,
+    "commit": "3e3e8064f2114bc8ef9af78119137051c32f57b7"
+  },
+  "workers": [
+    {
+      "seed": 2026092701,
+      "pid": 3833684,
+      "start_ticks": 93975572,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.counterfactual_control",
+        "--worker",
+        "2026092701"
+      ],
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/logs/s2026092701.log",
+      "process": null,
+      "failure": null,
+      "artifact_exists": true,
+      "log_tail": "{\"event\": \"SOURCE_COUNTERFACTUAL_START\", \"seed\": 2026092701, \"count\": 6300, \"checkpoint\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth\", \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092701, \"complete_samples\": 128, \"count\": 6300, \"batches_done\": 1, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092701, \"complete_samples\": 1280, \"count\": 6300, \"batches_done\": 10, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092701, \"complete_samples\": 2560, \"count\": 6300, \"batches_done\": 20, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092701, \"complete_samples\": 3840, \"count\": 6300, \"batches_done\": 30, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092701, \"complete_samples\": 5120, \"count\": 6300, \"batches_done\": 40, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092701, \"complete_samples\": 6300, \"count\": 6300, \"batches_done\": 50, \"batches\": 50, \"target_access\": false}\n{\"status\": \"SOURCE_COUNTERFACTUAL_AUDIT_COMPLETE\", \"seed\": 2026092701, \"source_count\": 6300, \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/s2026092701/audit.json\", \"state_invariance\": {\"parameters_never_updated\": true, \"parameters_restored\": true, \"buffers_restored\": true, \"buffer_objects_restored\": true, \"parameter_versions_unchanged\": true, \"forward_caches_and_counters_restored\": true, \"modes_restored\": true, \"requires_grad_restored\": true, \"gradients_restored\": true, \"gradient_objects_restored\": true, \"global_rng_restored\": true}, \"target_access\": false}\n"
+    },
+    {
+      "seed": 2026092702,
+      "pid": 3833693,
+      "start_ticks": 93975604,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.counterfactual_control",
+        "--worker",
+        "2026092702"
+      ],
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/logs/s2026092702.log",
+      "process": null,
+      "failure": null,
+      "artifact_exists": true,
+      "log_tail": "{\"event\": \"SOURCE_COUNTERFACTUAL_START\", \"seed\": 2026092702, \"count\": 6300, \"checkpoint\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth\", \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092702, \"complete_samples\": 128, \"count\": 6300, \"batches_done\": 1, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092702, \"complete_samples\": 1280, \"count\": 6300, \"batches_done\": 10, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092702, \"complete_samples\": 2560, \"count\": 6300, \"batches_done\": 20, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092702, \"complete_samples\": 3840, \"count\": 6300, \"batches_done\": 30, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092702, \"complete_samples\": 5120, \"count\": 6300, \"batches_done\": 40, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092702, \"complete_samples\": 6300, \"count\": 6300, \"batches_done\": 50, \"batches\": 50, \"target_access\": false}\n{\"status\": \"SOURCE_COUNTERFACTUAL_AUDIT_COMPLETE\", \"seed\": 2026092702, \"source_count\": 6300, \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/s2026092702/audit.json\", \"state_invariance\": {\"parameters_never_updated\": true, \"parameters_restored\": true, \"buffers_restored\": true, \"buffer_objects_restored\": true, \"parameter_versions_unchanged\": true, \"forward_caches_and_counters_restored\": true, \"modes_restored\": true, \"requires_grad_restored\": true, \"gradients_restored\": true, \"gradient_objects_restored\": true, \"global_rng_restored\": true}, \"target_access\": false}\n"
+    },
+    {
+      "seed": 2026092703,
+      "pid": 3833698,
+      "start_ticks": 93975631,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_stage2_decouple.counterfactual_control",
+        "--worker",
+        "2026092703"
+      ],
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/logs/s2026092703.log",
+      "process": null,
+      "failure": null,
+      "artifact_exists": true,
+      "log_tail": "{\"event\": \"SOURCE_COUNTERFACTUAL_START\", \"seed\": 2026092703, \"count\": 6300, \"checkpoint\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth\", \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092703, \"complete_samples\": 128, \"count\": 6300, \"batches_done\": 1, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092703, \"complete_samples\": 1280, \"count\": 6300, \"batches_done\": 10, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092703, \"complete_samples\": 2560, \"count\": 6300, \"batches_done\": 20, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092703, \"complete_samples\": 3840, \"count\": 6300, \"batches_done\": 30, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092703, \"complete_samples\": 5120, \"count\": 6300, \"batches_done\": 40, \"batches\": 50, \"target_access\": false}\n{\"event\": \"SOURCE_COUNTERFACTUAL_PROGRESS\", \"seed\": 2026092703, \"complete_samples\": 6300, \"count\": 6300, \"batches_done\": 50, \"batches\": 50, \"target_access\": false}\n{\"status\": \"SOURCE_COUNTERFACTUAL_AUDIT_COMPLETE\", \"seed\": 2026092703, \"source_count\": 6300, \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/s2026092703/audit.json\", \"state_invariance\": {\"parameters_never_updated\": true, \"parameters_restored\": true, \"buffers_restored\": true, \"buffer_objects_restored\": true, \"parameter_versions_unchanged\": true, \"forward_caches_and_counters_restored\": true, \"modes_restored\": true, \"requires_grad_restored\": true, \"gradients_restored\": true, \"gradient_objects_restored\": true, \"global_rng_restored\": true}, \"target_access\": false}\n"
+    }
+  ],
+  "capacity": {
+    "0": {
+      "pids": [
+        3774277,
+        3793018
+      ],
+      "free_mb": 17364
+    },
+    "1": {
+      "pids": [
+        3829550
+      ],
+      "free_mb": 20767
+    },
+    "2": {
+      "pids": [
+        3794131,
+        3819297
+      ],
+      "free_mb": 17354
+    },
+    "3": {
+      "pids": [],
+      "free_mb": 24124
+    },
+    "4": {
+      "pids": [
+        3797356,
+        3798552
+      ],
+      "free_mb": 17356
+    },
+    "5": {
+      "pids": [
+        3771565,
+        3812451
+      ],
+      "free_mb": 17370
+    },
+    "6": {
+      "pids": [],
+      "free_mb": 24124
+    },
+    "7": {
+      "pids": [
+        3809203,
+        3809816
+      ],
+      "free_mb": 17358
+    }
+  },
+  "status": "VERIFIED"
+}

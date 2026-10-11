@@ -1,0 +1,24 @@
+{
+  "command": "python -m experiments.cvs_stage2_decouple.deterministic_forward_checks --native --device cpu",
+  "status": "PASS",
+  "native_architecture": "reference_response",
+  "fixture_IQ_rows": 4,
+  "checkpoint_reads": 0,
+  "target_access": false,
+  "dropout_modules": 13,
+  "statistical_modules": 0,
+  "actual_encoder_gradient_norm": 42.43887710571289,
+  "deterministic_identity_outputs_exact": true,
+  "zero_intervention_E_gradient_zero": true,
+  "domain_forward_calls": 0,
+  "synthetic_checks": [
+    "nested_and_exception_restoration",
+    "original_CE_dropout_preserved",
+    "no_grad_rejected",
+    "active_stochastic_paths_rejected",
+    "all_dropout_families",
+    "gradient_paths"
+  ],
+  "integration_status": "NOT_INTEGRATED_IN_TRAINER",
+  "verification_scope": "CPU synthetic and randomly initialized actual architecture; not parent checkpoint training"
+}

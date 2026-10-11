@@ -1,0 +1,328 @@
+{
+  "purpose": "Pro research review, no new training",
+  "target_goal": "three seed clean mean >=84%",
+  "goal_status": "NOT_MET",
+  "source_diagnostic_status": "VERIFIED",
+  "files": [
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/events.jsonl",
+      "bytes": 582
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/compact_summary.json",
+      "bytes": 23642
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/completion.json",
+      "bytes": 180
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/controller.json",
+      "bytes": 474
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/deterministic_forward_checks.json",
+      "bytes": 896
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/launch.json",
+      "bytes": 1780
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/local_checks.json",
+      "bytes": 793
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/queue_state.json",
+      "bytes": 171
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/remote_readback.json",
+      "bytes": 10609
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/s2026092701.log",
+      "bytes": 1875
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/s2026092701_audit.json",
+      "bytes": 2233009
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/s2026092702.log",
+      "bytes": 1875
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/s2026092702_audit.json",
+      "bytes": 2233198
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/s2026092703.log",
+      "bytes": 1875
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/evidence/s2026092703_audit.json",
+      "bytes": 2233439
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/experiment.json",
+      "bytes": 17852
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/remote_events.jsonl",
+      "bytes": 2015
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/remote_experiment.json",
+      "bytes": 16383
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/report.md",
+      "bytes": 5069
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/evidence/source_complete_summary.json",
+      "bytes": 419241
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/experiment.json",
+      "bytes": 113783
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/report.md",
+      "bytes": 12327
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/analysis.md",
+      "bytes": 1899
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/completion.json",
+      "bytes": 593
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/day_scores.csv",
+      "bytes": 6317
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/day_scores.json",
+      "bytes": 52057
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/events.jsonl",
+      "bytes": 11295
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/experiment.json",
+      "bytes": 115354
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/failure.json",
+      "bytes": 1244
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/failure_resolution.json",
+      "bytes": 280
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/goal_assessment.json",
+      "bytes": 220
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/paired_results.json",
+      "bytes": 3195
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/parent_scores.json",
+      "bytes": 44646
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/queue_state.json",
+      "bytes": 2045
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/report.md",
+      "bytes": 11302
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/resources.json",
+      "bytes": 77316
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/scores.csv",
+      "bytes": 21203
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/scores.json",
+      "bytes": 178520
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/scoring_complete.json",
+      "bytes": 252
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/summary.csv",
+      "bytes": 1410
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20261011-phase1-stage2-decouple-manysig-m12-r01/results/summary.json",
+      "bytes": 3026
+    },
+    {
+      "path": "docs/CVS_MULTI_DISENTANGLE_RETROSPECTIVE_20261011.md",
+      "bytes": 24940
+    },
+    {
+      "path": "docs/CVS_MULTI_DISENTANGLE_STAGE2_20261011.md",
+      "bytes": 25592
+    },
+    {
+      "path": "docs/CVS_STAGE2_AUXILIARY_FINETUNING_HANDOFF_20261011.md",
+      "bytes": 14321
+    },
+    {
+      "path": "docs/CVS_STAGE2_COUNTERFACTUAL_SOURCE_AUDIT_20261011.md",
+      "bytes": 5055
+    },
+    {
+      "path": "docs/CVS_STAGE2_IMPLEMENTATION_TRACE_20261011.md",
+      "bytes": 4217
+    },
+    {
+      "path": "docs/CVS_STAGE2_R_SOURCE_OBJECTIVE_AUDIT_20261011.md",
+      "bytes": 22653
+    },
+    {
+      "path": "docs/CVS_STAGE2_SOURCE_DIAGNOSTIC_20261011.md",
+      "bytes": 19708
+    },
+    {
+      "path": "docs/PROJECT_PROTOCOL.md",
+      "bytes": 15592
+    },
+    {
+      "path": "docs/handoffs/20261011_stage2_auxiliary_pro/README.md",
+      "bytes": 1677
+    },
+    {
+      "path": "experiments/cvs_phase1_overlay/model.py",
+      "bytes": 6254
+    },
+    {
+      "path": "experiments/cvs_residual_identity/model.py",
+      "bytes": 3514
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/__init__.py",
+      "bytes": 62
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/actions.py",
+      "bytes": 16984
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/actions_checks.py",
+      "bytes": 9512
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/checkpoint_checks.py",
+      "bytes": 6756
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/common.py",
+      "bytes": 6118
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/control_checks.py",
+      "bytes": 9144
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/counterfactual_checks.py",
+      "bytes": 6373
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/counterfactual_control.py",
+      "bytes": 7661
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/counterfactual_publish.py",
+      "bytes": 6476
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/data.py",
+      "bytes": 8059
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/data_checks.py",
+      "bytes": 7654
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/design.py",
+      "bytes": 3474
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/deterministic_forward.py",
+      "bytes": 7746
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/deterministic_forward_checks.py",
+      "bytes": 8875
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/dispatch.py",
+      "bytes": 10781
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/evaluate.py",
+      "bytes": 19643
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/experiment.json",
+      "bytes": 111903
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/prediction_checks.py",
+      "bytes": 1385
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/publish.py",
+      "bytes": 10244
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/receiver.py",
+      "bytes": 19005
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/receiver_checks.py",
+      "bytes": 10488
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/registration.py",
+      "bytes": 2464
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/report.md",
+      "bytes": 9333
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/runtime_checks.py",
+      "bytes": 15176
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/source.py",
+      "bytes": 19523
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/source_counterfactual_audit.py",
+      "bytes": 25968
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/test_recovery.py",
+      "bytes": 15914
+    },
+    {
+      "path": "experiments/cvs_stage2_decouple/test_recovery_checks.py",
+      "bytes": 7340
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{"at": "2026-10-11T04:09:49.199183+00:00", "status": "PLANNED", "target_access": false, "identity_updates": 0}
+{"at": "2026-10-11T04:14:32.005939+00:00", "status": "LOCAL_VERIFIED", "evidence": ["evidence/local_checks.json"], "note": "CPU fixture and independent focused review pass; remote source-only execution pending"}
+{"at": 1791692050.9844816, "status": "RUNNING", "target_access": false, "rows": 3, "identity_updates": 0}
+{"at": 1791692051.2972846, "status": "RUNNING", "target_access": false, "seed": 2026092701, "pid": 3833684, "gpu": 3, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/logs/s2026092701.log"}
+{"at": 1791692051.6212478, "status": "RUNNING", "target_access": false, "seed": 2026092702, "pid": 3833693, "gpu": 6, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/logs/s2026092702.log"}
+{"at": 1791692051.8909218, "status": "RUNNING", "target_access": false, "seed": 2026092703, "pid": 3833698, "gpu": 3, "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/logs/s2026092703.log"}
+{"at": 1791692064.3711574, "status": "ANALYZED", "target_access": false, "seed": 2026092702, "artifact": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/s2026092702/audit.json"}
+{"at": 1791692065.624394, "status": "ANALYZED", "target_access": false, "seed": 2026092703, "artifact": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/s2026092703/audit.json"}
+{"at": 1791692065.8059168, "status": "ANALYZED", "target_access": false, "seed": 2026092701, "artifact": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/s2026092701/audit.json"}
+{"at": 1791692067.51833, "status": "ANALYZED", "target_access": false, "rows": 3, "identity_updates": 0}

@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户持续目标：在对应纯CE父基线上继续优化多解耦、节省训练成本、三seed clean均值84%；本诊断为下一版源证据核验，不重训、不扩大数据权限。",
   "code": {
-    "commit": "release_commit.txt assigned at launch",
+    "commit": "3e3e8064f2114bc8ef9af78119137051c32f57b7",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01"
@@ -201,7 +201,25 @@
       "command": "python -m experiments.cvs_stage2_decouple.source_counterfactual_audit --seed 2026092701 --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/s2026092701/audit.json --device cuda:0",
       "expected_artifacts": [
         "audit.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "execution": {
+        "seed": 2026092701,
+        "pid": 3833684,
+        "start_ticks": 93975572,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_decouple.counterfactual_control",
+          "--worker",
+          "2026092701"
+        ],
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/logs/s2026092701.log"
+      },
+      "artifact_ref": "evidence/s2026092701_audit.json"
     },
     {
       "row_id": "s2026092702",
@@ -231,7 +249,25 @@
       "command": "python -m experiments.cvs_stage2_decouple.source_counterfactual_audit --seed 2026092702 --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/s2026092702/audit.json --device cuda:0",
       "expected_artifacts": [
         "audit.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "execution": {
+        "seed": 2026092702,
+        "pid": 3833693,
+        "start_ticks": 93975604,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_decouple.counterfactual_control",
+          "--worker",
+          "2026092702"
+        ],
+        "gpu": 6,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/logs/s2026092702.log"
+      },
+      "artifact_ref": "evidence/s2026092702_audit.json"
     },
     {
       "row_id": "s2026092703",
@@ -261,7 +297,25 @@
       "command": "python -m experiments.cvs_stage2_decouple.source_counterfactual_audit --seed 2026092703 --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/s2026092703/audit.json --device cuda:0",
       "expected_artifacts": [
         "audit.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "execution": {
+        "seed": 2026092703,
+        "pid": 3833698,
+        "start_ticks": 93975631,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_counterfactual_source_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_decouple.counterfactual_control",
+          "--worker",
+          "2026092703"
+        ],
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-counterfactual-source-manysig-m3-r01/logs/s2026092703.log"
+      },
+      "artifact_ref": "evidence/s2026092703_audit.json"
     }
   ],
   "notes": [
@@ -270,5 +324,5 @@
     "Prior goal turn produced completed training, scoring and new source evidence; classified PROGRESS.",
     "All parent model state, buffers, modes, gradients and RNG must be restored after diagnostic."
   ],
-  "status": "LOCAL_VERIFIED"
+  "status": "ANALYZED"
 }
