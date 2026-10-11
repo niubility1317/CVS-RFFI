@@ -18,9 +18,26 @@
     "DELAYCAP_JOINT-s2026092703"
   ],
   "pending": 0,
-  "next": "Read existing dispatcher/workers, never republish. Auto clean each final scratch20 row. Collect all9 fixed results and source trajectory without target-driven adjustment.",
+  "next": "Keep existing dispatcher362606 and healthy workers. Collect all9 rows, automatically clean score each fixed final20. Do not change configs or relaunch from partial target results. source_full_analysis currently closed rows only; fresh collection should not lose earlier closed rows.",
   "collector": "python -m experiments.cvs_scratch_identity_style.collect_results --output automation_reports/CV-SincNet/20261012-phase1-scratch-identity-style-manysig-m9-r01",
   "budget": "random native student20; no heads; pretrained peer teacher ancestry retained; fixed12pair calibration at0/444; detached joint full-identity cap",
   "multilevel": "time_down/t2.pool; margin sensitivities without heads; fixed peer probabilities; independent AB Fishr fixed coefficients at0/444/denominator2; optional joint cap rho0.2; clean-inclusive hard four-style-plus-clean L selection with matched dropout; noEMA/noSat",
-  "owner": "codex/root/scratch-identity-style-20261012"
+  "owner": "codex/root/scratch-identity-style-20261012",
+  "progress": {
+    "read_at": 1791761455.4300683,
+    "launched": 9,
+    "active_processes_verified": 8,
+    "pending": 0,
+    "scored_rows": 1,
+    "source_fully_audited_rows": 1,
+    "source_fully_audited_steps": 4440,
+    "failures": [],
+    "goal_status": "UNPROVEN"
+  },
+  "completed_rows": [
+    "DELAY_JOINT-s2026092703"
+  ],
+  "source_audit": "source_trajectory.md",
+  "results": "test_results.md",
+  "reference_comparison": "reference_comparisons.md"
 }
