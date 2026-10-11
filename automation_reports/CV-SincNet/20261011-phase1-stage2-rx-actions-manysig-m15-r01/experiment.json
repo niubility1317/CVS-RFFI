@@ -60,7 +60,7 @@
   "comparison_group_id": "cvs-stage2-E200-40epoch-three-seed",
   "display_name": "E200续训40轮：实测RX作用、半监督与辅助难度网络五方案三种子",
   "description": "用跨TX/day可迁移的有限IQ作用约束身份学习，5arm15row固定因果对照；不以源V小幅涨跌选模",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "stage2",
@@ -488,7 +488,7 @@
       "arm": "CE",
       "model_seed": 2026092701,
       "row_id": "CE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -860,7 +860,7 @@
       "arm": "SSL",
       "model_seed": 2026092701,
       "row_id": "SSL-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -1232,7 +1232,7 @@
       "arm": "PHYS",
       "model_seed": 2026092701,
       "row_id": "PHYS-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -1604,7 +1604,7 @@
       "arm": "ROT",
       "model_seed": 2026092701,
       "row_id": "ROT-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -1976,7 +1976,7 @@
       "arm": "CRIT",
       "model_seed": 2026092701,
       "row_id": "CRIT-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -2348,7 +2348,7 @@
       "arm": "CE",
       "model_seed": 2026092702,
       "row_id": "CE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -2720,7 +2720,7 @@
       "arm": "SSL",
       "model_seed": 2026092702,
       "row_id": "SSL-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -3092,7 +3092,7 @@
       "arm": "PHYS",
       "model_seed": 2026092702,
       "row_id": "PHYS-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -3464,7 +3464,7 @@
       "arm": "ROT",
       "model_seed": 2026092702,
       "row_id": "ROT-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -3836,7 +3836,7 @@
       "arm": "CRIT",
       "model_seed": 2026092702,
       "row_id": "CRIT-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -4208,7 +4208,7 @@
       "arm": "CE",
       "model_seed": 2026092703,
       "row_id": "CE-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -4580,7 +4580,7 @@
       "arm": "SSL",
       "model_seed": 2026092703,
       "row_id": "SSL-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -4952,7 +4952,7 @@
       "arm": "PHYS",
       "model_seed": 2026092703,
       "row_id": "PHYS-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -5324,7 +5324,7 @@
       "arm": "ROT",
       "model_seed": 2026092703,
       "row_id": "ROT-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -5696,7 +5696,7 @@
       "arm": "CRIT",
       "model_seed": 2026092703,
       "row_id": "CRIT-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "config": {
         "schema": "stage2_rx_actions_v1",
         "run_id": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
@@ -6174,5 +6174,6 @@
   ],
   "registered_at": "2026-10-11T13:12:34+00:00",
   "execution_commit": "f3432d75b636588a5d929d41d4e7b749e0f0124f",
-  "delivery_verdict": "VERIFIED"
+  "delivery_verdict": "VERIFIED",
+  "goal_84_achieved": false
 }

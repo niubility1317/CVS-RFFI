@@ -1,8 +1,8 @@
 {
-  "goal": "clean three-seed mean >=84%; sourceV health only",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "run": "20261011-phase1-stage2-rx-actions-manysig-m15-r01",
-  "execution_commit": "f3432d75b636588a5d929d41d4e7b749e0f0124f",
-  "next": "Inspect existing run; no duplicate launch. Every row auto final -> clean -> independent truth-last. Collect all15 results. E50 extra compression remains running; E100/E150 complete both pass fixed0.3pp mean threshold. Compression feedback cannot select mechanisms.",
-  "evidence": "evidence/launch_progress.json"
+  "goal_84_achieved": false,
+  "next": "Do not rerun. Frozen source-only critic ranking diagnostic registered in 20261011-phase1-rx-critic-ranking-manysig-m3-r01 based on entropy evidence. E25 compression runs separately; no target feedback to mechanism research.",
+  "test": "test_results.md",
+  "source": "source_trajectory.md"
 }
