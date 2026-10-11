@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "rows": 18,
+  "unit": {
+    "analytic_gradient": true,
+    "exact_restore_normal_and_exception": true,
+    "BN_once": true,
+    "dropout_replay": true,
+    "rho0_gradient_equivalence": true
+  },
+  "arms": [
+    {
+      "arm": "SSL",
+      "ordinary_matches_prior_loss_and_gradient": true,
+      "SAM_finite_update": true,
+      "targets_actions_auxiliary_once": true,
+      "auxiliary_direct_identity_gradient_zero": true
+    },
+    {
+      "arm": "PHYS",
+      "ordinary_matches_prior_loss_and_gradient": true,
+      "SAM_finite_update": true,
+      "targets_actions_auxiliary_once": true,
+      "auxiliary_direct_identity_gradient_zero": true
+    },
+    {
+      "arm": "RANK",
+      "ordinary_matches_prior_loss_and_gradient": true,
+      "SAM_finite_update": true,
+      "targets_actions_auxiliary_once": true,
+      "auxiliary_direct_identity_gradient_zero": true
+    }
+  ],
+  "target_access": false
+}
