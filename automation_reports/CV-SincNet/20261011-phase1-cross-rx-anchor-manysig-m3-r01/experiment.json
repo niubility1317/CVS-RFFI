@@ -20,7 +20,7 @@
   "replaces_run_id": null,
   "authorization": "持续目标授权下源域研究；对应用户先检验新目标纠错能力及如何更新成熟骨干的要求",
   "code": {
-    "commit": "resolved from immutable Git release at launch",
+    "commit": "0853fdaca6c04f4c24d21836e85a0be8d6f9c162",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_cross_rx_anchor_20261011_r01"
@@ -383,7 +383,9 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-cross-rx-anchor-manysig-m3-r01/logs",
     "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_cross_rx_anchor_20261011_r01",
     "launch_command": "python -m experiments.cvs_cross_rx_anchor.publish --output local_artifacts/cvs_cross_rx_anchor_20261011_r01",
-    "stop_rule": "technical failure stops pending; healthy rows finish; no automatic retry/overwrite"
+    "stop_rule": "technical failure stops pending; healthy rows finish; no automatic retry/overwrite",
+    "pid": 4129968,
+    "last_read_at": 1791721519.7328858
   },
   "expected_artifacts": [
     "anchor_fit.json",
@@ -415,7 +417,7 @@
     {
       "row_id": "E200-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "config": {
         "run_id": "20261011-phase1-cross-rx-anchor-manysig-m3-r01",
         "row_id": "E200-s2026092701",
@@ -779,12 +781,14 @@
         "V_readouts.json",
         "provenance.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4130160,
+      "gpu": 7
     },
     {
       "row_id": "E200-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "config": {
         "run_id": "20261011-phase1-cross-rx-anchor-manysig-m3-r01",
         "row_id": "E200-s2026092702",
@@ -1148,12 +1152,14 @@
         "V_readouts.json",
         "provenance.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4130252,
+      "gpu": 7
     },
     {
       "row_id": "E200-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "config": {
         "run_id": "20261011-phase1-cross-rx-anchor-manysig-m3-r01",
         "row_id": "E200-s2026092703",
@@ -1517,7 +1523,9 @@
         "V_readouts.json",
         "provenance.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4130335,
+      "gpu": 6
     }
   ],
   "notes": [
@@ -1526,7 +1534,7 @@
     "Parents already saw all source RX; this excludes same-RX anchors only and must not be called genuine unseen-RX.",
     "Fixed whitening is a diagnostic readout, not claimed novel architecture or independently proven identity/channel decomposition."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "independent_review": {
     "reviewer": "stage2_release_review",
     "scope": "minimal8 source input, math, no target/mutation",
@@ -1534,5 +1542,7 @@
     "evidence": "stage2_release_review independent review PASS: P0/P1=0; math, exclusion, L-only fit, U/V roles and E200 source verified"
   },
   "registered_at": "2026-10-11T12:23:54+00:00",
-  "updated_at": "2026-10-11T11:52:14.880227+00:00"
+  "updated_at": "2026-10-11T12:26:21.077516+00:00",
+  "execution_commit": "0853fdaca6c04f4c24d21836e85a0be8d6f9c162",
+  "delivery_verdict": "VERIFIED"
 }

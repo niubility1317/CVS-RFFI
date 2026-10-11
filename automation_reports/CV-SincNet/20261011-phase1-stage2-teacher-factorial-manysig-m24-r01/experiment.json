@@ -105,7 +105,7 @@
   "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
   "group_id": "cvs-stage2-teacher-factorial",
   "comparison_group_id": "20261011-phase1-report-physical-ssl-manysig-m24-r01",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "display_name": "E200续训：原/修订参考响应与EMA/直接学生目标三种子因果对照",
   "description": "固定2种参考响应×4种目标/学习率×3seed，40epoch，逐行自动clean；独立于epoch压缩",
   "aliases": [
@@ -280,7 +280,7 @@
       "arm": "O_CE",
       "model_seed": 2026092701,
       "row_id": "O_CE-s2026092701",
-      "status": "TRAINED_AND_SCORED",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -626,13 +626,15 @@
       "pid": 4115162,
       "gpu": 6,
       "process_verified": false,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "O_EMA",
       "model_seed": 2026092701,
       "row_id": "O_EMA-s2026092701",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -978,13 +980,15 @@
       "pid": 4115247,
       "gpu": 7,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "O_DIRECT",
       "model_seed": 2026092701,
       "row_id": "O_DIRECT-s2026092701",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -1330,13 +1334,15 @@
       "pid": 4115335,
       "gpu": 7,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "O_DIRECT_HI",
       "model_seed": 2026092701,
       "row_id": "O_DIRECT_HI-s2026092701",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -1682,13 +1688,15 @@
       "pid": 4115419,
       "gpu": 6,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "R_CE",
       "model_seed": 2026092701,
       "row_id": "R_CE-s2026092701",
-      "status": "TRAINED_AND_SCORED",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -2034,13 +2042,15 @@
       "pid": 4115625,
       "gpu": 0,
       "process_verified": false,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "R_EMA",
       "model_seed": 2026092701,
       "row_id": "R_EMA-s2026092701",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -2386,13 +2396,15 @@
       "pid": 4115709,
       "gpu": 1,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "R_DIRECT",
       "model_seed": 2026092701,
       "row_id": "R_DIRECT-s2026092701",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -2738,13 +2750,15 @@
       "pid": 4116197,
       "gpu": 2,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "R_DIRECT_HI",
       "model_seed": 2026092701,
       "row_id": "R_DIRECT_HI-s2026092701",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -3090,13 +3104,15 @@
       "pid": 4116283,
       "gpu": 3,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "O_CE",
       "model_seed": 2026092702,
       "row_id": "O_CE-s2026092702",
-      "status": "TRAINED_AND_SCORED",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -3442,13 +3458,15 @@
       "pid": 4116367,
       "gpu": 4,
       "process_verified": false,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "O_EMA",
       "model_seed": 2026092702,
       "row_id": "O_EMA-s2026092702",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -3794,13 +3812,15 @@
       "pid": 4116454,
       "gpu": 5,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "O_DIRECT",
       "model_seed": 2026092702,
       "row_id": "O_DIRECT-s2026092702",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -4146,13 +4166,15 @@
       "pid": 4116537,
       "gpu": 6,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "O_DIRECT_HI",
       "model_seed": 2026092702,
       "row_id": "O_DIRECT_HI-s2026092702",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -4498,13 +4520,15 @@
       "pid": 4116621,
       "gpu": 7,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "R_CE",
       "model_seed": 2026092702,
       "row_id": "R_CE-s2026092702",
-      "status": "TRAINED_AND_SCORED",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -4850,13 +4874,15 @@
       "pid": 4116705,
       "gpu": 3,
       "process_verified": false,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "R_EMA",
       "model_seed": 2026092702,
       "row_id": "R_EMA-s2026092702",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -5202,13 +5228,15 @@
       "pid": 4116792,
       "gpu": 4,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "R_DIRECT",
       "model_seed": 2026092702,
       "row_id": "R_DIRECT-s2026092702",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -5554,13 +5582,15 @@
       "pid": 4116875,
       "gpu": 5,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "R_DIRECT_HI",
       "model_seed": 2026092702,
       "row_id": "R_DIRECT_HI-s2026092702",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -5906,13 +5936,15 @@
       "pid": 4117014,
       "gpu": 0,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "O_CE",
       "model_seed": 2026092703,
       "row_id": "O_CE-s2026092703",
-      "status": "TRAINED_AND_SCORED",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -6258,13 +6290,15 @@
       "pid": 4117098,
       "gpu": 1,
       "process_verified": false,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "O_EMA",
       "model_seed": 2026092703,
       "row_id": "O_EMA-s2026092703",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -6610,13 +6644,15 @@
       "pid": 4117182,
       "gpu": 2,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "O_DIRECT",
       "model_seed": 2026092703,
       "row_id": "O_DIRECT-s2026092703",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -6962,13 +6998,15 @@
       "pid": 4120089,
       "gpu": 3,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "O_DIRECT_HI",
       "model_seed": 2026092703,
       "row_id": "O_DIRECT_HI-s2026092703",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -7314,13 +7352,15 @@
       "pid": 4120274,
       "gpu": 6,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "R_CE",
       "model_seed": 2026092703,
       "row_id": "R_CE-s2026092703",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -7666,13 +7706,15 @@
       "pid": 4120965,
       "gpu": 0,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "R_EMA",
       "model_seed": 2026092703,
       "row_id": "R_EMA-s2026092703",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -8018,13 +8060,15 @@
       "pid": 4121119,
       "gpu": 4,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "R_DIRECT",
       "model_seed": 2026092703,
       "row_id": "R_DIRECT-s2026092703",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -8370,13 +8414,15 @@
       "pid": 4121827,
       "gpu": 1,
       "process_verified": true,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "completion_verified": true,
+      "scoring_verified": true
     },
     {
       "arm": "R_DIRECT_HI",
       "model_seed": 2026092703,
       "row_id": "R_DIRECT_HI-s2026092703",
-      "status": "QUEUED",
+      "status": "ANALYZED",
       "config": {
         "schema": "stage2_teacher_factorial_v1",
         "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
@@ -8718,7 +8764,11 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4124285,
+      "gpu": 6,
+      "completion_verified": true,
+      "scoring_verified": true
     }
   ],
   "semi_supervision": {
@@ -8908,5 +8958,15 @@
     "Current goal remains unmet; source-only evidence motivated controls, not target scores."
   ],
   "registered_at": "2026-10-11T12:06:38+00:00",
-  "updated_at": "2026-10-11T12:17:15.742812+00:00"
+  "updated_at": "2026-10-11T12:32:37.728614+00:00",
+  "result": {
+    "trained_models": 24,
+    "tested_models": 24,
+    "query_per_model": 168000,
+    "total_predictions": 4032000,
+    "identity_updates": 213120,
+    "goal_threshold": 0.84,
+    "goal_met": false,
+    "complete_arms_reaching_goal": []
+  }
 }

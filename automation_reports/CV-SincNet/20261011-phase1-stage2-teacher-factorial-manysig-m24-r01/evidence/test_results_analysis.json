@@ -1,7 +1,7 @@
 {
   "run_id": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
-  "read_at": 1791721099.8590555,
-  "status": "PARTIAL",
+  "read_at": 1791721644.7360446,
+  "status": "COMPLETE",
   "completed_rows": [
     "O_CE-s2026092701",
     "O_EMA-s2026092701",
@@ -21,15 +21,14 @@
     "R_DIRECT_HI-s2026092702",
     "O_CE-s2026092703",
     "O_EMA-s2026092703",
-    "R_CE-s2026092703"
-  ],
-  "missing_rows": [
     "O_DIRECT-s2026092703",
     "O_DIRECT_HI-s2026092703",
+    "R_CE-s2026092703",
     "R_EMA-s2026092703",
     "R_DIRECT-s2026092703",
     "R_DIRECT_HI-s2026092703"
   ],
+  "missing_rows": [],
   "summary": [
     {
       "arm": "P0",
@@ -113,12 +112,13 @@
       "arm": "O_DIRECT",
       "seeds": [
         2026092701,
-        2026092702
+        2026092702,
+        2026092703
       ],
-      "seed_count": 2,
-      "accuracy_mean": 0.7991488095238095,
-      "accuracy_sd": 0.02103642674029975,
-      "complete_three_seeds": false,
+      "seed_count": 3,
+      "accuracy_mean": 0.8025218253968254,
+      "accuracy_sd": 0.015981155566442935,
+      "complete_three_seeds": true,
       "per_seed": [
         {
           "seed": 2026092701,
@@ -127,6 +127,10 @@
         {
           "seed": 2026092702,
           "accuracy": 0.7842738095238095
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8092678571428571
         }
       ]
     },
@@ -134,12 +138,13 @@
       "arm": "O_DIRECT_HI",
       "seeds": [
         2026092701,
-        2026092702
+        2026092702,
+        2026092703
       ],
-      "seed_count": 2,
-      "accuracy_mean": 0.7933035714285714,
-      "accuracy_sd": 0.009857405247255348,
-      "complete_three_seeds": false,
+      "seed_count": 3,
+      "accuracy_mean": 0.7946785714285715,
+      "accuracy_sd": 0.007365873614467495,
+      "complete_three_seeds": true,
       "per_seed": [
         {
           "seed": 2026092701,
@@ -148,6 +153,10 @@
         {
           "seed": 2026092702,
           "accuracy": 0.7863333333333333
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.7974285714285714
         }
       ]
     },
@@ -181,12 +190,13 @@
       "arm": "R_EMA",
       "seeds": [
         2026092701,
-        2026092702
+        2026092702,
+        2026092703
       ],
-      "seed_count": 2,
-      "accuracy_mean": 0.7921011904761905,
-      "accuracy_sd": 0.023300852027670998,
-      "complete_three_seeds": false,
+      "seed_count": 3,
+      "accuracy_mean": 0.7983571428571429,
+      "accuracy_sd": 0.01971993086159131,
+      "complete_three_seeds": true,
       "per_seed": [
         {
           "seed": 2026092701,
@@ -195,6 +205,10 @@
         {
           "seed": 2026092702,
           "accuracy": 0.775625
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8108690476190477
         }
       ]
     },
@@ -202,12 +216,13 @@
       "arm": "R_DIRECT",
       "seeds": [
         2026092701,
-        2026092702
+        2026092702,
+        2026092703
       ],
-      "seed_count": 2,
-      "accuracy_mean": 0.7924077380952381,
-      "accuracy_sd": 0.02099854601987912,
-      "complete_three_seeds": false,
+      "seed_count": 3,
+      "accuracy_mean": 0.7991111111111111,
+      "accuracy_sd": 0.018848742579925457,
+      "complete_three_seeds": true,
       "per_seed": [
         {
           "seed": 2026092701,
@@ -216,6 +231,10 @@
         {
           "seed": 2026092702,
           "accuracy": 0.7775595238095238
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8125178571428572
         }
       ]
     },
@@ -223,12 +242,13 @@
       "arm": "R_DIRECT_HI",
       "seeds": [
         2026092701,
-        2026092702
+        2026092702,
+        2026092703
       ],
-      "seed_count": 2,
-      "accuracy_mean": 0.7855267857142858,
-      "accuracy_sd": 0.028692541234218417,
-      "complete_three_seeds": false,
+      "seed_count": 3,
+      "accuracy_mean": 0.7894424603174603,
+      "accuracy_sd": 0.021392252897544515,
+      "complete_three_seeds": true,
       "per_seed": [
         {
           "seed": 2026092701,
@@ -237,6 +257,10 @@
         {
           "seed": 2026092702,
           "accuracy": 0.7652380952380953
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.7972738095238096
         }
       ]
     }
@@ -17127,6 +17151,1882 @@
       "net_correct_gain": -235
     },
     {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8092678571428571,
+      "macro_f1": 0.8055257904733812,
+      "macro_accuracy": 0.8092678571428572,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27087,
+          54,
+          279,
+          563,
+          15,
+          2
+        ],
+        [
+          422,
+          15051,
+          50,
+          12405,
+          55,
+          17
+        ],
+        [
+          1315,
+          261,
+          21166,
+          489,
+          1032,
+          3737
+        ],
+        [
+          2964,
+          6930,
+          279,
+          17763,
+          11,
+          53
+        ],
+        [
+          6,
+          3,
+          27,
+          9,
+          27953,
+          2
+        ],
+        [
+          7,
+          4,
+          237,
+          18,
+          797,
+          26937
+        ]
+      ],
+      "NLL": 1.5292677879333496,
+      "parent_fix_count": 4164,
+      "parent_break_count": 5293,
+      "net_correct_gain": -1129
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7932916666666666,
+      "macro_f1": 0.7701629906576727,
+      "macro_accuracy": 0.7932916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3992,
+          4,
+          3,
+          1,
+          0,
+          0
+        ],
+        [
+          124,
+          1161,
+          1,
+          2713,
+          1,
+          0
+        ],
+        [
+          1127,
+          0,
+          2177,
+          2,
+          0,
+          694
+        ],
+        [
+          196,
+          7,
+          0,
+          3797,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          14,
+          0,
+          3984,
+          0
+        ],
+        [
+          3,
+          0,
+          56,
+          6,
+          7,
+          3928
+        ]
+      ],
+      "NLL": 1.9865152835845947,
+      "parent_fix_count": 488,
+      "parent_break_count": 426,
+      "net_correct_gain": 62
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7626666666666667,
+      "macro_f1": 0.7302468818984821,
+      "macro_accuracy": 0.7626666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3968,
+          0,
+          0,
+          32,
+          0,
+          0
+        ],
+        [
+          17,
+          2880,
+          0,
+          1100,
+          3,
+          0
+        ],
+        [
+          17,
+          3,
+          3421,
+          1,
+          2,
+          556
+        ],
+        [
+          5,
+          3671,
+          208,
+          69,
+          2,
+          45
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          3,
+          29,
+          3968
+        ]
+      ],
+      "NLL": 2.048476457595825,
+      "parent_fix_count": 1114,
+      "parent_break_count": 242,
+      "net_correct_gain": 872
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8992083333333334,
+      "macro_f1": 0.8988663048041681,
+      "macro_accuracy": 0.8992083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3733,
+          49,
+          168,
+          45,
+          5,
+          0
+        ],
+        [
+          3,
+          2696,
+          13,
+          1253,
+          24,
+          11
+        ],
+        [
+          13,
+          4,
+          3952,
+          19,
+          7,
+          5
+        ],
+        [
+          26,
+          682,
+          2,
+          3286,
+          2,
+          2
+        ],
+        [
+          0,
+          0,
+          3,
+          1,
+          3996,
+          0
+        ],
+        [
+          0,
+          2,
+          9,
+          2,
+          69,
+          3918
+        ]
+      ],
+      "NLL": 0.6727648973464966,
+      "parent_fix_count": 589,
+      "parent_break_count": 310,
+      "net_correct_gain": 279
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7669583333333333,
+      "macro_f1": 0.7691288603421566,
+      "macro_accuracy": 0.7669583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3983,
+          0,
+          4,
+          4,
+          8,
+          1
+        ],
+        [
+          10,
+          2192,
+          11,
+          1772,
+          11,
+          4
+        ],
+        [
+          24,
+          239,
+          3080,
+          210,
+          366,
+          81
+        ],
+        [
+          14,
+          2026,
+          23,
+          1931,
+          6,
+          0
+        ],
+        [
+          5,
+          1,
+          8,
+          8,
+          3978,
+          0
+        ],
+        [
+          3,
+          0,
+          166,
+          6,
+          582,
+          3243
+        ]
+      ],
+      "NLL": 2.240898370742798,
+      "parent_fix_count": 693,
+      "parent_break_count": 986,
+      "net_correct_gain": -293
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.84275,
+      "macro_f1": 0.8369169647159801,
+      "macro_accuracy": 0.84275,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3454,
+          0,
+          102,
+          441,
+          2,
+          1
+        ],
+        [
+          4,
+          1666,
+          2,
+          2327,
+          1,
+          0
+        ],
+        [
+          61,
+          6,
+          3270,
+          4,
+          653,
+          6
+        ],
+        [
+          1,
+          48,
+          0,
+          3949,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          4,
+          0,
+          107,
+          3889
+        ]
+      ],
+      "NLL": 0.7872519493103027,
+      "parent_fix_count": 470,
+      "parent_break_count": 754,
+      "net_correct_gain": -284
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8075,
+      "macro_f1": 0.794531985499367,
+      "macro_accuracy": 0.8075,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          264,
+          2390,
+          16,
+          1315,
+          14,
+          1
+        ],
+        [
+          70,
+          3,
+          3926,
+          0,
+          1,
+          0
+        ],
+        [
+          2722,
+          159,
+          46,
+          1068,
+          0,
+          5
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          1,
+          0,
+          1,
+          0,
+          2,
+          3996
+        ]
+      ],
+      "NLL": 1.5977435111999512,
+      "parent_fix_count": 349,
+      "parent_break_count": 790,
+      "net_correct_gain": -441
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7925,
+      "macro_f1": 0.7748385576270119,
+      "macro_accuracy": 0.7925,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3957,
+          1,
+          2,
+          40,
+          0,
+          0
+        ],
+        [
+          0,
+          2066,
+          7,
+          1925,
+          1,
+          1
+        ],
+        [
+          3,
+          6,
+          1340,
+          253,
+          3,
+          2395
+        ],
+        [
+          0,
+          337,
+          0,
+          3663,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          2,
+          1,
+          1,
+          1,
+          3995
+        ]
+      ],
+      "NLL": 1.3712239265441895,
+      "parent_fix_count": 461,
+      "parent_break_count": 1785,
+      "net_correct_gain": -1324
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9673928571428572,
+      "macro_f1": 0.16390436945195783,
+      "macro_accuracy": 0.9673928571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27087,
+          54,
+          279,
+          563,
+          15,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.202421635389328,
+      "parent_fix_count": 503,
+      "parent_break_count": 381,
+      "net_correct_gain": 122
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5375357142857143,
+      "macro_f1": 0.11653620124968062,
+      "macro_accuracy": 0.5375357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          422,
+          15051,
+          50,
+          12405,
+          55,
+          17
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 3.626026153564453,
+      "parent_fix_count": 2536,
+      "parent_break_count": 484,
+      "net_correct_gain": 2052
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7559285714285714,
+      "macro_f1": 0.143500250850859,
+      "macro_accuracy": 0.7559285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1315,
+          261,
+          21166,
+          489,
+          1032,
+          3737
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 1.3374762535095215,
+      "parent_fix_count": 533,
+      "parent_break_count": 2858,
+      "net_correct_gain": -2325
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6343928571428571,
+      "macro_f1": 0.12938400017481372,
+      "macro_accuracy": 0.6343928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2964,
+          6930,
+          279,
+          17763,
+          11,
+          53
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 3.836214065551758,
+      "parent_fix_count": 426,
+      "parent_break_count": 948,
+      "net_correct_gain": -522
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9983214285714286,
+      "macro_f1": 0.1665266682155857,
+      "macro_accuracy": 0.9983214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          3,
+          27,
+          9,
+          27953,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.011122161522507668,
+      "parent_fix_count": 15,
+      "parent_break_count": 11,
+      "net_correct_gain": 4
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9620357142857143,
+      "macro_f1": 0.1634417605620984,
+      "macro_accuracy": 0.9620357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          7,
+          4,
+          237,
+          18,
+          797,
+          26937
+        ]
+      ],
+      "NLL": 0.16234596073627472,
+      "parent_fix_count": 151,
+      "parent_break_count": 611,
+      "net_correct_gain": -460
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7974285714285714,
+      "macro_f1": 0.7944455266370726,
+      "macro_accuracy": 0.7974285714285715,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26687,
+          99,
+          500,
+          686,
+          27,
+          1
+        ],
+        [
+          268,
+          14842,
+          52,
+          12799,
+          29,
+          10
+        ],
+        [
+          1884,
+          1149,
+          19401,
+          1235,
+          935,
+          3396
+        ],
+        [
+          2435,
+          6809,
+          341,
+          18370,
+          14,
+          31
+        ],
+        [
+          7,
+          7,
+          21,
+          6,
+          27957,
+          2
+        ],
+        [
+          9,
+          11,
+          232,
+          18,
+          1019,
+          26711
+        ]
+      ],
+      "NLL": 1.6348586082458496,
+      "parent_fix_count": 4461,
+      "parent_break_count": 7579,
+      "net_correct_gain": -3118
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7999583333333333,
+      "macro_f1": 0.7808881722353034,
+      "macro_accuracy": 0.7999583333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3975,
+          5,
+          19,
+          1,
+          0,
+          0
+        ],
+        [
+          31,
+          1213,
+          0,
+          2755,
+          1,
+          0
+        ],
+        [
+          1691,
+          2,
+          2222,
+          1,
+          0,
+          84
+        ],
+        [
+          136,
+          15,
+          0,
+          3849,
+          0,
+          0
+        ],
+        [
+          1,
+          5,
+          12,
+          0,
+          3982,
+          0
+        ],
+        [
+          1,
+          1,
+          25,
+          6,
+          9,
+          3958
+        ]
+      ],
+      "NLL": 1.8882677555084229,
+      "parent_fix_count": 624,
+      "parent_break_count": 402,
+      "net_correct_gain": 222
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7611666666666667,
+      "macro_f1": 0.7300485343696915,
+      "macro_accuracy": 0.7611666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3943,
+          1,
+          0,
+          56,
+          0,
+          0
+        ],
+        [
+          19,
+          2935,
+          0,
+          1044,
+          2,
+          0
+        ],
+        [
+          34,
+          3,
+          3358,
+          57,
+          6,
+          542
+        ],
+        [
+          5,
+          3804,
+          105,
+          57,
+          2,
+          27
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          3,
+          19,
+          3977
+        ]
+      ],
+      "NLL": 1.9984209537506104,
+      "parent_fix_count": 1213,
+      "parent_break_count": 377,
+      "net_correct_gain": 836
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.873875,
+      "macro_f1": 0.8733655069126076,
+      "macro_accuracy": 0.873875,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3434,
+          90,
+          394,
+          66,
+          16,
+          0
+        ],
+        [
+          2,
+          2664,
+          34,
+          1285,
+          9,
+          6
+        ],
+        [
+          10,
+          6,
+          3950,
+          26,
+          4,
+          4
+        ],
+        [
+          16,
+          590,
+          3,
+          3386,
+          3,
+          2
+        ],
+        [
+          0,
+          0,
+          2,
+          2,
+          3996,
+          0
+        ],
+        [
+          0,
+          5,
+          8,
+          1,
+          443,
+          3543
+        ]
+      ],
+      "NLL": 0.7327845096588135,
+      "parent_fix_count": 642,
+      "parent_break_count": 971,
+      "net_correct_gain": -329
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7209166666666667,
+      "macro_f1": 0.7281362065795861,
+      "macro_accuracy": 0.7209166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3980,
+          0,
+          7,
+          3,
+          9,
+          1
+        ],
+        [
+          11,
+          2067,
+          1,
+          1907,
+          11,
+          3
+        ],
+        [
+          25,
+          1076,
+          1996,
+          838,
+          30,
+          35
+        ],
+        [
+          10,
+          1962,
+          22,
+          1998,
+          8,
+          0
+        ],
+        [
+          6,
+          2,
+          5,
+          4,
+          3983,
+          0
+        ],
+        [
+          7,
+          0,
+          196,
+          6,
+          513,
+          3278
+        ]
+      ],
+      "NLL": 2.476200580596924,
+      "parent_fix_count": 683,
+      "parent_break_count": 2081,
+      "net_correct_gain": -1398
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8325,
+      "macro_f1": 0.8259675036209143,
+      "macro_accuracy": 0.8325,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3405,
+          0,
+          79,
+          515,
+          1,
+          0
+        ],
+        [
+          1,
+          1595,
+          2,
+          2402,
+          0,
+          0
+        ],
+        [
+          7,
+          26,
+          3053,
+          4,
+          893,
+          17
+        ],
+        [
+          0,
+          37,
+          0,
+          3962,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          2,
+          1,
+          1,
+          30,
+          3966
+        ]
+      ],
+      "NLL": 0.9958013296127319,
+      "parent_fix_count": 329,
+      "parent_break_count": 859,
+      "net_correct_gain": -530
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8170833333333334,
+      "macro_f1": 0.805326889560491,
+      "macro_accuracy": 0.8170833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          203,
+          2458,
+          12,
+          1322,
+          4,
+          1
+        ],
+        [
+          115,
+          3,
+          3878,
+          3,
+          1,
+          0
+        ],
+        [
+          2268,
+          240,
+          211,
+          1279,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          1,
+          3,
+          3995
+        ]
+      ],
+      "NLL": 1.5820810794830322,
+      "parent_fix_count": 610,
+      "parent_break_count": 821,
+      "net_correct_gain": -211
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7765,
+      "macro_f1": 0.7487325298894992,
+      "macro_accuracy": 0.7765000000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3950,
+          3,
+          1,
+          45,
+          1,
+          0
+        ],
+        [
+          1,
+          1910,
+          3,
+          2084,
+          2,
+          0
+        ],
+        [
+          2,
+          33,
+          944,
+          306,
+          1,
+          2714
+        ],
+        [
+          0,
+          161,
+          0,
+          3839,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          3,
+          1,
+          0,
+          2,
+          3994
+        ]
+      ],
+      "NLL": 1.7704551219940186,
+      "parent_fix_count": 360,
+      "parent_break_count": 2068,
+      "net_correct_gain": -1708
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9531071428571428,
+      "macro_f1": 0.1626651062714478,
+      "macro_accuracy": 0.9531071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26687,
+          99,
+          500,
+          686,
+          27,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.3264666497707367,
+      "parent_fix_count": 497,
+      "parent_break_count": 775,
+      "net_correct_gain": -278
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5300714285714285,
+      "macro_f1": 0.11547858020945179,
+      "macro_accuracy": 0.5300714285714285,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          268,
+          14842,
+          52,
+          12799,
+          29,
+          10
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 3.7137770652770996,
+      "parent_fix_count": 2453,
+      "parent_break_count": 610,
+      "net_correct_gain": 1843
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6928928571428571,
+      "macro_f1": 0.1364317208497711,
+      "macro_accuracy": 0.6928928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1884,
+          1149,
+          19401,
+          1235,
+          935,
+          3396
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 1.9654499292373657,
+      "parent_fix_count": 512,
+      "parent_break_count": 4602,
+      "net_correct_gain": -4090
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6560714285714285,
+      "macro_f1": 0.13205377039752714,
+      "macro_accuracy": 0.6560714285714285,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2435,
+          6809,
+          341,
+          18370,
+          14,
+          31
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 3.628422975540161,
+      "parent_fix_count": 781,
+      "parent_break_count": 696,
+      "net_correct_gain": 85
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9984642857142857,
+      "macro_f1": 0.16653859213324518,
+      "macro_accuracy": 0.9984642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          7,
+          7,
+          21,
+          6,
+          27957,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.01440238207578659,
+      "parent_fix_count": 21,
+      "parent_break_count": 13,
+      "net_correct_gain": 8
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9539642857142857,
+      "macro_f1": 0.16273997307061958,
+      "macro_accuracy": 0.9539642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          9,
+          11,
+          232,
+          18,
+          1019,
+          26711
+        ]
+      ],
+      "NLL": 0.16063366830348969,
+      "parent_fix_count": 197,
+      "parent_break_count": 883,
+      "net_correct_gain": -686
+    },
+    {
       "row_id": "R_CE-s2026092703",
       "arm": "R_CE",
       "model_seed": 2026092703,
@@ -18063,6 +19963,2820 @@
       "parent_fix_count": 123,
       "parent_break_count": 267,
       "net_correct_gain": -144
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8108690476190477,
+      "macro_f1": 0.8073463661790181,
+      "macro_accuracy": 0.8108690476190477,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27104,
+          51,
+          225,
+          600,
+          16,
+          4
+        ],
+        [
+          460,
+          15389,
+          62,
+          12021,
+          48,
+          20
+        ],
+        [
+          1431,
+          678,
+          21027,
+          341,
+          749,
+          3774
+        ],
+        [
+          3026,
+          7031,
+          267,
+          17620,
+          11,
+          45
+        ],
+        [
+          5,
+          7,
+          21,
+          12,
+          27951,
+          4
+        ],
+        [
+          10,
+          9,
+          226,
+          15,
+          605,
+          27135
+        ]
+      ],
+      "NLL": 1.544829249382019,
+      "parent_fix_count": 4476,
+      "parent_break_count": 5336,
+      "net_correct_gain": -860
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.794125,
+      "macro_f1": 0.7719297184011049,
+      "macro_accuracy": 0.7941250000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3992,
+          4,
+          2,
+          2,
+          0,
+          0
+        ],
+        [
+          138,
+          1213,
+          1,
+          2647,
+          1,
+          0
+        ],
+        [
+          1096,
+          1,
+          2170,
+          0,
+          1,
+          732
+        ],
+        [
+          217,
+          2,
+          0,
+          3781,
+          0,
+          0
+        ],
+        [
+          0,
+          5,
+          9,
+          1,
+          3984,
+          1
+        ],
+        [
+          3,
+          0,
+          68,
+          5,
+          5,
+          3919
+        ]
+      ],
+      "NLL": 1.9024096727371216,
+      "parent_fix_count": 485,
+      "parent_break_count": 403,
+      "net_correct_gain": 82
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.77625,
+      "macro_f1": 0.7423085921923284,
+      "macro_accuracy": 0.7762500000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3971,
+          1,
+          0,
+          28,
+          0,
+          0
+        ],
+        [
+          18,
+          2941,
+          0,
+          1038,
+          3,
+          0
+        ],
+        [
+          46,
+          3,
+          3676,
+          1,
+          2,
+          272
+        ],
+        [
+          7,
+          3692,
+          206,
+          55,
+          2,
+          38
+        ],
+        [
+          0,
+          0,
+          3,
+          1,
+          3996,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          3,
+          6,
+          3991
+        ]
+      ],
+      "NLL": 2.1805129051208496,
+      "parent_fix_count": 1308,
+      "parent_break_count": 110,
+      "net_correct_gain": 1198
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.9029583333333333,
+      "macro_f1": 0.9028676999661606,
+      "macro_accuracy": 0.9029583333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3759,
+          45,
+          137,
+          51,
+          7,
+          1
+        ],
+        [
+          3,
+          2777,
+          16,
+          1173,
+          19,
+          12
+        ],
+        [
+          13,
+          6,
+          3950,
+          19,
+          5,
+          7
+        ],
+        [
+          27,
+          752,
+          3,
+          3214,
+          2,
+          2
+        ],
+        [
+          0,
+          0,
+          2,
+          2,
+          3996,
+          0
+        ],
+        [
+          1,
+          5,
+          5,
+          2,
+          12,
+          3975
+        ]
+      ],
+      "NLL": 0.6556498408317566,
+      "parent_fix_count": 651,
+      "parent_break_count": 282,
+      "net_correct_gain": 369
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7612916666666667,
+      "macro_f1": 0.7661673542382917,
+      "macro_accuracy": 0.7612916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3984,
+          1,
+          0,
+          5,
+          8,
+          2
+        ],
+        [
+          9,
+          2120,
+          23,
+          1834,
+          10,
+          4
+        ],
+        [
+          34,
+          632,
+          2968,
+          193,
+          93,
+          80
+        ],
+        [
+          13,
+          2023,
+          22,
+          1936,
+          6,
+          0
+        ],
+        [
+          5,
+          2,
+          6,
+          8,
+          3978,
+          1
+        ],
+        [
+          5,
+          1,
+          148,
+          4,
+          557,
+          3285
+        ]
+      ],
+      "NLL": 2.289824962615967,
+      "parent_fix_count": 613,
+      "parent_break_count": 1042,
+      "net_correct_gain": -429
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8480833333333333,
+      "macro_f1": 0.8432726225735409,
+      "macro_accuracy": 0.8480833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3433,
+          0,
+          86,
+          480,
+          0,
+          1
+        ],
+        [
+          4,
+          1767,
+          2,
+          2227,
+          0,
+          0
+        ],
+        [
+          76,
+          7,
+          3245,
+          4,
+          645,
+          23
+        ],
+        [
+          1,
+          60,
+          0,
+          3938,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          4,
+          0,
+          23,
+          3973
+        ]
+      ],
+      "NLL": 0.748755693435669,
+      "parent_fix_count": 504,
+      "parent_break_count": 660,
+      "net_correct_gain": -156
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.802875,
+      "macro_f1": 0.79068958438555,
+      "macro_accuracy": 0.8028749999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          288,
+          2393,
+          14,
+          1289,
+          13,
+          3
+        ],
+        [
+          164,
+          2,
+          3832,
+          1,
+          1,
+          0
+        ],
+        [
+          2761,
+          150,
+          36,
+          1048,
+          0,
+          5
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          1,
+          2,
+          3996
+        ]
+      ],
+      "NLL": 1.6515270471572876,
+      "parent_fix_count": 342,
+      "parent_break_count": 894,
+      "net_correct_gain": -552
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7905,
+      "macro_f1": 0.7706393770941377,
+      "macro_accuracy": 0.7905000000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3965,
+          0,
+          0,
+          34,
+          1,
+          0
+        ],
+        [
+          0,
+          2178,
+          6,
+          1813,
+          2,
+          1
+        ],
+        [
+          2,
+          27,
+          1186,
+          123,
+          2,
+          2660
+        ],
+        [
+          0,
+          352,
+          0,
+          3648,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          3,
+          1,
+          0,
+          0,
+          3996
+        ]
+      ],
+      "NLL": 1.3851243257522583,
+      "parent_fix_count": 573,
+      "parent_break_count": 1945,
+      "net_correct_gain": -1372
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.968,
+      "macro_f1": 0.16395663956639567,
+      "macro_accuracy": 0.968,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27104,
+          51,
+          225,
+          600,
+          16,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.22026024758815765,
+      "parent_fix_count": 508,
+      "parent_break_count": 369,
+      "net_correct_gain": 139
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5496071428571428,
+      "macro_f1": 0.11822504935966872,
+      "macro_accuracy": 0.5496071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          460,
+          15389,
+          62,
+          12021,
+          48,
+          20
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 3.497814178466797,
+      "parent_fix_count": 2839,
+      "parent_break_count": 449,
+      "net_correct_gain": 2390
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7509642857142858,
+      "macro_f1": 0.14296204132416832,
+      "macro_accuracy": 0.7509642857142858,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1431,
+          678,
+          21027,
+          341,
+          749,
+          3774
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 1.3607350587844849,
+      "parent_fix_count": 606,
+      "parent_break_count": 3070,
+      "net_correct_gain": -2464
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6292857142857143,
+      "macro_f1": 0.12874470261581178,
+      "macro_accuracy": 0.6292857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3026,
+          7031,
+          267,
+          17620,
+          11,
+          45
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 4.046644687652588,
+      "parent_fix_count": 375,
+      "parent_break_count": 1040,
+      "net_correct_gain": -665
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.99825,
+      "macro_f1": 0.16652070561741525,
+      "macro_accuracy": 0.99825,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          5,
+          7,
+          21,
+          12,
+          27951,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.009321480058133602,
+      "parent_fix_count": 13,
+      "parent_break_count": 11,
+      "net_correct_gain": 2
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9691071428571428,
+      "macro_f1": 0.16405187267615853,
+      "macro_accuracy": 0.9691071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          10,
+          9,
+          226,
+          15,
+          605,
+          27135
+        ]
+      ],
+      "NLL": 0.1342000514268875,
+      "parent_fix_count": 135,
+      "parent_break_count": 397,
+      "net_correct_gain": -262
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8125178571428572,
+      "macro_f1": 0.8090005025495391,
+      "macro_accuracy": 0.8125178571428572,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27113,
+          56,
+          256,
+          558,
+          13,
+          4
+        ],
+        [
+          441,
+          15312,
+          51,
+          12122,
+          51,
+          23
+        ],
+        [
+          1671,
+          401,
+          21208,
+          539,
+          927,
+          3254
+        ],
+        [
+          2934,
+          6982,
+          353,
+          17672,
+          12,
+          47
+        ],
+        [
+          6,
+          7,
+          18,
+          11,
+          27954,
+          4
+        ],
+        [
+          9,
+          7,
+          185,
+          17,
+          538,
+          27244
+        ]
+      ],
+      "NLL": 1.509867787361145,
+      "parent_fix_count": 4232,
+      "parent_break_count": 4815,
+      "net_correct_gain": -583
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7885,
+      "macro_f1": 0.7664422337549522,
+      "macro_accuracy": 0.7885,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3993,
+          4,
+          2,
+          1,
+          0,
+          0
+        ],
+        [
+          134,
+          1239,
+          1,
+          2625,
+          1,
+          0
+        ],
+        [
+          1396,
+          1,
+          2035,
+          0,
+          1,
+          567
+        ],
+        [
+          237,
+          21,
+          0,
+          3742,
+          0,
+          0
+        ],
+        [
+          1,
+          5,
+          6,
+          0,
+          3987,
+          1
+        ],
+        [
+          3,
+          0,
+          59,
+          5,
+          5,
+          3928
+        ]
+      ],
+      "NLL": 2.0365233421325684,
+      "parent_fix_count": 423,
+      "parent_break_count": 476,
+      "net_correct_gain": -53
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.772625,
+      "macro_f1": 0.7395706329737872,
+      "macro_accuracy": 0.772625,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3966,
+          0,
+          0,
+          34,
+          0,
+          0
+        ],
+        [
+          17,
+          2887,
+          1,
+          1092,
+          3,
+          0
+        ],
+        [
+          69,
+          3,
+          3637,
+          3,
+          2,
+          286
+        ],
+        [
+          4,
+          3591,
+          288,
+          77,
+          2,
+          38
+        ],
+        [
+          0,
+          0,
+          3,
+          0,
+          3997,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          3,
+          18,
+          3979
+        ]
+      ],
+      "NLL": 1.9854940176010132,
+      "parent_fix_count": 1259,
+      "parent_break_count": 148,
+      "net_correct_gain": 1111
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.898,
+      "macro_f1": 0.8979317773150549,
+      "macro_accuracy": 0.898,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3748,
+          50,
+          144,
+          54,
+          3,
+          1
+        ],
+        [
+          3,
+          2714,
+          11,
+          1236,
+          21,
+          15
+        ],
+        [
+          15,
+          5,
+          3952,
+          19,
+          5,
+          4
+        ],
+        [
+          23,
+          807,
+          3,
+          3162,
+          2,
+          3
+        ],
+        [
+          0,
+          0,
+          2,
+          2,
+          3996,
+          0
+        ],
+        [
+          0,
+          4,
+          7,
+          2,
+          7,
+          3980
+        ]
+      ],
+      "NLL": 0.694792628288269,
+      "parent_fix_count": 577,
+      "parent_break_count": 327,
+      "net_correct_gain": 250
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7760416666666666,
+      "macro_f1": 0.7794635677832712,
+      "macro_accuracy": 0.7760416666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3982,
+          2,
+          1,
+          4,
+          9,
+          2
+        ],
+        [
+          8,
+          2229,
+          11,
+          1737,
+          11,
+          4
+        ],
+        [
+          31,
+          376,
+          3100,
+          231,
+          181,
+          81
+        ],
+        [
+          12,
+          2005,
+          23,
+          1953,
+          7,
+          0
+        ],
+        [
+          5,
+          2,
+          6,
+          9,
+          3977,
+          1
+        ],
+        [
+          5,
+          0,
+          115,
+          6,
+          490,
+          3384
+        ]
+      ],
+      "NLL": 2.126370429992676,
+      "parent_fix_count": 726,
+      "parent_break_count": 801,
+      "net_correct_gain": -75
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8409166666666666,
+      "macro_f1": 0.8346898099473243,
+      "macro_accuracy": 0.8409166666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3463,
+          0,
+          108,
+          428,
+          0,
+          1
+        ],
+        [
+          4,
+          1705,
+          2,
+          2289,
+          0,
+          0
+        ],
+        [
+          130,
+          6,
+          3085,
+          20,
+          735,
+          24
+        ],
+        [
+          1,
+          47,
+          0,
+          3950,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          3,
+          0,
+          16,
+          3981
+        ]
+      ],
+      "NLL": 0.8376322984695435,
+      "parent_fix_count": 355,
+      "parent_break_count": 683,
+      "net_correct_gain": -328
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8115416666666667,
+      "macro_f1": 0.7980011495907126,
+      "macro_accuracy": 0.8115416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          275,
+          2427,
+          19,
+          1264,
+          12,
+          3
+        ],
+        [
+          29,
+          2,
+          3968,
+          0,
+          1,
+          0
+        ],
+        [
+          2657,
+          213,
+          39,
+          1086,
+          0,
+          5
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          1,
+          2,
+          3996
+        ]
+      ],
+      "NLL": 1.5678176879882812,
+      "parent_fix_count": 381,
+      "parent_break_count": 725,
+      "net_correct_gain": -344
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8,
+      "macro_f1": 0.7839499288845938,
+      "macro_accuracy": 0.7999999999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3961,
+          0,
+          1,
+          37,
+          1,
+          0
+        ],
+        [
+          0,
+          2111,
+          6,
+          1879,
+          3,
+          1
+        ],
+        [
+          1,
+          8,
+          1431,
+          266,
+          2,
+          2292
+        ],
+        [
+          0,
+          298,
+          0,
+          3702,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          3,
+          1,
+          0,
+          0,
+          3996
+        ]
+      ],
+      "NLL": 1.3204442262649536,
+      "parent_fix_count": 511,
+      "parent_break_count": 1655,
+      "net_correct_gain": -1144
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9683214285714286,
+      "macro_f1": 0.16398429892523844,
+      "macro_accuracy": 0.9683214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27113,
+          56,
+          256,
+          558,
+          13,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.2164342701435089,
+      "parent_fix_count": 505,
+      "parent_break_count": 357,
+      "net_correct_gain": 148
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5468571428571428,
+      "macro_f1": 0.11784263021795345,
+      "macro_accuracy": 0.5468571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          441,
+          15312,
+          51,
+          12122,
+          51,
+          23
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 3.516958236694336,
+      "parent_fix_count": 2721,
+      "parent_break_count": 408,
+      "net_correct_gain": 2313
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7574285714285715,
+      "macro_f1": 0.14366227713650898,
+      "macro_accuracy": 0.7574285714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1671,
+          401,
+          21208,
+          539,
+          927,
+          3254
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 1.4382699728012085,
+      "parent_fix_count": 435,
+      "parent_break_count": 2718,
+      "net_correct_gain": -2283
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6311428571428571,
+      "macro_f1": 0.12897763764815787,
+      "macro_accuracy": 0.6311428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2934,
+          6982,
+          353,
+          17672,
+          12,
+          47
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 3.7716684341430664,
+      "parent_fix_count": 414,
+      "parent_break_count": 1027,
+      "net_correct_gain": -613
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9983571428571428,
+      "macro_f1": 0.1665296493548272,
+      "macro_accuracy": 0.9983571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          7,
+          18,
+          11,
+          27954,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.00890138279646635,
+      "parent_fix_count": 12,
+      "parent_break_count": 7,
+      "net_correct_gain": 5
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.973,
+      "macro_f1": 0.1643858759925663,
+      "macro_accuracy": 0.973,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          9,
+          7,
+          185,
+          17,
+          538,
+          27244
+        ]
+      ],
+      "NLL": 0.1069749966263771,
+      "parent_fix_count": 145,
+      "parent_break_count": 298,
+      "net_correct_gain": -153
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7972738095238096,
+      "macro_f1": 0.7951189121259841,
+      "macro_accuracy": 0.7972738095238096,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26594,
+          68,
+          371,
+          935,
+          29,
+          3
+        ],
+        [
+          344,
+          15182,
+          34,
+          12380,
+          36,
+          24
+        ],
+        [
+          1657,
+          1111,
+          19513,
+          1531,
+          925,
+          3263
+        ],
+        [
+          2366,
+          7217,
+          227,
+          18133,
+          19,
+          38
+        ],
+        [
+          6,
+          5,
+          13,
+          11,
+          27962,
+          3
+        ],
+        [
+          15,
+          6,
+          148,
+          21,
+          1252,
+          26558
+        ]
+      ],
+      "NLL": 1.75236177444458,
+      "parent_fix_count": 4857,
+      "parent_break_count": 8001,
+      "net_correct_gain": -3144
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7894583333333334,
+      "macro_f1": 0.7652397792999385,
+      "macro_accuracy": 0.7894583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3991,
+          6,
+          3,
+          0,
+          0,
+          0
+        ],
+        [
+          60,
+          1214,
+          1,
+          2724,
+          1,
+          0
+        ],
+        [
+          1489,
+          2,
+          1940,
+          0,
+          1,
+          568
+        ],
+        [
+          109,
+          22,
+          0,
+          3869,
+          0,
+          0
+        ],
+        [
+          0,
+          5,
+          7,
+          2,
+          3985,
+          1
+        ],
+        [
+          1,
+          0,
+          29,
+          6,
+          16,
+          3948
+        ]
+      ],
+      "NLL": 2.319774627685547,
+      "parent_fix_count": 490,
+      "parent_break_count": 520,
+      "net_correct_gain": -30
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7749583333333333,
+      "macro_f1": 0.7448263048071909,
+      "macro_accuracy": 0.7749583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3934,
+          0,
+          0,
+          66,
+          0,
+          0
+        ],
+        [
+          20,
+          2830,
+          0,
+          1148,
+          2,
+          0
+        ],
+        [
+          37,
+          2,
+          3831,
+          7,
+          3,
+          120
+        ],
+        [
+          9,
+          3854,
+          70,
+          32,
+          2,
+          33
+        ],
+        [
+          0,
+          0,
+          2,
+          1,
+          3997,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          3,
+          22,
+          3975
+        ]
+      ],
+      "NLL": 2.23081636428833,
+      "parent_fix_count": 1363,
+      "parent_break_count": 196,
+      "net_correct_gain": 1167
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8663333333333333,
+      "macro_f1": 0.8663287453951031,
+      "macro_accuracy": 0.8663333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3573,
+          62,
+          273,
+          72,
+          18,
+          2
+        ],
+        [
+          3,
+          2730,
+          10,
+          1235,
+          9,
+          13
+        ],
+        [
+          9,
+          3,
+          3943,
+          26,
+          7,
+          12
+        ],
+        [
+          25,
+          821,
+          5,
+          3142,
+          4,
+          3
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          0,
+          3,
+          5,
+          1,
+          584,
+          3407
+        ]
+      ],
+      "NLL": 0.8153294324874878,
+      "parent_fix_count": 620,
+      "parent_break_count": 1130,
+      "net_correct_gain": -510
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7204166666666667,
+      "macro_f1": 0.7271042757796762,
+      "macro_accuracy": 0.7204166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3980,
+          0,
+          3,
+          6,
+          10,
+          1
+        ],
+        [
+          9,
+          2103,
+          0,
+          1872,
+          14,
+          2
+        ],
+        [
+          41,
+          1042,
+          1937,
+          905,
+          37,
+          38
+        ],
+        [
+          21,
+          2001,
+          11,
+          1955,
+          12,
+          0
+        ],
+        [
+          6,
+          0,
+          3,
+          6,
+          3985,
+          0
+        ],
+        [
+          9,
+          1,
+          108,
+          9,
+          543,
+          3330
+        ]
+      ],
+      "NLL": 2.5413124561309814,
+      "parent_fix_count": 692,
+      "parent_break_count": 2102,
+      "net_correct_gain": -1410
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8195416666666666,
+      "macro_f1": 0.8140797310145667,
+      "macro_accuracy": 0.8195416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3174,
+          0,
+          92,
+          734,
+          0,
+          0
+        ],
+        [
+          1,
+          1572,
+          1,
+          2425,
+          1,
+          0
+        ],
+        [
+          32,
+          19,
+          3051,
+          9,
+          876,
+          13
+        ],
+        [
+          0,
+          38,
+          0,
+          3960,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          0,
+          5,
+          0,
+          82,
+          3913
+        ]
+      ],
+      "NLL": 1.1321865320205688,
+      "parent_fix_count": 278,
+      "parent_break_count": 1119,
+      "net_correct_gain": -841
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8259166666666666,
+      "macro_f1": 0.8161010282672766,
+      "macro_accuracy": 0.8259166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          249,
+          2414,
+          20,
+          1303,
+          7,
+          7
+        ],
+        [
+          47,
+          2,
+          3949,
+          1,
+          1,
+          0
+        ],
+        [
+          2202,
+          188,
+          141,
+          1468,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          5,
+          0,
+          0,
+          1,
+          3,
+          3991
+        ]
+      ],
+      "NLL": 1.3977994918823242,
+      "parent_fix_count": 688,
+      "parent_break_count": 687,
+      "net_correct_gain": 1
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7842916666666667,
+      "macro_f1": 0.7571153257739773,
+      "macro_accuracy": 0.7842916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3942,
+          0,
+          0,
+          57,
+          1,
+          0
+        ],
+        [
+          2,
+          2319,
+          2,
+          1673,
+          2,
+          2
+        ],
+        [
+          2,
+          41,
+          862,
+          583,
+          0,
+          2512
+        ],
+        [
+          0,
+          293,
+          0,
+          3707,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          2,
+          1,
+          1,
+          2,
+          3994
+        ]
+      ],
+      "NLL": 1.8293135166168213,
+      "parent_fix_count": 726,
+      "parent_break_count": 2247,
+      "net_correct_gain": -1521
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9497857142857142,
+      "macro_f1": 0.16237437569452076,
+      "macro_accuracy": 0.9497857142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26594,
+          68,
+          371,
+          935,
+          29,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.37563207745552063,
+      "parent_fix_count": 502,
+      "parent_break_count": 873,
+      "net_correct_gain": -371
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5422142857142858,
+      "macro_f1": 0.11719389251694379,
+      "macro_accuracy": 0.5422142857142858,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          344,
+          15182,
+          34,
+          12380,
+          36,
+          24
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 3.8460803031921387,
+      "parent_fix_count": 2741,
+      "parent_break_count": 558,
+      "net_correct_gain": 2183
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6968928571428571,
+      "macro_f1": 0.13689586709602283,
+      "macro_accuracy": 0.6968928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1657,
+          1111,
+          19513,
+          1531,
+          925,
+          3263
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.3366236686706543,
+      "parent_fix_count": 619,
+      "parent_break_count": 4597,
+      "net_correct_gain": -3978
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6476071428571428,
+      "macro_f1": 0.1310197328015376,
+      "macro_accuracy": 0.6476071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2366,
+          7217,
+          227,
+          18133,
+          19,
+          38
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 3.7747693061828613,
+      "parent_fix_count": 770,
+      "parent_break_count": 922,
+      "net_correct_gain": -152
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9986428571428572,
+      "macro_f1": 0.16655349463326305,
+      "macro_accuracy": 0.9986428571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          5,
+          13,
+          11,
+          27962,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.00915535818785429,
+      "parent_fix_count": 23,
+      "parent_break_count": 10,
+      "net_correct_gain": 13
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9485,
+      "macro_f1": 0.16226156872808142,
+      "macro_accuracy": 0.9485,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          15,
+          6,
+          148,
+          21,
+          1252,
+          26558
+        ]
+      ],
+      "NLL": 0.17191004753112793,
+      "parent_fix_count": 202,
+      "parent_break_count": 1041,
+      "net_correct_gain": -839
     }
   ],
   "day_records": [
@@ -22891,6 +27605,542 @@
       "net_correct_gain": -235
     },
     {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8085,
+      "macro_f1": 0.805607317187699,
+      "macro_accuracy": 0.8085,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6388,
+          6,
+          217,
+          382,
+          6,
+          1
+        ],
+        [
+          130,
+          3698,
+          12,
+          3134,
+          23,
+          3
+        ],
+        [
+          125,
+          11,
+          5428,
+          63,
+          92,
+          1281
+        ],
+        [
+          766,
+          1487,
+          79,
+          4661,
+          7,
+          0
+        ],
+        [
+          0,
+          1,
+          4,
+          4,
+          6990,
+          1
+        ],
+        [
+          1,
+          0,
+          147,
+          3,
+          57,
+          6792
+        ]
+      ],
+      "NLL": 1.4548684358596802,
+      "parent_fix_count": 637,
+      "parent_break_count": 988,
+      "net_correct_gain": -351
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.829952380952381,
+      "macro_f1": 0.8266220599162457,
+      "macro_accuracy": 0.8299523809523811,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6841,
+          14,
+          41,
+          97,
+          7,
+          0
+        ],
+        [
+          75,
+          3991,
+          2,
+          2925,
+          4,
+          3
+        ],
+        [
+          15,
+          49,
+          6100,
+          101,
+          11,
+          724
+        ],
+        [
+          890,
+          1910,
+          129,
+          4043,
+          0,
+          28
+        ],
+        [
+          2,
+          1,
+          8,
+          4,
+          6985,
+          0
+        ],
+        [
+          0,
+          0,
+          10,
+          2,
+          90,
+          6898
+        ]
+      ],
+      "NLL": 1.4382132291793823,
+      "parent_fix_count": 918,
+      "parent_break_count": 1107,
+      "net_correct_gain": -189
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7614285714285715,
+      "macro_f1": 0.7560745566495907,
+      "macro_accuracy": 0.7614285714285715,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6971,
+          8,
+          13,
+          7,
+          1,
+          0
+        ],
+        [
+          160,
+          3288,
+          7,
+          3528,
+          11,
+          6
+        ],
+        [
+          977,
+          150,
+          4706,
+          315,
+          118,
+          734
+        ],
+        [
+          962,
+          2327,
+          14,
+          3691,
+          3,
+          3
+        ],
+        [
+          2,
+          1,
+          11,
+          1,
+          6984,
+          1
+        ],
+        [
+          0,
+          2,
+          54,
+          6,
+          598,
+          6340
+        ]
+      ],
+      "NLL": 1.964564561843872,
+      "parent_fix_count": 1201,
+      "parent_break_count": 1737,
+      "net_correct_gain": -536
+    },
+    {
+      "row_id": "O_DIRECT-s2026092703",
+      "arm": "O_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8371904761904762,
+      "macro_f1": 0.8326068736862035,
+      "macro_accuracy": 0.8371904761904762,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6887,
+          26,
+          8,
+          77,
+          1,
+          1
+        ],
+        [
+          57,
+          4074,
+          29,
+          2818,
+          17,
+          5
+        ],
+        [
+          198,
+          51,
+          4932,
+          10,
+          811,
+          998
+        ],
+        [
+          346,
+          1206,
+          57,
+          5368,
+          1,
+          22
+        ],
+        [
+          2,
+          0,
+          4,
+          0,
+          6994,
+          0
+        ],
+        [
+          6,
+          2,
+          26,
+          7,
+          52,
+          6907
+        ]
+      ],
+      "NLL": 1.2594246864318848,
+      "parent_fix_count": 1408,
+      "parent_break_count": 1461,
+      "net_correct_gain": -53
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8051190476190476,
+      "macro_f1": 0.8034481731503181,
+      "macro_accuracy": 0.8051190476190476,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6218,
+          32,
+          259,
+          486,
+          5,
+          0
+        ],
+        [
+          100,
+          3655,
+          25,
+          3208,
+          9,
+          3
+        ],
+        [
+          712,
+          49,
+          5387,
+          157,
+          89,
+          606
+        ],
+        [
+          574,
+          1446,
+          176,
+          4797,
+          7,
+          0
+        ],
+        [
+          2,
+          1,
+          3,
+          1,
+          6992,
+          1
+        ],
+        [
+          4,
+          2,
+          173,
+          4,
+          51,
+          6766
+        ]
+      ],
+      "NLL": 1.5225523710250854,
+      "parent_fix_count": 830,
+      "parent_break_count": 1323,
+      "net_correct_gain": -493
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8011428571428572,
+      "macro_f1": 0.7995517344902224,
+      "macro_accuracy": 0.8011428571428572,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6653,
+          18,
+          205,
+          105,
+          19,
+          0
+        ],
+        [
+          38,
+          3960,
+          0,
+          2999,
+          3,
+          0
+        ],
+        [
+          24,
+          55,
+          5354,
+          503,
+          14,
+          1050
+        ],
+        [
+          737,
+          2009,
+          90,
+          4143,
+          2,
+          19
+        ],
+        [
+          2,
+          4,
+          6,
+          3,
+          6985,
+          0
+        ],
+        [
+          1,
+          0,
+          14,
+          3,
+          429,
+          6553
+        ]
+      ],
+      "NLL": 1.5718368291854858,
+      "parent_fix_count": 984,
+      "parent_break_count": 2383,
+      "net_correct_gain": -1399
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7596190476190476,
+      "macro_f1": 0.754930489545469,
+      "macro_accuracy": 0.7596190476190476,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6949,
+          11,
+          26,
+          13,
+          1,
+          0
+        ],
+        [
+          67,
+          3269,
+          10,
+          3643,
+          5,
+          6
+        ],
+        [
+          1023,
+          267,
+          4319,
+          566,
+          79,
+          746
+        ],
+        [
+          844,
+          2226,
+          9,
+          3915,
+          4,
+          2
+        ],
+        [
+          1,
+          2,
+          10,
+          2,
+          6984,
+          1
+        ],
+        [
+          1,
+          4,
+          25,
+          6,
+          496,
+          6468
+        ]
+      ],
+      "NLL": 2.03605055809021,
+      "parent_fix_count": 1327,
+      "parent_break_count": 1939,
+      "net_correct_gain": -612
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "arm": "O_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8238333333333333,
+      "macro_f1": 0.8183771940067731,
+      "macro_accuracy": 0.8238333333333333,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6867,
+          38,
+          10,
+          82,
+          2,
+          1
+        ],
+        [
+          63,
+          3958,
+          17,
+          2949,
+          12,
+          1
+        ],
+        [
+          125,
+          778,
+          4341,
+          9,
+          753,
+          994
+        ],
+        [
+          280,
+          1128,
+          66,
+          5515,
+          1,
+          10
+        ],
+        [
+          2,
+          0,
+          2,
+          0,
+          6996,
+          0
+        ],
+        [
+          3,
+          5,
+          20,
+          5,
+          43,
+          6924
+        ]
+      ],
+      "NLL": 1.4089949131011963,
+      "parent_fix_count": 1320,
+      "parent_break_count": 1934,
+      "net_correct_gain": -614
+    },
+    {
       "row_id": "R_CE-s2026092703",
       "arm": "R_CE",
       "model_seed": 2026092703,
@@ -23157,6 +28407,810 @@
       "parent_fix_count": 1185,
       "parent_break_count": 957,
       "net_correct_gain": 228
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8174285714285714,
+      "macro_f1": 0.8150317578141019,
+      "macro_accuracy": 0.8174285714285713,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6384,
+          8,
+          186,
+          417,
+          4,
+          1
+        ],
+        [
+          135,
+          3728,
+          29,
+          3084,
+          19,
+          5
+        ],
+        [
+          98,
+          14,
+          5719,
+          53,
+          70,
+          1046
+        ],
+        [
+          760,
+          1498,
+          51,
+          4684,
+          7,
+          0
+        ],
+        [
+          1,
+          1,
+          4,
+          3,
+          6989,
+          2
+        ],
+        [
+          2,
+          2,
+          131,
+          3,
+          34,
+          6828
+        ]
+      ],
+      "NLL": 1.4342578649520874,
+      "parent_fix_count": 807,
+      "parent_break_count": 783,
+      "net_correct_gain": 24
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.832047619047619,
+      "macro_f1": 0.8287477517490816,
+      "macro_accuracy": 0.832047619047619,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6852,
+          12,
+          21,
+          103,
+          11,
+          1
+        ],
+        [
+          83,
+          4143,
+          3,
+          2766,
+          3,
+          2
+        ],
+        [
+          17,
+          53,
+          5961,
+          96,
+          10,
+          863
+        ],
+        [
+          893,
+          1928,
+          116,
+          4037,
+          1,
+          25
+        ],
+        [
+          2,
+          2,
+          7,
+          4,
+          6985,
+          0
+        ],
+        [
+          3,
+          0,
+          8,
+          0,
+          21,
+          6968
+        ]
+      ],
+      "NLL": 1.4706542491912842,
+      "parent_fix_count": 1056,
+      "parent_break_count": 1157,
+      "net_correct_gain": -101
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.763095238095238,
+      "macro_f1": 0.7575595670052979,
+      "macro_accuracy": 0.7630952380952382,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6969,
+          11,
+          12,
+          8,
+          0,
+          0
+        ],
+        [
+          169,
+          3403,
+          7,
+          3405,
+          10,
+          6
+        ],
+        [
+          1009,
+          250,
+          4661,
+          183,
+          35,
+          862
+        ],
+        [
+          972,
+          2371,
+          13,
+          3639,
+          2,
+          3
+        ],
+        [
+          2,
+          3,
+          9,
+          3,
+          6982,
+          1
+        ],
+        [
+          0,
+          4,
+          64,
+          6,
+          530,
+          6396
+        ]
+      ],
+      "NLL": 1.9725948572158813,
+      "parent_fix_count": 1291,
+      "parent_break_count": 1757,
+      "net_correct_gain": -466
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "arm": "R_EMA",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8309047619047619,
+      "macro_f1": 0.8259387602323899,
+      "macro_accuracy": 0.8309047619047618,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6899,
+          20,
+          6,
+          72,
+          1,
+          2
+        ],
+        [
+          73,
+          4115,
+          23,
+          2766,
+          16,
+          7
+        ],
+        [
+          307,
+          361,
+          4686,
+          9,
+          634,
+          1003
+        ],
+        [
+          401,
+          1234,
+          87,
+          5260,
+          1,
+          17
+        ],
+        [
+          0,
+          1,
+          1,
+          2,
+          6995,
+          1
+        ],
+        [
+          5,
+          3,
+          23,
+          6,
+          20,
+          6943
+        ]
+      ],
+      "NLL": 1.3018100261688232,
+      "parent_fix_count": 1322,
+      "parent_break_count": 1639,
+      "net_correct_gain": -317
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8154523809523809,
+      "macro_f1": 0.8129448200009676,
+      "macro_accuracy": 0.8154523809523809,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6388,
+          9,
+          212,
+          386,
+          4,
+          1
+        ],
+        [
+          139,
+          3726,
+          18,
+          3092,
+          20,
+          5
+        ],
+        [
+          286,
+          14,
+          5659,
+          72,
+          69,
+          900
+        ],
+        [
+          770,
+          1509,
+          66,
+          4648,
+          7,
+          0
+        ],
+        [
+          0,
+          1,
+          4,
+          4,
+          6989,
+          2
+        ],
+        [
+          2,
+          2,
+          96,
+          4,
+          57,
+          6839
+        ]
+      ],
+      "NLL": 1.4593899250030518,
+      "parent_fix_count": 778,
+      "parent_break_count": 837,
+      "net_correct_gain": -59
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8358095238095238,
+      "macro_f1": 0.8325497648294009,
+      "macro_accuracy": 0.8358095238095239,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6872,
+          11,
+          26,
+          82,
+          8,
+          1
+        ],
+        [
+          76,
+          4087,
+          2,
+          2828,
+          4,
+          3
+        ],
+        [
+          15,
+          54,
+          6149,
+          106,
+          10,
+          666
+        ],
+        [
+          856,
+          1934,
+          139,
+          4044,
+          1,
+          26
+        ],
+        [
+          3,
+          1,
+          7,
+          4,
+          6985,
+          0
+        ],
+        [
+          2,
+          0,
+          9,
+          1,
+          21,
+          6967
+        ]
+      ],
+      "NLL": 1.3949294090270996,
+      "parent_fix_count": 987,
+      "parent_break_count": 930,
+      "net_correct_gain": 57
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7657857142857143,
+      "macro_f1": 0.760685238225366,
+      "macro_accuracy": 0.7657857142857143,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6971,
+          9,
+          12,
+          8,
+          0,
+          0
+        ],
+        [
+          163,
+          3355,
+          6,
+          3460,
+          10,
+          6
+        ],
+        [
+          1031,
+          176,
+          4660,
+          336,
+          86,
+          711
+        ],
+        [
+          956,
+          2335,
+          11,
+          3691,
+          3,
+          4
+        ],
+        [
+          2,
+          4,
+          7,
+          2,
+          6984,
+          1
+        ],
+        [
+          0,
+          2,
+          60,
+          6,
+          430,
+          6502
+        ]
+      ],
+      "NLL": 1.9291837215423584,
+      "parent_fix_count": 1247,
+      "parent_break_count": 1600,
+      "net_correct_gain": -353
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "arm": "R_DIRECT",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8330238095238095,
+      "macro_f1": 0.8279561044392606,
+      "macro_accuracy": 0.8330238095238095,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6882,
+          27,
+          6,
+          82,
+          1,
+          2
+        ],
+        [
+          63,
+          4144,
+          25,
+          2742,
+          17,
+          9
+        ],
+        [
+          339,
+          157,
+          4740,
+          25,
+          762,
+          977
+        ],
+        [
+          352,
+          1204,
+          137,
+          5289,
+          1,
+          17
+        ],
+        [
+          1,
+          1,
+          0,
+          1,
+          6996,
+          1
+        ],
+        [
+          5,
+          3,
+          20,
+          6,
+          30,
+          6936
+        ]
+      ],
+      "NLL": 1.2559685707092285,
+      "parent_fix_count": 1220,
+      "parent_break_count": 1448,
+      "net_correct_gain": -228
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8121904761904762,
+      "macro_f1": 0.8111529059040317,
+      "macro_accuracy": 0.8121904761904761,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6117,
+          17,
+          282,
+          581,
+          3,
+          0
+        ],
+        [
+          109,
+          3680,
+          2,
+          3192,
+          13,
+          4
+        ],
+        [
+          294,
+          53,
+          5613,
+          145,
+          85,
+          810
+        ],
+        [
+          486,
+          1504,
+          120,
+          4883,
+          7,
+          0
+        ],
+        [
+          1,
+          0,
+          1,
+          3,
+          6994,
+          1
+        ],
+        [
+          6,
+          2,
+          100,
+          1,
+          66,
+          6825
+        ]
+      ],
+      "NLL": 1.6456897258758545,
+      "parent_fix_count": 1080,
+      "parent_break_count": 1276,
+      "net_correct_gain": -196
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8015238095238095,
+      "macro_f1": 0.8005407532488406,
+      "macro_accuracy": 0.8015238095238096,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6681,
+          11,
+          65,
+          218,
+          25,
+          0
+        ],
+        [
+          89,
+          4029,
+          1,
+          2876,
+          4,
+          1
+        ],
+        [
+          15,
+          35,
+          5384,
+          573,
+          10,
+          983
+        ],
+        [
+          739,
+          1960,
+          88,
+          4184,
+          4,
+          25
+        ],
+        [
+          3,
+          3,
+          5,
+          3,
+          6986,
+          0
+        ],
+        [
+          3,
+          0,
+          10,
+          6,
+          581,
+          6400
+        ]
+      ],
+      "NLL": 1.6306015253067017,
+      "parent_fix_count": 1147,
+      "parent_break_count": 2530,
+      "net_correct_gain": -1383
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7618571428571429,
+      "macro_f1": 0.7587953735123368,
+      "macro_accuracy": 0.7618571428571429,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6948,
+          10,
+          16,
+          24,
+          0,
+          2
+        ],
+        [
+          86,
+          3489,
+          8,
+          3404,
+          5,
+          8
+        ],
+        [
+          1017,
+          257,
+          4365,
+          799,
+          94,
+          468
+        ],
+        [
+          864,
+          2381,
+          9,
+          3738,
+          6,
+          2
+        ],
+        [
+          2,
+          2,
+          6,
+          3,
+          6986,
+          1
+        ],
+        [
+          0,
+          2,
+          26,
+          7,
+          493,
+          6472
+        ]
+      ],
+      "NLL": 2.132251262664795,
+      "parent_fix_count": 1438,
+      "parent_break_count": 1956,
+      "net_correct_gain": -518
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "arm": "R_DIRECT_HI",
+      "model_seed": 2026092703,
+      "stage": "phase1_stage2_teacher_factorial",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8135238095238095,
+      "macro_f1": 0.8077182408478255,
+      "macro_accuracy": 0.8135238095238096,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6848,
+          30,
+          8,
+          112,
+          1,
+          1
+        ],
+        [
+          60,
+          3984,
+          23,
+          2908,
+          14,
+          11
+        ],
+        [
+          331,
+          766,
+          4151,
+          14,
+          736,
+          1002
+        ],
+        [
+          277,
+          1372,
+          10,
+          5328,
+          2,
+          11
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          6996,
+          1
+        ],
+        [
+          6,
+          2,
+          12,
+          7,
+          112,
+          6861
+        ]
+      ],
+      "NLL": 1.6009039878845215,
+      "parent_fix_count": 1192,
+      "parent_break_count": 2239,
+      "net_correct_gain": -1047
     }
   ],
   "parent_records": [
@@ -26799,6 +32853,116 @@
       }
     },
     {
+      "row_id": "O_DIRECT-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.132717514992692
+        },
+        "wall_seconds": 6.307145067024976,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1726025728
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 556.0822310550138,
+          "peak_cuda_memory_bytes": 333444096,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4945478,
+          "auxiliary_saved_bytes": 522902,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "O_DIRECT_HI-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.294077605009079
+        },
+        "wall_seconds": 6.463439606013708,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1721675776
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 554.5775508258957,
+          "peak_cuda_memory_bytes": 333444096,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4945478,
+          "auxiliary_saved_bytes": 522902,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
       "row_id": "R_CE-s2026092703",
       "prediction": {
         "status": "PREDICTIONS_COMPLETE",
@@ -26852,13 +33016,178 @@
         "training_flops": null,
         "scope": "Shared GPU measured wall cost"
       }
+    },
+    {
+      "row_id": "R_EMA-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.151119353016838
+        },
+        "wall_seconds": 6.232330405036919,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1711665152
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 605.5024760219967,
+          "peak_cuda_memory_bytes": 336979456,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 844754,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4945414,
+          "auxiliary_saved_bytes": 3984844,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "R_DIRECT-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.291078220005147
+        },
+        "wall_seconds": 6.397715741069987,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1711374336
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 564.0674060650636,
+          "peak_cuda_memory_bytes": 333444096,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4945414,
+          "auxiliary_saved_bytes": 522902,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
+    },
+    {
+      "row_id": "R_DIRECT_HI-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.285653361002915
+        },
+        "wall_seconds": 6.457770422915928,
+        "peak_cuda_allocated_bytes": 91523584,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1711742976
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 200,
+        "incremental_epochs": 40,
+        "incremental_identity_updates": 8880,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 565.5706582539715,
+          "peak_cuda_memory_bytes": 333444096,
+          "trainable_parameters": 177025,
+          "total_parameters": 844754,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "conditional_snapshot_parameters": 0,
+          "main_L_packets": 1136640,
+          "U_identity_packets": 1022976,
+          "parent_training_epochs": 200,
+          "incremental_epochs": 40,
+          "optimizer_state_tensor_bytes": 1416468,
+          "auxiliary_optimizer_state_tensor_bytes": 0,
+          "checkpoint_bytes": 4945414,
+          "auxiliary_saved_bytes": 522902,
+          "conditional_snapshot_saved_bytes": 0,
+          "frequency_master_and_moment_dtype": null,
+          "physical_L_packets": 0,
+          "physical_U_packets": 0,
+          "teacher_identity_packets": 1022976,
+          "teacher_probability_method_batch_calls": 8850,
+          "teacher_diagnostic_packets": 218700,
+          "conditional_fit_snapshot_count": 0
+        },
+        "shared_IQ_preparation_reused": true,
+        "old_fitted_auxiliaries_reused": false,
+        "training_flops": null,
+        "scope": "Shared GPU measured wall cost"
+      }
     }
   ],
   "complete_arms_reaching_84": [],
   "checks": {
     "confusion_recount": true,
     "source_config_budget": true,
-    "row_aggregate_agreement": false
+    "row_aggregate_agreement": true
   },
   "target_feedback_to_training": false
 }

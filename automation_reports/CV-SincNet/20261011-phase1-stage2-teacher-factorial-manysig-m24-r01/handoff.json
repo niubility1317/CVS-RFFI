@@ -1,13 +1,14 @@
 {
-  "goal": "clean three-seed mean >=84, not met",
-  "status": "RUNNING",
+  "goal": "clean three-seed mean >=84; NOT MET",
+  "status": "ANALYZED",
   "run": "20261011-phase1-stage2-teacher-factorial-manysig-m24-r01",
   "execution_commit": "cefa563d861b49a9a7d20dd3682234d28d1ecf88",
-  "dispatcher_pid": 4115088,
-  "launched": 23,
-  "pending": 1,
-  "next": "Verify all active training counters including step889 target init; let fixed rows train40 and auto-clean; aggregate all24. Preserve compression extra study.",
-  "other_run": "20261011-phase1-ce-epoch-compression-manysig-m6-r01",
-  "epoch_exception": "clean three-seed mean decrease <=0.3pp only for epoch budget exploration",
-  "healthy_policy": "no stop/restart/hot change"
+  "trained": 24,
+  "tested": 24,
+  "full_steps": 213120,
+  "target_scores_consumed": true,
+  "source_cross_rx_diagnostic": "20261011-phase1-cross-rx-anchor-manysig-m3-r01 ANALYZED3/3",
+  "compression": "20261011-phase1-ce-epoch-compression-manysig-m6-r01 RUNNING; preserve healthy jobs",
+  "user_latest": "Current same-source V small gains no longer primary method evidence; health checks only, not unknown-RX claims",
+  "next": "Monitor E100/E150 auto-clean; no E125. Continue causal mechanism design without target-feedback tuning. Reconsider genuine source-RX-heldout parent only with explicit initialization plan."
 }

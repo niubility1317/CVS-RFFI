@@ -89,11 +89,12 @@ def summaries(value):
                     diffs=[dict(step=x['step'],loss_difference=x['metrics']['total_loss']-y['metrics']['total_loss']) for x,y in zip(left['steps'][:888],right['steps'][:888]) if x['metrics']['total_loss']!=y['metrics']['total_loss']]
                     warmup=dict(first_nonzero=diffs[0] if diffs else None,max_absolute_difference=max((abs(x['loss_difference']) for x in diffs),default=0),deterministic_CUDA=left['resolved']['backend_flags']['cudnn_deterministic'],interpretation='Same seeded recipe is not bitwise deterministic; pre-treatment numerical drift prevents attributing tiny individual pair differences entirely to EMA')
                 paired.append(dict(seed=seed,left=left['row_id'],right=right['row_id'],epochs=comparisons,warmup_numerical_drift=warmup))
-    return dict(run_id=d.RUN,read_at=value['read_at'],target_access=False,all_available_step_records=sum(r['complete_steps'] for r in rows),rows=rows,paired=paired,scope='Partial live source trajectories; not final results or target feedback')
+    complete=len(rows)==24 and all(r['source_complete'] and r['complete_steps']==8880 and r['complete_epochs']==40 for r in rows)
+    return dict(run_id=d.RUN,read_at=value['read_at'],target_access=False,all_available_step_records=sum(r['complete_steps'] for r in rows),rows=rows,paired=paired,complete_source_matrix=complete,scope='Complete source trajectories; no target feedback' if complete else 'Partial live source trajectories; not final results or target feedback')
 
 
 def report(summary,artifact):
-    rows=summary['rows'];text=['# 续训实际更新轨迹：源域中期检查','',f"读取时间（Unix）：{summary['read_at']}。完整解析当前 {len(rows)}/24 行可用日志，共 {summary['all_available_step_records']} 条完整逐步记录；尚未启动行不补值。未读取目标预测或评分。",'',
+    rows=summary['rows'];title='完整源域分析' if summary.get('complete_source_matrix') else '源域中期检查';text=['# 续训实际更新轨迹：'+title,'',f"读取时间（Unix）：{summary['read_at']}。完整解析当前 {len(rows)}/24 行可用日志，共 {summary['all_available_step_records']} 条完整逐步记录；尚未启动行不补值。未读取目标预测或评分。",'',
     '本报告只反映采样时刻的完整可用前缀。对照比较使用相同 seed、相同 epoch，不比较不同训练进度的最新值。参数相对 L2 位移排除原生 Hz 参数，不等于特征位移，也不证明泛化提升。','',
     '|行|完整 epoch|完整逐步记录|末次 V准确率 (%)|最差源 RX (%)|','|---|---:|---:|---:|---:|']
     for r in rows:
@@ -116,8 +117,16 @@ def report(summary,artifact):
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--output',required=True,type=Path);args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--output',required=True,type=Path);parser.add_argument('--compact-snapshot',action='store_true');args=parser.parse_args()
     blob,value=capture();summary=summaries(value);folder=args.output;folder.mkdir(parents=True,exist_ok=True);(folder/'evidence').mkdir(exist_ok=True)
+    if args.compact_snapshot:
+        # All records were parsed and summarized before omitting large per-U arrays.
+        # Original full logs remain at each registered remote source path.
+        for row in value['rows']:
+            for step in row['steps']:
+                for key in ('U_predictions','U_accepted_mask'):step.get('details',{}).pop(key,None)
+        value['snapshot_omissions']=['details.U_predictions','details.U_accepted_mask'];value['full_original_logs']=d.BASE.as_posix()+'/<row>/source/step_metrics.jsonl.gz'
+        blob=gzip.compress(json.dumps(value,separators=(',',':'),allow_nan=False).encode())
     name=f"source_trajectory_{int(value['read_at'])}.json.gz";path=folder/'evidence'/name
     with path.open('xb') as f:f.write(blob)
     d.write(folder/'evidence/source_trajectory_summary.json',summary);(folder/'source_trajectory.md').write_text(report(summary,name),encoding='utf-8')
