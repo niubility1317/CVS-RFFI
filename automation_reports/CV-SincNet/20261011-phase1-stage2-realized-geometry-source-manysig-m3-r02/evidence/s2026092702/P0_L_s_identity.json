@@ -1,0 +1,104 @@
+{
+  "actual": {
+    "count": 6300,
+    "accuracy": 1.0,
+    "errors": 0,
+    "margin_mean": 15.459135061153146,
+    "mean_ce": 0.00037132167430715106,
+    "receiver": {
+      "1": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 17.01663310290193
+      },
+      "3": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 13.366616974846705
+      },
+      "4": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 16.488803324439772
+      },
+      "6": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 16.77836035209243
+      },
+      "8": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 13.645261551484893
+      }
+    }
+  },
+  "current_features_parent_head": {
+    "count": 6300,
+    "accuracy": 1.0,
+    "errors": 0,
+    "margin_mean": 15.459135061153146,
+    "mean_ce": 0.00037132167430715106,
+    "receiver": {
+      "1": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 17.01663310290193
+      },
+      "3": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 13.366616974846705
+      },
+      "4": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 16.488803324439772
+      },
+      "6": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 16.77836035209243
+      },
+      "8": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 13.645261551484893
+      }
+    }
+  },
+  "parent_features_current_head": {
+    "count": 6300,
+    "accuracy": 1.0,
+    "errors": 0,
+    "margin_mean": 15.459135061153146,
+    "mean_ce": 0.00037132167430715106,
+    "receiver": {
+      "1": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 17.01663310290193
+      },
+      "3": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 13.366616974846705
+      },
+      "4": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 16.488803324439772
+      },
+      "6": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 16.77836035209243
+      },
+      "8": {
+        "count": 1260,
+        "accuracy": 1.0,
+        "margin_mean": 13.645261551484893
+      }
+    }
+  }
+}

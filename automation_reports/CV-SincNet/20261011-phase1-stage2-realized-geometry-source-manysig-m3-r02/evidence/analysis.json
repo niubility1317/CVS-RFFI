@@ -1,0 +1,201 @@
+{
+  "status": "VERIFIED",
+  "completion": {
+    "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+    "rows_completed": 3,
+    "identity_updates": 0,
+    "target_access": false,
+    "models": 15,
+    "forwarded_models": 12,
+    "source_packets_forwarded": 399600,
+    "elapsed_seconds": 205.86966457997914,
+    "execution_commit": "3e24e25205df92b53279fd764709f95b1a5940fc"
+  },
+  "geometry_seed_mean": [
+    {
+      "role": "L_s",
+      "arm": "P0",
+      "progress_coefficient": 0.0,
+      "error_over_parent": 1.0,
+      "target_energy": 4.637384415027552e-05,
+      "update_energy": 0.0,
+      "anchor_term": 0.0,
+      "cross_term": 0.0,
+      "constant_term": 2.318692207513776e-05,
+      "off_target_energy": 0.0,
+      "population_risk": 2.318692207513776e-05,
+      "off_target_fraction": null
+    },
+    {
+      "role": "L_s",
+      "arm": "B0",
+      "progress_coefficient": 1.3406431518553694,
+      "error_over_parent": 33.93812717504387,
+      "target_energy": 4.637384415027552e-05,
+      "update_energy": 0.0016771712694670952,
+      "anchor_term": 0.0008385856347335476,
+      "cross_term": -6.437931233098405e-05,
+      "constant_term": 2.318692207513776e-05,
+      "off_target_energy": 0.0015180550643521754,
+      "population_risk": 0.0007973932444777008,
+      "off_target_fraction": 0.9093300317153145
+    },
+    {
+      "role": "L_s",
+      "arm": "B2",
+      "progress_coefficient": 1.241504021945962,
+      "error_over_parent": 33.39050334916935,
+      "target_energy": 4.637384415027552e-05,
+      "update_energy": 0.0016462451405110873,
+      "anchor_term": 0.0008231225702555437,
+      "cross_term": -5.9418503902442314e-05,
+      "constant_term": 2.318692207513776e-05,
+      "off_target_energy": 0.0015018647628027271,
+      "population_risk": 0.0007868909884282387,
+      "off_target_fraction": 0.9144241124281772
+    },
+    {
+      "role": "L_s",
+      "arm": "B3",
+      "progress_coefficient": 0.8227086310806558,
+      "error_over_parent": 17.775324280870617,
+      "target_energy": 4.637384415027552e-05,
+      "update_energy": 0.0008401968035345744,
+      "anchor_term": 0.0004200984017672872,
+      "cross_term": -3.888365718819875e-05,
+      "constant_term": 2.318692207513776e-05,
+      "off_target_energy": 0.0007738860775663986,
+      "population_risk": 0.00040440166665422616,
+      "off_target_fraction": 0.9226533637663744
+    },
+    {
+      "role": "L_s",
+      "arm": "S3",
+      "progress_coefficient": 0.5749697008413982,
+      "error_over_parent": 16.860445222332487,
+      "target_energy": 4.637384415027552e-05,
+      "update_energy": 0.0007636759261531012,
+      "anchor_term": 0.0003818379630765506,
+      "cross_term": -2.6112237734541573e-05,
+      "constant_term": 2.318692207513776e-05,
+      "off_target_energy": 0.0007263000505788906,
+      "population_risk": 0.0003789126474171466,
+      "off_target_fraction": 0.9501566620717183
+    },
+    {
+      "role": "V",
+      "arm": "P0",
+      "progress_coefficient": 0.0,
+      "error_over_parent": 1.0,
+      "target_energy": 4.637384415027552e-05,
+      "update_energy": 0.0,
+      "anchor_term": 0.0,
+      "cross_term": 0.0,
+      "constant_term": 2.318692207513776e-05,
+      "off_target_energy": 0.0,
+      "population_risk": 2.318692207513776e-05,
+      "off_target_fraction": null
+    },
+    {
+      "role": "V",
+      "arm": "B0",
+      "progress_coefficient": 1.3826777111284314,
+      "error_over_parent": 34.89169980593949,
+      "target_energy": 4.637384415027552e-05,
+      "update_energy": 0.0017262362506729114,
+      "anchor_term": 0.0008631181253364557,
+      "cross_term": -6.61694506054635e-05,
+      "constant_term": 2.318692207513776e-05,
+      "off_target_energy": 0.0015570976601693401,
+      "population_risk": 0.0008201355968061301,
+      "off_target_fraction": 0.9061936205708241
+    },
+    {
+      "role": "V",
+      "arm": "B2",
+      "progress_coefficient": 1.2799159620795466,
+      "error_over_parent": 34.3085419798869,
+      "target_energy": 4.637384415027552e-05,
+      "update_energy": 0.0016937969790299457,
+      "anchor_term": 0.0008468984895149728,
+      "cross_term": -6.114312015090006e-05,
+      "constant_term": 2.318692207513776e-05,
+      "off_target_energy": 0.001540641611755377,
+      "population_risk": 0.0008089422914392108,
+      "off_target_fraction": 0.9119844395115119
+    },
+    {
+      "role": "V",
+      "arm": "B3",
+      "progress_coefficient": 0.8536107551594414,
+      "error_over_parent": 18.136361769558693,
+      "target_energy": 4.637384415027552e-05,
+      "update_energy": 0.0008596769366497675,
+      "anchor_term": 0.00042983846832488374,
+      "cross_term": -4.024531112768597e-05,
+      "constant_term": 2.318692207513776e-05,
+      "off_target_energy": 0.0007890421957161492,
+      "population_risk": 0.0004127800792723355,
+      "off_target_fraction": 0.9194701186269034
+    },
+    {
+      "role": "V",
+      "arm": "S3",
+      "progress_coefficient": 0.6045280761011331,
+      "error_over_parent": 17.137972066202668,
+      "target_energy": 4.637384415027552e-05,
+      "update_energy": 0.0007789396542625821,
+      "anchor_term": 0.00038946982713129107,
+      "cross_term": -2.7413007333706792e-05,
+      "constant_term": 2.318692207513776e-05,
+      "off_target_energy": 0.0007388399924825162,
+      "population_risk": 0.000385243741872722,
+      "off_target_fraction": 0.9475699323510793
+    }
+  ],
+  "paired": [
+    {
+      "seed": 2026092701,
+      "role": "L_s",
+      "risk_reduction_fraction": 0.3747255492687769,
+      "progress_change": -0.30446157880901115
+    },
+    {
+      "seed": 2026092701,
+      "role": "V",
+      "risk_reduction_fraction": 0.3787309180678372,
+      "progress_change": -0.308371184064122
+    },
+    {
+      "seed": 2026092702,
+      "role": "L_s",
+      "risk_reduction_fraction": 0.5383094740924195,
+      "progress_change": -1.0489946648865363
+    },
+    {
+      "seed": 2026092702,
+      "role": "V",
+      "risk_reduction_fraction": 0.5454879738908776,
+      "progress_change": -1.067657242587338
+    },
+    {
+      "seed": 2026092703,
+      "role": "L_s",
+      "risk_reduction_fraction": 0.5622568892210679,
+      "progress_change": -0.6461467196181442
+    },
+    {
+      "seed": 2026092703,
+      "role": "V",
+      "risk_reduction_fraction": 0.5663748199493412,
+      "progress_change": -0.6501352312837803
+    }
+  ],
+  "validation": {
+    "full_logs_parsed": 15,
+    "geometry_records": 108,
+    "identity_scores": 90,
+    "finite_metrics": true
+  },
+  "interpretation": "Unweighted mean of per-seed ratios; actual population risks use P0, contrasts are incremental only; source evidence, no target read"
+}

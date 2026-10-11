@@ -50,3 +50,12 @@ Run `20261011-phase1-stage2-relation-identifiability-source-manysig-m3-r01`，�
 `20261011-phase1-stage2-stable-rx-manysig-m3-r01` 三行E40/8880和自动clean全部完成，完整120epoch/26640step核验。S3均值80.946627%，相对B0 +0.033333pp（1/3正），性能目标状态NOT_MET。全部按预登记完成，不因结果重跑。报告 automation_reports/CV-SincNet/20261011-phase1-stage2-stable-rx-manysig-m3-r01/report.md，原始权重和日志仍在N607原run；禁止重复发布或预测。报告与测试均为证据，不是之后调参的输入。下一步须由源证据决定，目标未完成时保持active。
 
 源端补充：全部30个审计点R梯度非零，全部关系活跃；八视图固定源V压力日志已完整聚合，S3相比B0在temporal/LTL约+1.08/+1.53pp。下一步应核查真实源组差目标实现率和R锚定分量，而非依据target改权重。目标仍active；未发布新的后续训练或诊断。
+
+
+## R 实际组差诊断完成（当前交接）
+
+20261011-phase1-stage2-realized-geometry-source-manysig-m3-r02 已完成并独立读回VERIFIED：执行3e24e25205df92b53279fd764709f95b1a5940fc，CPU2线程205.870秒，12模型399600源包前向，15模型含缓存P0，身份更新0/target访问0，进程已退出。r01错误quality_bin==0前置检查失败已保留；实际90cell每70，存在单占用(2,1)名义分箱，r02按完整真实索引检查。8项checks通过。
+
+源结果：S3相对B2在V三seed完整R风险降低37.8731/54.5488/56.6375%，但方向进度全部更小。平均V保持项降低0.000457429，方向交叉项增加0.000033730，净风险降低0.000423699；这是终点损失分解，不是梯度因果分解。S3 V方向进度0.604528，误差/P0为17.137972，约94.76%位移能量偏离每对目标；不能称完全解耦。L_s同向结论。源头交换不能推出部署候选。完整report/geometry_metrics.csv/head_swaps.csv/108记录及每seed全部关系已保存。
+
+下一步：落实Z3匹配保持对照，只对S3固定payload消费时alpha=0；保留原c、关系抽样、方差修正、损失权重和全部LT/keep，不能重拟合可靠度或跳过R。三个原始CE E200独立出发E40/8880，4总进程/GPU，自动clean；实现/登记/检查/审查/推送后再发布，尚未启动。它回答R方向是否有独立增量，不预先承诺性能提升。所有新设计依据源证据，不用target调参。目标仍active，三seed84%未达到。
