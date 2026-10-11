@@ -1,0 +1,183 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "synthetic_only": true,
+  "target_access": false,
+  "cases": [
+    {
+      "ramp": 0.0,
+      "positive": {
+        "enabled": true,
+        "eligible_packets": 7,
+        "changed_packets": 0,
+        "changed_ratio": 0.0,
+        "movement_mean": 0.0,
+        "movement_max": 0.0,
+        "delta_ratio": 0.0,
+        "donors": [
+          1,
+          0,
+          3,
+          2,
+          5,
+          6,
+          5
+        ],
+        "transform": "bounded_logstats_v1",
+        "direction": 1,
+        "mean_shift_in_sigma_max": 0.0,
+        "scale_ratio_min": 1.0,
+        "scale_ratio_max": 1.0,
+        "mean_clipped_fraction": 1.0,
+        "log_scale_clipped_fraction": 0.9285714030265808,
+        "moments_detached": true
+      },
+      "negative": {
+        "enabled": true,
+        "eligible_packets": 7,
+        "changed_packets": 0,
+        "changed_ratio": 0.0,
+        "movement_mean": 0.0,
+        "movement_max": 0.0,
+        "delta_ratio": 0.0,
+        "donors": [
+          1,
+          0,
+          3,
+          2,
+          5,
+          6,
+          5
+        ],
+        "transform": "bounded_logstats_v1",
+        "direction": -1,
+        "mean_shift_in_sigma_max": 0.0,
+        "scale_ratio_min": 1.0,
+        "scale_ratio_max": 1.0,
+        "mean_clipped_fraction": 1.0,
+        "log_scale_clipped_fraction": 0.9285714030265808,
+        "moments_detached": true
+      },
+      "reciprocal_Jacobian": true,
+      "opposite_mean_shift": true
+    },
+    {
+      "ramp": 0.3,
+      "positive": {
+        "enabled": true,
+        "eligible_packets": 7,
+        "changed_packets": 7,
+        "changed_ratio": 1.0,
+        "movement_mean": 0.227585569024086,
+        "movement_max": 0.29999977350234985,
+        "delta_ratio": 0.05138707160949707,
+        "donors": [
+          1,
+          0,
+          3,
+          2,
+          5,
+          6,
+          5
+        ],
+        "transform": "bounded_logstats_v1",
+        "direction": 1,
+        "mean_shift_in_sigma_max": 0.29999977350234985,
+        "scale_ratio_min": 0.8122560381889343,
+        "scale_ratio_max": 1.2311441898345947,
+        "mean_clipped_fraction": 1.0,
+        "log_scale_clipped_fraction": 0.9285714030265808,
+        "moments_detached": true
+      },
+      "negative": {
+        "enabled": true,
+        "eligible_packets": 7,
+        "changed_packets": 7,
+        "changed_ratio": 1.0,
+        "movement_mean": 0.227585569024086,
+        "movement_max": 0.29999977350234985,
+        "delta_ratio": 0.0547030009329319,
+        "donors": [
+          1,
+          0,
+          3,
+          2,
+          5,
+          6,
+          5
+        ],
+        "transform": "bounded_logstats_v1",
+        "direction": -1,
+        "mean_shift_in_sigma_max": 0.29999977350234985,
+        "scale_ratio_min": 0.8122525215148926,
+        "scale_ratio_max": 1.2311389446258545,
+        "mean_clipped_fraction": 1.0,
+        "log_scale_clipped_fraction": 0.9285714030265808,
+        "moments_detached": true
+      },
+      "reciprocal_Jacobian": true,
+      "opposite_mean_shift": true
+    },
+    {
+      "ramp": 1.0,
+      "positive": {
+        "enabled": true,
+        "eligible_packets": 7,
+        "changed_packets": 7,
+        "changed_ratio": 1.0,
+        "movement_mean": 0.7586186528205872,
+        "movement_max": 0.9999992847442627,
+        "delta_ratio": 0.16299155354499817,
+        "donors": [
+          1,
+          0,
+          3,
+          2,
+          5,
+          6,
+          5
+        ],
+        "transform": "bounded_logstats_v1",
+        "direction": 1,
+        "mean_shift_in_sigma_max": 0.9999992847442627,
+        "scale_ratio_min": 0.5000073909759521,
+        "scale_ratio_max": 1.9999990463256836,
+        "mean_clipped_fraction": 1.0,
+        "log_scale_clipped_fraction": 0.9285714030265808,
+        "moments_detached": true
+      },
+      "negative": {
+        "enabled": true,
+        "eligible_packets": 7,
+        "changed_packets": 7,
+        "changed_ratio": 1.0,
+        "movement_mean": 0.7586186528205872,
+        "movement_max": 0.9999992847442627,
+        "delta_ratio": 0.20248518884181976,
+        "donors": [
+          1,
+          0,
+          3,
+          2,
+          5,
+          6,
+          5
+        ],
+        "transform": "bounded_logstats_v1",
+        "direction": -1,
+        "mean_shift_in_sigma_max": 0.9999992847442627,
+        "scale_ratio_min": 0.5000002384185791,
+        "scale_ratio_max": 1.9999703168869019,
+        "mean_clipped_fraction": 1.0,
+        "log_scale_clipped_fraction": 0.9285714030265808,
+        "moments_detached": true
+      },
+      "reciprocal_Jacobian": true,
+      "opposite_mean_shift": true
+    }
+  ],
+  "duplicate_PID_donor_exclusion": true,
+  "no_donor_bitwise_identity": true,
+  "constant_features_finite": true,
+  "private_RNG_preserved": true
+}

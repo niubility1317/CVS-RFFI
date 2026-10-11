@@ -1,0 +1,1053 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "pools": {
+    "POS": {
+      "status": "PASS",
+      "device": "cpu",
+      "source_only_synthetic": true,
+      "target_access": false,
+      "records": [
+        {
+          "case": "identity",
+          "details": {
+            "role": "L_style",
+            "source_role": "L_s",
+            "style_selection": "hard",
+            "style_input_valid": true,
+            "target_access": false,
+            "V_access": false,
+            "U_access": false,
+            "U_truth": false,
+            "batch_occurrences": 32,
+            "distinct_physical_ids": 30,
+            "duplicate_occurrences": 2,
+            "p": 1.0,
+            "alpha": 0.1,
+            "eta": 1.0,
+            "candidates": 4,
+            "candidate_seeds": [
+              3359096700,
+              3359201429,
+              3359306158,
+              3359410887
+            ],
+            "candidate_losses": [
+              1.0,
+              2.0,
+              2.0,
+              3.0
+            ],
+            "selected_index": -1,
+            "selected_seed": null,
+            "selected_levels": [],
+            "levels": {},
+            "actual_hook_order": [],
+            "changed_packets": 0,
+            "changed_packets_semantics": "sum over two layers; repeated batch occurrences retained",
+            "eval_clean": {
+              "CE": 9.0,
+              "margin": -3.1983156204223633,
+              "accuracy": 0.15625
+            },
+            "eval_selected": {
+              "CE": 9.0,
+              "margin": -3.1983156204223633,
+              "accuracy": 0.15625
+            },
+            "eval_readouts": 5,
+            "candidate_eval_forwards": 4,
+            "eval_forwards": 5,
+            "train_forwards": 1,
+            "total_extra_forwards": 6,
+            "candidate_state_unchanged": true,
+            "candidate_rng_unchanged": true,
+            "original_training_flags_restored": true,
+            "main_rng_restored": true,
+            "dropout_same_mask_requested": true,
+            "normal_training_dropout": true,
+            "selection_unit": "one complete candidate for the whole L batch; mean true-label CE",
+            "selection_dropout_free": true,
+            "tie_rule": "smallest style index; style wins equality with clean",
+            "clean_candidate_included": true,
+            "candidate_pool_size": 5,
+            "identity_selected": true,
+            "style_winner_index": 3,
+            "train_diff_is_not_eval_selection_causal_effect": true,
+            "style_transform": "bounded_logstats_v1",
+            "style_pool": "POS",
+            "candidate_directions": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "selected_direction": null
+          },
+          "finite_nonzero_identity_gradient": true
+        },
+        {
+          "case": "style",
+          "details": {
+            "role": "L_style",
+            "source_role": "L_s",
+            "style_selection": "hard",
+            "style_input_valid": true,
+            "target_access": false,
+            "V_access": false,
+            "U_access": false,
+            "U_truth": false,
+            "batch_occurrences": 32,
+            "distinct_physical_ids": 30,
+            "duplicate_occurrences": 2,
+            "p": 1.0,
+            "alpha": 0.1,
+            "eta": 1.0,
+            "candidates": 4,
+            "candidate_seeds": [
+              3359096700,
+              3359201429,
+              3359306158,
+              3359410887
+            ],
+            "candidate_losses": [
+              1.0,
+              4.0,
+              4.0,
+              2.0
+            ],
+            "selected_index": 1,
+            "selected_seed": 3359201429,
+            "selected_levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "levels": {
+              "time_down": {
+                "enabled": true,
+                "eligible_packets": 32,
+                "changed_packets": 31,
+                "changed_ratio": 0.96875,
+                "movement_mean": 0.4869786500930786,
+                "movement_max": 1.0,
+                "delta_ratio": 0.17521262168884277,
+                "transform": "bounded_logstats_v1",
+                "direction": 1,
+                "mean_shift_in_sigma_max": 1.0,
+                "scale_ratio_min": 0.5,
+                "scale_ratio_max": 2.0,
+                "mean_clipped_fraction": 0.0716145858168602,
+                "log_scale_clipped_fraction": 0.10546875,
+                "moments_detached": true,
+                "seed": 3359201429,
+                "path": "id_backbone.encoder.core.id_backbone.time_down",
+                "shape": [
+                  32,
+                  48,
+                  128
+                ],
+                "eta": 1.0,
+                "donor_rules_verified": true,
+                "donor_self_fallbacks": 0,
+                "input_requires_grad": true,
+                "output_requires_grad": true
+              },
+              "t2.pool": {
+                "enabled": true,
+                "eligible_packets": 32,
+                "changed_packets": 32,
+                "changed_ratio": 1.0,
+                "movement_mean": 0.5800677537918091,
+                "movement_max": 1.0,
+                "delta_ratio": 0.11377198994159698,
+                "transform": "bounded_logstats_v1",
+                "direction": 1,
+                "mean_shift_in_sigma_max": 1.0,
+                "scale_ratio_min": 0.5,
+                "scale_ratio_max": 2.0,
+                "mean_clipped_fraction": 0.02701822854578495,
+                "log_scale_clipped_fraction": 0.0872395858168602,
+                "moments_detached": true,
+                "seed": 3359203138,
+                "path": "id_backbone.encoder.core.id_backbone.t2.pool",
+                "shape": [
+                  32,
+                  96,
+                  32
+                ],
+                "eta": 1.0,
+                "donor_rules_verified": true,
+                "donor_self_fallbacks": 0,
+                "input_requires_grad": true,
+                "output_requires_grad": true
+              }
+            },
+            "actual_hook_order": [
+              "time_down",
+              "t2.pool"
+            ],
+            "changed_packets": 63,
+            "changed_packets_semantics": "sum over two layers; repeated batch occurrences retained",
+            "eval_clean": {
+              "CE": 0.0,
+              "margin": -3.1983156204223633,
+              "accuracy": 0.15625
+            },
+            "eval_selected": {
+              "CE": 4.0,
+              "margin": -3.1999318599700928,
+              "accuracy": 0.15625
+            },
+            "eval_readouts": 5,
+            "candidate_eval_forwards": 4,
+            "eval_forwards": 5,
+            "train_forwards": 1,
+            "total_extra_forwards": 6,
+            "candidate_state_unchanged": true,
+            "candidate_rng_unchanged": true,
+            "original_training_flags_restored": true,
+            "main_rng_restored": true,
+            "dropout_same_mask_requested": true,
+            "normal_training_dropout": true,
+            "selection_unit": "one complete candidate for the whole L batch; mean true-label CE",
+            "selection_dropout_free": true,
+            "tie_rule": "smallest style index; style wins equality with clean",
+            "clean_candidate_included": true,
+            "candidate_pool_size": 5,
+            "identity_selected": false,
+            "style_winner_index": 1,
+            "train_diff_is_not_eval_selection_causal_effect": true,
+            "style_transform": "bounded_logstats_v1",
+            "style_pool": "POS",
+            "candidate_directions": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "selected_direction": 1
+          },
+          "finite_nonzero_identity_gradient": true
+        },
+        {
+          "case": "tie",
+          "details": {
+            "role": "L_style",
+            "source_role": "L_s",
+            "style_selection": "hard",
+            "style_input_valid": true,
+            "target_access": false,
+            "V_access": false,
+            "U_access": false,
+            "U_truth": false,
+            "batch_occurrences": 32,
+            "distinct_physical_ids": 30,
+            "duplicate_occurrences": 2,
+            "p": 1.0,
+            "alpha": 0.1,
+            "eta": 1.0,
+            "candidates": 4,
+            "candidate_seeds": [
+              3359096700,
+              3359201429,
+              3359306158,
+              3359410887
+            ],
+            "candidate_losses": [
+              1.0,
+              4.0,
+              4.0,
+              2.0
+            ],
+            "selected_index": 1,
+            "selected_seed": 3359201429,
+            "selected_levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "levels": {
+              "time_down": {
+                "enabled": true,
+                "eligible_packets": 32,
+                "changed_packets": 31,
+                "changed_ratio": 0.96875,
+                "movement_mean": 0.4869786500930786,
+                "movement_max": 1.0,
+                "delta_ratio": 0.17521262168884277,
+                "transform": "bounded_logstats_v1",
+                "direction": 1,
+                "mean_shift_in_sigma_max": 1.0,
+                "scale_ratio_min": 0.5,
+                "scale_ratio_max": 2.0,
+                "mean_clipped_fraction": 0.0716145858168602,
+                "log_scale_clipped_fraction": 0.10546875,
+                "moments_detached": true,
+                "seed": 3359201429,
+                "path": "id_backbone.encoder.core.id_backbone.time_down",
+                "shape": [
+                  32,
+                  48,
+                  128
+                ],
+                "eta": 1.0,
+                "donor_rules_verified": true,
+                "donor_self_fallbacks": 0,
+                "input_requires_grad": true,
+                "output_requires_grad": true
+              },
+              "t2.pool": {
+                "enabled": true,
+                "eligible_packets": 32,
+                "changed_packets": 32,
+                "changed_ratio": 1.0,
+                "movement_mean": 0.5800677537918091,
+                "movement_max": 1.0,
+                "delta_ratio": 0.11377198994159698,
+                "transform": "bounded_logstats_v1",
+                "direction": 1,
+                "mean_shift_in_sigma_max": 1.0,
+                "scale_ratio_min": 0.5,
+                "scale_ratio_max": 2.0,
+                "mean_clipped_fraction": 0.02701822854578495,
+                "log_scale_clipped_fraction": 0.0872395858168602,
+                "moments_detached": true,
+                "seed": 3359203138,
+                "path": "id_backbone.encoder.core.id_backbone.t2.pool",
+                "shape": [
+                  32,
+                  96,
+                  32
+                ],
+                "eta": 1.0,
+                "donor_rules_verified": true,
+                "donor_self_fallbacks": 0,
+                "input_requires_grad": true,
+                "output_requires_grad": true
+              }
+            },
+            "actual_hook_order": [
+              "time_down",
+              "t2.pool"
+            ],
+            "changed_packets": 63,
+            "changed_packets_semantics": "sum over two layers; repeated batch occurrences retained",
+            "eval_clean": {
+              "CE": 4.0,
+              "margin": -3.1983156204223633,
+              "accuracy": 0.15625
+            },
+            "eval_selected": {
+              "CE": 4.0,
+              "margin": -3.1999318599700928,
+              "accuracy": 0.15625
+            },
+            "eval_readouts": 5,
+            "candidate_eval_forwards": 4,
+            "eval_forwards": 5,
+            "train_forwards": 1,
+            "total_extra_forwards": 6,
+            "candidate_state_unchanged": true,
+            "candidate_rng_unchanged": true,
+            "original_training_flags_restored": true,
+            "main_rng_restored": true,
+            "dropout_same_mask_requested": true,
+            "normal_training_dropout": true,
+            "selection_unit": "one complete candidate for the whole L batch; mean true-label CE",
+            "selection_dropout_free": true,
+            "tie_rule": "smallest style index; style wins equality with clean",
+            "clean_candidate_included": true,
+            "candidate_pool_size": 5,
+            "identity_selected": false,
+            "style_winner_index": 1,
+            "train_diff_is_not_eval_selection_causal_effect": true,
+            "style_transform": "bounded_logstats_v1",
+            "style_pool": "POS",
+            "candidate_directions": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "selected_direction": 1
+          },
+          "finite_nonzero_identity_gradient": true
+        }
+      ],
+      "actual_readout": {
+        "role": "L_style",
+        "source_role": "L_s",
+        "style_selection": "hard",
+        "style_input_valid": true,
+        "target_access": false,
+        "V_access": false,
+        "U_access": false,
+        "U_truth": false,
+        "batch_occurrences": 32,
+        "distinct_physical_ids": 30,
+        "duplicate_occurrences": 2,
+        "p": 1.0,
+        "alpha": 0.1,
+        "eta": 1.0,
+        "candidates": 4,
+        "candidate_seeds": [
+          3359096700,
+          3359201429,
+          3359306158,
+          3359410887
+        ],
+        "candidate_losses": [
+          3.678455352783203,
+          3.698788642883301,
+          3.747802734375,
+          3.642214298248291
+        ],
+        "selected_index": 2,
+        "selected_seed": 3359306158,
+        "selected_levels": [
+          "time_down",
+          "t2.pool"
+        ],
+        "levels": {
+          "time_down": {
+            "enabled": true,
+            "eligible_packets": 32,
+            "changed_packets": 32,
+            "changed_ratio": 1.0,
+            "movement_mean": 0.45861685276031494,
+            "movement_max": 1.0,
+            "delta_ratio": 0.1642254739999771,
+            "transform": "bounded_logstats_v1",
+            "direction": 1,
+            "mean_shift_in_sigma_max": 1.0,
+            "scale_ratio_min": 0.5,
+            "scale_ratio_max": 2.0,
+            "mean_clipped_fraction": 0.0696614608168602,
+            "log_scale_clipped_fraction": 0.0885416641831398,
+            "moments_detached": true,
+            "seed": 3359306158,
+            "path": "id_backbone.encoder.core.id_backbone.time_down",
+            "shape": [
+              32,
+              48,
+              128
+            ],
+            "eta": 1.0,
+            "donor_rules_verified": true,
+            "donor_self_fallbacks": 0,
+            "input_requires_grad": true,
+            "output_requires_grad": true
+          },
+          "t2.pool": {
+            "enabled": true,
+            "eligible_packets": 32,
+            "changed_packets": 32,
+            "changed_ratio": 1.0,
+            "movement_mean": 0.5334740877151489,
+            "movement_max": 1.0,
+            "delta_ratio": 0.11593274772167206,
+            "transform": "bounded_logstats_v1",
+            "direction": 1,
+            "mean_shift_in_sigma_max": 1.0,
+            "scale_ratio_min": 0.5,
+            "scale_ratio_max": 2.0,
+            "mean_clipped_fraction": 0.03125,
+            "log_scale_clipped_fraction": 0.0947265625,
+            "moments_detached": true,
+            "seed": 3359307867,
+            "path": "id_backbone.encoder.core.id_backbone.t2.pool",
+            "shape": [
+              32,
+              96,
+              32
+            ],
+            "eta": 1.0,
+            "donor_rules_verified": true,
+            "donor_self_fallbacks": 0,
+            "input_requires_grad": true,
+            "output_requires_grad": true
+          }
+        },
+        "actual_hook_order": [
+          "time_down",
+          "t2.pool"
+        ],
+        "changed_packets": 64,
+        "changed_packets_semantics": "sum over two layers; repeated batch occurrences retained",
+        "eval_clean": {
+          "CE": 3.7179224491119385,
+          "margin": -3.1983156204223633,
+          "accuracy": 0.15625
+        },
+        "eval_selected": {
+          "CE": 3.747802734375,
+          "margin": -3.2431070804595947,
+          "accuracy": 0.15625
+        },
+        "eval_readouts": 5,
+        "candidate_eval_forwards": 4,
+        "eval_forwards": 5,
+        "train_forwards": 1,
+        "total_extra_forwards": 6,
+        "candidate_state_unchanged": true,
+        "candidate_rng_unchanged": true,
+        "original_training_flags_restored": true,
+        "main_rng_restored": true,
+        "dropout_same_mask_requested": true,
+        "normal_training_dropout": true,
+        "selection_unit": "one complete candidate for the whole L batch; mean true-label CE",
+        "selection_dropout_free": true,
+        "tie_rule": "smallest style index; style wins equality with clean",
+        "clean_candidate_included": true,
+        "candidate_pool_size": 5,
+        "identity_selected": false,
+        "style_winner_index": 2,
+        "train_diff_is_not_eval_selection_causal_effect": true,
+        "style_transform": "bounded_logstats_v1",
+        "style_pool": "POS",
+        "candidate_directions": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "selected_direction": 1
+      },
+      "negative_checks": [
+        "clean_candidate_included",
+        "identity_selected",
+        "selected_index",
+        "selected_seed",
+        "candidate_pool_size",
+        "selected_direction",
+        "candidate_directions"
+      ],
+      "identity_replay_exception_cleanup": true,
+      "actual_forward_budget": 6,
+      "fixture_readout_overrides": "only controlled branch fixtures replace CE scalar; actual native forwards/backward retained; one additional real-readout test"
+    },
+    "BIDIR": {
+      "status": "PASS",
+      "device": "cpu",
+      "source_only_synthetic": true,
+      "target_access": false,
+      "records": [
+        {
+          "case": "identity",
+          "details": {
+            "role": "L_style",
+            "source_role": "L_s",
+            "style_selection": "hard",
+            "style_input_valid": true,
+            "target_access": false,
+            "V_access": false,
+            "U_access": false,
+            "U_truth": false,
+            "batch_occurrences": 32,
+            "distinct_physical_ids": 30,
+            "duplicate_occurrences": 2,
+            "p": 1.0,
+            "alpha": 0.1,
+            "eta": 1.0,
+            "candidates": 4,
+            "candidate_seeds": [
+              3359096700,
+              3359201429,
+              3359306158,
+              3359410887
+            ],
+            "candidate_losses": [
+              1.0,
+              2.0,
+              2.0,
+              3.0
+            ],
+            "selected_index": -1,
+            "selected_seed": null,
+            "selected_levels": [],
+            "levels": {},
+            "actual_hook_order": [],
+            "changed_packets": 0,
+            "changed_packets_semantics": "sum over two layers; repeated batch occurrences retained",
+            "eval_clean": {
+              "CE": 9.0,
+              "margin": -3.1983156204223633,
+              "accuracy": 0.15625
+            },
+            "eval_selected": {
+              "CE": 9.0,
+              "margin": -3.1983156204223633,
+              "accuracy": 0.15625
+            },
+            "eval_readouts": 5,
+            "candidate_eval_forwards": 4,
+            "eval_forwards": 5,
+            "train_forwards": 1,
+            "total_extra_forwards": 6,
+            "candidate_state_unchanged": true,
+            "candidate_rng_unchanged": true,
+            "original_training_flags_restored": true,
+            "main_rng_restored": true,
+            "dropout_same_mask_requested": true,
+            "normal_training_dropout": true,
+            "selection_unit": "one complete candidate for the whole L batch; mean true-label CE",
+            "selection_dropout_free": true,
+            "tie_rule": "smallest style index; style wins equality with clean",
+            "clean_candidate_included": true,
+            "candidate_pool_size": 5,
+            "identity_selected": true,
+            "style_winner_index": 3,
+            "train_diff_is_not_eval_selection_causal_effect": true,
+            "style_transform": "bounded_logstats_v1",
+            "style_pool": "BIDIR",
+            "candidate_directions": [
+              1,
+              -1,
+              1,
+              -1
+            ],
+            "selected_direction": null
+          },
+          "finite_nonzero_identity_gradient": true
+        },
+        {
+          "case": "style",
+          "details": {
+            "role": "L_style",
+            "source_role": "L_s",
+            "style_selection": "hard",
+            "style_input_valid": true,
+            "target_access": false,
+            "V_access": false,
+            "U_access": false,
+            "U_truth": false,
+            "batch_occurrences": 32,
+            "distinct_physical_ids": 30,
+            "duplicate_occurrences": 2,
+            "p": 1.0,
+            "alpha": 0.1,
+            "eta": 1.0,
+            "candidates": 4,
+            "candidate_seeds": [
+              3359096700,
+              3359201429,
+              3359306158,
+              3359410887
+            ],
+            "candidate_losses": [
+              1.0,
+              4.0,
+              4.0,
+              2.0
+            ],
+            "selected_index": 1,
+            "selected_seed": 3359201429,
+            "selected_levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "levels": {
+              "time_down": {
+                "enabled": true,
+                "eligible_packets": 32,
+                "changed_packets": 31,
+                "changed_ratio": 0.96875,
+                "movement_mean": 0.4869786500930786,
+                "movement_max": 1.0,
+                "delta_ratio": 0.19582444429397583,
+                "transform": "bounded_logstats_v1",
+                "direction": -1,
+                "mean_shift_in_sigma_max": 1.0,
+                "scale_ratio_min": 0.5,
+                "scale_ratio_max": 2.0,
+                "mean_clipped_fraction": 0.0716145858168602,
+                "log_scale_clipped_fraction": 0.10546875,
+                "moments_detached": true,
+                "seed": 3359201429,
+                "path": "id_backbone.encoder.core.id_backbone.time_down",
+                "shape": [
+                  32,
+                  48,
+                  128
+                ],
+                "eta": 1.0,
+                "donor_rules_verified": true,
+                "donor_self_fallbacks": 0,
+                "input_requires_grad": true,
+                "output_requires_grad": true
+              },
+              "t2.pool": {
+                "enabled": true,
+                "eligible_packets": 32,
+                "changed_packets": 32,
+                "changed_ratio": 1.0,
+                "movement_mean": 0.5800677537918091,
+                "movement_max": 1.0,
+                "delta_ratio": 0.19877536594867706,
+                "transform": "bounded_logstats_v1",
+                "direction": -1,
+                "mean_shift_in_sigma_max": 1.0,
+                "scale_ratio_min": 0.5,
+                "scale_ratio_max": 2.0,
+                "mean_clipped_fraction": 0.0804036483168602,
+                "log_scale_clipped_fraction": 0.1490885466337204,
+                "moments_detached": true,
+                "seed": 3359203138,
+                "path": "id_backbone.encoder.core.id_backbone.t2.pool",
+                "shape": [
+                  32,
+                  96,
+                  32
+                ],
+                "eta": 1.0,
+                "donor_rules_verified": true,
+                "donor_self_fallbacks": 0,
+                "input_requires_grad": true,
+                "output_requires_grad": true
+              }
+            },
+            "actual_hook_order": [
+              "time_down",
+              "t2.pool"
+            ],
+            "changed_packets": 63,
+            "changed_packets_semantics": "sum over two layers; repeated batch occurrences retained",
+            "eval_clean": {
+              "CE": 0.0,
+              "margin": -3.1983156204223633,
+              "accuracy": 0.15625
+            },
+            "eval_selected": {
+              "CE": 4.0,
+              "margin": -3.18739652633667,
+              "accuracy": 0.15625
+            },
+            "eval_readouts": 5,
+            "candidate_eval_forwards": 4,
+            "eval_forwards": 5,
+            "train_forwards": 1,
+            "total_extra_forwards": 6,
+            "candidate_state_unchanged": true,
+            "candidate_rng_unchanged": true,
+            "original_training_flags_restored": true,
+            "main_rng_restored": true,
+            "dropout_same_mask_requested": true,
+            "normal_training_dropout": true,
+            "selection_unit": "one complete candidate for the whole L batch; mean true-label CE",
+            "selection_dropout_free": true,
+            "tie_rule": "smallest style index; style wins equality with clean",
+            "clean_candidate_included": true,
+            "candidate_pool_size": 5,
+            "identity_selected": false,
+            "style_winner_index": 1,
+            "train_diff_is_not_eval_selection_causal_effect": true,
+            "style_transform": "bounded_logstats_v1",
+            "style_pool": "BIDIR",
+            "candidate_directions": [
+              1,
+              -1,
+              1,
+              -1
+            ],
+            "selected_direction": -1
+          },
+          "finite_nonzero_identity_gradient": true
+        },
+        {
+          "case": "tie",
+          "details": {
+            "role": "L_style",
+            "source_role": "L_s",
+            "style_selection": "hard",
+            "style_input_valid": true,
+            "target_access": false,
+            "V_access": false,
+            "U_access": false,
+            "U_truth": false,
+            "batch_occurrences": 32,
+            "distinct_physical_ids": 30,
+            "duplicate_occurrences": 2,
+            "p": 1.0,
+            "alpha": 0.1,
+            "eta": 1.0,
+            "candidates": 4,
+            "candidate_seeds": [
+              3359096700,
+              3359201429,
+              3359306158,
+              3359410887
+            ],
+            "candidate_losses": [
+              1.0,
+              4.0,
+              4.0,
+              2.0
+            ],
+            "selected_index": 1,
+            "selected_seed": 3359201429,
+            "selected_levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "levels": {
+              "time_down": {
+                "enabled": true,
+                "eligible_packets": 32,
+                "changed_packets": 31,
+                "changed_ratio": 0.96875,
+                "movement_mean": 0.4869786500930786,
+                "movement_max": 1.0,
+                "delta_ratio": 0.19582444429397583,
+                "transform": "bounded_logstats_v1",
+                "direction": -1,
+                "mean_shift_in_sigma_max": 1.0,
+                "scale_ratio_min": 0.5,
+                "scale_ratio_max": 2.0,
+                "mean_clipped_fraction": 0.0716145858168602,
+                "log_scale_clipped_fraction": 0.10546875,
+                "moments_detached": true,
+                "seed": 3359201429,
+                "path": "id_backbone.encoder.core.id_backbone.time_down",
+                "shape": [
+                  32,
+                  48,
+                  128
+                ],
+                "eta": 1.0,
+                "donor_rules_verified": true,
+                "donor_self_fallbacks": 0,
+                "input_requires_grad": true,
+                "output_requires_grad": true
+              },
+              "t2.pool": {
+                "enabled": true,
+                "eligible_packets": 32,
+                "changed_packets": 32,
+                "changed_ratio": 1.0,
+                "movement_mean": 0.5800677537918091,
+                "movement_max": 1.0,
+                "delta_ratio": 0.19877536594867706,
+                "transform": "bounded_logstats_v1",
+                "direction": -1,
+                "mean_shift_in_sigma_max": 1.0,
+                "scale_ratio_min": 0.5,
+                "scale_ratio_max": 2.0,
+                "mean_clipped_fraction": 0.0804036483168602,
+                "log_scale_clipped_fraction": 0.1490885466337204,
+                "moments_detached": true,
+                "seed": 3359203138,
+                "path": "id_backbone.encoder.core.id_backbone.t2.pool",
+                "shape": [
+                  32,
+                  96,
+                  32
+                ],
+                "eta": 1.0,
+                "donor_rules_verified": true,
+                "donor_self_fallbacks": 0,
+                "input_requires_grad": true,
+                "output_requires_grad": true
+              }
+            },
+            "actual_hook_order": [
+              "time_down",
+              "t2.pool"
+            ],
+            "changed_packets": 63,
+            "changed_packets_semantics": "sum over two layers; repeated batch occurrences retained",
+            "eval_clean": {
+              "CE": 4.0,
+              "margin": -3.1983156204223633,
+              "accuracy": 0.15625
+            },
+            "eval_selected": {
+              "CE": 4.0,
+              "margin": -3.18739652633667,
+              "accuracy": 0.15625
+            },
+            "eval_readouts": 5,
+            "candidate_eval_forwards": 4,
+            "eval_forwards": 5,
+            "train_forwards": 1,
+            "total_extra_forwards": 6,
+            "candidate_state_unchanged": true,
+            "candidate_rng_unchanged": true,
+            "original_training_flags_restored": true,
+            "main_rng_restored": true,
+            "dropout_same_mask_requested": true,
+            "normal_training_dropout": true,
+            "selection_unit": "one complete candidate for the whole L batch; mean true-label CE",
+            "selection_dropout_free": true,
+            "tie_rule": "smallest style index; style wins equality with clean",
+            "clean_candidate_included": true,
+            "candidate_pool_size": 5,
+            "identity_selected": false,
+            "style_winner_index": 1,
+            "train_diff_is_not_eval_selection_causal_effect": true,
+            "style_transform": "bounded_logstats_v1",
+            "style_pool": "BIDIR",
+            "candidate_directions": [
+              1,
+              -1,
+              1,
+              -1
+            ],
+            "selected_direction": -1
+          },
+          "finite_nonzero_identity_gradient": true
+        }
+      ],
+      "actual_readout": {
+        "role": "L_style",
+        "source_role": "L_s",
+        "style_selection": "hard",
+        "style_input_valid": true,
+        "target_access": false,
+        "V_access": false,
+        "U_access": false,
+        "U_truth": false,
+        "batch_occurrences": 32,
+        "distinct_physical_ids": 30,
+        "duplicate_occurrences": 2,
+        "p": 1.0,
+        "alpha": 0.1,
+        "eta": 1.0,
+        "candidates": 4,
+        "candidate_seeds": [
+          3359096700,
+          3359201429,
+          3359306158,
+          3359410887
+        ],
+        "candidate_losses": [
+          3.678455352783203,
+          3.736402988433838,
+          3.747802734375,
+          3.818619728088379
+        ],
+        "selected_index": 3,
+        "selected_seed": 3359410887,
+        "selected_levels": [
+          "time_down",
+          "t2.pool"
+        ],
+        "levels": {
+          "time_down": {
+            "enabled": true,
+            "eligible_packets": 32,
+            "changed_packets": 31,
+            "changed_ratio": 0.96875,
+            "movement_mean": 0.5749537944793701,
+            "movement_max": 1.0,
+            "delta_ratio": 0.23283664882183075,
+            "transform": "bounded_logstats_v1",
+            "direction": -1,
+            "mean_shift_in_sigma_max": 1.0,
+            "scale_ratio_min": 0.5,
+            "scale_ratio_max": 2.0,
+            "mean_clipped_fraction": 0.06640625,
+            "log_scale_clipped_fraction": 0.0963541641831398,
+            "moments_detached": true,
+            "seed": 3359410887,
+            "path": "id_backbone.encoder.core.id_backbone.time_down",
+            "shape": [
+              32,
+              48,
+              128
+            ],
+            "eta": 1.0,
+            "donor_rules_verified": true,
+            "donor_self_fallbacks": 0,
+            "input_requires_grad": true,
+            "output_requires_grad": true
+          },
+          "t2.pool": {
+            "enabled": true,
+            "eligible_packets": 32,
+            "changed_packets": 32,
+            "changed_ratio": 1.0,
+            "movement_mean": 0.4145084023475647,
+            "movement_max": 1.0,
+            "delta_ratio": 0.13281695544719696,
+            "transform": "bounded_logstats_v1",
+            "direction": -1,
+            "mean_shift_in_sigma_max": 1.0,
+            "scale_ratio_min": 0.5,
+            "scale_ratio_max": 2.0,
+            "mean_clipped_fraction": 0.1005859375,
+            "log_scale_clipped_fraction": 0.146484375,
+            "moments_detached": true,
+            "seed": 3359412596,
+            "path": "id_backbone.encoder.core.id_backbone.t2.pool",
+            "shape": [
+              32,
+              96,
+              32
+            ],
+            "eta": 1.0,
+            "donor_rules_verified": true,
+            "donor_self_fallbacks": 0,
+            "input_requires_grad": true,
+            "output_requires_grad": true
+          }
+        },
+        "actual_hook_order": [
+          "time_down",
+          "t2.pool"
+        ],
+        "changed_packets": 63,
+        "changed_packets_semantics": "sum over two layers; repeated batch occurrences retained",
+        "eval_clean": {
+          "CE": 3.7179224491119385,
+          "margin": -3.1983156204223633,
+          "accuracy": 0.15625
+        },
+        "eval_selected": {
+          "CE": 3.818619728088379,
+          "margin": -3.2820184230804443,
+          "accuracy": 0.15625
+        },
+        "eval_readouts": 5,
+        "candidate_eval_forwards": 4,
+        "eval_forwards": 5,
+        "train_forwards": 1,
+        "total_extra_forwards": 6,
+        "candidate_state_unchanged": true,
+        "candidate_rng_unchanged": true,
+        "original_training_flags_restored": true,
+        "main_rng_restored": true,
+        "dropout_same_mask_requested": true,
+        "normal_training_dropout": true,
+        "selection_unit": "one complete candidate for the whole L batch; mean true-label CE",
+        "selection_dropout_free": true,
+        "tie_rule": "smallest style index; style wins equality with clean",
+        "clean_candidate_included": true,
+        "candidate_pool_size": 5,
+        "identity_selected": false,
+        "style_winner_index": 3,
+        "train_diff_is_not_eval_selection_causal_effect": true,
+        "style_transform": "bounded_logstats_v1",
+        "style_pool": "BIDIR",
+        "candidate_directions": [
+          1,
+          -1,
+          1,
+          -1
+        ],
+        "selected_direction": -1
+      },
+      "negative_checks": [
+        "clean_candidate_included",
+        "identity_selected",
+        "selected_index",
+        "selected_seed",
+        "candidate_pool_size",
+        "selected_direction",
+        "candidate_directions"
+      ],
+      "identity_replay_exception_cleanup": true,
+      "actual_forward_budget": 6,
+      "fixture_readout_overrides": "only controlled branch fixtures replace CE scalar; actual native forwards/backward retained; one additional real-readout test"
+    }
+  },
+  "target_access": false
+}
