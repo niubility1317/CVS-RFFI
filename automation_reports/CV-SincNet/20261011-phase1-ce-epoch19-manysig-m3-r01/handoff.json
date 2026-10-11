@@ -9,5 +9,13 @@
   "no_target_feedback_to_mechanism": true,
   "latest_runtime": "evidence/latest_runtime.json",
   "all_rows_launched": true,
-  "scored_rows": 0
+  "scored_rows": 0,
+  "results": "test_results.md",
+  "results_evidence": "evidence/test_results_analysis.json",
+  "remaining_rows": [
+    "E19-s2026092701",
+    "E19-s2026092702",
+    "E19-s2026092703"
+  ],
+  "goal_met": false
 }

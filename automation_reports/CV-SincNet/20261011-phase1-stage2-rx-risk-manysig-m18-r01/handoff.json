@@ -16,5 +16,21 @@
   },
   "latest_runtime": "evidence/latest_runtime.json",
   "all_rows_launched": true,
-  "scored_rows": 3
+  "scored_rows": 7,
+  "results": "test_results.md",
+  "results_evidence": "evidence/test_results_analysis.json",
+  "remaining_rows": [
+    "RFIX-s2026092701",
+    "RANK-s2026092701",
+    "MARGIN-s2026092701",
+    "PHYS-s2026092702",
+    "RFIX-s2026092702",
+    "RANK-s2026092702",
+    "MARGIN-s2026092702",
+    "PHYS-s2026092703",
+    "RFIX-s2026092703",
+    "RANK-s2026092703",
+    "MARGIN-s2026092703"
+  ],
+  "goal_met": false
 }
