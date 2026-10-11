@@ -1,6 +1,6 @@
 # 固定纯 CE 父基线上的 40 轮多解耦实验
 
-日期：2026-10-11。状态：**已授权实现，正在完成本地验证与发布准备；尚未确认远端启动，84% 未验证。**
+日期：2026-10-11。状态：**已发布并核实 12 行正在训练（VERIFIED）；84% 未验证。**
 
 run_id：`20261011-phase1-stage2-decouple-manysig-m12-r01`。group_id：`cvs-fixed-parent-stage2-multi-decouple`。逐行配置、路径和六类 seed 见 [experiment.json](experiment.json)，执行后的真实状态以同 run 的 `events.jsonl`、PID/GPU 读回及产物为准。
 
@@ -67,3 +67,10 @@ R 用固定三个双 TX 留出折，在另四个 TX 上拟合物理状态到条�
 
 
 发布记录：release r01 的 CPU 父权重预检因历史 SatViewStage 模块未提前加载而失败（FAILED）。独立读回确认 run 目录不存在，submit/dispatcher 均未创建；没有训练启动。保留 r01 发布目录，修复导入顺序后使用 release r02，实验矩阵不变。
+
+
+发布核实：release r02，执行提交 `43779e2716e7c7154989b31f4cde9d4f991e37c0`，调度 PID `3812845`。三个 seed 共享准备全部完成；12 行均有匹配 PID/CWD/argv/GPU、实际 resolved config 与训练日志。全机当次读回每卡 3 个实验进程，均未超过 4。源数据/父权重来源检查通过；C0 无动作、R、EMA、U 或卫星前向；C2/C3 已实际执行 L/T，C3 已有非零 R 约束。
+
+发布后的只读状态工具曾使用系统 Python 缺少 torch；已改用项目 Python 完成独立读回，该问题不在训练进程中，不重启或修改健康实验。
+
+历史总结见 [多解耦实验回顾](../../../docs/CVS_MULTI_DISENTANGLE_RETROSPECTIVE_20261011.md)，逐项实现见 [设计追溯](../../../docs/CVS_STAGE2_IMPLEMENTATION_TRACE_20261011.md)。

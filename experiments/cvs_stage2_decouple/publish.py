@@ -103,7 +103,11 @@ def package(output):
 def inspect(output, config=None):
     output = Path(output)
     config = config or d.read(output / 'package.json')
-    result = json.loads(ssh(INSPECT.replace('CONFIG', repr(config))))
+    # The SSH transport uses system Python; capacity imports require the
+    # project's torch runtime. Inspect only, never resubmit a running release.
+    payload=INSPECT.replace('CONFIG', repr(config))
+    wrapper="import subprocess\nr=subprocess.run(['/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python','-'],input="+repr(payload)+",text=True,capture_output=True)\nprint(r.stdout)\nif r.returncode: raise RuntimeError(r.stderr)\n"
+    result = json.loads(ssh(wrapper))
     d.write(output / 'readback.json', result)
     return result
 
