@@ -29,7 +29,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求按最新设计报告继续追求目标；源域条件可预测性与源V身份保持检查均通过后，发布保守R变体三种子E40，4进程/GPU，自动clean。",
   "code": {
-    "commit": "f9a461c539495a19eeb450fa7518438c3b732653",
+    "commit": "5c9465846a49a90b5cd008584ebff839f9647595",
     "commit_note": "Preregistration baseline; exact execution commit inserted from immutable release at launch",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -152,7 +152,8 @@
     "gpu_policy": "max4 total processes/GPU including existing, shared lock, 12000 MB minimum free; no healthy job intervention",
     "command": "python -m experiments.cvs_stage2_stable_rx.dispatch",
     "launch_command": "python -m experiments.cvs_stage2_stable_rx.dispatch",
-    "stop_rule": "technical failure retained; no automatic retry or overwrite"
+    "stop_rule": "technical failure retained; no automatic retry or overwrite",
+    "release_commit": "5c9465846a49a90b5cd008584ebff839f9647595"
   },
   "expected_artifacts": [
     "per-row artifacts listed in rows",
@@ -229,7 +230,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "LOCAL_VERIFIED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791700601.0155885,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S3-s2026092701",
+        "pid": 3913802,
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-stable-rx-manysig-m3-r01/logs/train-S3-s2026092701.log",
+        "row_id": "S3-s2026092701"
+      }
     },
     {
       "row_id": "S3-s2026092702",
@@ -282,7 +293,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "LOCAL_VERIFIED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791700601.3363144,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S3-s2026092702",
+        "pid": 3913807,
+        "gpu": 5,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-stable-rx-manysig-m3-r01/logs/train-S3-s2026092702.log",
+        "row_id": "S3-s2026092702"
+      }
     },
     {
       "row_id": "S3-s2026092703",
@@ -335,7 +356,17 @@
         "prediction/predictions.npz",
         "completion.json"
       ],
-      "status": "LOCAL_VERIFIED"
+      "status": "RUNNING",
+      "latest_event": {
+        "at": 1791700601.6047616,
+        "status": "RUNNING",
+        "job_kind": "train",
+        "identifier": "S3-s2026092703",
+        "pid": 3913818,
+        "gpu": 6,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-stable-rx-manysig-m3-r01/logs/train-S3-s2026092703.log",
+        "row_id": "S3-s2026092703"
+      }
     }
   ],
   "notes": [
@@ -345,7 +376,7 @@
     "单向有限margin=log95；weights keep=.1/LT=1/R=1；ramp444；无CE梯度比例校准。",
     "源读出只在L_s拟合，V只读；无target反馈；未达目标不得报告成功。"
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "test_completion_plan": {
     "views": [
       "clean"
@@ -439,5 +470,7 @@
     ],
     "scope": "fixed E40/8880 from same original E200 parents; no new training; reused predictions verified and independently rescored after new predictions freeze",
     "rationale": "B0 same budget CE; B2 conditional L/T without R; B3 only R estimator differs. All fixed before new target access."
-  }
+  },
+  "execution_commit": "5c9465846a49a90b5cd008584ebff839f9647595",
+  "updated_at_unix": 1791700601.6047616
 }

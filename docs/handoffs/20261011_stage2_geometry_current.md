@@ -36,3 +36,10 @@ Run `20261011-phase1-stage2-relation-identifiability-source-manysig-m3-r01`，�
 新 run `20261011-phase1-stage2-stable-rx-manysig-m3-r01`：S3×3从对应原始E200重新开始E40/8880，替换共享RX预测器，其他B3目标/日程/LT不变。其他4TX＋其他2日拟合，shrink=.4、alpha≤.25、9折标量全160 c，完整有梯度有限总体修正。复用旧geometry全部B0/B2/B3同预算控制，自动逐row clean后truth-last；4总进程/GPU。9项本地checks和共享训练真实图/完成存档回归通过，独立P0/P1审查通过。
 
 新代码 `experiments/cvs_stage2_stable_rx`；shared geometry/source.py提供design_module与receiver_payload注入，旧配置行为保持。发布器先CPU拟合R+真实父前反向不更新参数，再启动唯一dispatcher。当前准备Git交付与正式发布，必须以远端readback确认启动。目标仍active，未达84%。源 V 筛查使用全部六 TX 的 leave-day 拟合；训练使用四 TX 的 leave-day 拟合。筛查与训练不是完全同一变换，不把筛查结果作为训练后身份保持的保证。
+
+
+### S3 正式运行 VERIFIED
+
+执行提交5c9465846a49a90b5cd008584ebff839f9647595，dispatcher3913667；S3-s2026092701 GPU3 PID3913802，seed02 GPU5 PID3913807，seed03 GPU6 PID3913818。最新快照各E3/40，无失败，resolved确认无teacher/U/satellite。新R27折c=.0262至.1021，所有alpha=.25，CPU实际parent梯度预检通过。
+
+远端run `/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-stable-rx-manysig-m3-r01`，不可变release `/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_stable_rx_20261011_r01`；已有唯一owner和自动clean链路，不要重新启动。收集脚本 `.codex_tmp/collect_stable_rx_training.py`，发布读回 `local_artifacts/stable_rx_training_20261011_r01/readback.json`。等待E40/8880固定、各row自动prediction和truth-last评分；完成后收集全部epoch/step日志和完整clean结果，报告与Git登记。目标仍未达成，不能依据逐row测试干预健康训练。
