@@ -1,0 +1,220 @@
+{
+  "status": "VERIFIED",
+  "read_at": 1791754629.7067626,
+  "run": "20261012-phase1-scratch-calibrated-style-manysig-m36-r01",
+  "execution_commit": "994db435e306b8e0f476424796111ebd4e467268",
+  "dispatcher": 317420,
+  "launched": 22,
+  "pending": 14,
+  "GPU_counts": {
+    "0": 3,
+    "1": 3,
+    "2": 3,
+    "3": 3,
+    "4": 3,
+    "5": 3,
+    "6": 3,
+    "7": 3
+  },
+  "rows": [
+    {
+      "row_id": "DELAY_M_SHALLOW-s2026092701",
+      "pid": 318023,
+      "gpu": 0,
+      "epochs": 3,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 55
+    },
+    {
+      "row_id": "DELAY_M_MIDDLE-s2026092701",
+      "pid": 318109,
+      "gpu": 1,
+      "epochs": 4,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 111
+    },
+    {
+      "row_id": "DELAY_M_BOTH-s2026092701",
+      "pid": 318198,
+      "gpu": 2,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "DELAY_JOINT-s2026092701",
+      "pid": 318285,
+      "gpu": 3,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "CAP_M_SHALLOW-s2026092701",
+      "pid": 318372,
+      "gpu": 5,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 0,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "CAP_M_MIDDLE-s2026092701",
+      "pid": 318516,
+      "gpu": 6,
+      "epochs": 3,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 0,
+      "auxiliary_steps": 55
+    },
+    {
+      "row_id": "CAP_M_BOTH-s2026092701",
+      "pid": 318685,
+      "gpu": 7,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 0,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "CAP_JOINT-s2026092701",
+      "pid": 318772,
+      "gpu": 7,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 0,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "DELAYCAP_M_SHALLOW-s2026092701",
+      "pid": 318857,
+      "gpu": 3,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "DELAYCAP_M_MIDDLE-s2026092701",
+      "pid": 318940,
+      "gpu": 5,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "DELAYCAP_M_BOTH-s2026092701",
+      "pid": 319026,
+      "gpu": 6,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "DELAYCAP_JOINT-s2026092701",
+      "pid": 319110,
+      "gpu": 1,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "DELAY_M_SHALLOW-s2026092702",
+      "pid": 319194,
+      "gpu": 0,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "DELAY_M_MIDDLE-s2026092702",
+      "pid": 319278,
+      "gpu": 2,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "DELAY_M_BOTH-s2026092702",
+      "pid": 319362,
+      "gpu": 2,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "DELAY_JOINT-s2026092702",
+      "pid": 319448,
+      "gpu": 1,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "CAP_M_SHALLOW-s2026092702",
+      "pid": 319941,
+      "gpu": 0,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 0,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "CAP_M_MIDDLE-s2026092702",
+      "pid": 320025,
+      "gpu": 6,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 0,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "CAP_M_BOTH-s2026092702",
+      "pid": 320109,
+      "gpu": 5,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 0,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "CAP_JOINT-s2026092702",
+      "pid": 320195,
+      "gpu": 3,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 0,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "DELAYCAP_M_SHALLOW-s2026092702",
+      "pid": 320279,
+      "gpu": 7,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 0
+    },
+    {
+      "row_id": "DELAYCAP_M_MIDDLE-s2026092702",
+      "pid": 320363,
+      "gpu": 4,
+      "epochs": 2,
+      "calibration_status": "FIXED_CALIBRATION_COMPLETE",
+      "after_updates": 444,
+      "auxiliary_steps": 0
+    }
+  ],
+  "target_access": false
+}
