@@ -1,0 +1,47 @@
+{
+  "run_id": "20261011-phase1-stage2-policy-risk-source-manysig-m3-r01",
+  "subject": "B2 fixed final E40, source diagnostic only",
+  "methods": [
+    "coverage",
+    "old",
+    "fresh_raw",
+    "fresh_risk"
+  ],
+  "primary": "fresh_risk",
+  "fit": {
+    "role": "L_s",
+    "passes": 2,
+    "batch_size": 128,
+    "optimizer": "AdamW",
+    "lr": 0.0002,
+    "weight_decay": 0.0001,
+    "initialization": "fresh; seed +17041*(kind_index+1), identical across raw/risk",
+    "steps_per_objective": 200,
+    "auxiliary_updates_per_seed": 400
+  },
+  "objectives": {
+    "raw": "-mean(stopgrad(clean_margin)-aug_margin)",
+    "risk": "-mean(0.5*relu((min(stopgrad(clean_margin),log95)-aug_margin)/log95)^2)"
+  },
+  "actions": "Unchanged geometry format2; 0.5 coverage / 0.5 conditional, shared per-sample U[0,1] Linf radius; unchanged L/T physical bounds",
+  "evaluation": "New private streams: seed+941003+kind_index*1009+(500009 if V else0); same across methods, all6300 L_s and27000 V; batch128; one draw per sample/kind/method",
+  "metrics": [
+    "finite risk",
+    "risk violation rate",
+    "raw margin drop",
+    "errors",
+    "new clean-correct errors",
+    "paired newly/no-longer exposed errors",
+    "IQ change/rms/edge energy",
+    "radius",
+    "top1percent risk share",
+    "complete TX/RX/day and TX-RX strata"
+  ],
+  "advancement": "Every seed: primary fresh_risk equal-L/T mean V risk strictly greater than old, fresh_raw and coverage. Only evidence for next scheduled-refresh design, not automatic identity training; no alternative selection.",
+  "identity_updates": 0,
+  "auxiliary_updates_per_seed": 400,
+  "new_identity_forwards_per_seed": 350100,
+  "target_access": false,
+  "validation_fit": false,
+  "model_seed": 2026092702
+}

@@ -1,0 +1,323 @@
+{
+  "schema": "experiment_record_v1",
+  "group_id": "stage2_policy_risk_source_20261011",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center crop/pad 256; per-packet complex RMS; center=False; fs=25MHz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-stage2-geometry-source-manysig-m3-r01/sSEED/source_cache.pt#labeled.ids; /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids.L_s",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#class_txs",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/manifest.json; all six registered class names",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000,
+      "L_s_fraction": 0.07,
+      "U_s_fraction": 0.63,
+      "V_fraction": 0.3,
+      "U_use": "index-only exact role audit; no U sample/label/training iterator"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": "inherited deterministic physical source roles (historical protocol label 392005)",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": "Not applicable: source-only audit",
+    "leo_config_ref": null,
+    "train_ratio_definition": "rho_label=L_s/(L_s+U_s)=0.1; only L_s contributes to training",
+    "diagnostic_access": "Only L_s fits auxiliary policies; identity frozen. V only forward/scoring after policies saved; no V fitting, no U, no target."
+  },
+  "checkpoint": {
+    "initialization": "Frozen B2 E40 subject, no identity optimizer; fresh private-seed auxiliary networks",
+    "sources": [
+      {
+        "model_seed": 2026092701,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+        "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+        "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+        "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+        "epoch": 200,
+        "identity_updates": 44400,
+        "initialization": "scratch at origin; no upstream checkpoint",
+        "selection": "fixed final E200; no target selection",
+        "actual_training": "L_s clean CE only; no U/EMA/pseudo/satellite; smoothing=0"
+      },
+      {
+        "model_seed": 2026092702,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+        "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+        "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+        "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+        "epoch": 200,
+        "identity_updates": 44400,
+        "initialization": "scratch at origin; no upstream checkpoint",
+        "selection": "fixed final E200; no target selection",
+        "actual_training": "L_s clean CE only; no U/EMA/pseudo/satellite; smoothing=0"
+      },
+      {
+        "model_seed": 2026092703,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+        "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+        "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+        "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+        "epoch": 200,
+        "identity_updates": 44400,
+        "initialization": "scratch at origin; no upstream checkpoint",
+        "selection": "fixed final E200; no target selection",
+        "actual_training": "L_s clean CE only; no U/EMA/pseudo/satellite; smoothing=0"
+      }
+    ],
+    "contract_check_ref": "experiments/cvs_stage2_decouple/common.py::verify_parent; previous source provenance evidence unchanged",
+    "provenance_verdict": "Runtime original E200 provenance + B2 source completion/freeze/config/checkpoint + source role contract",
+    "selection_rule": "All three fixed B2 final E40; no subject selection",
+    "diagnostic_sources": [
+      {
+        "seed": 2026092701,
+        "arm": "B2",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092701/source/final_ssdg.pth",
+        "ancestor": {
+          "model_seed": 2026092701,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "identity_updates": 44400,
+          "initialization": "scratch at origin; no upstream checkpoint",
+          "selection": "fixed final E200; no target selection",
+          "actual_training": "L_s clean CE only; no U/EMA/pseudo/satellite; smoothing=0"
+        }
+      },
+      {
+        "seed": 2026092702,
+        "arm": "B2",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092702/source/final_ssdg.pth",
+        "ancestor": {
+          "model_seed": 2026092702,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "identity_updates": 44400,
+          "initialization": "scratch at origin; no upstream checkpoint",
+          "selection": "fixed final E200; no target selection",
+          "actual_training": "L_s clean CE only; no U/EMA/pseudo/satellite; smoothing=0"
+        }
+      },
+      {
+        "seed": 2026092703,
+        "arm": "B2",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092703/source/final_ssdg.pth",
+        "ancestor": {
+          "model_seed": 2026092703,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "identity_updates": 44400,
+          "initialization": "scratch at origin; no upstream checkpoint",
+          "selection": "fixed final E200; no target selection",
+          "actual_training": "L_s clean CE only; no U/EMA/pseudo/satellite; smoothing=0"
+        }
+      }
+    ]
+  },
+  "run_id": "20261011-phase1-stage2-policy-risk-source-manysig-m3-r01",
+  "display_name": "三种子 L/T 策略刷新与有限风险拟合诊断",
+  "description": "冻结 B2 E40，比较原冻结 L/T、重新拟合原 margin 目标、直接有限风险目标与独立覆盖；只更新辅助网络。",
+  "aliases": [
+    "policy_freshness_finite_risk"
+  ],
+  "tags": [
+    "source_only",
+    "source_geometry",
+    "auxiliary_policy_risk"
+  ],
+  "comparison_group_id": "20261011-phase1-stage2-policy-risk-source-manysig-m3-r01",
+  "parent_run_ids": [
+    "20261011-phase1-stage2-geometry-source-manysig-m3-r01",
+    "20261011-phase1-stage2-geometry-manysig-m12-r01"
+  ],
+  "replaces_run_id": null,
+  "status": "LOCAL_VERIFIED",
+  "authorization": "按用户报告第九节步骤四及活动目标继续源研究；固定矩阵，无 target 反馈。",
+  "code": {
+    "commit": "a9ddf8b23eee154fa3ab7554ce8aacbdef523b36",
+    "commit_note": "Preregistration baseline; exact execution commit read from immutable release",
+    "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_policy_risk_source_20261011_r01"
+  },
+  "permissions": {
+    "regime": "source_only_diagnostic",
+    "query_use": "NONE",
+    "external_method_exception": null,
+    "claim_scope": "Detect source task risks missed by frozen E200 policies on B2 E40; no new RX identity generalization or accuracy gain claim.",
+    "target_feedback_to_training": false
+  },
+  "execution": {
+    "host": "N607",
+    "user": "szu2070436088",
+    "launch_owner": "codex/root/policy-risk-source-20261011",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-policy-risk-source-manysig-m3-r01",
+    "local_root": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\automation_reports\\CV-SincNet\\20261011-phase1-stage2-policy-risk-source-manysig-m3-r01",
+    "release_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_policy_risk_source_20261011_r01",
+    "gpu_policy": "Serial CPU2, CUDA disabled; no GPU process slot",
+    "command": "python -m experiments.cvs_stage2_geometry.policy_audit",
+    "launch_command": "python -m experiments.cvs_stage2_geometry.policy_audit",
+    "stop_rule": "Preserve technical failure; no automatic retry"
+  },
+  "expected_artifacts": [
+    "experiment.json",
+    "events.jsonl",
+    "completion.json",
+    "summary.json",
+    "sSEED/audit.json",
+    "sSEED/policies.pt",
+    "sSEED/labeled_metrics.pt",
+    "sSEED/validation_metrics.pt"
+  ],
+  "metrics_plan": {
+    "primary": "Every seed: primary fresh_risk equal-L/T mean V risk strictly greater than old, fresh_raw and coverage. Only evidence for next scheduled-refresh design, not automatic identity training; no alternative selection.",
+    "secondary": [
+      "finite risk",
+      "risk violation rate",
+      "raw margin drop",
+      "errors",
+      "new clean-correct errors",
+      "paired newly/no-longer exposed errors",
+      "IQ change/rms/edge energy",
+      "radius",
+      "top1percent risk share",
+      "complete TX/RX/day and TX-RX strata"
+    ],
+    "target_access": false,
+    "identity_updates": 0,
+    "auxiliary_updates": 1200
+  },
+  "rows": [
+    {
+      "row_id": "s2026092701",
+      "method": "policy_risk_source",
+      "purpose": "source_diagnostic",
+      "config_ref": "configs/s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-policy-risk-source-manysig-m3-r01/s2026092701/audit.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model matches original E200 and B2. Augmentation seed drives private initialization/shuffle/proposals (+17041 per kind); evaluation uses independent offset941003+kind*1009+role offset500009. Two passes per L/T network for each fresh objective.400 auxiliary steps, identity0; no support/target evaluation.",
+      "k": null,
+      "scenario": "source_only",
+      "optimizer": "AdamW (auxiliary only)",
+      "lr": 0.0002,
+      "epochs": 2,
+      "fl_rounds": null,
+      "steps": 400,
+      "command": "python -m experiments.cvs_stage2_geometry.policy_audit",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-policy-risk-source-manysig-m3-r01/s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_policy_risk_source_20261011_r01/stdout.log",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092701/source/final_ssdg.pth",
+      "status": "LOCAL_VERIFIED"
+    },
+    {
+      "row_id": "s2026092702",
+      "method": "policy_risk_source",
+      "purpose": "source_diagnostic",
+      "config_ref": "configs/s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-policy-risk-source-manysig-m3-r01/s2026092702/audit.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Model matches original E200 and B2. Augmentation seed drives private initialization/shuffle/proposals (+17041 per kind); evaluation uses independent offset941003+kind*1009+role offset500009. Two passes per L/T network for each fresh objective.400 auxiliary steps, identity0; no support/target evaluation.",
+      "k": null,
+      "scenario": "source_only",
+      "optimizer": "AdamW (auxiliary only)",
+      "lr": 0.0002,
+      "epochs": 2,
+      "fl_rounds": null,
+      "steps": 400,
+      "command": "python -m experiments.cvs_stage2_geometry.policy_audit",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-policy-risk-source-manysig-m3-r01/s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_policy_risk_source_20261011_r01/stdout.log",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092702/source/final_ssdg.pth",
+      "status": "LOCAL_VERIFIED"
+    },
+    {
+      "row_id": "s2026092703",
+      "method": "policy_risk_source",
+      "purpose": "source_diagnostic",
+      "config_ref": "configs/s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-policy-risk-source-manysig-m3-r01/s2026092703/audit.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": 2026092703
+      },
+      "seed_notes": "Model matches original E200 and B2. Augmentation seed drives private initialization/shuffle/proposals (+17041 per kind); evaluation uses independent offset941003+kind*1009+role offset500009. Two passes per L/T network for each fresh objective.400 auxiliary steps, identity0; no support/target evaluation.",
+      "k": null,
+      "scenario": "source_only",
+      "optimizer": "AdamW (auxiliary only)",
+      "lr": 0.0002,
+      "epochs": 2,
+      "fl_rounds": null,
+      "steps": 400,
+      "command": "python -m experiments.cvs_stage2_geometry.policy_audit",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-policy-risk-source-manysig-m3-r01/s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_policy_risk_source_20261011_r01/stdout.log",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092703/source/final_ssdg.pth",
+      "status": "LOCAL_VERIFIED"
+    }
+  ],
+  "test_completion_plan": {
+    "target_access": false,
+    "scope": "source-only diagnostic, no new identity checkpoint or target predictions",
+    "automatic_test": false
+  }
+}
