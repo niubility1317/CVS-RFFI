@@ -170,7 +170,7 @@
     "20261011-phase1-stage2-geometry-manysig-m12-r01"
   ],
   "replaces_run_id": null,
-  "status": "RUNNING",
+  "status": "SOURCE_DIAGNOSTIC_COMPLETE",
   "authorization": "按用户报告第九节步骤四及活动目标继续源研究；固定矩阵，无 target 反馈。",
   "code": {
     "commit": "c6e43735df6d21a2742a4df4dd0284dc765a15f4",
@@ -196,10 +196,7 @@
     "gpu_policy": "Serial CPU2, CUDA disabled; no GPU process slot",
     "command": "python -m experiments.cvs_stage2_geometry.policy_audit",
     "launch_command": "python -m experiments.cvs_stage2_geometry.policy_audit",
-    "stop_rule": "Preserve technical failure; no automatic retry",
-    "pid": 3971531,
-    "cuda_visible_devices": "",
-    "readback_ref": "evidence/launch_readback.json"
+    "stop_rule": "Preserve technical failure; no automatic retry"
   },
   "expected_artifacts": [
     "experiment.json",
@@ -257,7 +254,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-policy-risk-source-manysig-m3-r01/s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_policy_risk_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092701/source/final_ssdg.pth",
-      "status": "QUEUED_OR_RUNNING"
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "s2026092702",
@@ -286,7 +283,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-policy-risk-source-manysig-m3-r01/s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_policy_risk_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092702/source/final_ssdg.pth",
-      "status": "QUEUED_OR_RUNNING"
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "s2026092703",
@@ -315,7 +312,7 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-policy-risk-source-manysig-m3-r01/s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_policy_risk_source_20261011_r01/stdout.log",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092703/source/final_ssdg.pth",
-      "status": "QUEUED_OR_RUNNING"
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     }
   ],
   "test_completion_plan": {
@@ -323,5 +320,19 @@
     "scope": "source-only diagnostic, no new identity checkpoint or target predictions",
     "automatic_test": false
   },
-  "execution_commit": "c6e43735df6d21a2742a4df4dd0284dc765a15f4"
+  "execution_commit": "c6e43735df6d21a2742a4df4dd0284dc765a15f4",
+  "completion": {
+    "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+    "rows_completed": 3,
+    "identity_updates": 0,
+    "auxiliary_updates": 1200,
+    "new_identity_forwards": 1050300,
+    "target_access": false,
+    "validation_fit": false,
+    "primary_advanced": false,
+    "elapsed_seconds": 601.2609326849924,
+    "execution_commit": "c6e43735df6d21a2742a4df4dd0284dc765a15f4"
+  },
+  "source_advancement": "NOT_MET",
+  "updated_at_unix": 1791707235.3089278
 }

@@ -95,3 +95,8 @@ Z3源任务证据：八固定源V视图的均值准确率与S3最大绝对差0.0
 20261011-phase1-stage2-policy-risk-source-manysig-m3-r01，执行c6e43735df6d21a2742a4df4dd0284dc765a15f4；CPU2 PID3971531，CUDA不可见，远端PID/CWD/argv独立核验VERIFIED，当前无failure。固定B2 E40三seed诊断，coverage/旧冻结策略/B2上fresh_raw/B2上fresh_risk；两个fresh各L/T两遍Ls，每seed400辅助更新/350100身份样本前向，0身份更新/target/V拟合。全部策略先保存后V评分，相同随机半径与物理界限，IQ强度仅测量。7定向checks本地与远端通过，独立P0/P1及随机原生CPU反传检查通过。不能把辅助优化当成身份训练。
 
 已有唯一CPU进程，不重复启动。收集 E:/type10-7/.codex_tmp/collect_policy.py；完整完成并确认进程退出后 finalize_policy.py 生成所有48指标行、分层、配对与1200辅助step CSV，报告/交接/Git提交推送。finalize脚本已准备但未执行；执行前需检查实际结果并补充具体失败/成功解释。primary为每seed V等权LT风险fresh_risk均严格高于old/fresh_raw/coverage，只是推进后续刷新设计的证据，不自动训练或target。原始权重和逐包数据留N607本run sSEED。未来正式身份训练仍从相应E200初始化，不能倒灌B2终点辅助策略。目标84%仍active/未达到。
+
+
+## 当前：L/T 策略刷新有限风险诊断完成
+
+20261011-phase1-stage2-policy-risk-source-manysig-m3-r01，执行c6e43735df6d21a2742a4df4dd0284dc765a15f4。3seed完成，1200辅助更新、1050300身份样本前向、0身份更新/target/V拟合；独立读回VERIFIED，进程退出。固定B2 E40诊断；old/coverage/fresh_raw/fresh_risk相同物理界限和随机半径，两fresh各2遍Ls，未使用E40初始化新的身份训练。主推进NOT_MET，9/9条件失败。有限风险600步589次零梯度（L100/92/99,T100/100/98），三seed条件T噪声轴100%主导；sigmoid噪声初始化0.5与其余tanh≈0再L∞归一化产生偏置。raw刷新仅1/3提高风险，不支持直接晋级。下一步独立版本对称tanh坐标、噪声abs，保持物理界限；对比未拟合/原目标/有限风险，先验证去偏能否恢复搜索，不改选对照或扩大扰动，不自动启动刷新身份训练。详见完整report与mixture_components.json。目标84%仍active，未达到。

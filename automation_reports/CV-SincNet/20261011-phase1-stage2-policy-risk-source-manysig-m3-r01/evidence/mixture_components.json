@@ -1,0 +1,1658 @@
+[
+  {
+    "seed": 2026092701,
+    "role": "L_s",
+    "policy": "linear/old",
+    "conditional": true,
+    "count": 3164,
+    "finite_risk": 0.0,
+    "violations": 0,
+    "errors": 0,
+    "iq_relative_change": 0.04795706322786974,
+    "direction_abs_mean": [
+      0.913036512853825,
+      0.9547213743971814,
+      0.8397739976738708,
+      0.9334611284597182
+    ],
+    "dominant_axis_fraction": [
+      0.11788874841972187,
+      0.44310998735777496,
+      0.03192161820480405,
+      0.40707964601769914
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "L_s",
+    "policy": "linear/old",
+    "conditional": false,
+    "count": 3136,
+    "finite_risk": 0.0,
+    "violations": 0,
+    "errors": 0,
+    "iq_relative_change": 0.041771039499669003,
+    "direction_abs_mean": [
+      0.6254364727748016,
+      0.6313157445564666,
+      0.6266359437168268,
+      0.6103943578796227
+    ],
+    "dominant_axis_fraction": [
+      0.24872448979591838,
+      0.2598852040816326,
+      0.25350765306122447,
+      0.2378826530612245
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "L_s",
+    "policy": "linear/fresh_raw",
+    "conditional": true,
+    "count": 3164,
+    "finite_risk": 0.0,
+    "violations": 0,
+    "errors": 0,
+    "iq_relative_change": 0.04785716262159588,
+    "direction_abs_mean": [
+      0.9438827022740572,
+      0.9514861913532132,
+      0.8944575530671139,
+      0.8402874307158285
+    ],
+    "dominant_axis_fraction": [
+      0.2547408343868521,
+      0.3900126422250316,
+      0.14285714285714285,
+      0.21238938053097345
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "L_s",
+    "policy": "linear/fresh_raw",
+    "conditional": false,
+    "count": 3136,
+    "finite_risk": 0.0,
+    "violations": 0,
+    "errors": 0,
+    "iq_relative_change": 0.041771039499669003,
+    "direction_abs_mean": [
+      0.6254364727748016,
+      0.6313157445564666,
+      0.6266359437168268,
+      0.6103943578796227
+    ],
+    "dominant_axis_fraction": [
+      0.24872448979591838,
+      0.2598852040816326,
+      0.25350765306122447,
+      0.2378826530612245
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "L_s",
+    "policy": "linear/fresh_risk",
+    "conditional": true,
+    "count": 3164,
+    "finite_risk": 5.097507573334516e-06,
+    "violations": 1,
+    "errors": 0,
+    "iq_relative_change": 0.03625684452175187,
+    "direction_abs_mean": [
+      0.5341465446150799,
+      0.294005843453323,
+      0.19252289334973974,
+      0.9653985623986132
+    ],
+    "dominant_axis_fraction": [
+      0.04835651074589128,
+      0.05025284450063211,
+      0.009797724399494312,
+      0.8915929203539823
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "L_s",
+    "policy": "linear/fresh_risk",
+    "conditional": false,
+    "count": 3136,
+    "finite_risk": 0.0,
+    "violations": 0,
+    "errors": 0,
+    "iq_relative_change": 0.041771039499669003,
+    "direction_abs_mean": [
+      0.6254364727748016,
+      0.6313157445564666,
+      0.6266359437168268,
+      0.6103943578796227
+    ],
+    "dominant_axis_fraction": [
+      0.24872448979591838,
+      0.2598852040816326,
+      0.25350765306122447,
+      0.2378826530612245
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "L_s",
+    "policy": "temporal/old",
+    "conditional": true,
+    "count": 3082,
+    "finite_risk": 0.002417450601136521,
+    "violations": 35,
+    "errors": 5,
+    "iq_relative_change": 0.18248955710045428,
+    "direction_abs_mean": [
+      0.9965517599810105,
+      0.9737520560399809,
+      0.7141140492646281,
+      0.9453954499197965
+    ],
+    "dominant_axis_fraction": [
+      0.8105126541207008,
+      0.13238157040882545,
+      0.009085009733939001,
+      0.048020765736534715
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "L_s",
+    "policy": "temporal/old",
+    "conditional": false,
+    "count": 3218,
+    "finite_risk": 0.0028089686151261607,
+    "violations": 21,
+    "errors": 4,
+    "iq_relative_change": 0.13446004831415473,
+    "direction_abs_mean": [
+      0.6265913215290072,
+      0.6231452857405895,
+      0.6263514054949803,
+      0.6249616521078428
+    ],
+    "dominant_axis_fraction": [
+      0.25295214418893724,
+      0.2367930391547545,
+      0.2554381603480423,
+      0.254816656308266
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "L_s",
+    "policy": "temporal/fresh_raw",
+    "conditional": true,
+    "count": 3082,
+    "finite_risk": 0.04806588271240089,
+    "violations": 162,
+    "errors": 77,
+    "iq_relative_change": 0.19394865282090004,
+    "direction_abs_mean": [
+      0.976878370966407,
+      0.9912413392145861,
+      0.7692465892594639,
+      0.9665908208920692
+    ],
+    "dominant_axis_fraction": [
+      0.29688513951979234,
+      0.5781959766385464,
+      0.014600908500973394,
+      0.11031797534068787
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "L_s",
+    "policy": "temporal/fresh_raw",
+    "conditional": false,
+    "count": 3218,
+    "finite_risk": 0.0028089686151261607,
+    "violations": 21,
+    "errors": 4,
+    "iq_relative_change": 0.13446004831415473,
+    "direction_abs_mean": [
+      0.6265913215290072,
+      0.6231452857405895,
+      0.6263514054949803,
+      0.6249616521078428
+    ],
+    "dominant_axis_fraction": [
+      0.25295214418893724,
+      0.2367930391547545,
+      0.2554381603480423,
+      0.254816656308266
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "L_s",
+    "policy": "temporal/fresh_risk",
+    "conditional": true,
+    "count": 3082,
+    "finite_risk": 0.0,
+    "violations": 0,
+    "errors": 0,
+    "iq_relative_change": 0.01542057164993012,
+    "direction_abs_mean": [
+      0.03788593955531435,
+      0.028265049431503538,
+      1.0,
+      0.06079543476208291
+    ],
+    "dominant_axis_fraction": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "L_s",
+    "policy": "temporal/fresh_risk",
+    "conditional": false,
+    "count": 3218,
+    "finite_risk": 0.0028089686151261607,
+    "violations": 21,
+    "errors": 4,
+    "iq_relative_change": 0.13446004831415473,
+    "direction_abs_mean": [
+      0.6265913215290072,
+      0.6231452857405895,
+      0.6263514054949803,
+      0.6249616521078428
+    ],
+    "dominant_axis_fraction": [
+      0.25295214418893724,
+      0.2367930391547545,
+      0.2554381603480423,
+      0.254816656308266
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "V",
+    "policy": "linear/old",
+    "conditional": true,
+    "count": 13503,
+    "finite_risk": 0.001731959250841604,
+    "violations": 191,
+    "errors": 218,
+    "iq_relative_change": 0.04759300037754497,
+    "direction_abs_mean": [
+      0.915915378451674,
+      0.9555874597290873,
+      0.84088428939465,
+      0.934643995715081
+    ],
+    "dominant_axis_fraction": [
+      0.12308375916463009,
+      0.4299785232911205,
+      0.03184477523513293,
+      0.4150929423091165
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "V",
+    "policy": "linear/old",
+    "conditional": false,
+    "count": 13497,
+    "finite_risk": 0.0011224787109143455,
+    "violations": 212,
+    "errors": 182,
+    "iq_relative_change": 0.04172541043023421,
+    "direction_abs_mean": [
+      0.6245823708517574,
+      0.623557049887462,
+      0.6252927165522592,
+      0.6284305629800415
+    ],
+    "dominant_axis_fraction": [
+      0.24946284359487295,
+      0.24798103282210862,
+      0.2522041935244869,
+      0.2503519300585315
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "V",
+    "policy": "linear/fresh_raw",
+    "conditional": true,
+    "count": 13503,
+    "finite_risk": 0.0014305827483256871,
+    "violations": 186,
+    "errors": 216,
+    "iq_relative_change": 0.047465980592334325,
+    "direction_abs_mean": [
+      0.9462518138655255,
+      0.9517520955824935,
+      0.8947322755038963,
+      0.8411467447011078
+    ],
+    "dominant_axis_fraction": [
+      0.27364289417166554,
+      0.37761978819521586,
+      0.14781900318447752,
+      0.20091831444864106
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "V",
+    "policy": "linear/fresh_raw",
+    "conditional": false,
+    "count": 13497,
+    "finite_risk": 0.0011224787109143455,
+    "violations": 212,
+    "errors": 182,
+    "iq_relative_change": 0.04172541043023421,
+    "direction_abs_mean": [
+      0.6245823708517574,
+      0.623557049887462,
+      0.6252927165522592,
+      0.6284305629800415
+    ],
+    "dominant_axis_fraction": [
+      0.24946284359487295,
+      0.24798103282210862,
+      0.2522041935244869,
+      0.2503519300585315
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "V",
+    "policy": "linear/fresh_risk",
+    "conditional": true,
+    "count": 13503,
+    "finite_risk": 0.001255132910884533,
+    "violations": 179,
+    "errors": 212,
+    "iq_relative_change": 0.035970761760155644,
+    "direction_abs_mean": [
+      0.5373770263561622,
+      0.29035368416287305,
+      0.1894430844518118,
+      0.9664279730048386
+    ],
+    "dominant_axis_fraction": [
+      0.04524920388061912,
+      0.04835962378730652,
+      0.00947937495371399,
+      0.8969117973783604
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "V",
+    "policy": "linear/fresh_risk",
+    "conditional": false,
+    "count": 13497,
+    "finite_risk": 0.0011224787109143455,
+    "violations": 212,
+    "errors": 182,
+    "iq_relative_change": 0.04172541043023421,
+    "direction_abs_mean": [
+      0.6245823708517574,
+      0.623557049887462,
+      0.6252927165522592,
+      0.6284305629800415
+    ],
+    "dominant_axis_fraction": [
+      0.24946284359487295,
+      0.24798103282210862,
+      0.2522041935244869,
+      0.2503519300585315
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "V",
+    "policy": "temporal/old",
+    "conditional": true,
+    "count": 13390,
+    "finite_risk": 0.012158998289325608,
+    "violations": 418,
+    "errors": 267,
+    "iq_relative_change": 0.1847646372653567,
+    "direction_abs_mean": [
+      0.9962640019652557,
+      0.9733640390158234,
+      0.712443950471814,
+      0.9450424847449715
+    ],
+    "dominant_axis_fraction": [
+      0.8082897684839433,
+      0.12800597460791635,
+      0.010380881254667662,
+      0.05332337565347274
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "V",
+    "policy": "temporal/old",
+    "conditional": false,
+    "count": 13610,
+    "finite_risk": 0.0061722199245137855,
+    "violations": 321,
+    "errors": 236,
+    "iq_relative_change": 0.13585302438570632,
+    "direction_abs_mean": [
+      0.6269683851586105,
+      0.6191147636797723,
+      0.6230559914385724,
+      0.6255382651182045
+    ],
+    "dominant_axis_fraction": [
+      0.2533431300514328,
+      0.2423218221895665,
+      0.2476855253490081,
+      0.25664952240999267
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "V",
+    "policy": "temporal/fresh_raw",
+    "conditional": true,
+    "count": 13390,
+    "finite_risk": 0.06604650318737573,
+    "violations": 1003,
+    "errors": 575,
+    "iq_relative_change": 0.19677788820402284,
+    "direction_abs_mean": [
+      0.9760737916264096,
+      0.9911934993220765,
+      0.7684639251748513,
+      0.9668628999642065
+    ],
+    "dominant_axis_fraction": [
+      0.2899178491411501,
+      0.5834204630321135,
+      0.01650485436893204,
+      0.11015683345780433
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "V",
+    "policy": "temporal/fresh_raw",
+    "conditional": false,
+    "count": 13610,
+    "finite_risk": 0.0061722199245137855,
+    "violations": 321,
+    "errors": 236,
+    "iq_relative_change": 0.13585302438570632,
+    "direction_abs_mean": [
+      0.6269683851586105,
+      0.6191147636797723,
+      0.6230559914385724,
+      0.6255382651182045
+    ],
+    "dominant_axis_fraction": [
+      0.2533431300514328,
+      0.2423218221895665,
+      0.2476855253490081,
+      0.25664952240999267
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "V",
+    "policy": "temporal/fresh_risk",
+    "conditional": true,
+    "count": 13390,
+    "finite_risk": 0.00020488170606158983,
+    "violations": 195,
+    "errors": 206,
+    "iq_relative_change": 0.015913595391035994,
+    "direction_abs_mean": [
+      0.038868534962689036,
+      0.02832047811598863,
+      1.0,
+      0.061236865650407694
+    ],
+    "dominant_axis_fraction": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+    ]
+  },
+  {
+    "seed": 2026092701,
+    "role": "V",
+    "policy": "temporal/fresh_risk",
+    "conditional": false,
+    "count": 13610,
+    "finite_risk": 0.0061722199245137855,
+    "violations": 321,
+    "errors": 236,
+    "iq_relative_change": 0.13585302438570632,
+    "direction_abs_mean": [
+      0.6269683851586105,
+      0.6191147636797723,
+      0.6230559914385724,
+      0.6255382651182045
+    ],
+    "dominant_axis_fraction": [
+      0.2533431300514328,
+      0.2423218221895665,
+      0.2476855253490081,
+      0.25664952240999267
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "L_s",
+    "policy": "linear/old",
+    "conditional": true,
+    "count": 3175,
+    "finite_risk": 2.5357770161541896e-05,
+    "violations": 7,
+    "errors": 0,
+    "iq_relative_change": 0.04758478965463801,
+    "direction_abs_mean": [
+      0.9206628077236686,
+      0.9076306540442733,
+      0.8944601065812149,
+      0.9425394995569244
+    ],
+    "dominant_axis_fraction": [
+      0.21385826771653543,
+      0.2494488188976378,
+      0.24440944881889765,
+      0.2922834645669291
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "L_s",
+    "policy": "linear/old",
+    "conditional": false,
+    "count": 3125,
+    "finite_risk": 0.0,
+    "violations": 0,
+    "errors": 0,
+    "iq_relative_change": 0.04216206963905599,
+    "direction_abs_mean": [
+      0.6324632058860827,
+      0.6165847378039733,
+      0.6308702301272657,
+      0.6332009939351027
+    ],
+    "dominant_axis_fraction": [
+      0.2512,
+      0.23968,
+      0.25696,
+      0.25216
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "L_s",
+    "policy": "linear/fresh_raw",
+    "conditional": true,
+    "count": 3175,
+    "finite_risk": 2.6217435420615467e-05,
+    "violations": 6,
+    "errors": 0,
+    "iq_relative_change": 0.048220798566108704,
+    "direction_abs_mean": [
+      0.9353144594628041,
+      0.9228781800171522,
+      0.9124145621577586,
+      0.9443021907205656
+    ],
+    "dominant_axis_fraction": [
+      0.27307086614173226,
+      0.26110236220472444,
+      0.2204724409448819,
+      0.24535433070866142
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "L_s",
+    "policy": "linear/fresh_raw",
+    "conditional": false,
+    "count": 3125,
+    "finite_risk": 0.0,
+    "violations": 0,
+    "errors": 0,
+    "iq_relative_change": 0.04216206963905599,
+    "direction_abs_mean": [
+      0.6324632058860827,
+      0.6165847378039733,
+      0.6308702301272657,
+      0.6332009939351027
+    ],
+    "dominant_axis_fraction": [
+      0.2512,
+      0.23968,
+      0.25696,
+      0.25216
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "L_s",
+    "policy": "linear/fresh_risk",
+    "conditional": true,
+    "count": 3175,
+    "finite_risk": 0.0004031940900920487,
+    "violations": 9,
+    "errors": 1,
+    "iq_relative_change": 0.04022713839513948,
+    "direction_abs_mean": [
+      0.5705313481825155,
+      0.7356516096067677,
+      0.8882581558378091,
+      0.6667384173357346
+    ],
+    "dominant_axis_fraction": [
+      0.1215748031496063,
+      0.1952755905511811,
+      0.5480314960629922,
+      0.13511811023622047
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "L_s",
+    "policy": "linear/fresh_risk",
+    "conditional": false,
+    "count": 3125,
+    "finite_risk": 0.0,
+    "violations": 0,
+    "errors": 0,
+    "iq_relative_change": 0.04216206963905599,
+    "direction_abs_mean": [
+      0.6324632058860827,
+      0.6165847378039733,
+      0.6308702301272657,
+      0.6332009939351027
+    ],
+    "dominant_axis_fraction": [
+      0.2512,
+      0.23968,
+      0.25696,
+      0.25216
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "L_s",
+    "policy": "temporal/old",
+    "conditional": true,
+    "count": 3140,
+    "finite_risk": 0.00329833582297055,
+    "violations": 33,
+    "errors": 6,
+    "iq_relative_change": 0.18400574948134088,
+    "direction_abs_mean": [
+      0.9574848761983737,
+      0.9816292721849338,
+      0.7571167500155747,
+      0.9432634556369417
+    ],
+    "dominant_axis_fraction": [
+      0.2678343949044586,
+      0.5461783439490446,
+      0.10732484076433121,
+      0.0786624203821656
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "L_s",
+    "policy": "temporal/old",
+    "conditional": false,
+    "count": 3160,
+    "finite_risk": 0.001354037768106548,
+    "violations": 16,
+    "errors": 2,
+    "iq_relative_change": 0.1350076919898428,
+    "direction_abs_mean": [
+      0.6272345843754655,
+      0.6291445011925468,
+      0.6154024276522112,
+      0.6208690750469078
+    ],
+    "dominant_axis_fraction": [
+      0.260126582278481,
+      0.25253164556962027,
+      0.23512658227848102,
+      0.25221518987341773
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "L_s",
+    "policy": "temporal/fresh_raw",
+    "conditional": true,
+    "count": 3140,
+    "finite_risk": 3.120734350411755e-05,
+    "violations": 2,
+    "errors": 0,
+    "iq_relative_change": 0.15388856683360008,
+    "direction_abs_mean": [
+      0.4276331614758367,
+      0.33384350217777975,
+      0.8857528382046207,
+      0.9510394173632761
+    ],
+    "dominant_axis_fraction": [
+      0.0,
+      0.0,
+      0.3340764331210191,
+      0.6659235668789809
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "L_s",
+    "policy": "temporal/fresh_raw",
+    "conditional": false,
+    "count": 3160,
+    "finite_risk": 0.001354037768106548,
+    "violations": 16,
+    "errors": 2,
+    "iq_relative_change": 0.1350076919898428,
+    "direction_abs_mean": [
+      0.6272345843754655,
+      0.6291445011925468,
+      0.6154024276522112,
+      0.6208690750469078
+    ],
+    "dominant_axis_fraction": [
+      0.260126582278481,
+      0.25253164556962027,
+      0.23512658227848102,
+      0.25221518987341773
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "L_s",
+    "policy": "temporal/fresh_risk",
+    "conditional": true,
+    "count": 3140,
+    "finite_risk": 0.0,
+    "violations": 0,
+    "errors": 0,
+    "iq_relative_change": 0.016542642243731295,
+    "direction_abs_mean": [
+      0.029258596287702967,
+      0.08382040456458613,
+      1.0,
+      0.06769315563555685
+    ],
+    "dominant_axis_fraction": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "L_s",
+    "policy": "temporal/fresh_risk",
+    "conditional": false,
+    "count": 3160,
+    "finite_risk": 0.001354037768106548,
+    "violations": 16,
+    "errors": 2,
+    "iq_relative_change": 0.1350076919898428,
+    "direction_abs_mean": [
+      0.6272345843754655,
+      0.6291445011925468,
+      0.6154024276522112,
+      0.6208690750469078
+    ],
+    "dominant_axis_fraction": [
+      0.260126582278481,
+      0.25253164556962027,
+      0.23512658227848102,
+      0.25221518987341773
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "V",
+    "policy": "linear/old",
+    "conditional": true,
+    "count": 13531,
+    "finite_risk": 0.002499136427777719,
+    "violations": 277,
+    "errors": 223,
+    "iq_relative_change": 0.04752185701660459,
+    "direction_abs_mean": [
+      0.919199304679009,
+      0.9072532949788978,
+      0.8930046245600007,
+      0.9419520240640192
+    ],
+    "dominant_axis_fraction": [
+      0.21188382233389993,
+      0.24728401448525608,
+      0.2530485551696105,
+      0.2877836080112335
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "V",
+    "policy": "linear/old",
+    "conditional": false,
+    "count": 13469,
+    "finite_risk": 0.0010523778714664385,
+    "violations": 223,
+    "errors": 195,
+    "iq_relative_change": 0.041822044335253564,
+    "direction_abs_mean": [
+      0.6265164735656051,
+      0.6233280469703453,
+      0.6213379501061452,
+      0.6260055157488318
+    ],
+    "dominant_axis_fraction": [
+      0.25139208552973497,
+      0.24961021605167422,
+      0.24805108025837108,
+      0.25094661816021974
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "V",
+    "policy": "linear/fresh_raw",
+    "conditional": true,
+    "count": 13531,
+    "finite_risk": 0.002472392877673174,
+    "violations": 277,
+    "errors": 224,
+    "iq_relative_change": 0.0481457591907066,
+    "direction_abs_mean": [
+      0.933602270446748,
+      0.9226194351215548,
+      0.9110339677930275,
+      0.9434438651191819
+    ],
+    "dominant_axis_fraction": [
+      0.26635134136427463,
+      0.2702682728549257,
+      0.22792107013524499,
+      0.23545931564555464
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "V",
+    "policy": "linear/fresh_raw",
+    "conditional": false,
+    "count": 13469,
+    "finite_risk": 0.0010523778714664385,
+    "violations": 223,
+    "errors": 195,
+    "iq_relative_change": 0.041822044335253564,
+    "direction_abs_mean": [
+      0.6265164735656051,
+      0.6233280469703453,
+      0.6213379501061452,
+      0.6260055157488318
+    ],
+    "dominant_axis_fraction": [
+      0.25139208552973497,
+      0.24961021605167422,
+      0.24805108025837108,
+      0.25094661816021974
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "V",
+    "policy": "linear/fresh_risk",
+    "conditional": true,
+    "count": 13531,
+    "finite_risk": 0.004039843074552089,
+    "violations": 293,
+    "errors": 232,
+    "iq_relative_change": 0.040393539062444445,
+    "direction_abs_mean": [
+      0.5778976875135632,
+      0.7387481285865165,
+      0.8885705804050391,
+      0.6682732179596949
+    ],
+    "dominant_axis_fraction": [
+      0.12851969551400488,
+      0.20471509866233095,
+      0.539206267090385,
+      0.12755893873327914
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "V",
+    "policy": "linear/fresh_risk",
+    "conditional": false,
+    "count": 13469,
+    "finite_risk": 0.0010523778714664385,
+    "violations": 223,
+    "errors": 195,
+    "iq_relative_change": 0.041822044335253564,
+    "direction_abs_mean": [
+      0.6265164735656051,
+      0.6233280469703453,
+      0.6213379501061452,
+      0.6260055157488318
+    ],
+    "dominant_axis_fraction": [
+      0.25139208552973497,
+      0.24961021605167422,
+      0.24805108025837108,
+      0.25094661816021974
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "V",
+    "policy": "temporal/old",
+    "conditional": true,
+    "count": 13617,
+    "finite_risk": 0.009379291867350438,
+    "violations": 398,
+    "errors": 252,
+    "iq_relative_change": 0.18450948218835161,
+    "direction_abs_mean": [
+      0.9584825232229963,
+      0.982919847953422,
+      0.7563992251516956,
+      0.9450028388477627
+    ],
+    "dominant_axis_fraction": [
+      0.27238011309392673,
+      0.5470367922449879,
+      0.0956157743996475,
+      0.08496732026143791
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "V",
+    "policy": "temporal/old",
+    "conditional": false,
+    "count": 13383,
+    "finite_risk": 0.006264427754229202,
+    "violations": 327,
+    "errors": 241,
+    "iq_relative_change": 0.13476470049279282,
+    "direction_abs_mean": [
+      0.6244110123721094,
+      0.6281802286613649,
+      0.6243438832288484,
+      0.6267087546719705
+    ],
+    "dominant_axis_fraction": [
+      0.24807591720839872,
+      0.2508406186953598,
+      0.25001868041545244,
+      0.25106478368078905
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "V",
+    "policy": "temporal/fresh_raw",
+    "conditional": true,
+    "count": 13617,
+    "finite_risk": 0.0017231619466789774,
+    "violations": 219,
+    "errors": 201,
+    "iq_relative_change": 0.15440857164126764,
+    "direction_abs_mean": [
+      0.4272407431381978,
+      0.33421531672316385,
+      0.8858025517067633,
+      0.9534780407666267
+    ],
+    "dominant_axis_fraction": [
+      0.0,
+      0.0,
+      0.3292942645222883,
+      0.6707057354777117
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "V",
+    "policy": "temporal/fresh_raw",
+    "conditional": false,
+    "count": 13383,
+    "finite_risk": 0.006264427754229202,
+    "violations": 327,
+    "errors": 241,
+    "iq_relative_change": 0.13476470049279282,
+    "direction_abs_mean": [
+      0.6244110123721094,
+      0.6281802286613649,
+      0.6243438832288484,
+      0.6267087546719705
+    ],
+    "dominant_axis_fraction": [
+      0.24807591720839872,
+      0.2508406186953598,
+      0.25001868041545244,
+      0.25106478368078905
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "V",
+    "policy": "temporal/fresh_risk",
+    "conditional": true,
+    "count": 13617,
+    "finite_risk": 6.947932130294604e-05,
+    "violations": 186,
+    "errors": 189,
+    "iq_relative_change": 0.01653287971381204,
+    "direction_abs_mean": [
+      0.02943280030982209,
+      0.08394434056713204,
+      1.0,
+      0.0686463311577276
+    ],
+    "dominant_axis_fraction": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "role": "V",
+    "policy": "temporal/fresh_risk",
+    "conditional": false,
+    "count": 13383,
+    "finite_risk": 0.006264427754229202,
+    "violations": 327,
+    "errors": 241,
+    "iq_relative_change": 0.13476470049279282,
+    "direction_abs_mean": [
+      0.6244110123721094,
+      0.6281802286613649,
+      0.6243438832288484,
+      0.6267087546719705
+    ],
+    "dominant_axis_fraction": [
+      0.24807591720839872,
+      0.2508406186953598,
+      0.25001868041545244,
+      0.25106478368078905
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "L_s",
+    "policy": "linear/old",
+    "conditional": true,
+    "count": 3151,
+    "finite_risk": 3.3230106791872113e-06,
+    "violations": 3,
+    "errors": 0,
+    "iq_relative_change": 0.04671547665520025,
+    "direction_abs_mean": [
+      0.9545222055302919,
+      0.9727478691677335,
+      0.6383524363025815,
+      0.9229970613346142
+    ],
+    "dominant_axis_fraction": [
+      0.27483338622659476,
+      0.41383687718184703,
+      0.10980641066328149,
+      0.20152332592827674
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "L_s",
+    "policy": "linear/old",
+    "conditional": false,
+    "count": 3149,
+    "finite_risk": 0.00011085337276338925,
+    "violations": 3,
+    "errors": 0,
+    "iq_relative_change": 0.0410798931205918,
+    "direction_abs_mean": [
+      0.6249324171096444,
+      0.625645646366694,
+      0.6162399243731627,
+      0.6314595270186457
+    ],
+    "dominant_axis_fraction": [
+      0.25722451571927596,
+      0.2588123213718641,
+      0.23531279771355987,
+      0.2486503651953001
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "L_s",
+    "policy": "linear/fresh_raw",
+    "conditional": true,
+    "count": 3151,
+    "finite_risk": 6.233672491711914e-05,
+    "violations": 2,
+    "errors": 0,
+    "iq_relative_change": 0.04945572523657107,
+    "direction_abs_mean": [
+      0.9594660103037334,
+      0.5995905605631445,
+      0.7993810178315364,
+      0.892374763485743
+    ],
+    "dominant_axis_fraction": [
+      0.487146937480165,
+      0.07172326245636305,
+      0.2046969216121866,
+      0.2364328784512853
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "L_s",
+    "policy": "linear/fresh_raw",
+    "conditional": false,
+    "count": 3149,
+    "finite_risk": 0.00011085337276338925,
+    "violations": 3,
+    "errors": 0,
+    "iq_relative_change": 0.0410798931205918,
+    "direction_abs_mean": [
+      0.6249324171096444,
+      0.625645646366694,
+      0.6162399243731627,
+      0.6314595270186457
+    ],
+    "dominant_axis_fraction": [
+      0.25722451571927596,
+      0.2588123213718641,
+      0.23531279771355987,
+      0.2486503651953001
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "L_s",
+    "policy": "linear/fresh_risk",
+    "conditional": true,
+    "count": 3151,
+    "finite_risk": 2.040629287261276e-06,
+    "violations": 1,
+    "errors": 0,
+    "iq_relative_change": 0.036669661973498184,
+    "direction_abs_mean": [
+      0.7649314994867613,
+      0.3434762912656013,
+      0.3261409296750925,
+      0.9026932832372638
+    ],
+    "dominant_axis_fraction": [
+      0.36210726753411615,
+      0.007933989209774674,
+      0.0025388765471278957,
+      0.6274198667089813
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "L_s",
+    "policy": "linear/fresh_risk",
+    "conditional": false,
+    "count": 3149,
+    "finite_risk": 0.00011085337276338925,
+    "violations": 3,
+    "errors": 0,
+    "iq_relative_change": 0.0410798931205918,
+    "direction_abs_mean": [
+      0.6249324171096444,
+      0.625645646366694,
+      0.6162399243731627,
+      0.6314595270186457
+    ],
+    "dominant_axis_fraction": [
+      0.25722451571927596,
+      0.2588123213718641,
+      0.23531279771355987,
+      0.2486503651953001
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "L_s",
+    "policy": "temporal/old",
+    "conditional": true,
+    "count": 3173,
+    "finite_risk": 0.002612513613058979,
+    "violations": 42,
+    "errors": 7,
+    "iq_relative_change": 0.1824442649807862,
+    "direction_abs_mean": [
+      0.9685989583549235,
+      0.9951758117582608,
+      0.7877928953121184,
+      0.9299474710776457
+    ],
+    "dominant_axis_fraction": [
+      0.1229120705956508,
+      0.8506145603529782,
+      0.023321777497636306,
+      0.003151591553734636
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "L_s",
+    "policy": "temporal/old",
+    "conditional": false,
+    "count": 3127,
+    "finite_risk": 0.0031446738166437936,
+    "violations": 23,
+    "errors": 6,
+    "iq_relative_change": 0.13415922410698955,
+    "direction_abs_mean": [
+      0.6273497402909723,
+      0.6310408825472028,
+      0.6237199643670386,
+      0.6215794362728854
+    ],
+    "dominant_axis_fraction": [
+      0.2433642468819955,
+      0.2583946274384394,
+      0.24624240486088902,
+      0.251998720818676
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "L_s",
+    "policy": "temporal/fresh_raw",
+    "conditional": true,
+    "count": 3173,
+    "finite_risk": 0.0009215592353760639,
+    "violations": 29,
+    "errors": 2,
+    "iq_relative_change": 0.12730473424235264,
+    "direction_abs_mean": [
+      0.9915208156049495,
+      0.9703580711002873,
+      0.7501355691396435,
+      0.16006105138048216
+    ],
+    "dominant_axis_fraction": [
+      0.697447210841475,
+      0.28616451307910495,
+      0.016388276079420106,
+      0.0
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "L_s",
+    "policy": "temporal/fresh_raw",
+    "conditional": false,
+    "count": 3127,
+    "finite_risk": 0.0031446738166437936,
+    "violations": 23,
+    "errors": 6,
+    "iq_relative_change": 0.13415922410698955,
+    "direction_abs_mean": [
+      0.6273497402909723,
+      0.6310408825472028,
+      0.6237199643670386,
+      0.6215794362728854
+    ],
+    "dominant_axis_fraction": [
+      0.2433642468819955,
+      0.2583946274384394,
+      0.24624240486088902,
+      0.251998720818676
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "L_s",
+    "policy": "temporal/fresh_risk",
+    "conditional": true,
+    "count": 3173,
+    "finite_risk": 1.1300512190627593e-05,
+    "violations": 3,
+    "errors": 0,
+    "iq_relative_change": 0.017715675551941732,
+    "direction_abs_mean": [
+      0.06466089286871904,
+      0.1429438909842714,
+      1.0,
+      0.06542264898825675
+    ],
+    "dominant_axis_fraction": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "L_s",
+    "policy": "temporal/fresh_risk",
+    "conditional": false,
+    "count": 3127,
+    "finite_risk": 0.0031446738166437936,
+    "violations": 23,
+    "errors": 6,
+    "iq_relative_change": 0.13415922410698955,
+    "direction_abs_mean": [
+      0.6273497402909723,
+      0.6310408825472028,
+      0.6237199643670386,
+      0.6215794362728854
+    ],
+    "dominant_axis_fraction": [
+      0.2433642468819955,
+      0.2583946274384394,
+      0.24624240486088902,
+      0.251998720818676
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "V",
+    "policy": "linear/old",
+    "conditional": true,
+    "count": 13414,
+    "finite_risk": 0.0012279524425550506,
+    "violations": 232,
+    "errors": 184,
+    "iq_relative_change": 0.04706480775071083,
+    "direction_abs_mean": [
+      0.9547258195764033,
+      0.9721139583881626,
+      0.6323501812736433,
+      0.9203943610191345
+    ],
+    "dominant_axis_fraction": [
+      0.27657671089906066,
+      0.4131504398389742,
+      0.11212166393320412,
+      0.198151185328761
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "V",
+    "policy": "linear/old",
+    "conditional": false,
+    "count": 13586,
+    "finite_risk": 0.0013968557316645746,
+    "violations": 244,
+    "errors": 233,
+    "iq_relative_change": 0.041311019090929955,
+    "direction_abs_mean": [
+      0.6214659370414567,
+      0.6244972588678379,
+      0.624937817577166,
+      0.6225395200380502
+    ],
+    "dominant_axis_fraction": [
+      0.24495804504637125,
+      0.2540114824083615,
+      0.2512144854997792,
+      0.249815987045488
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "V",
+    "policy": "linear/fresh_raw",
+    "conditional": true,
+    "count": 13414,
+    "finite_risk": 0.0010561750158185619,
+    "violations": 242,
+    "errors": 193,
+    "iq_relative_change": 0.04961123354103989,
+    "direction_abs_mean": [
+      0.9594232882919442,
+      0.5946914409890556,
+      0.7941480349715723,
+      0.8889408147475466
+    ],
+    "dominant_axis_fraction": [
+      0.4950797674071865,
+      0.075369017444461,
+      0.1989712240942299,
+      0.23057999105412255
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "V",
+    "policy": "linear/fresh_raw",
+    "conditional": false,
+    "count": 13586,
+    "finite_risk": 0.0013968557316645746,
+    "violations": 244,
+    "errors": 233,
+    "iq_relative_change": 0.041311019090929955,
+    "direction_abs_mean": [
+      0.6214659370414567,
+      0.6244972588678379,
+      0.624937817577166,
+      0.6225395200380502
+    ],
+    "dominant_axis_fraction": [
+      0.24495804504637125,
+      0.2540114824083615,
+      0.2512144854997792,
+      0.249815987045488
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "V",
+    "policy": "linear/fresh_risk",
+    "conditional": true,
+    "count": 13414,
+    "finite_risk": 0.0010233075269357548,
+    "violations": 206,
+    "errors": 186,
+    "iq_relative_change": 0.037034892051760984,
+    "direction_abs_mean": [
+      0.7627258228939787,
+      0.3480096036051882,
+      0.3312602462991967,
+      0.9009567103256332
+    ],
+    "dominant_axis_fraction": [
+      0.3537349038318175,
+      0.014387952885045475,
+      0.003951095869986581,
+      0.6279260474131504
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "V",
+    "policy": "linear/fresh_risk",
+    "conditional": false,
+    "count": 13586,
+    "finite_risk": 0.0013968557316645746,
+    "violations": 244,
+    "errors": 233,
+    "iq_relative_change": 0.041311019090929955,
+    "direction_abs_mean": [
+      0.6214659370414567,
+      0.6244972588678379,
+      0.624937817577166,
+      0.6225395200380502
+    ],
+    "dominant_axis_fraction": [
+      0.24495804504637125,
+      0.2540114824083615,
+      0.2512144854997792,
+      0.249815987045488
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "V",
+    "policy": "temporal/old",
+    "conditional": true,
+    "count": 13624,
+    "finite_risk": 0.010696993652277156,
+    "violations": 485,
+    "errors": 269,
+    "iq_relative_change": 0.18199478351571166,
+    "direction_abs_mean": [
+      0.9683788871339014,
+      0.9960278189766778,
+      0.7878757989798584,
+      0.9310100306015783
+    ],
+    "dominant_axis_fraction": [
+      0.11413681738109219,
+      0.8622284204345273,
+      0.021065766294773927,
+      0.0025689958896065765
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "V",
+    "policy": "temporal/old",
+    "conditional": false,
+    "count": 13376,
+    "finite_risk": 0.00977643681966015,
+    "violations": 385,
+    "errors": 267,
+    "iq_relative_change": 0.13399229935005677,
+    "direction_abs_mean": [
+      0.6291923829156785,
+      0.6263074366737627,
+      0.6232213729851236,
+      0.6259550589308552
+    ],
+    "dominant_axis_fraction": [
+      0.25029904306220097,
+      0.251869019138756,
+      0.25059808612440193,
+      0.24723385167464115
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "V",
+    "policy": "temporal/fresh_raw",
+    "conditional": true,
+    "count": 13624,
+    "finite_risk": 0.004058341255339642,
+    "violations": 376,
+    "errors": 238,
+    "iq_relative_change": 0.12732898250645405,
+    "direction_abs_mean": [
+      0.9917616882720767,
+      0.9720865931980972,
+      0.7508286139017263,
+      0.1602272965384213
+    ],
+    "dominant_axis_fraction": [
+      0.6807839107457428,
+      0.3064445096887845,
+      0.012771579565472695,
+      0.0
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "V",
+    "policy": "temporal/fresh_raw",
+    "conditional": false,
+    "count": 13376,
+    "finite_risk": 0.00977643681966015,
+    "violations": 385,
+    "errors": 267,
+    "iq_relative_change": 0.13399229935005677,
+    "direction_abs_mean": [
+      0.6291923829156785,
+      0.6263074366737627,
+      0.6232213729851236,
+      0.6259550589308552
+    ],
+    "dominant_axis_fraction": [
+      0.25029904306220097,
+      0.251869019138756,
+      0.25059808612440193,
+      0.24723385167464115
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "V",
+    "policy": "temporal/fresh_risk",
+    "conditional": true,
+    "count": 13624,
+    "finite_risk": 0.0001524014319351214,
+    "violations": 235,
+    "errors": 208,
+    "iq_relative_change": 0.01760022266446176,
+    "direction_abs_mean": [
+      0.06391207354897868,
+      0.14332737329104808,
+      1.0,
+      0.06535351320991464
+    ],
+    "dominant_axis_fraction": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "role": "V",
+    "policy": "temporal/fresh_risk",
+    "conditional": false,
+    "count": 13376,
+    "finite_risk": 0.00977643681966015,
+    "violations": 385,
+    "errors": 267,
+    "iq_relative_change": 0.13399229935005677,
+    "direction_abs_mean": [
+      0.6291923829156785,
+      0.6263074366737627,
+      0.6232213729851236,
+      0.6259550589308552
+    ],
+    "dominant_axis_fraction": [
+      0.25029904306220097,
+      0.251869019138756,
+      0.25059808612440193,
+      0.24723385167464115
+    ]
+  }
+]
