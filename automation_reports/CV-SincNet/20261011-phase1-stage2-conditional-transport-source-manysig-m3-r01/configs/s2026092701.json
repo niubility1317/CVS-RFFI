@@ -1,0 +1,33 @@
+{
+  "run_id": "20261011-phase1-stage2-conditional-transport-source-manysig-m3-r01",
+  "methods": [
+    "zero",
+    "shared_rx",
+    "conditional_joint",
+    "conditional_state"
+  ],
+  "primary": "conditional_joint",
+  "control": "shared_rx",
+  "folds": "3 held TX pairs x3 held days, fit only other4TX and other2days",
+  "packets": "Each70 L_s cell split into35+35 by existing source-relation-split-v1 physical-ID order",
+  "fit": "For each directed source RX pair, both independent-half orientations: anchor A -> destination B minus anchor B; anchor B -> destination A minus anchor A. Only fit TX/day.",
+  "predictors": "affine ridge, scalar centered-input RMS normalization, ridge=.1, output shrink=.4; no hyperparameter search",
+  "inputs": "one held L_s anchor half A joint160 or state40; never other held RX or V features",
+  "outputs": "star potentials for all5 source RX with anchor potential0; any pair is difference, cycle-consistent within a fixed anchor",
+  "scoring": "held L_s halfB and independent V means; equal heldTX/day, equal five anchors and ten undirected pairs; same predictions for L_s_B/V",
+  "metrics": [
+    "full160 displacement MSE/zero",
+    "centered cosine logit displacement MSE/zero",
+    "fixed-anchor true-vs-rival margin displacement MSE/zero",
+    "direction alignment",
+    "max pair norm",
+    "all folds/anchors/pairs"
+  ],
+  "advancement": "Every seed conditional_joint strictly improves both full and centered-logit V MSE vs shared_rx and zero, and margin V MSE vs shared_rx and zero; L_s_B full MSE also improves shared_rx. Only primary may advance; no alternative selection.",
+  "target_access": false,
+  "identity_updates": 0,
+  "new_identity_forwards": 0,
+  "validation_fit": false,
+  "validation_input": false,
+  "model_seed": 2026092701
+}

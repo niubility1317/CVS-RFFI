@@ -11,3 +11,4 @@
 - [20261011-phase1-stage2-rx-anchor-manysig-m3-r01](../../automation_reports/CV-SincNet/20261011-phase1-stage2-rx-anchor-manysig-m3-r01/report.md)
 - [20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01](../../automation_reports/CV-SincNet/20261011-phase1-stage2-decision-geometry-source-manysig-m3-r01/report.md)
 - [20261011-phase1-stage2-soft-metric-source-manysig-m3-r01](../../automation_reports/CV-SincNet/20261011-phase1-stage2-soft-metric-source-manysig-m3-r01/report.md)
+- [20261011-phase1-stage2-conditional-transport-source-manysig-m3-r01](../../automation_reports/CV-SincNet/20261011-phase1-stage2-conditional-transport-source-manysig-m3-r01/report.md)
