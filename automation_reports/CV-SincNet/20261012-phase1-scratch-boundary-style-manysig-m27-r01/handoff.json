@@ -22,9 +22,9 @@
   "multilevel": "time_down/t2.pool; margin sensitivities without heads; fixed peer probabilities; independent AB Fishr fixed initial coefficients/denominator2; hard/random four-candidate L style with matched dropout; noEMA/noSat",
   "owner": "codex/root/scratch-boundary-style-20261012",
   "current_progress": {
-    "read_at": 1791752100.009335,
+    "read_at": 1791752323.1875155,
     "launched": 27,
-    "scored_rows": 7,
+    "scored_rows": 10,
     "source_fully_audited_rows": 7,
     "source_fully_audited_steps": 31080,
     "failure": null,
@@ -33,11 +33,14 @@
   "completed_rows": [
     "CE-s2026092701",
     "SSL-s2026092701",
+    "M_MIDDLE-s2026092701",
     "L_REPLAY-s2026092701",
     "CE-s2026092702",
     "SSL-s2026092702",
+    "L_REPLAY-s2026092702",
     "CE-s2026092703",
-    "SSL-s2026092703"
+    "SSL-s2026092703",
+    "L_REPLAY-s2026092703"
   ],
   "source_fully_audited_steps": 31080
 }
