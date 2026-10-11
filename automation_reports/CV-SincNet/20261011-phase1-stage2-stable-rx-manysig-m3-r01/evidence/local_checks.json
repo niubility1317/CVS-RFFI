@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "target_access": false,
+  "checks": [
+    "closed_form_shrink_reliability",
+    "held_TX_exclusion",
+    "held_day_exclusion",
+    "same_8880_sample_stream",
+    "finite_full160_gradient",
+    "unchanged_B3_objective_budget",
+    "capacity_four",
+    "truth_last_boundary",
+    "complete_control_summary"
+  ]
+}

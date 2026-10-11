@@ -27,3 +27,12 @@ Run `20261011-phase1-stage2-relation-identifiability-source-manysig-m3-r01`，�
 直接盒约束 oracle 误差比 0.735660/0.676194/0.716290，能解释 26.43%/32.38%/28.37% 的局部组差；统一缩放明显保守。oracle 不得变成训练 target 或预测置信度。数值凸误差界全部通过。
 
 下一步：只用 L_s 拟合稳定 RX 分量，检查源 V 身份保持；固定源 RX 关系只约束训练、推理保持单身份网络。再冻结具体 R 目标/权重后发布从对应 E200 开始的 E40 三种子变体，保留同预算 CE 和自动 clean。不要整体删除 TX×RX 耦合。目标仍 active、84% 未达成，没有新身份训练发布。
+
+
+## 稳定 RX S3 实现与发布准备
+
+源 V 检查 `20261011-phase1-stage2-stable-rx-identity-source-manysig-m3-r01` 三种子全部通过，执行 f9a461c539495a19eeb450fa7518438c3b732653，CPU 2.661 秒。alpha .25 准确率变化 −.011111/+ .003704/+ .003704 pp；source-only，无新身份训练或target。已保存完整报告。
+
+新 run `20261011-phase1-stage2-stable-rx-manysig-m3-r01`：S3×3从对应原始E200重新开始E40/8880，替换共享RX预测器，其他B3目标/日程/LT不变。其他4TX＋其他2日拟合，shrink=.4、alpha≤.25、9折标量全160 c，完整有梯度有限总体修正。复用旧geometry全部B0/B2/B3同预算控制，自动逐row clean后truth-last；4总进程/GPU。9项本地checks和共享训练真实图/完成存档回归通过，独立P0/P1审查通过。
+
+新代码 `experiments/cvs_stage2_stable_rx`；shared geometry/source.py提供design_module与receiver_payload注入，旧配置行为保持。发布器先CPU拟合R+真实父前反向不更新参数，再启动唯一dispatcher。当前准备Git交付与正式发布，必须以远端readback确认启动。目标仍active，未达84%。源 V 筛查使用全部六 TX 的 leave-day 拟合；训练使用四 TX 的 leave-day 拟合。筛查与训练不是完全同一变换，不把筛查结果作为训练后身份保持的保证。

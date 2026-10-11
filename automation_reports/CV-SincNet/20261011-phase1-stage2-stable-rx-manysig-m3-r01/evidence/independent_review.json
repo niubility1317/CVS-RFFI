@@ -1,0 +1,16 @@
+{
+  "status": "PASSED",
+  "reviewer": "/root/stochastic_forward_audit",
+  "p0": 0,
+  "p1": 0,
+  "scope": [
+    "cross TX/day fit",
+    "original parent E40",
+    "source sample stream",
+    "full160 R",
+    "capacity4",
+    "automatic truth last",
+    "fixed control reuse"
+  ],
+  "clarification": "源 V 筛查使用全部六 TX 的 leave-day 拟合；训练使用四 TX 的 leave-day 拟合。筛查与训练不是完全同一变换，不把筛查结果作为训练后身份保持的保证。"
+}

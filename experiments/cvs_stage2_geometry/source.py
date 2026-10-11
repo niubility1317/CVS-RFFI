@@ -41,7 +41,7 @@ def save_final_checkpoint(c, model, optimizer, out):
     """One fixed-final serialization path, also exercised by bounded checks."""
     checkpoint = Path(out)/'final_ssdg.pth'
     torch.save(dict(model=model.state_dict(), baseline_args=model._stage2_baseline_args,
-        config=c, run_id=d.RUN, candidate_id=c['row_id'], epoch=40, optimizer_steps=8880,
+        config=c, run_id=c['run_id'], candidate_id=c['row_id'], epoch=40, optimizer_steps=8880,
         checkpoint_selection='final_only', parent_checkpoint=c['parent_checkpoint'],
         optimizer=optimizer.state_dict(), target_access=False, rng=torch.get_rng_state()), checkpoint)
     model.load_state_dict(torch.load(checkpoint, map_location=next(model.parameters()).device,
@@ -51,7 +51,7 @@ def save_final_checkpoint(c, model, optimizer, out):
 
 def save_completion(c, out, result):
     dump(Path(out)/'completion.json', result)
-    dump(Path(out).parent/'source_frozen.json', dict(status='SOURCE_FROZEN', run_id=d.RUN,
+    dump(Path(out).parent/'source_frozen.json', dict(status='SOURCE_FROZEN', run_id=c['run_id'],
         row_id=c['row_id'], config=c, checkpoint=str(Path(out)/'final_ssdg.pth'), epoch=40,
         optimizer_steps=8880, target_access=False, target_scores_consumed=False,
         selection='fixed_final_E40'))
@@ -189,11 +189,12 @@ def relation_observations(logits, deterministic_logits, y, parent_margin, sample
     return records
 
 
-def train(c, device='cuda:0'):
+def train(c, device='cuda:0', *, design_module=d):
     from experiments.cvs_stage2_decouple.data import cached_loader
     from experiments.cvs_feature_disentangle.validation import evaluate_source_stress
     from experiments.cvs_feature_disentangle.source import source_validation
     from experiments.cvs_phase1_stack.recover import verify_contract
+    d = design_module
     d.validate(c)
     parent_c = d.parent_config(c['model_seed'])
     prepared = Path(c['preparation'])
@@ -213,7 +214,9 @@ def train(c, device='cuda:0'):
     if (len(packed['validation']['ids']) != 27000 or
             sorted(packed['validation']['ids']) != sorted(packed['contract']['role_ids']['V'])):
         raise ValueError('Cached V physical IDs differ')
-    bank = load_receiver(torch.load(prepared/'receiver.pt', map_location='cpu', weights_only=False))
+    bank = load_receiver(torch.load(c.get('receiver_payload', prepared/'receiver.pt'), map_location='cpu', weights_only=False))
+    if c.get('receiver_method') is not None and bank.payload.get('method') != c['receiver_method']:
+        raise ValueError('Frozen receiver estimator differs from registered method')
     if (bank.payload['seed'] != c['model_seed'] or bank.payload['source_ids'] != cache['ids'] or
             not torch.equal(bank.parent_feature, cache['parent_feature'])):
         raise ValueError('Frozen receiver/cache physical identity or parent vectors differ')

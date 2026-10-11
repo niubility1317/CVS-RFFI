@@ -1,0 +1,152 @@
+[
+  {
+    "seed": 2026092701,
+    "decision": {
+      "accuracy_delta": -0.00011111111111117289,
+      "min_receiver_delta": -0.00037037037037035425,
+      "no_material_identity_damage": true,
+      "registered_tolerances": {
+        "overall_drop": 0.002,
+        "any_receiver_drop": 0.005
+      }
+    },
+    "rows": [
+      {
+        "alpha": 0.0,
+        "count": 27000,
+        "accuracy": 0.9852962962962963,
+        "errors": 397,
+        "broken": 0,
+        "repaired": 0,
+        "margin_mean": 15.214709100253014,
+        "margin_delta_mean": 2.6884750764346433e-09,
+        "parent_correct_margin_drop_mean": -2.6563762750638872e-09,
+        "finite_keep_risk": 2.094986940031178e-18
+      },
+      {
+        "alpha": 0.25,
+        "count": 27000,
+        "accuracy": 0.9851851851851852,
+        "errors": 400,
+        "broken": 3,
+        "repaired": 0,
+        "margin_mean": 15.255047371979993,
+        "margin_delta_mean": 0.04033827441545504,
+        "parent_correct_margin_drop_mean": -0.04109729122413336,
+        "finite_keep_risk": 8.109331869687845e-07
+      },
+      {
+        "alpha": 1.0,
+        "count": 27000,
+        "accuracy": 0.9853703703703703,
+        "errors": 395,
+        "broken": 3,
+        "repaired": 5,
+        "margin_mean": 15.353877140493534,
+        "margin_delta_mean": 0.1391680429289971,
+        "parent_correct_margin_drop_mean": -0.14185231614779492,
+        "finite_keep_risk": 1.3855859220971226e-05
+      }
+    ]
+  },
+  {
+    "seed": 2026092702,
+    "decision": {
+      "accuracy_delta": 3.703703703694661e-05,
+      "min_receiver_delta": 0.0,
+      "no_material_identity_damage": true,
+      "registered_tolerances": {
+        "overall_drop": 0.002,
+        "any_receiver_drop": 0.005
+      }
+    },
+    "rows": [
+      {
+        "alpha": 0.0,
+        "count": 27000,
+        "accuracy": 0.9857037037037037,
+        "errors": 386,
+        "broken": 0,
+        "repaired": 0,
+        "margin_mean": 15.001552162614866,
+        "margin_delta_mean": -3.5354987799936284e-10,
+        "parent_correct_margin_drop_mean": 5.618852599492088e-10,
+        "finite_keep_risk": 3.037747682267112e-18
+      },
+      {
+        "alpha": 0.25,
+        "count": 27000,
+        "accuracy": 0.9857407407407407,
+        "errors": 385,
+        "broken": 1,
+        "repaired": 2,
+        "margin_mean": 15.04741307622926,
+        "margin_delta_mean": 0.04586091326084398,
+        "parent_correct_margin_drop_mean": -0.04669919901221074,
+        "finite_keep_risk": 1.903505164889198e-06
+      },
+      {
+        "alpha": 1.0,
+        "count": 27000,
+        "accuracy": 0.9856296296296296,
+        "errors": 388,
+        "broken": 11,
+        "repaired": 9,
+        "margin_mean": 15.158511778748085,
+        "margin_delta_mean": 0.15695961577966985,
+        "parent_correct_margin_drop_mean": -0.1598952159449779,
+        "finite_keep_risk": 3.272983190693798e-05
+      }
+    ]
+  },
+  {
+    "seed": 2026092703,
+    "decision": {
+      "accuracy_delta": 3.703703703705763e-05,
+      "min_receiver_delta": -0.00018518518518517713,
+      "no_material_identity_damage": true,
+      "registered_tolerances": {
+        "overall_drop": 0.002,
+        "any_receiver_drop": 0.005
+      }
+    },
+    "rows": [
+      {
+        "alpha": 0.0,
+        "count": 27000,
+        "accuracy": 0.9848148148148148,
+        "errors": 410,
+        "broken": 0,
+        "repaired": 0,
+        "margin_mean": 14.304126630098438,
+        "margin_delta_mean": 3.228008175919999e-09,
+        "parent_correct_margin_drop_mean": -3.347012518871547e-09,
+        "finite_keep_risk": 2.9534924328334023e-18
+      },
+      {
+        "alpha": 0.25,
+        "count": 27000,
+        "accuracy": 0.9848518518518519,
+        "errors": 409,
+        "broken": 3,
+        "repaired": 4,
+        "margin_mean": 14.35576442537526,
+        "margin_delta_mean": 0.05163779850482762,
+        "parent_correct_margin_drop_mean": -0.052590724666319213,
+        "finite_keep_risk": 2.4725255833502703e-06
+      },
+      {
+        "alpha": 1.0,
+        "count": 27000,
+        "accuracy": 0.9849629629629629,
+        "errors": 406,
+        "broken": 11,
+        "repaired": 15,
+        "margin_mean": 14.481652774581379,
+        "margin_delta_mean": 0.17752614771095038,
+        "parent_correct_margin_drop_mean": -0.1808535976658757,
+        "finite_keep_risk": 4.2634566322582497e-05
+      }
+    ]
+  }
+]
