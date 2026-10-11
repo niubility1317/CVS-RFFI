@@ -15,9 +15,9 @@
         },
         {
           "seed": 2026092702,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.7784166666666666,
           "reference_accuracy": 0.7811369047619048,
-          "difference": null
+          "difference": -0.0027202380952381366
         },
         {
           "seed": 2026092703,
@@ -26,7 +26,7 @@
           "difference": -0.0026964285714285996
         }
       ],
-      "paired_seed_count": 1,
+      "paired_seed_count": 2,
       "complete_three_seeds": false,
       "mean_difference": null,
       "sd_difference": null
@@ -65,9 +65,9 @@
       "per_seed": [
         {
           "seed": 2026092701,
-          "treatment_accuracy": null,
+          "treatment_accuracy": 0.8117321428571429,
           "reference_accuracy": 0.8119761904761905,
-          "difference": null
+          "difference": -0.00024404761904761596
         },
         {
           "seed": 2026092702,
@@ -82,7 +82,7 @@
           "difference": null
         }
       ],
-      "paired_seed_count": 0,
+      "paired_seed_count": 1,
       "complete_three_seeds": false,
       "mean_difference": null,
       "sd_difference": null
@@ -95,17 +95,17 @@
       "status": "PARTIAL",
       "run_id": "20261012-phase1-scratch-identity-style-manysig-m9-r01",
       "completed_rows": [
+        "DELAYCAP_JOINT-s2026092701",
+        "DELAY_JOINT-s2026092702",
         "DELAY_JOINT-s2026092703"
       ],
       "missing_rows": [
         "CAP_JOINT-s2026092701",
         "CAP_JOINT-s2026092702",
         "CAP_JOINT-s2026092703",
-        "DELAYCAP_JOINT-s2026092701",
         "DELAYCAP_JOINT-s2026092702",
         "DELAYCAP_JOINT-s2026092703",
-        "DELAY_JOINT-s2026092701",
-        "DELAY_JOINT-s2026092702"
+        "DELAY_JOINT-s2026092701"
       ],
       "actual_config_verification": "Existing collector source_config_budget=true; collector checked source/freeze against design",
       "local_config_verification": "Reconstructed each scored row from the registered local design and validated it"

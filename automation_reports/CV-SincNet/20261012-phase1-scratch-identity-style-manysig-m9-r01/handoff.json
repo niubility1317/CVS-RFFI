@@ -24,17 +24,19 @@
   "multilevel": "time_down/t2.pool; margin sensitivities without heads; fixed peer probabilities; independent AB Fishr fixed coefficients at0/444/denominator2; optional joint cap rho0.2; clean-inclusive hard four-style-plus-clean L selection with matched dropout; noEMA/noSat",
   "owner": "codex/root/scratch-identity-style-20261012",
   "progress": {
-    "read_at": 1791761455.4300683,
+    "read_at": 1791761701.221513,
     "launched": 9,
-    "active_processes_verified": 8,
+    "active_processes_verified": 6,
     "pending": 0,
-    "scored_rows": 1,
-    "source_fully_audited_rows": 1,
-    "source_fully_audited_steps": 4440,
+    "scored_rows": 3,
+    "source_fully_audited_rows": 3,
+    "source_fully_audited_steps": 13320,
     "failures": [],
     "goal_status": "UNPROVEN"
   },
   "completed_rows": [
+    "DELAYCAP_JOINT-s2026092701",
+    "DELAY_JOINT-s2026092702",
     "DELAY_JOINT-s2026092703"
   ],
   "source_audit": "source_trajectory.md",
