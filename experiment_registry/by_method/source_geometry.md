@@ -1,0 +1,4 @@
+# 可辨识特征几何
+
+- [20261011-phase1-stage2-geometry-source-manysig-m3-r01](../../automation_reports/CV-SincNet/20261011-phase1-stage2-geometry-source-manysig-m3-r01/report.md)
+- [20261011-phase1-stage2-geometry-manysig-m12-r01](../../automation_reports/CV-SincNet/20261011-phase1-stage2-geometry-manysig-m12-r01/report.md)

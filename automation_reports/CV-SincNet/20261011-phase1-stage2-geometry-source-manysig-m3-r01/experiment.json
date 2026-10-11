@@ -27,7 +27,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-11用户提交最新Pro设计报告并要求“按照报告，开始追求目标”；按报告先源审计，再B0–B3×三seed，每方案40epoch，4进程/GPU，自动clean。",
   "code": {
-    "commit": "5fb0acbbd685112e0cc5cfdc79f7b44d398c2a0e",
+    "commit": "8e5faf089ac0e3d2e0fdec6fc5707d138bfcb74e",
     "commit_note": "preregistration baseline only; exact execution commit replaced from immutable release_commit.txt at launch",
     "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -211,7 +211,14 @@
         "actions.pt",
         "receiver.pt"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "latest_event": {
+        "at": 1791695916.7429106,
+        "status": "ANALYZED",
+        "target_access": false,
+        "seed": 2026092701,
+        "artifact": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/audit.json"
+      }
     },
     {
       "row_id": "s2026092702",
@@ -248,7 +255,14 @@
         "actions.pt",
         "receiver.pt"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "latest_event": {
+        "at": 1791695907.7254987,
+        "status": "ANALYZED",
+        "target_access": false,
+        "seed": 2026092702,
+        "artifact": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092702/audit.json"
+      }
     },
     {
       "row_id": "s2026092703",
@@ -285,7 +299,14 @@
         "actions.pt",
         "receiver.pt"
       ],
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "latest_event": {
+        "at": 1791695911.0820506,
+        "status": "ANALYZED",
+        "target_access": false,
+        "seed": 2026092703,
+        "artifact": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092703/audit.json"
+      }
     }
   ],
   "notes": [
@@ -295,7 +316,7 @@
     "单向有限margin=log95；weights keep=.1/LT=1/R=1；ramp444；无CE梯度比例校准。",
     "源读出只在L_s拟合，V只读；无target反馈；未达目标不得报告成功。"
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "test_completion_plan": {
     "views": [],
     "automatic": false,

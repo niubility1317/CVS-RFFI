@@ -1,0 +1,392 @@
+{
+  "experiment": {
+    "schema": "experiment_record_v1",
+    "run_id": "20261011-phase1-stage2-geometry-source-manysig-m3-r01",
+    "group_id": "cvs-stage2-identifiable-feature-geometry",
+    "display_name": "三种子源域可辨识特征几何审计",
+    "description": "完整L_s几何、公共前导物理、独立源V读出及动作核验，冻结身份网络并拟合新动作与R辅助。",
+    "kind": "diagnostic",
+    "stage": "Phase1",
+    "aliases": [
+      "geometry",
+      "可辨识特征几何"
+    ],
+    "tags": [
+      "source_geometry",
+      "three_seeds",
+      "CE",
+      "old_gates",
+      "cosine",
+      "no_satellite",
+      "full160",
+      "finite_risk"
+    ],
+    "comparison_group_id": "20261011-phase1-stage2-geometry-manysig-m12-r01",
+    "parent_run_ids": [
+      "20261011-phase1-stage2-decouple-manysig-m12-r01"
+    ],
+    "replaces_run_id": null,
+    "authorization": "2026-10-11用户提交最新Pro设计报告并要求“按照报告，开始追求目标”；按报告先源审计，再B0–B3×三seed，每方案40epoch，4进程/GPU，自动clean。",
+    "code": {
+      "commit": "8e5faf089ac0e3d2e0fdec6fc5707d138bfcb74e",
+      "commit_note": "preregistration baseline only; exact execution commit replaced from immutable release_commit.txt at launch",
+      "checkout": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008",
+      "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_geometry_source_20261011_r01"
+    },
+    "data": {
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "version": "existing_N607_ManySig_6tx_12rx_4day",
+      "representation": "equalized=1; center crop/pad 256; per-packet complex RMS; center=False; fs=25MHz",
+      "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids; /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/manifest.json",
+      "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#class_txs",
+      "source_receivers": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "target_receivers": [
+        0,
+        2,
+        5,
+        7,
+        9,
+        10,
+        11
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "target_days": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/manifest.json; all six registered class names",
+      "roles": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000,
+        "L_s_fraction": 0.07,
+        "U_s_fraction": 0.63,
+        "V_fraction": 0.3,
+        "U_use": "index-only exact role audit; no U sample/label/training iterator"
+      },
+      "train_ratio": 0.1,
+      "capsule_id": null,
+      "split_id": "inherited deterministic physical source roles (historical protocol label 392005)",
+      "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "support_query_ref": "No support adaptation; target query capsule only after source freeze",
+      "leo_config_ref": null,
+      "train_ratio_definition": "rho_label=L_s/(L_s+U_s)=0.1; only L_s contributes to training",
+      "diagnostic_access": "L_s6300拟合/审计；V27000只读验证和固定L拟合读出；U_s不读取；target仅主训练冻结后clean预测与truth-last评分"
+    },
+    "permissions": {
+      "regime": "source_only_diagnostic",
+      "query_use": "NONE",
+      "external_method_exception": null,
+      "claim_scope": "source geometry only",
+      "target_feedback_to_training": false
+    },
+    "checkpoint": {
+      "initialization": "same-seed original E200 pure CE, strict parent_contract provenance; identity readonly in audit; fresh optimizer for B0–B3",
+      "sources": [
+        {
+          "model_seed": 2026092701,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "identity_updates": 44400,
+          "initialization": "scratch at origin; no upstream checkpoint",
+          "selection": "fixed final E200; no target selection",
+          "actual_training": "L_s clean CE only; no U/EMA/pseudo/satellite; smoothing=0",
+          "prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz"
+        },
+        {
+          "model_seed": 2026092702,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "identity_updates": 44400,
+          "initialization": "scratch at origin; no upstream checkpoint",
+          "selection": "fixed final E200; no target selection",
+          "actual_training": "L_s clean CE only; no U/EMA/pseudo/satellite; smoothing=0",
+          "prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092702/prediction/predictions.npz"
+        },
+        {
+          "model_seed": 2026092703,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/source/final_ssdg.pth",
+          "origin_run": "20261010-phase1-feature-disentangle-manysig-m48-r01",
+          "recovery_run": "20261010-phase1-feature-disentangle-manysig-m48-r02",
+          "origin_commit": "d4723b1aa227fce6368fd25680bb74b1190557d7",
+          "epoch": 200,
+          "identity_updates": 44400,
+          "initialization": "scratch at origin; no upstream checkpoint",
+          "selection": "fixed final E200; no target selection",
+          "actual_training": "L_s clean CE only; no U/EMA/pseudo/satellite; smoothing=0",
+          "prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092703/prediction/predictions.npz"
+        }
+      ],
+      "contract_check_ref": "experiments/cvs_stage2_decouple/common.py::verify_parent; previous source provenance evidence unchanged",
+      "provenance_verdict": "VERIFIED unchanged parent lineage, rechecked before load",
+      "selection_rule": "All fixed three original parents; no performance selection"
+    },
+    "execution": {
+      "host": "N607",
+      "user": "szu2070436088",
+      "launch_owner": "codex/root/stage2-geometry-20261011",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01",
+      "local_root": "E:\\type10-7\\code\\worktrees\\receiver_residual_dg_20261008\\automation_reports\\CV-SincNet\\20261011-phase1-stage2-geometry-source-manysig-m3-r01",
+      "gpu_policy": "max4 TOTAL processes per GPU including existing; shared capacity lock and 12000MB free condition",
+      "command": "python -m experiments.cvs_stage2_geometry.audit_control",
+      "release_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_geometry_source_20261011_r01",
+      "technical_failure_policy": "preserve failure and all artifacts; no automatic rerun; no intervention in unrelated healthy jobs",
+      "launch_command": "python -m experiments.cvs_stage2_geometry.audit_control",
+      "stop_rule": "preserve failure and all artifacts; no automatic rerun; no intervention in unrelated healthy jobs"
+    },
+    "expected_artifacts": [
+      "resolved_config.json",
+      "audit.json",
+      "preparation_complete.json",
+      "source_cache.pt",
+      "source_responses.pt",
+      "actions.pt",
+      "receiver.pt"
+    ],
+    "metrics_plan": {
+      "metrics": [
+        "full160 generalized spectrum",
+        "head utilization",
+        "source RX/day transfer",
+        "separate temporal and nonlinear readouts",
+        "L fitted independent V readout",
+        "heldout vector R reliability",
+        "controlled physical actions and finite risk",
+        "cost"
+      ],
+      "primary": "source_geometry"
+    },
+    "rows": [
+      {
+        "row_id": "s2026092701",
+        "method": "source_identifiability_audit",
+        "purpose": "source_diagnostic",
+        "config_ref": "configs/s2026092701.json",
+        "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/resolved_config.json",
+        "data_overrides": {},
+        "seeds": {
+          "model": 2026092701,
+          "split": 392005,
+          "data": 2026092802,
+          "augmentation": 2026903701,
+          "support": null,
+          "evaluation": null
+        },
+        "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+        "k": null,
+        "scenario": "source_only",
+        "optimizer": "AdamW(auxiliary only)",
+        "lr": 0.0002,
+        "epochs": 0,
+        "fl_rounds": null,
+        "budget_ref": "all6300 L_s and27000 V; zero identity updates; auxiliary2 full L passes + closed form R",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/logs/s2026092701.log",
+        "command": "python -m experiments.cvs_stage2_geometry.source_audit --seed 2026092701 --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/audit.json",
+        "expected_artifacts": [
+          "resolved_config.json",
+          "audit.json",
+          "preparation_complete.json",
+          "source_cache.pt",
+          "source_responses.pt",
+          "actions.pt",
+          "receiver.pt"
+        ],
+        "status": "ANALYZED",
+        "latest_event": {
+          "at": 1791695916.7429106,
+          "status": "ANALYZED",
+          "target_access": false,
+          "seed": 2026092701,
+          "artifact": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/audit.json"
+        }
+      },
+      {
+        "row_id": "s2026092702",
+        "method": "source_identifiability_audit",
+        "purpose": "source_diagnostic",
+        "config_ref": "configs/s2026092702.json",
+        "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092702/resolved_config.json",
+        "data_overrides": {},
+        "seeds": {
+          "model": 2026092702,
+          "split": 392005,
+          "data": 2026092803,
+          "augmentation": 2026903702,
+          "support": null,
+          "evaluation": null
+        },
+        "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+        "k": null,
+        "scenario": "source_only",
+        "optimizer": "AdamW(auxiliary only)",
+        "lr": 0.0002,
+        "epochs": 0,
+        "fl_rounds": null,
+        "budget_ref": "all6300 L_s and27000 V; zero identity updates; auxiliary2 full L passes + closed form R",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092702",
+        "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/logs/s2026092702.log",
+        "command": "python -m experiments.cvs_stage2_geometry.source_audit --seed 2026092702 --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092702/audit.json",
+        "expected_artifacts": [
+          "resolved_config.json",
+          "audit.json",
+          "preparation_complete.json",
+          "source_cache.pt",
+          "source_responses.pt",
+          "actions.pt",
+          "receiver.pt"
+        ],
+        "status": "ANALYZED",
+        "latest_event": {
+          "at": 1791695907.7254987,
+          "status": "ANALYZED",
+          "target_access": false,
+          "seed": 2026092702,
+          "artifact": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092702/audit.json"
+        }
+      },
+      {
+        "row_id": "s2026092703",
+        "method": "source_identifiability_audit",
+        "purpose": "source_diagnostic",
+        "config_ref": "configs/s2026092703.json",
+        "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092703/resolved_config.json",
+        "data_overrides": {},
+        "seeds": {
+          "model": 2026092703,
+          "split": 392005,
+          "data": 2026092804,
+          "augmentation": 2026903703,
+          "support": null,
+          "evaluation": null
+        },
+        "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+        "k": null,
+        "scenario": "source_only",
+        "optimizer": "AdamW(auxiliary only)",
+        "lr": 0.0002,
+        "epochs": 0,
+        "fl_rounds": null,
+        "budget_ref": "all6300 L_s and27000 V; zero identity updates; auxiliary2 full L passes + closed form R",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092703",
+        "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/logs/s2026092703.log",
+        "command": "python -m experiments.cvs_stage2_geometry.source_audit --seed 2026092703 --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092703/audit.json",
+        "expected_artifacts": [
+          "resolved_config.json",
+          "audit.json",
+          "preparation_complete.json",
+          "source_cache.pt",
+          "source_responses.pt",
+          "actions.pt",
+          "receiver.pt"
+        ],
+        "status": "ANALYZED",
+        "latest_event": {
+          "at": 1791695911.0820506,
+          "status": "ANALYZED",
+          "target_access": false,
+          "seed": 2026092703,
+          "artifact": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092703/audit.json"
+        }
+      }
+    ],
+    "notes": [
+      "原始纯CE父权重为唯一初始化；前轮C0/C1/C2/C3不作为新权重。",
+      "源审计是同一6300物理L_s样本分别观察三份父权重，不能算18900独立样本。",
+      "不增加unbounded增强CE、默认Fishr、额外身份骨干、交互网络、在线刷新或未验证物理特征支路。",
+      "单向有限margin=log95；weights keep=.1/LT=1/R=1；ramp444；无CE梯度比例校准。",
+      "源读出只在L_s拟合，V只读；无target反馈；未达目标不得报告成功。"
+    ],
+    "status": "ANALYZED",
+    "test_completion_plan": {
+      "views": [],
+      "automatic": false,
+      "truth_last": true,
+      "all_registered_rows": false,
+      "no_target_feedback": true,
+      "checkpoint_selection": "not applicable",
+      "primary_arm": null
+    }
+  },
+  "completion": {
+    "status": "ANALYZED",
+    "rows": 3,
+    "source_count_per_seed": 6300,
+    "target_access": false,
+    "identity_updates": 0,
+    "commit": "8e5faf089ac0e3d2e0fdec6fc5707d138bfcb74e"
+  },
+  "failure": null,
+  "launch": {
+    "rows": [
+      {
+        "seed": 2026092701,
+        "pid": 3867329,
+        "start_ticks": 94356367,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_geometry_source_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_geometry.audit_control",
+          "--worker",
+          "2026092701"
+        ],
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/logs/s2026092701.log"
+      },
+      {
+        "seed": 2026092702,
+        "pid": 3867338,
+        "start_ticks": 94356400,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_geometry_source_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_geometry.audit_control",
+          "--worker",
+          "2026092702"
+        ],
+        "gpu": 6,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/logs/s2026092702.log"
+      },
+      {
+        "seed": 2026092703,
+        "pid": 3867345,
+        "start_ticks": 94356427,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_geometry_source_20261011_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_stage2_geometry.audit_control",
+          "--worker",
+          "2026092703"
+        ],
+        "gpu": 3,
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/logs/s2026092703.log"
+      }
+    ]
+  }
+}

@@ -1,0 +1,761 @@
+{
+  "rows": [
+    {
+      "seed": 2026092701,
+      "status": "SOURCE_GEOMETRY_AUDIT_COMPLETE",
+      "seconds": 52.79911479295697,
+      "rank": 5,
+      "eigenvalues": [
+        55.07810712745883,
+        45.35215741613393,
+        30.46884339889832,
+        22.027152371289795,
+        12.693528646519141
+      ],
+      "c": [
+        0.0,
+        0.13611576768535016,
+        0.0
+      ],
+      "mse_ratio": [
+        1.0129289831255615,
+        0.8638842323146498,
+        1.1346998747833978
+      ],
+      "source_V_readouts": [
+        {
+          "condition": "independent_source_V",
+          "features": "joint160",
+          "count": 27000,
+          "correct": 26582,
+          "accuracy": 0.9845185185185186
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "physical",
+          "count": 27000,
+          "correct": 16742,
+          "accuracy": 0.6200740740740741
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "joint160_plus_physical",
+          "count": 27000,
+          "correct": 26590,
+          "accuracy": 0.9848148148148148
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "temporal_projective",
+          "count": 27000,
+          "correct": 16488,
+          "accuracy": 0.6106666666666667
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "joint160_plus_temporal_projective",
+          "count": 27000,
+          "correct": 26586,
+          "accuracy": 0.9846666666666667
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "nonlinear_residual",
+          "count": 27000,
+          "correct": 5288,
+          "accuracy": 0.19585185185185186
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "joint160_plus_nonlinear_residual",
+          "count": 27000,
+          "correct": 26580,
+          "accuracy": 0.9844444444444445
+        }
+      ],
+      "V_actions": [
+        {
+          "role": "V",
+          "policy": "coverage",
+          "kind": "linear",
+          "count": 27000,
+          "errors": 420,
+          "margin": {
+            "count": 27000,
+            "mean": 14.956148144086201,
+            "rms": 15.651411020700108,
+            "quantiles": [
+              -20.193849563598633,
+              6.332753658294678,
+              15.869040966033936,
+              20.342085361480713,
+              24.461902618408203
+            ]
+          },
+          "finite_task_violations": 532,
+          "finite_loss": {
+            "count": 27000,
+            "mean": 0.0006115764312558844,
+            "rms": 0.012777583583160388,
+            "quantiles": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.0503047704696655
+            ]
+          },
+          "iq_relative_change": {
+            "count": 27000,
+            "mean": 0.04163907808597961,
+            "rms": 0.048708111432781996,
+            "quantiles": [
+              1.1808855333583779e-06,
+              0.004207863402552903,
+              0.04038911126554012,
+              0.0838593989610672,
+              0.13024283945560455
+            ]
+          }
+        },
+        {
+          "role": "V",
+          "policy": "coverage",
+          "kind": "temporal",
+          "count": 27000,
+          "errors": 501,
+          "margin": {
+            "count": 27000,
+            "mean": 14.317101230663281,
+            "rms": 15.14136315819357,
+            "quantiles": [
+              -17.8502197265625,
+              4.786538553237915,
+              15.380556583404541,
+              20.211040687561034,
+              24.6381778717041
+            ]
+          },
+          "finite_task_violations": 905,
+          "finite_loss": {
+            "count": 27000,
+            "mean": 0.005917123346973867,
+            "rms": 0.08228522156870163,
+            "quantiles": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              4.2654900550842285
+            ]
+          },
+          "iq_relative_change": {
+            "count": 27000,
+            "mean": 0.1338942950021068,
+            "rms": 0.16165882799328118,
+            "quantiles": [
+              5.16505133418832e-06,
+              0.011716907983645797,
+              0.12071563675999641,
+              0.29805070608854295,
+              0.5155462622642517
+            ]
+          }
+        },
+        {
+          "role": "V",
+          "policy": "conditional",
+          "kind": "linear",
+          "count": 27000,
+          "errors": 405,
+          "margin": {
+            "count": 27000,
+            "mean": 14.740377154054466,
+            "rms": 15.421922894853807,
+            "quantiles": [
+              -20.193849563598633,
+              6.231061863899231,
+              15.597281455993652,
+              20.103720760345457,
+              24.461902618408203
+            ]
+          },
+          "finite_task_violations": 518,
+          "finite_loss": {
+            "count": 27000,
+            "mean": 0.0007925317425272246,
+            "rms": 0.01620017345349213,
+            "quantiles": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.0869485139846802
+            ]
+          },
+          "iq_relative_change": {
+            "count": 27000,
+            "mean": 0.04457900060240415,
+            "rms": 0.05197045760927743,
+            "quantiles": [
+              1.1808855333583779e-06,
+              0.0044992224546149375,
+              0.043702540919184685,
+              0.08896648399531841,
+              0.13024283945560455
+            ]
+          }
+        },
+        {
+          "role": "V",
+          "policy": "conditional",
+          "kind": "temporal",
+          "count": 27000,
+          "errors": 800,
+          "margin": {
+            "count": 27000,
+            "mean": 13.490409045497577,
+            "rms": 14.533676600340796,
+            "quantiles": [
+              -17.434450149536133,
+              2.3943137168884285,
+              14.740184783935547,
+              19.850584793090817,
+              24.63745880126953
+            ]
+          },
+          "finite_task_violations": 1707,
+          "finite_loss": {
+            "count": 27000,
+            "mean": 0.025389385142369554,
+            "rms": 0.2018112287783786,
+            "quantiles": [
+              0.0,
+              0.0,
+              0.0,
+              0.009037110488861761,
+              5.572855472564697
+            ]
+          },
+          "iq_relative_change": {
+            "count": 27000,
+            "mean": 0.15968175752796568,
+            "rms": 0.19031161141465955,
+            "quantiles": [
+              5.16505133418832e-06,
+              0.014326612651348113,
+              0.14848072826862335,
+              0.342326483130455,
+              0.6199019551277161
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "seed": 2026092702,
+      "status": "SOURCE_GEOMETRY_AUDIT_COMPLETE",
+      "seconds": 43.3606429080246,
+      "rank": 5,
+      "eigenvalues": [
+        49.656710453059716,
+        39.713290676074145,
+        31.90633408179605,
+        25.621869729237925,
+        13.932933197214409
+      ],
+      "c": [
+        0.06226365602531181,
+        0.08584375657460108,
+        0.0
+      ],
+      "mse_ratio": [
+        0.9377363439746882,
+        0.9141562434253989,
+        1.1823740902283268
+      ],
+      "source_V_readouts": [
+        {
+          "condition": "independent_source_V",
+          "features": "joint160",
+          "count": 27000,
+          "correct": 26594,
+          "accuracy": 0.9849629629629629
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "physical",
+          "count": 27000,
+          "correct": 16742,
+          "accuracy": 0.6200740740740741
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "joint160_plus_physical",
+          "count": 27000,
+          "correct": 26594,
+          "accuracy": 0.9849629629629629
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "temporal_projective",
+          "count": 27000,
+          "correct": 16488,
+          "accuracy": 0.6106666666666667
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "joint160_plus_temporal_projective",
+          "count": 27000,
+          "correct": 26594,
+          "accuracy": 0.9849629629629629
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "nonlinear_residual",
+          "count": 27000,
+          "correct": 5288,
+          "accuracy": 0.19585185185185186
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "joint160_plus_nonlinear_residual",
+          "count": 27000,
+          "correct": 26591,
+          "accuracy": 0.9848518518518519
+        }
+      ],
+      "V_actions": [
+        {
+          "role": "V",
+          "policy": "coverage",
+          "kind": "linear",
+          "count": 27000,
+          "errors": 411,
+          "margin": {
+            "count": 27000,
+            "mean": 14.69005760699069,
+            "rms": 15.358395654139342,
+            "quantiles": [
+              -21.2730712890625,
+              5.949184322357178,
+              15.64201307296753,
+              19.798939037322995,
+              22.438827514648438
+            ]
+          },
+          "finite_task_violations": 588,
+          "finite_loss": {
+            "count": 27000,
+            "mean": 0.0009452850741931451,
+            "rms": 0.016288237203447097,
+            "quantiles": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.1301878690719604
+            ]
+          },
+          "iq_relative_change": {
+            "count": 27000,
+            "mean": 0.04154136610681362,
+            "rms": 0.04862499076535884,
+            "quantiles": [
+              3.5135342386638513e-06,
+              0.00391221942845732,
+              0.040399324148893356,
+              0.08400873094797133,
+              0.12471580505371094
+            ]
+          }
+        },
+        {
+          "role": "V",
+          "policy": "coverage",
+          "kind": "temporal",
+          "count": 27000,
+          "errors": 480,
+          "margin": {
+            "count": 27000,
+            "mean": 14.143052327699131,
+            "rms": 14.90836539346797,
+            "quantiles": [
+              -19.54264259338379,
+              4.904979658126831,
+              15.160673141479492,
+              19.68063850402832,
+              22.67677116394043
+            ]
+          },
+          "finite_task_violations": 859,
+          "finite_loss": {
+            "count": 27000,
+            "mean": 0.0049304181922396354,
+            "rms": 0.07444842898244786,
+            "quantiles": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              4.712324619293213
+            ]
+          },
+          "iq_relative_change": {
+            "count": 27000,
+            "mean": 0.13373738544331187,
+            "rms": 0.161642055364104,
+            "quantiles": [
+              4.112195256311679e-06,
+              0.010888083931058645,
+              0.1218470148742199,
+              0.29676711708307263,
+              0.5928519368171692
+            ]
+          }
+        },
+        {
+          "role": "V",
+          "policy": "conditional",
+          "kind": "linear",
+          "count": 27000,
+          "errors": 432,
+          "margin": {
+            "count": 27000,
+            "mean": 14.584655170877774,
+            "rms": 15.267877133983468,
+            "quantiles": [
+              -21.2730712890625,
+              5.769871377944947,
+              15.55312442779541,
+              19.68957233428955,
+              22.320066452026367
+            ]
+          },
+          "finite_task_violations": 684,
+          "finite_loss": {
+            "count": 27000,
+            "mean": 0.0014680537285409372,
+            "rms": 0.020219979668836298,
+            "quantiles": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.9172570705413818
+            ]
+          },
+          "iq_relative_change": {
+            "count": 27000,
+            "mean": 0.04441502668251311,
+            "rms": 0.0518240475392975,
+            "quantiles": [
+              4.476250524021452e-06,
+              0.004199888021685183,
+              0.043386898934841156,
+              0.08883495815098284,
+              0.12410496175289154
+            ]
+          }
+        },
+        {
+          "role": "V",
+          "policy": "conditional",
+          "kind": "temporal",
+          "count": 27000,
+          "errors": 657,
+          "margin": {
+            "count": 27000,
+            "mean": 13.35343790678404,
+            "rms": 14.28788713727559,
+            "quantiles": [
+              -18.87407684326172,
+              3.279444980621338,
+              14.543099403381348,
+              19.38699827194214,
+              22.43709373474121
+            ]
+          },
+          "finite_task_violations": 1436,
+          "finite_loss": {
+            "count": 27000,
+            "mean": 0.016667738523259017,
+            "rms": 0.15767270966486885,
+            "quantiles": [
+              0.0,
+              0.0,
+              0.0,
+              0.00021300249136401277,
+              5.7758355140686035
+            ]
+          },
+          "iq_relative_change": {
+            "count": 27000,
+            "mean": 0.15732300322833895,
+            "rms": 0.18757068358644519,
+            "quantiles": [
+              1.8936829292215407e-05,
+              0.013536108331754804,
+              0.14736567437648773,
+              0.33656247854232785,
+              0.5928519368171692
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "seed": 2026092703,
+      "status": "SOURCE_GEOMETRY_AUDIT_COMPLETE",
+      "seconds": 46.33592097798828,
+      "rank": 5,
+      "eigenvalues": [
+        64.93296899966103,
+        37.056164393803705,
+        29.941346323261236,
+        20.222866014192185,
+        11.251983307956635
+      ],
+      "c": [
+        0.023758012959824715,
+        0.17681288346270263,
+        0.0
+      ],
+      "mse_ratio": [
+        0.9762419870401753,
+        0.8231871165372974,
+        1.0110403055654769
+      ],
+      "source_V_readouts": [
+        {
+          "condition": "independent_source_V",
+          "features": "joint160",
+          "count": 27000,
+          "correct": 26564,
+          "accuracy": 0.9838518518518519
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "physical",
+          "count": 27000,
+          "correct": 16742,
+          "accuracy": 0.6200740740740741
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "joint160_plus_physical",
+          "count": 27000,
+          "correct": 26576,
+          "accuracy": 0.9842962962962963
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "temporal_projective",
+          "count": 27000,
+          "correct": 16488,
+          "accuracy": 0.6106666666666667
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "joint160_plus_temporal_projective",
+          "count": 27000,
+          "correct": 26580,
+          "accuracy": 0.9844444444444445
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "nonlinear_residual",
+          "count": 27000,
+          "correct": 5288,
+          "accuracy": 0.19585185185185186
+        },
+        {
+          "condition": "independent_source_V",
+          "features": "joint160_plus_nonlinear_residual",
+          "count": 27000,
+          "correct": 26566,
+          "accuracy": 0.9839259259259259
+        }
+      ],
+      "V_actions": [
+        {
+          "role": "V",
+          "policy": "coverage",
+          "kind": "linear",
+          "count": 27000,
+          "errors": 413,
+          "margin": {
+            "count": 27000,
+            "mean": 14.055129406619955,
+            "rms": 14.72908753699088,
+            "quantiles": [
+              -17.185211181640625,
+              5.768816733360291,
+              14.990513324737549,
+              19.112524604797365,
+              22.48961067199707
+            ]
+          },
+          "finite_task_violations": 586,
+          "finite_loss": {
+            "count": 27000,
+            "mean": 0.0005818469735801194,
+            "rms": 0.009919575658421378,
+            "quantiles": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.5804816484451294
+            ]
+          },
+          "iq_relative_change": {
+            "count": 27000,
+            "mean": 0.04187319018002844,
+            "rms": 0.04901499336254227,
+            "quantiles": [
+              4.31882790508098e-06,
+              0.003913453035056591,
+              0.04075886495411396,
+              0.08450939320027825,
+              0.11862111836671829
+            ]
+          }
+        },
+        {
+          "role": "V",
+          "policy": "coverage",
+          "kind": "temporal",
+          "count": 27000,
+          "errors": 500,
+          "margin": {
+            "count": 27000,
+            "mean": 13.476597277614806,
+            "rms": 14.270232260394947,
+            "quantiles": [
+              -17.63485336303711,
+              4.418048620223999,
+              14.515506744384766,
+              18.937228870391845,
+              23.039653778076172
+            ]
+          },
+          "finite_task_violations": 1013,
+          "finite_loss": {
+            "count": 27000,
+            "mean": 0.005940006887932958,
+            "rms": 0.081345280117857,
+            "quantiles": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              4.729766845703125
+            ]
+          },
+          "iq_relative_change": {
+            "count": 27000,
+            "mean": 0.13461599245707995,
+            "rms": 0.1626333562430748,
+            "quantiles": [
+              1.2348085874691606e-05,
+              0.011443742783740163,
+              0.120920579880476,
+              0.29875119775533676,
+              0.4978073537349701
+            ]
+          }
+        },
+        {
+          "role": "V",
+          "policy": "conditional",
+          "kind": "linear",
+          "count": 27000,
+          "errors": 417,
+          "margin": {
+            "count": 27000,
+            "mean": 13.871833077492537,
+            "rms": 14.540682298666866,
+            "quantiles": [
+              -16.48101043701172,
+              5.740411353111267,
+              14.771018028259277,
+              18.930624103546144,
+              22.48961067199707
+            ]
+          },
+          "finite_task_violations": 573,
+          "finite_loss": {
+            "count": 27000,
+            "mean": 0.0007143012374907232,
+            "rms": 0.011676343662020054,
+            "quantiles": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.616706132888794
+            ]
+          },
+          "iq_relative_change": {
+            "count": 27000,
+            "mean": 0.04443004275045105,
+            "rms": 0.05182288432301278,
+            "quantiles": [
+              4.31882790508098e-06,
+              0.0042468766449019315,
+              0.043365348130464554,
+              0.0883968461304903,
+              0.11862111836671829
+            ]
+          }
+        },
+        {
+          "role": "V",
+          "policy": "conditional",
+          "kind": "temporal",
+          "count": 27000,
+          "errors": 912,
+          "margin": {
+            "count": 27000,
+            "mean": 12.62756809298639,
+            "rms": 13.665119344827518,
+            "quantiles": [
+              -19.50885581970215,
+              1.6700059890747074,
+              13.864306449890137,
+              18.70636224746704,
+              23.039653778076172
+            ]
+          },
+          "finite_task_violations": 1915,
+          "finite_loss": {
+            "count": 27000,
+            "mean": 0.030029157944878943,
+            "rms": 0.2113514234585395,
+            "quantiles": [
+              0.0,
+              0.0,
+              0.0,
+              0.026290863752364984,
+              5.311041831970215
+            ]
+          },
+          "iq_relative_change": {
+            "count": 27000,
+            "mean": 0.15869021028559993,
+            "rms": 0.18932276037120457,
+            "quantiles": [
+              1.2348085874691606e-05,
+              0.013842806359753013,
+              0.14733918756246567,
+              0.33969655334949495,
+              0.5878809094429016
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "target_access": false
+}

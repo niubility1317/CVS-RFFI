@@ -154,13 +154,14 @@
     "stop_rule": "preserve failure and all artifacts; no automatic rerun; no intervention in unrelated healthy jobs"
   },
   "expected_artifacts": [
-    "resolved_config.json",
-    "metrics_epoch.jsonl",
-    "metrics_epoch.csv",
-    "metrics_steps.jsonl",
-    "final_ssdg.pth",
-    "prediction",
+    "per-row artifacts listed in rows",
+    "row_scoring/<row>/scoring_complete.json",
     "scoring_complete.json",
+    "goal_assessment.json",
+    "scores.json",
+    "summary.json",
+    "paired_results.json",
+    "resources.json",
     "report.md"
   ],
   "metrics_plan": {
@@ -191,7 +192,7 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+      "seed_notes": "Matched original parent model seed; fixed physical source roles (protocol392005, no resplit); ordinary RNG=model+101; relation RNG=model+202; actions use model+13*global_identity_step; clean deterministic evaluation; no support. Preparation uses separately recorded private seed offsets.",
       "k": null,
       "scenario": "clean",
       "optimizer": {
@@ -214,17 +215,18 @@
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B0-s2026092701",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/B0-s2026092701.log",
-      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B0-s2026092701/config.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B0-s2026092701.log",
+      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/configs/B0-s2026092701.json --device cuda:0",
       "expected_artifacts": [
-        "resolved_config.json",
-        "metrics_epoch.jsonl",
-        "metrics_epoch.csv",
-        "metrics_steps.jsonl",
-        "final_ssdg.pth",
-        "prediction",
-        "scoring_complete.json",
-        "report.md"
+        "source/resolved_config.json",
+        "source/step_metrics.jsonl.gz",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_frozen.json",
+        "prediction/predictions.npz",
+        "completion.json"
       ],
       "status": "PLANNED"
     },
@@ -239,11 +241,11 @@
         "model": 2026092701,
         "split": 392005,
         "data": 2026092802,
-        "augmentation": 2026402701,
+        "augmentation": 2026092701,
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+      "seed_notes": "Matched original parent model seed; fixed physical source roles (protocol392005, no resplit); ordinary RNG=model+101; relation RNG=model+202; actions use model+13*global_identity_step; clean deterministic evaluation; no support. Preparation uses separately recorded private seed offsets.",
       "k": null,
       "scenario": "clean",
       "optimizer": {
@@ -266,17 +268,18 @@
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B1-s2026092701",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/B1-s2026092701.log",
-      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B1-s2026092701/config.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B1-s2026092701.log",
+      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/configs/B1-s2026092701.json --device cuda:0",
       "expected_artifacts": [
-        "resolved_config.json",
-        "metrics_epoch.jsonl",
-        "metrics_epoch.csv",
-        "metrics_steps.jsonl",
-        "final_ssdg.pth",
-        "prediction",
-        "scoring_complete.json",
-        "report.md"
+        "source/resolved_config.json",
+        "source/step_metrics.jsonl.gz",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_frozen.json",
+        "prediction/predictions.npz",
+        "completion.json"
       ],
       "status": "PLANNED"
     },
@@ -291,11 +294,11 @@
         "model": 2026092701,
         "split": 392005,
         "data": 2026092802,
-        "augmentation": 2026402701,
+        "augmentation": 2026092701,
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+      "seed_notes": "Matched original parent model seed; fixed physical source roles (protocol392005, no resplit); ordinary RNG=model+101; relation RNG=model+202; actions use model+13*global_identity_step; clean deterministic evaluation; no support. Preparation uses separately recorded private seed offsets.",
       "k": null,
       "scenario": "clean",
       "optimizer": {
@@ -318,17 +321,18 @@
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092701",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/B2-s2026092701.log",
-      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092701/config.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B2-s2026092701.log",
+      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/configs/B2-s2026092701.json --device cuda:0",
       "expected_artifacts": [
-        "resolved_config.json",
-        "metrics_epoch.jsonl",
-        "metrics_epoch.csv",
-        "metrics_steps.jsonl",
-        "final_ssdg.pth",
-        "prediction",
-        "scoring_complete.json",
-        "report.md"
+        "source/resolved_config.json",
+        "source/step_metrics.jsonl.gz",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_frozen.json",
+        "prediction/predictions.npz",
+        "completion.json"
       ],
       "status": "PLANNED"
     },
@@ -343,11 +347,11 @@
         "model": 2026092701,
         "split": 392005,
         "data": 2026092802,
-        "augmentation": 2026402701,
+        "augmentation": 2026092701,
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+      "seed_notes": "Matched original parent model seed; fixed physical source roles (protocol392005, no resplit); ordinary RNG=model+101; relation RNG=model+202; actions use model+13*global_identity_step; clean deterministic evaluation; no support. Preparation uses separately recorded private seed offsets.",
       "k": null,
       "scenario": "clean",
       "optimizer": {
@@ -370,17 +374,18 @@
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B3-s2026092701",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/B3-s2026092701.log",
-      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B3-s2026092701/config.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B3-s2026092701.log",
+      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/configs/B3-s2026092701.json --device cuda:0",
       "expected_artifacts": [
-        "resolved_config.json",
-        "metrics_epoch.jsonl",
-        "metrics_epoch.csv",
-        "metrics_steps.jsonl",
-        "final_ssdg.pth",
-        "prediction",
-        "scoring_complete.json",
-        "report.md"
+        "source/resolved_config.json",
+        "source/step_metrics.jsonl.gz",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_frozen.json",
+        "prediction/predictions.npz",
+        "completion.json"
       ],
       "status": "PLANNED"
     },
@@ -399,7 +404,7 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+      "seed_notes": "Matched original parent model seed; fixed physical source roles (protocol392005, no resplit); ordinary RNG=model+101; relation RNG=model+202; actions use model+13*global_identity_step; clean deterministic evaluation; no support. Preparation uses separately recorded private seed offsets.",
       "k": null,
       "scenario": "clean",
       "optimizer": {
@@ -422,17 +427,18 @@
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B0-s2026092702",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/B0-s2026092702.log",
-      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B0-s2026092702/config.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B0-s2026092702.log",
+      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/configs/B0-s2026092702.json --device cuda:0",
       "expected_artifacts": [
-        "resolved_config.json",
-        "metrics_epoch.jsonl",
-        "metrics_epoch.csv",
-        "metrics_steps.jsonl",
-        "final_ssdg.pth",
-        "prediction",
-        "scoring_complete.json",
-        "report.md"
+        "source/resolved_config.json",
+        "source/step_metrics.jsonl.gz",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_frozen.json",
+        "prediction/predictions.npz",
+        "completion.json"
       ],
       "status": "PLANNED"
     },
@@ -447,11 +453,11 @@
         "model": 2026092702,
         "split": 392005,
         "data": 2026092803,
-        "augmentation": 2026402702,
+        "augmentation": 2026092702,
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+      "seed_notes": "Matched original parent model seed; fixed physical source roles (protocol392005, no resplit); ordinary RNG=model+101; relation RNG=model+202; actions use model+13*global_identity_step; clean deterministic evaluation; no support. Preparation uses separately recorded private seed offsets.",
       "k": null,
       "scenario": "clean",
       "optimizer": {
@@ -474,17 +480,18 @@
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B1-s2026092702",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/B1-s2026092702.log",
-      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B1-s2026092702/config.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B1-s2026092702.log",
+      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/configs/B1-s2026092702.json --device cuda:0",
       "expected_artifacts": [
-        "resolved_config.json",
-        "metrics_epoch.jsonl",
-        "metrics_epoch.csv",
-        "metrics_steps.jsonl",
-        "final_ssdg.pth",
-        "prediction",
-        "scoring_complete.json",
-        "report.md"
+        "source/resolved_config.json",
+        "source/step_metrics.jsonl.gz",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_frozen.json",
+        "prediction/predictions.npz",
+        "completion.json"
       ],
       "status": "PLANNED"
     },
@@ -499,11 +506,11 @@
         "model": 2026092702,
         "split": 392005,
         "data": 2026092803,
-        "augmentation": 2026402702,
+        "augmentation": 2026092702,
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+      "seed_notes": "Matched original parent model seed; fixed physical source roles (protocol392005, no resplit); ordinary RNG=model+101; relation RNG=model+202; actions use model+13*global_identity_step; clean deterministic evaluation; no support. Preparation uses separately recorded private seed offsets.",
       "k": null,
       "scenario": "clean",
       "optimizer": {
@@ -526,17 +533,18 @@
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092702",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/B2-s2026092702.log",
-      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092702/config.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B2-s2026092702.log",
+      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/configs/B2-s2026092702.json --device cuda:0",
       "expected_artifacts": [
-        "resolved_config.json",
-        "metrics_epoch.jsonl",
-        "metrics_epoch.csv",
-        "metrics_steps.jsonl",
-        "final_ssdg.pth",
-        "prediction",
-        "scoring_complete.json",
-        "report.md"
+        "source/resolved_config.json",
+        "source/step_metrics.jsonl.gz",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_frozen.json",
+        "prediction/predictions.npz",
+        "completion.json"
       ],
       "status": "PLANNED"
     },
@@ -551,11 +559,11 @@
         "model": 2026092702,
         "split": 392005,
         "data": 2026092803,
-        "augmentation": 2026402702,
+        "augmentation": 2026092702,
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+      "seed_notes": "Matched original parent model seed; fixed physical source roles (protocol392005, no resplit); ordinary RNG=model+101; relation RNG=model+202; actions use model+13*global_identity_step; clean deterministic evaluation; no support. Preparation uses separately recorded private seed offsets.",
       "k": null,
       "scenario": "clean",
       "optimizer": {
@@ -578,17 +586,18 @@
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B3-s2026092702",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/B3-s2026092702.log",
-      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B3-s2026092702/config.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B3-s2026092702.log",
+      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/configs/B3-s2026092702.json --device cuda:0",
       "expected_artifacts": [
-        "resolved_config.json",
-        "metrics_epoch.jsonl",
-        "metrics_epoch.csv",
-        "metrics_steps.jsonl",
-        "final_ssdg.pth",
-        "prediction",
-        "scoring_complete.json",
-        "report.md"
+        "source/resolved_config.json",
+        "source/step_metrics.jsonl.gz",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_frozen.json",
+        "prediction/predictions.npz",
+        "completion.json"
       ],
       "status": "PLANNED"
     },
@@ -607,7 +616,7 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+      "seed_notes": "Matched original parent model seed; fixed physical source roles (protocol392005, no resplit); ordinary RNG=model+101; relation RNG=model+202; actions use model+13*global_identity_step; clean deterministic evaluation; no support. Preparation uses separately recorded private seed offsets.",
       "k": null,
       "scenario": "clean",
       "optimizer": {
@@ -630,17 +639,18 @@
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B0-s2026092703",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/B0-s2026092703.log",
-      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B0-s2026092703/config.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B0-s2026092703.log",
+      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/configs/B0-s2026092703.json --device cuda:0",
       "expected_artifacts": [
-        "resolved_config.json",
-        "metrics_epoch.jsonl",
-        "metrics_epoch.csv",
-        "metrics_steps.jsonl",
-        "final_ssdg.pth",
-        "prediction",
-        "scoring_complete.json",
-        "report.md"
+        "source/resolved_config.json",
+        "source/step_metrics.jsonl.gz",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_frozen.json",
+        "prediction/predictions.npz",
+        "completion.json"
       ],
       "status": "PLANNED"
     },
@@ -655,11 +665,11 @@
         "model": 2026092703,
         "split": 392005,
         "data": 2026092804,
-        "augmentation": 2026402703,
+        "augmentation": 2026092703,
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+      "seed_notes": "Matched original parent model seed; fixed physical source roles (protocol392005, no resplit); ordinary RNG=model+101; relation RNG=model+202; actions use model+13*global_identity_step; clean deterministic evaluation; no support. Preparation uses separately recorded private seed offsets.",
       "k": null,
       "scenario": "clean",
       "optimizer": {
@@ -682,17 +692,18 @@
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B1-s2026092703",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/B1-s2026092703.log",
-      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B1-s2026092703/config.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B1-s2026092703.log",
+      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/configs/B1-s2026092703.json --device cuda:0",
       "expected_artifacts": [
-        "resolved_config.json",
-        "metrics_epoch.jsonl",
-        "metrics_epoch.csv",
-        "metrics_steps.jsonl",
-        "final_ssdg.pth",
-        "prediction",
-        "scoring_complete.json",
-        "report.md"
+        "source/resolved_config.json",
+        "source/step_metrics.jsonl.gz",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_frozen.json",
+        "prediction/predictions.npz",
+        "completion.json"
       ],
       "status": "PLANNED"
     },
@@ -707,11 +718,11 @@
         "model": 2026092703,
         "split": 392005,
         "data": 2026092804,
-        "augmentation": 2026402703,
+        "augmentation": 2026092703,
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+      "seed_notes": "Matched original parent model seed; fixed physical source roles (protocol392005, no resplit); ordinary RNG=model+101; relation RNG=model+202; actions use model+13*global_identity_step; clean deterministic evaluation; no support. Preparation uses separately recorded private seed offsets.",
       "k": null,
       "scenario": "clean",
       "optimizer": {
@@ -734,17 +745,18 @@
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092703",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/B2-s2026092703.log",
-      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B2-s2026092703/config.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B2-s2026092703.log",
+      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/configs/B2-s2026092703.json --device cuda:0",
       "expected_artifacts": [
-        "resolved_config.json",
-        "metrics_epoch.jsonl",
-        "metrics_epoch.csv",
-        "metrics_steps.jsonl",
-        "final_ssdg.pth",
-        "prediction",
-        "scoring_complete.json",
-        "report.md"
+        "source/resolved_config.json",
+        "source/step_metrics.jsonl.gz",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_frozen.json",
+        "prediction/predictions.npz",
+        "completion.json"
       ],
       "status": "PLANNED"
     },
@@ -759,11 +771,11 @@
         "model": 2026092703,
         "split": 392005,
         "data": 2026092804,
-        "augmentation": 2026402703,
+        "augmentation": 2026092703,
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "model matched original parent; split392005 protocol identifier, actual source roles fixed physical IDs; ordinary data model+101/relation model+202; auxiliary/physical RNG offsets saved by code/config; no support adaptation; clean evaluation deterministic. Audit source action seed model+811000+batch_start; numerical response model+180001+batch_start.",
+      "seed_notes": "Matched original parent model seed; fixed physical source roles (protocol392005, no resplit); ordinary RNG=model+101; relation RNG=model+202; actions use model+13*global_identity_step; clean deterministic evaluation; no support. Preparation uses separately recorded private seed offsets.",
       "k": null,
       "scenario": "clean",
       "optimizer": {
@@ -786,17 +798,18 @@
       "fl_rounds": null,
       "budget_ref": "40epoch ×222=8880 identity updates; auxiliary every4, R every8, max32; cached preparation shared per seed",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B3-s2026092703",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/B3-s2026092703.log",
-      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/B3-s2026092703/config.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/logs/train-B3-s2026092703.log",
+      "command": "python -m experiments.cvs_stage2_geometry.source --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-manysig-m12-r01/configs/B3-s2026092703.json --device cuda:0",
       "expected_artifacts": [
-        "resolved_config.json",
-        "metrics_epoch.jsonl",
-        "metrics_epoch.csv",
-        "metrics_steps.jsonl",
-        "final_ssdg.pth",
-        "prediction",
-        "scoring_complete.json",
-        "report.md"
+        "source/resolved_config.json",
+        "source/step_metrics.jsonl.gz",
+        "source/epoch_metrics.jsonl",
+        "source/epoch_metrics.csv",
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_frozen.json",
+        "prediction/predictions.npz",
+        "completion.json"
       ],
       "status": "PLANNED"
     }
@@ -808,7 +821,7 @@
     "单向有限margin=log95；weights keep=.1/LT=1/R=1；ramp444；无CE梯度比例校准。",
     "源读出只在L_s拟合，V只读；无target反馈；未达目标不得报告成功。"
   ],
-  "status": "PLANNED",
+  "status": "LOCAL_VERIFIED",
   "test_completion_plan": {
     "views": [
       "clean"

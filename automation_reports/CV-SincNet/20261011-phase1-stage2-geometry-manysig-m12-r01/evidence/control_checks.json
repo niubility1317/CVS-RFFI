@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "synthetic_only": true,
+  "real_target_access": false,
+  "remote_process_calls": false,
+  "frozen_E40_budget": true,
+  "parent_contract_routed": true,
+  "truth_last_failure_boundary": true,
+  "preparation_reuse_only": true,
+  "arms": "B0-B3",
+  "capacity_includes_all": true,
+  "numpy_buffer_bridge": true
+}
