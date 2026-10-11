@@ -1,0 +1,29 @@
+{
+  "run_id": "20261011-phase1-stage2-stable-rx-identity-source-manysig-m3-r01",
+  "source_run": "20261011-phase1-stage2-geometry-source-manysig-m3-r01",
+  "source_count": 6300,
+  "validation_count": 27000,
+  "parent": "same seed original E200 CE old gates cosine",
+  "head": "original normalized joint160 cosine, scale30",
+  "estimator": "equal RX-centered TX/day source cell means, excluding current V day; fit all source TX",
+  "shrink": 0.4,
+  "alphas": [
+    0.0,
+    0.25,
+    1.0
+  ],
+  "primary_alpha": 0.25,
+  "feature_intervention": "normalize(z - alpha*L_fitted_RX_offset)",
+  "transform_inputs": [
+    "feature",
+    "known source RX",
+    "known source day"
+  ],
+  "validation_labels": "scoring only, never determine transform or fit",
+  "no_target_inference_claim": true,
+  "identity_updates": 0,
+  "target_access": false,
+  "validation_fit": false,
+  "next_step": "Only if each of three primary-alpha rows loses <=0.2 percentage points overall and <=0.5 pp for every source RX, proceed to stable-RX R training design; integer error-count boundary, alpha1 never selected.",
+  "model_seed": 2026092702
+}
