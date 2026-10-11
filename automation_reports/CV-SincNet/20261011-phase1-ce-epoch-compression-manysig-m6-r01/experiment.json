@@ -179,7 +179,7 @@
     {
       "row_id": "E100-s2026092701",
       "model_seed": 2026092701,
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch-compression-manysig-m6-r01",
@@ -659,7 +659,7 @@
     {
       "row_id": "E100-s2026092702",
       "model_seed": 2026092702,
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch-compression-manysig-m6-r01",
@@ -1139,7 +1139,7 @@
     {
       "row_id": "E100-s2026092703",
       "model_seed": 2026092703,
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch-compression-manysig-m6-r01",
@@ -1631,5 +1631,36 @@
   "registered_at": "2026-10-11T11:46:29+00:00",
   "execution_commit": "b92d0618af7d5e2b7dedb43ede1d79db71829f80",
   "delivery_verdict": "VERIFIED",
-  "updated_at": "2026-10-11T11:52:14.880227+00:00"
+  "updated_at": "2026-10-11T11:52:14.880227+00:00",
+  "result_progress": {
+    "completed_rows": [
+      "E100-s2026092701",
+      "E100-s2026092702",
+      "E100-s2026092703"
+    ],
+    "missing_rows": [
+      "E150-s2026092701",
+      "E150-s2026092702",
+      "E150-s2026092703"
+    ],
+    "decisions": [
+      {
+        "arm": "E100",
+        "paired_seed_count": 3,
+        "complete_three_seeds": true,
+        "mean_accuracy_difference": 0.0010496031746031569,
+        "margin": 0.003,
+        "within_margin": true
+      },
+      {
+        "arm": "E150",
+        "paired_seed_count": 0,
+        "complete_three_seeds": false,
+        "mean_accuracy_difference": null,
+        "margin": 0.003,
+        "within_margin": null
+      }
+    ],
+    "read_at": 1791722709.6910486
+  }
 }

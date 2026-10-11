@@ -120,7 +120,7 @@
     {
       "row_id": "L6300-spectral-crossfit",
       "model_seed": null,
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "config": {
         "run_id": "20261011-phase1-rx-spectral-crossfit-manysig-m1-r01",
         "row_id": "L6300-spectral-crossfit",
@@ -204,7 +204,7 @@
     "Known-TX samples legitimately carry TX labels; no U TX labels or UID pairing.",
     "No target-triggered new mechanism choice; motivated by previous source graph RX clustering and user V-health-only steering."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "independent_review": {
     "reviewer": "stage2_release_review",
     "scope": "minimal8: L-only math, exclusion, real IQ, no checkpoint/target mutation, single-row launch",
@@ -212,5 +212,7 @@
     "evidence": "stage2_release_review independent read-only review: P0/P1=0; TX AND day exclusion, IQ/DCT math, L-only access, one-row transport and output protection"
   },
   "registered_at": "2026-10-11T12:44:23+00:00",
-  "updated_at": "2026-10-11T12:26:21.077516+00:00"
+  "updated_at": "2026-10-11T12:26:21.077516+00:00",
+  "execution_commit": "64de4b84bad10a796893882c74f2539a3de0c0ce",
+  "delivery_verdict": "VERIFIED"
 }
