@@ -84,7 +84,7 @@
   "group_id": "cvs-e20-peer-soft",
   "display_name": "E20续训20轮：跨种子软教师与浅中层Fishr/MixStyle",
   "description": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "E20_plus20",
@@ -296,7 +296,7 @@
       "arm": "CE",
       "model_seed": 2026092701,
       "row_id": "CE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -689,13 +689,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 190349,
       "gpu": 0,
-      "live_epoch": 19
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "SELF_GATE",
       "model_seed": 2026092701,
       "row_id": "SELF_GATE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -1088,13 +1089,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 190441,
       "gpu": 1,
-      "live_epoch": 9
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "SELF_ALL",
       "model_seed": 2026092701,
       "row_id": "SELF_ALL-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -1487,13 +1489,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 190527,
       "gpu": 2,
-      "live_epoch": 10
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_GATE",
       "model_seed": 2026092701,
       "row_id": "PEER_GATE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -1889,13 +1892,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 190614,
       "gpu": 3,
-      "live_epoch": 9
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_ALL",
       "model_seed": 2026092701,
       "row_id": "PEER_ALL-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -2291,13 +2295,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 190701,
       "gpu": 4,
-      "live_epoch": 9
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_FISHR",
       "model_seed": 2026092701,
       "row_id": "PEER_FISHR-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -2696,13 +2701,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 190788,
       "gpu": 5,
-      "live_epoch": 7
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_STYLE",
       "model_seed": 2026092701,
       "row_id": "PEER_STYLE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -3101,13 +3107,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 190875,
       "gpu": 6,
-      "live_epoch": 7
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_JOINT",
       "model_seed": 2026092701,
       "row_id": "PEER_JOINT-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -3509,13 +3516,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 190962,
       "gpu": 7,
-      "live_epoch": 6
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "CE",
       "model_seed": 2026092702,
       "row_id": "CE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -3908,13 +3916,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 191050,
       "gpu": 7,
-      "live_epoch": 14
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "SELF_GATE",
       "model_seed": 2026092702,
       "row_id": "SELF_GATE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -4307,13 +4316,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 191138,
       "gpu": 0,
-      "live_epoch": 8
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "SELF_ALL",
       "model_seed": 2026092702,
       "row_id": "SELF_ALL-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -4706,13 +4716,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 191219,
       "gpu": 5,
-      "live_epoch": 7
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_GATE",
       "model_seed": 2026092702,
       "row_id": "PEER_GATE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -5108,13 +5119,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 191707,
       "gpu": 6,
-      "live_epoch": 7
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_ALL",
       "model_seed": 2026092702,
       "row_id": "PEER_ALL-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -5510,13 +5522,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 191791,
       "gpu": 1,
-      "live_epoch": 7
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_FISHR",
       "model_seed": 2026092702,
       "row_id": "PEER_FISHR-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -5915,13 +5928,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 191876,
       "gpu": 3,
-      "live_epoch": 5
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_STYLE",
       "model_seed": 2026092702,
       "row_id": "PEER_STYLE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -6320,13 +6334,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 191960,
       "gpu": 4,
-      "live_epoch": 5
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_JOINT",
       "model_seed": 2026092702,
       "row_id": "PEER_JOINT-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -6728,13 +6743,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 192044,
       "gpu": 2,
-      "live_epoch": 4
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "CE",
       "model_seed": 2026092703,
       "row_id": "CE-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -7127,13 +7143,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 192128,
       "gpu": 2,
-      "live_epoch": 13
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "SELF_GATE",
       "model_seed": 2026092703,
       "row_id": "SELF_GATE-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -7526,13 +7543,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 192212,
       "gpu": 1,
-      "live_epoch": 5
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "SELF_ALL",
       "model_seed": 2026092703,
       "row_id": "SELF_ALL-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -7925,13 +7943,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 192298,
       "gpu": 3,
-      "live_epoch": 5
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_GATE",
       "model_seed": 2026092703,
       "row_id": "PEER_GATE-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -8327,13 +8346,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 192382,
       "gpu": 4,
-      "live_epoch": 5
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_ALL",
       "model_seed": 2026092703,
       "row_id": "PEER_ALL-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -8729,13 +8749,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 192466,
       "gpu": 0,
-      "live_epoch": 5
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_FISHR",
       "model_seed": 2026092703,
       "row_id": "PEER_FISHR-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -9134,13 +9155,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 192672,
       "gpu": 7,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_STYLE",
       "model_seed": 2026092703,
       "row_id": "PEER_STYLE-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -9539,13 +9561,14 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 192769,
       "gpu": 5,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     },
     {
       "arm": "PEER_JOINT",
       "model_seed": 2026092703,
       "row_id": "PEER_JOINT-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_peer_soft",
       "purpose": "原生CE旧门控cos E20+20；八方案三种子；固定监督来源和门控对照；逐行自动clean测试",
       "config": {
@@ -9947,10 +9970,17 @@
       "seed_notes": "Fixed physical split;L stream seed+101,U+901337;noise seed+step*9901;aux sampler seed+step*99991;style private step/layer seed;None not inferred zero.",
       "pid": 192854,
       "gpu": 6,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "live_identity_updates": 4440
     }
   ],
   "registered_at": "2026-10-11T18:33:52+00:00",
   "execution_commit": "e5a134db7794b3b259eb99621966fdfe29ef1bb9",
-  "delivery_verdict": "VERIFIED"
+  "delivery_verdict": "VERIFIED",
+  "results": {
+    "complete_rows": 24,
+    "source_steps": 106560,
+    "complete_arms_reaching_84": [],
+    "report": "final_analysis.md"
+  }
 }

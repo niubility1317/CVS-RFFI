@@ -43,3 +43,11 @@ MixStyle 在 U 强视图的两个内部层执行，供体和接收者都使用�
 
 
 发布 VERIFIED：执行提交 `e5a134db7794b3b259eb99621966fdfe29ef1bb9`，dispatcher PID 189990。已启动 24/24 行，24 行的实际配置、E20 继承、进程和首轮日志核实通过，待运行 0 行；每卡总进程不超过 3。训练完成后逐行自动 clean 测试。当前无本批最终测试成绩，84% 目标待验证。
+
+
+## 完整矩阵完成
+
+24/24 行全部完成。三种子、配对差、RX/TX/day、纠错／破坏与成本见[完整分析](final_analysis.md)，机制执行与源日志见[source_trajectory.md](source_trajectory.md)。完整核验106560个主训练step、480个epoch与全部源训练stdout段；预测/评分stdout未混入源分析。没有完整方案达到84%，目标保持未完成。
+
+
+本批[反思与归纳](reflection.md)及[完整评分 CSV](evidence/test_scores.csv)已保存。CSV 共 474 行，包括全部新模型的总体、RX/TX/day 指标以及原 E20 总体和 RX/TX 对照；源域可复现性限制见完整分析末节。
