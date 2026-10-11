@@ -1,0 +1,281 @@
+{
+  "status": "PASS",
+  "rows": 3,
+  "models": 6,
+  "gradient_pairs": 216,
+  "style_trials": 1296,
+  "dropout_controls": 18,
+  "target_access": false,
+  "transport_paths": 56,
+  "head_warmup": {
+    "status": "HEAD_WARMUP_COMPLETE",
+    "enabled": true,
+    "source_role": "L_s only",
+    "source_L_cache_packets": 6300,
+    "cache_forward_calls": 50,
+    "head_packet_occurrences": 12000,
+    "optimizer_steps": 200,
+    "backbone_updates": 0,
+    "base_state_unchanged": true,
+    "optimizer": "fresh AdamW for heads only; discarded before main AdamW",
+    "lr": 0.003,
+    "weight_decay": 0.0001,
+    "initial_head_loss": 1.8462921380996704,
+    "final_head_loss": 1.7950016260147095,
+    "cache_seconds": 7.355742999992799,
+    "head_optimization_seconds": 0.8440724000101909,
+    "seconds": 9.739739199983887,
+    "cache_tensor_bytes": 3628800,
+    "optimizer_state_tensor_bytes": 7024,
+    "peak_cuda_memory_bytes": 52383232,
+    "rss_bytes": null,
+    "rss_unavailable_reason": "psutil unavailable",
+    "auxiliary_inheritance": false,
+    "old_features_consumed": false,
+    "target_access": false
+  },
+  "calibration": {
+    "status": "FIXED_CALIBRATION_COMPLETE",
+    "fixed_coefficients": {
+      "time_down": 1127.691806908929,
+      "t2.pool": 1549.957286659182
+    },
+    "levels": {
+      "time_down": {
+        "mean_CE_gradient_norm": 1.1701013379435266,
+        "mean_old_pair_gradient_norm": 0.00020752147441992783,
+        "uncapped_coefficient": 1127.691806908929,
+        "coefficient": 1127.691806908929,
+        "cap_active": false
+      },
+      "t2.pool": {
+        "mean_CE_gradient_norm": 3.6397167928930863,
+        "mean_old_pair_gradient_norm": 0.0004696538177498348,
+        "uncapped_coefficient": 1549.957286659182,
+        "coefficient": 1549.957286659182,
+        "cap_active": false
+      }
+    },
+    "pairs": 12,
+    "records": [
+      {
+        "pair": 0,
+        "day": 1,
+        "cross_batch_PID_overlap": 3,
+        "levels": {
+          "time_down": {
+            "main_ce_gradient_norm": 1.1201981959947398,
+            "old_pair_gradient_norm": 0.00019488219798127898
+          },
+          "t2.pool": {
+            "main_ce_gradient_norm": 3.6596115278156236,
+            "old_pair_gradient_norm": 0.0004172258132833569
+          }
+        },
+        "main_ce": 3.7545762062072754,
+        "seconds": 1.0160820999881253
+      },
+      {
+        "pair": 1,
+        "day": 2,
+        "cross_batch_PID_overlap": 1,
+        "levels": {
+          "time_down": {
+            "main_ce_gradient_norm": 1.1894506572251562,
+            "old_pair_gradient_norm": 0.00020913100274970374
+          },
+          "t2.pool": {
+            "main_ce_gradient_norm": 3.655352081505805,
+            "old_pair_gradient_norm": 0.00043385011838327665
+          }
+        },
+        "main_ce": 3.7457807064056396,
+        "seconds": 0.07486739999148995
+      },
+      {
+        "pair": 2,
+        "day": 3,
+        "cross_batch_PID_overlap": 2,
+        "levels": {
+          "time_down": {
+            "main_ce_gradient_norm": 1.2214811417990386,
+            "old_pair_gradient_norm": 0.0002023622342170533
+          },
+          "t2.pool": {
+            "main_ce_gradient_norm": 3.636389325638521,
+            "old_pair_gradient_norm": 0.0005275968328901246
+          }
+        },
+        "main_ce": 3.756349802017212,
+        "seconds": 0.06756399999721907
+      },
+      {
+        "pair": 3,
+        "day": 1,
+        "cross_batch_PID_overlap": 0,
+        "levels": {
+          "time_down": {
+            "main_ce_gradient_norm": 1.1898975189843666,
+            "old_pair_gradient_norm": 0.00020153446973497692
+          },
+          "t2.pool": {
+            "main_ce_gradient_norm": 3.668232846087259,
+            "old_pair_gradient_norm": 0.0004470553858635128
+          }
+        },
+        "main_ce": 3.747183322906494,
+        "seconds": 0.06857319999835454
+      },
+      {
+        "pair": 4,
+        "day": 2,
+        "cross_batch_PID_overlap": 1,
+        "levels": {
+          "time_down": {
+            "main_ce_gradient_norm": 1.076374045310088,
+            "old_pair_gradient_norm": 0.00020588884111658994
+          },
+          "t2.pool": {
+            "main_ce_gradient_norm": 3.6153241976984005,
+            "old_pair_gradient_norm": 0.00042550987603393476
+          }
+        },
+        "main_ce": 3.7762744426727295,
+        "seconds": 0.06915329999173991
+      },
+      {
+        "pair": 5,
+        "day": 3,
+        "cross_batch_PID_overlap": 2,
+        "levels": {
+          "time_down": {
+            "main_ce_gradient_norm": 1.1809598631179135,
+            "old_pair_gradient_norm": 0.00024809817449336305
+          },
+          "t2.pool": {
+            "main_ce_gradient_norm": 3.648263506018614,
+            "old_pair_gradient_norm": 0.0004925338958293467
+          }
+        },
+        "main_ce": 3.793804883956909,
+        "seconds": 0.06491480002296157
+      },
+      {
+        "pair": 6,
+        "day": 1,
+        "cross_batch_PID_overlap": 1,
+        "levels": {
+          "time_down": {
+            "main_ce_gradient_norm": 1.2136192241902997,
+            "old_pair_gradient_norm": 0.00019654153646862492
+          },
+          "t2.pool": {
+            "main_ce_gradient_norm": 3.668899455149685,
+            "old_pair_gradient_norm": 0.0004842150769789852
+          }
+        },
+        "main_ce": 3.7285008430480957,
+        "seconds": 0.06203010000172071
+      },
+      {
+        "pair": 7,
+        "day": 2,
+        "cross_batch_PID_overlap": 3,
+        "levels": {
+          "time_down": {
+            "main_ce_gradient_norm": 1.1581978395136916,
+            "old_pair_gradient_norm": 0.00018120606076784426
+          },
+          "t2.pool": {
+            "main_ce_gradient_norm": 3.6011638743219003,
+            "old_pair_gradient_norm": 0.00041503679268321033
+          }
+        },
+        "main_ce": 3.8114118576049805,
+        "seconds": 0.07056320001720451
+      },
+      {
+        "pair": 8,
+        "day": 3,
+        "cross_batch_PID_overlap": 1,
+        "levels": {
+          "time_down": {
+            "main_ce_gradient_norm": 1.0637252320725914,
+            "old_pair_gradient_norm": 0.00019386090505338935
+          },
+          "t2.pool": {
+            "main_ce_gradient_norm": 3.6046645601883087,
+            "old_pair_gradient_norm": 0.00046734727121781157
+          }
+        },
+        "main_ce": 3.790248155593872,
+        "seconds": 0.06941050000023097
+      },
+      {
+        "pair": 9,
+        "day": 1,
+        "cross_batch_PID_overlap": 1,
+        "levels": {
+          "time_down": {
+            "main_ce_gradient_norm": 1.1491614037292246,
+            "old_pair_gradient_norm": 0.00027702008984296434
+          },
+          "t2.pool": {
+            "main_ce_gradient_norm": 3.663044860032796,
+            "old_pair_gradient_norm": 0.0006193747367188939
+          }
+        },
+        "main_ce": 3.7930634021759033,
+        "seconds": 0.07101559999864548
+      },
+      {
+        "pair": 10,
+        "day": 2,
+        "cross_batch_PID_overlap": 1,
+        "levels": {
+          "time_down": {
+            "main_ce_gradient_norm": 1.2578343353624242,
+            "old_pair_gradient_norm": 0.00017965378449567553
+          },
+          "t2.pool": {
+            "main_ce_gradient_norm": 3.6456240846017347,
+            "old_pair_gradient_norm": 0.00043937592611398334
+          }
+        },
+        "main_ce": 3.7153940200805664,
+        "seconds": 0.07199590001255274
+      },
+      {
+        "pair": 11,
+        "day": 3,
+        "cross_batch_PID_overlap": 1,
+        "levels": {
+          "time_down": {
+            "main_ce_gradient_norm": 1.2203165980227828,
+            "old_pair_gradient_norm": 0.00020007839611766966
+          },
+          "t2.pool": {
+            "main_ce_gradient_norm": 3.6100311956583817,
+            "old_pair_gradient_norm": 0.0004667240870015802
+          }
+        },
+        "main_ce": 3.7414538860321045,
+        "seconds": 0.06383870000718161
+      }
+    ],
+    "extra_source_readouts": 1440,
+    "model_forwards": 24,
+    "seconds": 1.8257776999962516,
+    "state_unchanged": true,
+    "RNG_preserved": true,
+    "source_role": "L_s only",
+    "target_access": false,
+    "identity_updates": 0,
+    "head_updates": 0,
+    "all_layers_calibrated": true,
+    "coefficient_formula": "min(cap,0.2*mean(pair_main_CE_gradient_norm)/(mean(old_pair_Fishr_gradient_norm)+eps))",
+    "sampling_namespace": "calibration-private; distinct from training; cross-batch overlap allowed"
+  },
+  "fixture": "native original identity with synthetic L only",
+  "device": "cuda:0"
+}
