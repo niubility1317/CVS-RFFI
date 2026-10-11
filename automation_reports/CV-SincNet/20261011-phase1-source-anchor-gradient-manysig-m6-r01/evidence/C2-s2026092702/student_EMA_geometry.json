@@ -1,0 +1,46 @@
+{
+  "roles": {
+    "L": {
+      "count": 6300,
+      "normalized_feature_L2_mean": 0.002823938149958849,
+      "normalized_feature_L2_p95": 0.004147006198763847,
+      "feature_cosine_mean": 0.9999955892562866,
+      "feature_cosine_p05": 0.9999914169311523,
+      "prediction_disagreement_count": 0,
+      "probability_L1_mean": 7.155811090342468e-06,
+      "student_confidence_mean": 0.9998759627342224,
+      "EMA_confidence_mean": 0.9998787641525269,
+      "accuracy": null,
+      "reason": "Role-independent paired comparison; no labels consumed"
+    },
+    "U": {
+      "count": 56700,
+      "normalized_feature_L2_mean": 0.0028405203483998775,
+      "normalized_feature_L2_p95": 0.004187438171356916,
+      "feature_cosine_mean": 0.9999955892562866,
+      "feature_cosine_p05": 0.999991238117218,
+      "prediction_disagreement_count": 10,
+      "probability_L1_mean": 0.0001057233166648075,
+      "student_confidence_mean": 0.997809886932373,
+      "EMA_confidence_mean": 0.9978081583976746,
+      "accuracy": null,
+      "reason": "Role-independent paired comparison; no labels consumed"
+    },
+    "V": {
+      "count": 27000,
+      "normalized_feature_L2_mean": 0.0028531819116324186,
+      "normalized_feature_L2_p95": 0.004258923698216677,
+      "feature_cosine_mean": 0.9999954700469971,
+      "feature_cosine_p05": 0.9999909400939941,
+      "prediction_disagreement_count": 1,
+      "probability_L1_mean": 0.00013287444016896188,
+      "student_confidence_mean": 0.9974541068077087,
+      "EMA_confidence_mean": 0.9974583387374878,
+      "accuracy": null,
+      "reason": "Role-independent paired comparison; no labels consumed"
+    }
+  },
+  "temporal_scope": "E40 endpoints only; not E200-to-E40 movement",
+  "U_truth_access": false,
+  "target_access": false
+}

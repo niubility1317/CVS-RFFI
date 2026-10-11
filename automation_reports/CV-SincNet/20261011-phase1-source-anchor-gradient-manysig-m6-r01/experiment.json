@@ -20,7 +20,7 @@
   "replaces_run_id": null,
   "authorization": "持续84%目标授权；先回答三个问题、诊断EMA与纠错，暂不从头重训新机制",
   "code": {
-    "commit": "resolved from immutable Git release at launch",
+    "commit": "b92d0618af7d5e2b7dedb43ede1d79db71829f80",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_anchor_gradient_20261011_r01"
@@ -156,11 +156,14 @@
     "user": "szu2070436088",
     "launch_owner": "codex/root/source-anchor-gradient-20261011",
     "gpu_policy": "all eight GPU pool; <=3 TOTAL processes/GPU including other owners; >=12000MB free",
-    "remote_run_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01",
-    "remote_log_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01\\logs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/logs",
     "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_source_anchor_gradient_20261011_r01",
     "launch_command": "python -u -m experiments.cvs_source_anchor_audit.publish --output local_artifacts/cvs_source_anchor_gradient_20261011_r01",
-    "stop_rule": "technical failure stops new pending; healthy rows finish; retain all outputs, no retry/overwrite/performance stop"
+    "stop_rule": "technical failure stops new pending; healthy rows finish; retain all outputs, no retry/overwrite/performance stop",
+    "pid": 4103739,
+    "release_commit": "b92d0618af7d5e2b7dedb43ede1d79db71829f80",
+    "last_read_at": 1791719374.3045347
   },
   "expected_artifacts": [
     "graph_fit.json",
@@ -192,7 +195,7 @@
       "row_id": "C1-s2026092701",
       "source_arm": "C1",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "config": {
         "run_id": "20261011-phase1-source-anchor-gradient-manysig-m6-r01",
         "row_id": "C1-s2026092701",
@@ -550,7 +553,7 @@
       "method": "cvs_source_anchor_audit",
       "purpose": "fixed comparison",
       "config_ref": "experiment.json#rows/C1-s2026092701",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01\\C1-s2026092701\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/C1-s2026092701/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -569,7 +572,7 @@
       "fl_rounds": null,
       "budget_ref": "0 identity updates; 32 paired gradient batches; normalized virtual step restored exactly",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/C1-s2026092701",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01\\logs\\C1-s2026092701.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/logs/C1-s2026092701.log",
       "command": "python -u -m experiments.cvs_source_anchor_audit.dispatch --worker C1-s2026092701",
       "expected_artifacts": [
         "graph_fit.json",
@@ -577,13 +580,18 @@
         "student_EMA_geometry.json",
         "gradient_diagnostics.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4103815,
+      "gpu": 6,
+      "observed_epoch": null,
+      "remote_process_verified": false,
+      "completion_verified": true
     },
     {
       "row_id": "C2-s2026092701",
       "source_arm": "C2",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "config": {
         "run_id": "20261011-phase1-source-anchor-gradient-manysig-m6-r01",
         "row_id": "C2-s2026092701",
@@ -941,7 +949,7 @@
       "method": "cvs_source_anchor_audit",
       "purpose": "fixed comparison",
       "config_ref": "experiment.json#rows/C2-s2026092701",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01\\C2-s2026092701\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/C2-s2026092701/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -960,7 +968,7 @@
       "fl_rounds": null,
       "budget_ref": "0 identity updates; 32 paired gradient batches; normalized virtual step restored exactly",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/C2-s2026092701",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01\\logs\\C2-s2026092701.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/logs/C2-s2026092701.log",
       "command": "python -u -m experiments.cvs_source_anchor_audit.dispatch --worker C2-s2026092701",
       "expected_artifacts": [
         "graph_fit.json",
@@ -968,13 +976,18 @@
         "student_EMA_geometry.json",
         "gradient_diagnostics.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4103956,
+      "gpu": 7,
+      "observed_epoch": null,
+      "remote_process_verified": false,
+      "completion_verified": true
     },
     {
       "row_id": "C1-s2026092702",
       "source_arm": "C1",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "config": {
         "run_id": "20261011-phase1-source-anchor-gradient-manysig-m6-r01",
         "row_id": "C1-s2026092702",
@@ -1332,7 +1345,7 @@
       "method": "cvs_source_anchor_audit",
       "purpose": "fixed comparison",
       "config_ref": "experiment.json#rows/C1-s2026092702",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01\\C1-s2026092702\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/C1-s2026092702/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -1351,7 +1364,7 @@
       "fl_rounds": null,
       "budget_ref": "0 identity updates; 32 paired gradient batches; normalized virtual step restored exactly",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/C1-s2026092702",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01\\logs\\C1-s2026092702.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/logs/C1-s2026092702.log",
       "command": "python -u -m experiments.cvs_source_anchor_audit.dispatch --worker C1-s2026092702",
       "expected_artifacts": [
         "graph_fit.json",
@@ -1359,13 +1372,18 @@
         "student_EMA_geometry.json",
         "gradient_diagnostics.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4104044,
+      "gpu": 7,
+      "observed_epoch": null,
+      "remote_process_verified": false,
+      "completion_verified": true
     },
     {
       "row_id": "C2-s2026092702",
       "source_arm": "C2",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "config": {
         "run_id": "20261011-phase1-source-anchor-gradient-manysig-m6-r01",
         "row_id": "C2-s2026092702",
@@ -1723,7 +1741,7 @@
       "method": "cvs_source_anchor_audit",
       "purpose": "fixed comparison",
       "config_ref": "experiment.json#rows/C2-s2026092702",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01\\C2-s2026092702\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/C2-s2026092702/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -1742,7 +1760,7 @@
       "fl_rounds": null,
       "budget_ref": "0 identity updates; 32 paired gradient batches; normalized virtual step restored exactly",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/C2-s2026092702",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01\\logs\\C2-s2026092702.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/logs/C2-s2026092702.log",
       "command": "python -u -m experiments.cvs_source_anchor_audit.dispatch --worker C2-s2026092702",
       "expected_artifacts": [
         "graph_fit.json",
@@ -1750,13 +1768,18 @@
         "student_EMA_geometry.json",
         "gradient_diagnostics.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4104129,
+      "gpu": 6,
+      "observed_epoch": null,
+      "remote_process_verified": false,
+      "completion_verified": true
     },
     {
       "row_id": "C1-s2026092703",
       "source_arm": "C1",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "config": {
         "run_id": "20261011-phase1-source-anchor-gradient-manysig-m6-r01",
         "row_id": "C1-s2026092703",
@@ -2114,7 +2137,7 @@
       "method": "cvs_source_anchor_audit",
       "purpose": "fixed comparison",
       "config_ref": "experiment.json#rows/C1-s2026092703",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01\\C1-s2026092703\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/C1-s2026092703/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -2133,7 +2156,7 @@
       "fl_rounds": null,
       "budget_ref": "0 identity updates; 32 paired gradient batches; normalized virtual step restored exactly",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/C1-s2026092703",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01\\logs\\C1-s2026092703.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/logs/C1-s2026092703.log",
       "command": "python -u -m experiments.cvs_source_anchor_audit.dispatch --worker C1-s2026092703",
       "expected_artifacts": [
         "graph_fit.json",
@@ -2141,13 +2164,18 @@
         "student_EMA_geometry.json",
         "gradient_diagnostics.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4104213,
+      "gpu": 5,
+      "observed_epoch": null,
+      "remote_process_verified": false,
+      "completion_verified": true
     },
     {
       "row_id": "C2-s2026092703",
       "source_arm": "C2",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "config": {
         "run_id": "20261011-phase1-source-anchor-gradient-manysig-m6-r01",
         "row_id": "C2-s2026092703",
@@ -2505,7 +2533,7 @@
       "method": "cvs_source_anchor_audit",
       "purpose": "fixed comparison",
       "config_ref": "experiment.json#rows/C2-s2026092703",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01\\C2-s2026092703\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/C2-s2026092703/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -2524,7 +2552,7 @@
       "fl_rounds": null,
       "budget_ref": "0 identity updates; 32 paired gradient batches; normalized virtual step restored exactly",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/C2-s2026092703",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-source-anchor-gradient-manysig-m6-r01\\logs\\C2-s2026092703.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-source-anchor-gradient-manysig-m6-r01/logs/C2-s2026092703.log",
       "command": "python -u -m experiments.cvs_source_anchor_audit.dispatch --worker C2-s2026092703",
       "expected_artifacts": [
         "graph_fit.json",
@@ -2532,19 +2560,27 @@
         "student_EMA_geometry.json",
         "gradient_diagnostics.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4104297,
+      "gpu": 4,
+      "observed_epoch": null,
+      "remote_process_verified": false,
+      "completion_verified": true
     }
   ],
   "notes": [
     "No new identity training, no target tests; diagnostics continue in parallel with epoch compression.",
     "Goal clean mean>=84 remains active; diagnostic completion is not goal completion."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "independent_review": {
     "reviewer": "stage2_release_review",
     "scope": "P0/P1 minimal8",
     "status": "PASS",
     "evidence": "agent review in current thread; no P0/P1 for source anchor including student/EMA incremental audit"
   },
-  "registered_at": "2026-10-11T11:46:01+00:00"
+  "registered_at": "2026-10-11T11:46:01+00:00",
+  "execution_commit": "b92d0618af7d5e2b7dedb43ede1d79db71829f80",
+  "delivery_verdict": "VERIFIED",
+  "updated_at": "2026-10-11T11:52:14.880227+00:00"
 }

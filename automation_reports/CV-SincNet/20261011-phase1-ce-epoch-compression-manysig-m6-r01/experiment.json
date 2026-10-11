@@ -17,7 +17,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确：100/150各三seed，125不跑，压缩是额外探索且续训继续；测试均值下降不超过0.3pp决定后续epoch",
   "code": {
-    "commit": "resolved from immutable Git release at launch",
+    "commit": "b92d0618af7d5e2b7dedb43ede1d79db71829f80",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ce_epoch_compression_20261011_r01"
@@ -142,11 +142,14 @@
     "user": "szu2070436088",
     "launch_owner": "codex/root/ce-epoch-compression-20261011",
     "gpu_policy": "all eight GPU pool; <=3 TOTAL processes/GPU including other owners; >=12000MB free",
-    "remote_run_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01",
-    "remote_log_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\logs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/logs",
     "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_ce_epoch_compression_20261011_r01",
     "launch_command": "python -u -m experiments.cvs_ce_epoch_compression.publish --output local_artifacts/cvs_ce_epoch_compression_20261011_r01",
-    "stop_rule": "technical failure stops new pending; healthy rows finish; retain all outputs, no retry/overwrite/performance stop"
+    "stop_rule": "technical failure stops new pending; healthy rows finish; retain all outputs, no retry/overwrite/performance stop",
+    "pid": 4102489,
+    "release_commit": "b92d0618af7d5e2b7dedb43ede1d79db71829f80",
+    "last_read_at": 1791719374.3045347
   },
   "expected_artifacts": [
     "source/completion.json",
@@ -167,7 +170,7 @@
       "row",
       "seed"
     ],
-    "prediction_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\<row>\\prediction",
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/<row>/prediction",
     "scorer_ref": "separate process after fixed per-row prediction",
     "source_V_selects_epochs": false,
     "complete_seed_count": 3
@@ -176,7 +179,7 @@
     {
       "row_id": "E100-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch-compression-manysig-m6-r01",
@@ -375,7 +378,7 @@
       "method": "cvs_ce_epoch_compression",
       "purpose": "fixed comparison",
       "config_ref": "experiment.json#rows/E100-s2026092701",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\E100-s2026092701\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/E100-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -398,7 +401,7 @@
       "fl_rounds": null,
       "budget_ref": "22200 successful updates",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/E100-s2026092701/source",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\logs\\E100-s2026092701.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/logs/E100-s2026092701.log",
       "command": "python -u -m experiments.cvs_ce_epoch_compression.dispatch --worker E100-s2026092701",
       "expected_artifacts": [
         "source/completion.json",
@@ -406,12 +409,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4102560,
+      "gpu": 0,
+      "observed_epoch": 5,
+      "remote_process_verified": true,
+      "completion_verified": false
     },
     {
       "row_id": "E150-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch-compression-manysig-m6-r01",
@@ -610,7 +618,7 @@
       "method": "cvs_ce_epoch_compression",
       "purpose": "fixed comparison",
       "config_ref": "experiment.json#rows/E150-s2026092701",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\E150-s2026092701\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/E150-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -633,7 +641,7 @@
       "fl_rounds": null,
       "budget_ref": "33300 successful updates",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/E150-s2026092701/source",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\logs\\E150-s2026092701.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/logs/E150-s2026092701.log",
       "command": "python -u -m experiments.cvs_ce_epoch_compression.dispatch --worker E150-s2026092701",
       "expected_artifacts": [
         "source/completion.json",
@@ -641,12 +649,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4102643,
+      "gpu": 1,
+      "observed_epoch": 4,
+      "remote_process_verified": true,
+      "completion_verified": false
     },
     {
       "row_id": "E100-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch-compression-manysig-m6-r01",
@@ -845,7 +858,7 @@
       "method": "cvs_ce_epoch_compression",
       "purpose": "fixed comparison",
       "config_ref": "experiment.json#rows/E100-s2026092702",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\E100-s2026092702\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/E100-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -868,7 +881,7 @@
       "fl_rounds": null,
       "budget_ref": "22200 successful updates",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/E100-s2026092702/source",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\logs\\E100-s2026092702.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/logs/E100-s2026092702.log",
       "command": "python -u -m experiments.cvs_ce_epoch_compression.dispatch --worker E100-s2026092702",
       "expected_artifacts": [
         "source/completion.json",
@@ -876,12 +889,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4102730,
+      "gpu": 2,
+      "observed_epoch": 5,
+      "remote_process_verified": true,
+      "completion_verified": false
     },
     {
       "row_id": "E150-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch-compression-manysig-m6-r01",
@@ -1080,7 +1098,7 @@
       "method": "cvs_ce_epoch_compression",
       "purpose": "fixed comparison",
       "config_ref": "experiment.json#rows/E150-s2026092702",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\E150-s2026092702\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/E150-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -1103,7 +1121,7 @@
       "fl_rounds": null,
       "budget_ref": "33300 successful updates",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/E150-s2026092702/source",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\logs\\E150-s2026092702.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/logs/E150-s2026092702.log",
       "command": "python -u -m experiments.cvs_ce_epoch_compression.dispatch --worker E150-s2026092702",
       "expected_artifacts": [
         "source/completion.json",
@@ -1111,12 +1129,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4102817,
+      "gpu": 3,
+      "observed_epoch": 5,
+      "remote_process_verified": true,
+      "completion_verified": false
     },
     {
       "row_id": "E100-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch-compression-manysig-m6-r01",
@@ -1315,7 +1338,7 @@
       "method": "cvs_ce_epoch_compression",
       "purpose": "fixed comparison",
       "config_ref": "experiment.json#rows/E100-s2026092703",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\E100-s2026092703\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/E100-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -1338,7 +1361,7 @@
       "fl_rounds": null,
       "budget_ref": "22200 successful updates",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/E100-s2026092703/source",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\logs\\E100-s2026092703.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/logs/E100-s2026092703.log",
       "command": "python -u -m experiments.cvs_ce_epoch_compression.dispatch --worker E100-s2026092703",
       "expected_artifacts": [
         "source/completion.json",
@@ -1346,12 +1369,17 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4103063,
+      "gpu": 4,
+      "observed_epoch": 5,
+      "remote_process_verified": true,
+      "completion_verified": false
     },
     {
       "row_id": "E150-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "config": {
         "schema": "ce_epoch_compression_v1",
         "run_id": "20261011-phase1-ce-epoch-compression-manysig-m6-r01",
@@ -1550,7 +1578,7 @@
       "method": "cvs_ce_epoch_compression",
       "purpose": "fixed comparison",
       "config_ref": "experiment.json#rows/E150-s2026092703",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\E150-s2026092703\\source\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/E150-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -1573,7 +1601,7 @@
       "fl_rounds": null,
       "budget_ref": "33300 successful updates",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/E150-s2026092703/source",
-      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261011-phase1-ce-epoch-compression-manysig-m6-r01\\logs\\E150-s2026092703.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch-compression-manysig-m6-r01/logs/E150-s2026092703.log",
       "command": "python -u -m experiments.cvs_ce_epoch_compression.dispatch --worker E150-s2026092703",
       "expected_artifacts": [
         "source/completion.json",
@@ -1581,19 +1609,27 @@
         "prediction/complete.json",
         "row_scoring/<row>/scoring_complete.json",
         "completion.json"
-      ]
+      ],
+      "pid": 4103159,
+      "gpu": 5,
+      "observed_epoch": 5,
+      "remote_process_verified": true,
+      "completion_verified": false
     }
   ],
   "notes": [
     "Every E100/E150 starts from scratch; E200 weights never initialize these rows. No E125. Per-row automatic clean test.",
     "Goal clean mean>=84 remains active; diagnostic completion is not goal completion."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "independent_review": {
     "reviewer": "stage2_release_review",
     "scope": "P0/P1 minimal8",
     "status": "PASS",
     "evidence": "agent review in current thread; no P0/P1 for compressed CE dynamic budget/control/evaluation"
   },
-  "registered_at": "2026-10-11T11:46:29+00:00"
+  "registered_at": "2026-10-11T11:46:29+00:00",
+  "execution_commit": "b92d0618af7d5e2b7dedb43ede1d79db71829f80",
+  "delivery_verdict": "VERIFIED",
+  "updated_at": "2026-10-11T11:52:14.880227+00:00"
 }

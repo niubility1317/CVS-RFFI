@@ -1,0 +1,11 @@
+{
+  "goal": "clean three-seed mean >=84; not met",
+  "run": "20261011-phase1-ce-epoch-compression-manysig-m6-r01",
+  "status": "RUNNING",
+  "execution_commit": "b92d0618af7d5e2b7dedb43ede1d79db71829f80",
+  "next": "Reconcile baseline six processes and row tests; use source diagnostics for new continuation mechanism design",
+  "epoch_selection_exception": "explicit target clean mean drop <=0.3pp only for epoch compression",
+  "other_run": "20261011-phase1-source-anchor-gradient-manysig-m6-r01",
+  "healthy_process_policy": "no hot changes, restart, or stopping",
+  "goal_active": true
+}
