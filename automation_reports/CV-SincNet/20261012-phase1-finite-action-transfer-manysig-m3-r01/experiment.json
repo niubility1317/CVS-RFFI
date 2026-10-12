@@ -84,7 +84,7 @@
   "group_id": "cvs-finite-action-transfer",
   "display_name": "有限作用迁移：冻结无CFO源CE／频谱时序随机残差／留出TX day质量",
   "description": "固定3源CE编码器，独立三个作用×三个实际层；13留出条件，每网20次fit遍历。L拟合/留出迁移，U56700只同包操作验证；强双线性及输出低秩基线、真实RX统计覆盖，无身份更新及target访问",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "aliases": [],
   "tags": [
     "finite_action",
@@ -161,7 +161,7 @@
     {
       "row_id": "ACTION-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_finite_action",
       "purpose": "固定3源CE编码器，独立三个作用×三个实际层；13留出条件，每网20次fit遍历。L拟合/留出迁移，U56700只同包操作验证；强双线性及输出低秩基线、真实RX统计覆盖，无身份更新及target访问",
       "config": {
@@ -706,12 +706,30 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "reference=model;auxfit=model+314159+splitindex100003+kind1009+level101;fit/privatebatchsameauxseed;PIDsplit=model+271828;qualityrankcoherence/PID deterministic;operatornoise=model+roleSalt+batchstart8191+point104729+repeat65537+kind10000019;noUtruth"
+      "seed_notes": "reference=model;auxfit=model+314159+splitindex100003+kind1009+level101;fit/privatebatchsameauxseed;PIDsplit=model+271828;qualityrankcoherence/PID deterministic;operatornoise=model+roleSalt+batchstart8191+point104729+repeat65537+kind10000019;noUtruth",
+      "pid": 627076,
+      "gpu": 2,
+      "launch_evidence": {
+        "pid": 627076,
+        "start_ticks": 102884566,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_finite_action_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_finite_action.dispatch",
+          "--worker",
+          "ACTION-s2026092701"
+        ],
+        "gpu": "2"
+      },
+      "resolved_config_verified": true
     },
     {
       "row_id": "ACTION-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_finite_action",
       "purpose": "固定3源CE编码器，独立三个作用×三个实际层；13留出条件，每网20次fit遍历。L拟合/留出迁移，U56700只同包操作验证；强双线性及输出低秩基线、真实RX统计覆盖，无身份更新及target访问",
       "config": {
@@ -1256,12 +1274,30 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "reference=model;auxfit=model+314159+splitindex100003+kind1009+level101;fit/privatebatchsameauxseed;PIDsplit=model+271828;qualityrankcoherence/PID deterministic;operatornoise=model+roleSalt+batchstart8191+point104729+repeat65537+kind10000019;noUtruth"
+      "seed_notes": "reference=model;auxfit=model+314159+splitindex100003+kind1009+level101;fit/privatebatchsameauxseed;PIDsplit=model+271828;qualityrankcoherence/PID deterministic;operatornoise=model+roleSalt+batchstart8191+point104729+repeat65537+kind10000019;noUtruth",
+      "pid": 627153,
+      "gpu": 6,
+      "launch_evidence": {
+        "pid": 627153,
+        "start_ticks": 102884900,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_finite_action_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_finite_action.dispatch",
+          "--worker",
+          "ACTION-s2026092702"
+        ],
+        "gpu": "6"
+      },
+      "resolved_config_verified": true
     },
     {
       "row_id": "ACTION-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_finite_action",
       "purpose": "固定3源CE编码器，独立三个作用×三个实际层；13留出条件，每网20次fit遍历。L拟合/留出迁移，U56700只同包操作验证；强双线性及输出低秩基线、真实RX统计覆盖，无身份更新及target访问",
       "config": {
@@ -1806,8 +1842,95 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "reference=model;auxfit=model+314159+splitindex100003+kind1009+level101;fit/privatebatchsameauxseed;PIDsplit=model+271828;qualityrankcoherence/PID deterministic;operatornoise=model+roleSalt+batchstart8191+point104729+repeat65537+kind10000019;noUtruth"
+      "seed_notes": "reference=model;auxfit=model+314159+splitindex100003+kind1009+level101;fit/privatebatchsameauxseed;PIDsplit=model+271828;qualityrankcoherence/PID deterministic;operatornoise=model+roleSalt+batchstart8191+point104729+repeat65537+kind10000019;noUtruth",
+      "pid": 627304,
+      "gpu": 1,
+      "launch_evidence": {
+        "pid": 627304,
+        "start_ticks": 102885243,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_finite_action_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_finite_action.dispatch",
+          "--worker",
+          "ACTION-s2026092703"
+        ],
+        "gpu": "1"
+      },
+      "resolved_config_verified": true
     }
   ],
-  "registered_at": "2026-10-12T04:48:17+00:00"
+  "registered_at": "2026-10-12T04:48:17+00:00",
+  "execution_commit": "9471ce500c48d477b9c40708e0ef3ed9f1ad485b",
+  "delivery_verdict": "VERIFIED",
+  "progress": {
+    "launched": 3,
+    "resolved_verified": 3,
+    "queued": 0,
+    "failures": [],
+    "GPU_capacity": {
+      "0": {
+        "pids": [
+          619128,
+          624853
+        ],
+        "free_mb": 20128
+      },
+      "1": {
+        "pids": [
+          604340,
+          616039,
+          627304
+        ],
+        "free_mb": 20925
+      },
+      "2": {
+        "pids": [
+          615078,
+          626107,
+          627076
+        ],
+        "free_mb": 21651
+      },
+      "3": {
+        "pids": [
+          602294,
+          603007
+        ],
+        "free_mb": 18834
+      },
+      "4": {
+        "pids": [
+          614440,
+          622857
+        ],
+        "free_mb": 21218
+      },
+      "5": {
+        "pids": [
+          625434,
+          626605
+        ],
+        "free_mb": 20844
+      },
+      "6": {
+        "pids": [
+          619207,
+          627153,
+          627163
+        ],
+        "free_mb": 21215
+      },
+      "7": {
+        "pids": [
+          590696,
+          620723
+        ],
+        "free_mb": 18836
+      }
+    }
+  }
 }
