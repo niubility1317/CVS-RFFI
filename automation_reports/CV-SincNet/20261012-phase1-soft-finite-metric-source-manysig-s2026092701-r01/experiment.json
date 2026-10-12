@@ -688,7 +688,8 @@
           "worst_RX_noninferiority_MAHALANOBIS": 0.01
         },
         "selection": "sourceV clean only after fixed readouts; all15pairs; never target"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "METRIC-RX3-s2026092701",
@@ -1261,7 +1262,8 @@
           "worst_RX_noninferiority_MAHALANOBIS": 0.01
         },
         "selection": "sourceV clean only after fixed readouts; all15pairs; never target"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "METRIC-RX4-s2026092701",
@@ -1834,7 +1836,8 @@
           "worst_RX_noninferiority_MAHALANOBIS": 0.01
         },
         "selection": "sourceV clean only after fixed readouts; all15pairs; never target"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "METRIC-RX6-s2026092701",
@@ -2407,7 +2410,8 @@
           "worst_RX_noninferiority_MAHALANOBIS": 0.01
         },
         "selection": "sourceV clean only after fixed readouts; all15pairs; never target"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "METRIC-RX8-s2026092701",
@@ -2980,7 +2984,8 @@
           "worst_RX_noninferiority_MAHALANOBIS": 0.01
         },
         "selection": "sourceV clean only after fixed readouts; all15pairs; never target"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     }
   ],
   "notes": [
@@ -2988,6 +2993,7 @@
     "Actual four operation deltas do not guarantee physical RX coverage. Uniform all classes and prototype formula, no TX-specific handling.",
     "No target support, no U open, no model update. Metric scores have different uncalibrated scales; compare accuracy and confusion, no calibrated NLL claim."
   ],
-  "status": "PLANNED",
-  "registered_at": "2026-10-12T09:58:02+00:00"
+  "status": "ANALYZED",
+  "registered_at": "2026-10-12T09:58:02+00:00",
+  "execution_commit": "84cbc71853dc27c56e761c645a9a3faf2ac86d01"
 }
