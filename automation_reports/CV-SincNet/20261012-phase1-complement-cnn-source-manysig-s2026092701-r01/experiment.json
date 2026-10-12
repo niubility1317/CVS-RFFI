@@ -625,7 +625,8 @@
           "nonnegative_RX": 4,
           "worst_RX_noninferiority": 0.01
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "WAVE_CNN-RX3-s2026092701",
@@ -1140,7 +1141,8 @@
           "nonnegative_RX": 4,
           "worst_RX_noninferiority": 0.01
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "WAVE_CNN-RX4-s2026092701",
@@ -1655,7 +1657,8 @@
           "nonnegative_RX": 4,
           "worst_RX_noninferiority": 0.01
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "WAVE_CNN-RX6-s2026092701",
@@ -2170,7 +2173,8 @@
           "nonnegative_RX": 4,
           "worst_RX_noninferiority": 0.01
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "WAVE_CNN-RX8-s2026092701",
@@ -2685,7 +2689,8 @@
           "nonnegative_RX": 4,
           "worst_RX_noninferiority": 0.01
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     }
   ],
   "notes": [
@@ -2696,7 +2701,7 @@
     "Native3source61.7778% previouslyfrozen;bootstrapEMA source61.7185% failed eligibility,retainedno target.",
     "Onlyeligible mixture then3primaryseedfullsourceCNN30 andpreservedmatchednative3,automatic7views/truthlast;no targetfeedback."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-12T14:20:06+00:00",
   "replaces_run_id": null,
   "comparisons": [
@@ -2705,6 +2710,26 @@
       "arm": "EQUAL_PROBABILITY_3",
       "role": "all3frozenmatchingfitLsource probabilities; no teacher/initialization",
       "historical_identity_updates": 99900
+    }
+  ],
+  "execution_commit": "75c2dcbec67f176b782a2b4b6ceafe74735feea6",
+  "delivery_verdict": "VERIFIED",
+  "source_eligibility": false,
+  "source_result_summary": [
+    {
+      "arm": "NATIVE3",
+      "mean": 0.6177777826786042,
+      "worst_RX": 0.37925925850868225
+    },
+    {
+      "arm": "CNN",
+      "mean": 0.38585185408592226,
+      "worst_RX": 0.22962963581085205
+    },
+    {
+      "arm": "MIXTURE_CNN_NATIVE3",
+      "mean": 0.5473333239555359,
+      "worst_RX": 0.3316666781902313
     }
   ]
 }

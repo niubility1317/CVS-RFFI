@@ -399,3 +399,8 @@
 
 - [独立全波形CNN与native3互补：整RX留出30轮](../automation_reports/CV-SincNet/20261012-phase1-complement-cnn-source-manysig-s2026092701-r01/report.md)（PLANNED）
 - [源集成软标签逐步移交EMA：整RX留出30轮](../automation_reports/CV-SincNet/20261012-phase1-bootstrap-ema-source-manysig-s2026092701-r01/report.md)（ANALYZED）
+
+## 本轮关系互补与源端结论
+
+- [全局相位与统计池化消融：整RX留出30轮](../automation_reports/CV-SincNet/20261012-phase1-phase-pool-cnn-source-manysig-s2026092701-r01/report.md)（PLANNED）
+- [独立全波形CNN与native3互补：整RX留出30轮](../automation_reports/CV-SincNet/20261012-phase1-complement-cnn-source-manysig-s2026092701-r01/report.md)（ANALYZED）

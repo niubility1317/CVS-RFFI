@@ -1,0 +1,1 @@
+一次独立候选 family P0/P1 review：/root/quality_review PASS，无 P0/P1。三 arms 实际区分统计池化与训练相位旋转；增广计数 0/852480，eval 不增广。15 row 从零固定 30/6660，整 heldRX 排除，U/target 关闭。混合预测先固定再 source 评分，完整矩阵后按预登记源资格和排序冻结。不可覆盖输出、单 owner、总 GPU 进程上限和实际执行入口归档依赖检查 PASS。未追加其他审查。
