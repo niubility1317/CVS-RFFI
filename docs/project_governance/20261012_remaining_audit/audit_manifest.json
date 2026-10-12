@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "date": "2026-10-12",
+  "cutoff": "2026-09-01T00:00:00+08:00",
+  "status": "VERIFIED_READ_ONLY_AUDIT",
+  "artifact_deletions": 0,
+  "candidate_files": 29410,
+  "candidate_logical_bytes": 775216338,
+  "summary": {
+    "local": {
+      "identical_archive_copy": {
+        "files": 5,
+        "bytes": 85934080
+      },
+      "regenerable_cache": {
+        "files": 2924,
+        "bytes": 58364880
+      }
+    },
+    "remote": {
+      "identical_archive_copy": {
+        "files": 1,
+        "bytes": 73164800
+      },
+      "regenerable_cache": {
+        "files": 26480,
+        "bytes": 557752578
+      }
+    }
+  },
+  "archive_identity": "complete SHA-256 stream equality; member names inspected without extraction; details only in local audit evidence",
+  "reference_sources_checked": 10024,
+  "candidate_paths": "candidate_paths.json.gz",
+  "archive_candidates": "archive_candidates.csv",
+  "cache_groups": "cache_groups.csv",
+  "scope": "local current existence checks from 20260916 archive/cache/fixture inventory; N607 current archive/cache scan in chosen run/release/temp/log zones; excludes data, links and Git internals",
+  "limits": [
+    "not a full new project inventory",
+    "archive basename reference check is conservative and bounded to source/config/report metadata",
+    "cache regeneration means retained corresponding source, not an experiment result quality judgement",
+    "Git worktree caches and orphan bytecode excluded",
+    "test fixtures with predictions/weights/data not approved for deletion",
+    "mutation requires fresh keep-copy/source/active-path check"
+  ],
+  "evidence_root": "local_artifacts/project_file_management/20261012_remaining_audit"
+}

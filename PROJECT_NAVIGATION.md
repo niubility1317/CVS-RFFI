@@ -26,3 +26,5 @@
 历史大日志已在 2026-10-12 完成无损压缩，原路径恢复映射见[本机与 N607 清理报告](docs/project_governance/20261012_cleanup/REPORT.md)。
 
 2026-09-01 前无参考意义的旧产物清理及索引精简见[本机与 N607 永久清理报告](docs/project_governance/20261012_retirement/REPORT.md)。日期不是唯一筛选条件；已删除压缩件以新清单为准。
+
+后续旧产物专项清点（无新增删除）见[归档去重与缓存候选](docs/project_governance/20261012_remaining_audit/REPORT.md)。

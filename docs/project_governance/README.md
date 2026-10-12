@@ -45,3 +45,5 @@ python -X utf8 tools/project_files.py scan --database local_artifacts/project_fi
 已完成本机与 N607 历史大日志无损压缩和冗余原文件回收。见[清理报告](20261012_cleanup/REPORT.md)、[处理摘要](20261012_cleanup/cleanup_manifest.json)及[逐路径恢复映射](20261012_cleanup/path_changes.json.gz)。历史原始路径需结合本次映射查找；2026-09-16 全量盘点继续作为原快照保留。
 
 2026-10-12 后续按“2026-09-01 前且失去参考意义”清理旧冗余产物，见[永久清理报告](20261012_retirement/REPORT.md)。仅日期久远不构成删除理由；第一阶段恢复映射须结合永久删除清单使用。
+
+后续只读清点见[2026-10-12 候选及保留依据](20261012_remaining_audit/REPORT.md)。本轮只列归档去重和缓存候选，没有新增删除；旧文件盘点与永久清理增量继续保留。
