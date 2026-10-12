@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import shutil
 import stat
+import subprocess
 import sys
 
 CUTOFF = datetime.fromisoformat('2026-10-10T00:00:00+08:00').timestamp()
@@ -164,10 +165,20 @@ def apply(saved_plan, manifest):
                     raise FileExistsError('archive/partial already exists; original preserved')
                 original_digest = hashlib.sha256()
                 with source.open('rb') as inp, temporary.open('xb') as raw:
-                    with gzip.GzipFile(filename='', mode='wb', fileobj=raw, compresslevel=1, mtime=int(before.st_mtime)) as output:
-                        for chunk in iter(lambda: inp.read(4 * 1024 * 1024), b''):
-                            output.write(chunk)
-                            original_digest.update(chunk)
+                    pigz = shutil.which('pigz') if sys.platform != 'win32' else None
+                    if pigz:
+                        with subprocess.Popen([pigz, '-1', '-p', '4', '-c'], stdin=subprocess.PIPE, stdout=raw) as compressor:
+                            for chunk in iter(lambda: inp.read(4 * 1024 * 1024), b''):
+                                compressor.stdin.write(chunk)
+                                original_digest.update(chunk)
+                            compressor.stdin.close()
+                            if compressor.wait() != 0:
+                                raise RuntimeError('pigz failed; original preserved')
+                    else:
+                        with gzip.GzipFile(filename='', mode='wb', fileobj=raw, compresslevel=1, mtime=int(before.st_mtime)) as output:
+                            for chunk in iter(lambda: inp.read(4 * 1024 * 1024), b''):
+                                output.write(chunk)
+                                original_digest.update(chunk)
                     raw.flush()
                     os.fsync(raw.fileno())
                 with gzip.open(temporary, 'rb') as verified:
