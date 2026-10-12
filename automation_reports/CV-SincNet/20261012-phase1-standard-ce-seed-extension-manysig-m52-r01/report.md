@@ -116,3 +116,7 @@ CVS 在本矩阵中准确率最高且参数量最低，但单包时延和推理�
 - 验证：`local_artifacts/standard_ce_seed_extension_20261012_r01/metrics_delivery_verification.json`。
 
 VERIFIED：104 个种子行、1456 个分层指标、3744 个混淆矩阵记录，13 行实际 n=8、缺项=0。全部总体与效率公式和 CSV 核对一致，无公式错误。51042 个已有数据、公式和格式单元格保持一致（论文图页、说明及新增资源字段属于明确修改范围）；8 张嵌入图片与最终 PNG 一致且不重叠。图表数值文本不出画布，fig03 编号不重叠，完整 8 页 PDF 和 ZIP 已核验。
+
+## 端到端部署指标追加
+
+VERIFIED。独立资源诊断 `20261012-phase1-standard-ce-deployment-m104-r02` 完成 13 模型×8权重×2批大小，共41600次计时请求，不重新训练或评估准确率。最新 Excel 为 `E:\type10-7\outputs\01a0fd26-2621-7662-a9bd-9ff19509e812\standard_ce_clean_results_deployment.xlsx`，保留原图表/数据并新增端到端均值与P95/P99、CPU RSS采样峰值、GPU allocated/reserved峰值、实际FP32 state_dict序列化大小。口径和完整结果见该诊断report；不等同射频采集/同步/网络/排队或星载硬件全链路。

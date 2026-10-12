@@ -22,7 +22,7 @@
   "replaces_run_id": "20261012-phase1-standard-ce-deployment-m104-r01",
   "authorization": "2026-10-12用户明确测量端到端时延、推理峰值内存/显存和模型存储大小，并加入已有Excel。",
   "code": {
-    "commit": null,
+    "commit": "45c734e147fe0828bbdbed2975e4bb0deef2e31d",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_deployment_20261012_r02"
@@ -3879,5 +3879,21 @@
     "Existing historical RTX3090 timing/resources and accuracy preserved separately; new metrics do not replace or rescore them."
   ],
   "status": "PLANNED",
-  "registered_at": "2026-10-12T08:02:41+00:00"
+  "registered_at": "2026-10-12T08:02:41+00:00",
+  "analysis_completion": {
+    "location": "local",
+    "models": 104,
+    "profiles": 208,
+    "timed_requests": 41600,
+    "actual_seed_count_per_model": 8,
+    "missing_rows": 0,
+    "source_data_root": "E:\\type10-7\\exports\\paper_figures\\20261012-standard-ce-deployment-r02-source",
+    "workbook": "E:\\type10-7\\outputs\\01a0fd26-2621-7662-a9bd-9ff19509e812\\standard_ce_clean_results_deployment.xlsx",
+    "measurement_hardware": {
+      "cpu_model": "Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz",
+      "kernel": "6.8.0-142-generic",
+      "driver": "580.173.02"
+    },
+    "verification_ref": "local_artifacts/standard_ce_deployment_20261012_r02/excel_verification.json"
+  }
 }
