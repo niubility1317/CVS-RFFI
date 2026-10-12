@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "synthetic_only": true,
+  "target_access": false,
+  "arms": {
+    "MARGIN_ENERGY": {
+      "derivatives": {
+        "time_down.a": 6.051539369437975e-12,
+        "time_down.b": 4.98784975995481e-12,
+        "t2.pool.a": 7.810595052670788e-12,
+        "t2.pool.b": 7.502785827513681e-13,
+        "mixed_second": 6.405005414933385e-09
+      },
+      "lifecycle": {
+        "calibration_forwards": 48,
+        "L_readouts": 2880,
+        "same_pairs": true,
+        "state_RNG_modes_gradients_unchanged": true,
+        "checkpoint_state_rejection": true,
+        "live_second_derivative": true
+      }
+    },
+    "CE_ENERGY": {
+      "derivatives": {
+        "time_down.a": 7.862242432619959e-12,
+        "time_down.b": 1.1905035334283665e-12,
+        "t2.pool.a": 1.8702411581222878e-12,
+        "t2.pool.b": 3.906793020602012e-12,
+        "mixed_second": 2.65685162759155e-09
+      },
+      "lifecycle": {
+        "calibration_forwards": 48,
+        "L_readouts": 2880,
+        "same_pairs": true,
+        "state_RNG_modes_gradients_unchanged": true,
+        "checkpoint_state_rejection": true,
+        "live_second_derivative": true
+      }
+    }
+  },
+  "source_entry": {
+    "status": "PASS",
+    "arms": [
+      "MARGIN_ENERGY",
+      "CE_ENERGY"
+    ],
+    "identity_updates": 0,
+    "source_IQ": false,
+    "target_access": false
+  }
+}
