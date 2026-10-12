@@ -1,0 +1,83 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "synthetic_only": true,
+  "target_access": false,
+  "algebra": {
+    "additive_TX_RX_nullspace": true,
+    "interaction_nonzero_grad": true,
+    "finite_pool": [
+      {
+        "interaction_shift": 0.0,
+        "exact": 0.0,
+        "cross_expectation": 8.673617379884047e-19,
+        "same_batch_square_expectation": 0.08125000000000002,
+        "negative_cross_draws": 94,
+        "AB_combinations": 256
+      },
+      {
+        "interaction_shift": 0.6,
+        "exact": 0.011249999999999996,
+        "cross_expectation": 0.011249999999999991,
+        "same_batch_square_expectation": 0.0925,
+        "negative_cross_draws": 110,
+        "AB_combinations": 256
+      }
+    ]
+  },
+  "raw_derivatives": {
+    "ce": {
+      "time_down.a": 3.1963986579092163e-12,
+      "time_down.b": 6.618828803182236e-12,
+      "t2.pool.a": 1.2491362111344273e-12,
+      "t2.pool.b": 2.5807158601960645e-13,
+      "mixed_second": 2.621377337419517e-09
+    },
+    "margin": {
+      "time_down.a": 2.6321967609016506e-12,
+      "time_down.b": 2.2256708195195207e-12,
+      "t2.pool.a": 2.5995676965206993e-12,
+      "t2.pool.b": 8.525338285802694e-12,
+      "mixed_second": 6.428408916292483e-09
+    }
+  },
+  "arms": {
+    "MARGIN_INTERACTION": {
+      "calibration_forwards": 48,
+      "calibration_L": 2880,
+      "same_AB_pairs": true,
+      "state_unchanged": true,
+      "components": [
+        "interaction"
+      ],
+      "gradient_calibration_evaluations": 48,
+      "mixed_derivative_error": 1.46635524903016e-13,
+      "checkpoint_rejection": true
+    },
+    "CE_INTERACTION": {
+      "calibration_forwards": 48,
+      "calibration_L": 2880,
+      "same_AB_pairs": true,
+      "state_unchanged": true,
+      "components": [
+        "interaction"
+      ],
+      "gradient_calibration_evaluations": 48,
+      "mixed_derivative_error": 7.81484794411258e-14,
+      "checkpoint_rejection": true
+    },
+    "CE_MOMENT_INTERACTION": {
+      "calibration_forwards": 48,
+      "calibration_L": 2880,
+      "same_AB_pairs": true,
+      "state_unchanged": true,
+      "components": [
+        "moment",
+        "interaction"
+      ],
+      "gradient_calibration_evaluations": 72,
+      "mixed_derivative_error": 1.2189552752589483e-12,
+      "checkpoint_rejection": true
+    }
+  }
+}
