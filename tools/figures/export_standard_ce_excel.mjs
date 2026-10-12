@@ -3,10 +3,11 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Workbook, SpreadsheetFile } from '@oai/artifact-tool';
 
-const [inputFile,outputFile,figureDir]=process.argv.slice(2);
+const [inputFile,outputFile,figureDir,efficiencyFile]=process.argv.slice(2);
 if(!inputFile||!outputFile)throw new Error('Usage: node export_standard_ce_excel.mjs INPUT_JSON NEW_OUTPUT_XLSX');
 try {await fs.access(outputFile);throw new Error('Output exists; preserve it and choose a new name.');} catch(e){if(e.code!=='ENOENT')throw e;}
 const data=JSON.parse(await fs.readFile(inputFile,'utf8'));
+const efficiency=efficiencyFile?JSON.parse(await fs.readFile(efficiencyFile,'utf8')):null;
 const raw=data.raw,tables=data.tables;
 const progressMode=Boolean(raw.snapshot_hkt);
 if(!progressMode&&(raw.run_id!=='20261010-phase1-standard-ce-baselines-manysig-m56-r01'||raw.rows.length!==56))throw new Error('Unexpected benchmark');
@@ -19,7 +20,7 @@ const short={residual_fusion:'CVS',native:'Original CVS',resnet50:'R50-1D',cvres
  resnet18_2d:'R18-2D',convnext_tiny:'ConvNeXt',resnet50_2d:'R50-2D',cvresnet18_2d:'CR18-2D',transformer6:'Transformer'};
 const rows=order.flatMap(v=>raw.rows.filter(r=>r.row.variant===v).sort((a,b)=>a.row.model_seed-b.row.model_seed));
 const wb=Workbook.create();
-const sheetNames=['总体汇总',...(figureDir?['论文图表']:[]),'种子结果',...(progressMode?['实验进度']:[]),'接收机分层','发射机分层','配对差','资源测量','混淆矩阵','分层原始数据','实验说明'];
+const sheetNames=['总体汇总',...(efficiency?['效率汇总']:[]),...(figureDir?['论文图表']:[]),'种子结果',...(progressMode?['实验进度']:[]),'接收机分层','发射机分层','配对差','资源测量','混淆矩阵','分层原始数据','实验说明'];
 const sheets=Object.fromEntries(sheetNames.map(n=>[n,wb.worksheets.add(n)]));
 const font='Microsoft YaHei';
 const previews=path.join(path.dirname(outputFile),'excel_preview');await fs.mkdir(previews,{recursive:true});
@@ -93,9 +94,47 @@ table(sheets['配对差'],['对照variant','对照网络','基准variant','基�
  {name:'PairedDifferences',widths:[24,28,24,28,18,22,23],formats:{4:'@',5:'+0.0000;-0.0000;0.0000',6:'+0.0000;-0.0000;0.0000'}});
 sheets['配对差'].getRange(`F2:G${paired.length+1}`).conditionalFormats.add('cellIs',{operator:'lessThan',formula:0,format:{font:{color:'#B64342'}}});
 const resources=tables['resource_profiles.csv'];
-const rv=resources.map(r=>[r.variant,names[r.variant],String(r.model_seed),r.hardware,r.total_parameters,r.trainable_parameters,r.gradient_used_parameters,r.resident_state_bytes,r.training_elapsed_seconds,r.training_peak_cuda_allocated_bytes,r.inference_batch1_ms,r.inference_batch128_ms,r.training_batch128_ms,r.full_clean_inference_seconds,r.full_clean_peak_cuda_allocated_bytes,r.conv_linear_macs_per_sample,r.fft_calls_per_sample]);
-table(sheets['资源测量'],['variant','网络','model_seed','GPU','总参数量','可训练参数量','梯度使用参数量','常驻状态（byte）','E200耗时（s）','训练峰值显存（byte）','B1推理（ms）','B128推理（ms）','B128训练（ms）','clean全量推理（s）','clean峰值显存（byte）','Conv/Linear MACs','FFT调用数'],rv,
- {name:'ResourceProfiles',widths:[23,28,18,36,19,20,22,24,21,27,21,23,23,24,28,25,20],formats:{2:'@',4:'#,##0',5:'#,##0',6:'#,##0',7:'#,##0',8:'0.000',9:'#,##0',10:'0.000',11:'0.000',12:'0.000',13:'0.000',14:'#,##0',15:'#,##0',16:'0'}});
+const efficiencyRows=new Map((efficiency?.rows||[]).map(r=>[`${r.variant}:${r.model_seed}`,r]));
+if(efficiency&&(efficiencyRows.size!==resources.length||resources.some(r=>!efficiencyRows.has(`${r.variant}:${r.model_seed}`))))throw new Error('Resource rows do not match efficiency input');
+const rv=resources.map(r=>[r.variant,names[r.variant],String(r.model_seed),r.hardware,r.total_parameters,r.trainable_parameters,r.gradient_used_parameters,r.resident_state_bytes,r.training_elapsed_seconds,r.training_peak_cuda_allocated_bytes,r.inference_batch1_ms,r.inference_batch128_ms,r.training_batch128_ms,r.full_clean_inference_seconds,r.full_clean_peak_cuda_allocated_bytes,r.conv_linear_macs_per_sample,r.fft_calls_per_sample,
+ ...(efficiency?[efficiencyRows.get(`${r.variant}:${r.model_seed}`).matrix_macs,null,null,null,null,null,null,null]:[])]);
+table(sheets['资源测量'],['variant','网络','model_seed','GPU','总参数量','可训练参数量','梯度使用参数量','常驻状态（byte）','E200耗时（s）','训练峰值显存（byte）','B1推理（ms）','B128推理（ms）','B128训练（ms）','clean全量推理（s）','clean峰值显存（byte）','原Conv/Linear部分MACs','FFT调用数',
+ ...(efficiency?['校正卷积/矩阵MACs','卷积/矩阵FLOPs','B128吞吐（包/s）','B128均摊（µs/包）','常驻状态（MiB）','clean峰值（MiB）','训练峰值（MiB）','FP32权重（MiB）']:[])],rv,
+ {name:'ResourceProfiles',widths:[23,28,18,36,19,20,22,24,21,27,21,23,23,24,28,28,20,28,26,25,25,25,25,25,25],formats:{2:'@',4:'#,##0',5:'#,##0',6:'#,##0',7:'#,##0',8:'0.000',9:'#,##0',10:'0.000',11:'0.000',12:'0.000',13:'0.000',14:'#,##0',15:'#,##0',16:'0',...(efficiency?{17:'#,##0',18:'#,##0',19:'0.000',20:'0.000',21:'0.000',22:'0.000',23:'0.000',24:'0.000'}:{})}});
+if(efficiency){
+ sheets['资源测量'].getRange(`S2:Y${rv.length+1}`).formulas=rv.map((_,i)=>{const r=i+2;return [`=R${r}*2`,`=128000/L${r}`,`=1000*L${r}/128`,`=H${r}/1048576`,`=O${r}/1048576`,`=J${r}/1048576`,`=E${r}*4/1048576`];});
+ const es=sheets['效率汇总'];title(es,'13 种网络的性能与资源效率',`同一 RTX 3090 / FP32；每种网络 8 个种子；全部结果保留。CVS 实际为 164225 参数（0.164 M）。`);
+ table(es,['网络','实际seed数','参数（M）','常驻状态（MiB）','卷积/矩阵MACs（M）','卷积/矩阵FLOPs（M）','FFT调用/包','B1时延均值（ms）','B1时延SD（ms）','B128时延均值（ms）','B128时延SD（ms）','B128吞吐均值（千包/s）','B128吞吐SD（千包/s）','clean峰值显存（MiB）','训练峰值显存（MiB）','E200耗时（min）','clean全量流程（s）','全量吞吐（千包/s）','准确率','Macro-F1','绘图简称'],
+  order.map(v=>[names[v],...Array(19).fill(null),`${short[v]} (n=8)`]),
+  {start:5,name:'EfficiencySummary',widths:[29,16,18,25,29,30,19,26,24,29,27,31,30,31,31,24,26,29,19,19,27],formats:Object.fromEntries(Array.from({length:20},(_,i)=>[i,i===0?'@':i===1||i===6?'0':i===18||i===19?'0.00%':'0.000']))});
+ for(const [i,v] of order.entries()){
+  const r=i+6,ix=resources.flatMap((x,j)=>x.variant===v?[j+2]:[]);
+  const refs=c=>ix.map(j=>`'资源测量'!${c}${j}`).join(',');
+  const avg=c=>`AVERAGE(${refs(c)})`,std=c=>`STDEV(${refs(c)})`;
+  es.getRange(`B${r}:T${r}`).formulas=[[
+   `=COUNTA(${refs('C')})`,`=${avg('E')}/1000000`,`=${avg('V')}`,`=${avg('R')}/1000000`,`=${avg('S')}/1000000`,`=${avg('Q')}`,
+   `=${avg('K')}`,`=${std('K')}`,`=${avg('L')}`,`=${std('L')}`,`=${avg('T')}/1000`,`=${std('T')}/1000`,
+   `=${avg('W')}`,`=${avg('X')}`,`=${avg('I')}/60`,`=${avg('N')}`,`=AVERAGE(${ix.map(j=>`168000/'资源测量'!N${j}`).join(',')})/1000`,
+   `='总体汇总'!D${r}`,`='总体汇总'!F${r}`]];
+ }
+ const efficiencyNotes=[
+  '均值与样本 SD 均使用实际 8 个模型种子；吞吐率先逐种子计算再汇总。B128 均摊时延不是单包请求时延。',
+  '时延来自既有同硬件资源测量：预热 5 次、20 次前向、CUDA 同步；历史共享 GPU 环境，不能当作独占硬件基准。',
+  '卷积/矩阵 FLOPs = 2 × MACs。已补齐 BiLSTM 循环矩阵和 Transformer 融合注意力；原部分计数保留在资源测量 P 列。',
+  '该 FLOPs 不含 FFT、归一化、激活、池化、bias 与物理逐元素计算。CVS 每包 2 次 FFT；该数值不是完整网络 FLOPs。',
+  '峰值为 CUDA allocated memory，不是进程总显存；MiB=1048576 bytes。clean 全量流程含输入传输、CPU 回读与结果序列化。',
+  'CVS 的准确率和参数量优势由实测支持；单包时延及显存并非所有指标最优，保留更快或更省显存的基线。'];
+ for(const [i,note] of efficiencyNotes.entries()){es.getRange(`A${22+i}`).values=[[note]];es.getRange(`A${22+i}`).format.font={name:font,size:10,color:'#596B78'};}
+ const makeChart=(fields,heading,unit,start,end)=>{
+  const ch=es.charts.add('bar',[es.getRange(`U5:U${endSummary}`),...fields.map(c=>es.getRange(`${c}5:${c}${endSummary}`))]);
+  ch.title=heading;ch.barOptions.direction='column';ch.barOptions.grouping='clustered';ch.titleTextStyle.typeface='Arial';ch.titleTextStyle.fontSize=15;
+  ch.legend={position:'top',textStyle:{typeface:'Arial',fontSize:10}};ch.xAxis={axisType:'textAxis',textStyle:{typeface:'Arial',fontSize:10}};
+  ch.yAxis={numberFormatCode:'0.0',numberFormatSourceLinked:false,textStyle:{typeface:'Arial',fontSize:11}};ch.yAxis.title.text=unit;ch.setPosition(start,end);
+  ch.series.items[0].fill='#0072B2';if(fields.length>1)ch.series.items[1].fill='#D55E00';
+ };
+ makeChart(['H','J'],'Inference latency: B1 and B128','ms (lower is better)','A30','K55');
+ makeChart(['L'],'Batch-128 throughput','Thousand packets/s (higher is better)','A58','K83');
+}
 const conf=[];
 for(const r of rows){const cm=r.scores.results.find(s=>s.dimension==='overall').confusion;for(let i=0;i<6;i++)for(let j=0;j<6;j++)conf.push([r.row.variant,names[r.row.variant],String(r.row.model_seed),raw.classes[i],raw.classes[j],cm[i][j],null,cm[i].reduce((a,b)=>a+b,0)]);}
 table(sheets['混淆矩阵'],['variant','网络','model_seed','真实TX','预测TX','样本数','行内比例','真实类总包数'],conf,
@@ -117,7 +156,7 @@ const notes=[
  ['退化结果',`Transformer 的单类预测种子：${seedValues.filter(r=>r[0]==='transformer6'&&r[9]==='单类预测').map(r=>r[2]).join('、')}；准确率 16.6667%、Macro-F1 4.7619%，完整保留。`],
  ['配对差','每条记录为同 model seed 下对照网络减基准网络；只使用双方均已完成评分的种子，单位为百分点。'],
  ['混淆矩阵','每行是真实类与预测类的样本计数；行内比例=样本数/该真实类总包数。TX分层Macro-F1为单真实类子集上的6类宏平均，不是全测试集的该类F1。'],
- ['资源口径','RTX3090/FP32；E200耗时含源V评估。MACs仅含Conv/Linear；显存与状态用byte。'],
+ ['资源口径',efficiency?'RTX3090/FP32；历史共享GPU测量，预热5次、20次同步前向。卷积/矩阵FLOPs=2×MACs，补齐循环/注意力矩阵；不含FFT等非矩阵操作，CVS有2次FFT/包。完整说明见效率汇总。':'RTX3090/FP32；E200耗时含源V评估。MACs仅含Conv/Linear；显存与状态用byte。'],
  ['比较边界','已暴露代理基准、统一固定训练预算；2D采用16×16 IQ reshape。未提供显著性检验或星地鲁棒性结论。'],
  ['当前种子数',progressMode?`${raw.snapshot_hkt}快照；统计只包含已完成评分种子。CVS 指 residual_fusion。尚缺种子不填零、不剔除负结果。`:'原始4个种子的完成结果；CVS指residual_fusion。'],
  ['数据来源','network_summary.csv、per_seed_metrics.csv、receiver_summary.csv、transmitter_summary.csv、paired_differences.csv、resource_profiles.csv 与冻结评分JSON。'],
@@ -133,9 +172,9 @@ if(progressMode){
 let figureCount=0;
 if(figureDir){
  const manifest=JSON.parse(await fs.readFile(path.join(figureDir,'manifest.json'),'utf8'));
- const paper=sheets['论文图表'];paper.showGridLines=false;paper.getRange('A1:N350').format.rowHeight=24;
- paper.getRange('A1:N350').format.columnWidth=13;title(paper,'纯 CE clean 测试论文图表',`${raw.snapshot_hkt}；图内 n 为实际完成种子数。`);
- const titles=['总体准确率与Macro-F1','接收机准确率热图','参数量与准确率','架构配对差','CVS接收机与发射机表现','CVS与ResNet-50混淆矩阵'];
+ const paper=sheets['论文图表'];paper.showGridLines=false;paper.getRange('A1:N450').format.rowHeight=24;
+ paper.getRange('A1:N450').format.columnWidth=13;title(paper,'纯 CE clean 测试论文图表',`${raw.snapshot_hkt}；图内 n 为实际完成种子数。`);
+ const titles=['总体准确率与Macro-F1','接收机准确率热图','参数量与准确率：单图压缩左轴','架构配对差','CVS接收机与发射机表现','CVS与ResNet-50混淆矩阵','推理时延与吞吐率','参数、卷积/矩阵FLOPs与显存成本'];
  let row=6;
  for(const [i,fig] of manifest.figures.entries()){
   paper.getRange(`A${row}`).values=[[`图 ${i+1}：${titles[i]}`]];paper.getRange(`A${row}`).format.font={name:font,size:13,bold:true,color:'#263445'};
@@ -158,14 +197,27 @@ const summaryCells=sheets['总体汇总'].getRange(`C6:I${endSummary}`).values;
 for(let i=0;i<order.length;i++){const expected=source.find(r=>r.variant===order[i]);const actual=summaryCells[i];
  const exp=[expected.actual_seed_count,expected.accuracy_pct/100,expected.accuracy_sd_pp,expected.macro_f1_pct/100,expected.macro_f1_sd_pp,expected.worst_receiver_accuracy_pct/100,expected.worst_receiver_sd_pp];
  for(let j=0;j<7;j++)if(typeof actual[j]!=='number'||Math.abs(actual[j]-exp[j])>1e-9)throw new Error(`Summary mismatch: ${order[i]} column ${j}: ${actual[j]} expected ${exp[j]}`);}
+if(efficiency){
+ const cells=sheets['效率汇总'].getRange(`B6:T${endSummary}`).values;
+ for(const [i,v] of order.entries()){
+  const e=efficiency.summary.find(r=>r.variant===v);
+  const expected=[8,e.parameters_mean/1e6,e.resident_state_mib_mean,e.matrix_macs_mean/1e6,e.matrix_flops_mean/1e6,e.fft_calls_mean,
+   e.inference_b1_ms_mean,e.inference_b1_ms_sd,e.inference_b128_ms_mean,e.inference_b128_ms_sd,e.throughput_b128_samples_s_mean/1000,e.throughput_b128_samples_s_sd/1000,
+   e.clean_inference_peak_mib_mean,e.source_training_peak_mib_mean,e.e200_training_minutes_mean,e.clean_pipeline_seconds_mean,e.clean_pipeline_samples_s_mean/1000,
+   source.find(r=>r.variant===v).accuracy_pct/100,source.find(r=>r.variant===v).macro_f1_pct/100];
+  for(const [j,x] of expected.entries())if(typeof cells[i][j]!=='number'||Math.abs(cells[i][j]-x)>1e-7)throw new Error(`Efficiency mismatch: ${v} column ${j}: ${cells[i][j]} expected ${x}`);
+ }
+}
 const errors=await wb.inspect({kind:'match',searchTerm:'#REF!|#DIV/0!|#VALUE!|#NAME\\?|#N/A|#NUM!|#NULL!|#SPILL!|#CALC!',options:{useRegex:true,maxResults:20},maxChars:1500,summary:'formula error scan'});
 await fs.writeFile(path.join(previews,'formula_scan.jsonl'),errors.ndjson);
 const inspect=await wb.inspect({kind:'table',range:'总体汇总!A5:J8',include:'values,formulas',tableMaxRows:4,tableMaxCols:10,maxChars:2500});await fs.writeFile(path.join(previews,'summary_inspect.jsonl'),inspect.ndjson);
 for(const name of Object.keys(sheets)){
- const range=name==='论文图表'?'A1:N47':name==='总体汇总'?'A2:M20':name==='实验进度'?'A1:H8':name==='实验说明'?'A1:B9':name==='资源测量'?'A1:K7':'A1:'+col(name==='配对差'?6:name==='混淆矩阵'?7:name==='分层原始数据'?9:name==='种子结果'?9:8)+'7';
+ const range=name==='论文图表'?'A1:N47':name==='效率汇总'?'A2:K20':name==='总体汇总'?'A2:M20':name==='实验进度'?'A1:H8':name==='实验说明'?'A1:B9':name==='资源测量'?'A1:K7':'A1:'+col(name==='配对差'?6:name==='混淆矩阵'?7:name==='分层原始数据'?9:name==='种子结果'?9:8)+'7';
  const blob=await wb.render({sheetName:name,range,scale:1.25,format:'png'});await fs.writeFile(path.join(previews,name+'.png'),new Uint8Array(await blob.arrayBuffer()));
 }
 for(const [name,range,file] of [['总体汇总','A23:K48','总体图表'],['接收机分层','L2:T21','接收机图表']]){
  const blob=await wb.render({sheetName:name,range,scale:1.25,format:'png'});await fs.writeFile(path.join(previews,file+'.png'),new Uint8Array(await blob.arrayBuffer()));}
+if(efficiency)for(const [range,file] of [['A30:K55','时延图表'],['A58:K83','吞吐率图表']]){
+ const blob=await wb.render({sheetName:'效率汇总',range,scale:1.25,format:'png'});await fs.writeFile(path.join(previews,file+'.png'),new Uint8Array(await blob.arrayBuffer()));}
 await fs.mkdir(path.dirname(outputFile),{recursive:true});const xlsx=await SpreadsheetFile.exportXlsx(wb);await xlsx.save(outputFile);
-console.log(JSON.stringify({status:'VERIFIED',output:outputFile,sheets:sheetNames.length,nativeCharts:2,paperFigures:figureCount,models:rows.length,metricRecords:detail.length,confusionRows:conf.length,summaryFormulasReconciled:true}));
+console.log(JSON.stringify({status:'VERIFIED',output:outputFile,sheets:sheetNames.length,nativeCharts:efficiency?4:2,paperFigures:figureCount,models:rows.length,metricRecords:detail.length,confusionRows:conf.length,summaryFormulasReconciled:true,efficiencyFormulasReconciled:Boolean(efficiency)}));

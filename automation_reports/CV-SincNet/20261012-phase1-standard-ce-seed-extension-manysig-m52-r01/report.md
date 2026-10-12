@@ -81,8 +81,38 @@ CVS 准确率较最高的常见网络 ResNet-50-1D 高 3.97 个百分点；本�
 - 数据：`E:/type10-7/exports/paper_figures/20261012-standard-ce-clean-eight-seed-r01-source/`，所有当前表均标记实际完成种子数。
 - 验证证据：`local_artifacts/standard_ce_seed_extension_20261012_r01/progress_20261012_final_r01/readback.json` 与 `final_analysis_verification.json`。实验原执行提交仍为 627449a354b0755061a6cc7f4d494752d9340d38；报告工具修复另以本次 Git 提交记录。
 
-## 参数量图可读性修订
+## 参数量图可读性修订（历史版本，已由下一节替代）
 
 fig03 改为全范围概览＋密集区域放大：概览采用对数参数轴、0 至 100% 准确率，放大图采用线性参数轴，显示 2 至 42 M 参数、59 至 80% 准确率区域。编号用引导线连接原始数据点，完整图例移至下方三列。Transformer 完整标准差保留在概览，13 个模型与全部 8 个种子均未剔除。
 
 VERIFIED：数值标签不重叠、文本不出画布；所有源 CSV 与其余 5 张图的 PNG 均保持不变。最新图包为 E:\type10-7\exports\paper_figures\20261012-standard-ce-clean-eight-seed-r02（PDF/SVG/600 dpi PNG）。Excel 原文件被占用，更新版另存为 E:\type10-7\outputs\01a0fd26-2621-7662-a9bd-9ff19509e812\standard_ce_clean_results_updated.xlsx。文件由 artifact tool 生成新图片与绘图尺寸，再保留原工作簿包装；仅图 3 图片及其高度改变，所有其他 XLSX 成员保持一致，包括数据、公式、格式和可编辑图表。图片与下一张图之间有足够间距；11 个工作表、6 张论文图、2 张可编辑图表、n=8 和无公式错误核验通过。
+
+## 单图参数轴、配色与资源指标最终更新（2026-10-12）
+
+用户明确拒绝第二幅放大图，指定在一张图内压缩 CVS 参数区域，主体横轴为 3 至 50 M 线性刻度。最终 fig03 按此实现：CVS 位于最左端，点旁注明实际参数量 164225，即 0.164 M；不是 0.01 M。压缩区在横轴明确标记，全部模型均值与完整 SD 保留。13 个模型采用固定、明显不同的颜色，参数图和资源图同时采用不同点形；跨图颜色一致。此前 r02 双图形式保留为历史产物，不再是当前交付。
+
+新增 fig07 推理时延/吞吐率、fig08 参数/卷积矩阵计算量/状态/推理显存；数据来自已完成的 104 行资源测量，无新训练、目标预测或评分。计算量复核发现旧 profiler 对 BiLSTM 只计分类头、对 Transformer 漏计融合注意力。现从实际注册架构的权重形状和固定 64-token 输入补齐循环矩阵及注意力 projection/QK/AV：BiLSTM 为 941627392 MACs，Transformer 为 1233390592 MACs；原部分计数仍保留在资源测量 P 列，未改写历史原始测量。
+
+卷积/矩阵 FLOPs 按 2 × MACs 计算，不包含 FFT、归一化、激活、池化、bias 与物理/逐元素操作，因此不声称完整网络 FLOPs。CVS 每包有 2 次 FFT，另列展示。时延是既有 RTX3090/FP32、IQ 2×256 的 5 次预热与 20 次 CUDA 同步前向均值；采集时是历史共享 GPU 环境，不作为独占硬件性能基准。吞吐率先按每个种子的 128000/B128毫秒计算，再求 8 个种子的均值与样本 SD。CUDA allocated 峰值不是进程总显存；MiB=1048576 bytes。clean 全量流程耗时还包括输入传输、CPU 回读与预测文件序列化。
+
+| 指标（8 个种子均值） | CVS | ResNet-50-1D |
+|---|---:|---:|
+| clean 准确率（%） | 78.96 | 74.99 |
+| 参数量（M） | 0.164225 | 15.966982 |
+| 卷积/矩阵 FLOPs（M/包） | 19.418 | 399.761 |
+| 单包前向时延（ms） | 4.843 | 5.452 |
+| batch128 前向时延（ms） | 4.587 | 15.190 |
+| batch128 吞吐率（千包/s） | 28.107 | 8.854 |
+| 常驻模型状态（MiB） | 0.627 | 61.112 |
+| clean 推理 allocated 峰值（MiB） | 46.169 | 102.523 |
+
+CVS 在本矩阵中准确率最高且参数量最低，但单包时延和推理显存并非全模型最优；更快基线及所有负结果完整保留。所有判断只限本固定 clean 对比，不引申为独立盲测或真实星地部署优势。
+
+最终交付路径：
+
+- 图包：`E:/type10-7/exports/paper_figures/20261012-standard-ce-clean-metrics-r01/`，8 类图的 PDF/SVG/600 dpi PNG、图注、CSV、完整 PDF 和 ZIP。
+- 效率汇总源：`E:/type10-7/exports/paper_figures/20261012-standard-ce-clean-efficiency-r01-source/`，104 行逐种子数据、13 行均值与 SD、计算口径及 workbook 输入。
+- Excel：`E:/type10-7/outputs/01a0fd26-2621-7662-a9bd-9ff19509e812/standard_ce_clean_results_metrics.xlsx`；12 个工作表、8 张论文图、4 张可编辑图表。新效率表和原资源表的单位换算、FLOPs、吞吐率均用 Excel 公式；原有图表保留，当前表不含原 CVS。
+- 验证：`local_artifacts/standard_ce_seed_extension_20261012_r01/metrics_delivery_verification.json`。
+
+VERIFIED：104 个种子行、1456 个分层指标、3744 个混淆矩阵记录，13 行实际 n=8、缺项=0。全部总体与效率公式和 CSV 核对一致，无公式错误。51042 个已有数据、公式和格式单元格保持一致（论文图页、说明及新增资源字段属于明确修改范围）；8 张嵌入图片与最终 PNG 一致且不重叠。图表数值文本不出画布，fig03 编号不重叠，完整 8 页 PDF 和 ZIP 已核验。
