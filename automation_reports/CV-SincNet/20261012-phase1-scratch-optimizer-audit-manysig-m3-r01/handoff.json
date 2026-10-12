@@ -1,0 +1,9 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "run": "20261012-phase1-scratch-optimizer-audit-manysig-m3-r01",
+  "owner": "codex/root/scratch-optimizer-audit-20261012",
+  "goal": "clean three-seed mean>=84% remains active",
+  "source_only": true,
+  "next": "Inspect existing3 workers; never relaunch. Collect fixed all18 optimizer diagnosis. Healthy bidirectional18 continues automatic per-row clean testing.",
+  "collector": "python -m experiments.cvs_scratch_optimizer_audit.collect --output automation_reports/CV-SincNet/20261012-phase1-scratch-optimizer-audit-manysig-m3-r01/evidence"
+}
