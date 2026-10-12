@@ -77,3 +77,7 @@ SSL_EVAL、RESP_LU的eval模式有梯度前向使用相同clean包。eval-U已�
 实现状态：21行固定配置、七种原生GPU前后向分支与独立P0/P1审查已通过。已修复预检CLI兼容、全批评分入口顺序、CSV空验证值三项流程问题；不改变设计/预算。源初始化、辅助响应及peer的真实数据预检将在正式发布时执行。尚未启动，不代表取得84%。
 
 发布 VERIFIED：21/21行已启动、20份实际配置已核对、0行待资源。真实L/U三种子预检PASS，额外响应产生非零身份梯度、固定D及身份参数/buffer未更新，预检identity_updates=0。8GPU总CUDA进程均≤3。执行commit `acdaf7e47908d8b27fc996d6b1b49787b23f6639`。实际每row续训20/4440→固定自身E40→clean168000→truth-last评分已串联；目前尚无本批最终成绩，不把启动写成84%达成。
+
+VERIFIED / ANALYZED：21/21完整训练与clean独立评分，93240追加身份更新、420完整epoch、3528000固定预测。全量步记录由远端实际analyzer消费，本地完整读回epoch/梯度审计/统计与294+84分层，混淆矩阵逐项独立重算准确率。primary RESP_LU 目标状态 NOT_MET。不根据target选择教师、配置或重跑，全部负结果保留。
+
+完整成绩与源诊断解释见[result_analysis.md](result_analysis.md)。训练余弦/细模块历史缺口明确保留，终点诊断不冒充历史。21行完整成绩，84%未达到。

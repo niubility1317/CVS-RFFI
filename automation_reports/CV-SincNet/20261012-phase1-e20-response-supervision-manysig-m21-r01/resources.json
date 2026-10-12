@@ -1,0 +1,1327 @@
+{
+  "rows": [
+    {
+      "row_id": "CONT_CE-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 3.0330428540473804
+        },
+        "wall_seconds": 5.262503865989856,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1543983104
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 129.82339291495737,
+          "main_seconds": 128.60555933404248,
+          "peak_cuda_memory_bytes": 184960000,
+          "peak_process_rss_bytes": 1533677568,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": false,
+          "shared_response_cache_reused": false,
+          "source_response_cache_file_bytes": 0,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 0,
+          "forward_calls": 4440,
+          "extra_forward_calls": 0,
+          "extra_L_packets": 0,
+          "extra_U_packets": 0,
+          "response_readout_calls": 0,
+          "response_targets_L": 0,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": false,
+        "response_cache_reused": false,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "CONT_SSL-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.6990751270204782
+        },
+        "wall_seconds": 4.915797488996759,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1694883840
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 281.8825046860147,
+          "main_seconds": 280.0965407009935,
+          "peak_cuda_memory_bytes": 332912128,
+          "peak_process_rss_bytes": 1694883840,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": false,
+          "source_response_cache_file_bytes": 0,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 13320,
+          "extra_forward_calls": 0,
+          "extra_L_packets": 0,
+          "extra_U_packets": 0,
+          "response_readout_calls": 0,
+          "response_targets_L": 0,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": false,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "SSL_EVAL-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 3.215030633029528
+        },
+        "wall_seconds": 5.614150526933372,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1690509312
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 394.69498944899533,
+          "main_seconds": 392.91302818001714,
+          "peak_cuda_memory_bytes": 614085632,
+          "peak_process_rss_bytes": 1690509312,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": false,
+          "source_response_cache_file_bytes": 0,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 17760,
+          "extra_forward_calls": 4440,
+          "extra_L_packets": 568320,
+          "extra_U_packets": 568320,
+          "response_readout_calls": 0,
+          "response_targets_L": 0,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": false,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "RESP_L-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.7496971079381183
+        },
+        "wall_seconds": 5.029628671007231,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1935757312
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 391.19808998401277,
+          "main_seconds": 388.59615845093504,
+          "peak_cuda_memory_bytes": 470469632,
+          "peak_process_rss_bytes": 1935757312,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": true,
+          "source_response_cache_file_bytes": 906082898,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 17760,
+          "extra_forward_calls": 4440,
+          "extra_L_packets": 568320,
+          "extra_U_packets": 0,
+          "response_readout_calls": 17760,
+          "response_targets_L": 568320,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": true,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "RESP_U-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 3.2392927550245076
+        },
+        "wall_seconds": 5.483512990991585,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1932091392
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 283.5802449629409,
+          "main_seconds": 281.0040402469458,
+          "peak_cuda_memory_bytes": 468638720,
+          "peak_process_rss_bytes": 1932091392,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": true,
+          "source_response_cache_file_bytes": 906082898,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 13320,
+          "extra_forward_calls": 0,
+          "extra_L_packets": 0,
+          "extra_U_packets": 568320,
+          "response_readout_calls": 17760,
+          "response_targets_L": 0,
+          "response_targets_U": 568320,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": true,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "RESP_LU-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.573811133974232
+        },
+        "wall_seconds": 4.882340092910454,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1936388096
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 435.47170274099335,
+          "main_seconds": 432.88347464299295,
+          "peak_cuda_memory_bytes": 611099136,
+          "peak_process_rss_bytes": 1936388096,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": true,
+          "source_response_cache_file_bytes": 906082898,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 17760,
+          "extra_forward_calls": 4440,
+          "extra_L_packets": 568320,
+          "extra_U_packets": 568320,
+          "response_readout_calls": 35520,
+          "response_targets_L": 568320,
+          "response_targets_U": 568320,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": true,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "ACTION_LU-s2026092701",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.576345441979356
+        },
+        "wall_seconds": 4.766324063995853,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1730621440
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092701/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 350.82098110194784,
+          "main_seconds": 349.14294156001415,
+          "peak_cuda_memory_bytes": 624411648,
+          "peak_process_rss_bytes": 1730621440,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": false,
+          "source_response_cache_file_bytes": 0,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 17760,
+          "extra_forward_calls": 4440,
+          "extra_L_packets": 568320,
+          "extra_U_packets": 568320,
+          "response_readout_calls": 0,
+          "response_targets_L": 0,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": false,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "CONT_CE-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 3.0020288228988647
+        },
+        "wall_seconds": 5.3076441450975835,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1544065024
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 133.7908450269606,
+          "main_seconds": 132.63707024801988,
+          "peak_cuda_memory_bytes": 184960000,
+          "peak_process_rss_bytes": 1530974208,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": false,
+          "shared_response_cache_reused": false,
+          "source_response_cache_file_bytes": 0,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 0,
+          "forward_calls": 4440,
+          "extra_forward_calls": 0,
+          "extra_L_packets": 0,
+          "extra_U_packets": 0,
+          "response_readout_calls": 0,
+          "response_targets_L": 0,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": false,
+        "response_cache_reused": false,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "CONT_SSL-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 3.236563529004343
+        },
+        "wall_seconds": 5.577806642977521,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1693970432
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 278.24165695300326,
+          "main_seconds": 276.559049995034,
+          "peak_cuda_memory_bytes": 332912128,
+          "peak_process_rss_bytes": 1693970432,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": false,
+          "source_response_cache_file_bytes": 0,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 13320,
+          "extra_forward_calls": 0,
+          "extra_L_packets": 0,
+          "extra_U_packets": 0,
+          "response_readout_calls": 0,
+          "response_targets_L": 0,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": false,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "SSL_EVAL-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.7436928880633786
+        },
+        "wall_seconds": 5.016536884009838,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1692200960
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 394.64617696905043,
+          "main_seconds": 392.9171998889651,
+          "peak_cuda_memory_bytes": 614085632,
+          "peak_process_rss_bytes": 1692200960,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": false,
+          "source_response_cache_file_bytes": 0,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 17760,
+          "extra_forward_calls": 4440,
+          "extra_L_packets": 568320,
+          "extra_U_packets": 568320,
+          "response_readout_calls": 0,
+          "response_targets_L": 0,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": false,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "RESP_L-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.600102731026709
+        },
+        "wall_seconds": 4.797318133059889,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1930874880
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 477.76549967203755,
+          "main_seconds": 475.16518401307985,
+          "peak_cuda_memory_bytes": 470469632,
+          "peak_process_rss_bytes": 1930874880,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": true,
+          "source_response_cache_file_bytes": 906082898,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 17760,
+          "extra_forward_calls": 4440,
+          "extra_L_packets": 568320,
+          "extra_U_packets": 0,
+          "response_readout_calls": 17760,
+          "response_targets_L": 568320,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": true,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "RESP_U-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.158112632925622
+        },
+        "wall_seconds": 6.92774753307458,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1934385152
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 500.45565610402264,
+          "main_seconds": 497.63486957200803,
+          "peak_cuda_memory_bytes": 468638720,
+          "peak_process_rss_bytes": 1934385152,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": true,
+          "source_response_cache_file_bytes": 906082898,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 13320,
+          "extra_forward_calls": 0,
+          "extra_L_packets": 0,
+          "extra_U_packets": 568320,
+          "response_readout_calls": 17760,
+          "response_targets_L": 0,
+          "response_targets_U": 568320,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": true,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "RESP_LU-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.5228485870175064
+        },
+        "wall_seconds": 4.7591729030245915,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1936261120
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 412.51510516309645,
+          "main_seconds": 409.95218252798077,
+          "peak_cuda_memory_bytes": 611099136,
+          "peak_process_rss_bytes": 1936261120,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": true,
+          "source_response_cache_file_bytes": 906082898,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 17760,
+          "extra_forward_calls": 4440,
+          "extra_L_packets": 568320,
+          "extra_U_packets": 568320,
+          "response_readout_calls": 35520,
+          "response_targets_L": 568320,
+          "response_targets_U": 568320,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": true,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "ACTION_LU-s2026092702",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.5258876809384674
+        },
+        "wall_seconds": 4.6882027860265225,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1730412544
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092702/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 368.76170817099046,
+          "main_seconds": 366.9988576340256,
+          "peak_cuda_memory_bytes": 624411648,
+          "peak_process_rss_bytes": 1730412544,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": false,
+          "source_response_cache_file_bytes": 0,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 17760,
+          "extra_forward_calls": 4440,
+          "extra_L_packets": 568320,
+          "extra_U_packets": 568320,
+          "response_readout_calls": 0,
+          "response_targets_L": 0,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": false,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "CONT_CE-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.682095176074654
+        },
+        "wall_seconds": 4.8354182980256155,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1543692288
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 132.49810109799728,
+          "main_seconds": 131.199077844969,
+          "peak_cuda_memory_bytes": 184960000,
+          "peak_process_rss_bytes": 1528877056,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": false,
+          "shared_response_cache_reused": false,
+          "source_response_cache_file_bytes": 0,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 0,
+          "forward_calls": 4440,
+          "extra_forward_calls": 0,
+          "extra_L_packets": 0,
+          "extra_U_packets": 0,
+          "response_readout_calls": 0,
+          "response_targets_L": 0,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": false,
+        "response_cache_reused": false,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "CONT_SSL-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.778321113088168
+        },
+        "wall_seconds": 5.017931162961759,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1692098560
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 297.6611630789703,
+          "main_seconds": 295.6992793199606,
+          "peak_cuda_memory_bytes": 332912128,
+          "peak_process_rss_bytes": 1692098560,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": false,
+          "source_response_cache_file_bytes": 0,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 13320,
+          "extra_forward_calls": 0,
+          "extra_L_packets": 0,
+          "extra_U_packets": 0,
+          "response_readout_calls": 0,
+          "response_targets_L": 0,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": false,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "SSL_EVAL-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.4902232280001044
+        },
+        "wall_seconds": 4.656044699950144,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1688621056
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 392.52690848207567,
+          "main_seconds": 390.67540063499473,
+          "peak_cuda_memory_bytes": 614085632,
+          "peak_process_rss_bytes": 1687834624,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": false,
+          "source_response_cache_file_bytes": 0,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 17760,
+          "extra_forward_calls": 4440,
+          "extra_L_packets": 568320,
+          "extra_U_packets": 568320,
+          "response_readout_calls": 0,
+          "response_targets_L": 0,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": false,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "RESP_L-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.6107371610123664
+        },
+        "wall_seconds": 4.84121832693927,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1933479936
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 472.84857065603137,
+          "main_seconds": 469.99288428900763,
+          "peak_cuda_memory_bytes": 470469632,
+          "peak_process_rss_bytes": 1933479936,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": true,
+          "source_response_cache_file_bytes": 906082898,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 17760,
+          "extra_forward_calls": 4440,
+          "extra_L_packets": 568320,
+          "extra_U_packets": 0,
+          "response_readout_calls": 17760,
+          "response_targets_L": 568320,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": true,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "RESP_U-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.6206445790594444
+        },
+        "wall_seconds": 4.819787357933819,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1929969664
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 408.0601956350729,
+          "main_seconds": 404.51206490502227,
+          "peak_cuda_memory_bytes": 468638720,
+          "peak_process_rss_bytes": 1929969664,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": true,
+          "source_response_cache_file_bytes": 906082898,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 13320,
+          "extra_forward_calls": 0,
+          "extra_L_packets": 0,
+          "extra_U_packets": 568320,
+          "response_readout_calls": 17760,
+          "response_targets_L": 0,
+          "response_targets_U": 568320,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": true,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "RESP_LU-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 3.7953820119146258
+        },
+        "wall_seconds": 6.059298335108906,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1933324288
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 625.8619578770595,
+          "main_seconds": 622.7814594740048,
+          "peak_cuda_memory_bytes": 611099136,
+          "peak_process_rss_bytes": 1933324288,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": true,
+          "source_response_cache_file_bytes": 906082898,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 17760,
+          "extra_forward_calls": 4440,
+          "extra_L_packets": 568320,
+          "extra_U_packets": 568320,
+          "response_readout_calls": 35520,
+          "response_targets_L": 568320,
+          "response_targets_U": 568320,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": true,
+        "training_flops": null
+      }
+    },
+    {
+      "row_id": "ACTION_LU-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 2.542581798043102
+        },
+        "wall_seconds": 4.762756843003444,
+        "peak_cuda_allocated_bytes": 168901632,
+        "peak_cuda_reserved_bytes": 249561088,
+        "peak_process_rss_bytes": 1727660032
+      },
+      "source": {
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092703/source/final_ssdg.pth",
+        "parent_epochs": 20,
+        "incremental_epochs": 20,
+        "total_epochs": 40,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "total_seconds": 442.3733337590238,
+          "main_seconds": 440.40924283501226,
+          "peak_cuda_memory_bytes": 624411648,
+          "peak_process_rss_bytes": 1727660032,
+          "RSS_scope": "Linux lifetime maximum",
+          "optimizer_state_bytes": 1416468,
+          "teacher_forward_calls": 0,
+          "response_trainable_parameters": 0,
+          "response_parameters_buffers_unchanged": true,
+          "identity_trainable_parameters": 177025,
+          "shared_peer_cache_reused": true,
+          "shared_response_cache_reused": false,
+          "source_response_cache_file_bytes": 0,
+          "pretraining_cost": "parentCE20;other2CE peers40 if enabled;finite source diagnostic costs separate"
+        },
+        "counts": {
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 568320,
+          "forward_calls": 17760,
+          "extra_forward_calls": 4440,
+          "extra_L_packets": 568320,
+          "extra_U_packets": 568320,
+          "response_readout_calls": 0,
+          "response_targets_L": 0,
+          "response_targets_U": 0,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_optimizer_steps": 0
+        },
+        "shared_parent_models": "all3 source CE20 reused;do not double count",
+        "peer_cache_reused": true,
+        "response_cache_reused": false,
+        "training_flops": null
+      }
+    }
+  ]
+}

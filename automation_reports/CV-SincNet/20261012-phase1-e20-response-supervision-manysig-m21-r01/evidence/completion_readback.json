@@ -1,0 +1,234 @@
+{
+  "status": "VERIFIED",
+  "dispatcher_process": null,
+  "workers": [
+    {
+      "row_id": "CONT_CE-s2026092701",
+      "pid": 659224,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "CONT_CE-s2026092701"
+      }
+    },
+    {
+      "row_id": "CONT_SSL-s2026092701",
+      "pid": 659305,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "CONT_SSL-s2026092701"
+      }
+    },
+    {
+      "row_id": "SSL_EVAL-s2026092701",
+      "pid": 659386,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "SSL_EVAL-s2026092701"
+      }
+    },
+    {
+      "row_id": "RESP_L-s2026092701",
+      "pid": 659467,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "RESP_L-s2026092701"
+      }
+    },
+    {
+      "row_id": "RESP_U-s2026092701",
+      "pid": 659557,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "RESP_U-s2026092701"
+      }
+    },
+    {
+      "row_id": "RESP_LU-s2026092701",
+      "pid": 659638,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "RESP_LU-s2026092701"
+      }
+    },
+    {
+      "row_id": "ACTION_LU-s2026092701",
+      "pid": 659716,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "ACTION_LU-s2026092701"
+      }
+    },
+    {
+      "row_id": "CONT_CE-s2026092702",
+      "pid": 659794,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "CONT_CE-s2026092702"
+      }
+    },
+    {
+      "row_id": "CONT_SSL-s2026092702",
+      "pid": 659872,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "CONT_SSL-s2026092702"
+      }
+    },
+    {
+      "row_id": "SSL_EVAL-s2026092702",
+      "pid": 659950,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "SSL_EVAL-s2026092702"
+      }
+    },
+    {
+      "row_id": "RESP_L-s2026092702",
+      "pid": 660095,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "RESP_L-s2026092702"
+      }
+    },
+    {
+      "row_id": "RESP_U-s2026092702",
+      "pid": 660173,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "RESP_U-s2026092702"
+      }
+    },
+    {
+      "row_id": "RESP_LU-s2026092702",
+      "pid": 660251,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "RESP_LU-s2026092702"
+      }
+    },
+    {
+      "row_id": "ACTION_LU-s2026092702",
+      "pid": 660329,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "ACTION_LU-s2026092702"
+      }
+    },
+    {
+      "row_id": "CONT_CE-s2026092703",
+      "pid": 660814,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "CONT_CE-s2026092703"
+      }
+    },
+    {
+      "row_id": "CONT_SSL-s2026092703",
+      "pid": 660892,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "CONT_SSL-s2026092703"
+      }
+    },
+    {
+      "row_id": "SSL_EVAL-s2026092703",
+      "pid": 660970,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "SSL_EVAL-s2026092703"
+      }
+    },
+    {
+      "row_id": "RESP_L-s2026092703",
+      "pid": 661123,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "RESP_L-s2026092703"
+      }
+    },
+    {
+      "row_id": "RESP_U-s2026092703",
+      "pid": 661274,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "RESP_U-s2026092703"
+      }
+    },
+    {
+      "row_id": "RESP_LU-s2026092703",
+      "pid": 661352,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "RESP_LU-s2026092703"
+      }
+    },
+    {
+      "row_id": "ACTION_LU-s2026092703",
+      "pid": 661526,
+      "process": null,
+      "completion": {
+        "status": "TRAINED_AND_SCORED",
+        "row_id": "ACTION_LU-s2026092703"
+      }
+    }
+  ],
+  "completion": {
+    "status": "EXPERIMENT_COMPLETE",
+    "trained_models": 21,
+    "tested_models": 21,
+    "rows": [
+      "CONT_CE-s2026092701",
+      "CONT_CE-s2026092702",
+      "CONT_CE-s2026092703",
+      "CONT_SSL-s2026092701",
+      "RESP_U-s2026092701",
+      "CONT_SSL-s2026092702",
+      "CONT_SSL-s2026092703",
+      "ACTION_LU-s2026092701",
+      "RESP_L-s2026092701",
+      "SSL_EVAL-s2026092701",
+      "ACTION_LU-s2026092702",
+      "SSL_EVAL-s2026092702",
+      "SSL_EVAL-s2026092703",
+      "RESP_LU-s2026092701",
+      "RESP_LU-s2026092702",
+      "RESP_U-s2026092703",
+      "RESP_L-s2026092702",
+      "RESP_L-s2026092703",
+      "ACTION_LU-s2026092703",
+      "RESP_U-s2026092702",
+      "RESP_LU-s2026092703"
+    ]
+  },
+  "scoring": {
+    "status": "SCORED_COMPLETE",
+    "models": 21,
+    "views": 1,
+    "query_count_per_view": 168000,
+    "prediction_count": 3528000,
+    "metric_records": 294,
+    "day_metric_records": 84,
+    "truth_last": true,
+    "independent_recount": "VERIFIED"
+  }
+}

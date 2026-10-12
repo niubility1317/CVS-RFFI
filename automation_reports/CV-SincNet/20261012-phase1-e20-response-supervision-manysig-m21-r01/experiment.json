@@ -122,7 +122,7 @@
   "group_id": "cvs-e20-finite-response-identity",
   "display_name": "E20续训：有限响应监督进入身份主路径／CE SSL与真实IQ对照",
   "description": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "E20_continuation",
@@ -172,7 +172,8 @@
     "P0": 0,
     "P1": 0,
     "evidence": "experiments/cvs_e20_response/REVIEW.md",
-    "remote_source_preflight": "PASS"
+    "remote_source_preflight": "PASS",
+    "endpoint_analysis": "separate read-only source21; no new training/selection or target access"
   },
   "notes": [
     "No target feedback; design follows complete finite-source3 evidence only, all reference CE sources fixed without score ranking.",
@@ -189,7 +190,7 @@
       "arm": "CONT_CE",
       "model_seed": 2026092701,
       "row_id": "CONT_CE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -691,7 +692,7 @@
       "arm": "CONT_SSL",
       "model_seed": 2026092701,
       "row_id": "CONT_SSL-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -1198,7 +1199,7 @@
       "arm": "SSL_EVAL",
       "model_seed": 2026092701,
       "row_id": "SSL_EVAL-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -1705,7 +1706,7 @@
       "arm": "RESP_L",
       "model_seed": 2026092701,
       "row_id": "RESP_L-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -2238,7 +2239,7 @@
       "arm": "RESP_U",
       "model_seed": 2026092701,
       "row_id": "RESP_U-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -2771,7 +2772,7 @@
       "arm": "RESP_LU",
       "model_seed": 2026092701,
       "row_id": "RESP_LU-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -3305,7 +3306,7 @@
       "arm": "ACTION_LU",
       "model_seed": 2026092701,
       "row_id": "ACTION_LU-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -3812,7 +3813,7 @@
       "arm": "CONT_CE",
       "model_seed": 2026092702,
       "row_id": "CONT_CE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -4314,7 +4315,7 @@
       "arm": "CONT_SSL",
       "model_seed": 2026092702,
       "row_id": "CONT_SSL-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -4821,7 +4822,7 @@
       "arm": "SSL_EVAL",
       "model_seed": 2026092702,
       "row_id": "SSL_EVAL-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -5328,7 +5329,7 @@
       "arm": "RESP_L",
       "model_seed": 2026092702,
       "row_id": "RESP_L-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -5861,7 +5862,7 @@
       "arm": "RESP_U",
       "model_seed": 2026092702,
       "row_id": "RESP_U-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -6394,7 +6395,7 @@
       "arm": "RESP_LU",
       "model_seed": 2026092702,
       "row_id": "RESP_LU-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -6928,7 +6929,7 @@
       "arm": "ACTION_LU",
       "model_seed": 2026092702,
       "row_id": "ACTION_LU-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -7435,7 +7436,7 @@
       "arm": "CONT_CE",
       "model_seed": 2026092703,
       "row_id": "CONT_CE-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -7937,7 +7938,7 @@
       "arm": "CONT_SSL",
       "model_seed": 2026092703,
       "row_id": "CONT_SSL-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -8444,7 +8445,7 @@
       "arm": "SSL_EVAL",
       "model_seed": 2026092703,
       "row_id": "SSL_EVAL-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -8951,7 +8952,7 @@
       "arm": "RESP_L",
       "model_seed": 2026092703,
       "row_id": "RESP_L-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -9484,7 +9485,7 @@
       "arm": "RESP_U",
       "model_seed": 2026092703,
       "row_id": "RESP_U-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -10017,7 +10018,7 @@
       "arm": "RESP_LU",
       "model_seed": 2026092703,
       "row_id": "RESP_LU-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -10551,7 +10552,7 @@
       "arm": "ACTION_LU",
       "model_seed": 2026092703,
       "row_id": "ACTION_LU-s2026092703",
-      "status": "STARTING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -11051,83 +11052,25 @@
           "ACTION_LU-s2026092703"
         ],
         "gpu": "4"
-      }
+      },
+      "resolved_config_verified": true
     }
   ],
   "registered_at": "2026-10-12T05:48:37+00:00",
   "execution_commit": "acdaf7e47908d8b27fc996d6b1b49787b23f6639",
   "delivery_verdict": "VERIFIED",
   "progress": {
-    "launched": 21,
-    "resolved_verified": 20,
-    "queued": 0,
-    "completed": 0,
-    "failures": [],
-    "GPU_capacity": {
-      "0": {
-        "pids": [
-          640901,
-          660173,
-          661352
-        ],
-        "free_mb": 19497
-      },
-      "1": {
-        "pids": [
-          642706,
-          660095,
-          661123
-        ],
-        "free_mb": 21259
-      },
-      "2": {
-        "pids": [
-          659224,
-          659716,
-          660814
-        ],
-        "free_mb": 21991
-      },
-      "3": {
-        "pids": [
-          659305,
-          659794,
-          660251
-        ],
-        "free_mb": 21899
-      },
-      "4": {
-        "pids": [
-          641075,
-          661274,
-          661526
-        ],
-        "free_mb": 20269
-      },
-      "5": {
-        "pids": [
-          659386,
-          659950,
-          660970
-        ],
-        "free_mb": 21237
-      },
-      "6": {
-        "pids": [
-          659467,
-          659872,
-          660329
-        ],
-        "free_mb": 21637
-      },
-      "7": {
-        "pids": [
-          659557,
-          659638,
-          660892
-        ],
-        "free_mb": 21671
-      }
-    }
+    "completed_rows": 21,
+    "source_updates": 93240,
+    "source_epochs": 420,
+    "predictions": 3528000,
+    "metric_records": 294,
+    "day_metric_records": 84,
+    "goal_status": "NOT_MET",
+    "complete_arms_reaching_goal": [],
+    "target_feedback": false,
+    "endpoint_source_rows": 21,
+    "endpoint_identity_updates": 0,
+    "diagnostic_partial": "No training cosine or fine-module movement history; fixed endpoint only"
   }
 }
