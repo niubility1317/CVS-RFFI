@@ -1,1 +1,2 @@
 {"at": "2026-10-12T07:59:09+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-12T08:02:41+00:00", "status": "FAILED", "note": "Remote compile dependency import failed before subprocess launch: psutil unavailable. No benchmark process/run root created; release/archive preserved.", "evidence": ["local_artifacts/standard_ce_deployment_20261012_r01/package.json"], "row_id": null}

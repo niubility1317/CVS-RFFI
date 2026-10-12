@@ -18,7 +18,7 @@ from experiments.standard_ce_baselines.common import PROJECT,RUN,EXTENSION_RUN,r
 
 VARIANTS=('residual_fusion','resnet50','densenet121','cvresnet18_1d','resnet18','resnet34',
           'vgg16_bn','bilstm3','convnext_tiny','resnet50_2d','resnet18_2d','cvresnet18_2d','transformer6')
-BENCH_RUN='20261012-phase1-standard-ce-deployment-m104-r01'
+BENCH_RUN='20261012-phase1-standard-ce-deployment-m104-r02'
 
 def source_folder(variant,seed):
     if variant not in VARIANTS or seed not in range(2026092701,2026092709):raise ValueError('Invalid fixed row')
@@ -36,7 +36,6 @@ def summary(values):
 
 def worker(variant,seed,out,smoke=False):
     import numpy as np
-    import psutil
     import torch
     from experiments.standard_ce_baselines.model import build
     from experiments.standard_ce_baselines.predict import check
@@ -93,13 +92,15 @@ def worker(variant,seed,out,smoke=False):
                 if len(labels)!=batch:raise ValueError('Incomplete labels')
             # Memory is measured separately so sampling does not perturb latency.
             gc.collect();torch.cuda.empty_cache();torch.cuda.synchronize();torch.cuda.reset_peak_memory_stats()
-            process=psutil.Process();baseline_rss=process.memory_info().rss;rss=[baseline_rss];stop=threading.Event()
+            def process_rss():
+                return int(Path('/proc/self/statm').read_text().split()[1])*os.sysconf('SC_PAGE_SIZE')
+            baseline_rss=process_rss();rss=[baseline_rss];stop=threading.Event()
             def sample_rss():
-                while not stop.is_set():rss.append(process.memory_info().rss);stop.wait(.001)
+                while not stop.is_set():rss.append(process_rss());stop.wait(.001)
             thread=threading.Thread(target=sample_rss,daemon=True);thread.start()
             try:
                 for index in range(50):inference(index)
-                torch.cuda.synchronize();rss.append(process.memory_info().rss)
+                torch.cuda.synchronize();rss.append(process_rss())
             finally:stop.set();thread.join()
         item=dict(header,batch_size=batch,warmups=30,**summary(elapsed),
             latency_trials_ms=elapsed,

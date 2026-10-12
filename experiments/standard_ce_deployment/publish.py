@@ -10,7 +10,7 @@ from experiments.standard_ce_baselines.common import PROJECT,ROOT,write
 from experiments.standard_ce_baselines.publish import CONNECTION,ssh
 from experiments.standard_ce_deployment.benchmark import BENCH_RUN
 
-RELEASE='standard_ce_deployment_20261012_r01'
+RELEASE='standard_ce_deployment_20261012_r02'
 
 REMOTE=r'''
 import hashlib,json,os,subprocess,tarfile
@@ -29,7 +29,7 @@ with tarfile.open(archive) as tar:
     tar.extractall(release)
 python='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'
 env=dict(os.environ,PYTHONPATH=str(release)+os.pathsep+str(release/'code'),CUDA_VISIBLE_DEVICES='0',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
-check=subprocess.run([python,'-c','import py_compile,psutil,numpy,torch;py_compile.compile("experiments/standard_ce_deployment/benchmark.py",doraise=True);print(torch.__version__)'],cwd=release,env=env,capture_output=True,text=True)
+check=subprocess.run([python,'-c','import py_compile,numpy,torch;from pathlib import Path;assert Path("/proc/self/statm").is_file();py_compile.compile("experiments/standard_ce_deployment/benchmark.py",doraise=True);print(torch.__version__)'],cwd=release,env=env,capture_output=True,text=True)
 if check.returncode:raise RuntimeError(check.stderr)
 command=[python,'-m','experiments.standard_ce_deployment.benchmark','--output',str(run)]
 with (release/'stdout.log').open('x') as log:
