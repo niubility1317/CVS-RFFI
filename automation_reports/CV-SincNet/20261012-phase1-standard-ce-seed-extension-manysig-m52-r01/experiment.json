@@ -20,7 +20,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-12用户明确全部网络各新增四seed、保持E200和原划分；随后明确仅取消原CVS，其余13种继续。",
   "code": {
-    "commit": "release_commit.txt",
+    "commit": "627449a354b0755061a6cc7f4d494752d9340d38",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/standard_ce_seed_extension_20261012_r01"
@@ -2443,6 +2443,6 @@
     "User explicitly specified automatic clean testing in this turn; no practical or LEO views scheduled.",
     "No smaller-parameter filter. Parameter count is measured, not a selection criterion. This benchmark was previously exposed and is not a new blind confirmation set."
   ],
-  "status": "PREREGISTERED",
+  "status": "RUNNING",
   "comparison_extension_of": "20261010-phase1-standard-ce-baselines-manysig-m56-r01"
 }

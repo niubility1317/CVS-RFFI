@@ -3,7 +3,7 @@
 - run_id：`20261012-phase1-standard-ce-seed-extension-manysig-m52-r01`
 - group_id：`phase1-standard-fullwidth-ce-baselines`；类别：`comparison`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -39,3 +39,11 @@ Matched historical E200 seed extension; 12 common architectures and residual-fus
 本候选唯一独立 P0/P1 审查发现合并前过早 ANALYZED 的问题，已修复为 MERGING_EIGHT_SEEDS → 成功 ANALYZED／失败 FAILED_COMBINE；针对性复核 PASS。7 项相关协议与回归测试通过。launcher 首步执行真实 checkpoint 的 synthetic no-query smoke，PASS 后直接启动。N607 普通账户只读 preflight 于本次任务通过；发布使用一份 release archive、一次本地/远端 SHA 对比及远端 compile。
 
 代码/config 身份为本次 Git 提交（remote release_commit.txt），后续启动证据记录实际 OID。预期新增 52 行各有 source、prediction、scores 产物。仅在新矩阵完整评分且旧产物匹配时生成 combined_eight_seed.json/csv、combined_per_seed.csv、combined_paired.csv；包含完整 8 种子均值、样本标准差、最差 RX 和 CVS 配对差，保留负结果与退化种子。未完成时不得报告 8 种子结果。
+
+## 实际启动核验
+
+VERIFIED。实际执行提交为 `627449a354b0755061a6cc7f4d494752d9340d38`，本地与远端分支 OID 一致；release archive 单次传输 SHA 对比、remote compile 和真实 checkpoint no-query smoke 均通过。
+
+独立两次读回确认调度进程 CWD/argv 属于本次 release，52 行固定矩阵不含 native。启动快照为 7 行 TRAINING、45 行 QUEUED；已观察 epoch 与 7 行日志增长，CUDA_VISIBLE_DEVICES 与实际派发 GPU 一致。健康既有任务保留。完整证据保存在 `local_artifacts/standard_ce_seed_extension_20261012_r01/`，大体积及私有 runtime 证据不提交 Git。
+
+当前尚无新增 clean 测试结果，不宣称训练、评分或 8 种子分析完成。队列会继续逐行 E200 → freeze → clean prediction → 独立 scoring。全部新行评分后自动合并原 4 种子，合并失败会明确记录 FAILED_COMBINE；恢复先检查原进程及产物，不重复发布。
