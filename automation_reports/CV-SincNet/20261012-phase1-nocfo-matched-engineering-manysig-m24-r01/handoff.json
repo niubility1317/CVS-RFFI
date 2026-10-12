@@ -1,0 +1,239 @@
+{
+  "status": "RUNNING",
+  "run_id": "20261012-phase1-nocfo-matched-engineering-manysig-m24-r01",
+  "execution_commit": "68d9221c07cbb77543cf2a4fe9b28e604863edbc",
+  "dispatcher": {
+    "status": "SUBMITTED",
+    "pid": 579528,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_nocfo_engineering.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01/dispatcher.stdout.log",
+    "commit": "68d9221c07cbb77543cf2a4fe9b28e604863edbc",
+    "run_id": "20261012-phase1-nocfo-matched-engineering-manysig-m24-r01"
+  },
+  "launched": [
+    {
+      "row_id": "SSL-s2026092701",
+      "pid": 580105,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL-s2026092701.log"
+    },
+    {
+      "row_id": "L_REPLAY-s2026092701",
+      "pid": 580185,
+      "gpu": 1,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/L_REPLAY-s2026092701.log"
+    },
+    {
+      "row_id": "SSL_LR3-s2026092701",
+      "pid": 580266,
+      "gpu": 2,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_LR3-s2026092701.log"
+    },
+    {
+      "row_id": "SSL_WARM_LR3-s2026092701",
+      "pid": 580347,
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_WARM_LR3-s2026092701.log"
+    },
+    {
+      "row_id": "SSL_SAM-s2026092701",
+      "pid": 580575,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_SAM-s2026092701.log"
+    },
+    {
+      "row_id": "SSL_SMOOTH-s2026092701",
+      "pid": 580738,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_SMOOTH-s2026092701.log"
+    },
+    {
+      "row_id": "SSL_HIDDEN_MIX-s2026092701",
+      "pid": 580851,
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_HIDDEN_MIX-s2026092701.log"
+    },
+    {
+      "row_id": "SSL_WARM_LR3_SAM-s2026092701",
+      "pid": 580934,
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_WARM_LR3_SAM-s2026092701.log"
+    },
+    {
+      "row_id": "SSL-s2026092702",
+      "pid": 581015,
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL-s2026092702.log"
+    },
+    {
+      "row_id": "L_REPLAY-s2026092702",
+      "pid": 581094,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/L_REPLAY-s2026092702.log"
+    },
+    {
+      "row_id": "SSL_LR3-s2026092702",
+      "pid": 581173,
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_LR3-s2026092702.log"
+    },
+    {
+      "row_id": "SSL_WARM_LR3-s2026092702",
+      "pid": 581251,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_WARM_LR3-s2026092702.log"
+    },
+    {
+      "row_id": "SSL_SAM-s2026092702",
+      "pid": 581329,
+      "gpu": 2,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_SAM-s2026092702.log"
+    },
+    {
+      "row_id": "SSL_SMOOTH-s2026092702",
+      "pid": 581407,
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_SMOOTH-s2026092702.log"
+    },
+    {
+      "row_id": "SSL_HIDDEN_MIX-s2026092702",
+      "pid": 581486,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_HIDDEN_MIX-s2026092702.log"
+    },
+    {
+      "row_id": "SSL_WARM_LR3_SAM-s2026092702",
+      "pid": 581565,
+      "gpu": 1,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_WARM_LR3_SAM-s2026092702.log"
+    },
+    {
+      "row_id": "SSL-s2026092703",
+      "pid": 582051,
+      "gpu": 1,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL-s2026092703.log"
+    },
+    {
+      "row_id": "L_REPLAY-s2026092703",
+      "pid": 582129,
+      "gpu": 5,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/L_REPLAY-s2026092703.log"
+    },
+    {
+      "row_id": "SSL_LR3-s2026092703",
+      "pid": 582255,
+      "gpu": 7,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_LR3-s2026092703.log"
+    },
+    {
+      "row_id": "SSL_WARM_LR3-s2026092703",
+      "pid": 582360,
+      "gpu": 2,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_WARM_LR3-s2026092703.log"
+    },
+    {
+      "row_id": "SSL_SAM-s2026092703",
+      "pid": 582438,
+      "gpu": 0,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_SAM-s2026092703.log"
+    },
+    {
+      "row_id": "SSL_SMOOTH-s2026092703",
+      "pid": 582516,
+      "gpu": 3,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_SMOOTH-s2026092703.log"
+    },
+    {
+      "row_id": "SSL_HIDDEN_MIX-s2026092703",
+      "pid": 582594,
+      "gpu": 6,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_HIDDEN_MIX-s2026092703.log"
+    },
+    {
+      "row_id": "SSL_WARM_LR3_SAM-s2026092703",
+      "pid": 582673,
+      "gpu": 4,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-matched-engineering-manysig-m24-r01/logs/SSL_WARM_LR3_SAM-s2026092703.log"
+    }
+  ],
+  "progress": {
+    "launched": 24,
+    "resolved_verified": 24,
+    "queued": 0,
+    "failures": [],
+    "GPU_capacity": {
+      "0": {
+        "pids": [
+          580105,
+          581251,
+          582438
+        ],
+        "free_mb": 22019
+      },
+      "1": {
+        "pids": [
+          580185,
+          581565,
+          582051
+        ],
+        "free_mb": 21891
+      },
+      "2": {
+        "pids": [
+          580266,
+          581329,
+          582360
+        ],
+        "free_mb": 22019
+      },
+      "3": {
+        "pids": [
+          580347,
+          581407,
+          582516
+        ],
+        "free_mb": 21975
+      },
+      "4": {
+        "pids": [
+          580575,
+          581094,
+          582673
+        ],
+        "free_mb": 21889
+      },
+      "5": {
+        "pids": [
+          580738,
+          581486,
+          582129
+        ],
+        "free_mb": 21719
+      },
+      "6": {
+        "pids": [
+          580851,
+          581173,
+          582594
+        ],
+        "free_mb": 21719
+      },
+      "7": {
+        "pids": [
+          580934,
+          581015,
+          582255
+        ],
+        "free_mb": 21999
+      }
+    }
+  },
+  "next": "Do not relaunch. Complete all24 automatic clean+fullsource/report; engineering configs immutable, scores never choose teachers or tune. Next report relation/action/Ustructure stages are independent; no target-specific weights.",
+  "source_teacher_run": "20261012-phase1-nocfo-ce-foundation-manysig-m3-r01"
+}

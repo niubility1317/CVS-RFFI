@@ -123,7 +123,7 @@
   "group_id": "cvs-nocfo-matched-engineering",
   "display_name": "无显式 CFO 同路径 SSL、clean replay 和六工程方案",
   "description": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "aliases": [],
   "tags": [
     "scratch20",
@@ -245,7 +245,7 @@
       "arm": "SSL",
       "model_seed": 2026092701,
       "row_id": "SSL-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -689,13 +689,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 580105,
+      "gpu": 0,
+      "launch_evidence": {
+        "pid": 580105,
+        "start_ticks": 102464630,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL-s2026092701"
+        ],
+        "gpu": "0"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "L_REPLAY",
       "model_seed": 2026092701,
       "row_id": "L_REPLAY-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -1139,13 +1157,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 580185,
+      "gpu": 1,
+      "launch_evidence": {
+        "pid": 580185,
+        "start_ticks": 102464964,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "L_REPLAY-s2026092701"
+        ],
+        "gpu": "1"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_LR3",
       "model_seed": 2026092701,
       "row_id": "SSL_LR3-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -1589,13 +1625,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 580266,
+      "gpu": 2,
+      "launch_evidence": {
+        "pid": 580266,
+        "start_ticks": 102465296,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_LR3-s2026092701"
+        ],
+        "gpu": "2"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_WARM_LR3",
       "model_seed": 2026092701,
       "row_id": "SSL_WARM_LR3-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -2039,13 +2093,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 580347,
+      "gpu": 3,
+      "launch_evidence": {
+        "pid": 580347,
+        "start_ticks": 102465630,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_WARM_LR3-s2026092701"
+        ],
+        "gpu": "3"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_SAM",
       "model_seed": 2026092701,
       "row_id": "SSL_SAM-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -2489,13 +2561,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 580575,
+      "gpu": 4,
+      "launch_evidence": {
+        "pid": 580575,
+        "start_ticks": 102465963,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_SAM-s2026092701"
+        ],
+        "gpu": "4"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_SMOOTH",
       "model_seed": 2026092701,
       "row_id": "SSL_SMOOTH-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -2939,13 +3029,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 580738,
+      "gpu": 5,
+      "launch_evidence": {
+        "pid": 580738,
+        "start_ticks": 102466297,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_SMOOTH-s2026092701"
+        ],
+        "gpu": "5"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_HIDDEN_MIX",
       "model_seed": 2026092701,
       "row_id": "SSL_HIDDEN_MIX-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -3389,13 +3497,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 580851,
+      "gpu": 6,
+      "launch_evidence": {
+        "pid": 580851,
+        "start_ticks": 102466631,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_HIDDEN_MIX-s2026092701"
+        ],
+        "gpu": "6"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_WARM_LR3_SAM",
       "model_seed": 2026092701,
       "row_id": "SSL_WARM_LR3_SAM-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -3839,13 +3965,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 580934,
+      "gpu": 7,
+      "launch_evidence": {
+        "pid": 580934,
+        "start_ticks": 102466965,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_WARM_LR3_SAM-s2026092701"
+        ],
+        "gpu": "7"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL",
       "model_seed": 2026092702,
       "row_id": "SSL-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -4289,13 +4433,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 581015,
+      "gpu": 7,
+      "launch_evidence": {
+        "pid": 581015,
+        "start_ticks": 102467298,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL-s2026092702"
+        ],
+        "gpu": "7"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "L_REPLAY",
       "model_seed": 2026092702,
       "row_id": "L_REPLAY-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -4739,13 +4901,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 581094,
+      "gpu": 4,
+      "launch_evidence": {
+        "pid": 581094,
+        "start_ticks": 102467630,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "L_REPLAY-s2026092702"
+        ],
+        "gpu": "4"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_LR3",
       "model_seed": 2026092702,
       "row_id": "SSL_LR3-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -5189,13 +5369,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 581173,
+      "gpu": 6,
+      "launch_evidence": {
+        "pid": 581173,
+        "start_ticks": 102467962,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_LR3-s2026092702"
+        ],
+        "gpu": "6"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_WARM_LR3",
       "model_seed": 2026092702,
       "row_id": "SSL_WARM_LR3-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -5639,13 +5837,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 581251,
+      "gpu": 0,
+      "launch_evidence": {
+        "pid": 581251,
+        "start_ticks": 102468295,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_WARM_LR3-s2026092702"
+        ],
+        "gpu": "0"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_SAM",
       "model_seed": 2026092702,
       "row_id": "SSL_SAM-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -6089,13 +6305,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 581329,
+      "gpu": 2,
+      "launch_evidence": {
+        "pid": 581329,
+        "start_ticks": 102468628,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_SAM-s2026092702"
+        ],
+        "gpu": "2"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_SMOOTH",
       "model_seed": 2026092702,
       "row_id": "SSL_SMOOTH-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -6539,13 +6773,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 581407,
+      "gpu": 3,
+      "launch_evidence": {
+        "pid": 581407,
+        "start_ticks": 102468961,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_SMOOTH-s2026092702"
+        ],
+        "gpu": "3"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_HIDDEN_MIX",
       "model_seed": 2026092702,
       "row_id": "SSL_HIDDEN_MIX-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -6989,13 +7241,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 581486,
+      "gpu": 5,
+      "launch_evidence": {
+        "pid": 581486,
+        "start_ticks": 102469295,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_HIDDEN_MIX-s2026092702"
+        ],
+        "gpu": "5"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_WARM_LR3_SAM",
       "model_seed": 2026092702,
       "row_id": "SSL_WARM_LR3_SAM-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -7439,13 +7709,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 581565,
+      "gpu": 1,
+      "launch_evidence": {
+        "pid": 581565,
+        "start_ticks": 102469629,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_WARM_LR3_SAM-s2026092702"
+        ],
+        "gpu": "1"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL",
       "model_seed": 2026092703,
       "row_id": "SSL-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -7889,13 +8177,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 582051,
+      "gpu": 1,
+      "launch_evidence": {
+        "pid": 582051,
+        "start_ticks": 102469964,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL-s2026092703"
+        ],
+        "gpu": "1"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "L_REPLAY",
       "model_seed": 2026092703,
       "row_id": "L_REPLAY-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -8339,13 +8645,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 582129,
+      "gpu": 5,
+      "launch_evidence": {
+        "pid": 582129,
+        "start_ticks": 102470297,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "L_REPLAY-s2026092703"
+        ],
+        "gpu": "5"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_LR3",
       "model_seed": 2026092703,
       "row_id": "SSL_LR3-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -8789,13 +9113,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 582255,
+      "gpu": 7,
+      "launch_evidence": {
+        "pid": 582255,
+        "start_ticks": 102470630,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_LR3-s2026092703"
+        ],
+        "gpu": "7"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_WARM_LR3",
       "model_seed": 2026092703,
       "row_id": "SSL_WARM_LR3-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -9239,13 +9581,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 582360,
+      "gpu": 2,
+      "launch_evidence": {
+        "pid": 582360,
+        "start_ticks": 102470964,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_WARM_LR3-s2026092703"
+        ],
+        "gpu": "2"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_SAM",
       "model_seed": 2026092703,
       "row_id": "SSL_SAM-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -9689,13 +10049,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 582438,
+      "gpu": 0,
+      "launch_evidence": {
+        "pid": 582438,
+        "start_ticks": 102471297,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_SAM-s2026092703"
+        ],
+        "gpu": "0"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_SMOOTH",
       "model_seed": 2026092703,
       "row_id": "SSL_SMOOTH-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -10139,13 +10517,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 582516,
+      "gpu": 3,
+      "launch_evidence": {
+        "pid": 582516,
+        "start_ticks": 102471628,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_SMOOTH-s2026092703"
+        ],
+        "gpu": "3"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_HIDDEN_MIX",
       "model_seed": 2026092703,
       "row_id": "SSL_HIDDEN_MIX-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -10589,13 +10985,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 582594,
+      "gpu": 6,
+      "launch_evidence": {
+        "pid": 582594,
+        "start_ticks": 102471962,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_HIDDEN_MIX-s2026092703"
+        ],
+        "gpu": "6"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_WARM_LR3_SAM",
       "model_seed": 2026092703,
       "row_id": "SSL_WARM_LR3_SAM-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -11039,8 +11453,100 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling"
+      "seed_notes": "fixedphysicalroles;L stream=model+101;U=model+901337;noise=model+step9901;hidden donors=model+step104729+8107/Beta=model+step65537+2701;model/dropout=model;nosupportsampling",
+      "pid": 582673,
+      "gpu": 4,
+      "launch_evidence": {
+        "pid": 582673,
+        "start_ticks": 102472293,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_engineering_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_engineering.dispatch",
+          "--worker",
+          "SSL_WARM_LR3_SAM-s2026092703"
+        ],
+        "gpu": "4"
+      },
+      "resolved_config_verified": true
     }
   ],
-  "registered_at": "2026-10-12T03:42:14+00:00"
+  "registered_at": "2026-10-12T03:42:14+00:00",
+  "execution_commit": "68d9221c07cbb77543cf2a4fe9b28e604863edbc",
+  "delivery_verdict": "VERIFIED",
+  "progress": {
+    "launched": 24,
+    "resolved_verified": 24,
+    "queued": 0,
+    "failures": [],
+    "GPU_capacity": {
+      "0": {
+        "pids": [
+          580105,
+          581251,
+          582438
+        ],
+        "free_mb": 22019
+      },
+      "1": {
+        "pids": [
+          580185,
+          581565,
+          582051
+        ],
+        "free_mb": 21891
+      },
+      "2": {
+        "pids": [
+          580266,
+          581329,
+          582360
+        ],
+        "free_mb": 22019
+      },
+      "3": {
+        "pids": [
+          580347,
+          581407,
+          582516
+        ],
+        "free_mb": 21975
+      },
+      "4": {
+        "pids": [
+          580575,
+          581094,
+          582673
+        ],
+        "free_mb": 21889
+      },
+      "5": {
+        "pids": [
+          580738,
+          581486,
+          582129
+        ],
+        "free_mb": 21719
+      },
+      "6": {
+        "pids": [
+          580851,
+          581173,
+          582594
+        ],
+        "free_mb": 21719
+      },
+      "7": {
+        "pids": [
+          580934,
+          581015,
+          582255
+        ],
+        "free_mb": 21999
+      }
+    }
+  }
 }
