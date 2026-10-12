@@ -352,7 +352,19 @@ def build(root, managed_only=False):
         return _build(root, dest, managed_only)
 
 
+def retirement_key(identifier):
+    if identifier.startswith("remote:N607:") and "/CV-SincNet/" in identifier:
+        return "remote:N607:CV-SincNet/" + identifier.split("/CV-SincNet/", 1)[1]
+    return identifier
+
+
+def retired_record_keys(root):
+    path = Path(root) / "experiment_registry/retired_pre20260901.json"
+    return set(read_json(path)["ids"]) if path.exists() else set()
+
+
 def _build(root, dest, managed_only):
+    retired = retired_record_keys(root)
     old = {}
     catalog = dest / "catalog.jsonl"
     if catalog.exists():
@@ -495,6 +507,8 @@ def _build(root, dest, managed_only):
         used_keys = {r.get("detail_key") for r in old.values() if r.get("detail_key")}
         next_key = max([int(x) for x in used_keys] + [0]) + 1
         for key in sorted(set(artifact_lines) | set(fact_lines)):
+            if retirement_key(key) in retired:
+                continue
             detail_key = old.get(key, {}).get("detail_key")
             if not detail_key:
                 detail_key = f"{next_key:06d}"
@@ -511,6 +525,7 @@ def _build(root, dest, managed_only):
                 target.write_bytes(gzip.compress(raw, compresslevel=6, mtime=0))
         print(f"wrote {len(artifact_lines)} artifact groups and {len(fact_lines)} metadata groups", file=sys.stderr, flush=True)
     snapshots = import_remote_snapshots(root, records, errors)
+    records = {key: rec for key, rec in records.items() if retirement_key(key) not in retired}
     for rec in records.values():
         report = rec.get("report")
         if report and report.endswith(".md"):
@@ -648,10 +663,13 @@ def catalog_rows(root):
     path = Path(root) / "experiment_registry/catalog.jsonl"
     if not path.exists():
         raise ValueError("尚无索引；先运行build")
+    retired = retired_record_keys(root)
     with path.open(encoding="utf-8") as f:
         for line in f:
             if line.strip():
-                yield json.loads(line)
+                rec = json.loads(line)
+                if retirement_key(rec["id"]) not in retired:
+                    yield rec
 
 
 def search(root, query="", seed=None, tag=None, kind=None, status=None, record_type=None, limit=20):

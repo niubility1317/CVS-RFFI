@@ -5,6 +5,7 @@ reports, registration/configuration, metrics, and unique failure evidence.
 """
 import argparse
 from datetime import datetime
+import gzip
 import json
 import os
 from pathlib import Path
@@ -88,10 +89,24 @@ def disposable(path):
     return None
 
 
+def has_failure_evidence(path):
+    markers = [b'Traceback (most recent call last):', b'RuntimeError:',
+               b'CUDA out of memory', b'PermissionError:', b'OSError:']
+    opener = gzip.open if path.suffix.lower() == '.gz' else open
+    previous = b''
+    with opener(path, 'rb') as stream:
+        for chunk in iter(lambda: stream.read(512 * 1024), b''):
+            chunk = previous + chunk
+            if b'\x00' in chunk or any(marker in chunk for marker in markers):
+                return True
+            previous = chunk[-128:]
+    return False
+
+
 def make_plan(root, site, references):
     root = Path(root).resolve(strict=True)
     tokens = references['tokens']
-    zones = ['runs', 'logs', 'releases'] if site == 'remote' else ['automation_reports/CV-SincNet', 'local_artifacts', 'runs', 'logs', 'server_log_backups']
+    zones = ['runs', 'logs', 'logs/cvs/current', 'releases'] if site == 'remote' else ['automation_reports/CV-SincNet', 'local_artifacts', 'runs', 'logs', 'logs/cvs/current', 'server_log_backups']
     candidates, protected, errors = [], [], []
     for zone in zones:
         start = root / zone
@@ -131,6 +146,9 @@ def make_plan(root, site, references):
                         info = path.stat()
                         if not stat.S_ISREG(info.st_mode) or info.st_mtime >= CUTOFF:
                             continue
+                        if reason == 'expired_unreferenced_log' and has_failure_evidence(path):
+                            protected.append({'path': path.relative_to(root).as_posix(), 'reason': 'technical failure/unknown-encoding evidence retained'})
+                            continue
                         candidates.append({'path': str(path), 'relative': path.relative_to(root).as_posix(), 'bytes': info.st_size,
                                            'allocated': getattr(info, 'st_blocks', 0) * 512, 'signature': signature(info), 'reason': reason})
                     except (OSError, ValueError) as exc:
@@ -155,7 +173,6 @@ def apply_plan(plan, manifest):
                 result['status'] = 'ABOUT_TO_DELETE'
                 output.write(json.dumps(result, ensure_ascii=False) + '\n')
                 output.flush()
-                os.fsync(output.fileno())
                 path.unlink()
                 if path.exists():
                     raise OSError('post-state still exists')
@@ -167,6 +184,10 @@ def apply_plan(plan, manifest):
             rows.append(result)
             output.write(json.dumps(result, ensure_ascii=False) + '\n')
             output.flush()
+            if len(rows) % 1000 == 0:
+                os.fsync(output.fileno())
+                print(json.dumps({'processed': len(rows), 'total': len(plan['files']), 'removed_bytes': freed}), flush=True)
+        os.fsync(output.fileno())
     return {'status': 'VERIFIED' if all(row['status'] == 'VERIFIED' for row in rows) else 'PARTIAL',
             'deleted': sum(row['status'] == 'VERIFIED' for row in rows),
             'failed': sum(row['status'] != 'VERIFIED' for row in rows), 'removed_logical_bytes': freed}
