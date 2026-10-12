@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "mathematical": {
+    "status": "PASS",
+    "PSD_scatter_and_closure": true,
+    "global_TX_rank_at_most5": true,
+    "generalized_eigen_residual": true,
+    "zero_rank_safe": true,
+    "crossfit_disjoint": true,
+    "each_physical_ID_once_per_readout": true,
+    "all_RX_permutation_interaction_retained": true
+  },
+  "native": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "input_policy": {
+      "explicit_CFO_identity_input": false,
+      "coordinate": 27,
+      "shape": 29,
+      "active_features": 28,
+      "parameter_mutations": 0,
+      "internal_CFO_compensation": true,
+      "historical_checkpoint_training_policy": "explicit_CFO",
+      "function_policy": "masked_CFO_diagnostic"
+    },
+    "coordinate_zero_and_other_features_identical": true,
+    "actual_native_maps": {
+      "time_down": [
+        8,
+        96
+      ],
+      "t2.pool": [
+        8,
+        192
+      ],
+      "id_feat_joint": [
+        8,
+        160
+      ]
+    },
+    "parameters_buffers_RNG_unchanged": true,
+    "identity_updates": 0,
+    "target_access": false
+  },
+  "synthetic_only": true,
+  "target_access": false
+}

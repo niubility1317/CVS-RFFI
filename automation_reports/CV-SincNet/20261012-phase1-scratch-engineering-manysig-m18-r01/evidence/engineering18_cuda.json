@@ -1,0 +1,151 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "source_only": true,
+  "target_access": false,
+  "schedule": {
+    "exact_endpoints": true,
+    "rows": 18,
+    "step_count": 4440
+  },
+  "SAM": {
+    "manual_SAM_AdamW_reference": true,
+    "one_permanent_update": true,
+    "failed_closure_parameter_restoration": true
+  },
+  "native": [
+    {
+      "arm": "SSL_LR3",
+      "forwards": 3,
+      "sam": {
+        "sam_applied": false,
+        "temporary_parameter_restoration": true,
+        "identity_optimizer_steps": 1,
+        "first_gradient_norm": 17.188201904296875,
+        "second_gradient_norm": null,
+        "second_forward_calls": 0,
+        "second_backward_calls": 0,
+        "seconds": 0.0
+      },
+      "finite_gradients": true,
+      "actual_smoothing": 0.0,
+      "no_auxiliary_module": true
+    },
+    {
+      "arm": "SSL_WARM_LR3",
+      "forwards": 3,
+      "sam": {
+        "sam_applied": false,
+        "temporary_parameter_restoration": true,
+        "identity_optimizer_steps": 1,
+        "first_gradient_norm": 17.188201904296875,
+        "second_gradient_norm": null,
+        "second_forward_calls": 0,
+        "second_backward_calls": 0,
+        "seconds": 0.0
+      },
+      "finite_gradients": true,
+      "actual_smoothing": 0.0,
+      "no_auxiliary_module": true
+    },
+    {
+      "arm": "SSL_SAM",
+      "forwards": 6,
+      "sam": {
+        "sam_applied": true,
+        "temporary_parameter_restoration": true,
+        "identity_optimizer_steps": 1,
+        "first_gradient_norm": 17.188201904296875,
+        "second_gradient_norm": 21.781940460205078,
+        "second_forward_calls": 3,
+        "second_backward_calls": 1,
+        "seconds": 0.10532569998758845,
+        "rho": 0.02,
+        "actual_perturbation_l2": 0.019999999552965164,
+        "second_loss": 4.6817626953125,
+        "perturbed_parameter_tensors": 67,
+        "perturbed_parameters": 177025,
+        "missing_gradient_parameter_tensors": 0,
+        "same_samples_and_noise": true,
+        "same_dropout_rng": true,
+        "second_targets_recomputed": false
+      },
+      "finite_gradients": true,
+      "actual_smoothing": 0.0,
+      "no_auxiliary_module": true
+    },
+    {
+      "arm": "SSL_SMOOTH",
+      "forwards": 3,
+      "sam": {
+        "sam_applied": false,
+        "temporary_parameter_restoration": true,
+        "identity_optimizer_steps": 1,
+        "first_gradient_norm": 17.12518310546875,
+        "second_gradient_norm": null,
+        "second_forward_calls": 0,
+        "second_backward_calls": 0,
+        "seconds": 0.0
+      },
+      "finite_gradients": true,
+      "actual_smoothing": 0.05,
+      "no_auxiliary_module": true
+    },
+    {
+      "arm": "SSL_HIDDEN_MIX",
+      "forwards": 4,
+      "sam": {
+        "sam_applied": false,
+        "temporary_parameter_restoration": true,
+        "identity_optimizer_steps": 1,
+        "first_gradient_norm": 30.683961868286133,
+        "second_gradient_norm": null,
+        "second_forward_calls": 0,
+        "second_backward_calls": 0,
+        "seconds": 0.0
+      },
+      "finite_gradients": true,
+      "actual_smoothing": 0.0,
+      "no_auxiliary_module": true
+    },
+    {
+      "arm": "SSL_WARM_LR3_SAM",
+      "forwards": 6,
+      "sam": {
+        "sam_applied": true,
+        "temporary_parameter_restoration": true,
+        "identity_optimizer_steps": 1,
+        "first_gradient_norm": 17.188201904296875,
+        "second_gradient_norm": 21.781940460205078,
+        "second_forward_calls": 3,
+        "second_backward_calls": 1,
+        "seconds": 0.10812700001406483,
+        "rho": 0.02,
+        "actual_perturbation_l2": 0.019999999552965164,
+        "second_loss": 4.6817626953125,
+        "perturbed_parameter_tensors": 67,
+        "perturbed_parameters": 177025,
+        "missing_gradient_parameter_tensors": 0,
+        "same_samples_and_noise": true,
+        "same_dropout_rng": true,
+        "second_targets_recomputed": false
+      },
+      "finite_gradients": true,
+      "actual_smoothing": 0.0,
+      "no_auxiliary_module": true
+    }
+  ],
+  "source_entry": {
+    "status": "PASS",
+    "arms": [
+      "SSL_LR3",
+      "SSL_WARM_LR3",
+      "SSL_SAM",
+      "SSL_SMOOTH",
+      "SSL_HIDDEN_MIX",
+      "SSL_WARM_LR3_SAM"
+    ],
+    "identity_updates": 0,
+    "target_access": false
+  }
+}
