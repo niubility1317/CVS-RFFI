@@ -11,9 +11,9 @@
 |R05|9.2|收缩 PSD 分母的广义特征值，身份均值秩≤5；不删除全部交互|同上|verified|人工矩阵／类置换／退化条件检查|固定 alpha=beta=1、shrink=.1、eps；属于诊断|
 |R06|9.2|L 内物理 ID 交叉拟合，方向估计／原型与读出样本独立|同上|verified|fit/query 无交集；每 PID 每方法一次|跨 RX 只检验读出迁移，编码器已见五源 RX|
 |R07|9.3|比较合并 TX 原型与分别保留 RX 原型的读出|同上|verified|全部类别统一竞争、固定 tau|判断共同坐标假设，不由目标混淆指定 TX 权重|
-|R08|9.3|关系训练保留CE；关系任务、身份头、类margin、修复／破坏分开评估|cvs_crossrx_relation|implemented|固定15行发布VERIFIED；CUDA5／严格自身checkpoint5／22200合成源step／独立收尾15；实际10行配置核验，5行排队，每行自动测试尚未完成|原型参考eval/no_grad；只query梯度；未证明目标增益|
-|R09|9.4|作用网络先固定编码器、已知有限参数，验证留出 TX/day/质量迁移及线性／低秩基线|有限作用预测诊断|deferred|下一独立作用预测阶段；须先证明作用迁移再约束身份|拟合改进和真实 RX 残差覆盖分别量化，不称不同 RX 严格反事实|
-|R10|8.2、9.5|U 新监督优先同包已知操作／重复前导；先测辨识性、周期复现和不确定性|作用/前导诊断|deferred|与 R09 同阶段|不读取 U TX；不能把周期重复当新独立激励|
+|R08|9.3|关系CE保留身份CE；关系任务/身份头/margin/修复破坏分开|cvs_crossrx_relation|verified|实际15行完整66600源step／2520000独立clean评分；所有关系方案均值低于匹配SSL|核验机制及负结果，不宣称目标增益；不重跑/按target调权重|
+|R09|9.4|固定编码器已知有限参数作用预测、留出TX/day/质量、强简单基线与真实RX残差覆盖|cvs_finite_action|implemented|source-only3行固定登记；原生CUDA实际352个合成读出/13split/双线性基线/冻结及角色拒绝PASS；独立P0/P1 PASS，待实际351fit|原编码器已见源TX/RX；有限数字操作不声称严格真实RX反事实|
+|R10|8.2、9.5|新增U同包操作响应/可辨识性与不确定性；前导需先确认结构|cvs_finite_action|implemented|U56700仅受控响应验证、不拟合、不读TX；noise4实现的均值/方差；等待实际全U证据|前导N/A：当前256协议确认重复区间未获得，lag16仅质量proxy，不添加前导loss|
 |R11|9.6|工程优化单独归因；额外算力单列，同路径控制|cvs_nocfo_engineering／foundation|verified|实际24行完整106560源step和4032000评分、实测资源、全部负结果|旧engineering18保持未发布；新最高均值79.8986%，未达84%|
 |R12|全文|禁止目标 TX 特殊权重／目标反馈；全 seed 与负结果保留、报告准确名词|所有 config/report/scorer|verified|独立 P0/P1、truth-last 与完整结果|既有公开 benchmark 仅探索，不声称新盲测|
 
@@ -30,3 +30,5 @@ R08独立跨RX关系15行已固定登记，浅中最终与final、合并与分RX
 R02/R11/R12实际验证收尾：同输入CE3＋SSL/成本/工程24全部完成，119880完整源更新、4536000独立clean评分；24源日志自动全解析无缺项/异常。最高均值79.8986%（SSL_WARM_LR3），主组合78.8252%，未达到84%。关系15行在读取成绩前固定，不据目标评分改参/挑种子/重跑。
 
 当前验收计数：verified9、implemented1（R08）、deferred2（R09/R10）、rejected0、blocked0。R08已发布并排队，实际矩阵未完整完成，不能升级verified。后续源端设计见[有限作用与U证据](finite_action_next_stage.md)，仅设计未启动；最高风险仍是新增辅助知识能否迁移并实际保留身份判别。
+
+最新收尾：R08实际15/15已完整核验，主多层分RX均值76.5919%，最终分RX79.0442%，未达84%。不能由统计方向存在推断联合关系约束有效；全部负结果保留。R09/R10有限作用3行先于关系评分读出登记；当前verified10/implemented2/deferred0/rejected0/blocked0，R10前导子项明确N/A未实现。只有实际迁移和U响应证据才能升级验证状态，不能按target成绩提高约束权重或换参考编码器。

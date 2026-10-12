@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "synthetic_only": true,
+  "operator_zero_rms_private_rng": true,
+  "splits": 13,
+  "held_TX_fit_independent": true,
+  "coverage_PID_leak_rejected": true,
+  "strong_bilinear_MSE": 5.817702005903036e-13,
+  "auxiliary_fit_updates": 60,
+  "actual_native_L_readouts": 240,
+  "actual_native_U_readouts": 112,
+  "reference_state_unchanged": true,
+  "U_truth_rejected": true,
+  "target_access": false
+}

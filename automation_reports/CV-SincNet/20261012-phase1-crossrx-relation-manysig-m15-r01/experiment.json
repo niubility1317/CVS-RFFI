@@ -123,7 +123,7 @@
   "group_id": "cvs-crossrx-relation",
   "display_name": "独立源原型跨RX身份关系：最终层与浅中最终层对照",
   "description": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "scratch20",
@@ -252,7 +252,7 @@
       "arm": "L30_CE",
       "model_seed": 2026092701,
       "row_id": "L30_CE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -748,13 +748,15 @@
         ],
         "gpu": "2"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "REL_FINAL_MERGED",
       "model_seed": 2026092701,
       "row_id": "REL_FINAL_MERGED-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -1252,13 +1254,15 @@
         ],
         "gpu": "4"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "REL_FINAL_SEPARATE",
       "model_seed": 2026092701,
       "row_id": "REL_FINAL_SEPARATE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -1756,13 +1760,15 @@
         ],
         "gpu": "1"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "REL_MULTI_MERGED",
       "model_seed": 2026092701,
       "row_id": "REL_MULTI_MERGED-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -2262,13 +2268,15 @@
         ],
         "gpu": "6"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "REL_MULTI_SEPARATE",
       "model_seed": 2026092701,
       "row_id": "REL_MULTI_SEPARATE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -2768,13 +2776,15 @@
         ],
         "gpu": "5"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "L30_CE",
       "model_seed": 2026092702,
       "row_id": "L30_CE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -3270,13 +3280,15 @@
         ],
         "gpu": "0"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "REL_FINAL_MERGED",
       "model_seed": 2026092702,
       "row_id": "REL_FINAL_MERGED-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -3774,13 +3786,15 @@
         ],
         "gpu": "7"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "REL_FINAL_SEPARATE",
       "model_seed": 2026092702,
       "row_id": "REL_FINAL_SEPARATE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -4278,13 +4292,15 @@
         ],
         "gpu": "3"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "REL_MULTI_MERGED",
       "model_seed": 2026092702,
       "row_id": "REL_MULTI_MERGED-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -4784,13 +4800,15 @@
         ],
         "gpu": "5"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "REL_MULTI_SEPARATE",
       "model_seed": 2026092702,
       "row_id": "REL_MULTI_SEPARATE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -5275,13 +5293,15 @@
       "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
       "pid": 607440,
       "gpu": 6,
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "L30_CE",
       "model_seed": 2026092703,
       "row_id": "L30_CE-s2026092703",
-      "status": "QUEUED",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -5759,13 +5779,15 @@
         "support": 2026092703,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "REL_FINAL_MERGED",
       "model_seed": 2026092703,
       "row_id": "REL_FINAL_MERGED-s2026092703",
-      "status": "QUEUED",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -6245,13 +6267,15 @@
         "support": 2026092703,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "REL_FINAL_SEPARATE",
       "model_seed": 2026092703,
       "row_id": "REL_FINAL_SEPARATE-s2026092703",
-      "status": "QUEUED",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -6731,13 +6755,15 @@
         "support": 2026092703,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "REL_MULTI_MERGED",
       "model_seed": 2026092703,
       "row_id": "REL_MULTI_MERGED-s2026092703",
-      "status": "QUEUED",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -7219,13 +7245,15 @@
         "support": 2026092703,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "REL_MULTI_SEPARATE",
       "model_seed": 2026092703,
       "row_id": "REL_MULTI_SEPARATE-s2026092703",
-      "status": "QUEUED",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -7707,85 +7735,19 @@
         "support": 2026092703,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "epoch": 20,
+      "source_steps": 4440
     }
   ],
   "registered_at": "2026-10-12T04:20:10+00:00",
   "execution_commit": "3ec1801e104aa894335c0dd537e761bc5df7a4f0",
   "delivery_verdict": "VERIFIED",
   "progress": {
-    "launched": 10,
-    "resolved_verified": 10,
-    "queued": 5,
-    "failures": [],
-    "GPU_capacity": {
-      "0": {
-        "pids": [
-          590845,
-          602933,
-          605739
-        ],
-        "free_mb": 19689
-      },
-      "1": {
-        "pids": [
-          590919,
-          604340,
-          605496
-        ],
-        "free_mb": 20617
-      },
-      "2": {
-        "pids": [
-          589984,
-          604420,
-          605325
-        ],
-        "free_mb": 21487
-      },
-      "3": {
-        "pids": [
-          602294,
-          603007,
-          605903
-        ],
-        "free_mb": 18143
-      },
-      "4": {
-        "pids": [
-          590993,
-          591212,
-          605418
-        ],
-        "free_mb": 20899
-      },
-      "5": {
-        "pids": [
-          590136,
-          605661,
-          606497
-        ],
-        "free_mb": 20259
-      },
-      "6": {
-        "pids": [
-          590214,
-          602124,
-          605579
-        ],
-        "free_mb": 20345
-      },
-      "7": {
-        "pids": [
-          590696,
-          591510,
-          605821
-        ],
-        "free_mb": 19435
-      }
-    },
-    "source_trained": 0,
-    "trained_and_scored": 0,
-    "read_at": 1791779394.974986
+    "source_steps": 66600,
+    "clean_predictions": 2520000,
+    "completed_rows": 15,
+    "goal_status": "NOT_MET",
+    "primary_mean": 0.7659186507936508
   }
 }
