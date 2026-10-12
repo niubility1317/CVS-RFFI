@@ -423,3 +423,9 @@
 ## 本轮关系互补与源端结论
 
 - [固定三成员证据融合：零训练整RX源检验](../automation_reports/CV-SincNet/20261012-phase1-ensemble-readout-source-manysig-s2026092701-r01/report.md)（ANALYZED）
+
+## 本轮关系互补与源端结论
+
+- [普通 cos 头：跨 RX 元反馈选择 U 更新，30 轮](../automation_reports/CV-SincNet/20261013-phase1-cross-rx-feedback-source-manysig-s2026092701-r01/report.md)（LOCAL_VERIFIED）
+- [普通 cos 头：浅中层 TX 条件跨 RX 矩对齐，30 轮](../automation_reports/CV-SincNet/20261012-phase1-conditional-moments-source-manysig-s2026092701-r01/report.md)（PLANNED）
+- [固定三成员证据融合：零训练整RX源检验](../automation_reports/CV-SincNet/20261012-phase1-ensemble-readout-source-manysig-s2026092701-r01/report.md)（ANALYZED）
