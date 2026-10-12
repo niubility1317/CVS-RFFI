@@ -68,3 +68,12 @@ U 使用原始纯 CE E20 的另外两个 seed 的固定概率均值，ALL soft K
 
 
 源侧进展：六进程均实时核实存活，当前完成8轮；所有行444步固定校准正常。早期完整前缀5677条核验见[source_prefix_interpretation.md](source_prefix_interpretation.md)。关于混合方差无法唯一约束身份对应关系的合成反例与下一步源诊断范围见[moment_identifiability_research.md](moment_identifiability_research.md)，CPU/CUDA检查通过。新增工具不进入现有训练导入路径，未修改已发布执行提交。当前无本批最终clean结果，84%目标仍未证明。
+
+
+# 完整六行结果
+
+状态 VERIFIED / ANALYZED。6/6 行训练与 clean 独立评分完成，两方案各三种子；26,640 次源更新、120 个 epoch、1,008,000 次 clean 决策。逐行与汇总评分一致，完整源日志无错误。
+
+预登记主方案 CE_ENERGY：79.9806%；固定 E20 参考 P0：80.0504%。MARGIN_ENERGY 均值 80.1010%，相对 P0 +0.0506 个百分点；CE_ENERGY 相对 P0 -0.0698 个百分点。所有完整方案均未达到 84%。不据此改变已固定的后续源驱动设计或选择性重跑。
+
+完整每种子、配对差、RX/TX/day、Macro-F1、NLL、成本和来源边界见 [final_analysis.md](final_analysis.md)。逐步机制核验见 [source_trajectory.md](source_trajectory.md)，两项固定跨批对照见 [reference_comparisons.md](reference_comparisons.md)。

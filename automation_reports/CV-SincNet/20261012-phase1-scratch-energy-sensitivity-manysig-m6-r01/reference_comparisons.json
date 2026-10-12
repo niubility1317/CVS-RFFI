@@ -1,0 +1,104 @@
+{
+  "status": "COMPLETE",
+  "run_id": "20261012-phase1-scratch-energy-sensitivity-manysig-m6-r01",
+  "reference_run_id": "20261012-phase1-scratch-identity-style-manysig-m9-r01",
+  "comparisons": [
+    {
+      "treatment": "MARGIN_ENERGY",
+      "reference": "DELAYCAP_JOINT",
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "treatment_accuracy": 0.8154285714285714,
+          "reference_accuracy": 0.8117321428571429,
+          "difference": 0.0036964285714284895
+        },
+        {
+          "seed": 2026092702,
+          "treatment_accuracy": 0.7785357142857143,
+          "reference_accuracy": 0.7783630952380952,
+          "difference": 0.00017261904761911584
+        },
+        {
+          "seed": 2026092703,
+          "treatment_accuracy": 0.8090654761904762,
+          "reference_accuracy": 0.8074940476190476,
+          "difference": 0.001571428571428557
+        }
+      ],
+      "paired_seed_count": 3,
+      "complete_three_seeds": true,
+      "mean_difference": 0.0018134920634920542,
+      "sd_difference": 0.0017743321111519377
+    },
+    {
+      "treatment": "CE_ENERGY",
+      "reference": "DELAYCAP_JOINT",
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "treatment_accuracy": 0.8114166666666667,
+          "reference_accuracy": 0.8117321428571429,
+          "difference": -0.0003154761904762271
+        },
+        {
+          "seed": 2026092702,
+          "treatment_accuracy": 0.776720238095238,
+          "reference_accuracy": 0.7783630952380952,
+          "difference": -0.001642857142857168
+        },
+        {
+          "seed": 2026092703,
+          "treatment_accuracy": 0.8112797619047619,
+          "reference_accuracy": 0.8074940476190476,
+          "difference": 0.003785714285714281
+        }
+      ],
+      "paired_seed_count": 3,
+      "complete_three_seeds": true,
+      "mean_difference": 0.000609126984126962,
+      "sd_difference": 0.002829932015374272
+    }
+  ],
+  "expected_comparisons": 2,
+  "complete_comparisons": 2,
+  "inputs": {
+    "current": {
+      "status": "COMPLETE",
+      "run_id": "20261012-phase1-scratch-energy-sensitivity-manysig-m6-r01",
+      "completed_rows": [
+        "MARGIN_ENERGY-s2026092701",
+        "CE_ENERGY-s2026092701",
+        "MARGIN_ENERGY-s2026092702",
+        "CE_ENERGY-s2026092702",
+        "MARGIN_ENERGY-s2026092703",
+        "CE_ENERGY-s2026092703"
+      ],
+      "missing_rows": [],
+      "actual_config_verification": "Existing collector source_config_budget=true; collector checked source/freeze against design",
+      "local_config_verification": "Reconstructed each scored row from the registered local design and validated it"
+    },
+    "reference": {
+      "status": "COMPLETE",
+      "run_id": "20261012-phase1-scratch-identity-style-manysig-m9-r01",
+      "completed_rows": [
+        "DELAY_JOINT-s2026092701",
+        "CAP_JOINT-s2026092701",
+        "DELAYCAP_JOINT-s2026092701",
+        "DELAY_JOINT-s2026092702",
+        "CAP_JOINT-s2026092702",
+        "DELAYCAP_JOINT-s2026092702",
+        "DELAY_JOINT-s2026092703",
+        "CAP_JOINT-s2026092703",
+        "DELAYCAP_JOINT-s2026092703"
+      ],
+      "missing_rows": [],
+      "actual_config_verification": "Existing collector source_config_budget=true; collector checked source/freeze against design",
+      "local_config_verification": "Reconstructed each scored row from the registered local design and validated it"
+    }
+  },
+  "IQ_read": false,
+  "truth_read": false,
+  "predictions_read": false,
+  "scores_control_training": false
+}

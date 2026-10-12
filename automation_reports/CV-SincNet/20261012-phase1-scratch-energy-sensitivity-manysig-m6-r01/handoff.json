@@ -1,5 +1,5 @@
 {
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "goal": "clean three-seed mean>=.84 not yet demonstrated",
   "run": "20261012-phase1-scratch-energy-sensitivity-manysig-m6-r01",
   "execution_commit": "f3522b11b75d2617effea056e0acecab6674a6a7",
@@ -15,24 +15,36 @@
     "CE_ENERGY-s2026092703"
   ],
   "pending": 0,
-  "next": "Keep the6 immutable training workers live; collect each automatically scored clean row then full6 source/test reports. Next research: implement/register/review a separate all3 original E20 full-L conditional-sensitivity diagnostic per moment_identifiability_research.md; no new training design may be justified from target ranks. Mathematical prototype alone does not establish actual-source severity or test improvement.",
+  "next": "Fixed6 complete; preserve all results and never relaunch. Next mechanism hypotheses were fixed from source-only conditional geometry before collecting this target result: experiments/cvs_source_conditional_geometry/SOURCE_INTERPRETATION.md, commit bd7b725cd09bc827c6217f27d5e8f112f7b1d765. Implement and verify that plan with separate registration, no target-driven changes. Goal remains active.",
   "collector": "python -m experiments.cvs_scratch_energy_sensitivity.collect_results --output automation_reports/CV-SincNet/20261012-phase1-scratch-energy-sensitivity-manysig-m6-r01",
   "budget": "random native student20; no heads; pretrained peer teacher ancestry retained; fixed 2x12pair calibration after444;48forwards2880L; detached joint full-identity cap",
   "multilevel": "time_down/t2.pool; raw CE/margin sensitivities without heads; fixed peer probabilities; independent AB Fishr fixed scales and coefficients after444/denominator2; optional joint cap rho0.2; original convex whole-candidate style search plus clean with matched dropout; noEMA/noSat",
   "owner": "codex/root/scratch-energy-sensitivity-20261012",
   "progress": {
-    "read_at": 1791767011.7378237,
-    "active_processes_verified": 6,
-    "completed_rows": 0,
-    "epoch_range": [
-      8,
-      8
-    ],
-    "source_prefix_steps": 5677,
-    "source_prefix_evidence": "evidence/source_prefix_r01.json",
-    "target_results_available": false,
-    "goal_status": "NOT_DEMONSTRATED"
+    "read_at": 1791768365.4486368,
+    "launched": 6,
+    "active_processes_verified": 0,
+    "pending": 0,
+    "scored_rows": 6,
+    "source_fully_audited_rows": 6,
+    "source_fully_audited_steps": 26640,
+    "failures": [],
+    "goal_status": "NOT_MET",
+    "primary_arm": "CE_ENERGY",
+    "primary_accuracy_mean": 0.7998055555555555,
+    "complete_arms_reaching_goal": []
   },
   "source_prefix_interpretation": "source_prefix_interpretation.md",
-  "source_research": "moment_identifiability_research.md"
+  "source_research": "moment_identifiability_research.md",
+  "completed_rows": [
+    "MARGIN_ENERGY-s2026092701",
+    "CE_ENERGY-s2026092701",
+    "MARGIN_ENERGY-s2026092702",
+    "CE_ENERGY-s2026092702",
+    "MARGIN_ENERGY-s2026092703",
+    "CE_ENERGY-s2026092703"
+  ],
+  "results": "final_analysis.md",
+  "source_audit": "source_trajectory.md",
+  "reference_comparison": "reference_comparisons.md"
 }
