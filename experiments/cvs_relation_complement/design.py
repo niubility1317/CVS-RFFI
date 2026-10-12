@@ -3,8 +3,8 @@ from copy import deepcopy
 from experiments.cvs_quality_film import design as q
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,FULL_FP32_POLICY,read,write=(getattr(q,k) for k in ('PROJECT','SOURCE','FULL_FP32_POLICY','read','write'))
-RUN='20261012-phase1-relation-complement-source-manysig-s2026092701-r01'
-RELEASE='cvs_relation_complement_20261012_r01';OWNER='codex/root/relation-complement-20261012'
+RUN='20261012-phase1-relation-complement-source-manysig-s2026092701-r02'
+RELEASE='cvs_relation_complement_20261012_r02';OWNER='codex/root/relation-complement-20261012-r02'
 BASE=Path(PROJECT)/'runs'/RUN;REFERENCE=q.BASE
 RX=q.RX;SEED=q.SEED;ARMS=('RAW_REL_BRANCH','COMPLEX_REL_BRANCH')
 RULE=dict(mean_gain_vs_CE=.01,nonnegative_RX_vs_CE=4,worst_RX_noninferiority=.01,
@@ -21,7 +21,7 @@ def config(row):
    representation='normalized projected IQ outer products' if row['arm']=='RAW_REL_BRANCH' else 'normalized projected complex Gram real/imag repeated; weak constant complex gain/phase invariant channel only',
    frequency_handling='both branches same fixed per-packet lag20 phase slope compensation on window80:160 before full256 projection; no frequency scalar to classifier; fixed numerical convention, not verified preamble',
    whole_model_invariant=False,physical_RX_invariant=False,source_stats_fit=False,auxiliary_loss=False),
-  baseline_ref=str(REFERENCE/baseline_id(row['held_rx'])),scientific_rule=RULE,
+  baseline_ref=(REFERENCE/baseline_id(row['held_rx'])).as_posix(),scientific_rule=RULE,
   budget_authorization='user scratch30;10 fresh full native+branch models;5 matched CE30 source artifacts reused only for comparison, no initialization',
   initialization='full native identity and relation branch scratch; no loaded weights')
  return c

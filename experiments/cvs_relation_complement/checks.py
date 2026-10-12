@@ -1,5 +1,5 @@
 import argparse,json
-from pathlib import Path
+from pathlib import Path,PurePosixPath
 from copy import deepcopy
 from unittest.mock import patch
 import torch
@@ -9,6 +9,9 @@ from experiments.cvs_nocfo_foundation.model import build as native
 
 def run(device='cpu'):
  torch.set_num_threads(2);torch.manual_seed(71);x=torch.randn(32,2,256,device=device);y=torch.arange(32,device=device)%6;rows=[]
+ for row in d.rows():
+  expected=str(PurePosixPath(d.PROJECT)/'runs'/'20261012-phase1-quality-film-source-manysig-s2026092701-r01'/d.baseline_id(row['held_rx']))
+  if d.config(row)['baseline_ref']!=expected:raise AssertionError('Preregistered comparison path must match Linux runtime on every host')
  for arm in d.ARMS:
   c=d.config(next(r for r in d.rows() if r['arm']==arm))
   with patch('torch.load',side_effect=AssertionError('No pretrained construction')):m=build(c,x,device)
@@ -35,6 +38,6 @@ def run(device='cpu'):
   except ValueError:pass
   else:raise AssertionError('Illegal complementary source config')
  if rows[0]['parameters']!=rows[1]['parameters']:raise AssertionError('Branch capacity mismatch')
- return dict(status='PASS',device=device,rows=rows,negative_cases=4,weak_channel_invariance=True,whole_model_invariant=False,zero_packet_finite=True)
+ return dict(status='PASS',device=device,rows=rows,negative_cases=4,weak_channel_invariance=True,whole_model_invariant=False,zero_packet_finite=True,POSIX_baseline_refs=True)
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--device',default='cpu');p.add_argument('--output',type=Path,required=True);a=p.parse_args();v=run(a.device);d.write(a.output,v);print(json.dumps(v))

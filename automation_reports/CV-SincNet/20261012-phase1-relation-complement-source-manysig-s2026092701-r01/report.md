@@ -13,3 +13,7 @@
 run/output根不可覆盖，单owner，每GPU最多3个总进程，实际代码/config一次Git提交、一次P0/P1审查、聚焦负测、真实checkpoint无querysmoke先行PASS即续、一次N607preflight/归档传输SHA/远端compile/启动进程log核对。仅预登记系统技术故障停止所属run，不因低性能停止、重启或影响其他owner。精确矩阵、环境/CWD/命令/路径/stop rule见experiment.json；实际commit见release_commit.txt及启动后execution_commit。
 
 REJECTED_EXTRA_GATE：brainstorming单独设计/spec/plan多轮审批不在项目最小流程白名单中；依据用户已有继续研究授权直接执行，未新增门槛。现有目标基准已暴露，本研究不是新的独立盲测；84%尚未达到。
+
+## 技术失败：训练前预登记路径
+
+FAILED：独立远端核对 dispatcher/worker 均已退出，run仅logs目录，训练/源预测/目标预测均未启动。唯一差异是 baseline_ref 用str(Path)在Windows登记成反斜杠，Linux运行生成正斜杠。本地同一断言修复前失败，改为as_posix后10行全部PASS。旧run/release/归档保留，不覆盖或重启；相同模型、seed、数据、source-only权限、30轮与晋级阈值在r02发布。该失败没有性能结果。

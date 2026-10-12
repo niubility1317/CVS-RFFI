@@ -621,7 +621,8 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "NOT_STARTED"
     },
     {
       "row_id": "COMPLEX_REL_BRANCH-RX1-s2026092701",
@@ -1131,7 +1132,8 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "NOT_STARTED"
     },
     {
       "row_id": "RAW_REL_BRANCH-RX3-s2026092701",
@@ -1641,7 +1643,8 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "NOT_STARTED"
     },
     {
       "row_id": "COMPLEX_REL_BRANCH-RX3-s2026092701",
@@ -2151,7 +2154,8 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "NOT_STARTED"
     },
     {
       "row_id": "RAW_REL_BRANCH-RX4-s2026092701",
@@ -2661,7 +2665,8 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "NOT_STARTED"
     },
     {
       "row_id": "COMPLEX_REL_BRANCH-RX4-s2026092701",
@@ -3171,7 +3176,8 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "NOT_STARTED"
     },
     {
       "row_id": "RAW_REL_BRANCH-RX6-s2026092701",
@@ -3681,7 +3687,8 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "NOT_STARTED"
     },
     {
       "row_id": "COMPLEX_REL_BRANCH-RX6-s2026092701",
@@ -4191,7 +4198,8 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "NOT_STARTED"
     },
     {
       "row_id": "RAW_REL_BRANCH-RX8-s2026092701",
@@ -4701,7 +4709,8 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "NOT_STARTED"
     },
     {
       "row_id": "COMPLEX_REL_BRANCH-RX8-s2026092701",
@@ -5211,7 +5220,8 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "NOT_STARTED"
     }
   ],
   "notes": [
@@ -5223,7 +5233,7 @@
     "Invariantmechanism attribution separate:weakmeanRAW+.5pp,4/5nonnegative,worstnoninferior1pp;capacity benefit never called invariant benefit.",
     "REJECTED_EXTRA_GATE: brainstorming standalone design/spec approval chain is outside exclusive minimal experiment whitelist; existing user continuation authorization suffices; no added approval or planning files."
   ],
-  "status": "PLANNED",
+  "status": "FAILED",
   "registered_at": "2026-10-12T12:13:34+00:00",
   "replaces_run_id": null,
   "comparisons": [
@@ -5240,5 +5250,10 @@
       "reuse": "final30 source heldRX metrics/predictions only, exact fitL/heldV/seed/native/optimizer/LR; no model initialization",
       "historical_updates": 33300
     }
-  ]
+  ],
+  "delivery_verdict": "FAILED",
+  "failure_layer": "preregistration_path_portability",
+  "execution_commit": "3091a5a40dfa2b82a580e4dabe9622baf50ade38",
+  "training_started": false,
+  "target_access": false
 }

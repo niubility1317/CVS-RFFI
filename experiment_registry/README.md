@@ -369,3 +369,8 @@
 
 - [完整波形＋关系互补分支：整源RX留出30轮对照](../automation_reports/CV-SincNet/20261012-phase1-relation-complement-source-manysig-s2026092701-r01/report.md)（PLANNED）
 - [浅中层质量条件调制：整源RX留出30轮对照](../automation_reports/CV-SincNet/20261012-phase1-quality-film-source-manysig-s2026092701-r01/report.md)（ANALYZED）
+
+## 本轮关系互补与源端结论
+
+- [完整波形＋关系互补分支：整源RX留出30轮对照](../automation_reports/CV-SincNet/20261012-phase1-relation-complement-source-manysig-s2026092701-r02/report.md)（PLANNED）
+- [完整波形＋关系互补分支：整源RX留出30轮对照](../automation_reports/CV-SincNet/20261012-phase1-relation-complement-source-manysig-s2026092701-r01/report.md)（FAILED）
