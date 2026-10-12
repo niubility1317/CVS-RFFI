@@ -1,25 +1,25 @@
 {
-  "read_at": 1791764059.918827,
+  "read_at": 1791764134.5823414,
   "rows": [
     {
       "row": "OPT-s2026092701",
-      "completed_batches": 20,
-      "last_model": "calibrated-CAP_JOINT",
-      "log_bytes": 217553,
+      "completed_batches": 48,
+      "last_model": "identity-DELAY_JOINT",
+      "log_bytes": 425144,
       "completion": null
     },
     {
       "row": "OPT-s2026092702",
-      "completed_batches": 9,
-      "last_model": "calibrated-DELAY_JOINT",
-      "log_bytes": 136301,
+      "completed_batches": 21,
+      "last_model": "calibrated-CAP_JOINT",
+      "log_bytes": 225582,
       "completion": null
     },
     {
       "row": "OPT-s2026092703",
-      "completed_batches": 8,
-      "last_model": "calibrated-DELAY_JOINT",
-      "log_bytes": 128723,
+      "completed_batches": 20,
+      "last_model": "calibrated-CAP_JOINT",
+      "log_bytes": 217888,
       "completion": null
     }
   ],
@@ -60,14 +60,14 @@
       "pids": [
         430101
       ],
-      "free_mb": 22357
+      "free_mb": 22961
     },
     "5": {
       "pids": [
         430305,
         430404
       ],
-      "free_mb": 21784
+      "free_mb": 20594
     },
     "6": {
       "pids": [
