@@ -85,7 +85,7 @@
   "group_id": "cvs-response-identifiability",
   "display_name": "固定响应读出可辨识性：全部E20/E40模型的源端原点、条件输入和真实响应闭合诊断",
   "description": "3seed×8固定模型，完整L6300/U56700，真实频谱/时序操作；原点校正、h/q置均值置乱、参数线性、标准化输入Jacobian与实际响应闭合。身份/辅助更新0，V前向0，target访问0。",
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "source_only",
@@ -152,7 +152,7 @@
     {
       "row_id": "IDENT-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_response_identifiability",
       "purpose": "3seed×8固定模型，完整L6300/U56700，真实频谱/时序操作；原点校正、h/q置均值置乱、参数线性、标准化输入Jacobian与实际响应闭合。身份/辅助更新0，V前向0，target访问0。",
       "config": {
@@ -735,12 +735,14 @@
         "support": null,
         "evaluation": 2026702824
       },
-      "seed_notes": "fixed originalPID80_20; deterministic knownpositive actions;Jacobian seed+610123/private probes, within-stratum shuffle seed+74129;no target evaluation"
+      "seed_notes": "fixed originalPID80_20; deterministic knownpositive actions;Jacobian seed+610123/private probes, within-stratum shuffle seed+74129;no target evaluation",
+      "pid": 691151,
+      "gpu": 0
     },
     {
       "row_id": "IDENT-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_response_identifiability",
       "purpose": "3seed×8固定模型，完整L6300/U56700，真实频谱/时序操作；原点校正、h/q置均值置乱、参数线性、标准化输入Jacobian与实际响应闭合。身份/辅助更新0，V前向0，target访问0。",
       "config": {
@@ -1323,12 +1325,14 @@
         "support": null,
         "evaluation": 2026702825
       },
-      "seed_notes": "fixed originalPID80_20; deterministic knownpositive actions;Jacobian seed+610123/private probes, within-stratum shuffle seed+74129;no target evaluation"
+      "seed_notes": "fixed originalPID80_20; deterministic knownpositive actions;Jacobian seed+610123/private probes, within-stratum shuffle seed+74129;no target evaluation",
+      "pid": 691231,
+      "gpu": 1
     },
     {
       "row_id": "IDENT-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_response_identifiability",
       "purpose": "3seed×8固定模型，完整L6300/U56700，真实频谱/时序操作；原点校正、h/q置均值置乱、参数线性、标准化输入Jacobian与实际响应闭合。身份/辅助更新0，V前向0，target访问0。",
       "config": {
@@ -1911,8 +1915,13 @@
         "support": null,
         "evaluation": 2026702826
       },
-      "seed_notes": "fixed originalPID80_20; deterministic knownpositive actions;Jacobian seed+610123/private probes, within-stratum shuffle seed+74129;no target evaluation"
+      "seed_notes": "fixed originalPID80_20; deterministic knownpositive actions;Jacobian seed+610123/private probes, within-stratum shuffle seed+74129;no target evaluation",
+      "pid": 691312,
+      "gpu": 2
     }
   ],
-  "registered_at": "2026-10-12T06:55:35+00:00"
+  "registered_at": "2026-10-12T06:55:35+00:00",
+  "execution_commit": "4ccdf324665136c237e597a0b087b5f081493d7b",
+  "launch_readback": "evidence/launch_readback.json",
+  "delivery_verdict": "VERIFIED source-only release/24 CPU source preflight/actualprocesses/capacity8"
 }
