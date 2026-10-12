@@ -71,7 +71,7 @@
   "group_id": "cvs-source-conditional-geometry",
   "display_name": "原 E20 浅中层身份与接收机条件敏感度诊断",
   "description": "固定三个原纯CE E20，完整L的真实CE/margin敏感度与TX/RX交互分解及32置乱参照；模型零更新",
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "source_only",
@@ -144,7 +144,7 @@
     {
       "row_id": "CONDITIONAL-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_source_conditional_geometry",
       "purpose": "固定三个原纯CE E20，完整L的真实CE/margin敏感度与TX/RX交互分解及32置乱参照；模型零更新",
       "config": {
@@ -570,12 +570,14 @@
         "support": null,
         "evaluation": 2026599828
       },
-      "seed_notes": "Fixed complete original physical L split/order. Evaluation seed denotes source RX-shuffle diagnostic only; +day*100003+index*1597. No target evaluation or augmentation."
+      "seed_notes": "Fixed complete original physical L split/order. Evaluation seed denotes source RX-shuffle diagnostic only; +day*100003+index*1597. No target evaluation or augmentation.",
+      "pid": 471735,
+      "gpu": 6
     },
     {
       "row_id": "CONDITIONAL-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_source_conditional_geometry",
       "purpose": "固定三个原纯CE E20，完整L的真实CE/margin敏感度与TX/RX交互分解及32置乱参照；模型零更新",
       "config": {
@@ -1001,12 +1003,14 @@
         "support": null,
         "evaluation": 2026599829
       },
-      "seed_notes": "Fixed complete original physical L split/order. Evaluation seed denotes source RX-shuffle diagnostic only; +day*100003+index*1597. No target evaluation or augmentation."
+      "seed_notes": "Fixed complete original physical L split/order. Evaluation seed denotes source RX-shuffle diagnostic only; +day*100003+index*1597. No target evaluation or augmentation.",
+      "pid": 471822,
+      "gpu": 7
     },
     {
       "row_id": "CONDITIONAL-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_source_conditional_geometry",
       "purpose": "固定三个原纯CE E20，完整L的真实CE/margin敏感度与TX/RX交互分解及32置乱参照；模型零更新",
       "config": {
@@ -1432,8 +1436,13 @@
         "support": null,
         "evaluation": 2026599830
       },
-      "seed_notes": "Fixed complete original physical L split/order. Evaluation seed denotes source RX-shuffle diagnostic only; +day*100003+index*1597. No target evaluation or augmentation."
+      "seed_notes": "Fixed complete original physical L split/order. Evaluation seed denotes source RX-shuffle diagnostic only; +day*100003+index*1597. No target evaluation or augmentation.",
+      "pid": 471911,
+      "gpu": 6
     }
   ],
-  "registered_at": "2026-10-12T01:13:34+00:00"
+  "registered_at": "2026-10-12T01:13:34+00:00",
+  "execution_commit": "125db125f0b192f22ffe3b9a175ff5c03297eb15",
+  "delivery_verdict": "VERIFIED",
+  "scientific_verdict": "complete finite-source conditional geometry; no target improvement claim"
 }

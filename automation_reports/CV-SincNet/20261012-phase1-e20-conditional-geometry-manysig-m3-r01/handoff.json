@@ -1,9 +1,9 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "run": "20261012-phase1-e20-conditional-geometry-manysig-m3-r01",
   "owner": "codex/root/e20-conditional-geometry-20261012",
   "goal": "clean three-seed mean>=84% remains unproven",
   "source_only": true,
-  "next": "Inspect current3 diagnostic processes; do not repeat completed reads or launch. Collect all3 fixed full-L records and interpret source interaction versus32 shuffle controls. Keep six-row energy training immutable and collect automatic clean results.",
+  "next": "Three diagnostics complete and analyzed; do not relaunch. Implement source-driven conditional interaction hypotheses in experiments/cvs_source_conditional_geometry/SOURCE_INTERPRETATION.md, with separate preregistration and verification. Collect existing energy6 automatic clean results without feeding target results back into that fixed design.",
   "collector": "python -m experiments.cvs_source_conditional_geometry.collect --output automation_reports/CV-SincNet/20261012-phase1-e20-conditional-geometry-manysig-m3-r01/evidence"
 }
