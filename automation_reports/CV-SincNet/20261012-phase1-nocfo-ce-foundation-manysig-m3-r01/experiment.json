@@ -123,7 +123,7 @@
   "group_id": "cvs-nocfo-foundation",
   "display_name": "无显式 CFO 的同路径纯 CE E20 三种子基线",
   "description": "原生旧门控随机训练20轮，reference slot27恒零，保留内部CFO补偿；不读U、无教师、无辅助损失；固定final20逐行自动clean",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "scratch20",
@@ -191,7 +191,7 @@
       "arm": "CE",
       "model_seed": 2026092701,
       "row_id": "CE-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_foundation",
       "purpose": "原生旧门控随机训练20轮，reference slot27恒零，保留内部CFO补偿；不读U、无教师、无辅助损失；固定final20逐行自动clean",
       "config": {
@@ -640,13 +640,15 @@
         ],
         "gpu": "0"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "CE",
       "model_seed": 2026092702,
       "row_id": "CE-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_foundation",
       "purpose": "原生旧门控随机训练20轮，reference slot27恒零，保留内部CFO补偿；不读U、无教师、无辅助损失；固定final20逐行自动clean",
       "config": {
@@ -1095,13 +1097,15 @@
         ],
         "gpu": "1"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "CE",
       "model_seed": 2026092703,
       "row_id": "CE-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_foundation",
       "purpose": "原生旧门控随机训练20轮，reference slot27恒零，保留内部CFO补偿；不读U、无教师、无辅助损失；固定final20逐行自动clean",
       "config": {
@@ -1550,9 +1554,19 @@
         ],
         "gpu": "2"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     }
   ],
   "registered_at": "2026-10-12T03:26:35+00:00",
-  "execution_commit": "4aeef661c33cb140f5c750ab4718b863739fed65"
+  "execution_commit": "4aeef661c33cb140f5c750ab4718b863739fed65",
+  "delivery_verdict": "VERIFIED",
+  "progress": {
+    "source_steps": 13320,
+    "clean_predictions": 504000,
+    "completed_rows": 3,
+    "accuracy_mean": 0.794890873015873,
+    "goal_status": "NOT_MET"
+  }
 }

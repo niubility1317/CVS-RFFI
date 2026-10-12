@@ -11,3 +11,5 @@
 本地三seed原生CUDA纯CE梯度/一步更新、源码训练入口、严格自身checkpoint往返已通过。发布前独立P0/P1审查及远端实际L CPU预检；Git不可变运输后核验实际PID、配置、日志及容量。
 
 发布状态 VERIFIED：三行实际PID、源配置与无CFO／无U／无教师执行证据已读回。执行commit 4aeef661c33cb140f5c750ab4718b863739fed65，每行训练后自动clean；当前尚未完成评分。
+
+**VERIFIED / ANALYZED：三行训练与自动clean评分全部完成。** 13320完整源更新／504000预测。每seed81.0369%、77.0994%、80.3310%，均值79.4891%，未达到84%。完整分层及成本见[final_analysis.md](final_analysis.md)。所有三行源老师固定用于后续匹配24行，不按评分筛选。
