@@ -655,7 +655,8 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 454638,
       "gpu": 0,
-      "live_epoch": 2
+      "live_epoch": 8,
+      "live_identity_updates": 1776
     },
     {
       "arm": "CE_ENERGY",
@@ -1096,7 +1097,8 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 454724,
       "gpu": 1,
-      "live_epoch": 2
+      "live_epoch": 8,
+      "live_identity_updates": 1776
     },
     {
       "arm": "MARGIN_ENERGY",
@@ -1537,7 +1539,8 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 454951,
       "gpu": 2,
-      "live_epoch": 2
+      "live_epoch": 8,
+      "live_identity_updates": 1776
     },
     {
       "arm": "CE_ENERGY",
@@ -1978,7 +1981,8 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 455041,
       "gpu": 3,
-      "live_epoch": 2
+      "live_epoch": 8,
+      "live_identity_updates": 1776
     },
     {
       "arm": "MARGIN_ENERGY",
@@ -2419,7 +2423,8 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 455128,
       "gpu": 4,
-      "live_epoch": 2
+      "live_epoch": 8,
+      "live_identity_updates": 1776
     },
     {
       "arm": "CE_ENERGY",
@@ -2860,10 +2865,24 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 455215,
       "gpu": 5,
-      "live_epoch": 2
+      "live_epoch": 8,
+      "live_identity_updates": 1776
     }
   ],
   "registered_at": "2026-10-12T00:49:26+00:00",
   "execution_commit": "f3522b11b75d2617effea056e0acecab6674a6a7",
-  "delivery_verdict": "VERIFIED"
+  "delivery_verdict": "VERIFIED",
+  "progress": {
+    "read_at": 1791767011.7378237,
+    "active_processes_verified": 6,
+    "completed_rows": 0,
+    "epoch_range": [
+      8,
+      8
+    ],
+    "source_prefix_steps": 5677,
+    "source_prefix_evidence": "evidence/source_prefix_r01.json",
+    "target_results_available": false,
+    "goal_status": "NOT_DEMONSTRATED"
+  }
 }

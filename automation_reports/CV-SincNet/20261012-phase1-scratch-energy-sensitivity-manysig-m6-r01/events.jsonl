@@ -1,3 +1,4 @@
 {"at": "2026-10-12T00:49:26+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"event": "LOCAL_VERIFIED", "time": 1791766265.0065749, "matrix": 6, "review": "PASS", "CPU_CUDA_multilevel": "PASS", "target_access": false}
 {"event": "LAUNCH_VERIFIED", "time": 1791766459.4600353, "launched": 6, "checked": 6, "matrix": 6, "execution_commit": "f3522b11b75d2617effea056e0acecab6674a6a7"}
+{"event": "SOURCE_PREFIX_AND_IDENTIFIABILITY_VERIFIED", "time": 1791767135.1859174, "read_at": 1791767011.7378237, "active_processes_verified": 6, "completed_rows": 0, "epoch_range": [8, 8], "source_prefix_steps": 5677, "source_prefix_evidence": "evidence/source_prefix_r01.json", "target_results_available": false, "goal_status": "NOT_DEMONSTRATED", "training_mutated": false}

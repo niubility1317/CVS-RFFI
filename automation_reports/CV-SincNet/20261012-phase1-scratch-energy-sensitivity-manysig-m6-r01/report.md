@@ -65,3 +65,6 @@ U 使用原始纯 CE E20 的另外两个 seed 的固定概率均值，ALL soft K
 
 
 发布 VERIFIED：执行提交 `f3522b11b75d2617effea056e0acecab6674a6a7`，dispatcher PID 454039。已启动 6/6 行，6 行的实际配置、无学生权重继承、进程和首轮日志核实通过，待运行 0 行；每卡总进程不超过 3。训练完成后逐行自动 clean 测试。当前无本批最终测试成绩，84% 目标待验证。
+
+
+源侧进展：六进程均实时核实存活，当前完成8轮；所有行444步固定校准正常。早期完整前缀5677条核验见[source_prefix_interpretation.md](source_prefix_interpretation.md)。关于混合方差无法唯一约束身份对应关系的合成反例与下一步源诊断范围见[moment_identifiability_research.md](moment_identifiability_research.md)，CPU/CUDA检查通过。新增工具不进入现有训练导入路径，未修改已发布执行提交。当前无本批最终clean结果，84%目标仍未证明。

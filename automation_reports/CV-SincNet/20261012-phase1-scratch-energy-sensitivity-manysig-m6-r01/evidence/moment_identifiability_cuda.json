@@ -1,0 +1,51 @@
+{
+  "status": "PASS",
+  "device": "cuda",
+  "synthetic_only": true,
+  "source_IQ": false,
+  "target_access": false,
+  "model_updates": 0,
+  "counterexample": {
+    "mixed_variance_penalty": 0.0,
+    "class_receiver_interaction": 0.1333333333333334,
+    "full_covariance_max_domain_difference": 6.938893903907228e-18,
+    "same_complete_unconditional_distribution": true,
+    "interpretation": "Counterexample only: conditional class correspondence differs while every label-blind distribution moment agrees."
+  },
+  "finite_population_expectation": [
+    {
+      "interaction_shift": 0.0,
+      "exact": 0.0,
+      "cross_expectation": 8.673617379884047e-19,
+      "same_batch_square_expectation": 0.08125000000000002,
+      "negative_cross_draws": 94,
+      "AB_combinations": 256
+    },
+    {
+      "interaction_shift": 0.6,
+      "exact": 0.011249999999999996,
+      "cross_expectation": 0.011249999999999991,
+      "same_batch_square_expectation": 0.0925,
+      "negative_cross_draws": 110,
+      "AB_combinations": 256
+    }
+  ],
+  "exact_decomposition": {
+    "total": 1.0352656812290535,
+    "identity": 0.024503705322945976,
+    "receiver": 0.013632199177542173,
+    "interaction": 0.10025507259413323,
+    "within": 0.896874704134432
+  },
+  "additive_TX_RX_invariance": true,
+  "synthetic_convolution_CE_mixed_derivative": {
+    "loss": 7.950571501064444e-10,
+    "gradient_norm": 4.653250258720414e-09,
+    "levels": [
+      "time_down",
+      "t2.pool"
+    ],
+    "model_parameters_buffers_modes_RNG_gradients_unchanged": true
+  },
+  "caveat": "No actual-source severity, unknown-RX effect, optimization advantage or target performance has been measured by this audit."
+}
