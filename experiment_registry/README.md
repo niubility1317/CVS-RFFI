@@ -437,3 +437,8 @@
 ## 本轮关系互补与源端结论
 
 - [普通 cos 头：单轨迹30轮权重平均与末轮配对](../automation_reports/CV-SincNet/20261013-phase1-swa30-source-manysig-s2026092701-r01/report.md)（LOCAL_VERIFIED）
+
+## 本轮关系互补与源端结论
+
+- [普通 cos 头：跨 RX 元反馈选择 U 更新，30 轮](../automation_reports/CV-SincNet/20261013-phase1-cross-rx-feedback-source-manysig-s2026092701-r01/report.md)（ANALYZED）
+- [普通 cos 头：单轨迹30轮权重平均与末轮配对](../automation_reports/CV-SincNet/20261013-phase1-swa30-source-manysig-s2026092701-r01/report.md)（ANALYZED）

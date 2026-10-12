@@ -635,7 +635,8 @@
           "nonnegative_RX_each": 4,
           "worst_RX_noninferiority_each": 0.01
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "SWA-RX3-s2026092701",
@@ -1158,7 +1159,8 @@
           "nonnegative_RX_each": 4,
           "worst_RX_noninferiority_each": 0.01
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "SWA-RX4-s2026092701",
@@ -1681,7 +1683,8 @@
           "nonnegative_RX_each": 4,
           "worst_RX_noninferiority_each": 0.01
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "SWA-RX6-s2026092701",
@@ -2204,7 +2207,8 @@
           "nonnegative_RX_each": 4,
           "worst_RX_noninferiority_each": 0.01
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "SWA-RX8-s2026092701",
@@ -2727,7 +2731,8 @@
           "nonnegative_RX_each": 4,
           "worst_RX_noninferiority_each": 0.01
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     }
   ],
   "notes": [
@@ -2739,7 +2744,28 @@
     "IndependentfromcurrentlyhealthycrossRX Ufeedback15rows;nohotmodify/restart/stop oldrun;sharedcapacitylock totalGPUexperimentprocesses<=3/free>=12000MB.",
     "Basis uploadeduserreport sourceerrorcomplement evidence and https://arxiv.org/abs/1803.05407 ;currentAdamW schedule/window taskvariant,notoriginalSGD paper guarantee. Existingbenchmarkexposed."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-12T16:28:39+00:00",
-  "replaces_run_id": null
+  "replaces_run_id": null,
+  "execution_commit": "2a2232e6984e1b6413937126ebb3ad4d55e3968f",
+  "delivery_verdict": "VERIFIED",
+  "live_readback_ref": "local_artifacts/cvs_swa30_20261013_r01/readback.json",
+  "source_eligibility": false,
+  "source_result_summary": [
+    {
+      "readout": "CE30",
+      "mean": 0.6152222216129303,
+      "worst_RX": 0.3898148238658905
+    },
+    {
+      "readout": "FINAL",
+      "mean": 0.6150370359420776,
+      "worst_RX": 0.38203704357147217
+    },
+    {
+      "readout": "SWA",
+      "mean": 0.6171111226081848,
+      "worst_RX": 0.40037035942077637
+    }
+  ]
 }

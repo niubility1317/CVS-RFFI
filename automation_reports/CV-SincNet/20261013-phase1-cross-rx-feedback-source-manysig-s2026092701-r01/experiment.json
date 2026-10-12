@@ -683,7 +683,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "UNIFORM_SSL-RX1-s2026092701",
@@ -1250,7 +1251,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "META_SSL-RX1-s2026092701",
@@ -1817,7 +1819,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "CE_MATCHED-RX3-s2026092701",
@@ -2384,7 +2387,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "UNIFORM_SSL-RX3-s2026092701",
@@ -2951,7 +2955,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "META_SSL-RX3-s2026092701",
@@ -3518,7 +3523,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "CE_MATCHED-RX4-s2026092701",
@@ -4085,7 +4091,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "UNIFORM_SSL-RX4-s2026092701",
@@ -4652,7 +4659,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "META_SSL-RX4-s2026092701",
@@ -5219,7 +5227,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "CE_MATCHED-RX6-s2026092701",
@@ -5786,7 +5795,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "UNIFORM_SSL-RX6-s2026092701",
@@ -6353,7 +6363,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "META_SSL-RX6-s2026092701",
@@ -6920,7 +6931,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "CE_MATCHED-RX8-s2026092701",
@@ -7487,7 +7499,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "UNIFORM_SSL-RX8-s2026092701",
@@ -8054,7 +8067,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "META_SSL-RX8-s2026092701",
@@ -8621,7 +8635,8 @@
           "sevenviews": true,
           "truthlast": true
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     }
   ],
   "notes": [
@@ -8634,7 +8649,7 @@
     "Report basis userattached research;reference Ren2018 https://proceedings.mlr.press/v80/ren18a.html ;task adapts feedback from trainingL acrossRX,not original cleanvalidationprotocol. SWA heldreserve;no crossseed parameteraverage.",
     "Oldensemblealreadyfullytested81.3254% historicalthreeprimaryseedclean;retainednotnewclassifierroute;oracle80 own separate80/0/20 complete,neverinheritweights/unlockweakU."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-12T16:08:54+00:00",
   "replaces_run_id": null,
   "execution_commit": "d124f6ca873b573b1812dc4a1476773ec9a49172",
@@ -8661,6 +8676,24 @@
       "positive_groups": 11,
       "gradient_ratio_median": 0.18950338259481256,
       "gradient_ratio_mean": 3.4604242348258465
+    }
+  ],
+  "source_eligibility": false,
+  "source_result_summary": [
+    {
+      "arm": "CE_MATCHED",
+      "mean": 0.6013333320617675,
+      "worst_RX": 0.4009259343147278
+    },
+    {
+      "arm": "UNIFORM_SSL",
+      "mean": 0.6021111071109772,
+      "worst_RX": 0.4053703844547272
+    },
+    {
+      "arm": "META_SSL",
+      "mean": 0.6044814884662628,
+      "worst_RX": 0.4046296179294586
     }
   ]
 }
