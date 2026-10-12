@@ -1,6 +1,6 @@
 {
   "run_id": "20261012-phase1-scratch-bidirectional-style-manysig-m18-r01",
-  "read_at": 1791764907.0020182,
+  "read_at": 1791765892.1484437,
   "teacher_cache": {
     "schema": "e20_peer_probability_cache_v1",
     "status": "COMPLETE",
@@ -198,7 +198,7 @@
     "deployment_scope": "Phase1 ground U supervision only; no teacher cache in prediction model",
     "teacher_training_cost": "Three existing original E20 models reused; historical training cost is not zero"
   },
-  "status": "PARTIAL",
+  "status": "COMPLETE",
   "completed_rows": [
     "DELAY_POS-s2026092701",
     "DELAY_BIDIR-s2026092701",
@@ -215,12 +215,11 @@
     "DELAY_POS-s2026092703",
     "DELAY_BIDIR-s2026092703",
     "CAP_POS-s2026092703",
-    "DELAYCAP_POS-s2026092703"
-  ],
-  "missing_rows": [
     "CAP_BIDIR-s2026092703",
+    "DELAYCAP_POS-s2026092703",
     "DELAYCAP_BIDIR-s2026092703"
   ],
+  "missing_rows": [],
   "summary": [
     {
       "arm": "P0",
@@ -330,12 +329,13 @@
       "arm": "CAP_BIDIR",
       "seeds": [
         2026092701,
-        2026092702
+        2026092702,
+        2026092703
       ],
-      "seed_count": 2,
-      "accuracy_mean": 0.7851994047619048,
-      "accuracy_sd": 0.02709313303867747,
-      "complete_three_seeds": false,
+      "seed_count": 3,
+      "accuracy_mean": 0.7918670634920635,
+      "accuracy_sd": 0.02236944227626885,
+      "complete_three_seeds": true,
       "per_seed": [
         {
           "seed": 2026092701,
@@ -344,6 +344,10 @@
         {
           "seed": 2026092702,
           "accuracy": 0.7660416666666666
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.805202380952381
         }
       ]
     },
@@ -377,12 +381,13 @@
       "arm": "DELAYCAP_BIDIR",
       "seeds": [
         2026092701,
-        2026092702
+        2026092702,
+        2026092703
       ],
-      "seed_count": 2,
-      "accuracy_mean": 0.7847797619047618,
-      "accuracy_sd": 0.023906943554402347,
-      "complete_three_seeds": false,
+      "seed_count": 3,
+      "accuracy_mean": 0.7912162698412698,
+      "accuracy_sd": 0.02024986119228671,
+      "complete_three_seeds": true,
       "per_seed": [
         {
           "seed": 2026092701,
@@ -391,6 +396,10 @@
         {
           "seed": 2026092702,
           "accuracy": 0.767875
+        },
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8040892857142857
         }
       ]
     }
@@ -14467,6 +14476,944 @@
       "net_correct_gain": 374
     },
     {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.805202380952381,
+      "macro_f1": 0.8031045816654591,
+      "macro_accuracy": 0.8052023809523808,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26651,
+          353,
+          250,
+          690,
+          44,
+          12
+        ],
+        [
+          469,
+          13960,
+          52,
+          13402,
+          84,
+          33
+        ],
+        [
+          1108,
+          1224,
+          23203,
+          182,
+          423,
+          1860
+        ],
+        [
+          1804,
+          7210,
+          843,
+          18070,
+          21,
+          52
+        ],
+        [
+          7,
+          13,
+          14,
+          10,
+          27950,
+          6
+        ],
+        [
+          151,
+          99,
+          746,
+          49,
+          1515,
+          25440
+        ]
+      ],
+      "NLL": 0.9119852185249329,
+      "parent_fix_count": 3712,
+      "parent_break_count": 5618,
+      "net_correct_gain": -1906
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8334583333333333,
+      "macro_f1": 0.8196699025055544,
+      "macro_accuracy": 0.8334583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3984,
+          7,
+          5,
+          2,
+          2,
+          0
+        ],
+        [
+          19,
+          1308,
+          0,
+          2672,
+          1,
+          0
+        ],
+        [
+          13,
+          1,
+          3429,
+          2,
+          1,
+          554
+        ],
+        [
+          76,
+          62,
+          1,
+          3861,
+          0,
+          0
+        ],
+        [
+          1,
+          5,
+          4,
+          3,
+          3985,
+          2
+        ],
+        [
+          2,
+          34,
+          513,
+          2,
+          13,
+          3436
+        ]
+      ],
+      "NLL": 0.7846596837043762,
+      "parent_fix_count": 641,
+      "parent_break_count": 614,
+      "net_correct_gain": 27
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7247083333333333,
+      "macro_f1": 0.6963658195270902,
+      "macro_accuracy": 0.7247083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3708,
+          6,
+          0,
+          286,
+          0,
+          0
+        ],
+        [
+          19,
+          2707,
+          0,
+          1272,
+          2,
+          0
+        ],
+        [
+          311,
+          278,
+          3276,
+          2,
+          24,
+          109
+        ],
+        [
+          16,
+          3217,
+          697,
+          18,
+          4,
+          48
+        ],
+        [
+          1,
+          2,
+          0,
+          1,
+          3994,
+          2
+        ],
+        [
+          0,
+          3,
+          0,
+          1,
+          306,
+          3690
+        ]
+      ],
+      "NLL": 1.411050796508789,
+      "parent_fix_count": 455,
+      "parent_break_count": 1058,
+      "net_correct_gain": -603
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8537083333333333,
+      "macro_f1": 0.8505020485128165,
+      "macro_accuracy": 0.8537083333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3279,
+          311,
+          230,
+          139,
+          33,
+          8
+        ],
+        [
+          7,
+          1887,
+          15,
+          2013,
+          56,
+          22
+        ],
+        [
+          22,
+          80,
+          3866,
+          17,
+          14,
+          1
+        ],
+        [
+          41,
+          468,
+          9,
+          3477,
+          1,
+          4
+        ],
+        [
+          0,
+          0,
+          2,
+          2,
+          3996,
+          0
+        ],
+        [
+          2,
+          1,
+          11,
+          0,
+          2,
+          3984
+        ]
+      ],
+      "NLL": 0.6261026859283447,
+      "parent_fix_count": 678,
+      "parent_break_count": 486,
+      "net_correct_gain": 192
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.758,
+      "macro_f1": 0.7553363338569506,
+      "macro_accuracy": 0.758,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3975,
+          1,
+          6,
+          8,
+          7,
+          3
+        ],
+        [
+          22,
+          2324,
+          6,
+          1626,
+          12,
+          10
+        ],
+        [
+          24,
+          220,
+          3627,
+          54,
+          38,
+          37
+        ],
+        [
+          36,
+          2030,
+          7,
+          1913,
+          14,
+          0
+        ],
+        [
+          5,
+          6,
+          7,
+          4,
+          3977,
+          1
+        ],
+        [
+          147,
+          60,
+          212,
+          46,
+          1159,
+          2376
+        ]
+      ],
+      "NLL": 1.3773492574691772,
+      "parent_fix_count": 536,
+      "parent_break_count": 952,
+      "net_correct_gain": -416
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8692916666666667,
+      "macro_f1": 0.8573573820217133,
+      "macro_accuracy": 0.8692916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3844,
+          3,
+          9,
+          142,
+          1,
+          1
+        ],
+        [
+          18,
+          1346,
+          11,
+          2623,
+          2,
+          0
+        ],
+        [
+          7,
+          73,
+          3766,
+          13,
+          131,
+          10
+        ],
+        [
+          5,
+          45,
+          2,
+          3947,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          1,
+          8,
+          0,
+          31,
+          3960
+        ]
+      ],
+      "NLL": 0.5532629489898682,
+      "parent_fix_count": 171,
+      "parent_break_count": 278,
+      "net_correct_gain": -107
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.770375,
+      "macro_f1": 0.7532425383398295,
+      "macro_accuracy": 0.770375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          382,
+          2339,
+          19,
+          1251,
+          8,
+          1
+        ],
+        [
+          721,
+          1,
+          3277,
+          0,
+          1,
+          0
+        ],
+        [
+          1630,
+          1365,
+          127,
+          878,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3,
+          3995
+        ]
+      ],
+      "NLL": 1.0669821500778198,
+      "parent_fix_count": 539,
+      "parent_break_count": 1180,
+      "net_correct_gain": -641
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.826875,
+      "macro_f1": 0.8142792340868376,
+      "macro_accuracy": 0.8268749999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3861,
+          25,
+          0,
+          113,
+          1,
+          0
+        ],
+        [
+          2,
+          2049,
+          1,
+          1945,
+          3,
+          0
+        ],
+        [
+          10,
+          571,
+          1962,
+          94,
+          214,
+          1149
+        ],
+        [
+          0,
+          23,
+          0,
+          3976,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          3999
+        ]
+      ],
+      "NLL": 0.5644885897636414,
+      "parent_fix_count": 692,
+      "parent_break_count": 1050,
+      "net_correct_gain": -358
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9518214285714286,
+      "macro_f1": 0.1625526827810409,
+      "macro_accuracy": 0.9518214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26651,
+          353,
+          250,
+          690,
+          44,
+          12
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.1581556349992752,
+      "parent_fix_count": 332,
+      "parent_break_count": 417,
+      "net_correct_gain": -85
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.49857142857142855,
+      "macro_f1": 0.11089926914521768,
+      "macro_accuracy": 0.49857142857142855,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          469,
+          13960,
+          52,
+          13402,
+          84,
+          33
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.241168975830078,
+      "parent_fix_count": 1001,
+      "parent_break_count": 1367,
+      "net_correct_gain": -366
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8286785714285714,
+      "macro_f1": 0.15105234719319832,
+      "macro_accuracy": 0.8286785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1108,
+          1224,
+          23203,
+          182,
+          423,
+          1860
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.5104926824569702,
+      "parent_fix_count": 516,
+      "parent_break_count": 2871,
+      "net_correct_gain": -2355
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6453571428571429,
+      "macro_f1": 0.13074307213660372,
+      "macro_accuracy": 0.6453571428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1804,
+          7210,
+          843,
+          18070,
+          21,
+          52
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.217772960662842,
+      "parent_fix_count": 480,
+      "parent_break_count": 439,
+      "net_correct_gain": 41
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9982142857142857,
+      "macro_f1": 0.16651772415847482,
+      "macro_accuracy": 0.9982142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          7,
+          13,
+          14,
+          10,
+          27950,
+          6
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.006547607947140932,
+      "parent_fix_count": 10,
+      "parent_break_count": 9,
+      "net_correct_gain": 1
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9085714285714286,
+      "macro_f1": 0.15868263473053892,
+      "macro_accuracy": 0.9085714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          151,
+          99,
+          746,
+          49,
+          1515,
+          25440
+        ]
+      ],
+      "NLL": 0.33777299523353577,
+      "parent_fix_count": 1373,
+      "parent_break_count": 515,
+      "net_correct_gain": 858
+    },
+    {
       "row_id": "DELAYCAP_POS-s2026092703",
       "arm": "DELAYCAP_POS",
       "model_seed": 2026092703,
@@ -15403,6 +16350,944 @@
       "parent_fix_count": 1081,
       "parent_break_count": 839,
       "net_correct_gain": 242
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8040892857142857,
+      "macro_f1": 0.8017286720240179,
+      "macro_accuracy": 0.8040892857142858,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26646,
+          351,
+          229,
+          713,
+          50,
+          11
+        ],
+        [
+          497,
+          13758,
+          58,
+          13577,
+          74,
+          36
+        ],
+        [
+          1134,
+          992,
+          23447,
+          157,
+          343,
+          1927
+        ],
+        [
+          1762,
+          7117,
+          907,
+          18131,
+          21,
+          62
+        ],
+        [
+          8,
+          12,
+          16,
+          9,
+          27950,
+          5
+        ],
+        [
+          255,
+          175,
+          822,
+          40,
+          1553,
+          25155
+        ]
+      ],
+      "NLL": 0.9205753207206726,
+      "parent_fix_count": 3706,
+      "parent_break_count": 5799,
+      "net_correct_gain": -2093
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8292916666666666,
+      "macro_f1": 0.8153055863027246,
+      "macro_accuracy": 0.8292916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3987,
+          7,
+          3,
+          2,
+          1,
+          0
+        ],
+        [
+          17,
+          1300,
+          0,
+          2682,
+          1,
+          0
+        ],
+        [
+          7,
+          1,
+          3363,
+          3,
+          0,
+          626
+        ],
+        [
+          74,
+          58,
+          1,
+          3867,
+          0,
+          0
+        ],
+        [
+          1,
+          5,
+          5,
+          2,
+          3985,
+          2
+        ],
+        [
+          2,
+          19,
+          564,
+          1,
+          13,
+          3401
+        ]
+      ],
+      "NLL": 0.821158230304718,
+      "parent_fix_count": 602,
+      "parent_break_count": 675,
+      "net_correct_gain": -73
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.72025,
+      "macro_f1": 0.6925371884566158,
+      "macro_accuracy": 0.72025,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3681,
+          6,
+          0,
+          313,
+          0,
+          0
+        ],
+        [
+          18,
+          2682,
+          0,
+          1298,
+          2,
+          0
+        ],
+        [
+          282,
+          220,
+          3394,
+          2,
+          10,
+          92
+        ],
+        [
+          16,
+          3210,
+          687,
+          23,
+          5,
+          59
+        ],
+        [
+          1,
+          2,
+          1,
+          1,
+          3994,
+          1
+        ],
+        [
+          0,
+          3,
+          0,
+          1,
+          484,
+          3512
+        ]
+      ],
+      "NLL": 1.4214932918548584,
+      "parent_fix_count": 407,
+      "parent_break_count": 1117,
+      "net_correct_gain": -710
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.855375,
+      "macro_f1": 0.8520373325399918,
+      "macro_accuracy": 0.8553749999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3294,
+          304,
+          211,
+          143,
+          40,
+          8
+        ],
+        [
+          7,
+          1888,
+          18,
+          2018,
+          46,
+          23
+        ],
+        [
+          25,
+          60,
+          3873,
+          18,
+          22,
+          2
+        ],
+        [
+          40,
+          450,
+          12,
+          3494,
+          1,
+          3
+        ],
+        [
+          0,
+          0,
+          2,
+          2,
+          3996,
+          0
+        ],
+        [
+          2,
+          2,
+          10,
+          0,
+          2,
+          3984
+        ]
+      ],
+      "NLL": 0.6256871223449707,
+      "parent_fix_count": 709,
+      "parent_break_count": 477,
+      "net_correct_gain": 232
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7572916666666667,
+      "macro_f1": 0.753760701478543,
+      "macro_accuracy": 0.7572916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3975,
+          2,
+          7,
+          7,
+          6,
+          3
+        ],
+        [
+          20,
+          2305,
+          6,
+          1645,
+          12,
+          12
+        ],
+        [
+          24,
+          181,
+          3681,
+          40,
+          42,
+          32
+        ],
+        [
+          37,
+          2016,
+          7,
+          1927,
+          13,
+          0
+        ],
+        [
+          6,
+          5,
+          7,
+          4,
+          3977,
+          1
+        ],
+        [
+          250,
+          148,
+          236,
+          38,
+          1018,
+          2310
+        ]
+      ],
+      "NLL": 1.3888695240020752,
+      "parent_fix_count": 475,
+      "parent_break_count": 908,
+      "net_correct_gain": -433
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.869125,
+      "macro_f1": 0.8566838636664675,
+      "macro_accuracy": 0.869125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3866,
+          3,
+          8,
+          121,
+          2,
+          0
+        ],
+        [
+          18,
+          1323,
+          12,
+          2645,
+          2,
+          0
+        ],
+        [
+          7,
+          76,
+          3766,
+          16,
+          124,
+          11
+        ],
+        [
+          3,
+          45,
+          1,
+          3950,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          1,
+          3,
+          10,
+          0,
+          32,
+          3954
+        ]
+      ],
+      "NLL": 0.5680636167526245,
+      "parent_fix_count": 183,
+      "parent_break_count": 294,
+      "net_correct_gain": -111
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.766375,
+      "macro_f1": 0.7492828705161904,
+      "macro_accuracy": 0.766375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          415,
+          2286,
+          21,
+          1269,
+          8,
+          1
+        ],
+        [
+          777,
+          2,
+          3220,
+          0,
+          1,
+          0
+        ],
+        [
+          1592,
+          1317,
+          199,
+          892,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3,
+          3995
+        ]
+      ],
+      "NLL": 1.0740351676940918,
+      "parent_fix_count": 520,
+      "parent_break_count": 1257,
+      "net_correct_gain": -737
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8309166666666666,
+      "macro_f1": 0.8201183316668489,
+      "macro_accuracy": 0.8309166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3843,
+          29,
+          0,
+          127,
+          1,
+          0
+        ],
+        [
+          2,
+          1974,
+          1,
+          2020,
+          3,
+          0
+        ],
+        [
+          12,
+          452,
+          2150,
+          78,
+          144,
+          1164
+        ],
+        [
+          0,
+          21,
+          0,
+          3978,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          3999
+        ]
+      ],
+      "NLL": 0.5447202920913696,
+      "parent_fix_count": 810,
+      "parent_break_count": 1071,
+      "net_correct_gain": -261
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9516428571428571,
+      "macro_f1": 0.16253705669216412,
+      "macro_accuracy": 0.9516428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26646,
+          351,
+          229,
+          713,
+          50,
+          11
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.15823739767074585,
+      "parent_fix_count": 347,
+      "parent_break_count": 437,
+      "net_correct_gain": -90
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4913571428571429,
+      "macro_f1": 0.10982326739786387,
+      "macro_accuracy": 0.4913571428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          497,
+          13758,
+          58,
+          13577,
+          74,
+          36
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.3096587657928467,
+      "parent_fix_count": 945,
+      "parent_break_count": 1513,
+      "net_correct_gain": -568
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8373928571428572,
+      "macro_f1": 0.1519168594216702,
+      "macro_accuracy": 0.8373928571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1134,
+          992,
+          23447,
+          157,
+          343,
+          1927
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.4798409342765808,
+      "parent_fix_count": 649,
+      "parent_break_count": 2760,
+      "net_correct_gain": -2111
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6475357142857143,
+      "macro_f1": 0.13101096153707195,
+      "macro_accuracy": 0.6475357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1762,
+          7117,
+          907,
+          18131,
+          21,
+          62
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.203077793121338,
+      "parent_fix_count": 513,
+      "parent_break_count": 411,
+      "net_correct_gain": 102
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9982142857142857,
+      "macro_f1": 0.16651772415847482,
+      "macro_accuracy": 0.9982142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          8,
+          12,
+          16,
+          9,
+          27950,
+          5
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.00633271224796772,
+      "parent_fix_count": 10,
+      "parent_break_count": 9,
+      "net_correct_gain": 1
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.8983928571428571,
+      "macro_f1": 0.15774621390273727,
+      "macro_accuracy": 0.8983928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          255,
+          175,
+          822,
+          40,
+          1553,
+          25155
+        ]
+      ],
+      "NLL": 0.3663043975830078,
+      "parent_fix_count": 1242,
+      "parent_break_count": 669,
+      "net_correct_gain": 573
     }
   ],
   "day_records": [
@@ -19427,6 +21312,274 @@
       "net_correct_gain": -537
     },
     {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7942857142857143,
+      "macro_f1": 0.7926754331268028,
+      "macro_accuracy": 0.7942857142857144,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6404,
+          200,
+          64,
+          321,
+          7,
+          4
+        ],
+        [
+          110,
+          3423,
+          20,
+          3388,
+          47,
+          12
+        ],
+        [
+          80,
+          375,
+          5713,
+          117,
+          37,
+          678
+        ],
+        [
+          437,
+          1478,
+          375,
+          4704,
+          5,
+          1
+        ],
+        [
+          2,
+          2,
+          3,
+          1,
+          6991,
+          1
+        ],
+        [
+          6,
+          2,
+          147,
+          45,
+          675,
+          6125
+        ]
+      ],
+      "NLL": 0.9074270129203796,
+      "parent_fix_count": 1061,
+      "parent_break_count": 1819,
+      "net_correct_gain": -758
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8116428571428571,
+      "macro_f1": 0.8090919928512936,
+      "macro_accuracy": 0.8116428571428571,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6641,
+          56,
+          179,
+          91,
+          30,
+          3
+        ],
+        [
+          136,
+          3520,
+          9,
+          3329,
+          4,
+          2
+        ],
+        [
+          265,
+          294,
+          6098,
+          38,
+          143,
+          162
+        ],
+        [
+          450,
+          2192,
+          345,
+          3990,
+          4,
+          19
+        ],
+        [
+          2,
+          3,
+          3,
+          4,
+          6985,
+          3
+        ],
+        [
+          4,
+          6,
+          9,
+          1,
+          125,
+          6855
+        ]
+      ],
+      "NLL": 0.8614217638969421,
+      "parent_fix_count": 672,
+      "parent_break_count": 1303,
+      "net_correct_gain": -631
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.764547619047619,
+      "macro_f1": 0.7609325444548117,
+      "macro_accuracy": 0.7645476190476191,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6914,
+          25,
+          3,
+          50,
+          4,
+          4
+        ],
+        [
+          156,
+          2783,
+          11,
+          4024,
+          13,
+          13
+        ],
+        [
+          417,
+          509,
+          5651,
+          18,
+          150,
+          255
+        ],
+        [
+          630,
+          2312,
+          82,
+          3964,
+          10,
+          2
+        ],
+        [
+          2,
+          6,
+          5,
+          5,
+          6981,
+          1
+        ],
+        [
+          136,
+          35,
+          509,
+          2,
+          500,
+          5818
+        ]
+      ],
+      "NLL": 1.153530478477478,
+      "parent_fix_count": 1051,
+      "parent_break_count": 1149,
+      "net_correct_gain": -98
+    },
+    {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "arm": "CAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8503333333333334,
+      "macro_f1": 0.8489622199972539,
+      "macro_accuracy": 0.8503333333333334,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6692,
+          72,
+          4,
+          228,
+          3,
+          1
+        ],
+        [
+          67,
+          4234,
+          12,
+          2661,
+          20,
+          6
+        ],
+        [
+          346,
+          46,
+          5741,
+          9,
+          93,
+          765
+        ],
+        [
+          287,
+          1228,
+          41,
+          5412,
+          2,
+          30
+        ],
+        [
+          1,
+          2,
+          3,
+          0,
+          6993,
+          1
+        ],
+        [
+          5,
+          56,
+          81,
+          1,
+          215,
+          6642
+        ]
+      ],
+      "NLL": 0.725561261177063,
+      "parent_fix_count": 928,
+      "parent_break_count": 1347,
+      "net_correct_gain": -419
+    },
+    {
       "row_id": "DELAYCAP_POS-s2026092703",
       "arm": "DELAYCAP_POS",
       "model_seed": 2026092703,
@@ -19693,6 +21846,274 @@
       "parent_fix_count": 750,
       "parent_break_count": 1206,
       "net_correct_gain": -456
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7929285714285714,
+      "macro_f1": 0.7909874323004017,
+      "macro_accuracy": 0.7929285714285713,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6429,
+          190,
+          52,
+          318,
+          8,
+          3
+        ],
+        [
+          131,
+          3410,
+          20,
+          3389,
+          36,
+          14
+        ],
+        [
+          83,
+          321,
+          5719,
+          110,
+          39,
+          728
+        ],
+        [
+          424,
+          1490,
+          365,
+          4716,
+          5,
+          0
+        ],
+        [
+          2,
+          2,
+          3,
+          1,
+          6991,
+          1
+        ],
+        [
+          7,
+          3,
+          164,
+          37,
+          751,
+          6038
+        ]
+      ],
+      "NLL": 0.9210637807846069,
+      "parent_fix_count": 1065,
+      "parent_break_count": 1880,
+      "net_correct_gain": -815
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8106428571428571,
+      "macro_f1": 0.8079040645080727,
+      "macro_accuracy": 0.8106428571428572,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6631,
+          62,
+          171,
+          98,
+          34,
+          4
+        ],
+        [
+          144,
+          3473,
+          9,
+          3368,
+          4,
+          2
+        ],
+        [
+          289,
+          289,
+          6163,
+          25,
+          117,
+          117
+        ],
+        [
+          420,
+          2139,
+          408,
+          4000,
+          4,
+          29
+        ],
+        [
+          3,
+          2,
+          4,
+          4,
+          6985,
+          2
+        ],
+        [
+          6,
+          10,
+          11,
+          1,
+          177,
+          6795
+        ]
+      ],
+      "NLL": 0.8685178756713867,
+      "parent_fix_count": 685,
+      "parent_break_count": 1358,
+      "net_correct_gain": -673
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7646428571428572,
+      "macro_f1": 0.7600180753628801,
+      "macro_accuracy": 0.7646428571428571,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6900,
+          28,
+          3,
+          61,
+          5,
+          3
+        ],
+        [
+          156,
+          2693,
+          12,
+          4112,
+          13,
+          14
+        ],
+        [
+          398,
+          338,
+          5812,
+          12,
+          106,
+          334
+        ],
+        [
+          646,
+          2286,
+          75,
+          3981,
+          10,
+          2
+        ],
+        [
+          2,
+          6,
+          6,
+          4,
+          6981,
+          1
+        ],
+        [
+          237,
+          22,
+          559,
+          2,
+          432,
+          5748
+        ]
+      ],
+      "NLL": 1.1632788181304932,
+      "parent_fix_count": 1069,
+      "parent_break_count": 1163,
+      "net_correct_gain": -94
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "arm": "DELAYCAP_BIDIR",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8481428571428572,
+      "macro_f1": 0.8468876586618349,
+      "macro_accuracy": 0.8481428571428572,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6686,
+          71,
+          3,
+          236,
+          3,
+          1
+        ],
+        [
+          66,
+          4182,
+          17,
+          2708,
+          21,
+          6
+        ],
+        [
+          364,
+          44,
+          5753,
+          10,
+          81,
+          748
+        ],
+        [
+          272,
+          1202,
+          59,
+          5434,
+          2,
+          31
+        ],
+        [
+          1,
+          2,
+          3,
+          0,
+          6993,
+          1
+        ],
+        [
+          5,
+          140,
+          88,
+          0,
+          193,
+          6574
+        ]
+      ],
+      "NLL": 0.7294405102729797,
+      "parent_fix_count": 887,
+      "parent_break_count": 1398,
+      "net_correct_gain": -511
     }
   ],
   "parent_records": [
@@ -27970,6 +30391,381 @@
       }
     },
     {
+      "row_id": "CAP_BIDIR-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 6.261601141071878
+        },
+        "wall_seconds": 7.531533222994767,
+        "peak_cuda_allocated_bytes": 91517440,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1808089088
+      },
+      "source": {
+        "parent_checkpoint": null,
+        "parent_epochs": 0,
+        "incremental_epochs": 20,
+        "total_epochs": 20,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 3873.758562932024,
+          "identity_training_and_source_diagnostics_including_delayed_calibration_seconds": 3873.758562932024,
+          "calibration_inside_main_timer_seconds": 0.0,
+          "calibration_ready_events": 1,
+          "calibration_after_identity_updates": 0,
+          "incremental_total_seconds_including_warmup": 3883.6478485639673,
+          "head_warmup": {
+            "status": "NOT_APPLICABLE",
+            "enabled": false,
+            "source_L_cache_packets": 0,
+            "cache_forward_calls": 0,
+            "head_packet_occurrences": 0,
+            "optimizer_steps": 0,
+            "seconds": 0.0,
+            "cache_tensor_bytes": 0,
+            "optimizer_state_tensor_bytes": 0,
+            "base_state_unchanged": true,
+            "backbone_updates": 0,
+            "peak_cuda_memory_bytes": 0,
+            "rss_bytes": null,
+            "auxiliary_inheritance": false
+          },
+          "fishr_calibration": {
+            "status": "FIXED_CALIBRATION_COMPLETE",
+            "calibration_reference": "own_margin_term",
+            "fixed_coefficients": {
+              "time_down": 1.3221249961059374,
+              "t2.pool": 1.46485381854423
+            },
+            "levels": {
+              "time_down": {
+                "mean_CE_gradient_norm": 2.0019101304185365,
+                "mean_term_gradient_norm": 0.30283220365822655,
+                "uncapped_coefficient": 1.3221249961059374,
+                "coefficient": 1.3221249961059374,
+                "cap_active": false
+              },
+              "t2.pool": {
+                "mean_CE_gradient_norm": 5.141660587484926,
+                "mean_term_gradient_norm": 0.7020032336861269,
+                "uncapped_coefficient": 1.46485381854423,
+                "coefficient": 1.46485381854423,
+                "cap_active": false
+              }
+            },
+            "pairs": 12,
+            "records": [
+              {
+                "pair": 0,
+                "day": 1,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.9838728235944019,
+                    "term_gradient_norm": 0.3080707025992729,
+                    "raw_term": 0.08569851517677307
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 4.994958501979365,
+                    "term_gradient_norm": 0.8477156055876823,
+                    "raw_term": 0.04267813265323639
+                  }
+                },
+                "main_ce": 2.210115909576416,
+                "seconds": 1.635165300918743
+              },
+              {
+                "pair": 1,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.9893123496469214,
+                    "term_gradient_norm": 0.3151149503042003,
+                    "raw_term": 0.09429997205734253
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.007569950837657,
+                    "term_gradient_norm": 0.6523848601555469,
+                    "raw_term": 0.06051843240857124
+                  }
+                },
+                "main_ce": 2.17844557762146,
+                "seconds": 0.6474674220662564
+              },
+              {
+                "pair": 2,
+                "day": 3,
+                "cross_batch_PID_overlap": 5,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.0594562006322295,
+                    "term_gradient_norm": 0.2668933646502995,
+                    "raw_term": 0.0943463146686554
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.321478820258737,
+                    "term_gradient_norm": 0.7441608061809275,
+                    "raw_term": 0.1141498014330864
+                  }
+                },
+                "main_ce": 2.2711684703826904,
+                "seconds": 0.7765617420664057
+              },
+              {
+                "pair": 3,
+                "day": 1,
+                "cross_batch_PID_overlap": 0,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.0742404358718587,
+                    "term_gradient_norm": 0.33055293774273337,
+                    "raw_term": 0.08854106813669205
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.185034882301784,
+                    "term_gradient_norm": 0.88514576996481,
+                    "raw_term": 0.06810054928064346
+                  }
+                },
+                "main_ce": 2.2220284938812256,
+                "seconds": 0.5220817549852654
+              },
+              {
+                "pair": 4,
+                "day": 2,
+                "cross_batch_PID_overlap": 4,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.912975154605862,
+                    "term_gradient_norm": 0.24133066914177245,
+                    "raw_term": 0.07117879390716553
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 4.7154952798037755,
+                    "term_gradient_norm": 0.6259597835581563,
+                    "raw_term": 0.0713002011179924
+                  }
+                },
+                "main_ce": 2.1744225025177,
+                "seconds": 0.4115313879447058
+              },
+              {
+                "pair": 5,
+                "day": 3,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.9714644334753104,
+                    "term_gradient_norm": 0.2677379245308165,
+                    "raw_term": 0.09697306901216507
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.2374641486879066,
+                    "term_gradient_norm": 1.4011123623479456,
+                    "raw_term": 0.18313196301460266
+                  }
+                },
+                "main_ce": 2.2086257934570312,
+                "seconds": 0.3872351640602574
+              },
+              {
+                "pair": 6,
+                "day": 1,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.015127633106847,
+                    "term_gradient_norm": 0.2603892063706237,
+                    "raw_term": 0.07022830843925476
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.218361943770974,
+                    "term_gradient_norm": 0.5369250705684905,
+                    "raw_term": 0.0394078753888607
+                  }
+                },
+                "main_ce": 2.146414041519165,
+                "seconds": 0.5896275460254401
+              },
+              {
+                "pair": 7,
+                "day": 2,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.0375681664823806,
+                    "term_gradient_norm": 0.3636007440159983,
+                    "raw_term": 0.06589227169752121
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.291935828498957,
+                    "term_gradient_norm": 0.25889224023028945,
+                    "raw_term": 0.05260304734110832
+                  }
+                },
+                "main_ce": 2.2423903942108154,
+                "seconds": 0.7676783059723675
+              },
+              {
+                "pair": 8,
+                "day": 3,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.0784818621900016,
+                    "term_gradient_norm": 0.34504586801107756,
+                    "raw_term": 0.1020449697971344
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.5346396487573575,
+                    "term_gradient_norm": 0.798338455408447,
+                    "raw_term": 0.12468938529491425
+                  }
+                },
+                "main_ce": 2.2185051441192627,
+                "seconds": 0.7116142330924049
+              },
+              {
+                "pair": 9,
+                "day": 1,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.0107932658566527,
+                    "term_gradient_norm": 0.2933946431556369,
+                    "raw_term": 0.07471299916505814
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.069747084447638,
+                    "term_gradient_norm": 0.6067107427521492,
+                    "raw_term": 0.052496738731861115
+                  }
+                },
+                "main_ce": 2.196538209915161,
+                "seconds": 0.5809812169754878
+              },
+              {
+                "pair": 10,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.864609520855745,
+                    "term_gradient_norm": 0.2582621283035155,
+                    "raw_term": 0.06804793328046799
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 4.925368622667313,
+                    "term_gradient_norm": 0.45177954661159986,
+                    "raw_term": 0.08991788327693939
+                  }
+                },
+                "main_ce": 2.1923091411590576,
+                "seconds": 0.7361344790551811
+              },
+              {
+                "pair": 11,
+                "day": 3,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.0250197187042285,
+                    "term_gradient_norm": 0.38359330507277195,
+                    "raw_term": 0.12279483675956726
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.197872337807651,
+                    "term_gradient_norm": 0.6149135608674787,
+                    "raw_term": 0.06280522793531418
+                  }
+                },
+                "main_ce": 2.192220449447632,
+                "seconds": 0.582588981022127
+              }
+            ],
+            "extra_source_readouts": 1440,
+            "model_forwards": 24,
+            "seconds": 8.432845458039083,
+            "state_unchanged": true,
+            "RNG_preserved": true,
+            "parameters_buffers_unchanged": true,
+            "modes_preserved": true,
+            "python_numpy_RNG_preserved": true,
+            "source_role": "L_s only",
+            "U_access": false,
+            "V_access": false,
+            "target_access": false,
+            "identity_updates": 0,
+            "head_updates": 0,
+            "auxiliary_heads": 0,
+            "all_layers_calibrated": true,
+            "after_identity_updates": 0,
+            "scheduled_after_identity_updates": 0,
+            "coefficient_formula": "min(cap,0.2*mean(pair_main_CE_gradient_norm)/(mean(own_margin_term_gradient_norm)+eps))",
+            "sampling_namespace": "same twelve source-private calibration pairs as scratch boundary style; own-margin statistic"
+          },
+          "peak_cuda_memory_bytes": 671347200,
+          "trainable_parameters": 177025,
+          "total_parameters": 843134,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "optimizer_state_tensor_bytes": 1416468,
+          "checkpoint_bytes": 4978246,
+          "auxiliary_saved_bytes": 526870,
+          "parent_training_epochs": 0,
+          "incremental_epochs": 20,
+          "total_epochs": 20,
+          "parent_training_cost_reused": false,
+          "scratch_only": true,
+          "scratch_scope": "student_identity_only",
+          "student_initialization_checkpoint_count": 0,
+          "whole_method_pretrained_teachers": true,
+          "frozen_teacher_model_count": 2,
+          "teacher_training_epochs_reused": 40,
+          "historical_model_epochs_including_teachers": 60,
+          "teacher_probability_bank_bytes": 1871100,
+          "teacher_cache_resources_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-bidirectional-style-manysig-m18-r01/peer_cache/completion.json",
+          "teacher_scope": "teacher_parameters=0 means no teacher models resident during student training; extra original E20 training and shared cache forward costs reported separately",
+          "mixed_U_packets_unit": "U MixStyle disabled",
+          "mixed_L_packets_unit": "actual changed L packet-layer occurrences; not distinct packets",
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 119880,
+          "auxiliary_forwards": 1998,
+          "fishr_steps": 999,
+          "mixstyle_steps": 3996,
+          "style_L_packets": 511488,
+          "style_search_forwards": 19980,
+          "style_search_L": 2557440,
+          "mixstyle_U_steps": 0,
+          "mixed_U_packets": 0,
+          "mixed_L_packets": 1000426
+        },
+        "shared_IQ_preparation_reused": true,
+        "training_flops": null,
+        "scope": "random student20; pretrained source-U teacher history and initial calibration separately measured; shared GPU wall cost",
+        "P0_role": "fixed score reference only; never loaded into the student"
+      }
+    },
+    {
       "row_id": "DELAYCAP_POS-s2026092703",
       "prediction": {
         "status": "PREDICTIONS_COMPLETE",
@@ -28343,13 +31139,388 @@
         "scope": "random student20; pretrained source-U teacher history and initial calibration separately measured; shared GPU wall cost",
         "P0_role": "fixed score reference only; never loaded into the student"
       }
+    },
+    {
+      "row_id": "DELAYCAP_BIDIR-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 4.768312924075872
+        },
+        "wall_seconds": 5.981586417998187,
+        "peak_cuda_allocated_bytes": 91517440,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1801347072
+      },
+      "source": {
+        "parent_checkpoint": null,
+        "parent_epochs": 0,
+        "incremental_epochs": 20,
+        "total_epochs": 20,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 3779.257036841009,
+          "identity_training_and_source_diagnostics_including_delayed_calibration_seconds": 3786.6726472940063,
+          "calibration_inside_main_timer_seconds": 7.415610452997498,
+          "calibration_ready_events": 1,
+          "calibration_after_identity_updates": 444,
+          "incremental_total_seconds_including_warmup": 3788.2145533090224,
+          "head_warmup": {
+            "status": "NOT_APPLICABLE",
+            "enabled": false,
+            "source_L_cache_packets": 0,
+            "cache_forward_calls": 0,
+            "head_packet_occurrences": 0,
+            "optimizer_steps": 0,
+            "seconds": 0.0,
+            "cache_tensor_bytes": 0,
+            "optimizer_state_tensor_bytes": 0,
+            "base_state_unchanged": true,
+            "backbone_updates": 0,
+            "peak_cuda_memory_bytes": 0,
+            "rss_bytes": null,
+            "auxiliary_inheritance": false
+          },
+          "fishr_calibration": {
+            "status": "FIXED_CALIBRATION_COMPLETE",
+            "calibration_reference": "own_margin_term",
+            "fixed_coefficients": {
+              "time_down": 0.13359581699980957,
+              "t2.pool": 0.046643315487203935
+            },
+            "levels": {
+              "time_down": {
+                "mean_CE_gradient_norm": 1.1757910348536673,
+                "mean_term_gradient_norm": 1.7602213321614333,
+                "uncapped_coefficient": 0.13359581699980957,
+                "coefficient": 0.13359581699980957,
+                "cap_active": false
+              },
+              "t2.pool": {
+                "mean_CE_gradient_norm": 1.6621688938225747,
+                "mean_term_gradient_norm": 7.127147272703369,
+                "uncapped_coefficient": 0.046643315487203935,
+                "coefficient": 0.046643315487203935,
+                "cap_active": false
+              }
+            },
+            "pairs": 12,
+            "records": [
+              {
+                "pair": 0,
+                "day": 1,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.6911900568096908,
+                    "term_gradient_norm": 2.9307409926940435,
+                    "raw_term": 0.12936703860759735
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.0633041398653937,
+                    "term_gradient_norm": 2.933433783808738,
+                    "raw_term": 0.3667036294937134
+                  }
+                },
+                "main_ce": 0.17165181040763855,
+                "seconds": 0.6927355979569256
+              },
+              {
+                "pair": 1,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.9582561653091605,
+                    "term_gradient_norm": 2.020704967183136,
+                    "raw_term": 0.10387849062681198
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.4408412481507322,
+                    "term_gradient_norm": 10.133567010883644,
+                    "raw_term": 0.2857453227043152
+                  }
+                },
+                "main_ce": 0.12897250056266785,
+                "seconds": 0.38982867100276053
+              },
+              {
+                "pair": 2,
+                "day": 3,
+                "cross_batch_PID_overlap": 5,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.0652777263435391,
+                    "term_gradient_norm": 1.7624622800601772,
+                    "raw_term": 0.06906622648239136
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.6508326543416711,
+                    "term_gradient_norm": 2.632223372273775,
+                    "raw_term": 0.11323027312755585
+                  }
+                },
+                "main_ce": 0.21329568326473236,
+                "seconds": 0.7712659980170429
+              },
+              {
+                "pair": 3,
+                "day": 1,
+                "cross_batch_PID_overlap": 0,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.9404571132433648,
+                    "term_gradient_norm": 1.7300646279142216,
+                    "raw_term": 0.10649898648262024
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.3524854519831864,
+                    "term_gradient_norm": 6.1083958821837046,
+                    "raw_term": 0.11343438178300858
+                  }
+                },
+                "main_ce": 0.2365231066942215,
+                "seconds": 0.747497994103469
+              },
+              {
+                "pair": 4,
+                "day": 2,
+                "cross_batch_PID_overlap": 4,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.850563494591267,
+                    "term_gradient_norm": 1.3710449445977775,
+                    "raw_term": 0.06721729785203934
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.3199288746411981,
+                    "term_gradient_norm": 7.943958696255315,
+                    "raw_term": 0.2755241394042969
+                  }
+                },
+                "main_ce": 0.12306416779756546,
+                "seconds": 0.3837853450095281
+              },
+              {
+                "pair": 5,
+                "day": 3,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.161448259449659,
+                    "term_gradient_norm": 2.6724191009510854,
+                    "raw_term": 0.10275451093912125
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.6867869967076585,
+                    "term_gradient_norm": 14.964728912017028,
+                    "raw_term": 0.2997429668903351
+                  }
+                },
+                "main_ce": 0.3293973207473755,
+                "seconds": 0.6134384539909661
+              },
+              {
+                "pair": 6,
+                "day": 1,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.147618693414731,
+                    "term_gradient_norm": 1.0903470581852606,
+                    "raw_term": 0.06970110535621643
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 3.353417087311023,
+                    "term_gradient_norm": 8.63791707459824,
+                    "raw_term": 0.5209290981292725
+                  }
+                },
+                "main_ce": 0.3374994993209839,
+                "seconds": 0.7791002440499142
+              },
+              {
+                "pair": 7,
+                "day": 2,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.6567738809654893,
+                    "term_gradient_norm": 1.9371109022495017,
+                    "raw_term": 0.06580943614244461
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 2.236232815449953,
+                    "term_gradient_norm": 4.8476695130863074,
+                    "raw_term": 0.061255551874637604
+                  }
+                },
+                "main_ce": 0.2016913741827011,
+                "seconds": 0.6808571059955284
+              },
+              {
+                "pair": 8,
+                "day": 3,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.1098331053333375,
+                    "term_gradient_norm": 0.9516025334035351,
+                    "raw_term": 0.07927514612674713
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.4085056711952813,
+                    "term_gradient_norm": 2.778309821084879,
+                    "raw_term": 0.04491458460688591
+                  }
+                },
+                "main_ce": 0.279197633266449,
+                "seconds": 0.37425920797977597
+              },
+              {
+                "pair": 9,
+                "day": 1,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.3525115168704878,
+                    "term_gradient_norm": 2.235512792081871,
+                    "raw_term": 0.05891597643494606
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.6131894339851778,
+                    "term_gradient_norm": 13.497269998593508,
+                    "raw_term": 0.11479703336954117
+                  }
+                },
+                "main_ce": 0.20011968910694122,
+                "seconds": 0.3958800290711224
+              },
+              {
+                "pair": 10,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.4835089361219251,
+                    "term_gradient_norm": 1.1370479490206216,
+                    "raw_term": 0.061698850244283676
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.9078346240309438,
+                    "term_gradient_norm": 7.784892338547624,
+                    "raw_term": 0.1607905775308609
+                  }
+                },
+                "main_ce": 0.22241650521755219,
+                "seconds": 0.7822474209824577
+              },
+              {
+                "pair": 11,
+                "day": 3,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.6920534697913566,
+                    "term_gradient_norm": 1.2835978375959693,
+                    "raw_term": 0.07426540553569794
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.9126677282086768,
+                    "term_gradient_norm": 3.2634008691076684,
+                    "raw_term": 0.09884469211101532
+                  }
+                },
+                "main_ce": 0.25160327553749084,
+                "seconds": 0.757304921047762
+              }
+            ],
+            "extra_source_readouts": 1440,
+            "model_forwards": 24,
+            "seconds": 7.415610452997498,
+            "state_unchanged": true,
+            "RNG_preserved": true,
+            "parameters_buffers_unchanged": true,
+            "modes_preserved": true,
+            "python_numpy_RNG_preserved": true,
+            "source_role": "L_s only",
+            "U_access": false,
+            "V_access": false,
+            "target_access": false,
+            "identity_updates": 0,
+            "head_updates": 0,
+            "auxiliary_heads": 0,
+            "all_layers_calibrated": true,
+            "after_identity_updates": 444,
+            "scheduled_after_identity_updates": 444,
+            "coefficient_formula": "min(cap,0.2*mean(pair_main_CE_gradient_norm)/(mean(own_margin_term_gradient_norm)+eps))",
+            "sampling_namespace": "same twelve source-private calibration pairs as scratch boundary style; own-margin statistic"
+          },
+          "peak_cuda_memory_bytes": 672428544,
+          "trainable_parameters": 177025,
+          "total_parameters": 843134,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "optimizer_state_tensor_bytes": 1416468,
+          "checkpoint_bytes": 4978310,
+          "auxiliary_saved_bytes": 526870,
+          "parent_training_epochs": 0,
+          "incremental_epochs": 20,
+          "total_epochs": 20,
+          "parent_training_cost_reused": false,
+          "scratch_only": true,
+          "scratch_scope": "student_identity_only",
+          "student_initialization_checkpoint_count": 0,
+          "whole_method_pretrained_teachers": true,
+          "frozen_teacher_model_count": 2,
+          "teacher_training_epochs_reused": 40,
+          "historical_model_epochs_including_teachers": 60,
+          "teacher_probability_bank_bytes": 1871100,
+          "teacher_cache_resources_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-bidirectional-style-manysig-m18-r01/peer_cache/completion.json",
+          "teacher_scope": "teacher_parameters=0 means no teacher models resident during student training; extra original E20 training and shared cache forward costs reported separately",
+          "mixed_U_packets_unit": "U MixStyle disabled",
+          "mixed_L_packets_unit": "actual changed L packet-layer occurrences; not distinct packets",
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 119880,
+          "auxiliary_forwards": 1998,
+          "fishr_steps": 999,
+          "mixstyle_steps": 3996,
+          "style_L_packets": 511488,
+          "style_search_forwards": 19980,
+          "style_search_L": 2557440,
+          "mixstyle_U_steps": 0,
+          "mixed_U_packets": 0,
+          "mixed_L_packets": 1003189
+        },
+        "shared_IQ_preparation_reused": true,
+        "training_flops": null,
+        "scope": "random student20; pretrained source-U teacher history and initial calibration separately measured; shared GPU wall cost",
+        "P0_role": "fixed score reference only; never loaded into the student"
+      }
     }
   ],
   "complete_arms_reaching_84": [],
   "checks": {
     "confusion_recount": true,
     "source_config_budget": true,
-    "row_aggregate_agreement": false
+    "row_aggregate_agreement": true
   },
   "target_feedback_to_training": false
 }

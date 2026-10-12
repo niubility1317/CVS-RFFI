@@ -5,3 +5,4 @@
 {"event": "LAUNCH_VERIFIED", "time": 1791761859.4083848, "launched": 18, "checked": 18, "matrix": 18, "execution_commit": "f641c0abe526d562a60022a37b40e12fb0bdc9b0"}
 {"event": "PARTIAL_RESULTS_RECONCILED", "time": 1791764152.066693, "completed": 2, "total": 18, "evidence": "evidence/latest_live_progress.json"}
 {"event": "PARTIAL_RESULTS_RECONCILED", "time": 1791765038.3318882, "completed": 16, "total": 18, "evidence": "evidence/latest_live_progress.json"}
+{"event": "FULL_MATRIX_ANALYZED_VERIFIED", "time": 1791766133.0685282, "read_at": 1791765814.8236237, "launched": 18, "active_processes_verified": 0, "pending": 0, "scored_rows": 18, "source_fully_audited_rows": 18, "source_fully_audited_steps": 79920, "failures": [], "goal_status": "NOT_MET", "primary_arm": "DELAYCAP_BIDIR", "primary_accuracy_mean": 0.7912162698412698, "complete_arms_reaching_goal": []}

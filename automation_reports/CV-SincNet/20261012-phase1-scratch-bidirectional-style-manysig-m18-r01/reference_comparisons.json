@@ -1,0 +1,228 @@
+{
+  "status": "COMPLETE",
+  "run_id": "20261012-phase1-scratch-bidirectional-style-manysig-m18-r01",
+  "reference_run_id": "20261012-phase1-scratch-identity-style-manysig-m9-r01",
+  "comparisons": [
+    {
+      "treatment": "DELAY_POS",
+      "reference": "DELAY_JOINT",
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "treatment_accuracy": 0.811,
+          "reference_accuracy": 0.8132380952380952,
+          "difference": -0.00223809523809515
+        },
+        {
+          "seed": 2026092702,
+          "treatment_accuracy": 0.7779761904761905,
+          "reference_accuracy": 0.7784166666666666,
+          "difference": -0.0004404761904761578
+        },
+        {
+          "seed": 2026092703,
+          "treatment_accuracy": 0.8057440476190476,
+          "reference_accuracy": 0.8070952380952381,
+          "difference": -0.001351190476190478
+        }
+      ],
+      "paired_seed_count": 3,
+      "complete_three_seeds": true,
+      "mean_difference": -0.0013432539682539286,
+      "sd_difference": 0.0008988358032529208
+    },
+    {
+      "treatment": "DELAY_BIDIR",
+      "reference": "DELAY_JOINT",
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "treatment_accuracy": 0.8059821428571429,
+          "reference_accuracy": 0.8132380952380952,
+          "difference": -0.007255952380952335
+        },
+        {
+          "seed": 2026092702,
+          "treatment_accuracy": 0.7655833333333333,
+          "reference_accuracy": 0.7784166666666666,
+          "difference": -0.012833333333333363
+        },
+        {
+          "seed": 2026092703,
+          "treatment_accuracy": 0.8035833333333333,
+          "reference_accuracy": 0.8070952380952381,
+          "difference": -0.0035119047619047716
+        }
+      ],
+      "paired_seed_count": 3,
+      "complete_three_seeds": true,
+      "mean_difference": -0.00786706349206349,
+      "sd_difference": 0.004690666290161127
+    },
+    {
+      "treatment": "CAP_POS",
+      "reference": "CAP_JOINT",
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "treatment_accuracy": 0.8133869047619048,
+          "reference_accuracy": 0.8155178571428572,
+          "difference": -0.0021309523809524
+        },
+        {
+          "seed": 2026092702,
+          "treatment_accuracy": 0.779452380952381,
+          "reference_accuracy": 0.778375,
+          "difference": 0.0010773809523809685
+        },
+        {
+          "seed": 2026092703,
+          "treatment_accuracy": 0.8077678571428571,
+          "reference_accuracy": 0.8076309523809524,
+          "difference": 0.00013690476190475476
+        }
+      ],
+      "paired_seed_count": 3,
+      "complete_three_seeds": true,
+      "mean_difference": -0.0003055555555555589,
+      "sd_difference": 0.001649296529990836
+    },
+    {
+      "treatment": "CAP_BIDIR",
+      "reference": "CAP_JOINT",
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "treatment_accuracy": 0.8043571428571429,
+          "reference_accuracy": 0.8155178571428572,
+          "difference": -0.011160714285714302
+        },
+        {
+          "seed": 2026092702,
+          "treatment_accuracy": 0.7660416666666666,
+          "reference_accuracy": 0.778375,
+          "difference": -0.012333333333333418
+        },
+        {
+          "seed": 2026092703,
+          "treatment_accuracy": 0.805202380952381,
+          "reference_accuracy": 0.8076309523809524,
+          "difference": -0.0024285714285714466
+        }
+      ],
+      "paired_seed_count": 3,
+      "complete_three_seeds": true,
+      "mean_difference": -0.008640873015873055,
+      "sd_difference": 0.00541186447690649
+    },
+    {
+      "treatment": "DELAYCAP_POS",
+      "reference": "DELAYCAP_JOINT",
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "treatment_accuracy": 0.8109285714285714,
+          "reference_accuracy": 0.8117321428571429,
+          "difference": -0.000803571428571459
+        },
+        {
+          "seed": 2026092702,
+          "treatment_accuracy": 0.7809821428571428,
+          "reference_accuracy": 0.7783630952380952,
+          "difference": 0.002619047619047632
+        },
+        {
+          "seed": 2026092703,
+          "treatment_accuracy": 0.8065,
+          "reference_accuracy": 0.8074940476190476,
+          "difference": -0.0009940476190476444
+        }
+      ],
+      "paired_seed_count": 3,
+      "complete_three_seeds": true,
+      "mean_difference": 0.0002738095238095095,
+      "sd_difference": 0.0020332674657559647
+    },
+    {
+      "treatment": "DELAYCAP_BIDIR",
+      "reference": "DELAYCAP_JOINT",
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "treatment_accuracy": 0.8016845238095238,
+          "reference_accuracy": 0.8117321428571429,
+          "difference": -0.010047619047619083
+        },
+        {
+          "seed": 2026092702,
+          "treatment_accuracy": 0.767875,
+          "reference_accuracy": 0.7783630952380952,
+          "difference": -0.01048809523809524
+        },
+        {
+          "seed": 2026092703,
+          "treatment_accuracy": 0.8040892857142857,
+          "reference_accuracy": 0.8074940476190476,
+          "difference": -0.0034047619047619104
+        }
+      ],
+      "paired_seed_count": 3,
+      "complete_three_seeds": true,
+      "mean_difference": -0.007980158730158745,
+      "sd_difference": 0.003968525784341418
+    }
+  ],
+  "expected_comparisons": 6,
+  "complete_comparisons": 6,
+  "inputs": {
+    "current": {
+      "status": "COMPLETE",
+      "run_id": "20261012-phase1-scratch-bidirectional-style-manysig-m18-r01",
+      "completed_rows": [
+        "DELAY_POS-s2026092701",
+        "DELAY_BIDIR-s2026092701",
+        "CAP_POS-s2026092701",
+        "CAP_BIDIR-s2026092701",
+        "DELAYCAP_POS-s2026092701",
+        "DELAYCAP_BIDIR-s2026092701",
+        "DELAY_POS-s2026092702",
+        "DELAY_BIDIR-s2026092702",
+        "CAP_POS-s2026092702",
+        "CAP_BIDIR-s2026092702",
+        "DELAYCAP_POS-s2026092702",
+        "DELAYCAP_BIDIR-s2026092702",
+        "DELAY_POS-s2026092703",
+        "DELAY_BIDIR-s2026092703",
+        "CAP_POS-s2026092703",
+        "CAP_BIDIR-s2026092703",
+        "DELAYCAP_POS-s2026092703",
+        "DELAYCAP_BIDIR-s2026092703"
+      ],
+      "missing_rows": [],
+      "actual_config_verification": "Existing collector source_config_budget=true; collector checked source/freeze against design",
+      "local_config_verification": "Reconstructed each scored row from the registered local design and validated it"
+    },
+    "reference": {
+      "status": "COMPLETE",
+      "run_id": "20261012-phase1-scratch-identity-style-manysig-m9-r01",
+      "completed_rows": [
+        "DELAY_JOINT-s2026092701",
+        "CAP_JOINT-s2026092701",
+        "DELAYCAP_JOINT-s2026092701",
+        "DELAY_JOINT-s2026092702",
+        "CAP_JOINT-s2026092702",
+        "DELAYCAP_JOINT-s2026092702",
+        "DELAY_JOINT-s2026092703",
+        "CAP_JOINT-s2026092703",
+        "DELAYCAP_JOINT-s2026092703"
+      ],
+      "missing_rows": [],
+      "actual_config_verification": "Existing collector source_config_budget=true; collector checked source/freeze against design",
+      "local_config_verification": "Reconstructed each scored row from the registered local design and validated it"
+    }
+  },
+  "IQ_read": false,
+  "truth_read": false,
+  "predictions_read": false,
+  "scores_control_training": false
+}
