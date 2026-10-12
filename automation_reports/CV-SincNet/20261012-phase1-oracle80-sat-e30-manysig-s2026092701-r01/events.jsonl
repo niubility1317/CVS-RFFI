@@ -1,1 +1,2 @@
-{"status": "LOCAL_VERIFIED", "note": "Pending focused validation/review and committed immutable release"}
+{"at": "2026-10-12T13:14:09+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-12T13:18:54+00:00", "status": "RUNNING", "note": "VERIFIED: GPU0/scratchE30/80-20; actual fused clean+LEOweak CE0.68 fromE1; three-stage schedule; own-checkpoint smokePASS; automatic seven-view truth-last scoring and paired comparison", "evidence": ["automation_reports/CV-SincNet/20261012-phase1-oracle80-sat-e30-manysig-s2026092701-r01/evidence/launch_readback.json"], "row_id": null}

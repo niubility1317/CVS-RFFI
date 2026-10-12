@@ -13,3 +13,11 @@ E1至6使用leo_clear_weak,p=.30；E7至14使用leo_low_elev_weak/leo_rain_weak,
 当前状态：本地实现，未发布。执行提交由release_commit.txt与发布证据固定。
 
 本地聚焦验证PASS：真实三种LEO弱信道模拟、E1卫星CE梯度、原始72000样本完整遍历、563批、无U/EMA/辅助网络训练及配置负测。唯一独立P0/P1审查通过，确认native实际启用路径、来源、发布依赖和独立评分衔接。
+
+## 实际发布状态
+
+2026-10-12T21:18:53.553314+08:00：VERIFIED／RUNNING，GPU0。scratchE30、16890步，原80/20物理角色已复用VALIDATED_ONCE，初始checkpoint strict-load/无query smoke通过。实际native参数确认satelliteCE=.68、从E1起启用、fused拼接前向及三段LEO弱信道日程；U/EMA关闭。PID/CWD/argv/GPU和日志增长已独立核实。当前进度：1轮已完成。
+
+执行代码提交`592c5ee67ded914298bb34e0af73c576a4e2025c`。release归档SHA本地/远端比较与compile通过。详细只读证据保留在本地evidence/launch_readback.json。训练后自动固定final30，执行七视图预测→独立truth-last评分→与原run固定预测逐场景比较。尚无新测试结果，不标为实验完成。
+
+后续源域执行核实：已完成E3，concat_sat_active=1.0，该轮实际信道增强batch比例=33.3925%，卫星CE加权均值=0.313802>0，确认增强损失实际参与训练；这不是测试成绩。
