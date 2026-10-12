@@ -123,7 +123,7 @@
   "group_id": "cvs-nocfo-matched-engineering",
   "display_name": "无显式 CFO 同路径 SSL、clean replay 和六工程方案",
   "description": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "scratch20",
@@ -245,7 +245,7 @@
       "arm": "SSL",
       "model_seed": 2026092701,
       "row_id": "SSL-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -707,13 +707,15 @@
         ],
         "gpu": "0"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "L_REPLAY",
       "model_seed": 2026092701,
       "row_id": "L_REPLAY-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -1175,13 +1177,15 @@
         ],
         "gpu": "1"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_LR3",
       "model_seed": 2026092701,
       "row_id": "SSL_LR3-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -1643,13 +1647,15 @@
         ],
         "gpu": "2"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_WARM_LR3",
       "model_seed": 2026092701,
       "row_id": "SSL_WARM_LR3-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -2111,13 +2117,15 @@
         ],
         "gpu": "3"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_SAM",
       "model_seed": 2026092701,
       "row_id": "SSL_SAM-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -2579,13 +2587,15 @@
         ],
         "gpu": "4"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_SMOOTH",
       "model_seed": 2026092701,
       "row_id": "SSL_SMOOTH-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -3047,13 +3057,15 @@
         ],
         "gpu": "5"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_HIDDEN_MIX",
       "model_seed": 2026092701,
       "row_id": "SSL_HIDDEN_MIX-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -3515,13 +3527,15 @@
         ],
         "gpu": "6"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_WARM_LR3_SAM",
       "model_seed": 2026092701,
       "row_id": "SSL_WARM_LR3_SAM-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -3983,13 +3997,15 @@
         ],
         "gpu": "7"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL",
       "model_seed": 2026092702,
       "row_id": "SSL-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -4451,13 +4467,15 @@
         ],
         "gpu": "7"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "L_REPLAY",
       "model_seed": 2026092702,
       "row_id": "L_REPLAY-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -4919,13 +4937,15 @@
         ],
         "gpu": "4"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_LR3",
       "model_seed": 2026092702,
       "row_id": "SSL_LR3-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -5387,13 +5407,15 @@
         ],
         "gpu": "6"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_WARM_LR3",
       "model_seed": 2026092702,
       "row_id": "SSL_WARM_LR3-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -5855,13 +5877,15 @@
         ],
         "gpu": "0"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_SAM",
       "model_seed": 2026092702,
       "row_id": "SSL_SAM-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -6323,13 +6347,15 @@
         ],
         "gpu": "2"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_SMOOTH",
       "model_seed": 2026092702,
       "row_id": "SSL_SMOOTH-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -6791,13 +6817,15 @@
         ],
         "gpu": "3"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_HIDDEN_MIX",
       "model_seed": 2026092702,
       "row_id": "SSL_HIDDEN_MIX-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -7259,13 +7287,15 @@
         ],
         "gpu": "5"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_WARM_LR3_SAM",
       "model_seed": 2026092702,
       "row_id": "SSL_WARM_LR3_SAM-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -7727,13 +7757,15 @@
         ],
         "gpu": "1"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL",
       "model_seed": 2026092703,
       "row_id": "SSL-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -8195,13 +8227,15 @@
         ],
         "gpu": "1"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "L_REPLAY",
       "model_seed": 2026092703,
       "row_id": "L_REPLAY-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -8663,13 +8697,15 @@
         ],
         "gpu": "5"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_LR3",
       "model_seed": 2026092703,
       "row_id": "SSL_LR3-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -9131,13 +9167,15 @@
         ],
         "gpu": "7"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_WARM_LR3",
       "model_seed": 2026092703,
       "row_id": "SSL_WARM_LR3-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -9599,13 +9637,15 @@
         ],
         "gpu": "2"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_SAM",
       "model_seed": 2026092703,
       "row_id": "SSL_SAM-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -10067,13 +10107,15 @@
         ],
         "gpu": "0"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_SMOOTH",
       "model_seed": 2026092703,
       "row_id": "SSL_SMOOTH-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -10535,13 +10577,15 @@
         ],
         "gpu": "3"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_HIDDEN_MIX",
       "model_seed": 2026092703,
       "row_id": "SSL_HIDDEN_MIX-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -11003,13 +11047,15 @@
         ],
         "gpu": "6"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     },
     {
       "arm": "SSL_WARM_LR3_SAM",
       "model_seed": 2026092703,
       "row_id": "SSL_WARM_LR3_SAM-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_nocfo_engineering",
       "purpose": "八方案各三seed，随机身份学生20轮，另两固定新noCFO CE源教师ALL soft KL；分离半监督、额外读出、LR、SAM、平滑和浅中层隐藏混合",
       "config": {
@@ -11471,82 +11517,19 @@
         ],
         "gpu": "4"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "epoch": 20,
+      "source_steps": 4440
     }
   ],
   "registered_at": "2026-10-12T03:42:14+00:00",
   "execution_commit": "68d9221c07cbb77543cf2a4fe9b28e604863edbc",
   "delivery_verdict": "VERIFIED",
   "progress": {
-    "launched": 24,
-    "resolved_verified": 24,
-    "queued": 0,
-    "failures": [],
-    "GPU_capacity": {
-      "0": {
-        "pids": [
-          580105,
-          581251,
-          582438
-        ],
-        "free_mb": 22019
-      },
-      "1": {
-        "pids": [
-          580185,
-          581565,
-          582051
-        ],
-        "free_mb": 21891
-      },
-      "2": {
-        "pids": [
-          580266,
-          581329,
-          582360
-        ],
-        "free_mb": 22019
-      },
-      "3": {
-        "pids": [
-          580347,
-          581407,
-          582516
-        ],
-        "free_mb": 21975
-      },
-      "4": {
-        "pids": [
-          580575,
-          581094,
-          582673
-        ],
-        "free_mb": 21889
-      },
-      "5": {
-        "pids": [
-          580738,
-          581486,
-          582129
-        ],
-        "free_mb": 21719
-      },
-      "6": {
-        "pids": [
-          580851,
-          581173,
-          582594
-        ],
-        "free_mb": 21719
-      },
-      "7": {
-        "pids": [
-          580934,
-          581015,
-          582255
-        ],
-        "free_mb": 21999
-      }
-    }
+    "source_steps": 106560,
+    "clean_predictions": 4032000,
+    "completed_rows": 24,
+    "goal_status": "NOT_MET",
+    "primary_mean": 0.7882519841269842
   }
 }

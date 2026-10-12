@@ -1,0 +1,87 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "algebra": {
+    "modes": [
+      {
+        "mode": "merged_RX",
+        "own_RX_reference_excluded": true,
+        "TX_renaming_invariant": true,
+        "all6_compete": true
+      },
+      {
+        "mode": "separate_RX",
+        "own_RX_reference_excluded": true,
+        "TX_renaming_invariant": true,
+        "all6_compete": true
+      }
+    ],
+    "independent_support_budget30": true,
+    "deterministic_private_sampling": true,
+    "U_role_rejected": true
+  },
+  "native": [
+    {
+      "arm": "L30_CE",
+      "relation_gradient_norm": 0.07606922886714,
+      "all_gradients_finite": true,
+      "one_permanent_update": true,
+      "support_L": 30,
+      "reference_state_rng_modes_restored": true,
+      "no_auxiliary_heads": true,
+      "main_rng_changed_measured": true
+    },
+    {
+      "arm": "REL_FINAL_MERGED",
+      "relation_gradient_norm": 0.0125579150821374,
+      "all_gradients_finite": true,
+      "one_permanent_update": true,
+      "support_L": 30,
+      "reference_state_rng_modes_restored": true,
+      "no_auxiliary_heads": true,
+      "main_rng_changed_measured": true
+    },
+    {
+      "arm": "REL_FINAL_SEPARATE",
+      "relation_gradient_norm": 0.007780869552320137,
+      "all_gradients_finite": true,
+      "one_permanent_update": true,
+      "support_L": 30,
+      "reference_state_rng_modes_restored": true,
+      "no_auxiliary_heads": true,
+      "main_rng_changed_measured": true
+    },
+    {
+      "arm": "REL_MULTI_MERGED",
+      "relation_gradient_norm": 0.016360608709421975,
+      "all_gradients_finite": true,
+      "one_permanent_update": true,
+      "support_L": 30,
+      "reference_state_rng_modes_restored": true,
+      "no_auxiliary_heads": true,
+      "main_rng_changed_measured": true
+    },
+    {
+      "arm": "REL_MULTI_SEPARATE",
+      "relation_gradient_norm": 0.010562017169272606,
+      "all_gradients_finite": true,
+      "one_permanent_update": true,
+      "support_L": 30,
+      "reference_state_rng_modes_restored": true,
+      "no_auxiliary_heads": true,
+      "main_rng_changed_measured": true
+    }
+  ],
+  "source_entry": {
+    "status": "PASS",
+    "arms": [
+      "L30_CE",
+      "REL_FINAL_MERGED",
+      "REL_FINAL_SEPARATE",
+      "REL_MULTI_MERGED",
+      "REL_MULTI_SEPARATE"
+    ],
+    "identity_updates": 0
+  },
+  "target_access": false
+}

@@ -22,3 +22,5 @@
 本地八arm原生CUDA损失/有限梯度/一步AdamW、SAM人工参考与故障恢复、层混合、clean replay、实际训练入口和strict自身checkpoint往返通过；新教师来源负例/U标签负例拒绝。发布仍需独立P0/P1及远端真实L/U/新源teacher预检与启动证据。
 
 发布VERIFIED：实际启动24/24行，已核验24份实际源配置，其余按容量排队。8GPU总进程实测均不超过3；真实源L/U和全部固定新noCFO CE老师CPU预检PASS。执行commit 68d9221c07cbb77543cf2a4fe9b28e604863edbc；每行自动clean，当前矩阵评分未完成。
+
+**VERIFIED / ANALYZED：24行训练及自动clean独立评分全部完成。** 106560完整源更新／4032000固定预测；加CE3共27行。最高三种子均值SSL_WARM_LR3为79.8986%，原SSL79.7873%，同输入CE79.4891%；主方案WARM_LR3_SAM78.8252%。未达到84%。全部方案、分层、配对差与实测成本见[final_analysis.md](final_analysis.md)。后续关系15行登记先于读取这些成绩，配置不据此改变。
