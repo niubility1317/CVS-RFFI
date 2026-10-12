@@ -1,1 +1,4 @@
 {"at": "2026-10-12T11:42:46+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"event": "QUALITY_SOURCE_POSTSTATE", "status": "RUNNING", "at": 1791806370.2859557, "execution_commit": "cc84f08c3498caa3728a428fa7df1449ec9e6c6a", "models": 15, "epochs": [[12], [10], [10], [11], [8], [9], [8], [7], [6], [7], [5], [5], [5], [4], [3]], "capacity_counts": {"0": 2, "1": 2, "2": 2, "3": 2, "4": 2, "5": 2, "6": 1, "7": 2}, "target_access": false}
+{"at": "2026-10-12T11:59:30+00:00", "status": "RUNNING", "note": "VERIFIED: remote smoke PASS; PID/CWD/argv/GPU and log progress independently read; source-only wholeRX exclusion.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-10-12T12:04:12+00:00", "status": "ANALYZED", "note": "VERIFIED: all15 scratch30 source rows complete;99900updates/81000sourceV predictions independently recounted; no target or U.", "evidence": ["final_analysis.md"], "row_id": null}

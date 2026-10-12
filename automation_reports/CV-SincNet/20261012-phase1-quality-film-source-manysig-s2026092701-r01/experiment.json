@@ -619,7 +619,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 0
     },
     {
       "row_id": "FREE_FILM-RX1-s2026092701",
@@ -1128,7 +1130,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 1
     },
     {
       "row_id": "QUALITY_FILM-RX1-s2026092701",
@@ -1637,7 +1641,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 2
     },
     {
       "row_id": "CE30-RX3-s2026092701",
@@ -2146,7 +2152,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 3
     },
     {
       "row_id": "FREE_FILM-RX3-s2026092701",
@@ -2655,7 +2663,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 4
     },
     {
       "row_id": "QUALITY_FILM-RX3-s2026092701",
@@ -3164,7 +3174,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 5
     },
     {
       "row_id": "CE30-RX4-s2026092701",
@@ -3673,7 +3685,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 6
     },
     {
       "row_id": "FREE_FILM-RX4-s2026092701",
@@ -4182,7 +4196,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 7
     },
     {
       "row_id": "QUALITY_FILM-RX4-s2026092701",
@@ -4691,7 +4707,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 7
     },
     {
       "row_id": "CE30-RX6-s2026092701",
@@ -5200,7 +5218,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 0
     },
     {
       "row_id": "FREE_FILM-RX6-s2026092701",
@@ -5709,7 +5729,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 1
     },
     {
       "row_id": "QUALITY_FILM-RX6-s2026092701",
@@ -6218,7 +6240,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 2
     },
     {
       "row_id": "CE30-RX8-s2026092701",
@@ -6727,7 +6751,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 3
     },
     {
       "row_id": "FREE_FILM-RX8-s2026092701",
@@ -7236,7 +7262,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 4
     },
     {
       "row_id": "QUALITY_FILM-RX8-s2026092701",
@@ -7745,7 +7773,9 @@
             "worst_RX_noninferiority_FREE": 0.01
           }
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 5
     }
   ],
   "notes": [
@@ -7755,7 +7785,51 @@
     "Native/free/quality trainable177025/182913/182049; FREE vsquality difference864 (~.47%), costs reported not exactcapacityequivalence.",
     "Thresholds source mean+1ppvsCE/+0.5ppvsFREE,4/5nonnegativeeach,worstRXnoninferior1pp; fixed before newsource outcomes, never tuned to target."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-12T11:42:46+00:00",
-  "replaces_run_id": null
+  "replaces_run_id": null,
+  "execution_commit": "cc84f08c3498caa3728a428fa7df1449ec9e6c6a",
+  "delivery_verdict": "VERIFIED",
+  "source_eligibility": false,
+  "source_result_summary": [
+    {
+      "arm": "CE30",
+      "mean": 0.6152222216129303,
+      "worst_RX": 0.3898148238658905,
+      "parameters": 177025,
+      "per_RX": {
+        "1": 0.6070370078086853,
+        "3": 0.3898148238658905,
+        "4": 0.7651851773262024,
+        "6": 0.7333333492279053,
+        "8": 0.580740749835968
+      }
+    },
+    {
+      "arm": "FREE_FILM",
+      "mean": 0.6133703649044037,
+      "worst_RX": 0.38462963700294495,
+      "parameters": 182913,
+      "per_RX": {
+        "1": 0.6220370531082153,
+        "3": 0.38462963700294495,
+        "4": 0.757777750492096,
+        "6": 0.7238888740539551,
+        "8": 0.5785185098648071
+      }
+    },
+    {
+      "arm": "QUALITY_FILM",
+      "mean": 0.6044814825057984,
+      "worst_RX": 0.39592593908309937,
+      "parameters": 182049,
+      "per_RX": {
+        "1": 0.585185170173645,
+        "3": 0.39592593908309937,
+        "4": 0.757777750492096,
+        "6": 0.7127777934074402,
+        "8": 0.5707407593727112
+      }
+    }
+  ]
 }

@@ -364,3 +364,8 @@
 
 - [浅中层质量条件调制：整源RX留出30轮对照](../automation_reports/CV-SincNet/20261012-phase1-quality-film-source-manysig-s2026092701-r01/report.md)
 - [从头30轮：纯CE与可更新自伪标签三种子七视图匹配对照](../automation_reports/CV-SincNet/20261012-phase1-scratch30-ce-selfssl-manysig-m6-r02/report.md)
+
+## 本轮关系互补与源端结论
+
+- [完整波形＋关系互补分支：整源RX留出30轮对照](../automation_reports/CV-SincNet/20261012-phase1-relation-complement-source-manysig-s2026092701-r01/report.md)（PLANNED）
+- [浅中层质量条件调制：整源RX留出30轮对照](../automation_reports/CV-SincNet/20261012-phase1-quality-film-source-manysig-s2026092701-r01/report.md)（ANALYZED）
