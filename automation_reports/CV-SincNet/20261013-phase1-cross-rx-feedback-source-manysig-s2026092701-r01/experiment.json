@@ -8636,5 +8636,31 @@
   ],
   "status": "PLANNED",
   "registered_at": "2026-10-12T16:08:54+00:00",
-  "replaces_run_id": null
+  "replaces_run_id": null,
+  "execution_commit": "d124f6ca873b573b1812dc4a1476773ec9a49172",
+  "delivery_verdict": "VERIFIED",
+  "live_readback_ref": "local_artifacts/cvs_cross_rx_feedback_20261013_r01/readback.json",
+  "source_diagnostic_summary": [
+    {
+      "seed": 2026092701,
+      "actual_acceptance": 0.8593693693693694,
+      "positive_groups": 8,
+      "gradient_ratio_median": 0.42598600853869545,
+      "gradient_ratio_mean": 5.1073053547617056
+    },
+    {
+      "seed": 2026092702,
+      "actual_acceptance": 0.8578575450450451,
+      "positive_groups": 8,
+      "gradient_ratio_median": 0.781553223417133,
+      "gradient_ratio_mean": 35.35651149451136
+    },
+    {
+      "seed": 2026092703,
+      "actual_acceptance": 0.8495002815315316,
+      "positive_groups": 11,
+      "gradient_ratio_median": 0.18950338259481256,
+      "gradient_ratio_mean": 3.4604242348258465
+    }
+  ]
 }
