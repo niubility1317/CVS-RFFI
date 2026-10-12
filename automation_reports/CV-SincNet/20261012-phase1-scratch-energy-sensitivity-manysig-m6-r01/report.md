@@ -62,3 +62,6 @@ U 使用原始纯 CE E20 的另外两个 seed 的固定概率均值，ALL soft K
 - `dispatch.py`、`evaluate.py`：每卡最多 3 个总进程，逐行固定 final20 后 clean168000，prediction 固定后独立评分。
 
 合成检查只验证实现，不代表真实识别提升。固定源尺度不同于逐样本 RMS，也不等同于标准参数梯度 Fishr。
+
+
+发布 VERIFIED：执行提交 `f3522b11b75d2617effea056e0acecab6674a6a7`，dispatcher PID 454039。已启动 6/6 行，6 行的实际配置、无学生权重继承、进程和首轮日志核实通过，待运行 0 行；每卡总进程不超过 3。训练完成后逐行自动 clean 测试。当前无本批最终测试成绩，84% 目标待验证。

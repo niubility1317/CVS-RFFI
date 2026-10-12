@@ -125,7 +125,7 @@
   "group_id": "cvs-scratch-energy-sensitivity",
   "display_name": "浅中层 Fishr 幅度敏感度与困难 MixStyle",
   "description": "固定每层源 L RMS 保留 CE/margin 梯度幅度；两目标各三种子随机学生20轮，固定final20自动clean",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "aliases": [],
   "tags": [
     "scratch20",
@@ -220,7 +220,7 @@
       "arm": "MARGIN_ENERGY",
       "model_seed": 2026092701,
       "row_id": "MARGIN_ENERGY-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_energy_sensitivity",
       "purpose": "固定每层源 L RMS 保留 CE/margin 梯度幅度；两目标各三种子随机学生20轮，固定final20自动clean",
       "config": {
@@ -652,13 +652,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 454638,
+      "gpu": 0,
+      "live_epoch": 2
     },
     {
       "arm": "CE_ENERGY",
       "model_seed": 2026092701,
       "row_id": "CE_ENERGY-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_energy_sensitivity",
       "purpose": "固定每层源 L RMS 保留 CE/margin 梯度幅度；两目标各三种子随机学生20轮，固定final20自动clean",
       "config": {
@@ -1090,13 +1093,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 454724,
+      "gpu": 1,
+      "live_epoch": 2
     },
     {
       "arm": "MARGIN_ENERGY",
       "model_seed": 2026092702,
       "row_id": "MARGIN_ENERGY-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_energy_sensitivity",
       "purpose": "固定每层源 L RMS 保留 CE/margin 梯度幅度；两目标各三种子随机学生20轮，固定final20自动clean",
       "config": {
@@ -1528,13 +1534,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 454951,
+      "gpu": 2,
+      "live_epoch": 2
     },
     {
       "arm": "CE_ENERGY",
       "model_seed": 2026092702,
       "row_id": "CE_ENERGY-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_energy_sensitivity",
       "purpose": "固定每层源 L RMS 保留 CE/margin 梯度幅度；两目标各三种子随机学生20轮，固定final20自动clean",
       "config": {
@@ -1966,13 +1975,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 455041,
+      "gpu": 3,
+      "live_epoch": 2
     },
     {
       "arm": "MARGIN_ENERGY",
       "model_seed": 2026092703,
       "row_id": "MARGIN_ENERGY-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_energy_sensitivity",
       "purpose": "固定每层源 L RMS 保留 CE/margin 梯度幅度；两目标各三种子随机学生20轮，固定final20自动clean",
       "config": {
@@ -2404,13 +2416,16 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 455128,
+      "gpu": 4,
+      "live_epoch": 2
     },
     {
       "arm": "CE_ENERGY",
       "model_seed": 2026092703,
       "row_id": "CE_ENERGY-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_energy_sensitivity",
       "purpose": "固定每层源 L RMS 保留 CE/margin 梯度幅度；两目标各三种子随机学生20轮，固定final20自动clean",
       "config": {
@@ -2842,8 +2857,13 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero."
+      "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
+      "pid": 455215,
+      "gpu": 5,
+      "live_epoch": 2
     }
   ],
-  "registered_at": "2026-10-12T00:49:26+00:00"
+  "registered_at": "2026-10-12T00:49:26+00:00",
+  "execution_commit": "f3522b11b75d2617effea056e0acecab6674a6a7",
+  "delivery_verdict": "VERIFIED"
 }
