@@ -29,7 +29,7 @@ def run(rowid,device='cuda:0'):
      idx,_=stream.batch(128);x=fit['x'][idx].to(device);y=fit['y'][idx].to(device);opt.zero_grad(set_to_none=True);logits=model(x);loss=F.cross_entropy(logits,y)
      if not torch.isfinite(loss):raise FloatingPointError('Bounded quality-FiLM CE')
      loss.backward();norm=torch.nn.utils.clip_grad_norm_(params,10.,error_if_nonfinite=True);opt.step();updates+=1;sums['CE']+=float(loss);sums['accuracy']+=float((logits.argmax(1)==y).float().mean());log.write(json.dumps(dict(step=updates,epoch=epoch,CE=float(loss),gradient_norm=float(norm)))+'\n')
-    
+
     if epoch>=21:avg.update(model)
     log.flush();r=dict(epoch=epoch,updates=updates,lr=lr,**{k:v/222 for k,v in sums.items()});epochs.append(r);(out/'epoch_metrics.jsonl').write_text(''.join(json.dumps(e)+'\n' for e in epochs),encoding='utf-8');print('EPOCH '+json.dumps(r),flush=True)
   if updates!=6660:raise ValueError('Quality-FiLM budget/forward context differs')
