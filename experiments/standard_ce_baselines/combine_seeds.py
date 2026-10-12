@@ -5,6 +5,12 @@ from pathlib import Path
 from experiments.standard_ce_baselines.common import PROJECT,RUN,SEEDS,EXTENSION_SEEDS,read,write
 
 
+def score_record(score, variant, seed):
+    if score['variant'] != variant or score['model_seed'] != seed:
+        raise ValueError('Score identity does not match its row')
+    return dict(score)
+
+
 def aggregate(records):
     groups={}
     keys=set()
@@ -45,7 +51,7 @@ def combine(spec):
                 if complete['status']!='SCORED_COMPLETE':raise ValueError('Incomplete scoring')
                 scores=read(path/'scores/scores.json')['results']
                 if len(scores)!=14:raise ValueError('Missing overall/RX/TX result')
-                for s in scores:records.append(dict(variant=variant,model_seed=seed,**s))
+                for s in scores:records.append(score_record(s,variant,seed))
     groups=aggregate(records)
     overall={(r['variant'],r['model_seed']):r for r in records if r['dimension']=='overall'}
     paired=[];worst=[]

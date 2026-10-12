@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-12T04:02:56+00:00
+更新：2026-10-12T06:43:43+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -72,7 +72,6 @@
 |[auto_after_parent](by_method/auto_after_parent.md)|4|
 |[receiver_agnostic](by_method/receiver_agnostic.md)|4|
 |[shot](by_method/shot.md)|4|
-|[four_seeds](by_method/four_seeds.md)|3|
 |[architecture](by_method/architecture.md)|3|
 |[identity_only](by_method/identity_only.md)|3|
 |[no_target_access](by_method/no_target_access.md)|3|
@@ -93,6 +92,7 @@
 |[final_eval](by_method/final_eval.md)|2|
 |[source_scratch](by_method/source_scratch.md)|2|
 |[native_methods](by_method/native_methods.md)|2|
+|[four_seeds](by_method/four_seeds.md)|2|
 |[cvs_identity_ce](by_method/cvs_identity_ce.md)|2|
 |[cvcnn_matched](by_method/cvcnn_matched.md)|2|
 |[ablation](by_method/ablation.md)|2|
@@ -199,6 +199,7 @@
 |[batch_size](by_method/batch_size.md)|1|
 |[fixed_completed14](by_method/fixed_completed14.md)|1|
 |[partial_multiseed](by_method/partial_multiseed.md)|1|
+|[eight_seeds](by_method/eight_seeds.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
 |[fedcvs](by_method/fedcvs.md)|1|
 

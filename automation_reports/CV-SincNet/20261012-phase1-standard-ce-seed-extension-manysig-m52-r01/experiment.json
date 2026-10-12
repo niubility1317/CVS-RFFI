@@ -12,8 +12,8 @@
     "no_augmentation",
     "standard_architecture",
     "full_width",
-    "four_seeds",
-    "automatic_row_test"
+    "automatic_row_test",
+    "eight_seeds"
   ],
   "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
   "parent_run_ids": [],
@@ -2443,6 +2443,31 @@
     "User explicitly specified automatic clean testing in this turn; no practical or LEO views scheduled.",
     "No smaller-parameter filter. Parameter count is measured, not a selection criterion. This benchmark was previously exposed and is not a new blind confirmation set."
   ],
-  "status": "RUNNING",
-  "comparison_extension_of": "20261010-phase1-standard-ce-baselines-manysig-m56-r01"
+  "status": "ANALYZED",
+  "comparison_extension_of": "20261010-phase1-standard-ce-baselines-manysig-m56-r01",
+  "analysis_completion": {
+    "location": "local",
+    "remote_dispatch_status": "FAILED_COMBINE",
+    "new_scored_rows": 52,
+    "combined_models": 104,
+    "actual_seed_counts": {
+      "residual_fusion": 8,
+      "resnet18": 8,
+      "resnet34": 8,
+      "resnet50": 8,
+      "vgg16_bn": 8,
+      "densenet121": 8,
+      "convnext_tiny": 8,
+      "transformer6": 8,
+      "bilstm3": 8,
+      "cvresnet18_1d": 8,
+      "cvresnet18_2d": 8,
+      "resnet18_2d": 8,
+      "resnet50_2d": 8
+    },
+    "missing_rows": 0,
+    "source_data_root": "E:\\type10-7\\exports\\paper_figures\\20261012-standard-ce-clean-eight-seed-r01-source",
+    "figures_root": "E:\\type10-7\\exports\\paper_figures\\20261012-standard-ce-clean-eight-seed-r01",
+    "workbook": "E:/type10-7/outputs/01a0fd26-2621-7662-a9bd-9ff19509e812/standard_ce_clean_results.xlsx"
+  }
 }

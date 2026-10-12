@@ -6,10 +6,16 @@ from pathlib import Path
 from experiments.standard_ce_baselines.common import ROOT,read,SEEDS,EXTENSION_SEEDS,EXTENSION_CONFIG,EXTENSION_RUN
 from experiments.standard_ce_baselines.dispatch import validate_spec,finish
 from experiments.standard_ce_baselines.source import validate_config
-from experiments.standard_ce_baselines.combine_seeds import aggregate
+from experiments.standard_ce_baselines.combine_seeds import aggregate,score_record
 
 
 class ExtensionTests(unittest.TestCase):
+    def test_scored_record_preserves_existing_identity(self):
+        score=dict(variant='residual_fusion',model_seed=SEEDS[0],accuracy=.8)
+        self.assertEqual(score_record(score,'residual_fusion',SEEDS[0]),score)
+        with self.assertRaises(ValueError):score_record(score,'native',SEEDS[0])
+        with self.assertRaises(ValueError):score_record(score,'residual_fusion',EXTENSION_SEEDS[0])
+
     def test_fixed_52_rows_and_unchanged_training_plan(self):
         spec=read(ROOT/EXTENSION_CONFIG/'launch_spec.json');validate_spec(spec)
         self.assertEqual(len(spec['rows']),52)
