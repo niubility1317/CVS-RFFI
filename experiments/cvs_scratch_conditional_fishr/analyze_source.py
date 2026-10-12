@@ -456,8 +456,8 @@ def analyze_row(base,registered,c):
                         or multi['component_mean_denominator']!=len(multi['conditional_components'])):raise ValueError('Runtime component weights changed')
                 for level,component in multi['levels'].items():
                     if set(component['component_values'])!=set(multi['conditional_components']) or component['component_coefficients']!=calibration['fixed_component_coefficients'][level]:raise ValueError('Missing conditional term')
-                    combined=sum(component['component_values'][k]*component['component_coefficients'][k] for k in multi['conditional_components'])/len(multi['conditional_components'])
-                    if not math.isclose(component['raw_fishr'],combined,rel_tol=2e-5,abs_tol=1e-6):raise ValueError('Component reduction mismatch')
+                    component_average=sum(component['component_values'][k]*component['component_coefficients'][k] for k in multi['conditional_components'])/len(multi['conditional_components'])
+                    if not math.isclose(component['raw_fishr'],component_average,rel_tol=2e-5,abs_tol=1e-6):raise ValueError('Component reduction mismatch')
                 layer_records.append(dict(step=count,epoch=ep,statistic=c['multilevel']['statistic'],details=multi))
                 for level,info in multi['levels'].items():
                     stats=layers.setdefault(level,{})
