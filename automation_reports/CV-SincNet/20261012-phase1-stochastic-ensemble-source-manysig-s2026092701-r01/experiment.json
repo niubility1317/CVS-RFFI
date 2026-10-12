@@ -619,7 +619,9 @@
           }
         },
         "baseline_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-quality-film-source-manysig-s2026092701-r01/CE30-RX1-s2026092701"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 0
     },
     {
       "row_id": "MEMBER2-RX1-s2026092701",
@@ -1128,7 +1130,9 @@
           }
         },
         "baseline_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-quality-film-source-manysig-s2026092701-r01/CE30-RX1-s2026092701"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 1
     },
     {
       "row_id": "MEMBER1-RX3-s2026092701",
@@ -1637,7 +1641,9 @@
           }
         },
         "baseline_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-quality-film-source-manysig-s2026092701-r01/CE30-RX3-s2026092701"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 2
     },
     {
       "row_id": "MEMBER2-RX3-s2026092701",
@@ -2146,7 +2152,9 @@
           }
         },
         "baseline_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-quality-film-source-manysig-s2026092701-r01/CE30-RX3-s2026092701"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 3
     },
     {
       "row_id": "MEMBER1-RX4-s2026092701",
@@ -2655,7 +2663,9 @@
           }
         },
         "baseline_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-quality-film-source-manysig-s2026092701-r01/CE30-RX4-s2026092701"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 4
     },
     {
       "row_id": "MEMBER2-RX4-s2026092701",
@@ -3164,7 +3174,9 @@
           }
         },
         "baseline_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-quality-film-source-manysig-s2026092701-r01/CE30-RX4-s2026092701"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 5
     },
     {
       "row_id": "MEMBER1-RX6-s2026092701",
@@ -3673,7 +3685,9 @@
           }
         },
         "baseline_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-quality-film-source-manysig-s2026092701-r01/CE30-RX6-s2026092701"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 6
     },
     {
       "row_id": "MEMBER2-RX6-s2026092701",
@@ -4182,7 +4196,9 @@
           }
         },
         "baseline_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-quality-film-source-manysig-s2026092701-r01/CE30-RX6-s2026092701"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 7
     },
     {
       "row_id": "MEMBER1-RX8-s2026092701",
@@ -4691,7 +4707,9 @@
           }
         },
         "baseline_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-quality-film-source-manysig-s2026092701-r01/CE30-RX8-s2026092701"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 7
     },
     {
       "row_id": "MEMBER2-RX8-s2026092701",
@@ -5200,7 +5218,9 @@
           }
         },
         "baseline_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-quality-film-source-manysig-s2026092701-r01/CE30-RX8-s2026092701"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 0
     }
   ],
   "notes": [
@@ -5212,7 +5232,7 @@
     "PrevioussourceFiLMandrelationnegative,no targetlaunch;reusebaselinefrozenpredictionsonly.",
     "Finalifeligible:primary2701/02/03each3-memberensemble,allmemberfromscratch30orverifiedmatchingCE30member0reuse;distinctinternalderivedseeds and3xtotalcost fullyreported."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-12T12:35:02+00:00",
   "replaces_run_id": null,
   "comparisons": [
@@ -5228,6 +5248,23 @@
       ],
       "role": "exactmatchedfrozenmember0, inferenceonly",
       "historical_identity_updates": 33300
+    }
+  ],
+  "execution_commit": "eccf4c37e37962292d8ae031a3fd853c95e65ef7",
+  "delivery_verdict": "VERIFIED",
+  "source_eligibility": true,
+  "source_result_summary": [
+    {
+      "arm": "MEAN_COMPONENT",
+      "mean": 0.6062345643838247,
+      "worst_RX": 0.38111111521720886,
+      "parameters": 177025
+    },
+    {
+      "arm": "EQUAL_PROBABILITY_3",
+      "mean": 0.6177777826786042,
+      "worst_RX": 0.37925925850868225,
+      "parameters": 531075
     }
   ]
 }
