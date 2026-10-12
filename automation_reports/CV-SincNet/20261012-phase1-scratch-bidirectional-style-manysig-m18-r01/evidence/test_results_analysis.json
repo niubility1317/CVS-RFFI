@@ -1,0 +1,4333 @@
+{
+  "run_id": "20261012-phase1-scratch-bidirectional-style-manysig-m18-r01",
+  "read_at": 1791764007.0130708,
+  "teacher_cache": {
+    "schema": "e20_peer_probability_cache_v1",
+    "status": "COMPLETE",
+    "source_role": "U_s",
+    "count": 56700,
+    "seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "target_access": false,
+    "U_truth": false,
+    "provenance": {
+      "2026092701": {
+        "status": "VERIFIED",
+        "seed": 2026092701,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+        "source_run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+        "execution_commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
+        "epoch": 20,
+        "optimizer_steps": 4440,
+        "scratch_only": true,
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "training_target_access": false,
+        "checkpoint_selection": "fixed final20; all original matrix rows evaluated",
+        "method": "pure CE, original gates/reference_response, cosine schedule",
+        "auxiliary_inheritance": false,
+        "smoke": null,
+        "selection_context": "E20 now explicitly selected by user after target-informed epoch-budget exploration; exposed development benchmark, not a new blind confirmation"
+      },
+      "2026092702": {
+        "status": "VERIFIED",
+        "seed": 2026092702,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092702/source/final_ssdg.pth",
+        "source_run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+        "execution_commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
+        "epoch": 20,
+        "optimizer_steps": 4440,
+        "scratch_only": true,
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "training_target_access": false,
+        "checkpoint_selection": "fixed final20; all original matrix rows evaluated",
+        "method": "pure CE, original gates/reference_response, cosine schedule",
+        "auxiliary_inheritance": false,
+        "smoke": null,
+        "selection_context": "E20 now explicitly selected by user after target-informed epoch-budget exploration; exposed development benchmark, not a new blind confirmation"
+      },
+      "2026092703": {
+        "status": "VERIFIED",
+        "seed": 2026092703,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092703/source/final_ssdg.pth",
+        "source_run": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+        "execution_commit": "83b1903fed01854f5abb75646a02e9a5e190a90e",
+        "epoch": 20,
+        "optimizer_steps": 4440,
+        "scratch_only": true,
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "training_target_access": false,
+        "checkpoint_selection": "fixed final20; all original matrix rows evaluated",
+        "method": "pure CE, original gates/reference_response, cosine schedule",
+        "auxiliary_inheritance": false,
+        "smoke": null,
+        "selection_context": "E20 now explicitly selected by user after target-informed epoch-budget exploration; exposed development benchmark, not a new blind confirmation"
+      }
+    },
+    "resources": {
+      "2026092701": {
+        "eval_mode": true,
+        "no_grad": true,
+        "parameters_and_buffers_unchanged": true,
+        "rng_unchanged": true,
+        "optimizer_updates": 0,
+        "EMA_updates": 0,
+        "auxiliary_forwards": 0,
+        "validation_packets": 0,
+        "target_packets": 0,
+        "physical_packets": 56700,
+        "packet_occurrences": 56700,
+        "forward_calls": 222,
+        "batch_size": 256,
+        "dtype": "float32",
+        "temperature": 1.0,
+        "inference_seconds": 1.9452251910697669,
+        "total_seconds": 2.871220940956846,
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "peak_cuda_allocated_bytes": 91529728,
+        "peak_cuda_reserved_bytes": 136314880,
+        "process_peak_rss_bytes": 1303416832,
+        "process_peak_rss_note": null,
+        "teacher_parameters": 844754,
+        "trainable_parameters": 0,
+        "probability_tensor_bytes": 1360800,
+        "output_bytes": 3290268,
+        "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-bidirectional-style-manysig-m18-r01/peer_cache/seed-2026092701.pt"
+      },
+      "2026092702": {
+        "eval_mode": true,
+        "no_grad": true,
+        "parameters_and_buffers_unchanged": true,
+        "rng_unchanged": true,
+        "optimizer_updates": 0,
+        "EMA_updates": 0,
+        "auxiliary_forwards": 0,
+        "validation_packets": 0,
+        "target_packets": 0,
+        "physical_packets": 56700,
+        "packet_occurrences": 56700,
+        "forward_calls": 222,
+        "batch_size": 256,
+        "dtype": "float32",
+        "temperature": 1.0,
+        "inference_seconds": 1.507826387998648,
+        "total_seconds": 1.7887121570529416,
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "peak_cuda_allocated_bytes": 91529728,
+        "peak_cuda_reserved_bytes": 136314880,
+        "process_peak_rss_bytes": 1499709440,
+        "process_peak_rss_note": null,
+        "teacher_parameters": 844754,
+        "trainable_parameters": 0,
+        "probability_tensor_bytes": 1360800,
+        "output_bytes": 3290268,
+        "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-bidirectional-style-manysig-m18-r01/peer_cache/seed-2026092702.pt"
+      },
+      "2026092703": {
+        "eval_mode": true,
+        "no_grad": true,
+        "parameters_and_buffers_unchanged": true,
+        "rng_unchanged": true,
+        "optimizer_updates": 0,
+        "EMA_updates": 0,
+        "auxiliary_forwards": 0,
+        "validation_packets": 0,
+        "target_packets": 0,
+        "physical_packets": 56700,
+        "packet_occurrences": 56700,
+        "forward_calls": 222,
+        "batch_size": 256,
+        "dtype": "float32",
+        "temperature": 1.0,
+        "inference_seconds": 1.4600850250571966,
+        "total_seconds": 1.7513751299120486,
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "peak_cuda_allocated_bytes": 91529728,
+        "peak_cuda_reserved_bytes": 136314880,
+        "process_peak_rss_bytes": 1499709440,
+        "process_peak_rss_note": null,
+        "teacher_parameters": 844754,
+        "trainable_parameters": 0,
+        "probability_tensor_bytes": 1360800,
+        "output_bytes": 3290268,
+        "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-bidirectional-style-manysig-m18-r01/peer_cache/seed-2026092703.pt"
+      }
+    },
+    "packet_occurrences": 170100,
+    "physical_packets": 56700,
+    "total_seconds": 6.84260838793125,
+    "output_bytes": 9870804,
+    "output_bytes_scope": "three serialized probability cache files; completion JSON excluded",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "unlabeled_cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/source_unlabeled/source_cache.pt",
+    "preprocessing": {
+      "out_len": 256,
+      "crop_mode": "center",
+      "normalize": true,
+      "center": false,
+      "normalization": "per-packet complex RMS after center crop/pad; epsilon 1e-12",
+      "identity_source": "opaque_id(dataset.index[i])",
+      "cached_order": "exact dataset index order"
+    },
+    "device": "cuda:0",
+    "hardware": "NVIDIA GeForce RTX 3090",
+    "cuda_visible_devices": "1",
+    "deployment_scope": "Phase1 ground U supervision only; no teacher cache in prediction model",
+    "teacher_training_cost": "Three existing original E20 models reused; historical training cost is not zero"
+  },
+  "status": "PARTIAL",
+  "completed_rows": [
+    "DELAY_POS-s2026092703",
+    "CAP_POS-s2026092703"
+  ],
+  "missing_rows": [
+    "DELAY_POS-s2026092701",
+    "DELAY_BIDIR-s2026092701",
+    "CAP_POS-s2026092701",
+    "CAP_BIDIR-s2026092701",
+    "DELAYCAP_POS-s2026092701",
+    "DELAYCAP_BIDIR-s2026092701",
+    "DELAY_POS-s2026092702",
+    "DELAY_BIDIR-s2026092702",
+    "CAP_POS-s2026092702",
+    "CAP_BIDIR-s2026092702",
+    "DELAYCAP_POS-s2026092702",
+    "DELAYCAP_BIDIR-s2026092702",
+    "DELAY_BIDIR-s2026092703",
+    "CAP_BIDIR-s2026092703",
+    "DELAYCAP_POS-s2026092703",
+    "DELAYCAP_BIDIR-s2026092703"
+  ],
+  "summary": [
+    {
+      "arm": "P0",
+      "seeds": [
+        2026092703
+      ],
+      "seed_count": 1,
+      "accuracy_mean": 0.8165476190476191,
+      "accuracy_sd": null,
+      "complete_three_seeds": false,
+      "per_seed": [
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8165476190476191
+        }
+      ]
+    },
+    {
+      "arm": "DELAY_POS",
+      "seeds": [
+        2026092703
+      ],
+      "seed_count": 1,
+      "accuracy_mean": 0.8057440476190476,
+      "accuracy_sd": null,
+      "complete_three_seeds": false,
+      "per_seed": [
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8057440476190476
+        }
+      ]
+    },
+    {
+      "arm": "CAP_POS",
+      "seeds": [
+        2026092703
+      ],
+      "seed_count": 1,
+      "accuracy_mean": 0.8077678571428571,
+      "accuracy_sd": null,
+      "complete_three_seeds": false,
+      "per_seed": [
+        {
+          "seed": 2026092703,
+          "accuracy": 0.8077678571428571
+        }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8057440476190476,
+      "macro_f1": 0.8023237849246837,
+      "macro_accuracy": 0.8057440476190476,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26535,
+          200,
+          496,
+          699,
+          56,
+          14
+        ],
+        [
+          527,
+          13560,
+          119,
+          13679,
+          87,
+          28
+        ],
+        [
+          906,
+          509,
+          24249,
+          242,
+          175,
+          1919
+        ],
+        [
+          2150,
+          6487,
+          907,
+          18413,
+          17,
+          26
+        ],
+        [
+          6,
+          15,
+          14,
+          9,
+          27948,
+          8
+        ],
+        [
+          21,
+          68,
+          883,
+          14,
+          2354,
+          24660
+        ]
+      ],
+      "NLL": 0.9122974276542664,
+      "parent_fix_count": 3273,
+      "parent_break_count": 5088,
+      "net_correct_gain": -1815
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8331666666666667,
+      "macro_f1": 0.8175134848852186,
+      "macro_accuracy": 0.8331666666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3986,
+          2,
+          9,
+          2,
+          1,
+          0
+        ],
+        [
+          21,
+          1216,
+          8,
+          2753,
+          2,
+          0
+        ],
+        [
+          53,
+          1,
+          3484,
+          2,
+          1,
+          459
+        ],
+        [
+          143,
+          23,
+          0,
+          3834,
+          0,
+          0
+        ],
+        [
+          2,
+          8,
+          5,
+          3,
+          3980,
+          2
+        ],
+        [
+          4,
+          64,
+          386,
+          1,
+          49,
+          3496
+        ]
+      ],
+      "NLL": 0.8196954131126404,
+      "parent_fix_count": 597,
+      "parent_break_count": 577,
+      "net_correct_gain": 20
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7357916666666666,
+      "macro_f1": 0.7061473820386887,
+      "macro_accuracy": 0.7357916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3717,
+          2,
+          0,
+          281,
+          0,
+          0
+        ],
+        [
+          20,
+          2680,
+          0,
+          1298,
+          2,
+          0
+        ],
+        [
+          2,
+          3,
+          3937,
+          3,
+          3,
+          52
+        ],
+        [
+          15,
+          2982,
+          877,
+          101,
+          2,
+          23
+        ],
+        [
+          1,
+          2,
+          0,
+          1,
+          3995,
+          1
+        ],
+        [
+          0,
+          3,
+          0,
+          1,
+          767,
+          3229
+        ]
+      ],
+      "NLL": 1.2439510822296143,
+      "parent_fix_count": 321,
+      "parent_break_count": 658,
+      "net_correct_gain": -337
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8500416666666667,
+      "macro_f1": 0.8462340877395814,
+      "macro_accuracy": 0.8500416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3169,
+          183,
+          396,
+          194,
+          47,
+          11
+        ],
+        [
+          8,
+          1902,
+          26,
+          1986,
+          56,
+          22
+        ],
+        [
+          17,
+          59,
+          3901,
+          17,
+          5,
+          1
+        ],
+        [
+          49,
+          493,
+          4,
+          3450,
+          1,
+          3
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          3997,
+          1
+        ],
+        [
+          2,
+          1,
+          10,
+          1,
+          4,
+          3982
+        ]
+      ],
+      "NLL": 0.6430280804634094,
+      "parent_fix_count": 548,
+      "parent_break_count": 444,
+      "net_correct_gain": 104
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.754375,
+      "macro_f1": 0.7473870247101573,
+      "macro_accuracy": 0.754375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3977,
+          3,
+          8,
+          2,
+          7,
+          3
+        ],
+        [
+          23,
+          2305,
+          5,
+          1652,
+          11,
+          4
+        ],
+        [
+          31,
+          59,
+          3810,
+          27,
+          34,
+          39
+        ],
+        [
+          41,
+          2013,
+          6,
+          1927,
+          13,
+          0
+        ],
+        [
+          3,
+          5,
+          7,
+          4,
+          3979,
+          2
+        ],
+        [
+          15,
+          0,
+          434,
+          11,
+          1433,
+          2107
+        ]
+      ],
+      "NLL": 1.4050898551940918,
+      "parent_fix_count": 295,
+      "parent_break_count": 798,
+      "net_correct_gain": -503
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8665416666666667,
+      "macro_f1": 0.8541458634581982,
+      "macro_accuracy": 0.8665416666666665,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3831,
+          1,
+          83,
+          85,
+          0,
+          0
+        ],
+        [
+          19,
+          1340,
+          5,
+          2634,
+          2,
+          0
+        ],
+        [
+          8,
+          78,
+          3779,
+          25,
+          99,
+          11
+        ],
+        [
+          4,
+          40,
+          1,
+          3954,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          0,
+          10,
+          0,
+          96,
+          3894
+        ]
+      ],
+      "NLL": 0.5989622473716736,
+      "parent_fix_count": 121,
+      "parent_break_count": 294,
+      "net_correct_gain": -173
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7665,
+      "macro_f1": 0.7553072894860001,
+      "macro_accuracy": 0.7665000000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          432,
+          2067,
+          74,
+          1414,
+          11,
+          2
+        ],
+        [
+          791,
+          0,
+          3208,
+          0,
+          1,
+          0
+        ],
+        [
+          1898,
+          915,
+          19,
+          1168,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          0,
+          43,
+          0,
+          4,
+          3953
+        ]
+      ],
+      "NLL": 1.152116060256958,
+      "parent_fix_count": 609,
+      "parent_break_count": 1343,
+      "net_correct_gain": -734
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8337916666666667,
+      "macro_f1": 0.8242096665678996,
+      "macro_accuracy": 0.8337916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3855,
+          9,
+          0,
+          135,
+          1,
+          0
+        ],
+        [
+          4,
+          2050,
+          1,
+          1942,
+          3,
+          0
+        ],
+        [
+          4,
+          309,
+          2130,
+          168,
+          32,
+          1357
+        ],
+        [
+          0,
+          21,
+          0,
+          3979,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          3999
+        ]
+      ],
+      "NLL": 0.5232394337654114,
+      "parent_fix_count": 782,
+      "parent_break_count": 974,
+      "net_correct_gain": -192
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9476785714285715,
+      "macro_f1": 0.1621894196387641,
+      "macro_accuracy": 0.9476785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26535,
+          200,
+          496,
+          699,
+          56,
+          14
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.18406330049037933,
+      "parent_fix_count": 230,
+      "parent_break_count": 431,
+      "net_correct_gain": -201
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.48428571428571426,
+      "macro_f1": 0.10875842155919153,
+      "macro_accuracy": 0.48428571428571426,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          527,
+          13560,
+          119,
+          13679,
+          87,
+          28
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.40748929977417,
+      "parent_fix_count": 725,
+      "parent_break_count": 1491,
+      "net_correct_gain": -766
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8660357142857142,
+      "macro_f1": 0.1547015253880457,
+      "macro_accuracy": 0.8660357142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          906,
+          509,
+          24249,
+          242,
+          175,
+          1919
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.4008149802684784,
+      "parent_fix_count": 572,
+      "parent_break_count": 1881,
+      "net_correct_gain": -1309
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6576071428571428,
+      "macro_f1": 0.13224024878087318,
+      "macro_accuracy": 0.6576071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2150,
+          6487,
+          907,
+          18413,
+          17,
+          26
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.0611279010772705,
+      "parent_fix_count": 715,
+      "parent_break_count": 331,
+      "net_correct_gain": 384
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9981428571428571,
+      "macro_f1": 0.1665117609208551,
+      "macro_accuracy": 0.9981428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          15,
+          14,
+          9,
+          27948,
+          8
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.007728188764303923,
+      "parent_fix_count": 9,
+      "parent_break_count": 10,
+      "net_correct_gain": -1
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.8807142857142857,
+      "macro_f1": 0.15609570831750855,
+      "macro_accuracy": 0.8807142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          21,
+          68,
+          883,
+          14,
+          2354,
+          24660
+        ]
+      ],
+      "NLL": 0.4125610589981079,
+      "parent_fix_count": 1022,
+      "parent_break_count": 944,
+      "net_correct_gain": 78
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8077678571428571,
+      "macro_f1": 0.8044869840875993,
+      "macro_accuracy": 0.8077678571428571,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26527,
+          208,
+          468,
+          719,
+          62,
+          16
+        ],
+        [
+          532,
+          13804,
+          117,
+          13439,
+          78,
+          30
+        ],
+        [
+          808,
+          542,
+          24121,
+          232,
+          155,
+          2142
+        ],
+        [
+          2175,
+          6500,
+          927,
+          18347,
+          18,
+          33
+        ],
+        [
+          6,
+          10,
+          15,
+          9,
+          27950,
+          10
+        ],
+        [
+          32,
+          42,
+          910,
+          13,
+          2047,
+          24956
+        ]
+      ],
+      "NLL": 0.8979589939117432,
+      "parent_fix_count": 3224,
+      "parent_break_count": 4699,
+      "net_correct_gain": -1475
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8324166666666667,
+      "macro_f1": 0.8168278400891261,
+      "macro_accuracy": 0.8324166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3985,
+          2,
+          9,
+          2,
+          2,
+          0
+        ],
+        [
+          22,
+          1224,
+          7,
+          2745,
+          2,
+          0
+        ],
+        [
+          64,
+          1,
+          3435,
+          2,
+          1,
+          497
+        ],
+        [
+          143,
+          29,
+          0,
+          3828,
+          0,
+          0
+        ],
+        [
+          2,
+          6,
+          4,
+          3,
+          3981,
+          4
+        ],
+        [
+          5,
+          37,
+          396,
+          1,
+          36,
+          3525
+        ]
+      ],
+      "NLL": 0.8037630319595337,
+      "parent_fix_count": 605,
+      "parent_break_count": 603,
+      "net_correct_gain": 2
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.750375,
+      "macro_f1": 0.7196411133611816,
+      "macro_accuracy": 0.750375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3708,
+          2,
+          0,
+          290,
+          0,
+          0
+        ],
+        [
+          20,
+          2734,
+          0,
+          1244,
+          2,
+          0
+        ],
+        [
+          1,
+          5,
+          3962,
+          2,
+          2,
+          28
+        ],
+        [
+          16,
+          2977,
+          892,
+          85,
+          2,
+          28
+        ],
+        [
+          1,
+          1,
+          0,
+          1,
+          3995,
+          2
+        ],
+        [
+          0,
+          3,
+          0,
+          1,
+          471,
+          3525
+        ]
+      ],
+      "NLL": 1.2133578062057495,
+      "parent_fix_count": 402,
+      "parent_break_count": 389,
+      "net_correct_gain": 13
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8497916666666666,
+      "macro_f1": 0.8461172676517471,
+      "macro_accuracy": 0.8497916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3166,
+          191,
+          385,
+          194,
+          52,
+          12
+        ],
+        [
+          7,
+          1906,
+          22,
+          1991,
+          49,
+          25
+        ],
+        [
+          16,
+          77,
+          3881,
+          17,
+          7,
+          2
+        ],
+        [
+          49,
+          477,
+          5,
+          3465,
+          1,
+          3
+        ],
+        [
+          0,
+          0,
+          2,
+          1,
+          3997,
+          0
+        ],
+        [
+          2,
+          1,
+          9,
+          1,
+          7,
+          3980
+        ]
+      ],
+      "NLL": 0.6426813006401062,
+      "parent_fix_count": 590,
+      "parent_break_count": 492,
+      "net_correct_gain": 98
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7524583333333333,
+      "macro_f1": 0.7454461166363983,
+      "macro_accuracy": 0.7524583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3979,
+          1,
+          8,
+          2,
+          7,
+          3
+        ],
+        [
+          24,
+          2311,
+          5,
+          1644,
+          12,
+          4
+        ],
+        [
+          25,
+          87,
+          3774,
+          38,
+          37,
+          39
+        ],
+        [
+          41,
+          2002,
+          6,
+          1938,
+          13,
+          0
+        ],
+        [
+          3,
+          3,
+          8,
+          4,
+          3980,
+          2
+        ],
+        [
+          25,
+          1,
+          441,
+          10,
+          1446,
+          2077
+        ]
+      ],
+      "NLL": 1.3984811305999756,
+      "parent_fix_count": 297,
+      "parent_break_count": 846,
+      "net_correct_gain": -549
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8687916666666666,
+      "macro_f1": 0.856209503937813,
+      "macro_accuracy": 0.8687916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3836,
+          2,
+          66,
+          95,
+          0,
+          1
+        ],
+        [
+          18,
+          1329,
+          4,
+          2647,
+          2,
+          0
+        ],
+        [
+          7,
+          75,
+          3812,
+          14,
+          76,
+          16
+        ],
+        [
+          4,
+          38,
+          1,
+          3953,
+          2,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          0,
+          8,
+          0,
+          70,
+          3922
+        ]
+      ],
+      "NLL": 0.5891543626785278,
+      "parent_fix_count": 140,
+      "parent_break_count": 259,
+      "net_correct_gain": -119
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.768125,
+      "macro_f1": 0.7554875006444206,
+      "macro_accuracy": 0.7681250000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          437,
+          2086,
+          78,
+          1390,
+          8,
+          1
+        ],
+        [
+          692,
+          0,
+          3307,
+          0,
+          1,
+          0
+        ],
+        [
+          1922,
+          953,
+          23,
+          1102,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          0,
+          56,
+          0,
+          4,
+          3940
+        ]
+      ],
+      "NLL": 1.1360245943069458,
+      "parent_fix_count": 559,
+      "parent_break_count": 1254,
+      "net_correct_gain": -695
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8324166666666667,
+      "macro_f1": 0.8220755027558498,
+      "macro_accuracy": 0.8324166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3853,
+          10,
+          0,
+          136,
+          1,
+          0
+        ],
+        [
+          4,
+          2214,
+          1,
+          1778,
+          3,
+          0
+        ],
+        [
+          3,
+          297,
+          1950,
+          159,
+          31,
+          1560
+        ],
+        [
+          0,
+          24,
+          0,
+          3976,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          13,
+          3987
+        ]
+      ],
+      "NLL": 0.5022510290145874,
+      "parent_fix_count": 631,
+      "parent_break_count": 856,
+      "net_correct_gain": -225
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9473928571428571,
+      "macro_f1": 0.16216431003600662,
+      "macro_accuracy": 0.9473928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26527,
+          208,
+          468,
+          719,
+          62,
+          16
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.18703550100326538,
+      "parent_fix_count": 244,
+      "parent_break_count": 453,
+      "net_correct_gain": -209
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.493,
+      "macro_f1": 0.11006921187765127,
+      "macro_accuracy": 0.493,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          532,
+          13804,
+          117,
+          13439,
+          78,
+          30
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.3369946479797363,
+      "parent_fix_count": 807,
+      "parent_break_count": 1329,
+      "net_correct_gain": -522
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8614642857142857,
+      "macro_f1": 0.15426283711619757,
+      "macro_accuracy": 0.8614642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          808,
+          542,
+          24121,
+          232,
+          155,
+          2142
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.3958143889904022,
+      "parent_fix_count": 419,
+      "parent_break_count": 1856,
+      "net_correct_gain": -1437
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.65525,
+      "macro_f1": 0.13195388410612696,
+      "macro_accuracy": 0.65525,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2175,
+          6500,
+          927,
+          18347,
+          18,
+          33
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 2.0735247135162354,
+      "parent_fix_count": 665,
+      "parent_break_count": 347,
+      "net_correct_gain": 318
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9982142857142857,
+      "macro_f1": 0.16651772415847482,
+      "macro_accuracy": 0.9982142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          10,
+          15,
+          9,
+          27950,
+          10
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "NLL": 0.0074245138093829155,
+      "parent_fix_count": 9,
+      "parent_break_count": 8,
+      "net_correct_gain": 1
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.8912857142857142,
+      "macro_f1": 0.15708638618223933,
+      "macro_accuracy": 0.8912857142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          32,
+          42,
+          910,
+          13,
+          2047,
+          24956
+        ]
+      ],
+      "NLL": 0.3869604468345642,
+      "parent_fix_count": 1080,
+      "parent_break_count": 706,
+      "net_correct_gain": 374
+    }
+  ],
+  "day_records": [
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7939285714285714,
+      "macro_f1": 0.7901800837333778,
+      "macro_accuracy": 0.7939285714285714,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6385,
+          111,
+          185,
+          309,
+          7,
+          3
+        ],
+        [
+          123,
+          3313,
+          48,
+          3459,
+          51,
+          6
+        ],
+        [
+          104,
+          109,
+          6111,
+          115,
+          35,
+          526
+        ],
+        [
+          570,
+          1253,
+          420,
+          4752,
+          5,
+          0
+        ],
+        [
+          1,
+          3,
+          2,
+          1,
+          6990,
+          3
+        ],
+        [
+          3,
+          1,
+          380,
+          11,
+          811,
+          5794
+        ]
+      ],
+      "NLL": 0.9317355155944824,
+      "parent_fix_count": 845,
+      "parent_break_count": 1618,
+      "net_correct_gain": -773
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8094761904761905,
+      "macro_f1": 0.8070507705597301,
+      "macro_accuracy": 0.8094761904761905,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6528,
+          34,
+          300,
+          92,
+          42,
+          4
+        ],
+        [
+          176,
+          3385,
+          40,
+          3391,
+          7,
+          1
+        ],
+        [
+          202,
+          244,
+          6190,
+          95,
+          44,
+          225
+        ],
+        [
+          593,
+          2139,
+          114,
+          4150,
+          2,
+          2
+        ],
+        [
+          3,
+          7,
+          2,
+          4,
+          6982,
+          2
+        ],
+        [
+          6,
+          31,
+          21,
+          1,
+          178,
+          6763
+        ]
+      ],
+      "NLL": 0.8623006939888,
+      "parent_fix_count": 678,
+      "parent_break_count": 1400,
+      "net_correct_gain": -722
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.772952380952381,
+      "macro_f1": 0.7669971620253918,
+      "macro_accuracy": 0.7729523809523808,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6915,
+          15,
+          9,
+          51,
+          4,
+          6
+        ],
+        [
+          146,
+          2697,
+          15,
+          4119,
+          9,
+          14
+        ],
+        [
+          211,
+          132,
+          6051,
+          21,
+          20,
+          565
+        ],
+        [
+          670,
+          2195,
+          88,
+          4036,
+          9,
+          2
+        ],
+        [
+          2,
+          3,
+          6,
+          4,
+          6983,
+          2
+        ],
+        [
+          3,
+          34,
+          398,
+          2,
+          781,
+          5782
+        ]
+      ],
+      "NLL": 1.1362310647964478,
+      "parent_fix_count": 1076,
+      "parent_break_count": 821,
+      "net_correct_gain": 255
+    },
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "arm": "DELAY_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8466190476190476,
+      "macro_f1": 0.8444773141903733,
+      "macro_accuracy": 0.8466190476190475,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6707,
+          40,
+          2,
+          247,
+          3,
+          1
+        ],
+        [
+          82,
+          4165,
+          16,
+          2710,
+          20,
+          7
+        ],
+        [
+          389,
+          24,
+          5897,
+          11,
+          76,
+          603
+        ],
+        [
+          317,
+          900,
+          285,
+          5475,
+          1,
+          22
+        ],
+        [
+          0,
+          2,
+          4,
+          0,
+          6993,
+          1
+        ],
+        [
+          9,
+          2,
+          84,
+          0,
+          584,
+          6321
+        ]
+      ],
+      "NLL": 0.7189225554466248,
+      "parent_fix_count": 674,
+      "parent_break_count": 1249,
+      "net_correct_gain": -575
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7993809523809524,
+      "macro_f1": 0.7959724752344787,
+      "macro_accuracy": 0.7993809523809524,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6381,
+          112,
+          171,
+          325,
+          7,
+          4
+        ],
+        [
+          123,
+          3371,
+          49,
+          3408,
+          42,
+          7
+        ],
+        [
+          97,
+          111,
+          6127,
+          85,
+          41,
+          539
+        ],
+        [
+          582,
+          1287,
+          377,
+          4749,
+          5,
+          0
+        ],
+        [
+          1,
+          3,
+          3,
+          1,
+          6990,
+          2
+        ],
+        [
+          3,
+          1,
+          396,
+          10,
+          634,
+          5956
+        ]
+      ],
+      "NLL": 0.8983588814735413,
+      "parent_fix_count": 908,
+      "parent_break_count": 1452,
+      "net_correct_gain": -544
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8101666666666667,
+      "macro_f1": 0.8076164105517187,
+      "macro_accuracy": 0.8101666666666666,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6525,
+          35,
+          287,
+          102,
+          47,
+          4
+        ],
+        [
+          178,
+          3465,
+          37,
+          3314,
+          5,
+          1
+        ],
+        [
+          174,
+          255,
+          6110,
+          107,
+          43,
+          311
+        ],
+        [
+          605,
+          2103,
+          169,
+          4117,
+          2,
+          4
+        ],
+        [
+          3,
+          4,
+          3,
+          4,
+          6983,
+          3
+        ],
+        [
+          6,
+          23,
+          17,
+          1,
+          126,
+          6827
+        ]
+      ],
+      "NLL": 0.8520902991294861,
+      "parent_fix_count": 627,
+      "parent_break_count": 1320,
+      "net_correct_gain": -693
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.774,
+      "macro_f1": 0.7683370657788161,
+      "macro_accuracy": 0.774,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6915,
+          16,
+          8,
+          49,
+          5,
+          7
+        ],
+        [
+          153,
+          2807,
+          13,
+          4002,
+          11,
+          14
+        ],
+        [
+          190,
+          151,
+          5936,
+          31,
+          17,
+          675
+        ],
+        [
+          673,
+          2198,
+          109,
+          4008,
+          10,
+          2
+        ],
+        [
+          2,
+          2,
+          5,
+          4,
+          6984,
+          3
+        ],
+        [
+          14,
+          17,
+          411,
+          2,
+          698,
+          5858
+        ]
+      ],
+      "NLL": 1.1280890703201294,
+      "parent_fix_count": 1017,
+      "parent_break_count": 718,
+      "net_correct_gain": 299
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "arm": "CAP_POS",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8475238095238096,
+      "macro_f1": 0.8454218249321132,
+      "macro_accuracy": 0.8475238095238096,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6706,
+          45,
+          2,
+          243,
+          3,
+          1
+        ],
+        [
+          78,
+          4161,
+          18,
+          2715,
+          20,
+          8
+        ],
+        [
+          347,
+          25,
+          5948,
+          9,
+          54,
+          617
+        ],
+        [
+          315,
+          912,
+          272,
+          5473,
+          1,
+          27
+        ],
+        [
+          0,
+          1,
+          4,
+          0,
+          6993,
+          2
+        ],
+        [
+          9,
+          1,
+          86,
+          0,
+          589,
+          6315
+        ]
+      ],
+      "NLL": 0.7132976651191711,
+      "parent_fix_count": 672,
+      "parent_break_count": 1209,
+      "net_correct_gain": -537
+    }
+  ],
+  "parent_records": [
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8165476190476191,
+      "macro_f1": 0.8119528118696167,
+      "macro_accuracy": 0.816547619047619,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26736,
+          169,
+          504,
+          494,
+          69,
+          28
+        ],
+        [
+          559,
+          14326,
+          268,
+          12685,
+          135,
+          27
+        ],
+        [
+          231,
+          120,
+          25558,
+          45,
+          152,
+          1894
+        ],
+        [
+          2848,
+          5789,
+          1264,
+          18029,
+          23,
+          47
+        ],
+        [
+          8,
+          6,
+          19,
+          8,
+          27949,
+          10
+        ],
+        [
+          8,
+          43,
+          1423,
+          7,
+          1937,
+          24582
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8323333333333334,
+      "macro_f1": 0.8164115084846361,
+      "macro_accuracy": 0.8323333333333335,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3979,
+          6,
+          12,
+          2,
+          1,
+          0
+        ],
+        [
+          31,
+          1224,
+          6,
+          2738,
+          1,
+          0
+        ],
+        [
+          178,
+          0,
+          3771,
+          2,
+          1,
+          48
+        ],
+        [
+          128,
+          19,
+          1,
+          3852,
+          0,
+          0
+        ],
+        [
+          4,
+          2,
+          5,
+          6,
+          3981,
+          2
+        ],
+        [
+          2,
+          10,
+          790,
+          0,
+          29,
+          3169
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7498333333333334,
+      "macro_f1": 0.7154157710688042,
+      "macro_accuracy": 0.7498333333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3811,
+          0,
+          0,
+          189,
+          0,
+          0
+        ],
+        [
+          15,
+          2597,
+          0,
+          1384,
+          4,
+          0
+        ],
+        [
+          1,
+          2,
+          3987,
+          1,
+          2,
+          7
+        ],
+        [
+          14,
+          2699,
+          1226,
+          22,
+          2,
+          37
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          3994,
+          4
+        ],
+        [
+          0,
+          4,
+          0,
+          0,
+          411,
+          3585
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8457083333333333,
+      "macro_f1": 0.8402534809528958,
+      "macro_accuracy": 0.8457083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3222,
+          158,
+          409,
+          141,
+          62,
+          8
+        ],
+        [
+          9,
+          1843,
+          171,
+          1853,
+          102,
+          22
+        ],
+        [
+          10,
+          6,
+          3953,
+          14,
+          11,
+          6
+        ],
+        [
+          30,
+          609,
+          12,
+          3344,
+          0,
+          5
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          2,
+          5,
+          1,
+          55,
+          3937
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7753333333333333,
+      "macro_f1": 0.7698401670644407,
+      "macro_accuracy": 0.7753333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3961,
+          2,
+          12,
+          14,
+          5,
+          6
+        ],
+        [
+          24,
+          2401,
+          3,
+          1555,
+          15,
+          2
+        ],
+        [
+          20,
+          19,
+          3862,
+          12,
+          39,
+          48
+        ],
+        [
+          17,
+          1898,
+          8,
+          2063,
+          13,
+          1
+        ],
+        [
+          4,
+          3,
+          10,
+          2,
+          3979,
+          2
+        ],
+        [
+          6,
+          27,
+          596,
+          6,
+          1023,
+          2342
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.87375,
+      "macro_f1": 0.8610019566557039,
+      "macro_accuracy": 0.8737499999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3864,
+          1,
+          71,
+          50,
+          0,
+          14
+        ],
+        [
+          11,
+          1369,
+          13,
+          2603,
+          4,
+          0
+        ],
+        [
+          1,
+          19,
+          3871,
+          5,
+          97,
+          7
+        ],
+        [
+          2,
+          28,
+          8,
+          3952,
+          6,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          0,
+          28,
+          0,
+          57,
+          3915
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7970833333333334,
+      "macro_f1": 0.7767388603345542,
+      "macro_accuracy": 0.7970833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          468,
+          2343,
+          73,
+          1108,
+          5,
+          3
+        ],
+        [
+          19,
+          1,
+          3979,
+          0,
+          1,
+          0
+        ],
+        [
+          2657,
+          521,
+          6,
+          816,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          0,
+          4,
+          0,
+          4,
+          3992
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8417916666666667,
+      "macro_f1": 0.8357024121741982,
+      "macro_accuracy": 0.8417916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3899,
+          2,
+          0,
+          98,
+          1,
+          0
+        ],
+        [
+          1,
+          2549,
+          2,
+          1444,
+          4,
+          0
+        ],
+        [
+          2,
+          73,
+          2135,
+          11,
+          1,
+          1778
+        ],
+        [
+          0,
+          15,
+          3,
+          3980,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          358,
+          3642
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9548571428571428,
+      "macro_f1": 0.1628178895059924,
+      "macro_accuracy": 0.9548571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26736,
+          169,
+          504,
+          494,
+          69,
+          28
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5116428571428572,
+      "macro_f1": 0.11282269369497078,
+      "macro_accuracy": 0.5116428571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          559,
+          14326,
+          268,
+          12685,
+          135,
+          27
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.9127857142857143,
+      "macro_f1": 0.15906742845762226,
+      "macro_accuracy": 0.9127857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          231,
+          120,
+          25558,
+          45,
+          152,
+          1894
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6438928571428572,
+      "macro_f1": 0.13056261632159435,
+      "macro_accuracy": 0.6438928571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2848,
+          5789,
+          1264,
+          18029,
+          23,
+          47
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9981785714285715,
+      "macro_f1": 0.16651474259295668,
+      "macro_accuracy": 0.9981785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          8,
+          6,
+          19,
+          8,
+          27949,
+          10
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "row_id": "P0-s2026092703",
+      "arm": "P0",
+      "model_seed": 2026092703,
+      "stage": "phase1_scratch_bidirectional_style",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.8779285714285714,
+      "macro_f1": 0.15583279449241186,
+      "macro_accuracy": 0.8779285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          8,
+          43,
+          1423,
+          7,
+          1937,
+          24582
+        ]
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "row_id": "DELAY_POS-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.884503134991974
+        },
+        "wall_seconds": 7.42240803304594,
+        "peak_cuda_allocated_bytes": 91517440,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1814224896
+      },
+      "source": {
+        "parent_checkpoint": null,
+        "parent_epochs": 0,
+        "incremental_epochs": 20,
+        "total_epochs": 20,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 3062.1839153049514,
+          "identity_training_and_source_diagnostics_including_delayed_calibration_seconds": 3070.4726232079556,
+          "calibration_inside_main_timer_seconds": 8.288707903004251,
+          "calibration_ready_events": 1,
+          "calibration_after_identity_updates": 444,
+          "incremental_total_seconds_including_warmup": 3072.2065610130085,
+          "head_warmup": {
+            "status": "NOT_APPLICABLE",
+            "enabled": false,
+            "source_L_cache_packets": 0,
+            "cache_forward_calls": 0,
+            "head_packet_occurrences": 0,
+            "optimizer_steps": 0,
+            "seconds": 0.0,
+            "cache_tensor_bytes": 0,
+            "optimizer_state_tensor_bytes": 0,
+            "base_state_unchanged": true,
+            "backbone_updates": 0,
+            "peak_cuda_memory_bytes": 0,
+            "rss_bytes": null,
+            "auxiliary_inheritance": false
+          },
+          "fishr_calibration": {
+            "status": "FIXED_CALIBRATION_COMPLETE",
+            "calibration_reference": "own_margin_term",
+            "fixed_coefficients": {
+              "time_down": 0.1395485379536136,
+              "t2.pool": 0.016058751459731478
+            },
+            "levels": {
+              "time_down": {
+                "mean_CE_gradient_norm": 0.9577179898797835,
+                "mean_term_gradient_norm": 1.3725948031034683,
+                "uncapped_coefficient": 0.1395485379536136,
+                "coefficient": 0.1395485379536136,
+                "cap_active": false
+              },
+              "t2.pool": {
+                "mean_CE_gradient_norm": 1.307843757170335,
+                "mean_term_gradient_norm": 16.288237107969085,
+                "uncapped_coefficient": 0.016058751459731478,
+                "coefficient": 0.016058751459731478,
+                "cap_active": false
+              }
+            },
+            "pairs": 12,
+            "records": [
+              {
+                "pair": 0,
+                "day": 1,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.4265422006815683,
+                    "term_gradient_norm": 0.9984944269128696,
+                    "raw_term": 0.10716278851032257
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.6243104194811357,
+                    "term_gradient_norm": 4.162104516172888,
+                    "raw_term": 0.4125792682170868
+                  }
+                },
+                "main_ce": 0.16208796203136444,
+                "seconds": 0.6123439089860767
+              },
+              {
+                "pair": 1,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.9104105596265398,
+                    "term_gradient_norm": 0.9929355292977393,
+                    "raw_term": 0.11796285212039948
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.3019805320863955,
+                    "term_gradient_norm": 9.060332070421685,
+                    "raw_term": 0.2412470132112503
+                  }
+                },
+                "main_ce": 0.12539711594581604,
+                "seconds": 0.3999728780472651
+              },
+              {
+                "pair": 2,
+                "day": 3,
+                "cross_batch_PID_overlap": 5,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.9465503928145464,
+                    "term_gradient_norm": 0.9493779397708227,
+                    "raw_term": 0.07432617247104645
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.540542617724447,
+                    "term_gradient_norm": 3.9097190953343883,
+                    "raw_term": 0.1621462106704712
+                  }
+                },
+                "main_ce": 0.20993997156620026,
+                "seconds": 1.1422587119741365
+              },
+              {
+                "pair": 3,
+                "day": 1,
+                "cross_batch_PID_overlap": 0,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.7915160237028798,
+                    "term_gradient_norm": 1.9089650129637816,
+                    "raw_term": 0.07977800816297531
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.1440849232773382,
+                    "term_gradient_norm": 13.565190808698018,
+                    "raw_term": 0.20758436620235443
+                  }
+                },
+                "main_ce": 0.23725493252277374,
+                "seconds": 1.0879869880154729
+              },
+              {
+                "pair": 4,
+                "day": 2,
+                "cross_batch_PID_overlap": 4,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.57505215690396,
+                    "term_gradient_norm": 1.0198110765011121,
+                    "raw_term": 0.10101741552352905
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.8372281096520102,
+                    "term_gradient_norm": 18.45974930428388,
+                    "raw_term": 0.31815633177757263
+                  }
+                },
+                "main_ce": 0.11962948739528656,
+                "seconds": 0.5824427970219404
+              },
+              {
+                "pair": 5,
+                "day": 3,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.9398114976553015,
+                    "term_gradient_norm": 1.402413878607551,
+                    "raw_term": 0.1003977358341217
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.1980338733022933,
+                    "term_gradient_norm": 26.297340429510538,
+                    "raw_term": 0.5415613651275635
+                  }
+                },
+                "main_ce": 0.3100072741508484,
+                "seconds": 0.41471865901257843
+              },
+              {
+                "pair": 6,
+                "day": 1,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.66610879015659,
+                    "term_gradient_norm": 1.252966735535299,
+                    "raw_term": 0.04908718541264534
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 2.638779725344192,
+                    "term_gradient_norm": 5.063801434841261,
+                    "raw_term": 0.5173704028129578
+                  }
+                },
+                "main_ce": 0.3233201205730438,
+                "seconds": 0.41330676106736064
+              },
+              {
+                "pair": 7,
+                "day": 2,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.253377631408535,
+                    "term_gradient_norm": 3.099098100027943,
+                    "raw_term": 0.10922391712665558
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.6174178596031445,
+                    "term_gradient_norm": 70.12067009139493,
+                    "raw_term": 0.17222970724105835
+                  }
+                },
+                "main_ce": 0.2017294466495514,
+                "seconds": 0.4079998950473964
+              },
+              {
+                "pair": 8,
+                "day": 3,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.836545410406288,
+                    "term_gradient_norm": 1.1982975371042848,
+                    "raw_term": 0.08196289092302322
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.1227135706993867,
+                    "term_gradient_norm": 5.83205566684842,
+                    "raw_term": 0.15619471669197083
+                  }
+                },
+                "main_ce": 0.28547871112823486,
+                "seconds": 0.7588590150699019
+              },
+              {
+                "pair": 9,
+                "day": 1,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.9926354748573275,
+                    "term_gradient_norm": 1.8085140339604553,
+                    "raw_term": 0.07289336621761322
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.9706540642455236,
+                    "term_gradient_norm": 27.26732563954007,
+                    "raw_term": 0.17119984328746796
+                  }
+                },
+                "main_ce": 0.19246406853199005,
+                "seconds": 0.9467394839739427
+              },
+              {
+                "pair": 10,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.3815970716140134,
+                    "term_gradient_norm": 0.5826960330442846,
+                    "raw_term": 0.05048759654164314
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 1.7001701137946659,
+                    "term_gradient_norm": 8.783282201225107,
+                    "raw_term": 0.052077293395996094
+                  }
+                },
+                "main_ce": 0.2165384590625763,
+                "seconds": 0.7667355450103059
+              },
+              {
+                "pair": 11,
+                "day": 3,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 0.7724686687298528,
+                    "term_gradient_norm": 1.2575673335154771,
+                    "raw_term": 0.025825630873441696
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 0.9982092768334871,
+                    "term_gradient_norm": 2.9372740373577977,
+                    "raw_term": 0.08917609602212906
+                  }
+                },
+                "main_ce": 0.2541902959346771,
+                "seconds": 0.6966081119608134
+              }
+            ],
+            "extra_source_readouts": 1440,
+            "model_forwards": 24,
+            "seconds": 8.288707903004251,
+            "state_unchanged": true,
+            "RNG_preserved": true,
+            "parameters_buffers_unchanged": true,
+            "modes_preserved": true,
+            "python_numpy_RNG_preserved": true,
+            "source_role": "L_s only",
+            "U_access": false,
+            "V_access": false,
+            "target_access": false,
+            "identity_updates": 0,
+            "head_updates": 0,
+            "auxiliary_heads": 0,
+            "all_layers_calibrated": true,
+            "after_identity_updates": 444,
+            "scheduled_after_identity_updates": 444,
+            "coefficient_formula": "min(cap,0.2*mean(pair_main_CE_gradient_norm)/(mean(own_margin_term_gradient_norm)+eps))",
+            "sampling_namespace": "same twelve source-private calibration pairs as scratch boundary style; own-margin statistic"
+          },
+          "peak_cuda_memory_bytes": 660598784,
+          "trainable_parameters": 177025,
+          "total_parameters": 843134,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "optimizer_state_tensor_bytes": 1416468,
+          "checkpoint_bytes": 4978246,
+          "auxiliary_saved_bytes": 526870,
+          "parent_training_epochs": 0,
+          "incremental_epochs": 20,
+          "total_epochs": 20,
+          "parent_training_cost_reused": false,
+          "scratch_only": true,
+          "scratch_scope": "student_identity_only",
+          "student_initialization_checkpoint_count": 0,
+          "whole_method_pretrained_teachers": true,
+          "frozen_teacher_model_count": 2,
+          "teacher_training_epochs_reused": 40,
+          "historical_model_epochs_including_teachers": 60,
+          "teacher_probability_bank_bytes": 1871100,
+          "teacher_cache_resources_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-bidirectional-style-manysig-m18-r01/peer_cache/completion.json",
+          "teacher_scope": "teacher_parameters=0 means no teacher models resident during student training; extra original E20 training and shared cache forward costs reported separately",
+          "mixed_U_packets_unit": "U MixStyle disabled",
+          "mixed_L_packets_unit": "actual changed L packet-layer occurrences; not distinct packets",
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 119880,
+          "auxiliary_forwards": 1998,
+          "fishr_steps": 999,
+          "mixstyle_steps": 3996,
+          "style_L_packets": 511488,
+          "style_search_forwards": 19980,
+          "style_search_L": 2557440,
+          "mixstyle_U_steps": 0,
+          "mixed_U_packets": 0,
+          "mixed_L_packets": 629178
+        },
+        "shared_IQ_preparation_reused": true,
+        "training_flops": null,
+        "scope": "random student20; pretrained source-U teacher history and initial calibration separately measured; shared GPU wall cost",
+        "P0_role": "fixed score reference only; never loaded into the student"
+      }
+    },
+    {
+      "row_id": "CAP_POS-s2026092703",
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "inference_seconds": {
+          "clean": 5.049262695014477
+        },
+        "wall_seconds": 6.217866771039553,
+        "peak_cuda_allocated_bytes": 91517440,
+        "peak_cuda_reserved_bytes": 130023424,
+        "peak_process_rss_bytes": 1813950464
+      },
+      "source": {
+        "parent_checkpoint": null,
+        "parent_epochs": 0,
+        "incremental_epochs": 20,
+        "total_epochs": 20,
+        "incremental_identity_updates": 4440,
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "measured_training_resources": {
+          "identity_training_and_source_diagnostics_seconds": 2684.240056551993,
+          "identity_training_and_source_diagnostics_including_delayed_calibration_seconds": 2684.240056551993,
+          "calibration_inside_main_timer_seconds": 0.0,
+          "calibration_ready_events": 1,
+          "calibration_after_identity_updates": 0,
+          "incremental_total_seconds_including_warmup": 2694.6871702600038,
+          "head_warmup": {
+            "status": "NOT_APPLICABLE",
+            "enabled": false,
+            "source_L_cache_packets": 0,
+            "cache_forward_calls": 0,
+            "head_packet_occurrences": 0,
+            "optimizer_steps": 0,
+            "seconds": 0.0,
+            "cache_tensor_bytes": 0,
+            "optimizer_state_tensor_bytes": 0,
+            "base_state_unchanged": true,
+            "backbone_updates": 0,
+            "peak_cuda_memory_bytes": 0,
+            "rss_bytes": null,
+            "auxiliary_inheritance": false
+          },
+          "fishr_calibration": {
+            "status": "FIXED_CALIBRATION_COMPLETE",
+            "calibration_reference": "own_margin_term",
+            "fixed_coefficients": {
+              "time_down": 1.322124995827386,
+              "t2.pool": 1.46485382192147
+            },
+            "levels": {
+              "time_down": {
+                "mean_CE_gradient_norm": 2.001910129129303,
+                "mean_term_gradient_norm": 0.3028322035270042,
+                "uncapped_coefficient": 1.322124995827386,
+                "coefficient": 1.322124995827386,
+                "cap_active": false
+              },
+              "t2.pool": {
+                "mean_CE_gradient_norm": 5.141660589877552,
+                "mean_term_gradient_norm": 0.70200323239432,
+                "uncapped_coefficient": 1.46485382192147,
+                "coefficient": 1.46485382192147,
+                "cap_active": false
+              }
+            },
+            "pairs": 12,
+            "records": [
+              {
+                "pair": 0,
+                "day": 1,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.9838728322834398,
+                    "term_gradient_norm": 0.3080707019831089,
+                    "raw_term": 0.08569851517677307
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 4.9949585926653075,
+                    "term_gradient_norm": 0.8477155756136698,
+                    "raw_term": 0.04267813265323639
+                  }
+                },
+                "main_ce": 2.210115909576416,
+                "seconds": 1.464802447007969
+              },
+              {
+                "pair": 1,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.9893123448660004,
+                    "term_gradient_norm": 0.3151149498864056,
+                    "raw_term": 0.09429997205734253
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.0075698688657795,
+                    "term_gradient_norm": 0.6523848553769332,
+                    "raw_term": 0.06051843240857124
+                  }
+                },
+                "main_ce": 2.17844557762146,
+                "seconds": 0.6291911769658327
+              },
+              {
+                "pair": 2,
+                "day": 3,
+                "cross_batch_PID_overlap": 5,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.059456199728428,
+                    "term_gradient_norm": 0.26689336328404756,
+                    "raw_term": 0.0943463146686554
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.321478675781771,
+                    "term_gradient_norm": 0.7441608199954158,
+                    "raw_term": 0.1141498014330864
+                  }
+                },
+                "main_ce": 2.2711684703826904,
+                "seconds": 0.5934954799013212
+              },
+              {
+                "pair": 3,
+                "day": 1,
+                "cross_batch_PID_overlap": 0,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.0742404324036876,
+                    "term_gradient_norm": 0.3305529395330955,
+                    "raw_term": 0.08854106813669205
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.185034912362826,
+                    "term_gradient_norm": 0.8851457685772355,
+                    "raw_term": 0.06810054928064346
+                  }
+                },
+                "main_ce": 2.2220284938812256,
+                "seconds": 0.7284899930236861
+              },
+              {
+                "pair": 4,
+                "day": 2,
+                "cross_batch_PID_overlap": 4,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.912975160915528,
+                    "term_gradient_norm": 0.24133066978664577,
+                    "raw_term": 0.07117879390716553
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 4.715495355096343,
+                    "term_gradient_norm": 0.6259597683806987,
+                    "raw_term": 0.0713002011179924
+                  }
+                },
+                "main_ce": 2.1744225025177,
+                "seconds": 0.7229860930237919
+              },
+              {
+                "pair": 5,
+                "day": 3,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.9714644323792554,
+                    "term_gradient_norm": 0.26773792649245937,
+                    "raw_term": 0.09697306901216507
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.237464214607883,
+                    "term_gradient_norm": 1.4011123708290922,
+                    "raw_term": 0.18313196301460266
+                  }
+                },
+                "main_ce": 2.2086257934570312,
+                "seconds": 0.3830917610321194
+              },
+              {
+                "pair": 6,
+                "day": 1,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.015127629508276,
+                    "term_gradient_norm": 0.26038920463291526,
+                    "raw_term": 0.07022830843925476
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.218361849766006,
+                    "term_gradient_norm": 0.5369250808171886,
+                    "raw_term": 0.0394078753888607
+                  }
+                },
+                "main_ce": 2.146414041519165,
+                "seconds": 0.38109279808122665
+              },
+              {
+                "pair": 7,
+                "day": 2,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.037568166924584,
+                    "term_gradient_norm": 0.36360073973877427,
+                    "raw_term": 0.06589227169752121
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.291935860475247,
+                    "term_gradient_norm": 0.2588922464153104,
+                    "raw_term": 0.05260304734110832
+                  }
+                },
+                "main_ce": 2.2423903942108154,
+                "seconds": 0.7564982440089807
+              },
+              {
+                "pair": 8,
+                "day": 3,
+                "cross_batch_PID_overlap": 2,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.0784818571715156,
+                    "term_gradient_norm": 0.34504586859046255,
+                    "raw_term": 0.1020449697971344
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.534639718952374,
+                    "term_gradient_norm": 0.7983384454601972,
+                    "raw_term": 0.12468938529491425
+                  }
+                },
+                "main_ce": 2.2185051441192627,
+                "seconds": 0.7399250459857285
+              },
+              {
+                "pair": 9,
+                "day": 1,
+                "cross_batch_PID_overlap": 3,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.0107932544428344,
+                    "term_gradient_norm": 0.29339464362724277,
+                    "raw_term": 0.07471299916505814
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.069747085362935,
+                    "term_gradient_norm": 0.6067107358447592,
+                    "raw_term": 0.052496738731861115
+                  }
+                },
+                "main_ce": 2.196538209915161,
+                "seconds": 0.5633413919713348
+              },
+              {
+                "pair": 10,
+                "day": 2,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 1.8646095237265208,
+                    "term_gradient_norm": 0.2582621292083658,
+                    "raw_term": 0.06804793328046799
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 4.92536872535168,
+                    "term_gradient_norm": 0.4517795456267105,
+                    "raw_term": 0.08991788327693939
+                  }
+                },
+                "main_ce": 2.1923091411590576,
+                "seconds": 0.7556231829803437
+              },
+              {
+                "pair": 11,
+                "day": 3,
+                "cross_batch_PID_overlap": 1,
+                "levels": {
+                  "time_down": {
+                    "main_ce_gradient_norm": 2.025019715201565,
+                    "term_gradient_norm": 0.38359330556052756,
+                    "raw_term": 0.12279483675956726
+                  },
+                  "t2.pool": {
+                    "main_ce_gradient_norm": 5.197872219242465,
+                    "term_gradient_norm": 0.6149135757946299,
+                    "raw_term": 0.06280522793531418
+                  }
+                },
+                "main_ce": 2.192220449447632,
+                "seconds": 0.6772863899823278
+              }
+            ],
+            "extra_source_readouts": 1440,
+            "model_forwards": 24,
+            "seconds": 8.738215391058475,
+            "state_unchanged": true,
+            "RNG_preserved": true,
+            "parameters_buffers_unchanged": true,
+            "modes_preserved": true,
+            "python_numpy_RNG_preserved": true,
+            "source_role": "L_s only",
+            "U_access": false,
+            "V_access": false,
+            "target_access": false,
+            "identity_updates": 0,
+            "head_updates": 0,
+            "auxiliary_heads": 0,
+            "all_layers_calibrated": true,
+            "after_identity_updates": 0,
+            "scheduled_after_identity_updates": 0,
+            "coefficient_formula": "min(cap,0.2*mean(pair_main_CE_gradient_norm)/(mean(own_margin_term_gradient_norm)+eps))",
+            "sampling_namespace": "same twelve source-private calibration pairs as scratch boundary style; own-margin statistic"
+          },
+          "peak_cuda_memory_bytes": 671347200,
+          "trainable_parameters": 177025,
+          "total_parameters": 843134,
+          "auxiliary_trainable_parameters": 0,
+          "teacher_parameters": 0,
+          "optimizer_state_tensor_bytes": 1416468,
+          "checkpoint_bytes": 4978246,
+          "auxiliary_saved_bytes": 526870,
+          "parent_training_epochs": 0,
+          "incremental_epochs": 20,
+          "total_epochs": 20,
+          "parent_training_cost_reused": false,
+          "scratch_only": true,
+          "scratch_scope": "student_identity_only",
+          "student_initialization_checkpoint_count": 0,
+          "whole_method_pretrained_teachers": true,
+          "frozen_teacher_model_count": 2,
+          "teacher_training_epochs_reused": 40,
+          "historical_model_epochs_including_teachers": 60,
+          "teacher_probability_bank_bytes": 1871100,
+          "teacher_cache_resources_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-scratch-bidirectional-style-manysig-m18-r01/peer_cache/completion.json",
+          "teacher_scope": "teacher_parameters=0 means no teacher models resident during student training; extra original E20 training and shared cache forward costs reported separately",
+          "mixed_U_packets_unit": "U MixStyle disabled",
+          "mixed_L_packets_unit": "actual changed L packet-layer occurrences; not distinct packets",
+          "identity_updates": 4440,
+          "L_packets": 568320,
+          "U_packets": 511488,
+          "weak_forwards": 3996,
+          "physical_L": 0,
+          "physical_U": 0,
+          "feature_U": 0,
+          "margin_U": 0,
+          "EMA_updates": 0,
+          "satellite_calls": 0,
+          "auxiliary_steps": 999,
+          "auxiliary_L": 119880,
+          "auxiliary_forwards": 1998,
+          "fishr_steps": 999,
+          "mixstyle_steps": 3996,
+          "style_L_packets": 511488,
+          "style_search_forwards": 19980,
+          "style_search_L": 2557440,
+          "mixstyle_U_steps": 0,
+          "mixed_U_packets": 0,
+          "mixed_L_packets": 622119
+        },
+        "shared_IQ_preparation_reused": true,
+        "training_flops": null,
+        "scope": "random student20; pretrained source-U teacher history and initial calibration separately measured; shared GPU wall cost",
+        "P0_role": "fixed score reference only; never loaded into the student"
+      }
+    }
+  ],
+  "complete_arms_reaching_84": [],
+  "checks": {
+    "confusion_recount": true,
+    "source_config_budget": true,
+    "row_aggregate_agreement": false
+  },
+  "target_feedback_to_training": false
+}

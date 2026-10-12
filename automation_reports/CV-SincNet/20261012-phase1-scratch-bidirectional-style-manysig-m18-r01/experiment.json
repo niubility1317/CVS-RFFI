@@ -694,7 +694,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 391170,
       "gpu": 1,
-      "live_epoch": 7
+      "live_epoch": 17
     },
     {
       "arm": "DELAY_BIDIR",
@@ -1134,7 +1134,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 391256,
       "gpu": 2,
-      "live_epoch": 7
+      "live_epoch": 17
     },
     {
       "arm": "CAP_POS",
@@ -1574,7 +1574,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 391344,
       "gpu": 3,
-      "live_epoch": 7
+      "live_epoch": 16
     },
     {
       "arm": "CAP_BIDIR",
@@ -2014,7 +2014,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 391432,
       "gpu": 7,
-      "live_epoch": 7
+      "live_epoch": 15
     },
     {
       "arm": "DELAYCAP_POS",
@@ -2454,7 +2454,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 391518,
       "gpu": 7,
-      "live_epoch": 7
+      "live_epoch": 15
     },
     {
       "arm": "DELAYCAP_BIDIR",
@@ -2894,7 +2894,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 391840,
       "gpu": 1,
-      "live_epoch": 7
+      "live_epoch": 16
     },
     {
       "arm": "DELAY_POS",
@@ -3334,7 +3334,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 391948,
       "gpu": 2,
-      "live_epoch": 7
+      "live_epoch": 17
     },
     {
       "arm": "DELAY_BIDIR",
@@ -3774,7 +3774,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 392032,
       "gpu": 3,
-      "live_epoch": 7
+      "live_epoch": 17
     },
     {
       "arm": "CAP_POS",
@@ -4214,7 +4214,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 392118,
       "gpu": 7,
-      "live_epoch": 7
+      "live_epoch": 15
     },
     {
       "arm": "CAP_BIDIR",
@@ -4654,7 +4654,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 392202,
       "gpu": 1,
-      "live_epoch": 7
+      "live_epoch": 16
     },
     {
       "arm": "DELAYCAP_POS",
@@ -5094,7 +5094,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 392286,
       "gpu": 2,
-      "live_epoch": 7
+      "live_epoch": 17
     },
     {
       "arm": "DELAYCAP_BIDIR",
@@ -5534,13 +5534,13 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 392370,
       "gpu": 3,
-      "live_epoch": 7
+      "live_epoch": 16
     },
     {
       "arm": "DELAY_POS",
       "model_seed": 2026092703,
       "row_id": "DELAY_POS-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -5974,7 +5974,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 392454,
       "gpu": 6,
-      "live_epoch": 7
+      "live_epoch": 20
     },
     {
       "arm": "DELAY_BIDIR",
@@ -6414,13 +6414,13 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 392538,
       "gpu": 0,
-      "live_epoch": 7
+      "live_epoch": 16
     },
     {
       "arm": "CAP_POS",
       "model_seed": 2026092703,
       "row_id": "CAP_POS-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_bidirectional_style",
       "purpose": "固定三种校准策略，各比较POS/BIDIR受限统计方向池，六方案各三种子随机学生20轮，自动clean",
       "config": {
@@ -6854,7 +6854,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 393471,
       "gpu": 5,
-      "live_epoch": 6
+      "live_epoch": 20
     },
     {
       "arm": "CAP_BIDIR",
@@ -7294,7 +7294,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 403143,
       "gpu": 0,
-      "live_epoch": 3
+      "live_epoch": 12
     },
     {
       "arm": "DELAYCAP_POS",
@@ -7734,7 +7734,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 404809,
       "gpu": 6,
-      "live_epoch": 2
+      "live_epoch": 16
     },
     {
       "arm": "DELAYCAP_BIDIR",
@@ -8174,7 +8174,7 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 405837,
       "gpu": 0,
-      "live_epoch": 2
+      "live_epoch": 11
     }
   ],
   "registered_at": "2026-10-11T23:14:06+00:00",
