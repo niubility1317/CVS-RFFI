@@ -1,0 +1,13 @@
+# 待用户决定的训练预算选项
+
+这项建议改变用户此前明确的“从头训练30轮”预算，只请求预算范围决定，不新增设计/签名/测试审批。未获授权，不发布新训练。现有原始数据、角色、无显式CFO、单包纯DG及84%主目标保持；它不保证更多轮数达到84%。
+
+建议先做单模型种子2026092701的五RX源先导：RX1/3/4/6/8分别复用对应已经完整核实的纯CE30父模型（quality-film源矩阵中的CE30行，fitL5040/heldV5400）。加载前核对真实契约、完整继承、实际fit物理IDs、固定final30及无U/目标训练/CFO标量；从完全相同fit数据继续70轮，累计100。旧父权重及日志不覆盖。
+
+明确为重置AdamW和cosine日程的续训，不冒充恢复原优化轨迹或从零E100。新70×222=15540更新、batch128、纯L clean CE、label_smoothing0、WD0.0001、lr0.0002至0.000001按70轮cosine、clip10；重置域平衡采样器，private seed=primary+700101，无U、teacher、EMA、星地/相位/其他增强、辅助loss。继承30轮6660更新，总100轮22200更新；五模型新增350模型轮/77700更新，父历史150模型轮/33300更新，总500模型轮/111000更新。
+
+每row fixedfinal100后只预测held-sourceV并独立重算，旧相同物理IDs CE30只读作为对照；不按V挑epoch。预定source资格：均值至少比CE30提高1pp，至少4/5RX非负，最差RX非劣1pp。全部五row完成后判断，失败全部保留，不访问target、不按目标分数选 epoch/recipe 或重跑。
+
+若源条件通过，后续正式路线也是同一E30+70机制：每primary2701/02/03的固定3个合法全源CE30成员各自继续70，不按已有目标成绩选成员；原9父权重配置/实际物理角色/来源检查，SourceU/目标训练关闭，fixedfinal100后每primary等权softmax概率集成。新增9×70=630模型轮/139860更新，父9×30=270模型轮/59940更新，总900模型轮/199800更新。逐row自动clean及六practical七视图各168000，prediction全完成后独立truth-last；全部三个primary组报告后才判断84%，不宣称新盲测。
+
+普通N607账号、每GPU最多3个总实验进程含其他owner、不停止其他健康任务。授权后按现有最小workflow完成实际实现/局部负测与真实checkpoint smoke/一次P0P1/一个不可覆盖run及预登记/Git commit/一次archive SHA比对和remotecompile/preflight/PID-CWD-argv-GPU-loggrowth。仅系统技术/权限/输出碰撞故障停止所属run；source低分保留为科学结果。未授权前只保留此可审阅的预算建议，不发起训练。

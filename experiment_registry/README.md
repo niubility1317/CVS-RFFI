@@ -419,3 +419,7 @@
 
 - [固定三成员证据融合：零训练整RX源检验](../automation_reports/CV-SincNet/20261012-phase1-ensemble-readout-source-manysig-s2026092701-r01/report.md)（PLANNED）
 - [已冻结RX分类器零训练读出：整RX源检验](../automation_reports/CV-SincNet/20261012-phase1-rx-head-readout-source-manysig-s2026092701-r01/report.md)（ANALYZED）
+
+## 本轮关系互补与源端结论
+
+- [固定三成员证据融合：零训练整RX源检验](../automation_reports/CV-SincNet/20261012-phase1-ensemble-readout-source-manysig-s2026092701-r01/report.md)（ANALYZED）
