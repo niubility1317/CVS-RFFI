@@ -1,2 +1,3 @@
 {"at": "2026-10-12T03:26:35+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"event": "LOCAL_VERIFIED", "native_cuda": "PASS3", "strict_own_checkpoint": "PASS3", "independent_review": "PASS", "synthetic_finish": "PASS", "target_access": false}
+{"event": "RUNNING_VERIFIED", "time": 1791776028.2217329, "dispatcher_pid": 569580, "execution_commit": "4aeef661c33cb140f5c750ab4718b863739fed65", "workers": [{"row_id": "CE-s2026092701", "pid": 569677, "gpu": 0}, {"row_id": "CE-s2026092702", "pid": 569759, "gpu": 1}, {"row_id": "CE-s2026092703", "pid": 570248, "gpu": 2}], "explicit_CFO": false, "U_iterator": false, "teacher": "none"}

@@ -123,7 +123,7 @@
   "group_id": "cvs-nocfo-foundation",
   "display_name": "无显式 CFO 的同路径纯 CE E20 三种子基线",
   "description": "原生旧门控随机训练20轮，reference slot27恒零，保留内部CFO补偿；不读U、无教师、无辅助损失；固定final20逐行自动clean",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "aliases": [],
   "tags": [
     "scratch20",
@@ -191,7 +191,7 @@
       "arm": "CE",
       "model_seed": 2026092701,
       "row_id": "CE-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_foundation",
       "purpose": "原生旧门控随机训练20轮，reference slot27恒零，保留内部CFO补偿；不读U、无教师、无辅助损失；固定final20逐行自动clean",
       "config": {
@@ -622,13 +622,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed physical roles; L stream seed=model+101; model/dropout RNG=model; no augmentation/support sampling; null not zero"
+      "seed_notes": "fixed physical roles; L stream seed=model+101; model/dropout RNG=model; no augmentation/support sampling; null not zero",
+      "pid": 569677,
+      "gpu": 0,
+      "launch_evidence": {
+        "pid": 569677,
+        "start_ticks": 102360862,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_foundation_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_foundation.dispatch",
+          "--worker",
+          "CE-s2026092701"
+        ],
+        "gpu": "0"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "CE",
       "model_seed": 2026092702,
       "row_id": "CE-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_foundation",
       "purpose": "原生旧门控随机训练20轮，reference slot27恒零，保留内部CFO补偿；不读U、无教师、无辅助损失；固定final20逐行自动clean",
       "config": {
@@ -1059,13 +1077,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed physical roles; L stream seed=model+101; model/dropout RNG=model; no augmentation/support sampling; null not zero"
+      "seed_notes": "fixed physical roles; L stream seed=model+101; model/dropout RNG=model; no augmentation/support sampling; null not zero",
+      "pid": 569759,
+      "gpu": 1,
+      "launch_evidence": {
+        "pid": 569759,
+        "start_ticks": 102361196,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_foundation_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_foundation.dispatch",
+          "--worker",
+          "CE-s2026092702"
+        ],
+        "gpu": "1"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "CE",
       "model_seed": 2026092703,
       "row_id": "CE-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_nocfo_foundation",
       "purpose": "原生旧门控随机训练20轮，reference slot27恒零，保留内部CFO补偿；不读U、无教师、无辅助损失；固定final20逐行自动clean",
       "config": {
@@ -1496,8 +1532,27 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed physical roles; L stream seed=model+101; model/dropout RNG=model; no augmentation/support sampling; null not zero"
+      "seed_notes": "fixed physical roles; L stream seed=model+101; model/dropout RNG=model; no augmentation/support sampling; null not zero",
+      "pid": 570248,
+      "gpu": 2,
+      "launch_evidence": {
+        "pid": 570248,
+        "start_ticks": 102361531,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_nocfo_foundation_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_nocfo_foundation.dispatch",
+          "--worker",
+          "CE-s2026092703"
+        ],
+        "gpu": "2"
+      },
+      "resolved_config_verified": true
     }
   ],
-  "registered_at": "2026-10-12T03:26:35+00:00"
+  "registered_at": "2026-10-12T03:26:35+00:00",
+  "execution_commit": "4aeef661c33cb140f5c750ab4718b863739fed65"
 }
