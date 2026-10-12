@@ -36,7 +36,7 @@ def relative_locator(value):
     return value
 
 
-def run(root, references, mode, evidence):
+def run(root, references, mode, evidence, render=True):
     root = Path(root).resolve(strict=True)
     destination = root / 'experiment_registry'
     evidence = Path(evidence)
@@ -94,10 +94,17 @@ def run(root, references, mode, evidence):
         coverage['retirement_20261012'] = {'retired_records': len(retired), 'retained_records': len(kept),
                                          'summary': summary_path.name, 'note': 'historical snapshot with explicit pre-September retirement increment'}
         coverage['active_record_counts'] = dict(Counter(record['record_type'] for record in kept))
+        coverage['pre_retirement_record_counts'] = coverage['record_counts']
+        coverage['record_counts'] = coverage['active_record_counts']
         registry.write_text(destination / 'coverage.json', registry.json_text(coverage))
-        registry.render_index(destination, kept, coverage)
+        if render:
+            registry.render_index(destination, kept, coverage)
         readme = destination / 'README.md'
-        registry.write_text(readme, readme.read_text(encoding='utf-8') + '\n2026-10-12 已精简 2026-09-01 前的无当前引用旧记录，见[历史摘要](retired_pre20260901_summaries.jsonl.gz)。原始报告与精简结果保留；已删除旧元数据明细不会在重建时自动回填。\n')
+        text = readme.read_text(encoding='utf-8')
+        if not render:
+            for kind, count in coverage['pre_retirement_record_counts'].items():
+                text = text.replace(f'|{kind}|{count}|', f'|{kind}|{coverage["record_counts"].get(kind, 0)}|')
+        registry.write_text(readme, text + '\n2026-10-12 已精简 2026-09-01 前的无当前引用旧记录，见[历史摘要](retired_pre20260901_summaries.jsonl.gz)。原始报告与精简结果保留；已删除旧元数据明细不会在重建时自动回填。\n')
         outcome = dict(plan, status='VERIFIED', deleted_details=deleted, original_catalog_rows=len(records),
                        summary_bytes=summary_path.stat().st_size, current_records_preserved=True)
         evidence.write_text(json.dumps(outcome, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
@@ -105,4 +112,4 @@ def run(root, references, mode, evidence):
 
 
 if __name__ == '__main__':
-    run(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    run(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], render='--no-render' not in sys.argv)
