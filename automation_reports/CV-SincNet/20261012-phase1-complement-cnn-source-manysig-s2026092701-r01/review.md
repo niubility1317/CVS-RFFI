@@ -1,0 +1,1 @@
+一次独立 P0/P1 review：/root/quality_review verdict PASS，无 P0/P1。整 heldRX 从 L 训练排除、U/target 关闭；CNN 全参数从零固定 30/6660；数值补偿和 GroupNorm 逐包；固定 0.5 融合核对 IDs、先固定混合预测后 source 评分；原 native3 严格分析复用；单 owner、不覆盖输出、总 GPU 进程上限及实际执行入口归档依赖 PASS。未追加报告、runner 或完整复审。
