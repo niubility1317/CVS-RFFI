@@ -621,7 +621,9 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 1
     },
     {
       "row_id": "COMPLEX_REL_BRANCH-RX1-s2026092701",
@@ -1131,7 +1133,9 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 2
     },
     {
       "row_id": "RAW_REL_BRANCH-RX3-s2026092701",
@@ -1641,7 +1645,9 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 3
     },
     {
       "row_id": "COMPLEX_REL_BRANCH-RX3-s2026092701",
@@ -2151,7 +2157,9 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 4
     },
     {
       "row_id": "RAW_REL_BRANCH-RX4-s2026092701",
@@ -2661,7 +2669,9 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 5
     },
     {
       "row_id": "COMPLEX_REL_BRANCH-RX4-s2026092701",
@@ -3171,7 +3181,9 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 6
     },
     {
       "row_id": "RAW_REL_BRANCH-RX6-s2026092701",
@@ -3681,7 +3693,9 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 7
     },
     {
       "row_id": "COMPLEX_REL_BRANCH-RX6-s2026092701",
@@ -4191,7 +4205,9 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 7
     },
     {
       "row_id": "RAW_REL_BRANCH-RX8-s2026092701",
@@ -4701,7 +4717,9 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 1
     },
     {
       "row_id": "COMPLEX_REL_BRANCH-RX8-s2026092701",
@@ -5211,7 +5229,9 @@
           "invariant_attribution_mean_gain_vs_RAW": 0.005,
           "invariant_attribution_nonnegative_RX": 4
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "gpu": 3
     }
   ],
   "notes": [
@@ -5223,7 +5243,7 @@
     "Invariantmechanism attribution separate:weakmeanRAW+.5pp,4/5nonnegative,worstnoninferior1pp;capacity benefit never called invariant benefit.",
     "REJECTED_EXTRA_GATE: brainstorming standalone design/spec approval chain is outside exclusive minimal experiment whitelist; existing user continuation authorization suffices; no added approval or planning files."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-12T12:19:28+00:00",
   "replaces_run_id": "20261012-phase1-relation-complement-source-manysig-s2026092701-r01",
   "comparisons": [
@@ -5239,6 +5259,50 @@
       ],
       "reuse": "final30 source heldRX metrics/predictions only, exact fitL/heldV/seed/native/optimizer/LR; no model initialization",
       "historical_updates": 33300
+    }
+  ],
+  "execution_commit": "087139136b7efd967ffa5ae3ac0e0ab65932844d",
+  "delivery_verdict": "VERIFIED",
+  "source_eligibility": false,
+  "source_result_summary": [
+    {
+      "arm": "CE30",
+      "mean": 0.6152222216129303,
+      "worst_RX": 0.3898148238658905,
+      "parameters": 177025,
+      "per_RX": {
+        "1": 0.6070370078086853,
+        "3": 0.3898148238658905,
+        "4": 0.7651851773262024,
+        "6": 0.7333333492279053,
+        "8": 0.580740749835968
+      }
+    },
+    {
+      "arm": "RAW_REL_BRANCH",
+      "mean": 0.610999995470047,
+      "worst_RX": 0.3948148190975189,
+      "parameters": 197177,
+      "per_RX": {
+        "1": 0.6007407307624817,
+        "3": 0.3948148190975189,
+        "4": 0.7483333349227905,
+        "6": 0.7153703570365906,
+        "8": 0.5957407355308533
+      }
+    },
+    {
+      "arm": "COMPLEX_REL_BRANCH",
+      "mean": 0.607111120223999,
+      "worst_RX": 0.3799999952316284,
+      "parameters": 197177,
+      "per_RX": {
+        "1": 0.596666693687439,
+        "3": 0.3799999952316284,
+        "4": 0.7622222304344177,
+        "6": 0.7109259366989136,
+        "8": 0.5857407450675964
+      }
     }
   ]
 }

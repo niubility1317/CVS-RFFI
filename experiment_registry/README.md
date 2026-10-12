@@ -374,3 +374,8 @@
 
 - [完整波形＋关系互补分支：整源RX留出30轮对照](../automation_reports/CV-SincNet/20261012-phase1-relation-complement-source-manysig-s2026092701-r02/report.md)（PLANNED）
 - [完整波形＋关系互补分支：整源RX留出30轮对照](../automation_reports/CV-SincNet/20261012-phase1-relation-complement-source-manysig-s2026092701-r01/report.md)（FAILED）
+
+## 本轮关系互补与源端结论
+
+- [固定三成员概率集成：整源RX留出30轮方差检验](../automation_reports/CV-SincNet/20261012-phase1-stochastic-ensemble-source-manysig-s2026092701-r01/report.md)（PLANNED）
+- [完整波形＋关系互补分支：整源RX留出30轮对照](../automation_reports/CV-SincNet/20261012-phase1-relation-complement-source-manysig-s2026092701-r02/report.md)（ANALYZED）
