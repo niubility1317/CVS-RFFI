@@ -20,6 +20,7 @@ plt.rcParams['font.sans-serif'] = ['Arial', 'DejaVu Sans', 'Liberation Sans']
 plt.rcParams['svg.fonttype'] = 'none'
 import numpy as np
 from matplotlib.lines import Line2D
+from matplotlib.patches import Rectangle
 from pypdf import PdfReader, PdfWriter
 from PIL import Image
 
@@ -193,24 +194,53 @@ def main():
          'Mean clean-test accuracy across seven held-out receivers, with 24,000 packets per receiver and model. Actual completed seed counts appear beside each network. Colours use a fixed 0–100% scale. Receiver SD is supplied in source data.',
          ['receiver_summary.csv'])
 
-    # Figure 3: points numbered to avoid overlapping architecture labels.
-    fig=plt.figure(figsize=(WIDTH,4.8));ax=fig.add_axes([.09,.18,.48,.68]);keyax=fig.add_axes([.615,.20,.36,.64]);keyax.axis('off')
+    # Figure 3: full-range context plus a larger linear-axis view of the dense region.
+    fig=plt.figure(figsize=(WIDTH,5.5))
+    ax=fig.add_axes([.09,.37,.30,.50]);zoom=fig.add_axes([.48,.37,.49,.50])
+    keyax=fig.add_axes([.055,.075,.92,.19]);keyax.axis('off')
+    # Move only labels, never the means, parameter counts or SD intervals.
+    label_positions={'resnet18':(3.8,69.2),'densenet121':(4.7,77),
+        'resnet34':(8.2,69.2),'cvresnet18_1d':(10.4,77),
+        'resnet50':(17.5,78.3),'vgg16_bn':(36.4,74),
+        'bilstm3':(13.7,70.2),'convnext_tiny':(29.8,69.2),
+        'resnet50_2d':(26.3,60.5),'resnet18_2d':(10.2,60.5),
+        'cvresnet18_2d':(19.5,60.5)}
+    ax.add_patch(Rectangle((2,59),40,21,facecolor='#EDF2F6',edgecolor='#9AAABB',
+                          linewidth=.8,linestyle='--',zorder=0))
+    number_labels=[]
     for i,v in enumerate(order,1):
         a=values(v);p=int(summary[v]['total_parameters'])/1e6;c=COLORS[family(v)]
         marker='D' if family(v)=='cvs' else 's' if family(v)=='complex' else '^' if family(v)=='real2d' else 'o'
-        ax.errorbar(p,a.mean(),yerr=a.std(ddof=1),fmt=marker,color=c,ms=6,capsize=2,elinewidth=.9)
-        offsets={1:(-8,8),2:(-8,-13),3:(3,8),4:(5,9),5:(-10,-14),6:(-13,6),7:(-9,-16),8:(-13,8),
-                 9:(-15,2),10:(5,7),11:(4,8),12:(-17,0),13:(-17,-12),14:(5,-10)}
-        dx,dy=offsets[i]
-        ax.annotate(str(i),(p,a.mean()),xytext=(dx,dy),textcoords='offset points',fontsize=7,color=c,
-                    bbox=dict(boxstyle='round,pad=.12',fc='white',ec='none',alpha=.9))
-        keyax.text(0,1-(i-1)/len(order),f'{i:>2}  {labels[v]}',fontsize=7.2,color=c,va='top')
+        ax.errorbar(p,a.mean(),yerr=a.std(ddof=1),fmt=marker,color=c,
+                    ms=5 if family(v)=='cvs' else 3.5,capsize=1.6,elinewidth=.8,zorder=3)
+        if 2<=p<=42 and 59<=a.mean()<=80:
+            zoom.errorbar(p,a.mean(),yerr=a.std(ddof=1),fmt=marker,color=c,
+                          ms=5.5,capsize=2.5,elinewidth=1,zorder=3)
+            xytext=label_positions.get(v,(p,a.mean()+4))
+            number_labels.append(zoom.annotate(str(i),(p,a.mean()),xytext=xytext,
+                ha='center',va='center',fontsize=8,weight='bold',color=c,zorder=4,
+                bbox=dict(boxstyle='round,pad=.18',fc='white',ec='none'),
+                arrowprops=dict(arrowstyle='-',color=c,linewidth=.65,shrinkA=3,shrinkB=5)))
+        else:
+            ax.annotate(f'{i}: '+('CVS' if v=='residual_fusion' else 'Transformer' if v=='transformer6' else NAMES[v]),
+                (p,a.mean()),xytext=(0,10 if family(v)=='cvs' else -16),textcoords='offset points',
+                ha='center',fontsize=6.5,color=c,bbox=dict(boxstyle='round,pad=.1',fc='white',ec='none'))
+        column=(i-1)//5;row=(i-1)%5
+        keyax.plot(column/3+.015,.94-row*.20,marker=marker,color=c,ms=4,ls='',transform=keyax.transAxes)
+        keyax.text(column/3+.035,.94-row*.20,f'{i:>2}  {labels[v]}',fontsize=6.4,color=c,
+                   va='center',transform=keyax.transAxes)
     ax.set_xscale('log');ax.set_xlim(.1,65);ax.set_ylim(0,100);ax.set_yticks([0,20,40,60,80,100])
-    ax.set_xticks([.1,1,10,50],['0.1','1','10','50']);ax.set_xlabel('Total parameters (millions; log scale)');ax.set_ylabel('Clean-test accuracy (%)')
-    grid(ax,'both');panel(ax,'a','Capacity and clean-test accuracy')
-    foot(fig,'Mean ± sample SD; actual n in key. Parameters do not measure inference cost.',.048)
+    ax.set_xticks([.1,1,10,50],['0.1','1','10','50']);ax.set_xlabel('Parameters (M; log scale)');ax.set_ylabel('Clean-test accuracy (%)')
+    zoom.set_xlim(2,42);zoom.set_ylim(59,80);zoom.set_xticks([5,10,20,30,40]);zoom.set_yticks([60,65,70,75,80])
+    zoom.set_xlabel('Parameters (M; linear scale)')
+    grid(ax,'both');grid(zoom,'both');panel(ax,'a','All models');panel(zoom,'b','Enlarged common-model region')
+    # Numeric callouts must be distinct in the enlarged panel.
+    fig.canvas.draw();renderer=fig.canvas.get_renderer()
+    bounds=[label.get_bbox_patch().get_window_extent(renderer) for label in number_labels]
+    assert all(not a.overlaps(b) for i,a in enumerate(bounds) for b in bounds[i+1:]),'Overlapping model numbers'
+    foot(fig,'Mean ± sample SD; n in key. Full Transformer SD shown in a; parameters are not inference cost.',.025)
     save(fig,'fig03_parameter_accuracy',
-         'Clean-test accuracy versus parameter count on a logarithmic axis in millions. Points and vertical error bars show completed-seed means and sample SD; actual n appears in the key. Parameters do not measure full compute, memory or latency.',
+         'Clean-test accuracy versus parameter count in millions. Panel a shows every model on a logarithmic parameter axis with the full 0–100% accuracy range and complete sample-SD intervals. The dashed region (2–42 million parameters, 59–80% accuracy) is enlarged in panel b using a linear parameter axis. Numbered callouts use leader lines; point coordinates are unchanged. CVS and Transformer are outside the enlarged region and remain visible in a, including the full Transformer SD. Actual n appears in the three-column key. Parameters do not measure full compute, memory or latency.',
          ['network_summary.csv'])
 
     # Figure 4: same-seed differences, including negative results.
@@ -310,7 +340,7 @@ def main():
 
 1. fig01：总体 Accuracy/Macro-F1，保留每个种子和均值 ± 样本标准差。
 2. fig02：7 个目标接收机的准确率热图，颜色固定为 0 至 100%。
-3. fig03：参数量与准确率；参数轴为对数，编号对应完整网络名称。
+3. fig03：参数量与准确率；左图保留全模型的对数参数轴，右图以线性参数轴放大密集区域，错开编号并用引导线连接原始坐标。Transformer 完整标准差保留在左图。
 4. fig04：1D/2D、复数/实数的同 seed 配对准确率差。
 5. fig05：CVS 的接收机/发射机分层表现，保留全部已完成种子。
 6. fig06：CVS 与 ResNet-50-1D 的平均行归一化混淆矩阵。

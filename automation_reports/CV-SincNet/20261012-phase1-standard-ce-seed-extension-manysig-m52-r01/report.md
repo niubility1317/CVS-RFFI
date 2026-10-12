@@ -80,3 +80,9 @@ CVS 准确率较最高的常见网络 ResNet-50-1D 高 3.97 个百分点；本�
 - 论文图：`E:/type10-7/exports/paper_figures/20261012-standard-ce-clean-eight-seed-r01/`；6 类图延续总体表现、RX 热图、参数量/准确率、架构配对差、CVS 分层表现和混淆矩阵，更新至完整 8 种子；PDF/SVG/600 dpi PNG、英文图注和对应 source_data。
 - 数据：`E:/type10-7/exports/paper_figures/20261012-standard-ce-clean-eight-seed-r01-source/`，所有当前表均标记实际完成种子数。
 - 验证证据：`local_artifacts/standard_ce_seed_extension_20261012_r01/progress_20261012_final_r01/readback.json` 与 `final_analysis_verification.json`。实验原执行提交仍为 627449a354b0755061a6cc7f4d494752d9340d38；报告工具修复另以本次 Git 提交记录。
+
+## 参数量图可读性修订
+
+fig03 改为全范围概览＋密集区域放大：概览采用对数参数轴、0 至 100% 准确率，放大图采用线性参数轴，显示 2 至 42 M 参数、59 至 80% 准确率区域。编号用引导线连接原始数据点，完整图例移至下方三列。Transformer 完整标准差保留在概览，13 个模型与全部 8 个种子均未剔除。
+
+VERIFIED：数值标签不重叠、文本不出画布；所有源 CSV 与其余 5 张图的 PNG 均保持不变。最新图包为 E:\type10-7\exports\paper_figures\20261012-standard-ce-clean-eight-seed-r02（PDF/SVG/600 dpi PNG）。Excel 原文件被占用，更新版另存为 E:\type10-7\outputs\01a0fd26-2621-7662-a9bd-9ff19509e812\standard_ce_clean_results_updated.xlsx。文件由 artifact tool 生成新图片与绘图尺寸，再保留原工作簿包装；仅图 3 图片及其高度改变，所有其他 XLSX 成员保持一致，包括数据、公式、格式和可编辑图表。图片与下一张图之间有足够间距；11 个工作表、6 张论文图、2 张可编辑图表、n=8 和无公式错误核验通过。
