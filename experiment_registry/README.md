@@ -359,3 +359,8 @@
 
 
 - [CE＋旧门控＋cos：E15/E12各三种子压缩](../automation_reports/CV-SincNet/20261011-phase1-ce-epoch12-15-manysig-m6-r01/report.md)
+
+## 本轮恢复
+
+- [浅中层质量条件调制：整源RX留出30轮对照](../automation_reports/CV-SincNet/20261012-phase1-quality-film-source-manysig-s2026092701-r01/report.md)
+- [从头30轮：纯CE与可更新自伪标签三种子七视图匹配对照](../automation_reports/CV-SincNet/20261012-phase1-scratch30-ce-selfssl-manysig-m6-r02/report.md)

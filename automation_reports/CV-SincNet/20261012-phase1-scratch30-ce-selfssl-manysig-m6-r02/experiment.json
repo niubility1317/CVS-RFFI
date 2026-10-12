@@ -625,7 +625,10 @@
         },
         "sampling": "seedprivate RX/day balanced full L permutation; independent U permutation with traversal pass; no hidden U TX",
         "budget_authorization": "current user: from scratch30epochs; overrides prior E20 only for subsequent matched controls"
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 805236,
+      "gpu": 0
     },
     {
       "row_id": "SELF_SSL30-s2026092701",
@@ -1120,7 +1123,10 @@
         },
         "sampling": "seedprivate RX/day balanced full L permutation; independent U permutation with traversal pass; no hidden U TX",
         "budget_authorization": "current user: from scratch30epochs; overrides prior E20 only for subsequent matched controls"
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 805329,
+      "gpu": 1
     },
     {
       "row_id": "CE30-s2026092702",
@@ -1615,7 +1621,10 @@
         },
         "sampling": "seedprivate RX/day balanced full L permutation; independent U permutation with traversal pass; no hidden U TX",
         "budget_authorization": "current user: from scratch30epochs; overrides prior E20 only for subsequent matched controls"
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 805409,
+      "gpu": 2
     },
     {
       "row_id": "SELF_SSL30-s2026092702",
@@ -2110,7 +2119,10 @@
         },
         "sampling": "seedprivate RX/day balanced full L permutation; independent U permutation with traversal pass; no hidden U TX",
         "budget_authorization": "current user: from scratch30epochs; overrides prior E20 only for subsequent matched controls"
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 805491,
+      "gpu": 3
     },
     {
       "row_id": "CE30-s2026092703",
@@ -2605,7 +2617,10 @@
         },
         "sampling": "seedprivate RX/day balanced full L permutation; independent U permutation with traversal pass; no hidden U TX",
         "budget_authorization": "current user: from scratch30epochs; overrides prior E20 only for subsequent matched controls"
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 805571,
+      "gpu": 4
     },
     {
       "row_id": "SELF_SSL30-s2026092703",
@@ -3100,7 +3115,10 @@
         },
         "sampling": "seedprivate RX/day balanced full L permutation; independent U permutation with traversal pass; no hidden U TX",
         "budget_authorization": "current user: from scratch30epochs; overrides prior E20 only for subsequent matched controls"
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 806052,
+      "gpu": 5
     }
   ],
   "notes": [
@@ -3109,6 +3127,9 @@
     "Current student pseudo target is regenerated each update, no fixed prior teacher; confidence.95 and adjacent full traversal pass consistency2; U TXneveravailable.",
     "Primary SELF_SSL30 clean mean >=.84 across2701/02/03; report full sevenviews and paired differences, no target-driven hyperparameters/seed reruns."
   ],
-  "status": "PLANNED",
-  "registered_at": "2026-10-12T10:36:11+00:00"
+  "status": "ANALYZED",
+  "registered_at": "2026-10-12T10:36:11+00:00",
+  "execution_commit": "3800446790b081169d85df6f994d7045d4696d19",
+  "delivery_verdict": "VERIFIED",
+  "live_readback_ref": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_scratch30_baseline_20261012_r02\\readback.json"
 }
