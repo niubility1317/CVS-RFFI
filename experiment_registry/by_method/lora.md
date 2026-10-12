@@ -6,5 +6,5 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|LORA真实WiSig源代码完整链路验收|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-diagnostic-lora-wisig-s392005-r01/report.md)|
 |LORA全面验收两轮真实WiSig回归|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-diagnostic-lora-wisig-s392005-r02/report.md)|
+|LORA真实WiSig源代码完整链路验收|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-diagnostic-lora-wisig-s392005-r01/report.md)|

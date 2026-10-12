@@ -4,9 +4,10 @@
   "workspace": "E:\\type10-7",
   "mode": "managed_only",
   "record_counts": {
-    "legacy_evidence_group": 4028,
+    "managed_run": 6,
+    "legacy_evidence_group": 1533,
     "legacy_log_record": 7778,
-    "remote_directory_locator": 3608
+    "remote_directory_locator": 925
   },
   "surfaces": [
     {
@@ -549,5 +550,22 @@
     "仅完整读取不超过2MB的UTF-8/带BOM UTF-16元数据与Markdown；大文件与编码错误仍保留locator。",
     "reported_statuses是原文声明，可能包含历史过程或嵌套row，不能作为当前状态。",
     "目录不存在、旧索引记录未重见、结构化读取失败都在此披露，不宣称已完成全量性能审计。"
-  ]
+  ],
+  "retirement_20261012": {
+    "retired_records": 5178,
+    "retained_records": 10242,
+    "summary": "retired_pre20260901_summaries.jsonl.gz",
+    "note": "historical snapshot with explicit pre-September retirement increment"
+  },
+  "active_record_counts": {
+    "managed_run": 6,
+    "legacy_evidence_group": 1533,
+    "legacy_log_record": 7778,
+    "remote_directory_locator": 925
+  },
+  "pre_retirement_record_counts": {
+    "legacy_evidence_group": 4028,
+    "legacy_log_record": 7778,
+    "remote_directory_locator": 3608
+  }
 }

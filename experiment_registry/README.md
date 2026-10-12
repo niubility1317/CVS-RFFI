@@ -12,9 +12,10 @@
 
 |记录类型|数量|
 |---|---:|
-|legacy_evidence_group|4028|
+|managed_run|6|
+|legacy_evidence_group|1533|
 |legacy_log_record|7778|
-|remote_directory_locator|3608|
+|remote_directory_locator|925|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -25,55 +26,63 @@
 |[centralized](by_method/centralized.md)|4168|
 |[other](by_method/other.md)|2245|
 |[comparison_baseline](by_method/comparison_baseline.md)|1784|
-|[adv3b02](by_method/adv3b02.md)|1462|
-|[cvs](by_method/cvs.md)|1214|
 |[bex02](by_method/bex02.md)|1132|
 |[satellite_ablation](by_method/satellite_ablation.md)|1109|
 |[scheduler](by_method/scheduler.md)|1098|
-|[federated](by_method/federated.md)|742|
-|[phase1](by_method/phase1.md)|665|
-|[riei](by_method/riei.md)|626|
-|[qknn](by_method/qknn.md)|624|
-|[drift](by_method/drift.md)|616|
-|[stage2](by_method/stage2.md)|600|
+|[federated](by_method/federated.md)|736|
 |[fsdg](by_method/fsdg.md)|540|
-|[cvcnn](by_method/cvcnn.md)|479|
-|[receiver_agnostic](by_method/receiver_agnostic.md)|466|
-|[phase2](by_method/phase2.md)|464|
-|[d92](by_method/d92.md)|463|
+|[adv3b02](by_method/adv3b02.md)|528|
+|[riei](by_method/riei.md)|486|
+|[cvcnn](by_method/cvcnn.md)|478|
+|[drift](by_method/drift.md)|474|
+|[receiver_agnostic](by_method/receiver_agnostic.md)|442|
 |[fl82](by_method/fl82.md)|376|
 |[fedcvs/vmb](by_method/fedcvs_vmb.md)|344|
-|[bex](by_method/bex.md)|237|
-|[core90](by_method/core90.md)|205|
-|[fasttrust](by_method/fasttrust.md)|139|
-|[shot](by_method/shot.md)|113|
-|[source](by_method/source.md)|89|
-|[smoke](by_method/smoke.md)|70|
-|[repair](by_method/repair.md)|68|
+|[phase1](by_method/phase1.md)|282|
+|[cvs](by_method/cvs.md)|242|
+|[bex](by_method/bex.md)|221|
+|[stage2](by_method/stage2.md)|199|
+|[core90](by_method/core90.md)|168|
+|[phase2](by_method/phase2.md)|142|
+|[qknn](by_method/qknn.md)|87|
+|[fasttrust](by_method/fasttrust.md)|66|
+|[d92](by_method/d92.md)|50|
 |[nm fdu](by_method/nm_fdu.md)|49|
 |[ecrs](by_method/ecrs.md)|45|
 |[response](by_method/response.md)|42|
-|[mopc](by_method/mopc.md)|30|
+|[repair](by_method/repair.md)|32|
 |[split_bex02](by_method/split_bex02.md)|30|
-|[csil](by_method/csil.md)|29|
-|[protonet](by_method/protonet.md)|29|
+|[source](by_method/source.md)|26|
+|[smoke](by_method/smoke.md)|25|
 |[daot](by_method/daot.md)|25|
-|[comparison](by_method/comparison.md)|23|
-|[hcfdg](by_method/hcfdg.md)|20|
-|[dryrun](by_method/dryrun.md)|19|
-|[diagnostic](by_method/diagnostic.md)|13|
-|[fedcvs](by_method/fedcvs.md)|9|
-|[stop](by_method/stop.md)|5|
-|[rafl](by_method/rafl.md)|4|
-|[phase3](by_method/phase3.md)|3|
-|[fucl](by_method/fucl.md)|2|
+|[shot](by_method/shot.md)|23|
+|[mopc](by_method/mopc.md)|15|
+|[csil](by_method/csil.md)|14|
+|[comparison](by_method/comparison.md)|8|
+|[hcfdg](by_method/hcfdg.md)|7|
+|[WiSig](by_method/WiSig.md)|6|
+|[fedcvs](by_method/fedcvs.md)|6|
+|[issl](by_method/issl.md)|4|
+|[source_acceptance](by_method/source_acceptance.md)|4|
+|[diagnostic](by_method/diagnostic.md)|4|
+|[protonet](by_method/protonet.md)|4|
+|[stop](by_method/stop.md)|3|
+|[issl_fixed_v1](by_method/issl_fixed_v1.md)|2|
+|[lora](by_method/lora.md)|2|
 |[tifs2025](by_method/tifs2025.md)|2|
+|[dryrun](by_method/dryrun.md)|1|
 |[fedfa](by_method/fedfa.md)|1|
 
 ## 最近记录入口
 
 |名称|类型|报告/原目录|
 |---|---|---|
+|ISSL修复版两轮匹配回归|managed_run|[打开](../automation_reports/CV-SincNet/20260930-diagnostic-issl-wisig-s392005-r03/report.md)|
+|ISSL修复版新类学习固定预算验证|managed_run|[打开](../automation_reports/CV-SincNet/20260930-diagnostic-issl-wisig-s392005-r04/report.md)|
+|ISSL全面验收两轮真实WiSig回归|managed_run|[打开](../automation_reports/CV-SincNet/20260930-diagnostic-issl-wisig-s392005-r02/report.md)|
+|LORA全面验收两轮真实WiSig回归|managed_run|[打开](../automation_reports/CV-SincNet/20260930-diagnostic-lora-wisig-s392005-r02/report.md)|
+|ISSL真实WiSig源代码完整链路验收|managed_run|[打开](../automation_reports/CV-SincNet/20260930-diagnostic-issl-wisig-s392005-r01/report.md)|
+|LORA真实WiSig源代码完整链路验收|managed_run|[打开](../automation_reports/CV-SincNet/20260930-diagnostic-lora-wisig-s392005-r01/report.md)|
 |CVS项目场景与数据协议|legacy_evidence_group|[打开](../github_publish/CVS-RFFI-repo/docs/PROJECT_PROTOCOL.md)|
 |实验管理与快速定位|legacy_evidence_group|[打开](../github_publish/CVS-RFFI-repo/docs/EXPERIMENT_MANAGEMENT.md)|
 |N607操作|legacy_evidence_group|[打开](../github_publish/CVS-RFFI-repo/docs/workflows/n607.md)|
@@ -188,9 +197,5 @@
 |持续学习、开放世界学习与CVS-RFFI持续注册：联网调研与项目映射报告|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CONTINUAL_LEARNING_OPEN_WORLD_REGISTRATION_RESEARCH_20260809.md)|
 |Codex过程更新可见性修复交接|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/COLLABORATION_PROGRESS_VISIBILITY_FIX_20260714.md)|
 |CVS-only GitHub整理自动化|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/AUTOMATION_GITHUB_REVIEW.md)|
-|ADV3B02 CORE90源域审计、对手追踪与课程控制实现计划|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/ADV3B02_CORE90_GAME_TRACKING_IMPLEMENTATION_PLAN_20260911.md)|
-|Phase2实现前本地审计记录|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/diagnostics/phase2_implementation_audit.md)|
-|stage2b_sclba_a_rx20_1_noquery_smoke_20260824|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/configs/stage2b_sclba_a_rx20_1_noquery_smoke_20260824.json)|
-|phase1_adv3b02_sat_anchor_ssl8_s392002_20260822|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/configs/phase1_adv3b02_sat_anchor_ssl8_s392002_20260822.json)|
-|phase1_d85_adv3b02_center_lowrank_radius|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/configs/phase1_d85_adv3b02_center_lowrank_radius.json)|
-|phase1_adv3b02_fasttrust_rc4_s392002_20260822|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/configs/phase1_adv3b02_fasttrust_rc4_s392002_20260822.json)|
+
+2026-10-12 已精简 2026-09-01 前无当前引用的旧目录记录，保留[历史摘要](retired_pre20260901_summaries.jsonl.gz)。历史原报告和精简结果保留，已删除的元数据明细不会在重建时回填。

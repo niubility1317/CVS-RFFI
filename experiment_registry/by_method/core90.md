@@ -98,16 +98,8 @@
 |A1-Fast匹配CORE90重训实验|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/a1_fast_matched_core90_s392005_20260908_r3/report.md)|
 |A1-Fast匹配CORE90重训实验|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/a1_fast_matched_core90_s392005_20260908_r2/report.md)|
 |A1-Fast匹配CORE90重训实验|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/a1_fast_matched_core90_s392005_20260908_r1/report.md)|
-|ADV3B03 CORE90邻域新增5-seed满卡实验|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_adv3b03_core90seed_near5_day123_e200_20260830_r1/report.md)|
 |ADV3B03复用CORE90原seed及邻域3-seed正式实验|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_adv3b03_core90seed_near3_day123_e200_20260830_r1/report.md)|
-|phase1_adv3b03_core90seed_near5_day123_e200_20260830_r1|legacy_evidence_group|[打开](../../local_artifacts/phase1_adv3b03_core90seed_near5_day123_e200_20260830_r1)|
 |phase1_adv3b03_core90seed_near3_day123_e200_20260830_r1|legacy_evidence_group|[打开](../../local_artifacts/phase1_adv3b03_core90seed_near3_day123_e200_20260830_r1)|
-|phase1_adv3b03_core90seed_near5_day123_e200_20260830_r1_release1|legacy_evidence_group|[打开](../../release_archives/phase1_adv3b03_core90seed_near5_day123_e200_20260830_r1_release1.zip)|
-|phase1_adv3b03_core90seed_near3_day123_e200_20260830_r1_release1|legacy_evidence_group|[打开](../../release_archives/phase1_adv3b03_core90seed_near3_day123_e200_20260830_r1_release1.zip)|
-|sf_tapft_task7a_core90_bundle_20260827|legacy_evidence_group|[打开](../../local_artifacts/sf_tapft_task7a_core90_bundle_20260827)|
-|Phase1 Core90拼接式LEO_WEAK默认策略封存报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_core90_leo_weak_concat_default_freeze_20260821_r1/report.md)|
-|ADV3B02 CORE90 三组E200重跑|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/phase1_adv3b02_core90_triplet_20260819/report.md)|
-|ADV3B02 CORE90 三组E200重跑|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_adv3b02_core90_triplet_20260819/report.md)|
 |a1_fast_matched_core90_s392005_20260908_r1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |a1_fast_matched_core90_s392005_20260908_r2|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |a1_fast_matched_core90_s392005_20260908_r3|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
@@ -130,13 +122,6 @@
 |core90_game_v2_target11_20260912_r1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |core90_game_v2_target11_20260913_multigpu_r2|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |phase1_adv3b03_core90seed_near3_day123_e200_20260830_r1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near3_day123_e200_20260830_r1.dispatcher.log|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near3_day123_smoke_e1_20260830_r1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near3_day123_smoke_e1_20260830_r1.dispatcher.log|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near5_day123_e200_20260830_r1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near5_day123_e200_20260830_r1.dispatcher.log|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near5_day123_smoke_e1_20260830_r1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near5_day123_smoke_e1_20260830_r1.dispatcher.log|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |core90_anchored_392005_1afa43a7|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |core90_cross_response_392005_54afc2bc|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |core90_cross_response_v2_392005_40c1c205|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
@@ -160,12 +145,6 @@
 |core90_target15_481b868c|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |core90_target_b8_56c4fb92|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |core90_target_new9_74e95b47|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near3_day123_e200_20260830_r1_release1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near3_day123_e200_20260830_r1_release1.zip|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near5_day123_e200_20260830_r1_release1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near5_day123_e200_20260830_r1_release1.zip|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|sf_tapft_core90_bundle_20260827_58d834c5|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|sf_tapft_core90_bundle_20260827_e73e67af|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |a1_fast_matched_core90_s392005_20260908_r1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |a1_fast_matched_core90_s392005_20260908_r2|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |a1_fast_matched_core90_s392005_20260908_r3|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
@@ -194,20 +173,4 @@
 |core90_target_b8_392005_56c4fb92.stdout.log|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |core90_target_new9_392005_74e95b47|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |core90_target_new9_392005_74e95b47.stdout.log|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b02_core90_bundle_20260827_r1_techfix1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b02_core90_match_seed392034_073_20260819|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b02_core90_match_seed392034_073_20260819_retry1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b02_core90_match_seed392034_073_20260819_retry2|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b02_core90_match_seed392034_102_20260819|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b02_core90_match_seed392034_102_20260819_legacy|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b02_core90_match_seed392034_102_20260819_retry1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b02_core90_match_seed392034_102_20260819_retry2|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b02_core90_repro_seed392002_102_20260819|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b02_core90_repro_seed392002_102_20260819_legacy|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b02_core90_repro_seed392002_102_20260819_retry1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b02_core90_repro_seed392002_102_20260819_retry2|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b02_core90_triplet_20260819_eval_final|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |phase1_adv3b03_core90seed_near3_day123_e200_20260830_r1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near3_day123_smoke_e1_20260830_r1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near5_day123_e200_20260830_r1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|phase1_adv3b03_core90seed_near5_day123_smoke_e1_20260830_r1|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|

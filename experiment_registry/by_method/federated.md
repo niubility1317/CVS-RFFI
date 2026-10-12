@@ -6,14 +6,8 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|远端优化/联邦日志追加归档报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/20260609_120903_remote_optimizer_federated_history/report.md)|
-|联邦学习实验/训练数据全量审计（本地 + N607，一个月窗口）|legacy_evidence_group|[打开](../../analysis/federated_full_audit_20260607/report.md)|
 |2026-06-04 联邦训练日志全量扫描报告入口|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/20260604_federated_log_full_audit/report.md)|
 |2026-06-04 联邦训练日志全量扫描与分析报告|legacy_evidence_group|[打开](../../analysis/20260604_federated_log_full_audit/report.md)|
-|联邦训练全流程实现逻辑审计 - 2026-06-03|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/20260603_federated_training_flow_audit/report.md)|
-|N607 Federated Training Log Analysis|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/20260528_162922_federated_log_analysis/report.md)|
-|Federated Training Stop Report|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/20260527_1716_stop_federated_training/report.md)|
-|Federated Best-Run Scan|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/20260527_1549_federated_best_scan/report.md)|
 |Federated Log Forensics Report|legacy_evidence_group|[打开](../../analysis/federated_log_forensics/federated_log_forensics_report.md)|
 |Fed-PVS-CPRFFI Federated Implementation Traceability|legacy_evidence_group|[打开](../../analysis/fed_pvs_cprffi_federated_traceability.md)|
 |借鉴协作推理的多原型分类头联邦学习分析报告|legacy_evidence_group|[打开](../../docs/federated_collaborative_prototype_fusion_report.md)|

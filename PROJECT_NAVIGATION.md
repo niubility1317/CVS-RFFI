@@ -6,7 +6,7 @@
 |---|---|
 | 实验名称、说明、状态证据、数据/seed、配置、模型与输出 | [实验总索引](experiment_registry/README.md) |
 | 代码、报告、冒烟、临时文件、归档的路径与用途 | [资料管理](docs/project_governance/README.md) |
-| 数据协议、方法权限、truth-last边界 | [项目协议](docs/PROJECT_PROTOCOL.md)；Git克隆见[协议镜像](docs/PROJECT_PROTOCOL.md) |
+| 数据协议、方法权限、truth-last边界 | [项目协议](项目.md)；Git克隆见[协议镜像](docs/PROJECT_PROTOCOL.md) |
 | 当前执行流程、控制面责任 | [职责映射](tools/optimizer_control_manifest.md) |
 | 启动实验 | [实验管理技能](.agents/skills/experiment-management/SKILL.md)、[CVS执行技能](.agents/skills/cvs-experiment-workflow/SKILL.md) |
 | 资料整理、去重与归档 | [资料管理技能](.agents/skills/project-file-management/SKILL.md) |
@@ -22,3 +22,7 @@
 - `.codex_tmp/`、`tmp/`、`analysis_tmp/`和根目录`tmp_*`：待按用途检索的一次性工具与证据，不能整目录清空。
 
 新对话先查入口与命中记录，无需重新递归扫描整个工作区。
+
+历史大日志已在 2026-10-12 完成无损压缩，原路径恢复映射见[本机与 N607 清理报告](docs/project_governance/20261012_cleanup/REPORT.md)。
+
+2026-09-01 前无参考意义的旧产物清理及索引精简见[本机与 N607 永久清理报告](docs/project_governance/20261012_retirement/REPORT.md)。日期不是唯一筛选条件；已删除压缩件以新清单为准。

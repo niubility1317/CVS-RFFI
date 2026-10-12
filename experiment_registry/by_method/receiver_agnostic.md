@@ -10,30 +10,6 @@
 |receiver_agnostic_twostage_uda_dry_run_20260708|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/local_artifacts/receiver_agnostic_twostage_uda_dry_run_20260708.json)|
 |Receiver-Agnostic Two-stage UDA复现逐项对应表|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/analysis/receiver_agnostic_twostage_uda_traceability_20260708.md)|
 |Receiver-AgnosticTwo-stageUDA多子agent复现审计报告|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/analysis/receiver_agnostic_twostage_uda_multiagent_audit_20260708.md)|
-|receiver_agnostic_fig8_classrx_opt_20260709_105935|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/receiver_agnostic_fig8_classrx_opt_20260709_105935/report.md)|
-|receiver_agnostic_fig8_classrx_opt_20260709_105935|legacy_evidence_group|[打开](../../local_artifacts/receiver_agnostic_fig8_classrx_opt_20260709_105935)|
-|receiver_agnostic_replace_18_2_20260709_0005|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/receiver_agnostic_replace_18_2_20260709_0005/report.md)|
-|receiver_agnostic_repro_optimization_20260708_2240|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/receiver_agnostic_repro_optimization_20260708_2240/report.md)|
-|receiver_agnostic_twostage_uda_tuned_fig8_r123_20260708_2110|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/receiver_agnostic_twostage_uda_tuned_fig8_r123_20260708_2110/report.md)|
-|receiver_agnostic_twostage_uda_r34_lmmd_grid_20260708_2100|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/receiver_agnostic_twostage_uda_r34_lmmd_grid_20260708_2100/report.md)|
-|receiver_agnostic_twostage_uda_tuned_fig8_r123_20260708_2110|legacy_evidence_group|[打开](../../local_artifacts/receiver_agnostic_twostage_uda_tuned_fig8_r123_20260708_2110)|
-|receiver_agnostic_twostage_uda_r34_lmmd_grid_20260708_2100|legacy_evidence_group|[打开](../../local_artifacts/receiver_agnostic_twostage_uda_r34_lmmd_grid_20260708_2100)|
-|receiver_agnostic_twostage_uda_tuned_fig7_full_20260708_2006|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/receiver_agnostic_twostage_uda_tuned_fig7_full_20260708_2006/report.md)|
-|receiver_agnostic_twostage_uda_tuned_fig7_full_20260708_2006|legacy_evidence_group|[打开](../../local_artifacts/receiver_agnostic_twostage_uda_tuned_fig7_full_20260708_2006)|
-|receiver_agnostic_twostage_uda_best_r6_normal_20260708_1915|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/receiver_agnostic_twostage_uda_best_r6_normal_20260708_1915/report.md)|
-|receiver_agnostic_twostage_uda_best_r6_normal_20260708_1915|legacy_evidence_group|[打开](../../local_artifacts/receiver_agnostic_twostage_uda_best_r6_normal_20260708_1915)|
-|receiver_agnostic_twostage_uda_lmmd_grid_r6_20260708_1857|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/receiver_agnostic_twostage_uda_lmmd_grid_r6_20260708_1857/report.md)|
-|receiver_agnostic_twostage_uda_lmmd_grid_r6_20260708_1857|legacy_evidence_group|[打开](../../local_artifacts/receiver_agnostic_twostage_uda_lmmd_grid_r6_20260708_1857)|
-|receiver_agnostic_twostage_uda_diag_lmmd_feature_transductive_20260708_1804|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/receiver_agnostic_twostage_uda_diag_lmmd_feature_transductive_20260708_1804/report.md)|
-|receiver_agnostic_twostage_uda_diag_lmmd_feature_transductive_20260708_1804|legacy_evidence_group|[打开](../../local_artifacts/receiver_agnostic_twostage_uda_diag_lmmd_feature_transductive_20260708_1804)|
-|Receiver-Agnostic Two-stage UDA WiSig Formal Reproduction|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/receiver_agnostic_twostage_uda_wisig_formal_20260708_124402/report.md)|
-|Receiver-Agnostic Two-stage UDA WiSig复现实验结果|legacy_evidence_group|[打开](../../local_artifacts/receiver_agnostic_twostage_uda_wisig_formal_20260708_124402/reproduction_result_analysis.md)|
-|receiver_agnostic_twostage_uda_n607_formal_dry_run_20260708|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/local_artifacts/receiver_agnostic_twostage_uda_n607_formal_dry_run_20260708.json)|
-|Receiver-Agnostic Two-stage UDA复现逐项对应表|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/analysis/receiver_agnostic_twostage_uda_traceability_20260708.md)|
-|receiver_agnostic_twostage_uda_dry_run_20260708|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/local_artifacts/receiver_agnostic_twostage_uda_dry_run_20260708.json)|
-|Receiver-AgnosticTwo-stageUDA多子agent复现审计报告|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/analysis/receiver_agnostic_twostage_uda_multiagent_audit_20260708.md)|
-|CVS Baseline Receiver-Agnostic Seed1337 OBS/COLLAB Reproduction|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/cvs_baseline_receiver_agnostic_seed1337_obs_collab_20260527_191521/report.md)|
-|cvs_baseline_receiver_agnostic_seed1337_repro_finaltest_20260527_174529|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/cvs_baseline_receiver_agnostic_seed1337_repro_finaltest_20260527_174529/report.md)|
 |receiver_agnostic_plain_T14_P01_K2_train-0-1_test-rest|legacy_log_record|[打开](../../analysis/20260604_federated_log_full_audit/catalog/log_catalog.csv)|
 |receiver_agnostic_plain_T14_P01_K3_train-0-1-10_test-rest|legacy_log_record|[打开](../../analysis/20260604_federated_log_full_audit/catalog/log_catalog.csv)|
 |receiver_agnostic_plain_T14_P01_K4_train-0-1-10-11_test-rest|legacy_log_record|[打开](../../analysis/20260604_federated_log_full_audit/catalog/log_catalog.csv)|

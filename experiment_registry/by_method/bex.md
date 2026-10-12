@@ -6,15 +6,6 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|GEOFF/r2.2 Phase1双表征归档r6技术run报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/rchm_bpp_p1_dual_archive_blobexact_r6_de9a6476_20260723_r6/report.md)|
-|Split-BEX02 Alternatives Implementation And Validation Report|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/20260528_split_bex02_alternatives/report.md)|
-|CV-SincNet Experiment Report: BEX02_ratio010_concat_clear_sched_gpu0_20260527_064305|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/BEX02_ratio010_concat_clear_sched_gpu0_20260527_064305/report.md)|
-|BEX02 Ratio 0.1 Baseline Concat SAT GPU0|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/BEX02_ratio010_baseline_concat_mixed_gpu0_20260526_223716/report.md)|
-|target_adapt_bex02_sweep_8gpu_20260521_010343|legacy_evidence_group|[打开](../../server_log_backups/N607/20260526_101853/logs/target_adapt_bex02_sweep_8gpu_20260521_010343)|
-|target_adapt_bex02_clean_target_8gpu_20260521_090254|legacy_evidence_group|[打开](../../server_log_backups/N607/20260526_101853/logs/target_adapt_bex02_clean_target_8gpu_20260521_090254)|
-|target_adapt_bex02_rx_tx_balanced_8gpu_20260521_093636|legacy_evidence_group|[打开](../../server_log_backups/N607/20260526_101853/logs/target_adapt_bex02_rx_tx_balanced_8gpu_20260521_093636)|
-|bex02_ratio010_central_custom_20260525_171212|legacy_evidence_group|[打开](../../server_log_backups/N607/20260526_101853/logs/bex02_ratio010_central_custom_20260525_171212)|
-|ssdg_gpu45_bex02|legacy_evidence_group|[打开](../../server_log_backups/N607/20260526_101853/logs/ssdg_gpu45_bex02)|
 |target_adapt_bex02_finetune_fix_20260521_001930|legacy_evidence_group|[打开](../../server_log_backups/N607/20260526_101853/logs/target_adapt_bex02_finetune_fix_20260521_001930)|
 |BEX01_fishr002_storm|legacy_log_record|[打开](../../analysis/20260604_federated_log_full_audit/catalog/log_catalog.csv)|
 |BEX03_fishr002_mixed_swa|legacy_log_record|[打开](../../analysis/20260604_federated_log_full_audit/catalog/log_catalog.csv)|
@@ -234,12 +225,5 @@
 |BBF14_mixed_e170_seed2027|legacy_log_record|[打开](../../analysis/training_log_catalog_20260609_after_archive/log_catalog.csv)|
 |BBF15_lowrain_e170_seed42|legacy_log_record|[打开](../../analysis/training_log_catalog_20260609_after_archive/log_catalog.csv)|
 |BBF16_lowrain_e170_seed2027|legacy_log_record|[打开](../../analysis/training_log_catalog_20260609_after_archive/log_catalog.csv)|
-|BEX02_ratio010_baseline_concat_mixed_gpu0_20260526_223716|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|BEX02_ratio010_concat_clear_sched_gpu0_20260527_064305|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|bex02_ratio010_central_custom_20260525_171212|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |ssdg_gpu45_bex02|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|target_adapt_bex02_clean_target_8gpu_20260521_090254|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|target_adapt_bex02_finetune_20260521_000915|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |target_adapt_bex02_finetune_fix_20260521_001930|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|target_adapt_bex02_rx_tx_balanced_8gpu_20260521_093636|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|target_adapt_bex02_sweep_8gpu_20260521_010343|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|

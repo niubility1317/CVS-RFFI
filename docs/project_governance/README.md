@@ -39,3 +39,9 @@ python -X utf8 tools/project_files.py scan --database local_artifacts/project_fi
 当前恢复包位于`local_artifacts/project_file_management/20260916/`。`removed_caches.zip`保存已移除缓存的相对路径；只恢复需要的单个文件，先检查原路径是否已有新文件，禁止直接覆盖新结果。`artifacts.jsonl.gz`和`facts.jsonl.gz`是上一轮被替代的生成索引，清单记录原路径；gzip解压可恢复。正式实验索引仍为`experiment_registry/`。
 
 清单里的大小为逻辑字节，Windows压缩、稀疏文件和分配单元会影响实际磁盘空间；不把逻辑减少量当作实测磁盘释放量。
+
+## 2026-10-12 历史实验日志清理
+
+已完成本机与 N607 历史大日志无损压缩和冗余原文件回收。见[清理报告](20261012_cleanup/REPORT.md)、[处理摘要](20261012_cleanup/cleanup_manifest.json)及[逐路径恢复映射](20261012_cleanup/path_changes.json.gz)。历史原始路径需结合本次映射查找；2026-09-16 全量盘点继续作为原快照保留。
+
+2026-10-12 后续按“2026-09-01 前且失去参考意义”清理旧冗余产物，见[永久清理报告](20261012_retirement/REPORT.md)。仅日期久远不构成删除理由；第一阶段恢复映射须结合永久删除清单使用。

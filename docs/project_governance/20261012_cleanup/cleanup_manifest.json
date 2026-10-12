@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "date": "2026-10-12",
+  "timezone": "Asia/Hong_Kong",
+  "status": "VERIFIED",
+  "code_commit": "fc03c7f1c3ae9360baf7896c44a4ebea96273eb4",
+  "local": {
+    "status": "VERIFIED",
+    "files": 907,
+    "raw_bytes": 6387981502,
+    "archive_bytes": 1205800695,
+    "reclaimed_logical_bytes": 5182180807,
+    "reclaimed_allocated_bytes": 0,
+    "invalid": []
+  },
+  "remote": {
+    "status": "VERIFIED",
+    "files": 3855,
+    "raw_bytes": 397185215656,
+    "archive_bytes": 64245681315,
+    "reclaimed_logical_bytes": 332939534341,
+    "reclaimed_allocated_bytes": 332945002496,
+    "invalid": []
+  },
+  "path_changes": "path_changes.json.gz",
+  "scope": "authorized local workspace and N607 historical large logs; before 2026-10-10 00:00 HKT; minimum 1 MiB",
+  "policy": "lossless gzip; raw copy removed only after full content verification; paths mapped for restoration",
+  "preserved": [
+    "datasets",
+    "all weights/checkpoints including E20 parents",
+    "predictions",
+    "scores",
+    "numeric NPZ state archives",
+    "reports and experiment registry",
+    "source and all Git worktrees",
+    "current/recent logs and active run scopes"
+  ],
+  "evidence_root": "local_artifacts/project_file_management/20261012_cleanup",
+  "stage": "first-stage compaction; verification describes post-state before subsequent authorized pruning",
+  "subsequent_pruning": "../20261012_retirement/deletion_manifest.json",
+  "archives_subsequently_deleted": 1312
+}

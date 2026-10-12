@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "date": "2026-10-12",
+  "cutoff": "2026-09-01T00:00:00+08:00",
+  "status": "PARTIAL",
+  "successful_deletions_poststate": "VERIFIED",
+  "local": {
+    "deleted_files": 11784,
+    "deleted_logical_bytes": 1133033829,
+    "status": "VERIFIED"
+  },
+  "remote": {
+    "deleted_files": 129018,
+    "deleted_logical_bytes": 13024732332,
+    "status": "PARTIAL",
+    "permission_denied_retained_files": 1944,
+    "retention_poststate": "VERIFIED"
+  },
+  "registry_snapshots": {
+    "root": {
+      "retired_records": 3218,
+      "retained_records": 1406,
+      "detail_bytes": 437820,
+      "summary_bytes": 68699
+    },
+    "carrier": {
+      "retired_records": 5178,
+      "retained_records": 10242,
+      "detail_bytes": 52870392,
+      "summary_bytes": 155162
+    }
+  },
+  "deleted_paths": "deleted_paths.json.gz",
+  "permission_blocked_paths": "retained_permission_paths.json.gz",
+  "retired_metadata_paths": "retired_metadata_paths.json.gz",
+  "policy": "date is necessary but insufficient; retain current references, key weights, data, reports, compact results and detected failures; retire old unreferenced locator metadata with full compact historical summaries",
+  "preserved": [
+    "all weights/checkpoints (none qualified for deletion)",
+    "E20 parent weights",
+    "datasets and NPZ state",
+    "scores and reports",
+    "known failed/unresolved evidence",
+    "managed experiments",
+    "referenced and current runs",
+    "source/config/Git worktrees"
+  ],
+  "evidence": "local_artifacts/project_file_management/20261012_cleanup"
+}

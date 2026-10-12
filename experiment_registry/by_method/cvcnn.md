@@ -484,4 +484,3 @@
 |cvcnn_plain_T1_P01_K7_train-0-10-11-2-5-6-3_test-rest|legacy_log_record|[打开](../../analysis/training_log_catalog_20260609_after_archive/log_catalog.csv)|
 |cvcnn|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
 |cvcnn_ce|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
-|cen31_student_distill_20260603_sinc_cvcnn|remote_directory_locator|[打开](../../experiment_registry/snapshots/n607_directories_20260916.json)|
