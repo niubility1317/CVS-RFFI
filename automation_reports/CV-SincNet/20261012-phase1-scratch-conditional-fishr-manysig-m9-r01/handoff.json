@@ -1,0 +1,27 @@
+{
+  "status": "RUNNING",
+  "goal": "clean three-seed mean>=.84 not yet demonstrated",
+  "run": "20261012-phase1-scratch-conditional-fishr-manysig-m9-r01",
+  "execution_commit": "dc7afae5025bc4b4abef053c3f84f81b2863de75",
+  "dispatcher": 485284,
+  "matrix": 9,
+  "launched": 9,
+  "checked": [
+    "MARGIN_INTERACTION-s2026092701",
+    "CE_INTERACTION-s2026092701",
+    "CE_MOMENT_INTERACTION-s2026092701",
+    "MARGIN_INTERACTION-s2026092702",
+    "CE_INTERACTION-s2026092702",
+    "CE_MOMENT_INTERACTION-s2026092702",
+    "MARGIN_INTERACTION-s2026092703",
+    "CE_INTERACTION-s2026092703",
+    "CE_MOMENT_INTERACTION-s2026092703"
+  ],
+  "pending": 0,
+  "next": "Inspect existing conditional9 dispatcher/workers, no republish. Auto clean final20. In parallel implement engineering18 fixed in ENGINEERING_NEXT.md with separate registration, native checks and P0/P1 review before release.",
+  "collector": "python -m experiments.cvs_scratch_conditional_fishr.collect_results --output automation_reports/CV-SincNet/20261012-phase1-scratch-conditional-fishr-manysig-m9-r01",
+  "budget": "random native student20; no heads; pretrained peer teacher ancestry retained; fixed 2x12pair calibration after444;48forwards2880L; detached joint full-identity cap",
+  "multilevel": "time_down/t2.pool; raw CE/margin sensitivities without heads; fixed peer probabilities; independent AB conditional interaction / moment; separately calibrated component mean after444/denominator2; optional joint cap rho0.2; original convex whole-candidate style search plus clean with matched dropout; noEMA/noSat",
+  "owner": "codex/root/scratch-conditional-fishr-20261012",
+  "engineering_next": "Implement six predefined engineering variants x3 seeds in experiments/cvs_scratch_conditional_fishr/ENGINEERING_NEXT.md. Separate new run/release; retain healthy conditional9. This plan was written before conditional9 target results. Read only source/design records for duplicate checks, not target scores for selection."
+}

@@ -1,0 +1,92 @@
+{
+  "status": "VERIFIED",
+  "read_at": 1791769490.5966887,
+  "rows": [
+    {
+      "row": "MARGIN_INTERACTION-s2026092701",
+      "epoch": 3,
+      "status": "FIXED_CALIBRATION_COMPLETE",
+      "aux_steps": 55,
+      "components": [
+        "interaction"
+      ]
+    },
+    {
+      "row": "CE_INTERACTION-s2026092701",
+      "epoch": 3,
+      "status": "FIXED_CALIBRATION_COMPLETE",
+      "aux_steps": 55,
+      "components": [
+        "interaction"
+      ]
+    },
+    {
+      "row": "CE_MOMENT_INTERACTION-s2026092701",
+      "epoch": 3,
+      "status": "FIXED_CALIBRATION_COMPLETE",
+      "aux_steps": 55,
+      "components": [
+        "moment",
+        "interaction"
+      ]
+    },
+    {
+      "row": "MARGIN_INTERACTION-s2026092702",
+      "epoch": 3,
+      "status": "FIXED_CALIBRATION_COMPLETE",
+      "aux_steps": 55,
+      "components": [
+        "interaction"
+      ]
+    },
+    {
+      "row": "CE_INTERACTION-s2026092702",
+      "epoch": 3,
+      "status": "FIXED_CALIBRATION_COMPLETE",
+      "aux_steps": 55,
+      "components": [
+        "interaction"
+      ]
+    },
+    {
+      "row": "CE_MOMENT_INTERACTION-s2026092702",
+      "epoch": 2,
+      "status": "FIXED_CALIBRATION_COMPLETE",
+      "aux_steps": 0,
+      "components": [
+        "moment",
+        "interaction"
+      ]
+    },
+    {
+      "row": "MARGIN_INTERACTION-s2026092703",
+      "epoch": 3,
+      "status": "FIXED_CALIBRATION_COMPLETE",
+      "aux_steps": 55,
+      "components": [
+        "interaction"
+      ]
+    },
+    {
+      "row": "CE_INTERACTION-s2026092703",
+      "epoch": 2,
+      "status": "FIXED_CALIBRATION_COMPLETE",
+      "aux_steps": 0,
+      "components": [
+        "interaction"
+      ]
+    },
+    {
+      "row": "CE_MOMENT_INTERACTION-s2026092703",
+      "epoch": 2,
+      "status": "FIXED_CALIBRATION_COMPLETE",
+      "aux_steps": 0,
+      "components": [
+        "moment",
+        "interaction"
+      ]
+    }
+  ],
+  "scope": "snapshot through completed epoch; no claim remaining steps complete",
+  "target_access": false
+}
