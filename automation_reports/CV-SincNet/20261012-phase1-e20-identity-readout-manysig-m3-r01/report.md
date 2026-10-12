@@ -19,3 +19,6 @@
 资源沿用八卡、每卡≤3总CUDA进程、剩余名额运行；一个owner，独占不可覆盖run/root。源诊断明确不追加target测试，健康conditional9保持原配置并自动clean。远端发布先本地验证与独立P0/P1、Git提交/push/OID读回，再同步和实际PID/config/进度核实。每模型全部完整统计和日志完成后统一收集，不把partial当完整三seed。
 
 本地检查：PSD与恒等分解、全局秩≤5、广义特征残差、零秩处理、合成RX类置换、crossfit disjoint/coverage、实际native CUDA层读取、CFO slot严格零且其他字段相同、参数/缓冲/RNG不变。远端预检三个真实源权重各8L／1前向，不重验既有数据契约。所有指标和证据仅源域，不参与目标选择。
+
+
+**VERIFIED / ANALYZED：三种子源诊断全部完成。** 实际参数、进程、完整统计、300模型前向／37800L读出、零模型更新核验通过。完整结果见 [analysis.md](analysis.md)，源诊断不能证明未知RX或84%目标。后续统一无CFO训练控制，原型与作用预测按报告次序探索。

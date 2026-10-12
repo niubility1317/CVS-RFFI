@@ -84,7 +84,7 @@
   "group_id": "cvs-source-identity-readout",
   "display_name": "冻结 E20 实际浅中最终表示的稳定身份可读出性",
   "description": "原E20三种子；显式CFO屏蔽诊断；实际PSD scatter与L内跨RX交叉拟合的稳定线性／原型读出，源域零网络更新",
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "source_only",
@@ -152,7 +152,7 @@
     {
       "row_id": "READOUT-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_source_identity_readout",
       "purpose": "原E20三种子；显式CFO屏蔽诊断；实际PSD scatter与L内跨RX交叉拟合的稳定线性／原型读出，源域零网络更新",
       "config": {
@@ -602,12 +602,14 @@
         "support": null,
         "evaluation": 2026254504
       },
-      "seed_notes": "model seed is historical fixedE20;physicalsplitfixed;readoutcrossfit seed=model+161803;no stochasticaugmentation;nullnotzero"
+      "seed_notes": "model seed is historical fixedE20;physicalsplitfixed;readoutcrossfit seed=model+161803;no stochasticaugmentation;nullnotzero",
+      "pid": 537052,
+      "gpu": 0
     },
     {
       "row_id": "READOUT-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_source_identity_readout",
       "purpose": "原E20三种子；显式CFO屏蔽诊断；实际PSD scatter与L内跨RX交叉拟合的稳定线性／原型读出，源域零网络更新",
       "config": {
@@ -1057,12 +1059,14 @@
         "support": null,
         "evaluation": 2026254505
       },
-      "seed_notes": "model seed is historical fixedE20;physicalsplitfixed;readoutcrossfit seed=model+161803;no stochasticaugmentation;nullnotzero"
+      "seed_notes": "model seed is historical fixedE20;physicalsplitfixed;readoutcrossfit seed=model+161803;no stochasticaugmentation;nullnotzero",
+      "pid": 537139,
+      "gpu": 1
     },
     {
       "row_id": "READOUT-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_source_identity_readout",
       "purpose": "原E20三种子；显式CFO屏蔽诊断；实际PSD scatter与L内跨RX交叉拟合的稳定线性／原型读出，源域零网络更新",
       "config": {
@@ -1512,8 +1516,19 @@
         "support": null,
         "evaluation": 2026254506
       },
-      "seed_notes": "model seed is historical fixedE20;physicalsplitfixed;readoutcrossfit seed=model+161803;no stochasticaugmentation;nullnotzero"
+      "seed_notes": "model seed is historical fixedE20;physicalsplitfixed;readoutcrossfit seed=model+161803;no stochasticaugmentation;nullnotzero",
+      "pid": 537237,
+      "gpu": 2
     }
   ],
-  "registered_at": "2026-10-12T03:07:14+00:00"
+  "registered_at": "2026-10-12T03:07:14+00:00",
+  "execution_commit": "bafa32a63062f392e571f8c8f9384824913de0d8",
+  "delivery_verdict": "VERIFIED",
+  "progress": {
+    "rows_complete": 3,
+    "model_forwards": 300,
+    "L_model_readouts": 37800,
+    "identity_updates": 0,
+    "target_access": false
+  }
 }

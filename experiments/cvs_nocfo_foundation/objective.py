@@ -1,0 +1,14 @@
+"""Unchanged source-U soft KL; only registered engineering terms differ."""
+from .base_objective import objective as base_objective,BASE_WEIGHTED_KEYS,AUDIT_ONLY_KEYS
+from .update import rng_state
+from .hidden_mix import forward as hidden_forward
+
+def objective(c,model,bank,L,li,U,ui,step,device):
+    clean_rng=rng_state() if c['engineering']['hidden_mix'] else None
+    total,parts,weighted,detail=base_objective(c,model,bank,L,li,U,ui,step,device)
+    if c['engineering']['hidden_mix'] and step>c['semi']['warmup_updates']:
+        loss,info=hidden_forward(c,model,L['x'][li].to(device),L['y'][li].to(device),step,clean_rng)
+        parts['style_ce']=loss;weighted['style_ce']=loss*c['engineering']['mix_weight']*detail['ramp']
+        detail['hidden_mix']=info
+        total=sum(weighted[k] for k in BASE_WEIGHTED_KEYS)
+    return total,parts,weighted,detail

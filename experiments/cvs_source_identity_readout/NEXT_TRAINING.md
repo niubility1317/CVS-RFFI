@@ -2,13 +2,13 @@
 
 旧 engineering18 已本地实现和验证，尚未发布。它采用历史显式CFO输入、复用跨run参考。按新报告9.1要求保留旧未发布实现与登记，下一批新建不可覆盖run；统一关闭显式CFO身份坐标，并增加同代码路径、同学生20轮预算的CE/SSL控制。不能原地改健康conditional9，也不让源诊断成为目标测试选模。
 
-固定新矩阵为八个arm×三seed，共24个学生：CE、SSL、SSL_LR3、SSL_WARM_LR3、SSL_SAM、SSL_SMOOTH、SSL_HIDDEN_MIX、SSL_WARM_LR3_SAM（工程主方案）。学习率/rho/smoothing/hidden层与标签规则沿用已冻结ENGINEERING_NEXT，不由conditional9目标成绩或新读出目标成绩更改。全部随机原生旧门控训练20轮／4440更新，final20自动clean，无EMA/卫星/Fishr。每卡最多3总进程。
+固定新矩阵为九个arm×三seed，共27个学生：CE、SSL、L_REPLAY、SSL_LR3、SSL_WARM_LR3、SSL_SAM、SSL_SMOOTH、SSL_HIDDEN_MIX、SSL_WARM_LR3_SAM（工程主方案）。学习率/rho/smoothing/hidden层与标签规则沿用已冻结ENGINEERING_NEXT，不由conditional9目标成绩或新读出目标成绩更改。全部随机原生旧门控训练20轮／4440更新，final20自动clean，无EMA/卫星/Fishr。每卡最多3总进程。
 
-先执行三行无显式CFO的纯CE控制，学生只使用合法L_s；它们按固定final20测试。其训练checkpoint依预登记固定作为其他21行的源教师：每学生使用另外两seed的无显式CFO CE源模型，不使用历史显式CFO训练权重或旧概率缓存。原型读出诊断的冻结历史权重功能屏蔽，不能冒充这些新训练基线。教师checkpoint/数据角色/继承/选模来源逐一核验，不能根据CE测试成绩选择教师或种子。
+先执行三行无显式CFO的纯CE控制，学生只使用合法L_s；它们按固定final20测试。其训练checkpoint依预登记固定作为其他24行的源教师：每学生使用另外两seed的无显式CFO CE源模型，不使用历史显式CFO训练权重或旧概率缓存。原型读出诊断的冻结历史权重功能屏蔽，不能冒充这些新训练基线。教师checkpoint/数据角色/继承/选模来源逐一核验，不能根据CE测试成绩选择教师或种子。
 
 随后生成三CE在全部合法U上的固定概率缓存，使用ALL soft KL、444步L预热和888步ramp，训练SSL及六个工程变体。统一输入和同路径SSL对照使新批增量可以单独归因；新CE与历史P0差异仍包含输入/训练器，原P0只作附带公开评分参考。源教师历史成本在本批另列，不能在每行重复计共享缓存生成。
 
-hidden mix与新SSL没有完全匹配的额外L读出成本，需要新增说明或同路径额外clean replay控制才能隔离纯混合增量；因此实施时至少增加L_REPLAY三行，最终完整矩阵为九arm×三seed＝27行（CE、SSL、L_REPLAY和六工程变体）。这是固定成本控制，不凭目标排名选择追加。每行样本读出、额外反向、参数/显存与耗时实测另列。
+hidden mix与新SSL没有完全匹配的额外L读出成本，需要新增说明或同路径额外clean replay控制才能隔离纯混合增量；完整矩阵因此固定包含L_REPLAY三行，共九arm×三seed＝27行（CE、SSL、L_REPLAY和六工程变体）。这是固定成本控制，不凭目标排名选择追加。每行样本读出、额外反向、参数/显存与耗时实测另列。
 
 关系训练按报告9.3在源读出诊断后单独设计，先检查merged/RX-separate原型与稳定方向，不将它叠入工程主方案；多作用网络及U新监督按报告9.4/9.5另设作用迁移诊断，保留未拟合TX/day/质量与线性/低秩控制，不以重构或难度代替更新效用。
 
