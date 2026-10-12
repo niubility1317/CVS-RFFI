@@ -624,7 +624,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 775607,
+      "gpu": 0
     },
     {
       "row_id": "ACTION_CE-RX1-s2026092701",
@@ -1133,7 +1136,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 775700,
+      "gpu": 1
     },
     {
       "row_id": "FINITE_MARGIN-RX1-s2026092701",
@@ -1642,7 +1648,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 775781,
+      "gpu": 2
     },
     {
       "row_id": "CLEAN_REPLAY-RX3-s2026092701",
@@ -2151,7 +2160,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 775862,
+      "gpu": 3
     },
     {
       "row_id": "ACTION_CE-RX3-s2026092701",
@@ -2660,7 +2672,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 775943,
+      "gpu": 4
     },
     {
       "row_id": "FINITE_MARGIN-RX3-s2026092701",
@@ -3169,7 +3184,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 776025,
+      "gpu": 5
     },
     {
       "row_id": "CLEAN_REPLAY-RX4-s2026092701",
@@ -3678,7 +3696,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 776106,
+      "gpu": 6
     },
     {
       "row_id": "ACTION_CE-RX4-s2026092701",
@@ -4187,7 +4208,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 776187,
+      "gpu": 7
     },
     {
       "row_id": "FINITE_MARGIN-RX4-s2026092701",
@@ -4696,7 +4720,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 776268,
+      "gpu": 7
     },
     {
       "row_id": "CLEAN_REPLAY-RX6-s2026092701",
@@ -5205,7 +5232,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 776346,
+      "gpu": 0
     },
     {
       "row_id": "ACTION_CE-RX6-s2026092701",
@@ -5714,7 +5744,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 776424,
+      "gpu": 1
     },
     {
       "row_id": "FINITE_MARGIN-RX6-s2026092701",
@@ -6223,7 +6256,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 776502,
+      "gpu": 2
     },
     {
       "row_id": "CLEAN_REPLAY-RX8-s2026092701",
@@ -6732,7 +6768,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 776580,
+      "gpu": 3
     },
     {
       "row_id": "ACTION_CE-RX8-s2026092701",
@@ -7241,7 +7280,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 776658,
+      "gpu": 4
     },
     {
       "row_id": "FINITE_MARGIN-RX8-s2026092701",
@@ -7750,7 +7792,10 @@
         },
         "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
         "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+      "pid": 776736,
+      "gpu": 5
     }
   ],
   "notes": [
@@ -7759,6 +7804,9 @@
     "One model seed and five true sourceRX holdouts precede official all-source three-seed training with automatic clean plus six-practical truth-last scoring.",
     "No pretrained teacher, no old response model, no hard projection or covariance quotient; source V never updates."
   ],
-  "status": "PLANNED",
-  "registered_at": "2026-10-12T09:44:41+00:00"
+  "status": "ANALYZED",
+  "registered_at": "2026-10-12T09:44:41+00:00",
+  "execution_commit": "ae98770e97310d12530283694b3bfa14fb5febe6",
+  "delivery_verdict": "VERIFIED",
+  "live_readback_ref": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_finite_margin_20261012_r01\\readback.json"
 }

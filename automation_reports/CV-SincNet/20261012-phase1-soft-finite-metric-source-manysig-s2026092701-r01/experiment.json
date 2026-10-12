@@ -1,0 +1,2993 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01",
+  "group_id": "phase1-soft-finite-covariance-identity",
+  "display_name": "有界实际作用软度量：普通Mahalanobis与硬投影源对照",
+  "description": "冻结全部五个源CLEAN_REPLAY E20模型，在相同四RX L拟合均匀六类原型和普通／有界作用／硬投影度量；真正未见RX验证，不将U混合协方差当干扰。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source_only",
+    "soft_metric",
+    "finite_covariance",
+    "true_RX_holdout",
+    "single_seed",
+    "frozen_E20"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261012-phase1-finite-margin-source-manysig-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "当前用户明确要求：总结前对话经验、根据粘贴优化报告继续探索达到84%三种子目标。本批source-only可证伪先导，不引入目标支持或新增采集。",
+  "code": {
+    "commit": "ae98770e97310d12530283694b3bfa14fb5febe6",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_soft_finite_metric_20261012_r01",
+    "commit_notes": "actual execution commit is fixed by release_commit.txt and readback; source code commit self-reference is not a gate"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "raw received residual/post_sync/noeq IQ; fixed common temporal linear projection",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      0,
+      1,
+      2
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": "56700 hidden and unopened",
+      "V": 27000
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "no target query; heldRX L and V only after head frozen",
+    "external_method_exception": null,
+    "claim_scope": "single-seed analytic representation information survival; no 84% target claim"
+  },
+  "checkpoint": {
+    "initialization": "five fixed sourceRX-excluded E20 CLEAN_REPLAY models",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX1-s2026092701/identity.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX3-s2026092701/identity.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX4-s2026092701/identity.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX6-s2026092701/identity.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX8-s2026092701/identity.pth"
+    ],
+    "contract_check_ref": "experiments/cvs_soft_finite_metric/run.py:parent",
+    "provenance_verdict": "read actual config/commit/full scratch ancestry/source roles/heldRX exclusion before loading",
+    "selection_rule": "all five controls fixed; all readouts source-only; no score-chosen model"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/soft-finite-metric-20261012",
+    "gpu_policy": "max3 total CUDA processes/GPU including other owners, capacity lock, eight GPUs",
+    "remote_run_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01",
+    "remote_log_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01\\logs",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_soft_finite_metric_20261012_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_soft_finite_metric.dispatch",
+    "stop_rule": "wrong source role/RX, target or U access, output collision, unlaunchable or same technical preprediction error; no stop/retry for low accuracy; preserve all artifacts; do not terminate unrelated workloads"
+  },
+  "expected_artifacts": [
+    "metric_state.pt",
+    "source_predictions.pt",
+    "resolved_config.json",
+    "completion.json",
+    "analysis.json",
+    "source_decision.json",
+    "final_analysis.md"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "heldRX source clean accuracy",
+      "macro_f1",
+      "NLL descriptive uncalibrated scales",
+      "15 TX pair margins/confusion"
+    ],
+    "dimensions": [
+      "held_source_RX",
+      "readout",
+      "day",
+      "TX class pair"
+    ],
+    "prediction_ref": "fixed source_predictions.pt",
+    "scorer_ref": "heldRX V only after fixed readouts; no target truth"
+  },
+  "rows": [
+    {
+      "row_id": "METRIC-RX1-s2026092701",
+      "method": "NATIVE_HEAD/COSINE_PROTO/MAHALANOBIS/SOFT_FINITE/HARD_FINITE",
+      "purpose": "source falsification",
+      "config_ref": "experiments/cvs_soft_finite_metric/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX1-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "继承对应固定source-only E20模型；物理划分不变，metric固定确定性，无augmentation/support/evaluation随机seed。",
+      "k": null,
+      "scenario": "source clean no satellite",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero updates, parent20epochs/4440updates separately retained; L5040 x five actual feature views, heldV5400 clean only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX1-s2026092701",
+      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01\\logs\\METRIC-RX1-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_soft_finite_metric.dispatch --worker METRIC-RX1-s2026092701",
+      "expected_artifacts": [
+        "metric_state.pt",
+        "source_predictions.pt",
+        "resolved_config.json",
+        "completion.json",
+        "analysis.json",
+        "source_decision.json",
+        "final_analysis.md"
+      ],
+      "config": {
+        "run_id": "20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01",
+        "row_id": "METRIC-RX1-s2026092701",
+        "held_rx": 1,
+        "model_seed": 2026092701,
+        "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX1-s2026092701",
+        "launch_owner": "codex/root/soft-finite-metric-20261012",
+        "source_only": true,
+        "target_access": false,
+        "U_access": false,
+        "identity_updates": 0,
+        "head_updates": 0,
+        "arms": [
+          "NATIVE_HEAD",
+          "COSINE_PROTO",
+          "MAHALANOBIS",
+          "SOFT_FINITE",
+          "HARD_FINITE"
+        ],
+        "parent_config": {
+          "run_id": "20261012-phase1-finite-margin-source-manysig-s2026092701-r01",
+          "row_id": "CLEAN_REPLAY-RX1-s2026092701",
+          "arm": "CLEAN_REPLAY",
+          "held_rx": 1,
+          "model_seed": 2026092701,
+          "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX1-s2026092701",
+          "launch_owner": "codex/root/finite-margin-20261012",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "source_only": true,
+          "target_access": false,
+          "checkpoint_sources": [],
+          "source_loader_config": {
+            "schema": "nocfo_ce_foundation_v1",
+            "run_id": "20261012-phase1-nocfo-ce-foundation-manysig-m3-r01",
+            "arm": "CE",
+            "model_seed": 2026092701,
+            "row_id": "CE-s2026092701",
+            "stage": "phase1_nocfo_foundation",
+            "method": "cvs_nocfo_foundation",
+            "variant": "reference_response",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092701/source",
+            "launch_owner": "codex/root/nocfo-ce-foundation-20261012",
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "parent_checkpoint": null,
+            "reference_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+            "reference_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/prediction/predictions.npz",
+            "reference_config": {
+              "schema": "ce_epoch_compression_v1",
+              "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+              "stage": "ce_epoch_compression",
+              "arm": "native",
+              "model_seed": 2026092701,
+              "row_id": "E20-s2026092701",
+              "features": [],
+              "variant": "reference_response",
+              "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+              "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+              "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source",
+              "epochs": 20,
+              "steps_per_epoch": 222,
+              "model_initialization": "scratch",
+              "checkpoint_sources": [],
+              "numerical_policy": {
+                "cudnn_allow_tf32": false,
+                "cuda_matmul_allow_tf32": false,
+                "cudnn_benchmark": false,
+                "cudnn_deterministic": false,
+                "matmul_precision": "highest"
+              },
+              "method": "cvs_ce_epoch2040",
+              "target_access": false,
+              "pseudo_domain_gate": false,
+              "temporal_mode": "batch_neighbor",
+              "temporal_min_streak": 2,
+              "lr_schedule": "cosine",
+              "lr_min": 1e-06,
+              "risk_recipe": {
+                "warmup_epochs": 20,
+                "auxiliary_every_steps": 4,
+                "auxiliary_batch_size": 32,
+                "auxiliary_lr": 0.0002,
+                "auxiliary_lr_min": 1e-06,
+                "reference_refresh_steps": 888,
+                "gradient_audit_every_steps": 888,
+                "epochs": 20,
+                "steps_per_epoch": 222,
+                "hidden": 48,
+                "branch_weights": {
+                  "linear": 0.015,
+                  "temporal": 0.015,
+                  "joint": 0.02,
+                  "receiver": 0.01
+                },
+                "proposal_candidates": 4,
+                "random_fraction": 0.25,
+                "receiver_tail_alpha": 0.25,
+                "proposal_risk_relative_tolerance": 0.25,
+                "proposal_risk_error_ema": 0.9,
+                "proposal_quality_bins": 4,
+                "proposal_min_distinct_audit_ids": 16,
+                "receiver_live_audit_reencode_max": 32,
+                "auxiliary_batch_scope": "at most32 fresh source-L packets; R may separately re-encode at most32 cached audit IQ packets; count both",
+                "receiver_max_age_steps": 888,
+                "resume": false,
+                "source_selection": "fixed final epoch; all three rows tested",
+                "deployment": "identity_only",
+                "reference": "periodically frozen own student; no EMA teacher",
+                "action_scope": "bounded post-receive linear/phase increments; no satellite simulator in training",
+                "source_u_scope": "No U access in any arm"
+              },
+              "arm_plan": {
+                "paths": [],
+                "action_mode": "proposal",
+                "shared": false,
+                "r_target": "distribution",
+                "consistency_weight": 0.0,
+                "action_label_free": false,
+                "source_u_fit": false,
+                "replacements": [],
+                "conditional_edges": true
+              },
+              "source_stress": {
+                "seed": 2026101007,
+                "physical_selection": "all existing source V",
+                "batch_size": 256,
+                "views": [
+                  "clean",
+                  "linear",
+                  "temporal",
+                  "LT",
+                  "TL",
+                  "noise_fixed_LT",
+                  "LTL_heldout",
+                  "curvature_pressure"
+                ],
+                "clean_noninferiority_pp": 0.5,
+                "noise_tie_pp": 0.0,
+                "tail_alpha": 0.25,
+                "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
+                "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
+              },
+              "feature_plan": {
+                "relation": "none",
+                "style": false,
+                "fishr": "none",
+                "fishr_ratio": 0.0,
+                "r_identity": true,
+                "selection_required": false
+              },
+              "feature_recipe": {
+                "relation_every": 8,
+                "relation_weight": 0.1,
+                "relation_batch": 48,
+                "relation_calls": 5550,
+                "relation_packet_occurrences": 266400,
+                "positive_fishr_calls": 4995,
+                "relation_blocks": 30,
+                "source_rx": [
+                  1,
+                  3,
+                  4,
+                  6,
+                  8
+                ],
+                "source_days": [
+                  0,
+                  1,
+                  2
+                ],
+                "source_classes": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "style_probability": 0.15,
+                "style_eta": 0.2,
+                "style_alpha": 0.1,
+                "style_location": "time_down",
+                "fishr_beta": 0.9,
+                "fishr_scale": 30.0,
+                "fishr_coordinates": 960,
+                "fishr_scene_weights": {
+                  "clean": 1.0
+                },
+                "warmup_epochs": 20,
+                "ramp_epochs": 20,
+                "calibration_epoch": 20,
+                "calibration_target_ratios": [
+                  0.03,
+                  0.05,
+                  0.1
+                ],
+                "calibration_scope": "mature source-L relation buckets; fixed once, no later weight adaptation",
+                "style_scope": "native labeled clean CE only; no extra CE or KL",
+                "statistical_ema": "gradient statistics only, not an EMA teacher",
+                "shared_hidden": 50,
+                "independent_hidden": 48,
+                "capacity_relative_tolerance": 0.002,
+                "deferred": [
+                  "hard_resampling",
+                  "DSU_alternative",
+                  "fourth_interaction_network"
+                ]
+              },
+              "source_selection": {
+                "rule": "fixed final epoch; every predeclared row tested; no source V epoch selection",
+                "future_compression": "USER EXPLICIT EXCEPTION: clean three-seed mean no more than 0.003 below fixed original E200 permits shorter epoch exploration",
+                "benchmark_role": "exposed development benchmark for epoch budget only; not independent blind test",
+                "target_samples_or_labels_in_training": false,
+                "noninferiority_accuracy_margin": 0.003
+              },
+              "budget_arm": "E20",
+              "updates": 4440,
+              "checkpoint_selection": "final_only",
+              "test_views": [
+                "clean"
+              ],
+              "launch_owner": "codex/root/ce-epoch10-40-20261011",
+              "concurrency": {
+                "max_processes_per_gpu": 2,
+                "includes_existing": true,
+                "gpu_ids": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              "reference_E200": {
+                "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+                "prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
+                "role": "comparison only; never loaded for initialization"
+              }
+            },
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+            "unlabeled": false,
+            "unlabeled_cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/source_unlabeled/source_cache.pt",
+            "teacher": {
+              "source": "none",
+              "selection": "none",
+              "confidence": 0.95,
+              "seeds": [],
+              "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
+              "temperature": 1.0
+            },
+            "epochs": 20,
+            "steps_per_epoch": 222,
+            "updates": 4440,
+            "batch_size": 128,
+            "optimizer": {
+              "name": "AdamW",
+              "peak_lr": 0.0002,
+              "min_lr": 1e-06,
+              "weight_decay": 0.0001,
+              "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
+            },
+            "semi": {
+              "warmup_updates": 444,
+              "ramp_updates": 888,
+              "confidence": 0.95,
+              "noise_std": 0.015,
+              "target_provider": "none"
+            },
+            "losses": {
+              "ce": 1.0,
+              "KL": 0.0,
+              "feature": 0.0,
+              "margin": 0.0
+            },
+            "multilevel": {
+              "enabled": false,
+              "mixstyle_l": false,
+              "mixstyle_u": false,
+              "fishr_mode": "none",
+              "interval": 4,
+              "batch_size": 120,
+              "aux_ce_weight": 0.1,
+              "fishr_raw_weight": 2.0,
+              "fishr_ratio": 0.2,
+              "fishr_cap": 10000.0,
+              "fishr_eps": 1e-12,
+              "mixstyle_p": 1.0,
+              "mixstyle_alpha": 0.1,
+              "mixstyle_strength": 1.0,
+              "style_confidence": 0.95,
+              "levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "head_warmup_steps": 0,
+              "head_warmup_lr": 0.003,
+              "head_warmup_weight_decay": 0.0001,
+              "head_warmup_batch": 60,
+              "sampling": "independent A/B, each same-day 6TX x 5RX x2 L, cross-batch overlap allowed",
+              "fishr_scope": "disabled; no Fishr graph",
+              "gradient_budget_scope": "not applicable",
+              "fishr_levels": [],
+              "style_levels": [],
+              "aux_ce_to_backbone": false,
+              "aux_ce_routing": "no auxiliary heads or CE",
+              "fishr_fixed_denominator": 2,
+              "routing_control": "engineering only; no auxiliary forward/calibration",
+              "fishr_estimator": "cross",
+              "pair_batch_size": 60,
+              "pair_quota": 2,
+              "style_ce_weight": 1.0,
+              "fishr_calibration_pairs": 12,
+              "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
+              "statistic": "none",
+              "sensitivity_eps": 1e-06,
+              "style_selection": "none",
+              "candidates": 4,
+              "joint_gradient_cap": {
+                "enabled": false,
+                "rho": 0.2,
+                "eps": 1e-12
+              }
+            },
+            "rx_action": {
+              "enabled": false,
+              "critic": false,
+              "kind": "physical",
+              "taps": 33,
+              "scales": [
+                0.5,
+                1.0
+              ],
+              "max_amplitude_dB": 3.0,
+              "start_after_updates": 888,
+              "ramp_updates": 888,
+              "L_augmented_CE_fraction": 0.5,
+              "critic_every": 4,
+              "critic_batch": 32,
+              "critic_lr": 0.0002,
+              "critic_hidden": 48,
+              "critic_uniform_warmup_updates": 444,
+              "critic_uniform_probability": 0.5,
+              "critic_temperature": 0.25,
+              "L_fit": "other five TX AND other two days",
+              "U_fit": "all six L TX, other two days; U TX never read",
+              "critic_fit": "actual deterministic CE increment on up to32L, identity detached; smoothL1; zero-action anchored",
+              "action_selection": "eight candidates: four other sourceRX times two fixed scales; no identity class prediction in bank lookup"
+            },
+            "checkpoint_selection": "final_only",
+            "test_views": [
+              "clean"
+            ],
+            "target_access": false,
+            "sampling": "same seed-private RX/day-balanced full permutation for L and independently U; no TX grouping/hidden U labels",
+            "validation": {
+              "epochs": [
+                5,
+                10,
+                15,
+                20
+              ],
+              "role": "health only; no epoch/arm selection"
+            },
+            "feature_target": "main identity margin sensitivities and supervised style at time_down/t2.pool",
+            "margin_target": "none",
+            "enabled": {
+              "averaging": false
+            },
+            "evaluation": {
+              "primary_arm": "CE",
+              "goal_three_seed_mean": 0.84,
+              "truth_last": true,
+              "feedback_to_training": false
+            },
+            "concurrency": {
+              "max_processes_per_gpu": 3,
+              "includes_existing": true,
+              "gpu_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "initialization_checkpoint_sources": [],
+            "scratch_scope": "student_identity_only",
+            "label_smoothing": 0.0,
+            "engineering": {
+              "sam": false,
+              "sam_rho": 0.02,
+              "sam_adaptive": false,
+              "sam_all_trainable_identity": true,
+              "same_batch_same_RNG": true,
+              "warm_lr": false,
+              "warm_updates": 0,
+              "hidden_mix": false,
+              "mix_levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "mix_layer_policy": "alternate from active step445; exactly one layer per update",
+              "mix_beta_alpha": 2.0,
+              "mix_lambda_policy": "max(lambda,1-lambda)",
+              "mix_source": "L_s only; different TX donors; repeated donors allowed",
+              "mix_weight": 1.0,
+              "mix_inference": false,
+              "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
+            },
+            "identity_input": {
+              "explicit_CFO": false,
+              "reference_feature_width": 29,
+              "constant_zero_coordinate": 27,
+              "active_features": 28,
+              "internal_CFO_compensation": true,
+              "raw_IQ_scope": "residual frequency information is not guaranteed absent"
+            }
+          },
+          "epochs": 20,
+          "steps_per_epoch": 222,
+          "updates": 4440,
+          "batch_size": 128,
+          "extra_batch_size": 32,
+          "peak_lr": 0.0002,
+          "min_lr": 1e-06,
+          "weight_decay": 0.0001,
+          "gradient_clip": 10.0,
+          "loss_weight": 0.5,
+          "actions": [
+            [
+              "spectral",
+              [
+                1.5,
+                0.0
+              ]
+            ],
+            [
+              "spectral",
+              [
+                -1.5,
+                0.0
+              ]
+            ],
+            [
+              "timing",
+              [
+                0.25,
+                0.0
+              ]
+            ],
+            [
+              "timing",
+              [
+                -0.25,
+                0.0
+              ]
+            ]
+          ],
+          "source_U": false,
+          "EMA": false,
+          "satellite": false,
+          "auxiliary": false,
+          "explicit_CFO_identity_feature": false,
+          "initialization": "whole native CVS identity from scratch; no weights or teacher",
+          "checkpoint_selection": "final_only",
+          "extra_mode": "eval with input/parameter gradient; no dropout or BN updates",
+          "main_mode": "train clean CE",
+          "margin": "logsumexp_c(-min_a(f_y(A_a x)-f_c(A_a x))); clean and four actual views; uniform all competitors; finite set only",
+          "compute_control": "all arms generate four actions and execute one extra160-packet eval forward; CLEAN_REPLAY forwards five identical clean copies",
+          "source_validation": "heldRX V only after epoch20; no updates; source clean+four finite operations",
+          "held_rx_excluded_from_all_fitting": true,
+          "scientific_rule": {
+            "mean_gain_ACTION_CE": 0.005,
+            "nonnegative_RX": 4,
+            "clean_mean_noninferiority_REPLAY": 0.005,
+            "worst_RX_noninferiority_ACTION_CE": 0.01,
+            "finite_stress_mean_noninferiority_ACTION_CE": 0.0
+          },
+          "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
+          "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
+        },
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX1-s2026092701/identity.pth",
+        "parent_execution_commit": "ae98770e97310d12530283694b3bfa14fb5febe6",
+        "parent_selection": "all five preregistered CLEAN_REPLAY fixedE20 controls; no selection by scores",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "features": "unit normalized actual id_feat_joint160",
+        "actions": [
+          [
+            "spectral",
+            [
+              1.5,
+              0.0
+            ]
+          ],
+          [
+            "spectral",
+            [
+              -1.5,
+              0.0
+            ]
+          ],
+          [
+            "timing",
+            [
+              0.25,
+              0.0
+            ]
+          ],
+          [
+            "timing",
+            [
+              -0.25,
+              0.0
+            ]
+          ]
+        ],
+        "fit": "L only from the four training RX; source heldRX/V never fit",
+        "shrinkage": 0.1,
+        "epsilon_relative": 1e-06,
+        "finite_covariance": "mean actual within-packet delta outer products; no U mixture or class covariance used as nuisance",
+        "soft_covariance_multiplier": 1.0,
+        "hard_energy_fraction": 0.8,
+        "scientific_rule": {
+          "clean_gain_MAHALANOBIS": 0.005,
+          "nonnegative_RX": 4,
+          "clean_mean_noninferiority_NATIVE": 0.005,
+          "worst_RX_noninferiority_MAHALANOBIS": 0.01
+        },
+        "selection": "sourceV clean only after fixed readouts; all15pairs; never target"
+      }
+    },
+    {
+      "row_id": "METRIC-RX3-s2026092701",
+      "method": "NATIVE_HEAD/COSINE_PROTO/MAHALANOBIS/SOFT_FINITE/HARD_FINITE",
+      "purpose": "source falsification",
+      "config_ref": "experiments/cvs_soft_finite_metric/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX3-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "继承对应固定source-only E20模型；物理划分不变，metric固定确定性，无augmentation/support/evaluation随机seed。",
+      "k": null,
+      "scenario": "source clean no satellite",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero updates, parent20epochs/4440updates separately retained; L5040 x five actual feature views, heldV5400 clean only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX3-s2026092701",
+      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01\\logs\\METRIC-RX3-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_soft_finite_metric.dispatch --worker METRIC-RX3-s2026092701",
+      "expected_artifacts": [
+        "metric_state.pt",
+        "source_predictions.pt",
+        "resolved_config.json",
+        "completion.json",
+        "analysis.json",
+        "source_decision.json",
+        "final_analysis.md"
+      ],
+      "config": {
+        "run_id": "20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01",
+        "row_id": "METRIC-RX3-s2026092701",
+        "held_rx": 3,
+        "model_seed": 2026092701,
+        "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX3-s2026092701",
+        "launch_owner": "codex/root/soft-finite-metric-20261012",
+        "source_only": true,
+        "target_access": false,
+        "U_access": false,
+        "identity_updates": 0,
+        "head_updates": 0,
+        "arms": [
+          "NATIVE_HEAD",
+          "COSINE_PROTO",
+          "MAHALANOBIS",
+          "SOFT_FINITE",
+          "HARD_FINITE"
+        ],
+        "parent_config": {
+          "run_id": "20261012-phase1-finite-margin-source-manysig-s2026092701-r01",
+          "row_id": "CLEAN_REPLAY-RX3-s2026092701",
+          "arm": "CLEAN_REPLAY",
+          "held_rx": 3,
+          "model_seed": 2026092701,
+          "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX3-s2026092701",
+          "launch_owner": "codex/root/finite-margin-20261012",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "source_only": true,
+          "target_access": false,
+          "checkpoint_sources": [],
+          "source_loader_config": {
+            "schema": "nocfo_ce_foundation_v1",
+            "run_id": "20261012-phase1-nocfo-ce-foundation-manysig-m3-r01",
+            "arm": "CE",
+            "model_seed": 2026092701,
+            "row_id": "CE-s2026092701",
+            "stage": "phase1_nocfo_foundation",
+            "method": "cvs_nocfo_foundation",
+            "variant": "reference_response",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092701/source",
+            "launch_owner": "codex/root/nocfo-ce-foundation-20261012",
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "parent_checkpoint": null,
+            "reference_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+            "reference_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/prediction/predictions.npz",
+            "reference_config": {
+              "schema": "ce_epoch_compression_v1",
+              "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+              "stage": "ce_epoch_compression",
+              "arm": "native",
+              "model_seed": 2026092701,
+              "row_id": "E20-s2026092701",
+              "features": [],
+              "variant": "reference_response",
+              "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+              "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+              "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source",
+              "epochs": 20,
+              "steps_per_epoch": 222,
+              "model_initialization": "scratch",
+              "checkpoint_sources": [],
+              "numerical_policy": {
+                "cudnn_allow_tf32": false,
+                "cuda_matmul_allow_tf32": false,
+                "cudnn_benchmark": false,
+                "cudnn_deterministic": false,
+                "matmul_precision": "highest"
+              },
+              "method": "cvs_ce_epoch2040",
+              "target_access": false,
+              "pseudo_domain_gate": false,
+              "temporal_mode": "batch_neighbor",
+              "temporal_min_streak": 2,
+              "lr_schedule": "cosine",
+              "lr_min": 1e-06,
+              "risk_recipe": {
+                "warmup_epochs": 20,
+                "auxiliary_every_steps": 4,
+                "auxiliary_batch_size": 32,
+                "auxiliary_lr": 0.0002,
+                "auxiliary_lr_min": 1e-06,
+                "reference_refresh_steps": 888,
+                "gradient_audit_every_steps": 888,
+                "epochs": 20,
+                "steps_per_epoch": 222,
+                "hidden": 48,
+                "branch_weights": {
+                  "linear": 0.015,
+                  "temporal": 0.015,
+                  "joint": 0.02,
+                  "receiver": 0.01
+                },
+                "proposal_candidates": 4,
+                "random_fraction": 0.25,
+                "receiver_tail_alpha": 0.25,
+                "proposal_risk_relative_tolerance": 0.25,
+                "proposal_risk_error_ema": 0.9,
+                "proposal_quality_bins": 4,
+                "proposal_min_distinct_audit_ids": 16,
+                "receiver_live_audit_reencode_max": 32,
+                "auxiliary_batch_scope": "at most32 fresh source-L packets; R may separately re-encode at most32 cached audit IQ packets; count both",
+                "receiver_max_age_steps": 888,
+                "resume": false,
+                "source_selection": "fixed final epoch; all three rows tested",
+                "deployment": "identity_only",
+                "reference": "periodically frozen own student; no EMA teacher",
+                "action_scope": "bounded post-receive linear/phase increments; no satellite simulator in training",
+                "source_u_scope": "No U access in any arm"
+              },
+              "arm_plan": {
+                "paths": [],
+                "action_mode": "proposal",
+                "shared": false,
+                "r_target": "distribution",
+                "consistency_weight": 0.0,
+                "action_label_free": false,
+                "source_u_fit": false,
+                "replacements": [],
+                "conditional_edges": true
+              },
+              "source_stress": {
+                "seed": 2026101007,
+                "physical_selection": "all existing source V",
+                "batch_size": 256,
+                "views": [
+                  "clean",
+                  "linear",
+                  "temporal",
+                  "LT",
+                  "TL",
+                  "noise_fixed_LT",
+                  "LTL_heldout",
+                  "curvature_pressure"
+                ],
+                "clean_noninferiority_pp": 0.5,
+                "noise_tie_pp": 0.0,
+                "tail_alpha": 0.25,
+                "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
+                "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
+              },
+              "feature_plan": {
+                "relation": "none",
+                "style": false,
+                "fishr": "none",
+                "fishr_ratio": 0.0,
+                "r_identity": true,
+                "selection_required": false
+              },
+              "feature_recipe": {
+                "relation_every": 8,
+                "relation_weight": 0.1,
+                "relation_batch": 48,
+                "relation_calls": 5550,
+                "relation_packet_occurrences": 266400,
+                "positive_fishr_calls": 4995,
+                "relation_blocks": 30,
+                "source_rx": [
+                  1,
+                  3,
+                  4,
+                  6,
+                  8
+                ],
+                "source_days": [
+                  0,
+                  1,
+                  2
+                ],
+                "source_classes": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "style_probability": 0.15,
+                "style_eta": 0.2,
+                "style_alpha": 0.1,
+                "style_location": "time_down",
+                "fishr_beta": 0.9,
+                "fishr_scale": 30.0,
+                "fishr_coordinates": 960,
+                "fishr_scene_weights": {
+                  "clean": 1.0
+                },
+                "warmup_epochs": 20,
+                "ramp_epochs": 20,
+                "calibration_epoch": 20,
+                "calibration_target_ratios": [
+                  0.03,
+                  0.05,
+                  0.1
+                ],
+                "calibration_scope": "mature source-L relation buckets; fixed once, no later weight adaptation",
+                "style_scope": "native labeled clean CE only; no extra CE or KL",
+                "statistical_ema": "gradient statistics only, not an EMA teacher",
+                "shared_hidden": 50,
+                "independent_hidden": 48,
+                "capacity_relative_tolerance": 0.002,
+                "deferred": [
+                  "hard_resampling",
+                  "DSU_alternative",
+                  "fourth_interaction_network"
+                ]
+              },
+              "source_selection": {
+                "rule": "fixed final epoch; every predeclared row tested; no source V epoch selection",
+                "future_compression": "USER EXPLICIT EXCEPTION: clean three-seed mean no more than 0.003 below fixed original E200 permits shorter epoch exploration",
+                "benchmark_role": "exposed development benchmark for epoch budget only; not independent blind test",
+                "target_samples_or_labels_in_training": false,
+                "noninferiority_accuracy_margin": 0.003
+              },
+              "budget_arm": "E20",
+              "updates": 4440,
+              "checkpoint_selection": "final_only",
+              "test_views": [
+                "clean"
+              ],
+              "launch_owner": "codex/root/ce-epoch10-40-20261011",
+              "concurrency": {
+                "max_processes_per_gpu": 2,
+                "includes_existing": true,
+                "gpu_ids": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              "reference_E200": {
+                "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+                "prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
+                "role": "comparison only; never loaded for initialization"
+              }
+            },
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+            "unlabeled": false,
+            "unlabeled_cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/source_unlabeled/source_cache.pt",
+            "teacher": {
+              "source": "none",
+              "selection": "none",
+              "confidence": 0.95,
+              "seeds": [],
+              "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
+              "temperature": 1.0
+            },
+            "epochs": 20,
+            "steps_per_epoch": 222,
+            "updates": 4440,
+            "batch_size": 128,
+            "optimizer": {
+              "name": "AdamW",
+              "peak_lr": 0.0002,
+              "min_lr": 1e-06,
+              "weight_decay": 0.0001,
+              "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
+            },
+            "semi": {
+              "warmup_updates": 444,
+              "ramp_updates": 888,
+              "confidence": 0.95,
+              "noise_std": 0.015,
+              "target_provider": "none"
+            },
+            "losses": {
+              "ce": 1.0,
+              "KL": 0.0,
+              "feature": 0.0,
+              "margin": 0.0
+            },
+            "multilevel": {
+              "enabled": false,
+              "mixstyle_l": false,
+              "mixstyle_u": false,
+              "fishr_mode": "none",
+              "interval": 4,
+              "batch_size": 120,
+              "aux_ce_weight": 0.1,
+              "fishr_raw_weight": 2.0,
+              "fishr_ratio": 0.2,
+              "fishr_cap": 10000.0,
+              "fishr_eps": 1e-12,
+              "mixstyle_p": 1.0,
+              "mixstyle_alpha": 0.1,
+              "mixstyle_strength": 1.0,
+              "style_confidence": 0.95,
+              "levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "head_warmup_steps": 0,
+              "head_warmup_lr": 0.003,
+              "head_warmup_weight_decay": 0.0001,
+              "head_warmup_batch": 60,
+              "sampling": "independent A/B, each same-day 6TX x 5RX x2 L, cross-batch overlap allowed",
+              "fishr_scope": "disabled; no Fishr graph",
+              "gradient_budget_scope": "not applicable",
+              "fishr_levels": [],
+              "style_levels": [],
+              "aux_ce_to_backbone": false,
+              "aux_ce_routing": "no auxiliary heads or CE",
+              "fishr_fixed_denominator": 2,
+              "routing_control": "engineering only; no auxiliary forward/calibration",
+              "fishr_estimator": "cross",
+              "pair_batch_size": 60,
+              "pair_quota": 2,
+              "style_ce_weight": 1.0,
+              "fishr_calibration_pairs": 12,
+              "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
+              "statistic": "none",
+              "sensitivity_eps": 1e-06,
+              "style_selection": "none",
+              "candidates": 4,
+              "joint_gradient_cap": {
+                "enabled": false,
+                "rho": 0.2,
+                "eps": 1e-12
+              }
+            },
+            "rx_action": {
+              "enabled": false,
+              "critic": false,
+              "kind": "physical",
+              "taps": 33,
+              "scales": [
+                0.5,
+                1.0
+              ],
+              "max_amplitude_dB": 3.0,
+              "start_after_updates": 888,
+              "ramp_updates": 888,
+              "L_augmented_CE_fraction": 0.5,
+              "critic_every": 4,
+              "critic_batch": 32,
+              "critic_lr": 0.0002,
+              "critic_hidden": 48,
+              "critic_uniform_warmup_updates": 444,
+              "critic_uniform_probability": 0.5,
+              "critic_temperature": 0.25,
+              "L_fit": "other five TX AND other two days",
+              "U_fit": "all six L TX, other two days; U TX never read",
+              "critic_fit": "actual deterministic CE increment on up to32L, identity detached; smoothL1; zero-action anchored",
+              "action_selection": "eight candidates: four other sourceRX times two fixed scales; no identity class prediction in bank lookup"
+            },
+            "checkpoint_selection": "final_only",
+            "test_views": [
+              "clean"
+            ],
+            "target_access": false,
+            "sampling": "same seed-private RX/day-balanced full permutation for L and independently U; no TX grouping/hidden U labels",
+            "validation": {
+              "epochs": [
+                5,
+                10,
+                15,
+                20
+              ],
+              "role": "health only; no epoch/arm selection"
+            },
+            "feature_target": "main identity margin sensitivities and supervised style at time_down/t2.pool",
+            "margin_target": "none",
+            "enabled": {
+              "averaging": false
+            },
+            "evaluation": {
+              "primary_arm": "CE",
+              "goal_three_seed_mean": 0.84,
+              "truth_last": true,
+              "feedback_to_training": false
+            },
+            "concurrency": {
+              "max_processes_per_gpu": 3,
+              "includes_existing": true,
+              "gpu_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "initialization_checkpoint_sources": [],
+            "scratch_scope": "student_identity_only",
+            "label_smoothing": 0.0,
+            "engineering": {
+              "sam": false,
+              "sam_rho": 0.02,
+              "sam_adaptive": false,
+              "sam_all_trainable_identity": true,
+              "same_batch_same_RNG": true,
+              "warm_lr": false,
+              "warm_updates": 0,
+              "hidden_mix": false,
+              "mix_levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "mix_layer_policy": "alternate from active step445; exactly one layer per update",
+              "mix_beta_alpha": 2.0,
+              "mix_lambda_policy": "max(lambda,1-lambda)",
+              "mix_source": "L_s only; different TX donors; repeated donors allowed",
+              "mix_weight": 1.0,
+              "mix_inference": false,
+              "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
+            },
+            "identity_input": {
+              "explicit_CFO": false,
+              "reference_feature_width": 29,
+              "constant_zero_coordinate": 27,
+              "active_features": 28,
+              "internal_CFO_compensation": true,
+              "raw_IQ_scope": "residual frequency information is not guaranteed absent"
+            }
+          },
+          "epochs": 20,
+          "steps_per_epoch": 222,
+          "updates": 4440,
+          "batch_size": 128,
+          "extra_batch_size": 32,
+          "peak_lr": 0.0002,
+          "min_lr": 1e-06,
+          "weight_decay": 0.0001,
+          "gradient_clip": 10.0,
+          "loss_weight": 0.5,
+          "actions": [
+            [
+              "spectral",
+              [
+                1.5,
+                0.0
+              ]
+            ],
+            [
+              "spectral",
+              [
+                -1.5,
+                0.0
+              ]
+            ],
+            [
+              "timing",
+              [
+                0.25,
+                0.0
+              ]
+            ],
+            [
+              "timing",
+              [
+                -0.25,
+                0.0
+              ]
+            ]
+          ],
+          "source_U": false,
+          "EMA": false,
+          "satellite": false,
+          "auxiliary": false,
+          "explicit_CFO_identity_feature": false,
+          "initialization": "whole native CVS identity from scratch; no weights or teacher",
+          "checkpoint_selection": "final_only",
+          "extra_mode": "eval with input/parameter gradient; no dropout or BN updates",
+          "main_mode": "train clean CE",
+          "margin": "logsumexp_c(-min_a(f_y(A_a x)-f_c(A_a x))); clean and four actual views; uniform all competitors; finite set only",
+          "compute_control": "all arms generate four actions and execute one extra160-packet eval forward; CLEAN_REPLAY forwards five identical clean copies",
+          "source_validation": "heldRX V only after epoch20; no updates; source clean+four finite operations",
+          "held_rx_excluded_from_all_fitting": true,
+          "scientific_rule": {
+            "mean_gain_ACTION_CE": 0.005,
+            "nonnegative_RX": 4,
+            "clean_mean_noninferiority_REPLAY": 0.005,
+            "worst_RX_noninferiority_ACTION_CE": 0.01,
+            "finite_stress_mean_noninferiority_ACTION_CE": 0.0
+          },
+          "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
+          "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
+        },
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX3-s2026092701/identity.pth",
+        "parent_execution_commit": "ae98770e97310d12530283694b3bfa14fb5febe6",
+        "parent_selection": "all five preregistered CLEAN_REPLAY fixedE20 controls; no selection by scores",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "features": "unit normalized actual id_feat_joint160",
+        "actions": [
+          [
+            "spectral",
+            [
+              1.5,
+              0.0
+            ]
+          ],
+          [
+            "spectral",
+            [
+              -1.5,
+              0.0
+            ]
+          ],
+          [
+            "timing",
+            [
+              0.25,
+              0.0
+            ]
+          ],
+          [
+            "timing",
+            [
+              -0.25,
+              0.0
+            ]
+          ]
+        ],
+        "fit": "L only from the four training RX; source heldRX/V never fit",
+        "shrinkage": 0.1,
+        "epsilon_relative": 1e-06,
+        "finite_covariance": "mean actual within-packet delta outer products; no U mixture or class covariance used as nuisance",
+        "soft_covariance_multiplier": 1.0,
+        "hard_energy_fraction": 0.8,
+        "scientific_rule": {
+          "clean_gain_MAHALANOBIS": 0.005,
+          "nonnegative_RX": 4,
+          "clean_mean_noninferiority_NATIVE": 0.005,
+          "worst_RX_noninferiority_MAHALANOBIS": 0.01
+        },
+        "selection": "sourceV clean only after fixed readouts; all15pairs; never target"
+      }
+    },
+    {
+      "row_id": "METRIC-RX4-s2026092701",
+      "method": "NATIVE_HEAD/COSINE_PROTO/MAHALANOBIS/SOFT_FINITE/HARD_FINITE",
+      "purpose": "source falsification",
+      "config_ref": "experiments/cvs_soft_finite_metric/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX4-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "继承对应固定source-only E20模型；物理划分不变，metric固定确定性，无augmentation/support/evaluation随机seed。",
+      "k": null,
+      "scenario": "source clean no satellite",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero updates, parent20epochs/4440updates separately retained; L5040 x five actual feature views, heldV5400 clean only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX4-s2026092701",
+      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01\\logs\\METRIC-RX4-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_soft_finite_metric.dispatch --worker METRIC-RX4-s2026092701",
+      "expected_artifacts": [
+        "metric_state.pt",
+        "source_predictions.pt",
+        "resolved_config.json",
+        "completion.json",
+        "analysis.json",
+        "source_decision.json",
+        "final_analysis.md"
+      ],
+      "config": {
+        "run_id": "20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01",
+        "row_id": "METRIC-RX4-s2026092701",
+        "held_rx": 4,
+        "model_seed": 2026092701,
+        "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX4-s2026092701",
+        "launch_owner": "codex/root/soft-finite-metric-20261012",
+        "source_only": true,
+        "target_access": false,
+        "U_access": false,
+        "identity_updates": 0,
+        "head_updates": 0,
+        "arms": [
+          "NATIVE_HEAD",
+          "COSINE_PROTO",
+          "MAHALANOBIS",
+          "SOFT_FINITE",
+          "HARD_FINITE"
+        ],
+        "parent_config": {
+          "run_id": "20261012-phase1-finite-margin-source-manysig-s2026092701-r01",
+          "row_id": "CLEAN_REPLAY-RX4-s2026092701",
+          "arm": "CLEAN_REPLAY",
+          "held_rx": 4,
+          "model_seed": 2026092701,
+          "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX4-s2026092701",
+          "launch_owner": "codex/root/finite-margin-20261012",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "source_only": true,
+          "target_access": false,
+          "checkpoint_sources": [],
+          "source_loader_config": {
+            "schema": "nocfo_ce_foundation_v1",
+            "run_id": "20261012-phase1-nocfo-ce-foundation-manysig-m3-r01",
+            "arm": "CE",
+            "model_seed": 2026092701,
+            "row_id": "CE-s2026092701",
+            "stage": "phase1_nocfo_foundation",
+            "method": "cvs_nocfo_foundation",
+            "variant": "reference_response",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092701/source",
+            "launch_owner": "codex/root/nocfo-ce-foundation-20261012",
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "parent_checkpoint": null,
+            "reference_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+            "reference_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/prediction/predictions.npz",
+            "reference_config": {
+              "schema": "ce_epoch_compression_v1",
+              "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+              "stage": "ce_epoch_compression",
+              "arm": "native",
+              "model_seed": 2026092701,
+              "row_id": "E20-s2026092701",
+              "features": [],
+              "variant": "reference_response",
+              "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+              "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+              "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source",
+              "epochs": 20,
+              "steps_per_epoch": 222,
+              "model_initialization": "scratch",
+              "checkpoint_sources": [],
+              "numerical_policy": {
+                "cudnn_allow_tf32": false,
+                "cuda_matmul_allow_tf32": false,
+                "cudnn_benchmark": false,
+                "cudnn_deterministic": false,
+                "matmul_precision": "highest"
+              },
+              "method": "cvs_ce_epoch2040",
+              "target_access": false,
+              "pseudo_domain_gate": false,
+              "temporal_mode": "batch_neighbor",
+              "temporal_min_streak": 2,
+              "lr_schedule": "cosine",
+              "lr_min": 1e-06,
+              "risk_recipe": {
+                "warmup_epochs": 20,
+                "auxiliary_every_steps": 4,
+                "auxiliary_batch_size": 32,
+                "auxiliary_lr": 0.0002,
+                "auxiliary_lr_min": 1e-06,
+                "reference_refresh_steps": 888,
+                "gradient_audit_every_steps": 888,
+                "epochs": 20,
+                "steps_per_epoch": 222,
+                "hidden": 48,
+                "branch_weights": {
+                  "linear": 0.015,
+                  "temporal": 0.015,
+                  "joint": 0.02,
+                  "receiver": 0.01
+                },
+                "proposal_candidates": 4,
+                "random_fraction": 0.25,
+                "receiver_tail_alpha": 0.25,
+                "proposal_risk_relative_tolerance": 0.25,
+                "proposal_risk_error_ema": 0.9,
+                "proposal_quality_bins": 4,
+                "proposal_min_distinct_audit_ids": 16,
+                "receiver_live_audit_reencode_max": 32,
+                "auxiliary_batch_scope": "at most32 fresh source-L packets; R may separately re-encode at most32 cached audit IQ packets; count both",
+                "receiver_max_age_steps": 888,
+                "resume": false,
+                "source_selection": "fixed final epoch; all three rows tested",
+                "deployment": "identity_only",
+                "reference": "periodically frozen own student; no EMA teacher",
+                "action_scope": "bounded post-receive linear/phase increments; no satellite simulator in training",
+                "source_u_scope": "No U access in any arm"
+              },
+              "arm_plan": {
+                "paths": [],
+                "action_mode": "proposal",
+                "shared": false,
+                "r_target": "distribution",
+                "consistency_weight": 0.0,
+                "action_label_free": false,
+                "source_u_fit": false,
+                "replacements": [],
+                "conditional_edges": true
+              },
+              "source_stress": {
+                "seed": 2026101007,
+                "physical_selection": "all existing source V",
+                "batch_size": 256,
+                "views": [
+                  "clean",
+                  "linear",
+                  "temporal",
+                  "LT",
+                  "TL",
+                  "noise_fixed_LT",
+                  "LTL_heldout",
+                  "curvature_pressure"
+                ],
+                "clean_noninferiority_pp": 0.5,
+                "noise_tie_pp": 0.0,
+                "tail_alpha": 0.25,
+                "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
+                "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
+              },
+              "feature_plan": {
+                "relation": "none",
+                "style": false,
+                "fishr": "none",
+                "fishr_ratio": 0.0,
+                "r_identity": true,
+                "selection_required": false
+              },
+              "feature_recipe": {
+                "relation_every": 8,
+                "relation_weight": 0.1,
+                "relation_batch": 48,
+                "relation_calls": 5550,
+                "relation_packet_occurrences": 266400,
+                "positive_fishr_calls": 4995,
+                "relation_blocks": 30,
+                "source_rx": [
+                  1,
+                  3,
+                  4,
+                  6,
+                  8
+                ],
+                "source_days": [
+                  0,
+                  1,
+                  2
+                ],
+                "source_classes": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "style_probability": 0.15,
+                "style_eta": 0.2,
+                "style_alpha": 0.1,
+                "style_location": "time_down",
+                "fishr_beta": 0.9,
+                "fishr_scale": 30.0,
+                "fishr_coordinates": 960,
+                "fishr_scene_weights": {
+                  "clean": 1.0
+                },
+                "warmup_epochs": 20,
+                "ramp_epochs": 20,
+                "calibration_epoch": 20,
+                "calibration_target_ratios": [
+                  0.03,
+                  0.05,
+                  0.1
+                ],
+                "calibration_scope": "mature source-L relation buckets; fixed once, no later weight adaptation",
+                "style_scope": "native labeled clean CE only; no extra CE or KL",
+                "statistical_ema": "gradient statistics only, not an EMA teacher",
+                "shared_hidden": 50,
+                "independent_hidden": 48,
+                "capacity_relative_tolerance": 0.002,
+                "deferred": [
+                  "hard_resampling",
+                  "DSU_alternative",
+                  "fourth_interaction_network"
+                ]
+              },
+              "source_selection": {
+                "rule": "fixed final epoch; every predeclared row tested; no source V epoch selection",
+                "future_compression": "USER EXPLICIT EXCEPTION: clean three-seed mean no more than 0.003 below fixed original E200 permits shorter epoch exploration",
+                "benchmark_role": "exposed development benchmark for epoch budget only; not independent blind test",
+                "target_samples_or_labels_in_training": false,
+                "noninferiority_accuracy_margin": 0.003
+              },
+              "budget_arm": "E20",
+              "updates": 4440,
+              "checkpoint_selection": "final_only",
+              "test_views": [
+                "clean"
+              ],
+              "launch_owner": "codex/root/ce-epoch10-40-20261011",
+              "concurrency": {
+                "max_processes_per_gpu": 2,
+                "includes_existing": true,
+                "gpu_ids": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              "reference_E200": {
+                "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+                "prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
+                "role": "comparison only; never loaded for initialization"
+              }
+            },
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+            "unlabeled": false,
+            "unlabeled_cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/source_unlabeled/source_cache.pt",
+            "teacher": {
+              "source": "none",
+              "selection": "none",
+              "confidence": 0.95,
+              "seeds": [],
+              "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
+              "temperature": 1.0
+            },
+            "epochs": 20,
+            "steps_per_epoch": 222,
+            "updates": 4440,
+            "batch_size": 128,
+            "optimizer": {
+              "name": "AdamW",
+              "peak_lr": 0.0002,
+              "min_lr": 1e-06,
+              "weight_decay": 0.0001,
+              "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
+            },
+            "semi": {
+              "warmup_updates": 444,
+              "ramp_updates": 888,
+              "confidence": 0.95,
+              "noise_std": 0.015,
+              "target_provider": "none"
+            },
+            "losses": {
+              "ce": 1.0,
+              "KL": 0.0,
+              "feature": 0.0,
+              "margin": 0.0
+            },
+            "multilevel": {
+              "enabled": false,
+              "mixstyle_l": false,
+              "mixstyle_u": false,
+              "fishr_mode": "none",
+              "interval": 4,
+              "batch_size": 120,
+              "aux_ce_weight": 0.1,
+              "fishr_raw_weight": 2.0,
+              "fishr_ratio": 0.2,
+              "fishr_cap": 10000.0,
+              "fishr_eps": 1e-12,
+              "mixstyle_p": 1.0,
+              "mixstyle_alpha": 0.1,
+              "mixstyle_strength": 1.0,
+              "style_confidence": 0.95,
+              "levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "head_warmup_steps": 0,
+              "head_warmup_lr": 0.003,
+              "head_warmup_weight_decay": 0.0001,
+              "head_warmup_batch": 60,
+              "sampling": "independent A/B, each same-day 6TX x 5RX x2 L, cross-batch overlap allowed",
+              "fishr_scope": "disabled; no Fishr graph",
+              "gradient_budget_scope": "not applicable",
+              "fishr_levels": [],
+              "style_levels": [],
+              "aux_ce_to_backbone": false,
+              "aux_ce_routing": "no auxiliary heads or CE",
+              "fishr_fixed_denominator": 2,
+              "routing_control": "engineering only; no auxiliary forward/calibration",
+              "fishr_estimator": "cross",
+              "pair_batch_size": 60,
+              "pair_quota": 2,
+              "style_ce_weight": 1.0,
+              "fishr_calibration_pairs": 12,
+              "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
+              "statistic": "none",
+              "sensitivity_eps": 1e-06,
+              "style_selection": "none",
+              "candidates": 4,
+              "joint_gradient_cap": {
+                "enabled": false,
+                "rho": 0.2,
+                "eps": 1e-12
+              }
+            },
+            "rx_action": {
+              "enabled": false,
+              "critic": false,
+              "kind": "physical",
+              "taps": 33,
+              "scales": [
+                0.5,
+                1.0
+              ],
+              "max_amplitude_dB": 3.0,
+              "start_after_updates": 888,
+              "ramp_updates": 888,
+              "L_augmented_CE_fraction": 0.5,
+              "critic_every": 4,
+              "critic_batch": 32,
+              "critic_lr": 0.0002,
+              "critic_hidden": 48,
+              "critic_uniform_warmup_updates": 444,
+              "critic_uniform_probability": 0.5,
+              "critic_temperature": 0.25,
+              "L_fit": "other five TX AND other two days",
+              "U_fit": "all six L TX, other two days; U TX never read",
+              "critic_fit": "actual deterministic CE increment on up to32L, identity detached; smoothL1; zero-action anchored",
+              "action_selection": "eight candidates: four other sourceRX times two fixed scales; no identity class prediction in bank lookup"
+            },
+            "checkpoint_selection": "final_only",
+            "test_views": [
+              "clean"
+            ],
+            "target_access": false,
+            "sampling": "same seed-private RX/day-balanced full permutation for L and independently U; no TX grouping/hidden U labels",
+            "validation": {
+              "epochs": [
+                5,
+                10,
+                15,
+                20
+              ],
+              "role": "health only; no epoch/arm selection"
+            },
+            "feature_target": "main identity margin sensitivities and supervised style at time_down/t2.pool",
+            "margin_target": "none",
+            "enabled": {
+              "averaging": false
+            },
+            "evaluation": {
+              "primary_arm": "CE",
+              "goal_three_seed_mean": 0.84,
+              "truth_last": true,
+              "feedback_to_training": false
+            },
+            "concurrency": {
+              "max_processes_per_gpu": 3,
+              "includes_existing": true,
+              "gpu_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "initialization_checkpoint_sources": [],
+            "scratch_scope": "student_identity_only",
+            "label_smoothing": 0.0,
+            "engineering": {
+              "sam": false,
+              "sam_rho": 0.02,
+              "sam_adaptive": false,
+              "sam_all_trainable_identity": true,
+              "same_batch_same_RNG": true,
+              "warm_lr": false,
+              "warm_updates": 0,
+              "hidden_mix": false,
+              "mix_levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "mix_layer_policy": "alternate from active step445; exactly one layer per update",
+              "mix_beta_alpha": 2.0,
+              "mix_lambda_policy": "max(lambda,1-lambda)",
+              "mix_source": "L_s only; different TX donors; repeated donors allowed",
+              "mix_weight": 1.0,
+              "mix_inference": false,
+              "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
+            },
+            "identity_input": {
+              "explicit_CFO": false,
+              "reference_feature_width": 29,
+              "constant_zero_coordinate": 27,
+              "active_features": 28,
+              "internal_CFO_compensation": true,
+              "raw_IQ_scope": "residual frequency information is not guaranteed absent"
+            }
+          },
+          "epochs": 20,
+          "steps_per_epoch": 222,
+          "updates": 4440,
+          "batch_size": 128,
+          "extra_batch_size": 32,
+          "peak_lr": 0.0002,
+          "min_lr": 1e-06,
+          "weight_decay": 0.0001,
+          "gradient_clip": 10.0,
+          "loss_weight": 0.5,
+          "actions": [
+            [
+              "spectral",
+              [
+                1.5,
+                0.0
+              ]
+            ],
+            [
+              "spectral",
+              [
+                -1.5,
+                0.0
+              ]
+            ],
+            [
+              "timing",
+              [
+                0.25,
+                0.0
+              ]
+            ],
+            [
+              "timing",
+              [
+                -0.25,
+                0.0
+              ]
+            ]
+          ],
+          "source_U": false,
+          "EMA": false,
+          "satellite": false,
+          "auxiliary": false,
+          "explicit_CFO_identity_feature": false,
+          "initialization": "whole native CVS identity from scratch; no weights or teacher",
+          "checkpoint_selection": "final_only",
+          "extra_mode": "eval with input/parameter gradient; no dropout or BN updates",
+          "main_mode": "train clean CE",
+          "margin": "logsumexp_c(-min_a(f_y(A_a x)-f_c(A_a x))); clean and four actual views; uniform all competitors; finite set only",
+          "compute_control": "all arms generate four actions and execute one extra160-packet eval forward; CLEAN_REPLAY forwards five identical clean copies",
+          "source_validation": "heldRX V only after epoch20; no updates; source clean+four finite operations",
+          "held_rx_excluded_from_all_fitting": true,
+          "scientific_rule": {
+            "mean_gain_ACTION_CE": 0.005,
+            "nonnegative_RX": 4,
+            "clean_mean_noninferiority_REPLAY": 0.005,
+            "worst_RX_noninferiority_ACTION_CE": 0.01,
+            "finite_stress_mean_noninferiority_ACTION_CE": 0.0
+          },
+          "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
+          "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
+        },
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX4-s2026092701/identity.pth",
+        "parent_execution_commit": "ae98770e97310d12530283694b3bfa14fb5febe6",
+        "parent_selection": "all five preregistered CLEAN_REPLAY fixedE20 controls; no selection by scores",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "features": "unit normalized actual id_feat_joint160",
+        "actions": [
+          [
+            "spectral",
+            [
+              1.5,
+              0.0
+            ]
+          ],
+          [
+            "spectral",
+            [
+              -1.5,
+              0.0
+            ]
+          ],
+          [
+            "timing",
+            [
+              0.25,
+              0.0
+            ]
+          ],
+          [
+            "timing",
+            [
+              -0.25,
+              0.0
+            ]
+          ]
+        ],
+        "fit": "L only from the four training RX; source heldRX/V never fit",
+        "shrinkage": 0.1,
+        "epsilon_relative": 1e-06,
+        "finite_covariance": "mean actual within-packet delta outer products; no U mixture or class covariance used as nuisance",
+        "soft_covariance_multiplier": 1.0,
+        "hard_energy_fraction": 0.8,
+        "scientific_rule": {
+          "clean_gain_MAHALANOBIS": 0.005,
+          "nonnegative_RX": 4,
+          "clean_mean_noninferiority_NATIVE": 0.005,
+          "worst_RX_noninferiority_MAHALANOBIS": 0.01
+        },
+        "selection": "sourceV clean only after fixed readouts; all15pairs; never target"
+      }
+    },
+    {
+      "row_id": "METRIC-RX6-s2026092701",
+      "method": "NATIVE_HEAD/COSINE_PROTO/MAHALANOBIS/SOFT_FINITE/HARD_FINITE",
+      "purpose": "source falsification",
+      "config_ref": "experiments/cvs_soft_finite_metric/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX6-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "继承对应固定source-only E20模型；物理划分不变，metric固定确定性，无augmentation/support/evaluation随机seed。",
+      "k": null,
+      "scenario": "source clean no satellite",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero updates, parent20epochs/4440updates separately retained; L5040 x five actual feature views, heldV5400 clean only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX6-s2026092701",
+      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01\\logs\\METRIC-RX6-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_soft_finite_metric.dispatch --worker METRIC-RX6-s2026092701",
+      "expected_artifacts": [
+        "metric_state.pt",
+        "source_predictions.pt",
+        "resolved_config.json",
+        "completion.json",
+        "analysis.json",
+        "source_decision.json",
+        "final_analysis.md"
+      ],
+      "config": {
+        "run_id": "20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01",
+        "row_id": "METRIC-RX6-s2026092701",
+        "held_rx": 6,
+        "model_seed": 2026092701,
+        "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX6-s2026092701",
+        "launch_owner": "codex/root/soft-finite-metric-20261012",
+        "source_only": true,
+        "target_access": false,
+        "U_access": false,
+        "identity_updates": 0,
+        "head_updates": 0,
+        "arms": [
+          "NATIVE_HEAD",
+          "COSINE_PROTO",
+          "MAHALANOBIS",
+          "SOFT_FINITE",
+          "HARD_FINITE"
+        ],
+        "parent_config": {
+          "run_id": "20261012-phase1-finite-margin-source-manysig-s2026092701-r01",
+          "row_id": "CLEAN_REPLAY-RX6-s2026092701",
+          "arm": "CLEAN_REPLAY",
+          "held_rx": 6,
+          "model_seed": 2026092701,
+          "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX6-s2026092701",
+          "launch_owner": "codex/root/finite-margin-20261012",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "source_only": true,
+          "target_access": false,
+          "checkpoint_sources": [],
+          "source_loader_config": {
+            "schema": "nocfo_ce_foundation_v1",
+            "run_id": "20261012-phase1-nocfo-ce-foundation-manysig-m3-r01",
+            "arm": "CE",
+            "model_seed": 2026092701,
+            "row_id": "CE-s2026092701",
+            "stage": "phase1_nocfo_foundation",
+            "method": "cvs_nocfo_foundation",
+            "variant": "reference_response",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092701/source",
+            "launch_owner": "codex/root/nocfo-ce-foundation-20261012",
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "parent_checkpoint": null,
+            "reference_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+            "reference_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/prediction/predictions.npz",
+            "reference_config": {
+              "schema": "ce_epoch_compression_v1",
+              "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+              "stage": "ce_epoch_compression",
+              "arm": "native",
+              "model_seed": 2026092701,
+              "row_id": "E20-s2026092701",
+              "features": [],
+              "variant": "reference_response",
+              "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+              "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+              "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source",
+              "epochs": 20,
+              "steps_per_epoch": 222,
+              "model_initialization": "scratch",
+              "checkpoint_sources": [],
+              "numerical_policy": {
+                "cudnn_allow_tf32": false,
+                "cuda_matmul_allow_tf32": false,
+                "cudnn_benchmark": false,
+                "cudnn_deterministic": false,
+                "matmul_precision": "highest"
+              },
+              "method": "cvs_ce_epoch2040",
+              "target_access": false,
+              "pseudo_domain_gate": false,
+              "temporal_mode": "batch_neighbor",
+              "temporal_min_streak": 2,
+              "lr_schedule": "cosine",
+              "lr_min": 1e-06,
+              "risk_recipe": {
+                "warmup_epochs": 20,
+                "auxiliary_every_steps": 4,
+                "auxiliary_batch_size": 32,
+                "auxiliary_lr": 0.0002,
+                "auxiliary_lr_min": 1e-06,
+                "reference_refresh_steps": 888,
+                "gradient_audit_every_steps": 888,
+                "epochs": 20,
+                "steps_per_epoch": 222,
+                "hidden": 48,
+                "branch_weights": {
+                  "linear": 0.015,
+                  "temporal": 0.015,
+                  "joint": 0.02,
+                  "receiver": 0.01
+                },
+                "proposal_candidates": 4,
+                "random_fraction": 0.25,
+                "receiver_tail_alpha": 0.25,
+                "proposal_risk_relative_tolerance": 0.25,
+                "proposal_risk_error_ema": 0.9,
+                "proposal_quality_bins": 4,
+                "proposal_min_distinct_audit_ids": 16,
+                "receiver_live_audit_reencode_max": 32,
+                "auxiliary_batch_scope": "at most32 fresh source-L packets; R may separately re-encode at most32 cached audit IQ packets; count both",
+                "receiver_max_age_steps": 888,
+                "resume": false,
+                "source_selection": "fixed final epoch; all three rows tested",
+                "deployment": "identity_only",
+                "reference": "periodically frozen own student; no EMA teacher",
+                "action_scope": "bounded post-receive linear/phase increments; no satellite simulator in training",
+                "source_u_scope": "No U access in any arm"
+              },
+              "arm_plan": {
+                "paths": [],
+                "action_mode": "proposal",
+                "shared": false,
+                "r_target": "distribution",
+                "consistency_weight": 0.0,
+                "action_label_free": false,
+                "source_u_fit": false,
+                "replacements": [],
+                "conditional_edges": true
+              },
+              "source_stress": {
+                "seed": 2026101007,
+                "physical_selection": "all existing source V",
+                "batch_size": 256,
+                "views": [
+                  "clean",
+                  "linear",
+                  "temporal",
+                  "LT",
+                  "TL",
+                  "noise_fixed_LT",
+                  "LTL_heldout",
+                  "curvature_pressure"
+                ],
+                "clean_noninferiority_pp": 0.5,
+                "noise_tie_pp": 0.0,
+                "tail_alpha": 0.25,
+                "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
+                "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
+              },
+              "feature_plan": {
+                "relation": "none",
+                "style": false,
+                "fishr": "none",
+                "fishr_ratio": 0.0,
+                "r_identity": true,
+                "selection_required": false
+              },
+              "feature_recipe": {
+                "relation_every": 8,
+                "relation_weight": 0.1,
+                "relation_batch": 48,
+                "relation_calls": 5550,
+                "relation_packet_occurrences": 266400,
+                "positive_fishr_calls": 4995,
+                "relation_blocks": 30,
+                "source_rx": [
+                  1,
+                  3,
+                  4,
+                  6,
+                  8
+                ],
+                "source_days": [
+                  0,
+                  1,
+                  2
+                ],
+                "source_classes": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "style_probability": 0.15,
+                "style_eta": 0.2,
+                "style_alpha": 0.1,
+                "style_location": "time_down",
+                "fishr_beta": 0.9,
+                "fishr_scale": 30.0,
+                "fishr_coordinates": 960,
+                "fishr_scene_weights": {
+                  "clean": 1.0
+                },
+                "warmup_epochs": 20,
+                "ramp_epochs": 20,
+                "calibration_epoch": 20,
+                "calibration_target_ratios": [
+                  0.03,
+                  0.05,
+                  0.1
+                ],
+                "calibration_scope": "mature source-L relation buckets; fixed once, no later weight adaptation",
+                "style_scope": "native labeled clean CE only; no extra CE or KL",
+                "statistical_ema": "gradient statistics only, not an EMA teacher",
+                "shared_hidden": 50,
+                "independent_hidden": 48,
+                "capacity_relative_tolerance": 0.002,
+                "deferred": [
+                  "hard_resampling",
+                  "DSU_alternative",
+                  "fourth_interaction_network"
+                ]
+              },
+              "source_selection": {
+                "rule": "fixed final epoch; every predeclared row tested; no source V epoch selection",
+                "future_compression": "USER EXPLICIT EXCEPTION: clean three-seed mean no more than 0.003 below fixed original E200 permits shorter epoch exploration",
+                "benchmark_role": "exposed development benchmark for epoch budget only; not independent blind test",
+                "target_samples_or_labels_in_training": false,
+                "noninferiority_accuracy_margin": 0.003
+              },
+              "budget_arm": "E20",
+              "updates": 4440,
+              "checkpoint_selection": "final_only",
+              "test_views": [
+                "clean"
+              ],
+              "launch_owner": "codex/root/ce-epoch10-40-20261011",
+              "concurrency": {
+                "max_processes_per_gpu": 2,
+                "includes_existing": true,
+                "gpu_ids": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              "reference_E200": {
+                "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+                "prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
+                "role": "comparison only; never loaded for initialization"
+              }
+            },
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+            "unlabeled": false,
+            "unlabeled_cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/source_unlabeled/source_cache.pt",
+            "teacher": {
+              "source": "none",
+              "selection": "none",
+              "confidence": 0.95,
+              "seeds": [],
+              "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
+              "temperature": 1.0
+            },
+            "epochs": 20,
+            "steps_per_epoch": 222,
+            "updates": 4440,
+            "batch_size": 128,
+            "optimizer": {
+              "name": "AdamW",
+              "peak_lr": 0.0002,
+              "min_lr": 1e-06,
+              "weight_decay": 0.0001,
+              "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
+            },
+            "semi": {
+              "warmup_updates": 444,
+              "ramp_updates": 888,
+              "confidence": 0.95,
+              "noise_std": 0.015,
+              "target_provider": "none"
+            },
+            "losses": {
+              "ce": 1.0,
+              "KL": 0.0,
+              "feature": 0.0,
+              "margin": 0.0
+            },
+            "multilevel": {
+              "enabled": false,
+              "mixstyle_l": false,
+              "mixstyle_u": false,
+              "fishr_mode": "none",
+              "interval": 4,
+              "batch_size": 120,
+              "aux_ce_weight": 0.1,
+              "fishr_raw_weight": 2.0,
+              "fishr_ratio": 0.2,
+              "fishr_cap": 10000.0,
+              "fishr_eps": 1e-12,
+              "mixstyle_p": 1.0,
+              "mixstyle_alpha": 0.1,
+              "mixstyle_strength": 1.0,
+              "style_confidence": 0.95,
+              "levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "head_warmup_steps": 0,
+              "head_warmup_lr": 0.003,
+              "head_warmup_weight_decay": 0.0001,
+              "head_warmup_batch": 60,
+              "sampling": "independent A/B, each same-day 6TX x 5RX x2 L, cross-batch overlap allowed",
+              "fishr_scope": "disabled; no Fishr graph",
+              "gradient_budget_scope": "not applicable",
+              "fishr_levels": [],
+              "style_levels": [],
+              "aux_ce_to_backbone": false,
+              "aux_ce_routing": "no auxiliary heads or CE",
+              "fishr_fixed_denominator": 2,
+              "routing_control": "engineering only; no auxiliary forward/calibration",
+              "fishr_estimator": "cross",
+              "pair_batch_size": 60,
+              "pair_quota": 2,
+              "style_ce_weight": 1.0,
+              "fishr_calibration_pairs": 12,
+              "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
+              "statistic": "none",
+              "sensitivity_eps": 1e-06,
+              "style_selection": "none",
+              "candidates": 4,
+              "joint_gradient_cap": {
+                "enabled": false,
+                "rho": 0.2,
+                "eps": 1e-12
+              }
+            },
+            "rx_action": {
+              "enabled": false,
+              "critic": false,
+              "kind": "physical",
+              "taps": 33,
+              "scales": [
+                0.5,
+                1.0
+              ],
+              "max_amplitude_dB": 3.0,
+              "start_after_updates": 888,
+              "ramp_updates": 888,
+              "L_augmented_CE_fraction": 0.5,
+              "critic_every": 4,
+              "critic_batch": 32,
+              "critic_lr": 0.0002,
+              "critic_hidden": 48,
+              "critic_uniform_warmup_updates": 444,
+              "critic_uniform_probability": 0.5,
+              "critic_temperature": 0.25,
+              "L_fit": "other five TX AND other two days",
+              "U_fit": "all six L TX, other two days; U TX never read",
+              "critic_fit": "actual deterministic CE increment on up to32L, identity detached; smoothL1; zero-action anchored",
+              "action_selection": "eight candidates: four other sourceRX times two fixed scales; no identity class prediction in bank lookup"
+            },
+            "checkpoint_selection": "final_only",
+            "test_views": [
+              "clean"
+            ],
+            "target_access": false,
+            "sampling": "same seed-private RX/day-balanced full permutation for L and independently U; no TX grouping/hidden U labels",
+            "validation": {
+              "epochs": [
+                5,
+                10,
+                15,
+                20
+              ],
+              "role": "health only; no epoch/arm selection"
+            },
+            "feature_target": "main identity margin sensitivities and supervised style at time_down/t2.pool",
+            "margin_target": "none",
+            "enabled": {
+              "averaging": false
+            },
+            "evaluation": {
+              "primary_arm": "CE",
+              "goal_three_seed_mean": 0.84,
+              "truth_last": true,
+              "feedback_to_training": false
+            },
+            "concurrency": {
+              "max_processes_per_gpu": 3,
+              "includes_existing": true,
+              "gpu_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "initialization_checkpoint_sources": [],
+            "scratch_scope": "student_identity_only",
+            "label_smoothing": 0.0,
+            "engineering": {
+              "sam": false,
+              "sam_rho": 0.02,
+              "sam_adaptive": false,
+              "sam_all_trainable_identity": true,
+              "same_batch_same_RNG": true,
+              "warm_lr": false,
+              "warm_updates": 0,
+              "hidden_mix": false,
+              "mix_levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "mix_layer_policy": "alternate from active step445; exactly one layer per update",
+              "mix_beta_alpha": 2.0,
+              "mix_lambda_policy": "max(lambda,1-lambda)",
+              "mix_source": "L_s only; different TX donors; repeated donors allowed",
+              "mix_weight": 1.0,
+              "mix_inference": false,
+              "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
+            },
+            "identity_input": {
+              "explicit_CFO": false,
+              "reference_feature_width": 29,
+              "constant_zero_coordinate": 27,
+              "active_features": 28,
+              "internal_CFO_compensation": true,
+              "raw_IQ_scope": "residual frequency information is not guaranteed absent"
+            }
+          },
+          "epochs": 20,
+          "steps_per_epoch": 222,
+          "updates": 4440,
+          "batch_size": 128,
+          "extra_batch_size": 32,
+          "peak_lr": 0.0002,
+          "min_lr": 1e-06,
+          "weight_decay": 0.0001,
+          "gradient_clip": 10.0,
+          "loss_weight": 0.5,
+          "actions": [
+            [
+              "spectral",
+              [
+                1.5,
+                0.0
+              ]
+            ],
+            [
+              "spectral",
+              [
+                -1.5,
+                0.0
+              ]
+            ],
+            [
+              "timing",
+              [
+                0.25,
+                0.0
+              ]
+            ],
+            [
+              "timing",
+              [
+                -0.25,
+                0.0
+              ]
+            ]
+          ],
+          "source_U": false,
+          "EMA": false,
+          "satellite": false,
+          "auxiliary": false,
+          "explicit_CFO_identity_feature": false,
+          "initialization": "whole native CVS identity from scratch; no weights or teacher",
+          "checkpoint_selection": "final_only",
+          "extra_mode": "eval with input/parameter gradient; no dropout or BN updates",
+          "main_mode": "train clean CE",
+          "margin": "logsumexp_c(-min_a(f_y(A_a x)-f_c(A_a x))); clean and four actual views; uniform all competitors; finite set only",
+          "compute_control": "all arms generate four actions and execute one extra160-packet eval forward; CLEAN_REPLAY forwards five identical clean copies",
+          "source_validation": "heldRX V only after epoch20; no updates; source clean+four finite operations",
+          "held_rx_excluded_from_all_fitting": true,
+          "scientific_rule": {
+            "mean_gain_ACTION_CE": 0.005,
+            "nonnegative_RX": 4,
+            "clean_mean_noninferiority_REPLAY": 0.005,
+            "worst_RX_noninferiority_ACTION_CE": 0.01,
+            "finite_stress_mean_noninferiority_ACTION_CE": 0.0
+          },
+          "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
+          "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
+        },
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX6-s2026092701/identity.pth",
+        "parent_execution_commit": "ae98770e97310d12530283694b3bfa14fb5febe6",
+        "parent_selection": "all five preregistered CLEAN_REPLAY fixedE20 controls; no selection by scores",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "features": "unit normalized actual id_feat_joint160",
+        "actions": [
+          [
+            "spectral",
+            [
+              1.5,
+              0.0
+            ]
+          ],
+          [
+            "spectral",
+            [
+              -1.5,
+              0.0
+            ]
+          ],
+          [
+            "timing",
+            [
+              0.25,
+              0.0
+            ]
+          ],
+          [
+            "timing",
+            [
+              -0.25,
+              0.0
+            ]
+          ]
+        ],
+        "fit": "L only from the four training RX; source heldRX/V never fit",
+        "shrinkage": 0.1,
+        "epsilon_relative": 1e-06,
+        "finite_covariance": "mean actual within-packet delta outer products; no U mixture or class covariance used as nuisance",
+        "soft_covariance_multiplier": 1.0,
+        "hard_energy_fraction": 0.8,
+        "scientific_rule": {
+          "clean_gain_MAHALANOBIS": 0.005,
+          "nonnegative_RX": 4,
+          "clean_mean_noninferiority_NATIVE": 0.005,
+          "worst_RX_noninferiority_MAHALANOBIS": 0.01
+        },
+        "selection": "sourceV clean only after fixed readouts; all15pairs; never target"
+      }
+    },
+    {
+      "row_id": "METRIC-RX8-s2026092701",
+      "method": "NATIVE_HEAD/COSINE_PROTO/MAHALANOBIS/SOFT_FINITE/HARD_FINITE",
+      "purpose": "source falsification",
+      "config_ref": "experiments/cvs_soft_finite_metric/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX8-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "继承对应固定source-only E20模型；物理划分不变，metric固定确定性，无augmentation/support/evaluation随机seed。",
+      "k": null,
+      "scenario": "source clean no satellite",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero updates, parent20epochs/4440updates separately retained; L5040 x five actual feature views, heldV5400 clean only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX8-s2026092701",
+      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01\\logs\\METRIC-RX8-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_soft_finite_metric.dispatch --worker METRIC-RX8-s2026092701",
+      "expected_artifacts": [
+        "metric_state.pt",
+        "source_predictions.pt",
+        "resolved_config.json",
+        "completion.json",
+        "analysis.json",
+        "source_decision.json",
+        "final_analysis.md"
+      ],
+      "config": {
+        "run_id": "20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01",
+        "row_id": "METRIC-RX8-s2026092701",
+        "held_rx": 8,
+        "model_seed": 2026092701,
+        "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-soft-finite-metric-source-manysig-s2026092701-r01/METRIC-RX8-s2026092701",
+        "launch_owner": "codex/root/soft-finite-metric-20261012",
+        "source_only": true,
+        "target_access": false,
+        "U_access": false,
+        "identity_updates": 0,
+        "head_updates": 0,
+        "arms": [
+          "NATIVE_HEAD",
+          "COSINE_PROTO",
+          "MAHALANOBIS",
+          "SOFT_FINITE",
+          "HARD_FINITE"
+        ],
+        "parent_config": {
+          "run_id": "20261012-phase1-finite-margin-source-manysig-s2026092701-r01",
+          "row_id": "CLEAN_REPLAY-RX8-s2026092701",
+          "arm": "CLEAN_REPLAY",
+          "held_rx": 8,
+          "model_seed": 2026092701,
+          "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX8-s2026092701",
+          "launch_owner": "codex/root/finite-margin-20261012",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "source_only": true,
+          "target_access": false,
+          "checkpoint_sources": [],
+          "source_loader_config": {
+            "schema": "nocfo_ce_foundation_v1",
+            "run_id": "20261012-phase1-nocfo-ce-foundation-manysig-m3-r01",
+            "arm": "CE",
+            "model_seed": 2026092701,
+            "row_id": "CE-s2026092701",
+            "stage": "phase1_nocfo_foundation",
+            "method": "cvs_nocfo_foundation",
+            "variant": "reference_response",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/CE-s2026092701/source",
+            "launch_owner": "codex/root/nocfo-ce-foundation-20261012",
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "parent_checkpoint": null,
+            "reference_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source/final_ssdg.pth",
+            "reference_prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/prediction/predictions.npz",
+            "reference_config": {
+              "schema": "ce_epoch_compression_v1",
+              "run_id": "20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01",
+              "stage": "ce_epoch_compression",
+              "arm": "native",
+              "model_seed": 2026092701,
+              "row_id": "E20-s2026092701",
+              "features": [],
+              "variant": "reference_response",
+              "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+              "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+              "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01/E20-s2026092701/source",
+              "epochs": 20,
+              "steps_per_epoch": 222,
+              "model_initialization": "scratch",
+              "checkpoint_sources": [],
+              "numerical_policy": {
+                "cudnn_allow_tf32": false,
+                "cuda_matmul_allow_tf32": false,
+                "cudnn_benchmark": false,
+                "cudnn_deterministic": false,
+                "matmul_precision": "highest"
+              },
+              "method": "cvs_ce_epoch2040",
+              "target_access": false,
+              "pseudo_domain_gate": false,
+              "temporal_mode": "batch_neighbor",
+              "temporal_min_streak": 2,
+              "lr_schedule": "cosine",
+              "lr_min": 1e-06,
+              "risk_recipe": {
+                "warmup_epochs": 20,
+                "auxiliary_every_steps": 4,
+                "auxiliary_batch_size": 32,
+                "auxiliary_lr": 0.0002,
+                "auxiliary_lr_min": 1e-06,
+                "reference_refresh_steps": 888,
+                "gradient_audit_every_steps": 888,
+                "epochs": 20,
+                "steps_per_epoch": 222,
+                "hidden": 48,
+                "branch_weights": {
+                  "linear": 0.015,
+                  "temporal": 0.015,
+                  "joint": 0.02,
+                  "receiver": 0.01
+                },
+                "proposal_candidates": 4,
+                "random_fraction": 0.25,
+                "receiver_tail_alpha": 0.25,
+                "proposal_risk_relative_tolerance": 0.25,
+                "proposal_risk_error_ema": 0.9,
+                "proposal_quality_bins": 4,
+                "proposal_min_distinct_audit_ids": 16,
+                "receiver_live_audit_reencode_max": 32,
+                "auxiliary_batch_scope": "at most32 fresh source-L packets; R may separately re-encode at most32 cached audit IQ packets; count both",
+                "receiver_max_age_steps": 888,
+                "resume": false,
+                "source_selection": "fixed final epoch; all three rows tested",
+                "deployment": "identity_only",
+                "reference": "periodically frozen own student; no EMA teacher",
+                "action_scope": "bounded post-receive linear/phase increments; no satellite simulator in training",
+                "source_u_scope": "No U access in any arm"
+              },
+              "arm_plan": {
+                "paths": [],
+                "action_mode": "proposal",
+                "shared": false,
+                "r_target": "distribution",
+                "consistency_weight": 0.0,
+                "action_label_free": false,
+                "source_u_fit": false,
+                "replacements": [],
+                "conditional_edges": true
+              },
+              "source_stress": {
+                "seed": 2026101007,
+                "physical_selection": "all existing source V",
+                "batch_size": 256,
+                "views": [
+                  "clean",
+                  "linear",
+                  "temporal",
+                  "LT",
+                  "TL",
+                  "noise_fixed_LT",
+                  "LTL_heldout",
+                  "curvature_pressure"
+                ],
+                "clean_noninferiority_pp": 0.5,
+                "noise_tie_pp": 0.0,
+                "tail_alpha": 0.25,
+                "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
+                "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
+              },
+              "feature_plan": {
+                "relation": "none",
+                "style": false,
+                "fishr": "none",
+                "fishr_ratio": 0.0,
+                "r_identity": true,
+                "selection_required": false
+              },
+              "feature_recipe": {
+                "relation_every": 8,
+                "relation_weight": 0.1,
+                "relation_batch": 48,
+                "relation_calls": 5550,
+                "relation_packet_occurrences": 266400,
+                "positive_fishr_calls": 4995,
+                "relation_blocks": 30,
+                "source_rx": [
+                  1,
+                  3,
+                  4,
+                  6,
+                  8
+                ],
+                "source_days": [
+                  0,
+                  1,
+                  2
+                ],
+                "source_classes": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "style_probability": 0.15,
+                "style_eta": 0.2,
+                "style_alpha": 0.1,
+                "style_location": "time_down",
+                "fishr_beta": 0.9,
+                "fishr_scale": 30.0,
+                "fishr_coordinates": 960,
+                "fishr_scene_weights": {
+                  "clean": 1.0
+                },
+                "warmup_epochs": 20,
+                "ramp_epochs": 20,
+                "calibration_epoch": 20,
+                "calibration_target_ratios": [
+                  0.03,
+                  0.05,
+                  0.1
+                ],
+                "calibration_scope": "mature source-L relation buckets; fixed once, no later weight adaptation",
+                "style_scope": "native labeled clean CE only; no extra CE or KL",
+                "statistical_ema": "gradient statistics only, not an EMA teacher",
+                "shared_hidden": 50,
+                "independent_hidden": 48,
+                "capacity_relative_tolerance": 0.002,
+                "deferred": [
+                  "hard_resampling",
+                  "DSU_alternative",
+                  "fourth_interaction_network"
+                ]
+              },
+              "source_selection": {
+                "rule": "fixed final epoch; every predeclared row tested; no source V epoch selection",
+                "future_compression": "USER EXPLICIT EXCEPTION: clean three-seed mean no more than 0.003 below fixed original E200 permits shorter epoch exploration",
+                "benchmark_role": "exposed development benchmark for epoch budget only; not independent blind test",
+                "target_samples_or_labels_in_training": false,
+                "noninferiority_accuracy_margin": 0.003
+              },
+              "budget_arm": "E20",
+              "updates": 4440,
+              "checkpoint_selection": "final_only",
+              "test_views": [
+                "clean"
+              ],
+              "launch_owner": "codex/root/ce-epoch10-40-20261011",
+              "concurrency": {
+                "max_processes_per_gpu": 2,
+                "includes_existing": true,
+                "gpu_ids": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              "reference_E200": {
+                "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/source/final_ssdg.pth",
+                "prediction": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-feature-disentangle-manysig-m48-r02/native-s2026092701/prediction/predictions.npz",
+                "role": "comparison only; never loaded for initialization"
+              }
+            },
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+            "unlabeled": false,
+            "unlabeled_cache": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stage2_ssl_hybrid_20261011_r02/source_unlabeled/source_cache.pt",
+            "teacher": {
+              "source": "none",
+              "selection": "none",
+              "confidence": 0.95,
+              "seeds": [],
+              "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
+              "temperature": 1.0
+            },
+            "epochs": 20,
+            "steps_per_epoch": 222,
+            "updates": 4440,
+            "batch_size": 128,
+            "optimizer": {
+              "name": "AdamW",
+              "peak_lr": 0.0002,
+              "min_lr": 1e-06,
+              "weight_decay": 0.0001,
+              "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
+            },
+            "semi": {
+              "warmup_updates": 444,
+              "ramp_updates": 888,
+              "confidence": 0.95,
+              "noise_std": 0.015,
+              "target_provider": "none"
+            },
+            "losses": {
+              "ce": 1.0,
+              "KL": 0.0,
+              "feature": 0.0,
+              "margin": 0.0
+            },
+            "multilevel": {
+              "enabled": false,
+              "mixstyle_l": false,
+              "mixstyle_u": false,
+              "fishr_mode": "none",
+              "interval": 4,
+              "batch_size": 120,
+              "aux_ce_weight": 0.1,
+              "fishr_raw_weight": 2.0,
+              "fishr_ratio": 0.2,
+              "fishr_cap": 10000.0,
+              "fishr_eps": 1e-12,
+              "mixstyle_p": 1.0,
+              "mixstyle_alpha": 0.1,
+              "mixstyle_strength": 1.0,
+              "style_confidence": 0.95,
+              "levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "head_warmup_steps": 0,
+              "head_warmup_lr": 0.003,
+              "head_warmup_weight_decay": 0.0001,
+              "head_warmup_batch": 60,
+              "sampling": "independent A/B, each same-day 6TX x 5RX x2 L, cross-batch overlap allowed",
+              "fishr_scope": "disabled; no Fishr graph",
+              "gradient_budget_scope": "not applicable",
+              "fishr_levels": [],
+              "style_levels": [],
+              "aux_ce_to_backbone": false,
+              "aux_ce_routing": "no auxiliary heads or CE",
+              "fishr_fixed_denominator": 2,
+              "routing_control": "engineering only; no auxiliary forward/calibration",
+              "fishr_estimator": "cross",
+              "pair_batch_size": 60,
+              "pair_quota": 2,
+              "style_ce_weight": 1.0,
+              "fishr_calibration_pairs": 12,
+              "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
+              "statistic": "none",
+              "sensitivity_eps": 1e-06,
+              "style_selection": "none",
+              "candidates": 4,
+              "joint_gradient_cap": {
+                "enabled": false,
+                "rho": 0.2,
+                "eps": 1e-12
+              }
+            },
+            "rx_action": {
+              "enabled": false,
+              "critic": false,
+              "kind": "physical",
+              "taps": 33,
+              "scales": [
+                0.5,
+                1.0
+              ],
+              "max_amplitude_dB": 3.0,
+              "start_after_updates": 888,
+              "ramp_updates": 888,
+              "L_augmented_CE_fraction": 0.5,
+              "critic_every": 4,
+              "critic_batch": 32,
+              "critic_lr": 0.0002,
+              "critic_hidden": 48,
+              "critic_uniform_warmup_updates": 444,
+              "critic_uniform_probability": 0.5,
+              "critic_temperature": 0.25,
+              "L_fit": "other five TX AND other two days",
+              "U_fit": "all six L TX, other two days; U TX never read",
+              "critic_fit": "actual deterministic CE increment on up to32L, identity detached; smoothL1; zero-action anchored",
+              "action_selection": "eight candidates: four other sourceRX times two fixed scales; no identity class prediction in bank lookup"
+            },
+            "checkpoint_selection": "final_only",
+            "test_views": [
+              "clean"
+            ],
+            "target_access": false,
+            "sampling": "same seed-private RX/day-balanced full permutation for L and independently U; no TX grouping/hidden U labels",
+            "validation": {
+              "epochs": [
+                5,
+                10,
+                15,
+                20
+              ],
+              "role": "health only; no epoch/arm selection"
+            },
+            "feature_target": "main identity margin sensitivities and supervised style at time_down/t2.pool",
+            "margin_target": "none",
+            "enabled": {
+              "averaging": false
+            },
+            "evaluation": {
+              "primary_arm": "CE",
+              "goal_three_seed_mean": 0.84,
+              "truth_last": true,
+              "feedback_to_training": false
+            },
+            "concurrency": {
+              "max_processes_per_gpu": 3,
+              "includes_existing": true,
+              "gpu_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "initialization_checkpoint_sources": [],
+            "scratch_scope": "student_identity_only",
+            "label_smoothing": 0.0,
+            "engineering": {
+              "sam": false,
+              "sam_rho": 0.02,
+              "sam_adaptive": false,
+              "sam_all_trainable_identity": true,
+              "same_batch_same_RNG": true,
+              "warm_lr": false,
+              "warm_updates": 0,
+              "hidden_mix": false,
+              "mix_levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "mix_layer_policy": "alternate from active step445; exactly one layer per update",
+              "mix_beta_alpha": 2.0,
+              "mix_lambda_policy": "max(lambda,1-lambda)",
+              "mix_source": "L_s only; different TX donors; repeated donors allowed",
+              "mix_weight": 1.0,
+              "mix_inference": false,
+              "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
+            },
+            "identity_input": {
+              "explicit_CFO": false,
+              "reference_feature_width": 29,
+              "constant_zero_coordinate": 27,
+              "active_features": 28,
+              "internal_CFO_compensation": true,
+              "raw_IQ_scope": "residual frequency information is not guaranteed absent"
+            }
+          },
+          "epochs": 20,
+          "steps_per_epoch": 222,
+          "updates": 4440,
+          "batch_size": 128,
+          "extra_batch_size": 32,
+          "peak_lr": 0.0002,
+          "min_lr": 1e-06,
+          "weight_decay": 0.0001,
+          "gradient_clip": 10.0,
+          "loss_weight": 0.5,
+          "actions": [
+            [
+              "spectral",
+              [
+                1.5,
+                0.0
+              ]
+            ],
+            [
+              "spectral",
+              [
+                -1.5,
+                0.0
+              ]
+            ],
+            [
+              "timing",
+              [
+                0.25,
+                0.0
+              ]
+            ],
+            [
+              "timing",
+              [
+                -0.25,
+                0.0
+              ]
+            ]
+          ],
+          "source_U": false,
+          "EMA": false,
+          "satellite": false,
+          "auxiliary": false,
+          "explicit_CFO_identity_feature": false,
+          "initialization": "whole native CVS identity from scratch; no weights or teacher",
+          "checkpoint_selection": "final_only",
+          "extra_mode": "eval with input/parameter gradient; no dropout or BN updates",
+          "main_mode": "train clean CE",
+          "margin": "logsumexp_c(-min_a(f_y(A_a x)-f_c(A_a x))); clean and four actual views; uniform all competitors; finite set only",
+          "compute_control": "all arms generate four actions and execute one extra160-packet eval forward; CLEAN_REPLAY forwards five identical clean copies",
+          "source_validation": "heldRX V only after epoch20; no updates; source clean+four finite operations",
+          "held_rx_excluded_from_all_fitting": true,
+          "scientific_rule": {
+            "mean_gain_ACTION_CE": 0.005,
+            "nonnegative_RX": 4,
+            "clean_mean_noninferiority_REPLAY": 0.005,
+            "worst_RX_noninferiority_ACTION_CE": 0.01,
+            "finite_stress_mean_noninferiority_ACTION_CE": 0.0
+          },
+          "sampling": "same RX/day-balanced stream on four RX only; main128 plus its first32 for extra views",
+          "budget": "fixedE20 4440 updates; five RX x three arms, 15 fresh native identity models"
+        },
+        "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/CLEAN_REPLAY-RX8-s2026092701/identity.pth",
+        "parent_execution_commit": "ae98770e97310d12530283694b3bfa14fb5febe6",
+        "parent_selection": "all five preregistered CLEAN_REPLAY fixedE20 controls; no selection by scores",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "features": "unit normalized actual id_feat_joint160",
+        "actions": [
+          [
+            "spectral",
+            [
+              1.5,
+              0.0
+            ]
+          ],
+          [
+            "spectral",
+            [
+              -1.5,
+              0.0
+            ]
+          ],
+          [
+            "timing",
+            [
+              0.25,
+              0.0
+            ]
+          ],
+          [
+            "timing",
+            [
+              -0.25,
+              0.0
+            ]
+          ]
+        ],
+        "fit": "L only from the four training RX; source heldRX/V never fit",
+        "shrinkage": 0.1,
+        "epsilon_relative": 1e-06,
+        "finite_covariance": "mean actual within-packet delta outer products; no U mixture or class covariance used as nuisance",
+        "soft_covariance_multiplier": 1.0,
+        "hard_energy_fraction": 0.8,
+        "scientific_rule": {
+          "clean_gain_MAHALANOBIS": 0.005,
+          "nonnegative_RX": 4,
+          "clean_mean_noninferiority_NATIVE": 0.005,
+          "worst_RX_noninferiority_MAHALANOBIS": 0.01
+        },
+        "selection": "sourceV clean only after fixed readouts; all15pairs; never target"
+      }
+    }
+  ],
+  "notes": [
+    "Fixed Cnoise shrinkage=.1, epsilon=1e-6; finite covariance multiplier1; hard energy=.8 from fit L only.",
+    "Actual four operation deltas do not guarantee physical RX coverage. Uniform all classes and prototype formula, no TX-specific handling.",
+    "No target support, no U open, no model update. Metric scores have different uncalibrated scales; compare accuracy and confusion, no calibrated NLL claim."
+  ],
+  "status": "PLANNED",
+  "registered_at": "2026-10-12T09:58:02+00:00"
+}
