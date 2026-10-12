@@ -63,3 +63,33 @@ GPU 列分别为 PyTorch allocated/reserved 推理峰值，在预热后清理缓
 Excel：`E:\type10-7\outputs\01a0fd26-2621-7662-a9bd-9ff19509e812\standard_ce_clean_results_deployment.xlsx`。14 个工作表；原 12 页、8 张论文图、4 张可编辑图表以及既有数据/公式/格式/列宽/表引用保留。新增效率汇总第 86 行起的端到端测量表、208 行部署测量、41600 行请求时延。均值、P50/P95/P99、内存/存储单位和吞吐率使用可追溯 Excel 公式；全部与独立 Python 汇总核对一致，无公式错误。
 
 数据与口径：`E:\type10-7\exports\paper_figures\20261012-standard-ce-deployment-r02-source`；Excel QA：`local_artifacts/standard_ce_deployment_20261012_r02/excel_verification.json`。存储差异与更快基线均完整保留，不基于本次性能结果重新选模或改网络。
+
+## 综合排名图（用户要求，2026-10-12）
+
+复用已完成的 13 网络 × 8 种子 clean 汇总和本 run 部署实测，未新增训练、预测、测试评分或目标反馈选模。原 CVS 排除，CVS 指残差融合网络。
+
+默认描述性指数使用准确率 50%，五项部署指标各 10%：B1 软件链路端到端 P95 时延、B128 软件链路端到端吞吐量、B1 GPU allocated 推理峰值、B1 CPU 总进程 RSS 推理峰值、实际 FP32 state_dict 序列化大小。各指标按有利方向计算全精度名次，再以 `100 × (13 − 名次) / 12` 转分，最后加权平均。参数、MAC/FLOPs 与 macro-F1 不再次计权，避免叠加相近代理指标；该指数仍有主观权重和名次不保留差距幅度的局限，不是行业标准，不代表准确率或显著胜出。
+
+| 综合名次 | 模型 | 综合分（0 至 100） |
+|---|---|---:|
+| 1 | CVS | 82.5 |
+| 2 | ResNet-18-1D | 75.0 |
+| 3 | ResNet-50-1D | 68.3 |
+| 4 | ResNet-34-1D | 61.7 |
+| 5 | Complex ResNet-18-1D | 57.5 |
+| 6 | DenseNet-121-1D | 51.7 |
+| 7 | VGG-16-BN-1D | 50.8 |
+| 8（并列） | BiLSTM (3 layers) | 45.0 |
+| 8（并列） | ResNet-18-2D | 45.0 |
+| 10 | ConvNeXt-Tiny-1D | 40.8 |
+| 11（并列） | ResNet-50-2D | 27.5 |
+| 11（并列） | Transformer (6 layers) | 27.5 |
+| 13 | Complex ResNet-18-2D | 16.7 |
+
+同分共享 competition rank，不用浮点误差拆开同分，仅按准确率排列同分行。图中保留准确率均值 ± 样本 SD、全部实测值和单项名次；Transformer 退化种子保留。CVS 准确率、B1 allocated 显存峰值和模型存储分别第 1；P95 第 8、B128 吞吐量第 3、CPU 进程 RSS 第 13。内存包含运行时成本，未解释为模型独立 RAM。
+
+权重敏感性：准确率权重从 0% 至 100% 每次增加 1 个百分点，剩余权重均分给五项成本。CVS 在 0%、25%、50%、75%、100% 下分别排名 3、2、1、1、1。解析交点为准确率权重 `11/31 = 35.4838709677%`，CVS 高于该权重时独占第 1，交点与 ResNet-18-1D 并列。部署优先时并不保证 CVS 第一。
+
+输出：`E:/type10-7/exports/paper_figures/20261012-standard-ce-comprehensive-ranking-r01`。单图为 183 × 145 mm，PDF/SVG 保留可编辑文字，PNG 600 dpi；预览无裁切、拥挤或文字重叠。`source_data/comprehensive_ranking.csv` 保留 13 行得分及实际指标，`weight_sensitivity.csv` 保留 1313 行权重检验。英文图注、中文口径、源汇总和 manifest 随图交付。原 8 张图及已有 14 页 Excel 保留。
+
+复现：`python tools/figures/plot_standard_ce_ranking.py --clean <clean_summary_directory> --deployment <deployment_summary_directory> --output <new_output_directory>`。校验复算名次与得分、并列名次、覆盖 13 模型/8 种子、B1/B128 请求数、PDF 页数和文字、SVG 可编辑文字、600 dpi 画布尺寸与所有文字边界。结果 VERIFIED，仅支持固定 split 392005/E200 clean 比较及测量硬件上的软件链路效率，不扩展为真实接收机/星地部署结论。
