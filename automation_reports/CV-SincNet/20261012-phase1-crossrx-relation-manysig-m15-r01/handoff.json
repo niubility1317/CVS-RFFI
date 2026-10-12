@@ -73,9 +73,9 @@
     }
   ],
   "progress": {
-    "launched": 9,
-    "resolved_verified": 9,
-    "queued": 6,
+    "launched": 10,
+    "resolved_verified": 10,
+    "queued": 5,
     "failures": [],
     "GPU_capacity": {
       "0": {
@@ -142,8 +142,11 @@
         ],
         "free_mb": 19435
       }
-    }
+    },
+    "source_trained": 0,
+    "trained_and_scored": 0,
+    "read_at": 1791779394.974986
   },
-  "next": "Do not relaunch. Complete all15 automatic clean+fullsource/report; relation configs immutable, scores never choose teachers or tune. Next report action/Ustructure stages are independent; no target-specific weights.",
+  "next": "No relaunch. Current fixed15 automatically train/clean score/full66600source/report. R09/R10 source finite-action and U structure stage remains unlaunched; design analysis/finite_action_next_stage.md. Target scores never alter configs/teacher choice.",
   "source_teacher_run": "20261012-phase1-nocfo-ce-foundation-manysig-m3-r01"
 }

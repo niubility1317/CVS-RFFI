@@ -4790,7 +4790,7 @@
       "arm": "REL_MULTI_SEPARATE",
       "model_seed": 2026092702,
       "row_id": "REL_MULTI_SEPARATE-s2026092702",
-      "status": "QUEUED",
+      "status": "RUNNING",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -5272,7 +5272,10 @@
         "support": 2026092702,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "pid": 607440,
+      "gpu": 6,
+      "resolved_config_verified": true
     },
     {
       "arm": "L30_CE",
@@ -7711,9 +7714,9 @@
   "execution_commit": "3ec1801e104aa894335c0dd537e761bc5df7a4f0",
   "delivery_verdict": "VERIFIED",
   "progress": {
-    "launched": 9,
-    "resolved_verified": 9,
-    "queued": 6,
+    "launched": 10,
+    "resolved_verified": 10,
+    "queued": 5,
     "failures": [],
     "GPU_capacity": {
       "0": {
@@ -7780,6 +7783,9 @@
         ],
         "free_mb": 19435
       }
-    }
+    },
+    "source_trained": 0,
+    "trained_and_scored": 0,
+    "read_at": 1791779394.974986
   }
 }

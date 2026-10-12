@@ -11,7 +11,7 @@
 |R05|9.2|收缩 PSD 分母的广义特征值，身份均值秩≤5；不删除全部交互|同上|verified|人工矩阵／类置换／退化条件检查|固定 alpha=beta=1、shrink=.1、eps；属于诊断|
 |R06|9.2|L 内物理 ID 交叉拟合，方向估计／原型与读出样本独立|同上|verified|fit/query 无交集；每 PID 每方法一次|跨 RX 只检验读出迁移，编码器已见五源 RX|
 |R07|9.3|比较合并 TX 原型与分别保留 RX 原型的读出|同上|verified|全部类别统一竞争、固定 tau|判断共同坐标假设，不由目标混淆指定 TX 权重|
-|R08|9.3|关系训练保留CE；关系任务、身份头、类margin、修复／破坏分开评估|cvs_crossrx_relation|implemented|固定15行发布VERIFIED；CUDA5／严格自身checkpoint5／22200合成源step／独立收尾15；实际9行配置核验，自动测试进行中|原型参考eval/no_grad；只query梯度；未证明目标增益|
+|R08|9.3|关系训练保留CE；关系任务、身份头、类margin、修复／破坏分开评估|cvs_crossrx_relation|implemented|固定15行发布VERIFIED；CUDA5／严格自身checkpoint5／22200合成源step／独立收尾15；实际10行配置核验，5行排队，每行自动测试尚未完成|原型参考eval/no_grad；只query梯度；未证明目标增益|
 |R09|9.4|作用网络先固定编码器、已知有限参数，验证留出 TX/day/质量迁移及线性／低秩基线|有限作用预测诊断|deferred|下一独立作用预测阶段；须先证明作用迁移再约束身份|拟合改进和真实 RX 残差覆盖分别量化，不称不同 RX 严格反事实|
 |R10|8.2、9.5|U 新监督优先同包已知操作／重复前导；先测辨识性、周期复现和不确定性|作用/前导诊断|deferred|与 R09 同阶段|不读取 U TX；不能把周期重复当新独立激励|
 |R11|9.6|工程优化单独归因；额外算力单列，同路径控制|cvs_nocfo_engineering／foundation|verified|实际24行完整106560源step和4032000评分、实测资源、全部负结果|旧engineering18保持未发布；新最高均值79.8986%，未达84%|
