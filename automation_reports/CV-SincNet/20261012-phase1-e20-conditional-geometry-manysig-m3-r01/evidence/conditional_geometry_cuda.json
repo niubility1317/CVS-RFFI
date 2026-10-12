@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "device": "cuda",
+  "synthetic_only": true,
+  "target_access": false,
+  "native_random_network": true,
+  "backend_flags": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "readout": {
+    "model_forwards": 3,
+    "forward_batch_sizes": [
+      64,
+      64,
+      52
+    ],
+    "L_occurrences": 180,
+    "first_order_derivative_calls": 6,
+    "identity_updates": 0,
+    "head_updates": 0,
+    "parameters_buffers_gradients_RNG_modes_unchanged": true,
+    "no_saved_features": true,
+    "source_L_accuracy": 0.16666666666666666,
+    "source_L_CE": 3.7567844814724394,
+    "CE_margin_identity_max_abs_error": 1.2516975402832031e-06
+  },
+  "records": 18,
+  "role_PID_cell_rejections": true,
+  "counterexample": {
+    "mixed_variance_penalty": 0.0,
+    "class_receiver_interaction": 0.1333333333333334,
+    "full_covariance_max_domain_difference": 6.938893903907228e-18,
+    "same_complete_unconditional_distribution": true,
+    "interpretation": "Counterexample only: conditional class correspondence differs while every label-blind distribution moment agrees."
+  },
+  "expectation": [
+    {
+      "interaction_shift": 0.0,
+      "exact": 0.0,
+      "cross_expectation": 8.673617379884047e-19,
+      "same_batch_square_expectation": 0.08125000000000002,
+      "negative_cross_draws": 94,
+      "AB_combinations": 256
+    },
+    {
+      "interaction_shift": 0.6,
+      "exact": 0.011249999999999996,
+      "cross_expectation": 0.011249999999999991,
+      "same_batch_square_expectation": 0.0925,
+      "negative_cross_draws": 110,
+      "AB_combinations": 256
+    }
+  ]
+}

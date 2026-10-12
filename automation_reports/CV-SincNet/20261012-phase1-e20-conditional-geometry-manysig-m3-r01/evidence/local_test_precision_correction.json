@@ -1,0 +1,11 @@
+{
+  "scope": "synthetic native-network test only; no remote experiment was started",
+  "initial_status": "FAILED",
+  "error": "CE/margin gradient identity: maximum absolute difference0.0002464056;2502/6144 coordinates failed",
+  "cause": "test omitted the registered numerical_context, unlike production run/preflight",
+  "fix": "test now enters exact production FULL_FP32_POLICY; no tolerance relaxation",
+  "verified_status": "PASS",
+  "maximum_absolute_difference": 1.2516975402832031e-06,
+  "production_training_changed": false,
+  "target_access": false
+}
