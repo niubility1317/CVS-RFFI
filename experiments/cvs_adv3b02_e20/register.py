@@ -10,7 +10,7 @@ def specification():
         description='当前纯CE网络从零训练20轮，严格使用历史ADV3B02物理划分，自动三个clean测试集合',
         aliases=['历史ADV3B02 E20比较'],tags=['CE','old_gates','cosine','historical_ADV3B02','single_seed','clean_only','scratch'],
         authorization='用户：使用E20旧门控+cos跑历史ADV3B02数据集配置，并最后自动测试，种子要一致；补充：只测clean',
-        status='PLANNED',parent_run_ids=[],replaces_run_id=None,comparison_group_id=None)
+        status='PLANNED',parent_run_ids=[],replaces_run_id='20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01',comparison_group_id=None)
     spec['code'].update(commit='resolved from immutable release Git commit',checkout=str(d.ROOT),cwd=d.PROJECT+'/releases/'+d.RELEASE)
     spec['data'].update(contract_ref=d.SOURCE,physical_ids_ref=d.SOURCE+'#role_ids',label_map_ref=d.SOURCE+'#class_txs',
         source_receivers=h['source_rx'],target_receivers=h['target_rx'],source_days=h['source_days'],target_days=h['target_days'],

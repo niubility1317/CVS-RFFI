@@ -1,1 +1,2 @@
 {"at": "2026-10-12T02:41:31+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-12T02:47:26+00:00", "status": "FAILED", "note": "Dispatcher exited before train: POSIX config vs Windows path text; empty logs; source preflight PASS; preserved and replaced by r02", "evidence": ["local_artifacts/cvs_e20_historical_adv3b02_20261012_r01/readback.json"], "row_id": null}

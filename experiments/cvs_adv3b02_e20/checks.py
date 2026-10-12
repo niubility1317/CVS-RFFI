@@ -8,6 +8,9 @@ def check():
     from .evaluate import metric
     from experiments.cvs_phase1_stack.fast_execution import configure
     c=d.config(d.rows()[0]);a=configure(d.make_args(c,'cpu'))
+    # Registration runs on Windows; the identical config runs on Linux.
+    for path in (d.SOURCE,d.CAPSULE,d.TRUTH,c['output_root'],c['source_contract']):
+        if not path.startswith(d.PROJECT+'/') or '\\' in path:raise ValueError('Remote path must use portable POSIX text')
     for key,value in [('model_seed',2026092701),('checkpoint_sources',['current_E20']),('test_views',['clean','practical_high']),('target_access',True)]:
         bad=copy.deepcopy(c);bad[key]=value
         try:d.validate(bad)

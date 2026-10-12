@@ -26,6 +26,7 @@ result=dict(status='FAILED' if failure else 'VERIFIED' if valid else 'UNKNOWN',s
  resolved=read(base/'E20-s392002/source/resolved_config.json'),source_completion=read(base/'E20-s392002/source/completion.json'),
  latest_epoch={k:v for k,v in (last or {}).items() if k in ('epoch','train/loss','time/epoch_sec','train/a1_ema_successful_updates')},
  log_bytes=log.stat().st_size if log and log.is_file() else None,log_tail=log.read_text(errors='replace').splitlines()[-8:] if log and log.is_file() else [],
+ dispatcher_log_tail=(release/'dispatcher.stdout.log').read_text(errors='replace').splitlines()[-12:] if (release/'dispatcher.stdout.log').is_file() else [],
  capacity={str(g):dict(pids=sorted(s['pids']),free_mb=s['free_mb']) for g,s in capacity().items()},read_at=time.time())
 print(json.dumps(result))
 '''

@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |E20 旧门控＋cos：历史 ADV3B02 划分、同 seed392002|managed_run|[打开](../../automation_reports/CV-SincNet/20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01/report.md)|
+|E20 旧门控＋cos：历史 ADV3B02 划分、同 seed392002|managed_run|[打开](../../automation_reports/CV-SincNet/20261012-phase1-e20-historical-adv3b02-manysig-s392002-r02/report.md)|

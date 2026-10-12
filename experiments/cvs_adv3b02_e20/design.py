@@ -5,11 +5,11 @@ from experiments.cvs_phase1_stack.design import args_from_validated_config
 
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT=baseline.PROJECT
-RUN='20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01'
-RELEASE='cvs_e20_historical_adv3b02_20261012_r01'
+RUN='20261012-phase1-e20-historical-adv3b02-manysig-s392002-r02'
+RELEASE='cvs_e20_historical_adv3b02_20261012_r02'
 BASE=Path(PROJECT)/'runs'/RUN
-SOURCE=str(Path(PROJECT)/'releases'/RELEASE/'source_contract.json')
-CAPSULE=str(BASE/'data/capsule');TRUTH=str(BASE/'data/truth.npz')
+SOURCE=(Path(PROJECT)/'releases'/RELEASE/'source_contract.json').as_posix()
+CAPSULE=(BASE/'data/capsule').as_posix();TRUTH=(BASE/'data/truth.npz').as_posix()
 CLASSES=baseline.CLASSES;FULL_FP32_POLICY=baseline.FULL_FP32_POLICY
 SEEDS=(392002,);OWNER='codex/root/historical-adv3b02-e20-20261012'
 read,write=baseline.read,baseline.write
@@ -23,7 +23,7 @@ def config(row):
     c=deepcopy(baseline.config(dict(row_id='E20-s2026092701',epochs=20,model_seed=2026092701)))
     c.pop('reference_E200',None)
     c.update(schema='historical_adv3b02_e20_v1',stage='historical_adv3b02_e20',run_id=RUN,**row,
-        method='cvs_adv3b02_e20',output_root=str(BASE/row['row_id']/'source'),source_contract=SOURCE,
+        method='cvs_adv3b02_e20',output_root=(BASE/row['row_id']/'source').as_posix(),source_contract=SOURCE,
         historical_data=dict(source_rx=list(range(7)),source_days=[0,1],target_rx=list(range(7,12)),target_days=[2,3],
             L_s=8400,U_s=58800,V=16800,ratios=[.1,.7,.2],rho_label=.125,equalized=1,
             split='per TX/RX/day/eq sorted sig_i; first100 L,next700 U,last200 V'),

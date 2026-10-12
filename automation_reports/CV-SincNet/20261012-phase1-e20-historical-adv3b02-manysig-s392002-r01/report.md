@@ -1,5 +1,7 @@
 # E20 旧门控＋cos：历史 ADV3B02 划分、同 seed392002
 
+实际状态：**FAILED（训练前登记路径不一致）**。远端源码编译和源数据preflight PASS；dispatcher stdout明确报 `ValueError: Preregistration differs`，dispatcher PID已退出，run仅有空logs目录，无训练、预测或评分启动。失败层为Windows `str(Path)`产生反斜杠，与Linux动态config不同；修复为远端路径统一 `as_posix()` 并增加回归检查。保留r01全部产物，不原地重启；r02保持同seed、数据、E20/4440预算和clean矩阵。
+
 - run_id：`20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01`
 - group_id：`cvs-historical-adv3b02-network-comparison`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
