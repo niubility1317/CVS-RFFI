@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-10T06:17:18+00:00
+更新：2026-10-12T03:54:46+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|121|
+|managed_run|122|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -27,10 +27,10 @@
 |[phase2](by_method/phase2.md)|118|
 |[stage2](by_method/stage2.md)|67|
 |[clean_only](by_method/clean_only.md)|60|
-|[ce_only](by_method/ce_only.md)|59|
+|[ce_only](by_method/ce_only.md)|60|
 |[qknn](by_method/qknn.md)|56|
 |[performance_priority](by_method/performance_priority.md)|48|
-|[no_augmentation](by_method/no_augmentation.md)|41|
+|[no_augmentation](by_method/no_augmentation.md)|42|
 |[source_selection](by_method/source_selection.md)|35|
 |[fasttrust](by_method/fasttrust.md)|26|
 |[source](by_method/source.md)|23|
@@ -72,6 +72,7 @@
 |[auto_after_parent](by_method/auto_after_parent.md)|4|
 |[receiver_agnostic](by_method/receiver_agnostic.md)|4|
 |[shot](by_method/shot.md)|4|
+|[four_seeds](by_method/four_seeds.md)|3|
 |[architecture](by_method/architecture.md)|3|
 |[identity_only](by_method/identity_only.md)|3|
 |[no_target_access](by_method/no_target_access.md)|3|
@@ -92,7 +93,6 @@
 |[final_eval](by_method/final_eval.md)|2|
 |[source_scratch](by_method/source_scratch.md)|2|
 |[native_methods](by_method/native_methods.md)|2|
-|[four_seeds](by_method/four_seeds.md)|2|
 |[cvs_identity_ce](by_method/cvs_identity_ce.md)|2|
 |[cvcnn_matched](by_method/cvcnn_matched.md)|2|
 |[ablation](by_method/ablation.md)|2|
@@ -111,6 +111,9 @@
 |[synthetic](by_method/synthetic.md)|2|
 |[sequential_source_selection](by_method/sequential_source_selection.md)|2|
 |[completed_snapshot](by_method/completed_snapshot.md)|2|
+|[standard_architecture](by_method/standard_architecture.md)|2|
+|[full_width](by_method/full_width.md)|2|
+|[automatic_row_test](by_method/automatic_row_test.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[nm fdu](by_method/nm_fdu.md)|2|
 |[protonet](by_method/protonet.md)|2|
@@ -196,9 +199,6 @@
 |[batch_size](by_method/batch_size.md)|1|
 |[fixed_completed14](by_method/fixed_completed14.md)|1|
 |[partial_multiseed](by_method/partial_multiseed.md)|1|
-|[standard_architecture](by_method/standard_architecture.md)|1|
-|[full_width](by_method/full_width.md)|1|
-|[automatic_row_test](by_method/automatic_row_test.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
 |[fedcvs](by_method/fedcvs.md)|1|
 
@@ -324,5 +324,5 @@
 |纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/report.md)|
 |纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/report.md)|
 |常用网络纯CE：完整clean测试结果|managed_run|[打开](../automation_reports/CV-SincNet/20261010-phase1-standard-ce-baselines-manysig-m56-r01/report.md)|
+|十三种网络纯CE E200追加四种子：CVS为残差融合版本|managed_run|[打开](../automation_reports/CV-SincNet/20261012-phase1-standard-ce-seed-extension-manysig-m52-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
-|原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|

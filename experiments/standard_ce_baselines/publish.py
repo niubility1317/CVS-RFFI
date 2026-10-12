@@ -6,7 +6,7 @@ import json
 import subprocess
 import tarfile
 from pathlib import Path
-from experiments.standard_ce_baselines.common import ROOT,RUN,RELEASE,PROJECT,read,write
+from experiments.standard_ce_baselines.common import ROOT,RUN,RELEASE,PROJECT,read,write,EXTENSION_RUN,EXTENSION_RELEASE,EXTENSION_CONFIG
 
 CONNECTION=['-F','E:/type10-7/tools/n607_ssh_config','-o','BatchMode=yes','-o','ConnectTimeout=10']
 
@@ -64,8 +64,8 @@ with tarfile.open(archive) as tar:
 python='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'
 env=dict(os.environ,PYTHONPATH=str(release)+os.pathsep+str(release/'code'),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
 subprocess.run([python,'-m','compileall','-q',str(release/'experiments'),str(release/'baselines'),str(release/'code'),str(release/'comparison_suite')],cwd=release,env=env,check=True)
-spec=release/'experiments/standard_ce_baselines/configs/launch_spec.json';d=json.loads(spec.read_text())
-if d['run_id']!=c['run'] or len(d['rows'])!=56:raise ValueError('Wrong matrix')
+spec=release/c['spec_relative'];d=json.loads(spec.read_text())
+if d['run_id']!=c['run'] or len(d['rows'])!=c['row_count']:raise ValueError('Wrong matrix')
 for row in d['rows']:
     config=json.loads(Path(row['source_config']).read_text())
     for key in ('dataset','source_contract'):
@@ -106,11 +106,14 @@ def publish(output):
         for name in selected:
             blob=(ROOT/name).read_bytes();member=tarfile.TarInfo(name);member.size=len(blob);member.mode=0o644;tar.addfile(member,io.BytesIO(blob))
         blob=(commit+'\n').encode();member=tarfile.TarInfo('release_commit.txt');member.size=len(blob);tar.addfile(member,io.BytesIO(blob))
-    config=dict(project=PROJECT,release=RELEASE,run=RUN,archive=archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),commit=commit)
+    extended=RUN==EXTENSION_RUN
+    config=dict(project=PROJECT,release=RELEASE,run=RUN,archive=archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),commit=commit,
+        spec_relative=EXTENSION_CONFIG+'/launch_spec.json' if extended else 'experiments/standard_ce_baselines/configs/launch_spec.json',row_count=52 if extended else 56)
     write(output/'package.json',dict(config,files=len(selected)))
     subprocess.run(['scp',*CONNECTION,str(archive),'N607:'+PROJECT+'/releases/'+archive.name],check=True,timeout=60)
     receipt=json.loads(ssh(REMOTE.replace('CONFIG',repr(config))));write(output/'submit.json',receipt);print(receipt)
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--inspect',action='store_true');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--inspect',action='store_true');p.add_argument('--seed-extension',action='store_true');a=p.parse_args()
+    if a.seed_extension:RUN,RELEASE=EXTENSION_RUN,EXTENSION_RELEASE
     inspect(a.output) if a.inspect else publish(a.output)

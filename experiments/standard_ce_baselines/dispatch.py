@@ -7,21 +7,28 @@ import statistics
 import subprocess
 import sys
 import time
-from experiments.standard_ce_baselines.common import ROOT,read,write,SEEDS,OWNER
+from experiments.standard_ce_baselines.common import ROOT,read,write,SEEDS,OWNER,RUN,EXTENSION_RUN,EXTENSION_OWNER,EXTENSION_SEEDS,EXTENSION_CONFIG
 from experiments.standard_ce_baselines.model import VARIANTS
 from experiments.cvs_clean_design.dispatch import choose_gpu
 
 
+def matrix(spec):
+    if spec['run_id']==EXTENSION_RUN:return tuple(v for v in VARIANTS if v!='native'),EXTENSION_SEEDS,EXTENSION_OWNER
+    if spec['run_id']==RUN:return VARIANTS,SEEDS,OWNER
+    raise ValueError('Unregistered run')
+
 def validate_spec(spec):
-    expected={(v,s) for v in VARIANTS for s in SEEDS}
-    if len(spec['rows'])!=len(expected) or {(r['variant'],r['model_seed']) for r in spec['rows']}!=expected or spec['launch_owner']!=OWNER:raise ValueError('Wrong fixed matrix')
+    variants,seeds,owner=matrix(spec)
+    expected={(v,s) for v in variants for s in seeds}
+    if len(spec['rows'])!=len(expected) or {(r['variant'],r['model_seed']) for r in spec['rows']}!=expected or spec['launch_owner']!=owner:raise ValueError('Wrong fixed matrix')
     paths=[r[k] for r in spec['rows'] for k in ('source_output','prediction_output','score_output')]
     root=Path(spec['runtime_root']).resolve()
     if len(set(paths))!=len(paths) or any(not Path(p).resolve().is_relative_to(root) for p in paths):raise ValueError('Output collision/path escape')
 
 
 def summary(spec,state):
-    groups={v:[] for v in VARIANTS};paired={}
+    variants,seeds,_=matrix(spec)
+    groups={v:[] for v in variants};paired={}
     for row in spec['rows']:
         if state['rows'][row['row_id']]['status']!='SCORED':continue
         values=read(Path(row['score_output'])/'scores.json')['results']
@@ -35,7 +42,7 @@ def summary(spec,state):
             **{metric:dict(mean=statistics.mean(r[metric] for r in rows) if rows else None,
                 sample_sd=statistics.stdev(r[metric] for r in rows) if len(rows)>1 else None) for metric in ('accuracy','macro_f1','worst_receiver_accuracy')})
         paired[variant]={}
-        for control in ('native','residual_fusion'):
+        for control in (v for v in ('native','residual_fusion') if v in groups):
             reference={r['seed']:r for r in groups[control]}
             diffs=[r['accuracy']-reference[r['seed']]['accuracy'] for r in rows if r['seed'] in reference]
             paired[variant][control]=dict(actual_pairs=len(diffs),mean_accuracy_difference=statistics.mean(diffs) if diffs else None,per_seed_differences=diffs)
@@ -46,16 +53,33 @@ def summary(spec,state):
     (Path(spec['runtime_root'])/'report.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 
+def finish(spec,state,metadata):
+    run=Path(spec['runtime_root'])
+    complete=all(r['status']=='SCORED' for r in state['rows'].values())
+    state['status']='MERGING_EIGHT_SEEDS' if complete and spec['run_id']==EXTENSION_RUN else ('ANALYZED' if complete else 'FAILED_PARTIAL')
+    write(run/'pipeline_state.json',state)
+    if state['status']=='MERGING_EIGHT_SEEDS':
+        from experiments.standard_ce_baselines.combine_seeds import combine
+        try:
+            combine(spec);state['status']='ANALYZED'
+        except Exception as error:
+            state['status']='FAILED_COMBINE';state['combine_error']=str(error)
+    write(run/'pipeline_state.json',state)
+    metadata['status']=state['status'];write(run/'experiment.json',metadata);summary(spec,state)
+    return 0 if state['status']=='ANALYZED' else 1
+
+
 def dispatch(spec_path):
     import fcntl
     spec=read(spec_path);validate_spec(spec)
     run,logs=Path(spec['runtime_root']),Path(spec['log_root'])
     run.mkdir(parents=True,exist_ok=False);logs.mkdir(parents=True,exist_ok=False)
     lock=(run/'owner.lock').open('x');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-    state=dict(status='RUNNING',pid=os.getpid(),cwd=str(ROOT),argv=sys.argv,run_id=spec['run_id'],launch_owner=OWNER,
+    _,_,owner=matrix(spec)
+    state=dict(status='RUNNING',pid=os.getpid(),cwd=str(ROOT),argv=sys.argv,run_id=spec['run_id'],launch_owner=owner,
         commit=(ROOT/'release_commit.txt').read_text().strip(),rows={r['row_id']:dict(status='QUEUED',variant=r['variant'],model_seed=r['model_seed']) for r in spec['rows']})
-    metadata=read(ROOT/'experiments/standard_ce_baselines/configs/experiment_spec.json');write(run/'experiment.json',metadata)
-    pending=[(r,'source') for r in spec['rows']];active={};write(run/'pipeline_state.json',state)
+    metadata=read(ROOT/(EXTENSION_CONFIG+'/experiment_spec.json' if spec['run_id']==EXTENSION_RUN else 'experiments/standard_ce_baselines/configs/experiment_spec.json'));write(run/'experiment.json',metadata)
+    pending=[(r,'source') for r in spec['rows']];active={};technical_failures=0;write(run/'pipeline_state.json',state)
     def event(row,status):
         state['rows'][row['row_id']]['status']=status
         with (run/'events.jsonl').open('a',encoding='utf-8') as f:f.write(json.dumps(dict(time=time.time(),row_id=row['row_id'],status=status))+'\n')
@@ -69,7 +93,13 @@ def dispatch(spec_path):
             if code is None:continue
             job['log'].close();del active[rid];row=job['row'];stage=job['stage']
             if code:
-                state['rows'][rid]['exit_code']=code;event(row,'FAILED_'+stage.upper());continue
+                state['rows'][rid]['exit_code']=code;event(row,'FAILED_'+stage.upper());technical_failures+=1
+                if spec['run_id']==EXTENSION_RUN and technical_failures>=2:
+                    for queued,queued_stage in pending:
+                        if queued_stage=='source':event(queued,'NOT_STARTED_SYSTEMIC_TECHNICAL_FAILURE')
+                    pending=[job for job in pending if job[1]!='source']
+                    state['systemic_technical_stop']=True
+                continue
             try:
                 if stage=='source':
                     out=Path(row['source_output']);done=read(out/'completion.json')
@@ -85,6 +115,12 @@ def dispatch(spec_path):
                     event(row,'SCORED');summary(spec,state)
             except Exception as error:
                 state['rows'][rid]['error']=str(error);event(row,'FAILED_'+stage.upper())
+                technical_failures+=1
+                if spec['run_id']==EXTENSION_RUN and technical_failures>=2:
+                    for queued,queued_stage in pending:
+                        if queued_stage=='source':event(queued,'NOT_STARTED_SYSTEMIC_TECHNICAL_FAILURE')
+                    pending=[job for job in pending if job[1]!='source']
+                    state['systemic_technical_stop']=True
         if pending:
             gpu=choose_gpu(active)
             if gpu is not None:
@@ -102,9 +138,7 @@ def dispatch(spec_path):
                 state['rows'][rid].update(pid=child.pid,gpu=gpu,argv=command,log=str(logpath),source_output=row['source_output'],started=time.time())
                 event(row,'TRAINING' if stage=='source' else 'PREDICTING_CLEAN');print('LAUNCHED '+json.dumps(state['rows'][rid]),flush=True)
         if pending or active:time.sleep(5)
-    state['status']='ANALYZED' if all(r['status']=='SCORED' for r in state['rows'].values()) else 'FAILED_PARTIAL'
-    write(run/'pipeline_state.json',state);metadata['status']=state['status'];write(run/'experiment.json',metadata);summary(spec,state)
-    return 0 if state['status']=='ANALYZED' else 1
+    return finish(spec,state,metadata)
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--spec',required=True);a=p.parse_args();raise SystemExit(dispatch(a.spec))

@@ -8,6 +8,11 @@ RELEASE='standard_ce_baselines_20261010_r01'
 OWNER='codex/root/standard-ce-baselines-20261010'
 SEEDS=(2026092701,2026092702,2026092703,2026092704)
 VIEWS=('clean',)
+EXTENSION_RUN='20261012-phase1-standard-ce-seed-extension-manysig-m52-r01'
+EXTENSION_RELEASE='standard_ce_seed_extension_20261012_r01'
+EXTENSION_OWNER='codex/root/standard-ce-seed-extension-20261012'
+EXTENSION_SEEDS=(2026092705,2026092706,2026092707,2026092708)
+EXTENSION_CONFIG='experiments/standard_ce_baselines/configs/seed_extension_20261012'
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
 
