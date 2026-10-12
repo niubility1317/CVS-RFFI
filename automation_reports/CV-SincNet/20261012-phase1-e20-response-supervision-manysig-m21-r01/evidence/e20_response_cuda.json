@@ -1,0 +1,67 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "synthetic_only": true,
+  "rows": [
+    {
+      "arm": "CONT_CE",
+      "finite_one_identity_update": true,
+      "response_input_grad_norm": null,
+      "reader_frozen": false,
+      "eval_modes_buffers_rng_preserved": true,
+      "U_truth_rejected": false
+    },
+    {
+      "arm": "CONT_SSL",
+      "finite_one_identity_update": true,
+      "response_input_grad_norm": null,
+      "reader_frozen": false,
+      "eval_modes_buffers_rng_preserved": true,
+      "U_truth_rejected": true
+    },
+    {
+      "arm": "SSL_EVAL",
+      "finite_one_identity_update": true,
+      "response_input_grad_norm": null,
+      "reader_frozen": false,
+      "eval_modes_buffers_rng_preserved": true,
+      "U_truth_rejected": true
+    },
+    {
+      "arm": "RESP_L",
+      "finite_one_identity_update": true,
+      "response_input_grad_norm": 0.05518193170428276,
+      "reader_frozen": true,
+      "eval_modes_buffers_rng_preserved": true,
+      "U_truth_rejected": true
+    },
+    {
+      "arm": "RESP_U",
+      "finite_one_identity_update": true,
+      "response_input_grad_norm": 0.05518193170428276,
+      "reader_frozen": true,
+      "eval_modes_buffers_rng_preserved": true,
+      "U_truth_rejected": true
+    },
+    {
+      "arm": "RESP_LU",
+      "finite_one_identity_update": true,
+      "response_input_grad_norm": 0.05518193170428276,
+      "reader_frozen": true,
+      "eval_modes_buffers_rng_preserved": true,
+      "U_truth_rejected": true
+    },
+    {
+      "arm": "ACTION_LU",
+      "finite_one_identity_update": true,
+      "response_input_grad_norm": null,
+      "reader_frozen": false,
+      "eval_modes_buffers_rng_preserved": true,
+      "U_truth_rejected": true
+    }
+  ],
+  "strict_own_checkpoint_rows": 21,
+  "known_real_IQ_operations": true,
+  "identity_updates": 7,
+  "target_access": false
+}
