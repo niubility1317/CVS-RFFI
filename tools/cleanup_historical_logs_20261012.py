@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import stat
 import subprocess
@@ -72,10 +73,41 @@ def active_remote_paths(root):
             cwd = os.readlink(proc / 'cwd')
             if str(root) in cmd or cwd.startswith(str(root)):
                 if not any(x in cmd for x in ['sshd:', 'sftp-server']):
-                    active.append({'pid': int(proc.name), 'cwd': cwd, 'command': cmd})
+                    references = []
+                    for descriptor in (proc / 'fd').iterdir():
+                        try:
+                            target = os.readlink(descriptor)
+                            if target.startswith(str(root)):
+                                references.append(target)
+                        except OSError:
+                            continue
+                    active.append({'pid': int(proc.name), 'cwd': cwd,
+                                   'command': cmd, 'references': references})
         except (OSError, PermissionError):
             continue
     return active
+
+
+def assert_selected_inactive(root, files):
+    """Protect actual active run scopes without blocking unrelated history."""
+    root = str(root)
+    scopes = set()
+    for process in active_remote_paths(root):
+        cwd = process['cwd']
+        if cwd == root:
+            raise RuntimeError('Unresolved active process at project root; no mutation')
+        if cwd.startswith(root + '/'):
+            scopes.add(cwd)
+        references = process['references'] + [process['command']]
+        pattern = re.escape(root) + r'/(?:runs|logs|server_log_backups)/[^/\s\"\x00]+'
+        for reference in references:
+            scopes.update(re.findall(pattern, reference))
+    overlaps = [item['path'] for item in files
+                if any(item['path'] == scope or item['path'].startswith(scope + '/')
+                       for scope in scopes)]
+    if overlaps:
+        raise RuntimeError('Selected log belongs to active run; no mutation: ' + json.dumps(overlaps))
+    return sorted(scopes)
 
 
 def signature(info):
@@ -143,9 +175,7 @@ def digest_stream(stream):
 
 def apply(saved_plan, manifest):
     root = Path(saved_plan['root']).resolve(strict=True)
-    active = active_remote_paths(root)
-    if active:
-        raise RuntimeError('Active project process detected; no mutation: ' + json.dumps(active))
+    protected_scopes = assert_selected_inactive(root, saved_plan['files'])
     journal = Path(manifest)
     journal.parent.mkdir(parents=True, exist_ok=True)
     if journal.exists():
@@ -217,7 +247,8 @@ def apply(saved_plan, manifest):
             records.flush()
             os.fsync(records.fileno())
     return {'status': 'VERIFIED' if failed == 0 else 'PARTIAL', 'completed': done,
-            'failed': failed, 'reclaimed_logical_bytes': reclaimed, 'manifest': str(journal)}
+            'failed': failed, 'reclaimed_logical_bytes': reclaimed, 'manifest': str(journal),
+            'protected_active_scopes': protected_scopes}
 
 
 def main():

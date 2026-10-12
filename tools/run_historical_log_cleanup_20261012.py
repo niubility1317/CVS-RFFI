@@ -27,8 +27,8 @@ print('REMOTE_COMPRESSOR_ROUNDTRIP_VERIFIED', flush=True)
 REMOTE_APPLY = r'''
 from concurrent.futures import ThreadPoolExecutor
 saved = json.loads(Path('/tmp/cvs_cleanup_20261012_plan.json').read_text(encoding='utf-8'))
-if active_remote_paths(saved['root']):
-    raise RuntimeError('Active project process; no mutation')
+protected_scopes = assert_selected_inactive(saved['root'], saved['files'])
+print(json.dumps({'protected_active_scopes': protected_scopes}), flush=True)
 groups = []
 for index in range(4):
     part = dict(saved)
