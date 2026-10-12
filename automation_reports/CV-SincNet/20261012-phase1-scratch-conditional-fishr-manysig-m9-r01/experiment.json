@@ -125,7 +125,7 @@
   "group_id": "cvs-scratch-conditional-fishr",
   "display_name": "浅中层条件交互、Fishr 与受控 MixStyle",
   "description": "三个固定条件敏感度目标各三seed；随机学生20轮、源U固定教师、浅中层增强、final20自动clean",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "scratch20",
@@ -233,7 +233,7 @@
       "arm": "MARGIN_INTERACTION",
       "model_seed": 2026092701,
       "row_id": "MARGIN_INTERACTION-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_conditional_fishr",
       "purpose": "三个固定条件敏感度目标各三seed；随机学生20轮、源U固定教师、浅中层增强、final20自动clean",
       "config": {
@@ -692,13 +692,14 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 485482,
       "gpu": 0,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "CE_INTERACTION",
       "model_seed": 2026092701,
       "row_id": "CE_INTERACTION-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_conditional_fishr",
       "purpose": "三个固定条件敏感度目标各三seed；随机学生20轮、源U固定教师、浅中层增强、final20自动clean",
       "config": {
@@ -1157,13 +1158,14 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 485568,
       "gpu": 1,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "CE_MOMENT_INTERACTION",
       "model_seed": 2026092701,
       "row_id": "CE_MOMENT_INTERACTION-s2026092701",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_conditional_fishr",
       "purpose": "三个固定条件敏感度目标各三seed；随机学生20轮、源U固定教师、浅中层增强、final20自动clean",
       "config": {
@@ -1623,13 +1625,14 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 485655,
       "gpu": 2,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "MARGIN_INTERACTION",
       "model_seed": 2026092702,
       "row_id": "MARGIN_INTERACTION-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_conditional_fishr",
       "purpose": "三个固定条件敏感度目标各三seed；随机学生20轮、源U固定教师、浅中层增强、final20自动clean",
       "config": {
@@ -2088,13 +2091,14 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 485742,
       "gpu": 3,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "CE_INTERACTION",
       "model_seed": 2026092702,
       "row_id": "CE_INTERACTION-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_conditional_fishr",
       "purpose": "三个固定条件敏感度目标各三seed；随机学生20轮、源U固定教师、浅中层增强、final20自动clean",
       "config": {
@@ -2553,13 +2557,14 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 485829,
       "gpu": 4,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "CE_MOMENT_INTERACTION",
       "model_seed": 2026092702,
       "row_id": "CE_MOMENT_INTERACTION-s2026092702",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_conditional_fishr",
       "purpose": "三个固定条件敏感度目标各三seed；随机学生20轮、源U固定教师、浅中层增强、final20自动clean",
       "config": {
@@ -3019,13 +3024,14 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 485916,
       "gpu": 5,
-      "live_epoch": 2
+      "live_epoch": 20,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "MARGIN_INTERACTION",
       "model_seed": 2026092703,
       "row_id": "MARGIN_INTERACTION-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_conditional_fishr",
       "purpose": "三个固定条件敏感度目标各三seed；随机学生20轮、源U固定教师、浅中层增强、final20自动clean",
       "config": {
@@ -3484,13 +3490,14 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 486006,
       "gpu": 6,
-      "live_epoch": 3
+      "live_epoch": 20,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "CE_INTERACTION",
       "model_seed": 2026092703,
       "row_id": "CE_INTERACTION-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_conditional_fishr",
       "purpose": "三个固定条件敏感度目标各三seed；随机学生20轮、源U固定教师、浅中层增强、final20自动clean",
       "config": {
@@ -3949,13 +3956,14 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 486095,
       "gpu": 7,
-      "live_epoch": 2
+      "live_epoch": 20,
+      "scoring_evidence_collected": true
     },
     {
       "arm": "CE_MOMENT_INTERACTION",
       "model_seed": 2026092703,
       "row_id": "CE_MOMENT_INTERACTION-s2026092703",
-      "status": "RUNNING",
+      "status": "TRAINED_AND_SCORED",
       "method": "cvs_scratch_conditional_fishr",
       "purpose": "三个固定条件敏感度目标各三seed；随机学生20轮、源U固定教师、浅中层增强、final20自动clean",
       "config": {
@@ -4415,10 +4423,19 @@
       "seed_notes": "Fixed physical split;L seed+101,U+901337;noise seed+step*9901;aux private sampler;style private step/layer seeds. Null is not zero.",
       "pid": 486182,
       "gpu": 7,
-      "live_epoch": 2
+      "live_epoch": 20,
+      "scoring_evidence_collected": true
     }
   ],
   "registered_at": "2026-10-12T01:38:08+00:00",
   "execution_commit": "dc7afae5025bc4b4abef053c3f84f81b2863de75",
-  "delivery_verdict": "VERIFIED"
+  "delivery_verdict": "VERIFIED",
+  "progress": {
+    "completed_rows": 9,
+    "source_steps": 39960,
+    "clean_predictions": 1512000,
+    "primary_accuracy_mean": 0.7987519841269841,
+    "goal_status": "NOT_MET",
+    "complete_arms_reaching_goal": []
+  }
 }

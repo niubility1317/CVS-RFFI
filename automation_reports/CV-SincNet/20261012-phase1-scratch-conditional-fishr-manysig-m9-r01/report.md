@@ -49,3 +49,6 @@ N607 每卡最多3个总CUDA进程，包含其他任务；先验证可用容量�
 
 
 九行实际固定标定已完成；当前已完成2至3轮，已有6行记录55次辅助更新，其余3行当前完整epoch日志仍为预热结束，后续进度以实时记录为准。工程方法后续六方案×三seed已写入 [engineering_next.md](evidence/engineering_next.md)，尚未实现或发布，不包含在本run九行之内。
+
+
+**VERIFIED / ANALYZED：9/9训练与clean评分完成。** 三方案各三种子，39960源更新／1512000clean预测；完整源日志及全部校准／组合诊断核验。MARGIN_INTERACTION79.9917%，CE_INTERACTION79.9331%，CE_MOMENT_INTERACTION79.8752%，均未达到84%。完整每seed和RX/TX/day见 [final_analysis.md](final_analysis.md)。分析器分项均值变量覆盖梯度汇总字典的错误已修复，未影响训练/预测/评分；修复后全部39960条源记录完整通过。

@@ -2,3 +2,4 @@
 {"event": "LOCAL_VERIFIED", "time": 1791769333.5905523, "matrix": 9, "review": "PASS", "CPU_CUDA_multilevel": "PASS", "target_access": false}
 {"event": "LAUNCH_VERIFIED", "time": 1791769576.7611654, "launched": 9, "checked": 9, "matrix": 9, "execution_commit": "dc7afae5025bc4b4abef053c3f84f81b2863de75"}
 {"event": "ENGINEERING_NEXT_FIXED_BEFORE_CURRENT_TARGET_RESULTS", "time": 1791769615.253905, "planned_variants": 6, "planned_seeds": 3, "launched_engineering_rows": 0, "existing_conditional_rows": 9}
+{"event": "FULL_MATRIX_ANALYZED_VERIFIED", "time": 1791775301.020585, "completed_rows": 9, "source_steps": 39960, "clean_predictions": 1512000, "primary_accuracy_mean": 0.7987519841269841, "goal_status": "NOT_MET", "complete_arms_reaching_goal": []}

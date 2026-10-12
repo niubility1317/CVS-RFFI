@@ -1,0 +1,132 @@
+{
+  "status": "COMPLETE",
+  "run_id": "20261012-phase1-scratch-conditional-fishr-manysig-m9-r01",
+  "reference_run_id": "20261012-phase1-scratch-energy-sensitivity-manysig-m6-r01",
+  "comparisons": [
+    {
+      "treatment": "MARGIN_INTERACTION",
+      "reference": "MARGIN_ENERGY",
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "treatment_accuracy": 0.8124047619047619,
+          "reference_accuracy": 0.8154285714285714,
+          "difference": -0.0030238095238095397
+        },
+        {
+          "seed": 2026092702,
+          "treatment_accuracy": 0.7792261904761905,
+          "reference_accuracy": 0.7785357142857143,
+          "difference": 0.0006904761904761303
+        },
+        {
+          "seed": 2026092703,
+          "treatment_accuracy": 0.8081190476190476,
+          "reference_accuracy": 0.8090654761904762,
+          "difference": -0.0009464285714285703
+        }
+      ],
+      "paired_seed_count": 3,
+      "complete_three_seeds": true,
+      "mean_difference": -0.0010932539682539932,
+      "sd_difference": 0.0018614907640655538
+    },
+    {
+      "treatment": "CE_INTERACTION",
+      "reference": "CE_ENERGY",
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "treatment_accuracy": 0.8124404761904762,
+          "reference_accuracy": 0.8114166666666667,
+          "difference": 0.001023809523809538
+        },
+        {
+          "seed": 2026092702,
+          "treatment_accuracy": 0.7766011904761905,
+          "reference_accuracy": 0.776720238095238,
+          "difference": -0.00011904761904757422
+        },
+        {
+          "seed": 2026092703,
+          "treatment_accuracy": 0.808952380952381,
+          "reference_accuracy": 0.8112797619047619,
+          "difference": -0.002327380952380942
+        }
+      ],
+      "paired_seed_count": 3,
+      "complete_three_seeds": true,
+      "mean_difference": -0.00047420634920632604,
+      "sd_difference": 0.0017035911172090053
+    },
+    {
+      "treatment": "CE_MOMENT_INTERACTION",
+      "reference": "CE_ENERGY",
+      "per_seed": [
+        {
+          "seed": 2026092701,
+          "treatment_accuracy": 0.8116666666666666,
+          "reference_accuracy": 0.8114166666666667,
+          "difference": 0.00024999999999997247
+        },
+        {
+          "seed": 2026092702,
+          "treatment_accuracy": 0.7765535714285714,
+          "reference_accuracy": 0.776720238095238,
+          "difference": -0.0001666666666666483
+        },
+        {
+          "seed": 2026092703,
+          "treatment_accuracy": 0.8080357142857143,
+          "reference_accuracy": 0.8112797619047619,
+          "difference": -0.0032440476190476186
+        }
+      ],
+      "paired_seed_count": 3,
+      "complete_three_seeds": true,
+      "mean_difference": -0.0010535714285714315,
+      "sd_difference": 0.0019084135384030555
+    }
+  ],
+  "expected_comparisons": 3,
+  "complete_comparisons": 3,
+  "inputs": {
+    "current": {
+      "status": "COMPLETE",
+      "run_id": "20261012-phase1-scratch-conditional-fishr-manysig-m9-r01",
+      "completed_rows": [
+        "MARGIN_INTERACTION-s2026092701",
+        "CE_INTERACTION-s2026092701",
+        "CE_MOMENT_INTERACTION-s2026092701",
+        "MARGIN_INTERACTION-s2026092702",
+        "CE_INTERACTION-s2026092702",
+        "CE_MOMENT_INTERACTION-s2026092702",
+        "MARGIN_INTERACTION-s2026092703",
+        "CE_INTERACTION-s2026092703",
+        "CE_MOMENT_INTERACTION-s2026092703"
+      ],
+      "missing_rows": [],
+      "actual_config_verification": "Existing collector source_config_budget=true; collector checked source/freeze against design",
+      "local_config_verification": "Reconstructed each scored row from the registered local design and validated it"
+    },
+    "reference": {
+      "status": "COMPLETE",
+      "run_id": "20261012-phase1-scratch-energy-sensitivity-manysig-m6-r01",
+      "completed_rows": [
+        "MARGIN_ENERGY-s2026092701",
+        "CE_ENERGY-s2026092701",
+        "MARGIN_ENERGY-s2026092702",
+        "CE_ENERGY-s2026092702",
+        "MARGIN_ENERGY-s2026092703",
+        "CE_ENERGY-s2026092703"
+      ],
+      "missing_rows": [],
+      "actual_config_verification": "Existing collector source_config_budget=true; collector checked source/freeze against design",
+      "local_config_verification": "Reconstructed each scored row from the registered local design and validated it"
+    }
+  },
+  "IQ_read": false,
+  "truth_read": false,
+  "predictions_read": false,
+  "scores_control_training": false
+}
