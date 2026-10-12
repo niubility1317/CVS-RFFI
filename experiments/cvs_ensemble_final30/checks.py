@@ -7,6 +7,13 @@ from . import design as d
 from .model import build_member,groups,ProbabilityEnsemble
 
 def run(device='cpu'):
+ from .contracts import verified_component_contract
+ reference=dict(role_ids={'L_s':['synthetic-L'],'V':['synthetic-V']});actual=dict(reference,native_role_comparison='EXACT_MATCH')
+ if verified_component_contract([actual,dict(actual)],reference)!=actual:raise AssertionError('Runtime source role evidence must be preserved')
+ for bad in (dict(reference),dict(actual,role_ids={'L_s':['wrong-source'],'V':['synthetic-V']})):
+  try:verified_component_contract([bad,actual],reference)
+  except ValueError:pass
+  else:raise AssertionError('Missing runtime evidence or wrong role must block')
  torch.set_num_threads(2);torch.manual_seed(1);x=torch.randn(16,2,256,device=device);y=torch.arange(16,device=device)%6;rows=[]
  row=d.rows()[0];members=[]
  for member in (1,2):
@@ -27,6 +34,6 @@ def run(device='cpu'):
   try:d.validate_member(c)
   except ValueError:pass
   else:raise AssertionError('Illegal final member config')
- return dict(status='PASS',device=device,primary_seed_count=3,members=rows,exact_mixture=True,no_checkpoint_initialization=True,negative_cases=3)
+ return dict(status='PASS',device=device,primary_seed_count=3,members=rows,exact_mixture=True,no_checkpoint_initialization=True,negative_cases=5,runtime_contract_preserved=True)
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--device',default='cpu');p.add_argument('--output',type=Path,required=True);a=p.parse_args();v=run(a.device);d.write(a.output,v);print(json.dumps(v))

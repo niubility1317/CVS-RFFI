@@ -78,7 +78,9 @@ def train(rowid,device='cuda:0'):
  bundle=dict(config=c,members=[dict(member=0,config=d.baseline_config(row['model_seed']),checkpoint=d.baseline_config(row['model_seed'])['output']+'/identity.pth'),
   *[dict(member=i,config=d.member_config(row,i),checkpoint=d.member_config(row,i)['output']+'/identity.pth') for i in (1,2)]],
   formula=c['ensemble']['formula'],epochs_per_member=30,new_updates=13320,reused_updates=6660,total_updates=19980,target_access=False,ensemble_fit_updates=0)
- torch.save(bundle,parent/'identity.pth');d.write(parent/'source_contract.json',d.read(d.SOURCE))
+ from .contracts import verified_component_contract
+ actual=verified_component_contract([d.read(Path(d.member_config(row,i)['output'])/'source_contract.json') for i in (1,2)],d.read(d.SOURCE))
+ torch.save(bundle,parent/'identity.pth');d.write(parent/'source_contract.json',actual)
  done=dict(status='SOURCE_TRAINED',config=c,members=3,new_members=2,epochs_per_member=30,new_updates=13320,reused_updates=6660,total_updates=19980,
   ensemble_fit_updates=0,target_access=False,U_truth_read=False,allmembersfrozen=True,trainable_parameters=531075)
  d.write(parent/'completion.json',done);d.write(parent/'source_frozen.json',dict(status='SOURCE_FROZEN',config=c,checkpoint=str(parent/'identity.pth'),selection=c['checkpoint_selection'],target_access=False))

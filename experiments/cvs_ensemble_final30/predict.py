@@ -7,12 +7,20 @@ def baseline_proof(c):
  from experiments.cvs_scratch30_baseline.predict import source_proof as original
  return original(d.baseline_config(c['model_seed']))
 
-def source_proof(c):
+def source_proof(c,repair_reference_copy=False):
  d.validate(c);baseline_proof(c);source=Path(c['output']);done=d.read(source/'completion.json');frozen=d.read(source/'source_frozen.json')
  expected=dict(status='SOURCE_TRAINED',config=c,members=3,new_members=2,epochs_per_member=30,new_updates=13320,reused_updates=6660,total_updates=19980,ensemble_fit_updates=0,target_access=False,U_truth_read=False,allmembersfrozen=True,trainable_parameters=531075)
  if done!=expected or frozen!=dict(status='SOURCE_FROZEN',config=c,checkpoint=str(source/'identity.pth'),selection=c['checkpoint_selection'],target_access=False):raise ValueError('Ensemble final source freeze differs')
  from experiments.cvs_phase1_stack.recover import verify_contract
- verify_contract(d.read(source/'source_contract.json'),d.read(d.SOURCE))
+ reference=d.read(d.SOURCE);aggregate=d.read(source/'source_contract.json')
+ if repair_reference_copy:
+  # The r01 writer copied exactly the reference recipe into the aggregate.
+  # Repair only that observed metadata defect from actual member evidence.
+  if aggregate!=reference:raise ValueError('Recovery source differs from known reference-copy defect')
+  from .contracts import verified_component_contract
+  rr=next(r for r in d.rows() if r['row_id']==c['row_id'])
+  aggregate=verified_component_contract([d.read(Path(d.member_config(rr,i)['output'])/'source_contract.json') for i in (1,2)],reference)
+ verify_contract(aggregate,reference)
  row=next(r for r in d.rows() if r['row_id']==c['row_id'])
  for member in (1,2):
   mc=d.member_config(row,member);p=Path(mc['output']);v=d.read(p/'completion.json');resolved=d.read(p/'resolved_config.json');sf=d.read(p/'source_frozen.json')
@@ -22,11 +30,11 @@ def source_proof(c):
   verify_contract(d.read(p/'source_contract.json'),d.read(d.SOURCE))
  return source
 
-def own_model(c,device):
+def own_model(c,device,repair_reference_copy=False):
  import torch
  from .model import build_member,ProbabilityEnsemble
  from experiments.cvs_scratch30_baseline.predict import own_model as baseline_model
- source=source_proof(c);bundle=torch.load(source/'identity.pth',map_location='cpu',weights_only=False);row=next(r for r in d.rows() if r['row_id']==c['row_id'])
+ source=source_proof(c,repair_reference_copy=repair_reference_copy);bundle=torch.load(source/'identity.pth',map_location='cpu',weights_only=False);row=next(r for r in d.rows() if r['row_id']==c['row_id'])
  members=[dict(member=0,config=d.baseline_config(c['model_seed']),checkpoint=d.baseline_config(c['model_seed'])['output']+'/identity.pth'),*[dict(member=i,config=d.member_config(row,i),checkpoint=d.member_config(row,i)['output']+'/identity.pth') for i in (1,2)]]
  if bundle!=dict(config=c,members=members,formula=c['ensemble']['formula'],epochs_per_member=30,new_updates=13320,reused_updates=6660,total_updates=19980,target_access=False,ensemble_fit_updates=0):raise ValueError('Fixed inference bundle differs')
  models=[baseline_model(d.baseline_config(c['model_seed']),device)]

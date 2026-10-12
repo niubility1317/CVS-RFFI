@@ -648,7 +648,9 @@
           "source_qualification": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-stochastic-ensemble-source-manysig-s2026092701-r01/source_decision.json",
           "source_qualification_result": "PASS before target access"
         }
-      }
+      },
+      "status": "RUNNING",
+      "gpu": 0
     },
     {
       "row_id": "EQUAL_PROBABILITY_3-s2026092702",
@@ -1162,7 +1164,9 @@
           "source_qualification": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-stochastic-ensemble-source-manysig-s2026092701-r01/source_decision.json",
           "source_qualification_result": "PASS before target access"
         }
-      }
+      },
+      "status": "RUNNING",
+      "gpu": 1
     },
     {
       "row_id": "EQUAL_PROBABILITY_3-s2026092703",
@@ -1676,7 +1680,9 @@
           "source_qualification": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-stochastic-ensemble-source-manysig-s2026092701-r01/source_decision.json",
           "source_qualification_result": "PASS before target access"
         }
-      }
+      },
+      "status": "RUNNING",
+      "gpu": 2
     }
   ],
   "notes": [
@@ -1686,7 +1692,7 @@
     "Actualinitializerseed mustreachreference adapter constructor;source P1 fixedbeforeanylaunch,67identitytensors29random tensors differ;no frozennuisance falsepositive.",
     "Source-onlyreviewonce+oneissuefocusedrereview alreadyclosed;unchanged method and existing seven-view truth-last runner reused;no extra runner/full/report-only review per minimalwhitelist."
   ],
-  "status": "PLANNED",
+  "status": "RUNNING",
   "registered_at": "2026-10-12T13:00:38+00:00",
   "comparisons": [
     {
@@ -1703,5 +1709,7 @@
       "run_id": "20261012-phase1-stochastic-ensemble-source-manysig-s2026092701-r01",
       "role": "source qualification only;no target on thispilot"
     }
-  ]
+  ],
+  "execution_commit": "753eecc06dad74bf8f600959e79b36a1e048fb05",
+  "delivery_verdict": "VERIFIED"
 }
