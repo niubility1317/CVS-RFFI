@@ -56,7 +56,7 @@
     "diagnostic_access": "L6300 labels;U56700 IQ/RX/day/opaquePID;V27000 healthonlyE5/10/15/20;target only fixedfinal20->cleanprediction->independenttruth-last"
   },
   "code": {
-    "commit": "resolved from immutable Git release at launch",
+    "commit": "acdaf7e47908d8b27fc996d6b1b49787b23f6639",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01"
@@ -122,7 +122,7 @@
   "group_id": "cvs-e20-finite-response-identity",
   "display_name": "E20续训：有限响应监督进入身份主路径／CE SSL与真实IQ对照",
   "description": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "aliases": [],
   "tags": [
     "E20_continuation",
@@ -172,7 +172,7 @@
     "P0": 0,
     "P1": 0,
     "evidence": "experiments/cvs_e20_response/REVIEW.md",
-    "remote_source_preflight": "PENDING"
+    "remote_source_preflight": "PASS"
   },
   "notes": [
     "No target feedback; design follows complete finite-source3 evidence only, all reference CE sources fixed without score ranking.",
@@ -189,7 +189,7 @@
       "arm": "CONT_CE",
       "model_seed": 2026092701,
       "row_id": "CONT_CE-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -667,13 +667,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 659224,
+      "gpu": 2,
+      "launch_evidence": {
+        "pid": 659224,
+        "start_ticks": 103260397,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "CONT_CE-s2026092701"
+        ],
+        "gpu": "2"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "CONT_SSL",
       "model_seed": 2026092701,
       "row_id": "CONT_SSL-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -1156,13 +1174,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 659305,
+      "gpu": 3,
+      "launch_evidence": {
+        "pid": 659305,
+        "start_ticks": 103260728,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "CONT_SSL-s2026092701"
+        ],
+        "gpu": "3"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_EVAL",
       "model_seed": 2026092701,
       "row_id": "SSL_EVAL-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -1645,13 +1681,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 659386,
+      "gpu": 5,
+      "launch_evidence": {
+        "pid": 659386,
+        "start_ticks": 103261057,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "SSL_EVAL-s2026092701"
+        ],
+        "gpu": "5"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "RESP_L",
       "model_seed": 2026092701,
       "row_id": "RESP_L-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -2160,13 +2214,31 @@
         "support": 2026364529,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 659467,
+      "gpu": 6,
+      "launch_evidence": {
+        "pid": 659467,
+        "start_ticks": 103261390,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "RESP_L-s2026092701"
+        ],
+        "gpu": "6"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "RESP_U",
       "model_seed": 2026092701,
       "row_id": "RESP_U-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -2675,13 +2747,31 @@
         "support": 2026364529,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 659557,
+      "gpu": 7,
+      "launch_evidence": {
+        "pid": 659557,
+        "start_ticks": 103261723,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "RESP_U-s2026092701"
+        ],
+        "gpu": "7"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "RESP_LU",
       "model_seed": 2026092701,
       "row_id": "RESP_LU-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -3191,13 +3281,31 @@
         "support": 2026364529,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 659638,
+      "gpu": 7,
+      "launch_evidence": {
+        "pid": 659638,
+        "start_ticks": 103262056,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "RESP_LU-s2026092701"
+        ],
+        "gpu": "7"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "ACTION_LU",
       "model_seed": 2026092701,
       "row_id": "ACTION_LU-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -3680,13 +3788,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 659716,
+      "gpu": 2,
+      "launch_evidence": {
+        "pid": 659716,
+        "start_ticks": 103262389,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "ACTION_LU-s2026092701"
+        ],
+        "gpu": "2"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "CONT_CE",
       "model_seed": 2026092702,
       "row_id": "CONT_CE-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -4164,13 +4290,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 659794,
+      "gpu": 3,
+      "launch_evidence": {
+        "pid": 659794,
+        "start_ticks": 103262722,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "CONT_CE-s2026092702"
+        ],
+        "gpu": "3"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "CONT_SSL",
       "model_seed": 2026092702,
       "row_id": "CONT_SSL-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -4653,13 +4797,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 659872,
+      "gpu": 6,
+      "launch_evidence": {
+        "pid": 659872,
+        "start_ticks": 103263055,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "CONT_SSL-s2026092702"
+        ],
+        "gpu": "6"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_EVAL",
       "model_seed": 2026092702,
       "row_id": "SSL_EVAL-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -5142,13 +5304,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 659950,
+      "gpu": 5,
+      "launch_evidence": {
+        "pid": 659950,
+        "start_ticks": 103263388,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "SSL_EVAL-s2026092702"
+        ],
+        "gpu": "5"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "RESP_L",
       "model_seed": 2026092702,
       "row_id": "RESP_L-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -5657,13 +5837,31 @@
         "support": 2026364530,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 660095,
+      "gpu": 1,
+      "launch_evidence": {
+        "pid": 660095,
+        "start_ticks": 103263721,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "RESP_L-s2026092702"
+        ],
+        "gpu": "1"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "RESP_U",
       "model_seed": 2026092702,
       "row_id": "RESP_U-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -6172,13 +6370,31 @@
         "support": 2026364530,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 660173,
+      "gpu": 0,
+      "launch_evidence": {
+        "pid": 660173,
+        "start_ticks": 103264049,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "RESP_U-s2026092702"
+        ],
+        "gpu": "0"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "RESP_LU",
       "model_seed": 2026092702,
       "row_id": "RESP_LU-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -6688,13 +6904,31 @@
         "support": 2026364530,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 660251,
+      "gpu": 3,
+      "launch_evidence": {
+        "pid": 660251,
+        "start_ticks": 103264381,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "RESP_LU-s2026092702"
+        ],
+        "gpu": "3"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "ACTION_LU",
       "model_seed": 2026092702,
       "row_id": "ACTION_LU-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -7177,13 +7411,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 660329,
+      "gpu": 6,
+      "launch_evidence": {
+        "pid": 660329,
+        "start_ticks": 103264716,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "ACTION_LU-s2026092702"
+        ],
+        "gpu": "6"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "CONT_CE",
       "model_seed": 2026092703,
       "row_id": "CONT_CE-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -7661,13 +7913,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 660814,
+      "gpu": 2,
+      "launch_evidence": {
+        "pid": 660814,
+        "start_ticks": 103265051,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "CONT_CE-s2026092703"
+        ],
+        "gpu": "2"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "CONT_SSL",
       "model_seed": 2026092703,
       "row_id": "CONT_SSL-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -8150,13 +8420,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 660892,
+      "gpu": 7,
+      "launch_evidence": {
+        "pid": 660892,
+        "start_ticks": 103265382,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "CONT_SSL-s2026092703"
+        ],
+        "gpu": "7"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "SSL_EVAL",
       "model_seed": 2026092703,
       "row_id": "SSL_EVAL-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -8639,13 +8927,31 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 660970,
+      "gpu": 5,
+      "launch_evidence": {
+        "pid": 660970,
+        "start_ticks": 103265715,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "SSL_EVAL-s2026092703"
+        ],
+        "gpu": "5"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "RESP_L",
       "model_seed": 2026092703,
       "row_id": "RESP_L-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -9154,13 +9460,31 @@
         "support": 2026364531,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 661123,
+      "gpu": 1,
+      "launch_evidence": {
+        "pid": 661123,
+        "start_ticks": 103266049,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "RESP_L-s2026092703"
+        ],
+        "gpu": "1"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "RESP_U",
       "model_seed": 2026092703,
       "row_id": "RESP_U-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -9669,13 +9993,31 @@
         "support": 2026364531,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 661274,
+      "gpu": 4,
+      "launch_evidence": {
+        "pid": 661274,
+        "start_ticks": 103266389,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "RESP_U-s2026092703"
+        ],
+        "gpu": "4"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "RESP_LU",
       "model_seed": 2026092703,
       "row_id": "RESP_LU-s2026092703",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -10185,13 +10527,31 @@
         "support": 2026364531,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 661352,
+      "gpu": 0,
+      "launch_evidence": {
+        "pid": 661352,
+        "start_ticks": 103266722,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "RESP_LU-s2026092703"
+        ],
+        "gpu": "0"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "ACTION_LU",
       "model_seed": 2026092703,
       "row_id": "ACTION_LU-s2026092703",
-      "status": "PLANNED",
+      "status": "STARTING",
       "method": "cvs_e20_response",
       "purpose": "对应合规无CFO旧门控cos纯CE E20追加20epoch；7arm×3seed，冻结四作用读出/真实同包响应监督，L/U角色分解和直接IQ动作对照；全身份更新，无EMA/星地/R去噪",
       "config": {
@@ -10674,8 +11034,100 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses"
+      "seed_notes": "fixed inheritedsource-role split label392005;model private native reset;L DomainStream seed+101/U+901337;U noise model+step9901;IQaction deterministic kindalternation;response usesfixedoriginalPID80_20 fitpartition model+271828,not new support sampling;query evaluation deterministic/allregisteredclasses",
+      "pid": 661526,
+      "gpu": 4,
+      "launch_evidence": {
+        "pid": 661526,
+        "start_ticks": 103269384,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_e20_response.dispatch",
+          "--worker",
+          "ACTION_LU-s2026092703"
+        ],
+        "gpu": "4"
+      }
     }
   ],
-  "registered_at": "2026-10-12T05:48:37+00:00"
+  "registered_at": "2026-10-12T05:48:37+00:00",
+  "execution_commit": "acdaf7e47908d8b27fc996d6b1b49787b23f6639",
+  "delivery_verdict": "VERIFIED",
+  "progress": {
+    "launched": 21,
+    "resolved_verified": 20,
+    "queued": 0,
+    "completed": 0,
+    "failures": [],
+    "GPU_capacity": {
+      "0": {
+        "pids": [
+          640901,
+          660173,
+          661352
+        ],
+        "free_mb": 19497
+      },
+      "1": {
+        "pids": [
+          642706,
+          660095,
+          661123
+        ],
+        "free_mb": 21259
+      },
+      "2": {
+        "pids": [
+          659224,
+          659716,
+          660814
+        ],
+        "free_mb": 21991
+      },
+      "3": {
+        "pids": [
+          659305,
+          659794,
+          660251
+        ],
+        "free_mb": 21899
+      },
+      "4": {
+        "pids": [
+          641075,
+          661274,
+          661526
+        ],
+        "free_mb": 20269
+      },
+      "5": {
+        "pids": [
+          659386,
+          659950,
+          660970
+        ],
+        "free_mb": 21237
+      },
+      "6": {
+        "pids": [
+          659467,
+          659872,
+          660329
+        ],
+        "free_mb": 21637
+      },
+      "7": {
+        "pids": [
+          659557,
+          659638,
+          660892
+        ],
+        "free_mb": 21671
+      }
+    }
+  }
 }

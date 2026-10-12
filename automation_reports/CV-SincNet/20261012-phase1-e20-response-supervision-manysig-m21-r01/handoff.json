@@ -1,0 +1,95 @@
+{
+  "status": "RUNNING",
+  "run_id": "20261012-phase1-e20-response-supervision-manysig-m21-r01",
+  "execution_commit": "acdaf7e47908d8b27fc996d6b1b49787b23f6639",
+  "dispatcher": {
+    "status": "SUBMITTED",
+    "pid": 659126,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_e20_response.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_response_20261012_r01/dispatcher.stdout.log",
+    "commit": "acdaf7e47908d8b27fc996d6b1b49787b23f6639",
+    "run_id": "20261012-phase1-e20-response-supervision-manysig-m21-r01"
+  },
+  "progress": {
+    "launched": 21,
+    "resolved_verified": 20,
+    "queued": 0,
+    "completed": 0,
+    "failures": [],
+    "GPU_capacity": {
+      "0": {
+        "pids": [
+          640901,
+          660173,
+          661352
+        ],
+        "free_mb": 19497
+      },
+      "1": {
+        "pids": [
+          642706,
+          660095,
+          661123
+        ],
+        "free_mb": 21259
+      },
+      "2": {
+        "pids": [
+          659224,
+          659716,
+          660814
+        ],
+        "free_mb": 21991
+      },
+      "3": {
+        "pids": [
+          659305,
+          659794,
+          660251
+        ],
+        "free_mb": 21899
+      },
+      "4": {
+        "pids": [
+          641075,
+          661274,
+          661526
+        ],
+        "free_mb": 20269
+      },
+      "5": {
+        "pids": [
+          659386,
+          659950,
+          660970
+        ],
+        "free_mb": 21237
+      },
+      "6": {
+        "pids": [
+          659467,
+          659872,
+          660329
+        ],
+        "free_mb": 21637
+      },
+      "7": {
+        "pids": [
+          659557,
+          659638,
+          660892
+        ],
+        "free_mb": 21671
+      }
+    }
+  },
+  "next": "Do not relaunch or edit immutable release. Eachrow fixed E20+20 automatically own40 clean168000 and independent truth-last; complete all21/full93240 source logs and420epoch, collect all7x3 scores/negative outcomes/cost, update original record and Git. Never target-driven teacher/parameter/arm selection.",
+  "evidence": "evidence/readback.json and remote_preflight.json",
+  "goal": "clean3seed mean>=84% remains active, not yet achieved"
+}
