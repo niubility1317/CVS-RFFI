@@ -7324,5 +7324,12 @@
   "registered_at": "2026-10-12T00:10:05+00:00",
   "execution_commit": "8d1f266e6abb44d5ec96cdabd00eb51eea83a6fc",
   "delivery_verdict": "VERIFIED",
-  "scientific_verdict": "source-only optimizer evidence; target improvement not evaluated"
+  "scientific_verdict": "source-only optimizer evidence; target improvement not evaluated",
+  "research_outputs": {
+    "optimizer_interpretation": "optimizer_interpretation.md",
+    "mathematical_check": "evidence/loss_sensitivity_identity.json",
+    "mechanism_followup": "mechanism_followup.md",
+    "next_design": "next_experiment_design.md",
+    "next_design_status": "DESIGN_READY_NOT_IMPLEMENTED_NOT_PUBLISHED"
+  }
 }

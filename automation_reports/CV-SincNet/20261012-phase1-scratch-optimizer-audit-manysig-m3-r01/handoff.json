@@ -1,9 +1,16 @@
 {
   "status": "ANALYZED",
   "run": "20261012-phase1-scratch-optimizer-audit-manysig-m3-r01",
+  "execution_commit": "8d1f266e6abb44d5ec96cdabd00eb51eea83a6fc",
   "owner": "codex/root/scratch-optimizer-audit-20261012",
-  "goal": "clean three-seed mean>=84% remains active",
-  "source_only": true,
-  "next": "Inspect existing3 workers; never relaunch. Collect fixed all18 optimizer diagnosis. Healthy bidirectional18 continues automatic per-row clean testing.",
-  "collector": "python -m experiments.cvs_scratch_optimizer_audit.collect --output automation_reports/CV-SincNet/20261012-phase1-scratch-optimizer-audit-manysig-m3-r01/evidence"
+  "source_diagnostic_complete": true,
+  "goal": "clean mean over fixed three seeds>=84% remains active and unachieved",
+  "completion_evidence": "evidence/complete_source_evidence.json",
+  "completed": "18 fixed models;216 batches;1728 temporary AdamW steps;0 persistent identity updates;no target access;source state preserved",
+  "finding": "Fishr changes actual updates. Unit per-sample CE/margin sensitivities are sign-equivalent away from epsilon; confidence detach changes mixed second derivative. Full parameter relative norm mixes Hz and weight scales.",
+  "next": "Implement and verify exact next_experiment_design.md: MARGIN_ENERGY/CE_ENERGY x3 seeds, fixed layer-global source scales then own gradient calibration, scratch20, no EMA/satellite, same identity9 MixStyle and fixed peer U; source-motivated design, no target-based selection.",
+  "pending_training_run": "20261012-phase1-scratch-bidirectional-style-manysig-m18-r01",
+  "pending_training_state": "16/18 tested at last authoritative snapshot; two original workers healthy at E17/E16. Do not restart or modify. Continue automatic clean and full source/result collection.",
+  "next_matrix_not_yet_implemented": true,
+  "next_matrix_not_yet_published": true
 }
