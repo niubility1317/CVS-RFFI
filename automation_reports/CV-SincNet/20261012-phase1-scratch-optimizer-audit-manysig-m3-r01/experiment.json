@@ -71,7 +71,7 @@
   "group_id": "cvs-scratch-optimizer-audit",
   "display_name": "浅中层 Fishr/MixStyle 的 AdamW 单步源诊断",
   "description": "固定十八个完成权重，分解梯度并测量保存状态/重置优化器下的实际临时位移；身份零持久更新",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "source_only",
@@ -159,7 +159,7 @@
     {
       "row_id": "OPT-s2026092701",
       "model_seed": 2026092701,
-      "status": "RUNNING",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_scratch_optimizer_audit",
       "purpose": "固定十八个完成权重，分解梯度并测量保存状态/重置优化器下的实际临时位移；身份零持久更新",
       "config": {
@@ -2547,7 +2547,7 @@
     {
       "row_id": "OPT-s2026092702",
       "model_seed": 2026092702,
-      "status": "RUNNING",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_scratch_optimizer_audit",
       "purpose": "固定十八个完成权重，分解梯度并测量保存状态/重置优化器下的实际临时位移；身份零持久更新",
       "config": {
@@ -4935,7 +4935,7 @@
     {
       "row_id": "OPT-s2026092703",
       "model_seed": 2026092703,
-      "status": "RUNNING",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_scratch_optimizer_audit",
       "purpose": "固定十八个完成权重，分解梯度并测量保存状态/重置优化器下的实际临时位移；身份零持久更新",
       "config": {
@@ -7323,5 +7323,6 @@
   ],
   "registered_at": "2026-10-12T00:10:05+00:00",
   "execution_commit": "8d1f266e6abb44d5ec96cdabd00eb51eea83a6fc",
-  "delivery_verdict": "VERIFIED"
+  "delivery_verdict": "VERIFIED",
+  "scientific_verdict": "source-only optimizer evidence; target improvement not evaluated"
 }

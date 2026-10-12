@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "synthetic_only": true,
+  "source_data_access": false,
+  "target_access": false,
+  "persistent_identity_updates": 0,
+  "CE_softplus_margin_identity": true,
+  "raw_gradient_identity": true,
+  "mixed_second_derivative_identity": true,
+  "actual_epsilon_normalization_formula": true,
+  "epsilon_free_sign_equivalence_error": 1.7763568394002505e-15,
+  "ordinary_batch_normalized_sign_difference": 6.472955504932543e-11,
+  "confidence_gradient_magnitude_factor_range": [
+    0.07138140902214252,
+    0.9999918941532194
+  ],
+  "near_zero_epsilon_counterexample_max_difference": 0.9999,
+  "confidence_detach_second_derivative_error": 0.15338375229865067,
+  "interpretation": "CE-normalized and margin-normalized scores have opposite signs away from epsilon, hence same variance; near-zero epsilon breaks equivalence. Raw CE retains live confidence scaling and its second derivative. No performance claim."
+}
