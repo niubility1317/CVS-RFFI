@@ -1,0 +1,1 @@
+一次独立候选 family P0/P1：/root/quality_review PASS，无 P0/P1。RX只用fitRX、Random只固定随机fitL索引每头1260；一次joint160前向保留global/aux梯度；推理全部专家平均不读RX/元数据。heldRX排除、U/target关闭、30/6660固定预算、固定融合、完整10row源资格判断、不可覆盖输出、单owner、总GPU进程上限及实际入口归档依赖通过。无额外复审。
