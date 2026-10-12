@@ -5,7 +5,7 @@
 - run_id：`20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01`
 - group_id：`cvs-historical-adv3b02-network-comparison`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：FAILED（训练前技术失败，产物保留）。experiment.json 保留发布前登记，生命周期以 events.jsonl 和完成证据为准。
 
 ## 目的与对照
 

@@ -4,7 +4,7 @@
 - run_id：`20261012-phase1-e20-historical-adv3b02-manysig-s392002-r02`
 - group_id：`cvs-historical-adv3b02-network-comparison`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED / VERIFIED（训练、预测、独立评分与分析完成）。experiment.json 保留发布前登记，生命周期以 events.jsonl 和完成证据为准。
 
 ## 目的与对照
 
@@ -34,14 +34,13 @@
 
 技术停止规则：本row协议越界、错误物理ID/seed/checkout、输出碰撞、非有限loss/gradient、无法完成预测或评分、stage非零退出即记录failure并停止后续stage，保留全部产物，不自动重试，不因低性能停机。readback核对dispatcher和stage的PID/CWD/argv/GPU及日志增长；通信不明先查原run，禁止重复提交。
 
-本地聚焦检查：PASS，历史角色数、sig_i边界、U标签隐藏（远端数据preflight）、source/query配置负测、重叠物理ID负测、真实网络CE梯度、222更新循环、辅助对象关闭、metric算例。独立P0/P1审查结果在发布前追加；无报告审查、签名或额外seal门槛。
+本地聚焦检查：PASS，历史角色数、sig_i边界、U标签隐藏（远端数据preflight）、source/query配置负测、重叠物理ID负测、真实网络CE梯度、222更新循环、辅助对象关闭、metric算例。独立 P0/P1 审查已通过；无报告审查、签名或额外seal门槛。
 
 独立 P0/P1 审查：PASS。已核对14源域与独立222更新预算、source-only及U隐藏、无继承、204000个源/测试互斥物理ID、预测完成后单独truth-last scorer、所有owner计入GPU容量、不可覆盖输出与发布依赖。未发现阻止本次合法run的P0/P1；不追加完整复审。
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+全部预登记 clean 集合完成，结果见下方“完整 clean 结果”。源训练完成标记、204000 条预测完成标记、独立评分完成标记及远端 completion.json 相互对应，无缺项。
 
 ## 交接
 
@@ -50,3 +49,19 @@
 技术恢复：r01在训练前因Windows登记远端路径反斜杠与Linux config不同而停止；preflight已PASS、没有训练或预测。r02统一使用POSIX路径文本并完成本地回归。保留原r01目录，不重启或覆盖；seed392002、历史角色、E20/4440预算和clean三集合不变。仅该路径问题做一次定点复审。
 
 路径问题唯一一次定点复审：PASS。SOURCE/CAPSULE/TRUTH/output_root及登记row config全部使用同一POSIX表示；dispatcher比较字段没有跨平台差异。无新增P0/P1，不做完整复审。
+
+## 完整 clean 结果（VERIFIED）
+
+执行提交：`046c0ce3345ec4434b968b79b8994979494b0406`。seed392002、历史物理划分、scratch E20和4440次成功更新均已核实。训练、builder、204000条预测和独立评分全部完成，无缺项。
+
+|测试集合|样本数|历史 ADV3B02 E200 (%)|当前 E20 (%)|差值（百分点）|当前 Macro-F1 (%)|
+|---|---:|---:|---:|---:|---:|
+|unseen_day_seen_rx|84000|93.4917|92.8202|-0.6714|92.8382|
+|seen_day_unseen_rx|60000|87.4483|91.2200|+3.7717|91.1434|
+|unseen_day_unseen_rx|60000|84.8900|87.6067|+2.7167|87.6467|
+
+本轮训练耗时567.10秒；clean纯推理耗时5.62秒。实际日志成功更新4440次；本轮只测clean，不作卫星部署结果声明。
+历史参考来自原run的metrics_epoch.jsonl第200轮，不使用best_joint_safe挑出的最佳分数；原checkpoint元数据已核实seed392002、RX/day、equalized1和10/70/20。历史训练启用了joint_safe及测试监测，存在目标驱动保护/选模背景，因此只作已暴露历史参考，不作为独立干净泛化证明。
+当前与历史同时改变架构、损失、半监督/信道增强和训练成本；单seed差值不能单独证明网络结构贡献或三seed稳定收益。
+
+完整RX/day/TX分层、混淆矩阵和NLL保存在本run的独立scores/metrics.json及本地final_results.json；原始checkpoint、IQ、prediction和训练日志保留远端，不进入Git。
