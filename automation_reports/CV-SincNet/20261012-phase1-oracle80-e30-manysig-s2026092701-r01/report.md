@@ -19,3 +19,22 @@ ManySig全部6TX；源RX索引1/3/4/6/8、day1/2/3。每TX/RX/day/eq按sig_i排�
 2026-10-12T20:09:10.177076+08:00：VERIFIED／RUNNING。实际GPU0，从零E30/16890步，L/U/V=72000/0/18000。release archive校验、远端compile、实际source-only数据预检和自有scratch checkpoint smoke均通过。PID/CWD/argv/GPU及日志增长证据保存在本地evidence/launch_readback.json。执行提交`6d701688f40d4cda0862430cdf0b5281a5b14114`。首轮进度：1。
 
 训练、七视图预测和独立truth-last评分仍在执行；尚无最终测试结果，不标为完成。远端run root与精确命令见experiment.json，自动训练→固定final30→clean与六practical预测→独立评分→scores/analysis.md，无需再次授权测试。
+
+## 完成与测试结果
+
+2026-10-12T20:49:47.281695+08:00：VERIFIED／ANALYZED。E30训练、固定final30、全部7×168000条预测和独立truth-last评分均完成。未发现技术失败。
+
+|测试视图|样本数|准确率 (%)|Macro-F1 (%)|
+|---|---:|---:|---:|
+|clean|168000|82.3649|82.0748|
+|practical_high|168000|63.4161|63.5374|
+|practical_mid|168000|60.1137|60.0211|
+|practical_low_suburban|168000|57.3262|57.0658|
+|practical_high_urban|168000|60.4946|60.4333|
+|practical_mid_urban|168000|47.3702|46.7421|
+|practical_low_urban|168000|38.1524|37.1103|
+
+六种practical场景准确率算术均值：54.4789%。这是单seed结果，不能替代多seed统计。
+实际训练时间：29.25分钟；16890次更新。源验证集最终准确率：98.6444%。验证指标与目标测试分开报告。
+该结果提供本数据划分、网络和E30预算下的全标签参考；clean82.36%不能被解释为伪标签算法的理论上限。与默认弱标注实验的训练/验证划分及曝光预算同时不同。
+完整每场景/RX/day/TX指标保存在远端scores/metrics.json，本地只读回收副本位于local_artifacts/cvs_oracle80_e30_20261012_r01/results/；原始预测和权重保持远端。
