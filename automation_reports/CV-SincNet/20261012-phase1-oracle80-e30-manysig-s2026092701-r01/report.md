@@ -13,3 +13,9 @@ ManySig全部6TX；源RX索引1/3/4/6/8、day1/2/3。每TX/RX/day/eq按sig_i排�
 当前状态：本地实现，未发布。一次真实自有scratch checkpoint无query smoke由launcher训练首步执行，PASS即继续。
 
 本地聚焦验证PASS：80/0/20物理角色、负测、完整72000样本/563批、实际网络CE梯度及无辅助训练。唯一独立P0/P1审查通过，未发现阻断缺陷。
+
+## 实际发布状态
+
+2026-10-12T20:09:10.177076+08:00：VERIFIED／RUNNING。实际GPU0，从零E30/16890步，L/U/V=72000/0/18000。release archive校验、远端compile、实际source-only数据预检和自有scratch checkpoint smoke均通过。PID/CWD/argv/GPU及日志增长证据保存在本地evidence/launch_readback.json。执行提交`6d701688f40d4cda0862430cdf0b5281a5b14114`。首轮进度：1。
+
+训练、七视图预测和独立truth-last评分仍在执行；尚无最终测试结果，不标为完成。远端run root与精确命令见experiment.json，自动训练→固定final30→clean与六practical预测→独立评分→scores/analysis.md，无需再次授权测试。
