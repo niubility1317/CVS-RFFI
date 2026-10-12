@@ -1,0 +1,439 @@
+{
+  "schema": "experiment_record_v1",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "code": {
+    "commit": "resolved from immutable release Git commit",
+    "checkout": "E:/type10-7/code/worktrees/report_physical_ssl_delivery_20261011",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_oracle80_e30_20261012_r01"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center crop/pad 256; per-packet complex RMS; center=False; fs=25MHz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_oracle80_e30_20261012_r01/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_oracle80_e30_20261012_r01/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_oracle80_e30_20261012_r01/source_contract.json#class_txs",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all6 ManySig.tx_list",
+    "roles": {
+      "L_s": 72000,
+      "U_s": 0,
+      "V": 18000,
+      "L_s_fraction": 0.8,
+      "U_s_fraction": 0.0,
+      "V_fraction": 0.2,
+      "U_use": "none; all train packets labeled"
+    },
+    "train_ratio": 0.8,
+    "capsule_id": null,
+    "split_id": "oracle80 per TX/RX/day/eq first800 last200",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_oracle80_e30_20261012_r01/source_contract.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json",
+    "train_ratio_definition": "source whole-pool training fraction .8; train-pool label fraction1.0",
+    "diagnostic_access": "sourceV health only; no query during training"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_oracle80_e30_20261012_r01/source_contract.json",
+    "provenance_verdict": "scratch; no inherited states; old weights incompatible with changed split",
+    "selection_rule": "fixed final E30"
+  },
+  "execution": {
+    "host": "N607",
+    "stop_rule": "technical failure stops pending; healthy rows continue; no automatic retry or output overwrite",
+    "launch_owner": "codex/root/oracle80-e30-20261012",
+    "gpu_policy": "<=3 total processes perGPU,all owners; >=12000MB free",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-oracle80-e30-manysig-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-oracle80-e30-manysig-s2026092701-r01/logs",
+    "local_artifact_root": "E:/type10-7/code/worktrees/report_physical_ssl_delivery_20261011/local_artifacts/cvs_oracle80_e30_20261012_r01",
+    "launch_command": "python -m experiments.cvs_oracle80.publish --output local_artifacts/cvs_oracle80_e30_20261012_r01"
+  },
+  "expected_artifacts": [
+    "source/final_ssdg.pth",
+    "source/resolved_native_args.json",
+    "source/epoch_metrics.jsonl",
+    "source/completion.json",
+    "source_frozen.json",
+    "prediction/predictions.npz",
+    "prediction/complete.json",
+    "scores/metrics.json",
+    "scores/analysis.md",
+    "scores/scoring_complete.json",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "Macro-F1",
+      "NLL",
+      "confusion",
+      "time"
+    ],
+    "dimensions": [
+      "view",
+      "receiver",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-oracle80-e30-manysig-s2026092701-r01/E30-s2026092701/prediction/predictions.npz",
+    "scorer_ref": "experiments.cvs_oracle80.evaluate.score",
+    "complete_seed_count": 1,
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "query_count_per_view": 168000
+  },
+  "run_id": "20261012-phase1-oracle80-e30-manysig-s2026092701-r01",
+  "group_id": "cvs-full-label-oracle80",
+  "display_name": "80% 全标签训练／20% 验证：E30 监督参考",
+  "description": "当前CVS残差融合从零训练，全标签源训练池，观察伪标签方法可追赶的参考性能",
+  "aliases": [
+    "伪标签上限",
+    "全监督上限"
+  ],
+  "tags": [
+    "cvs",
+    "oracle80",
+    "full_labels",
+    "E30",
+    "single_seed",
+    "scratch",
+    "truth_last"
+  ],
+  "authorization": "用户：启动0.8比0.2的训练集比验证集实验，全部训练集都有标签，看看伪标签上限，发布E30",
+  "status": "LOCAL_VERIFIED",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "comparison_group_id": null,
+  "permissions": {
+    "regime": "user_authorized_full_label_reference",
+    "query_use": "per-packet prediction only",
+    "claim_scope": "E30 supervised reference; not mathematical pseudo-label upper bound; exposed benchmark; split and exposure differ from weak-label7/63/30",
+    "target_feedback_to_training": false
+  },
+  "rows": [
+    {
+      "row_id": "E30-s2026092701",
+      "model_seed": 2026092701,
+      "config": {
+        "schema": "oracle80_e30_v1",
+        "run_id": "20261012-phase1-oracle80-e30-manysig-s2026092701-r01",
+        "stage": "oracle80_e30",
+        "arm": "native",
+        "model_seed": 2026092701,
+        "row_id": "E30-s2026092701",
+        "features": [],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_oracle80_e30_20261012_r01/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-oracle80-e30-manysig-s2026092701-r01/E30-s2026092701/source",
+        "epochs": 30,
+        "steps_per_epoch": 563,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_oracle80",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "risk_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "reference_refresh_steps": 888,
+          "gradient_audit_every_steps": 888,
+          "epochs": 30,
+          "steps_per_epoch": 563,
+          "hidden": 48,
+          "branch_weights": {
+            "linear": 0.015,
+            "temporal": 0.015,
+            "joint": 0.02,
+            "receiver": 0.01
+          },
+          "proposal_candidates": 4,
+          "random_fraction": 0.25,
+          "receiver_tail_alpha": 0.25,
+          "proposal_risk_relative_tolerance": 0.25,
+          "proposal_risk_error_ema": 0.9,
+          "proposal_quality_bins": 4,
+          "proposal_min_distinct_audit_ids": 16,
+          "receiver_live_audit_reencode_max": 32,
+          "auxiliary_batch_scope": "at most32 fresh source-L packets; R may separately re-encode at most32 cached audit IQ packets; count both",
+          "receiver_max_age_steps": 888,
+          "resume": false,
+          "source_selection": "fixed final E30; full-label supervised reference",
+          "deployment": "identity_only",
+          "reference": "periodically frozen own student; no EMA teacher",
+          "action_scope": "bounded post-receive linear/phase increments; no satellite simulator in training",
+          "source_u_scope": "No U access in any arm"
+        },
+        "arm_plan": {
+          "paths": [],
+          "action_mode": "proposal",
+          "shared": false,
+          "r_target": "distribution",
+          "consistency_weight": 0.0,
+          "action_label_free": false,
+          "source_u_fit": false,
+          "replacements": [],
+          "conditional_edges": true
+        },
+        "source_stress": {
+          "seed": 2026101007,
+          "physical_selection": "all existing source V",
+          "batch_size": 256,
+          "views": [
+            "clean",
+            "linear",
+            "temporal",
+            "LT",
+            "TL",
+            "noise_fixed_LT",
+            "LTL_heldout",
+            "curvature_pressure"
+          ],
+          "clean_noninferiority_pp": 0.5,
+          "noise_tie_pp": 0.0,
+          "tail_alpha": 0.25,
+          "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
+          "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
+        },
+        "feature_plan": {
+          "relation": "none",
+          "style": false,
+          "fishr": "none",
+          "fishr_ratio": 0.0,
+          "r_identity": true,
+          "selection_required": false
+        },
+        "feature_recipe": {
+          "relation_every": 8,
+          "relation_weight": 0.1,
+          "relation_batch": 48,
+          "relation_calls": 5550,
+          "relation_packet_occurrences": 266400,
+          "positive_fishr_calls": 4995,
+          "relation_blocks": 30,
+          "source_rx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "source_days": [
+            1,
+            2,
+            3
+          ],
+          "source_classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "style_probability": 0.15,
+          "style_eta": 0.2,
+          "style_alpha": 0.1,
+          "style_location": "time_down",
+          "fishr_beta": 0.9,
+          "fishr_scale": 30.0,
+          "fishr_coordinates": 960,
+          "fishr_scene_weights": {
+            "clean": 1.0
+          },
+          "warmup_epochs": 20,
+          "ramp_epochs": 20,
+          "calibration_epoch": 20,
+          "calibration_target_ratios": [
+            0.03,
+            0.05,
+            0.1
+          ],
+          "calibration_scope": "mature source-L relation buckets; fixed once, no later weight adaptation",
+          "style_scope": "native labeled clean CE only; no extra CE or KL",
+          "statistical_ema": "gradient statistics only, not an EMA teacher",
+          "shared_hidden": 50,
+          "independent_hidden": 48,
+          "capacity_relative_tolerance": 0.002,
+          "deferred": [
+            "hard_resampling",
+            "DSU_alternative",
+            "fourth_interaction_network"
+          ]
+        },
+        "source_selection": {
+          "rule": "fixed final E30; source V health only; no target-feedback selection"
+        },
+        "budget_arm": "E30",
+        "updates": 16890,
+        "checkpoint_selection": "final_only",
+        "test_views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "launch_owner": "codex/root/oracle80-e30-20261012",
+        "concurrency": {
+          "max_processes_per_gpu": 3,
+          "includes_existing": true,
+          "gpu_ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "oracle_data": {
+          "source_rx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "source_days": [
+            1,
+            2,
+            3
+          ],
+          "target_rx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "target_days": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "L_s": 72000,
+          "U_s": 0,
+          "V": 18000,
+          "ratios": [
+            0.8,
+            0.0,
+            0.2
+          ],
+          "rho_label": 1.0,
+          "split": "per TX/RX/day/eq sorted sig_i; first800 train,last200 V",
+          "equalized": 1
+        },
+        "epoch_definition": "one shuffled full pass of all72000 train packets; batch128,last64;563 updates"
+      },
+      "method": "cvs_oracle80",
+      "purpose": "fully supervised E30 reference",
+      "config_ref": "experiment.json#rows/E30-s2026092701",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-oracle80-e30-manysig-s2026092701-r01/E30-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "deterministic sig_i split; model seed controls initialization and shuffle; existing sixscene observations reused without regeneration; channel/evaluation seeds referenced by existing received_views manifest, not yet read locally",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW",
+      "lr": {
+        "peak": 0.0002,
+        "min": 1e-06,
+        "schedule": "cosine"
+      },
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "30x563=16890 updates; batch128 final64; all72000 train packets once per epoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-oracle80-e30-manysig-s2026092701-r01/E30-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-oracle80-e30-manysig-s2026092701-r01/logs/train.log",
+      "command": "python -m experiments.cvs_oracle80.dispatch",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/resolved_native_args.json",
+        "source/epoch_metrics.jsonl",
+        "source/completion.json",
+        "source_frozen.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "scores/analysis.md",
+        "scores/scoring_complete.json",
+        "completion.json"
+      ]
+    }
+  ],
+  "registered_at": "2026-10-12T02:46:44+00:00"
+}
