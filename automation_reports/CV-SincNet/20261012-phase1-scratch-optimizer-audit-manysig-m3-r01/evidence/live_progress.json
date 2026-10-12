@@ -1,0 +1,87 @@
+{
+  "read_at": 1791764059.918827,
+  "rows": [
+    {
+      "row": "OPT-s2026092701",
+      "completed_batches": 20,
+      "last_model": "calibrated-CAP_JOINT",
+      "log_bytes": 217553,
+      "completion": null
+    },
+    {
+      "row": "OPT-s2026092702",
+      "completed_batches": 9,
+      "last_model": "calibrated-DELAY_JOINT",
+      "log_bytes": 136301,
+      "completion": null
+    },
+    {
+      "row": "OPT-s2026092703",
+      "completed_batches": 8,
+      "last_model": "calibrated-DELAY_JOINT",
+      "log_bytes": 128723,
+      "completion": null
+    }
+  ],
+  "capacity": {
+    "0": {
+      "pids": [
+        392538,
+        403143,
+        405837
+      ],
+      "free_mb": 20955
+    },
+    "1": {
+      "pids": [
+        391170,
+        391840,
+        392202
+      ],
+      "free_mb": 20955
+    },
+    "2": {
+      "pids": [
+        391256,
+        391948,
+        392286
+      ],
+      "free_mb": 20971
+    },
+    "3": {
+      "pids": [
+        391344,
+        392032,
+        392370
+      ],
+      "free_mb": 20955
+    },
+    "4": {
+      "pids": [
+        430101
+      ],
+      "free_mb": 22357
+    },
+    "5": {
+      "pids": [
+        430305,
+        430404
+      ],
+      "free_mb": 21784
+    },
+    "6": {
+      "pids": [
+        404809
+      ],
+      "free_mb": 23057
+    },
+    "7": {
+      "pids": [
+        391432,
+        391518,
+        392118
+      ],
+      "free_mb": 20939
+    }
+  }
+}

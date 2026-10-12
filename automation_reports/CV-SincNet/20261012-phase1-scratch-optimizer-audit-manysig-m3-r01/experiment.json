@@ -71,7 +71,7 @@
   "group_id": "cvs-scratch-optimizer-audit",
   "display_name": "浅中层 Fishr/MixStyle 的 AdamW 单步源诊断",
   "description": "固定十八个完成权重，分解梯度并测量保存状态/重置优化器下的实际临时位移；身份零持久更新",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "aliases": [],
   "tags": [
     "source_only",
@@ -159,7 +159,7 @@
     {
       "row_id": "OPT-s2026092701",
       "model_seed": 2026092701,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_optimizer_audit",
       "purpose": "固定十八个完成权重，分解梯度并测量保存状态/重置优化器下的实际临时位移；身份零持久更新",
       "config": {
@@ -2540,12 +2540,14 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Original model seeds inherited; fixed existing physical role split; diagnostic main/reference/U seed=model+880301+batch*1597; original auxiliary/style private samplers. Null does not mean zero."
+      "seed_notes": "Original model seeds inherited; fixed existing physical role split; diagnostic main/reference/U seed=model+880301+batch*1597; original auxiliary/style private samplers. Null does not mean zero.",
+      "pid": 430101,
+      "gpu": 4
     },
     {
       "row_id": "OPT-s2026092702",
       "model_seed": 2026092702,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_optimizer_audit",
       "purpose": "固定十八个完成权重，分解梯度并测量保存状态/重置优化器下的实际临时位移；身份零持久更新",
       "config": {
@@ -4926,12 +4928,14 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Original model seeds inherited; fixed existing physical role split; diagnostic main/reference/U seed=model+880301+batch*1597; original auxiliary/style private samplers. Null does not mean zero."
+      "seed_notes": "Original model seeds inherited; fixed existing physical role split; diagnostic main/reference/U seed=model+880301+batch*1597; original auxiliary/style private samplers. Null does not mean zero.",
+      "pid": 430305,
+      "gpu": 5
     },
     {
       "row_id": "OPT-s2026092703",
       "model_seed": 2026092703,
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_scratch_optimizer_audit",
       "purpose": "固定十八个完成权重，分解梯度并测量保存状态/重置优化器下的实际临时位移；身份零持久更新",
       "config": {
@@ -7312,8 +7316,12 @@
         "support": null,
         "evaluation": null
       },
-      "seed_notes": "Original model seeds inherited; fixed existing physical role split; diagnostic main/reference/U seed=model+880301+batch*1597; original auxiliary/style private samplers. Null does not mean zero."
+      "seed_notes": "Original model seeds inherited; fixed existing physical role split; diagnostic main/reference/U seed=model+880301+batch*1597; original auxiliary/style private samplers. Null does not mean zero.",
+      "pid": 430404,
+      "gpu": 5
     }
   ],
-  "registered_at": "2026-10-12T00:10:05+00:00"
+  "registered_at": "2026-10-12T00:10:05+00:00",
+  "execution_commit": "8d1f266e6abb44d5ec96cdabd00eb51eea83a6fc",
+  "delivery_verdict": "VERIFIED"
 }
