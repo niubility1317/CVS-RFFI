@@ -389,3 +389,8 @@
 
 - [固定三成员概率集成：零训练技术恢复](../automation_reports/CV-SincNet/20261012-phase1-ensemble-final30-recovery-manysig-m3-r02/report.md)（PLANNED）
 - [固定三成员概率集成：三种子30轮最终确认](../automation_reports/CV-SincNet/20261012-phase1-ensemble-final30-manysig-m3-r01/report.md)（FAILED）
+
+## 本轮关系互补与源端结论
+
+- [源集成软标签逐步移交EMA：整RX留出30轮](../automation_reports/CV-SincNet/20261012-phase1-bootstrap-ema-source-manysig-s2026092701-r01/report.md)（PLANNED）
+- [固定三成员概率集成：零训练技术恢复](../automation_reports/CV-SincNet/20261012-phase1-ensemble-final30-recovery-manysig-m3-r02/report.md)（ANALYZED）

@@ -1,0 +1,1 @@
+一次独立 P0/P1 review（/root/quality_review）发现唯一 P1：CE 模板 U_cache 为 None，会导致 preflight 无法打开 U。已修复为显式绑定原 truth-blind U_CACHE，全部 10 row 配置及登记同步；新增精确路径断言 PASS。一次该问题定点复核 PASS，无剩余 P0/P1。其余真实角色、heldRX 隔离、教师来源、随机学生、EMA 版本写入、软目标移交、预算和传输依赖无 P0/P1。没有追加完整、报告或 runner 复审。

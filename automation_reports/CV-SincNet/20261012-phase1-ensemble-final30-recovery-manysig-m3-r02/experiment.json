@@ -1123,7 +1123,8 @@
           "defect": "aggregate source contract copied reference instead of runtime evidence",
           "fix": "actual member runtime contracts verified against unchanged reference; no fabricated flag/no source mutation"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "EQUAL_PROBABILITY_3-s2026092702",
@@ -2115,7 +2116,8 @@
           "defect": "aggregate source contract copied reference instead of runtime evidence",
           "fix": "actual member runtime contracts verified against unchanged reference; no fabricated flag/no source mutation"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "EQUAL_PROBABILITY_3-s2026092703",
@@ -3107,7 +3109,8 @@
           "defect": "aggregate source contract copied reference instead of runtime evidence",
           "fix": "actual member runtime contracts verified against unchanged reference; no fabricated flag/no source mutation"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     }
   ],
   "notes": [
@@ -3118,7 +3121,7 @@
     "Source-onlyreviewonce+oneissuefocusedrereview alreadyclosed;unchanged method and existing seven-view truth-last runner reused;no extra runner/full/report-only review per minimalwhitelist.",
     "r01 FAILED before target prediction:aggregate source_contract copied reference rather than actual runtime proof. All6new members trained30,all owned processes independently null,no prediction/score outputs. Old run immutable;new recovery0training and all3rows same fixed recipe."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-12T13:48:20+00:00",
   "comparisons": [
     {
@@ -3134,6 +3137,109 @@
     {
       "run_id": "20261012-phase1-stochastic-ensemble-source-manysig-s2026092701-r01",
       "role": "source qualification only;no target on thispilot"
+    }
+  ],
+  "execution_commit": "a5ef3788c93d124f999130e8804e84778d2cb052",
+  "delivery_verdict": "VERIFIED",
+  "goal_84": false,
+  "result_summary": [
+    {
+      "arm": "EQUAL_PROBABILITY_3",
+      "view": "clean",
+      "accuracy_mean": 0.8132539682539682,
+      "accuracy_sd": 0.012266816418815055,
+      "seed_accuracy": {
+        "2026092701": 0.8237738095238095,
+        "2026092702": 0.7997797619047619,
+        "2026092703": 0.8162083333333333
+      },
+      "macro_f1_mean": 0.8110360026277946,
+      "worst_RX_mean": 0.7199027777777778,
+      "baseline_CE30_mean": 0.7945615079365079
+    },
+    {
+      "arm": "EQUAL_PROBABILITY_3",
+      "view": "practical_high",
+      "accuracy_mean": 0.5990396825396825,
+      "accuracy_sd": 0.005974465973598853,
+      "seed_accuracy": {
+        "2026092701": 0.5950178571428572,
+        "2026092702": 0.5961964285714285,
+        "2026092703": 0.605904761904762
+      },
+      "macro_f1_mean": 0.5768318534025244,
+      "worst_RX_mean": 0.426875,
+      "baseline_CE30_mean": 0.5487083333333334
+    },
+    {
+      "arm": "EQUAL_PROBABILITY_3",
+      "view": "practical_mid",
+      "accuracy_mean": 0.5678948412698412,
+      "accuracy_sd": 0.006734943034054402,
+      "seed_accuracy": {
+        "2026092701": 0.5631369047619048,
+        "2026092702": 0.5649464285714285,
+        "2026092703": 0.5756011904761905
+      },
+      "macro_f1_mean": 0.5478064909721686,
+      "worst_RX_mean": 0.41368055555555555,
+      "baseline_CE30_mean": 0.5222559523809523
+    },
+    {
+      "arm": "EQUAL_PROBABILITY_3",
+      "view": "practical_low_suburban",
+      "accuracy_mean": 0.5394246031746032,
+      "accuracy_sd": 0.007741302754030126,
+      "seed_accuracy": {
+        "2026092701": 0.5346666666666666,
+        "2026092702": 0.53525,
+        "2026092703": 0.5483571428571429
+      },
+      "macro_f1_mean": 0.5205269745786782,
+      "worst_RX_mean": 0.39937500000000004,
+      "baseline_CE30_mean": 0.498625
+    },
+    {
+      "arm": "EQUAL_PROBABILITY_3",
+      "view": "practical_high_urban",
+      "accuracy_mean": 0.5681488095238095,
+      "accuracy_sd": 0.0058367549488849806,
+      "seed_accuracy": {
+        "2026092701": 0.5638690476190477,
+        "2026092702": 0.5657797619047619,
+        "2026092703": 0.5747976190476191
+      },
+      "macro_f1_mean": 0.546777698145539,
+      "worst_RX_mean": 0.4098194444444444,
+      "baseline_CE30_mean": 0.521265873015873
+    },
+    {
+      "arm": "EQUAL_PROBABILITY_3",
+      "view": "practical_mid_urban",
+      "accuracy_mean": 0.44304166666666667,
+      "accuracy_sd": 0.007095859772221369,
+      "seed_accuracy": {
+        "2026092701": 0.4376607142857143,
+        "2026092702": 0.4403809523809524,
+        "2026092703": 0.45108333333333334
+      },
+      "macro_f1_mean": 0.428134669347122,
+      "worst_RX_mean": 0.3341111111111111,
+      "baseline_CE30_mean": 0.4110734126984127
+    },
+    {
+      "arm": "EQUAL_PROBABILITY_3",
+      "view": "practical_low_urban",
+      "accuracy_mean": 0.35426587301587303,
+      "accuracy_sd": 0.005748879454718382,
+      "seed_accuracy": {
+        "2026092701": 0.34954166666666664,
+        "2026092702": 0.3525892857142857,
+        "2026092703": 0.3606666666666667
+      },
+      "macro_f1_mean": 0.3409913638616628,
+      "worst_RX_mean": 0.2786388888888889,
+      "baseline_CE30_mean": 0.33275992063492066
     }
   ]
 }
