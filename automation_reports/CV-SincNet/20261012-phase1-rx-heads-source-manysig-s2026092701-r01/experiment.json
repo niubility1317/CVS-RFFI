@@ -617,7 +617,8 @@
           "formula": "0.5globalnative softmaxT1+0.5uniform mean fourexpert softmaxT1;no inferenceRX/metadata",
           "training": "originalglobalLCE +0.25oneassignedexpertLCE,same joint160forward"
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "RX_HEAD-RX1-s2026092701",
@@ -1123,7 +1124,8 @@
           "formula": "0.5globalnative softmaxT1+0.5uniform mean fourexpert softmaxT1;no inferenceRX/metadata",
           "training": "originalglobalLCE +0.25oneassignedexpertLCE,same joint160forward"
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "RANDOM_HEAD-RX3-s2026092701",
@@ -1629,7 +1631,8 @@
           "formula": "0.5globalnative softmaxT1+0.5uniform mean fourexpert softmaxT1;no inferenceRX/metadata",
           "training": "originalglobalLCE +0.25oneassignedexpertLCE,same joint160forward"
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "RX_HEAD-RX3-s2026092701",
@@ -2135,7 +2138,8 @@
           "formula": "0.5globalnative softmaxT1+0.5uniform mean fourexpert softmaxT1;no inferenceRX/metadata",
           "training": "originalglobalLCE +0.25oneassignedexpertLCE,same joint160forward"
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "RANDOM_HEAD-RX4-s2026092701",
@@ -2641,7 +2645,8 @@
           "formula": "0.5globalnative softmaxT1+0.5uniform mean fourexpert softmaxT1;no inferenceRX/metadata",
           "training": "originalglobalLCE +0.25oneassignedexpertLCE,same joint160forward"
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "RX_HEAD-RX4-s2026092701",
@@ -3147,7 +3152,8 @@
           "formula": "0.5globalnative softmaxT1+0.5uniform mean fourexpert softmaxT1;no inferenceRX/metadata",
           "training": "originalglobalLCE +0.25oneassignedexpertLCE,same joint160forward"
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "RANDOM_HEAD-RX6-s2026092701",
@@ -3653,7 +3659,8 @@
           "formula": "0.5globalnative softmaxT1+0.5uniform mean fourexpert softmaxT1;no inferenceRX/metadata",
           "training": "originalglobalLCE +0.25oneassignedexpertLCE,same joint160forward"
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "RX_HEAD-RX6-s2026092701",
@@ -4159,7 +4166,8 @@
           "formula": "0.5globalnative softmaxT1+0.5uniform mean fourexpert softmaxT1;no inferenceRX/metadata",
           "training": "originalglobalLCE +0.25oneassignedexpertLCE,same joint160forward"
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "RANDOM_HEAD-RX8-s2026092701",
@@ -4665,7 +4673,8 @@
           "formula": "0.5globalnative softmaxT1+0.5uniform mean fourexpert softmaxT1;no inferenceRX/metadata",
           "training": "originalglobalLCE +0.25oneassignedexpertLCE,same joint160forward"
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "RX_HEAD-RX8-s2026092701",
@@ -5171,7 +5180,8 @@
           "formula": "0.5globalnative softmaxT1+0.5uniform mean fourexpert softmaxT1;no inferenceRX/metadata",
           "training": "originalglobalLCE +0.25oneassignedexpertLCE,same joint160forward"
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     }
   ],
   "notes": [
@@ -5182,7 +5192,7 @@
     "Eligibility follows complete10rows;ifeligible fullsourceeach3primaryseed native+5experts (oneperobservedsourceRX1260samples),randomstudent30;formalrecipe states5 beforetargetaccess.",
     "Fullsourcefixed5heads181825params + native3 531075=712900 total;all inheritednative3 costreported;samecategoryformula and0targetupdates."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-12T14:41:05+00:00",
   "replaces_run_id": null,
   "comparisons": [
@@ -5191,6 +5201,24 @@
       "arm": "EQUAL_PROBABILITY_3",
       "role": "all3frozenmatchingfitLsource probabilities; no teacher/initialization",
       "historical_identity_updates": 99900
+    }
+  ],
+  "execution_commit": "c8f8ab373e897cead9cb38707dfaa60518d106fd",
+  "delivery_verdict": "VERIFIED",
+  "live_readback_ref": "local_artifacts/cvs_rx_heads_20261012_r01/readback.json",
+  "source_eligibility": false,
+  "source_result_summary": [
+    {
+      "arm": "RANDOM_HEAD",
+      "alone_mean": 0.6078148126602173,
+      "mixture_mean": 0.6142222285270691,
+      "worst_RX": 0.3970370292663574
+    },
+    {
+      "arm": "RX_HEAD",
+      "alone_mean": 0.6224074065685272,
+      "mixture_mean": 0.6240000009536744,
+      "worst_RX": 0.4107407331466675
     }
   ]
 }
