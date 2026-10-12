@@ -631,7 +631,8 @@
           "learned_temperature": false,
           "head_optimizer": false
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "PROTO-RX3-s2026092702",
@@ -1146,7 +1147,8 @@
           "learned_temperature": false,
           "head_optimizer": false
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "PROTO-RX4-s2026092702",
@@ -1661,7 +1663,8 @@
           "learned_temperature": false,
           "head_optimizer": false
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "PROTO-RX6-s2026092702",
@@ -2176,7 +2179,8 @@
           "learned_temperature": false,
           "head_optimizer": false
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "PROTO-RX8-s2026092702",
@@ -2691,7 +2695,8 @@
           "learned_temperature": false,
           "head_optimizer": false
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "PROTO-RX1-s2026092703",
@@ -3206,7 +3211,8 @@
           "learned_temperature": false,
           "head_optimizer": false
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "PROTO-RX3-s2026092703",
@@ -3721,7 +3727,8 @@
           "learned_temperature": false,
           "head_optimizer": false
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "PROTO-RX4-s2026092703",
@@ -4236,7 +4243,8 @@
           "learned_temperature": false,
           "head_optimizer": false
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "PROTO-RX6-s2026092703",
@@ -4751,7 +4759,8 @@
           "learned_temperature": false,
           "head_optimizer": false
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     },
     {
       "row_id": "PROTO-RX8-s2026092703",
@@ -5266,7 +5275,8 @@
           "learned_temperature": false,
           "head_optimizer": false
         }
-      }
+      },
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
     }
   ],
   "notes": [
@@ -5275,6 +5285,7 @@
     "Source U closed; no target data. Formal selected all-source fixedE20 three-seed paired readouts will automatically test clean+sixpractical truth-last.",
     "No change to user currentE20 budget; optional longerbudget question still pending."
   ],
-  "status": "PLANNED",
-  "registered_at": "2026-10-12T10:06:39+00:00"
+  "status": "ANALYZED",
+  "registered_at": "2026-10-12T10:06:39+00:00",
+  "execution_commit": "05762daa2d87ef711aa8e0e3c65f0bddd9af1b23"
 }
