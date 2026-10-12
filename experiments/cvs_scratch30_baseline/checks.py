@@ -20,6 +20,9 @@ def run(device='cpu'):
  if not all(p.grad is not None and torch.isfinite(p.grad).all() for p in model.parameters()):raise AssertionError('SelfSSL gradient')
  ce=d.config(next(r for r in d.rows() if r['arm']=='CE30'));m=Toy().to(device).train();loss,_,v=objective(m,x,y,None,None,None,None,ce,6660);loss.backward()
  if v['U_packets'] or v['teacher_forward_calls']:raise AssertionError('CE must not execute U/teacher')
+ for row in d.rows():
+  actual=d.config(row)
+  if actual['source_U'] and actual['U_cache']!=d.U_CACHE.as_posix():raise AssertionError('Cross-platform preregistration U path differs')
  for key,value in [('epochs',20),('checkpoint_sources',['legacy']),('source_U',False),('training_target_access',True)]:
   bad=deepcopy(c);bad[key]=value
   try:d.validate(bad)
