@@ -12,8 +12,8 @@
 |R06|9.2|L 内物理 ID 交叉拟合，方向估计／原型与读出样本独立|同上|verified|fit/query 无交集；每 PID 每方法一次|跨 RX 只检验读出迁移，编码器已见五源 RX|
 |R07|9.3|比较合并 TX 原型与分别保留 RX 原型的读出|同上|verified|全部类别统一竞争、固定 tau|判断共同坐标假设，不由目标混淆指定 TX 权重|
 |R08|9.3|关系CE保留身份CE；关系任务/身份头/margin/修复破坏分开|cvs_crossrx_relation|verified|实际15行完整66600源step／2520000独立clean评分；所有关系方案均值低于匹配SSL|核验机制及负结果，不宣称目标增益；不重跑/按target调权重|
-|R09|9.4|固定编码器已知有限参数作用预测、留出TX/day/质量、强简单基线与真实RX残差覆盖|cvs_finite_action|implemented|source-only3行固定登记；原生CUDA实际352个合成读出/13split/双线性基线/冻结及角色拒绝PASS；独立P0/P1 PASS，待实际351fit|原编码器已见源TX/RX；有限数字操作不声称严格真实RX反事实|
-|R10|8.2、9.5|新增U同包操作响应/可辨识性与不确定性；前导需先确认结构|cvs_finite_action|implemented|U56700仅受控响应验证、不拟合、不读TX；noise4实现的均值/方差；等待实际全U证据|前导N/A：当前256协议确认重复区间未获得，lag16仅质量proxy，不添加前导loss|
+|R09|9.4|固定编码器已知有限参数作用预测、留出TX/day/质量、强简单基线与真实RX残差覆盖|cvs_finite_action|verified|实际3行351fit／351540aux更新／7020完整epoch／1890评估／135覆盖；全源冻结及角色核验闭合|浅层L/T留出TX优于双线性；真实源RX覆盖46.68%/38.91%，不是因果恢复或身份增益|
+|R10|8.2、9.5|新增U同包操作响应/可辨识性与不确定性；前导需先确认结构|cvs_finite_action|verified|全U56700/seed已知响应核验，无TX/拟合；noise4实现均值/方差、NLL/MSE完整分报|R均值无稳定增量、最终方差未校准；前导子项N/A未实现，lag16仅proxy|
 |R11|9.6|工程优化单独归因；额外算力单列，同路径控制|cvs_nocfo_engineering／foundation|verified|实际24行完整106560源step和4032000评分、实测资源、全部负结果|旧engineering18保持未发布；新最高均值79.8986%，未达84%|
 |R12|全文|禁止目标 TX 特殊权重／目标反馈；全 seed 与负结果保留、报告准确名词|所有 config/report/scorer|verified|独立 P0/P1、truth-last 与完整结果|既有公开 benchmark 仅探索，不声称新盲测|
 
@@ -32,3 +32,5 @@ R02/R11/R12实际验证收尾：同输入CE3＋SSL/成本/工程24全部完成�
 当前验收计数：verified9、implemented1（R08）、deferred2（R09/R10）、rejected0、blocked0。R08已发布并排队，实际矩阵未完整完成，不能升级verified。后续源端设计见[有限作用与U证据](finite_action_next_stage.md)，仅设计未启动；最高风险仍是新增辅助知识能否迁移并实际保留身份判别。
 
 最新收尾：R08实际15/15已完整核验，主多层分RX均值76.5919%，最终分RX79.0442%，未达84%。不能由统计方向存在推断联合关系约束有效；全部负结果保留。R09/R10有限作用3行先于关系评分读出登记；当前verified10/implemented2/deferred0/rejected0/blocked0，R10前导子项明确N/A未实现。只有实际迁移和U响应证据才能升级验证状态，不能按target成绩提高约束权重或换参考编码器。
+
+有限作用源端最终收尾：3/3全量闭合、1474200源模型样本读出、身份/头更新0、target访问0。R09/R10验证的是完整实施和正负证据，不代表物理解耦有效。当前verified12/implemented0/deferred0/rejected0/blocked0；R10前导子项N/A保留。最高剩余科学风险是L/T可迁移作用知识能否在源身份训练中带来净收益并跨未知RX泛化，84%尚未达成。后续机制只能从源证据设计，不据既有target成绩调权重/挑老师/重跑。

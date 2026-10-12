@@ -21,3 +21,5 @@
 本地原生CUDA240 L＋112 U读出、真实三层可达、零操作／RMS／私有RNG、13独立split、强双线性人工参考、fit标准化／辅助优化、U标签和PID泄漏拒绝通过。只在完整源证据支持某有限作用迁移后，再另登记对应身份联合训练；本阶段source-only无自动target测试。每卡最多3总CUDA进程，唯一owner，不影响健康任务。
 
 发布VERIFIED：实际3/3行已启动，三份实际配置与固定源权重来源核验通过；8GPU总进程均不超过3。真实源L/U三参考CPU预检PASS。执行commit 9471ce500c48d477b9c40708e0ef3ed9f1ad485b；本批source-only，身份/头更新0，无U拟合/target访问，完成后自动全量源汇总，不生成新的身份测试成绩。
+
+VERIFIED / ANALYZED：3/3源作用诊断完成，351fit/351540aux更新/1474200源读出/7020完整epoch/1890评估/135覆盖，身份更新0。完整比较见[final_analysis.md](final_analysis.md)，迁移/基线/身份保留解释见[source_interpretation.md](source_interpretation.md)。没有新的target成绩，84%仍未达成。

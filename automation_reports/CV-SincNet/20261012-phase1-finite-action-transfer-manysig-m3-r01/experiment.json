@@ -84,7 +84,7 @@
   "group_id": "cvs-finite-action-transfer",
   "display_name": "有限作用迁移：冻结无CFO源CE／频谱时序随机残差／留出TX day质量",
   "description": "固定3源CE编码器，独立三个作用×三个实际层；13留出条件，每网20次fit遍历。L拟合/留出迁移，U56700只同包操作验证；强双线性及输出低秩基线、真实RX统计覆盖，无身份更新及target访问",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "aliases": [],
   "tags": [
     "finite_action",
@@ -128,7 +128,10 @@
     "report.md",
     "experiment.json",
     "events.jsonl",
-    "epoch_metrics.csv"
+    "epoch_metrics.csv",
+    "source_interpretation.md",
+    "evidence/source_interpretation.json",
+    "evidence/source_full_analysis.json"
   ],
   "test_completion_plan": {
     "views": [],
@@ -161,7 +164,7 @@
     {
       "row_id": "ACTION-s2026092701",
       "model_seed": 2026092701,
-      "status": "RUNNING",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_finite_action",
       "purpose": "固定3源CE编码器，独立三个作用×三个实际层；13留出条件，每网20次fit遍历。L拟合/留出迁移，U56700只同包操作验证；强双线性及输出低秩基线、真实RX统计覆盖，无身份更新及target访问",
       "config": {
@@ -724,12 +727,14 @@
         ],
         "gpu": "2"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "auxiliary_fits": 117,
+      "auxiliary_optimizer_steps": 117180
     },
     {
       "row_id": "ACTION-s2026092702",
       "model_seed": 2026092702,
-      "status": "RUNNING",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_finite_action",
       "purpose": "固定3源CE编码器，独立三个作用×三个实际层；13留出条件，每网20次fit遍历。L拟合/留出迁移，U56700只同包操作验证；强双线性及输出低秩基线、真实RX统计覆盖，无身份更新及target访问",
       "config": {
@@ -1292,12 +1297,14 @@
         ],
         "gpu": "6"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "auxiliary_fits": 117,
+      "auxiliary_optimizer_steps": 117180
     },
     {
       "row_id": "ACTION-s2026092703",
       "model_seed": 2026092703,
-      "status": "RUNNING",
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE",
       "method": "cvs_finite_action",
       "purpose": "固定3源CE编码器，独立三个作用×三个实际层；13留出条件，每网20次fit遍历。L拟合/留出迁移，U56700只同包操作验证；强双线性及输出低秩基线、真实RX统计覆盖，无身份更新及target访问",
       "config": {
@@ -1860,77 +1867,24 @@
         ],
         "gpu": "1"
       },
-      "resolved_config_verified": true
+      "resolved_config_verified": true,
+      "auxiliary_fits": 117,
+      "auxiliary_optimizer_steps": 117180
     }
   ],
   "registered_at": "2026-10-12T04:48:17+00:00",
   "execution_commit": "9471ce500c48d477b9c40708e0ef3ed9f1ad485b",
   "delivery_verdict": "VERIFIED",
   "progress": {
-    "launched": 3,
-    "resolved_verified": 3,
-    "queued": 0,
-    "failures": [],
-    "GPU_capacity": {
-      "0": {
-        "pids": [
-          619128,
-          624853
-        ],
-        "free_mb": 20128
-      },
-      "1": {
-        "pids": [
-          604340,
-          616039,
-          627304
-        ],
-        "free_mb": 20925
-      },
-      "2": {
-        "pids": [
-          615078,
-          626107,
-          627076
-        ],
-        "free_mb": 21651
-      },
-      "3": {
-        "pids": [
-          602294,
-          603007
-        ],
-        "free_mb": 18834
-      },
-      "4": {
-        "pids": [
-          614440,
-          622857
-        ],
-        "free_mb": 21218
-      },
-      "5": {
-        "pids": [
-          625434,
-          626605
-        ],
-        "free_mb": 20844
-      },
-      "6": {
-        "pids": [
-          619207,
-          627153,
-          627163
-        ],
-        "free_mb": 21215
-      },
-      "7": {
-        "pids": [
-          590696,
-          620723
-        ],
-        "free_mb": 18836
-      }
-    }
+    "completed_rows": 3,
+    "auxiliary_fits": 351,
+    "auxiliary_optimizer_steps": 351540,
+    "source_packets": 1474200,
+    "source_epochs": 7020,
+    "records": 1890,
+    "coverage_records": 135,
+    "identity_updates": 0,
+    "target_access": false,
+    "goal_status": "NOT_MET"
   }
 }
