@@ -1,0 +1,408 @@
+{
+  "schema": "experiment_record_v1",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "code": {
+    "commit": "resolved from immutable release Git commit",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_e20_historical_adv3b02_20261012_r01"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center crop/pad 256; per-packet complex RMS; center=False; fs=25MHz",
+    "contract_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\releases\\cvs_e20_historical_adv3b02_20261012_r01\\source_contract.json",
+    "physical_ids_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\releases\\cvs_e20_historical_adv3b02_20261012_r01\\source_contract.json#role_ids",
+    "label_map_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\releases\\cvs_e20_historical_adv3b02_20261012_r01\\source_contract.json#class_txs",
+    "source_receivers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "target_receivers": [
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      0,
+      1
+    ],
+    "target_days": [
+      2,
+      3
+    ],
+    "tx_sets_ref": "all6 ManySig.tx_list",
+    "roles": {
+      "L_s": 8400,
+      "U_s": 58800,
+      "V": 16800,
+      "L_s_fraction": 0.1,
+      "U_s_fraction": 0.7,
+      "V_fraction": 0.2,
+      "U_use": "disabled;TX hidden"
+    },
+    "train_ratio": 0.125,
+    "capsule_id": null,
+    "split_id": "historical deterministic per TX/RX/day/eq sig_i 100/700/200",
+    "validation_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\releases\\cvs_e20_historical_adv3b02_20261012_r01\\source_contract.json",
+    "support_query_ref": "no adaptation; three disjoint historical clean cells after final20 freeze",
+    "leo_config_ref": null,
+    "train_ratio_definition": "historical L/(L+U)=.125; user-authorized historical comparison",
+    "diagnostic_access": "sourceV health only; no query during training"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\releases\\cvs_e20_historical_adv3b02_20261012_r01\\source_contract.json",
+    "provenance_verdict": "No inherited model state; current E20 data contract mismatch forbids reuse",
+    "selection_rule": "fixed final E20"
+  },
+  "execution": {
+    "host": "N607",
+    "stop_rule": "technical failure stops pending; healthy rows continue; no automatic retry or output overwrite",
+    "launch_owner": "codex/root/historical-adv3b02-e20-20261012",
+    "gpu_policy": "<=3 total processes perGPU,all owners; >=12000MB free",
+    "remote_run_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01",
+    "remote_log_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01\\logs",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_e20_historical_adv3b02_20261012_r01",
+    "launch_command": "python -m experiments.cvs_adv3b02_e20.publish --output local_artifacts/cvs_e20_historical_adv3b02_20261012_r01"
+  },
+  "expected_artifacts": [
+    "source/completion.json",
+    "source_frozen.json",
+    "data/capsule/manifest.json",
+    "prediction/complete.json",
+    "scores/scoring_complete.json",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "Macro-F1",
+      "NLL",
+      "confusion",
+      "time"
+    ],
+    "dimensions": [
+      "historical_test_cell",
+      "receiver",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01\\E20-s392002\\prediction\\predictions.npz",
+    "scorer_ref": "experiments.cvs_adv3b02_e20.evaluate.score",
+    "complete_seed_count": 1,
+    "clean_split_counts": {
+      "unseen_day_seen_rx": 84000,
+      "seen_day_unseen_rx": 60000,
+      "unseen_day_unseen_rx": 60000
+    }
+  },
+  "run_id": "20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01",
+  "group_id": "cvs-historical-adv3b02-network-comparison",
+  "display_name": "E20 旧门控＋cos：历史 ADV3B02 划分、同 seed392002",
+  "description": "当前纯CE网络从零训练20轮，严格使用历史ADV3B02物理划分，自动三个clean测试集合",
+  "aliases": [
+    "历史ADV3B02 E20比较"
+  ],
+  "tags": [
+    "CE",
+    "old_gates",
+    "cosine",
+    "historical_ADV3B02",
+    "single_seed",
+    "clean_only",
+    "scratch"
+  ],
+  "authorization": "用户：使用E20旧门控+cos跑历史ADV3B02数据集配置，并最后自动测试，种子要一致；补充：只测clean",
+  "status": "PLANNED",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "comparison_group_id": null,
+  "permissions": {
+    "regime": "user_authorized_historical_split",
+    "query_use": "per-packet prediction only",
+    "claim_scope": "exposed historical benchmark; no current10% protocol claim; network/loss/budget all differ from original",
+    "target_feedback_to_training": false
+  },
+  "rows": [
+    {
+      "row_id": "E20-s392002",
+      "model_seed": 392002,
+      "config": {
+        "schema": "historical_adv3b02_e20_v1",
+        "run_id": "20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01",
+        "stage": "historical_adv3b02_e20",
+        "arm": "native",
+        "model_seed": 392002,
+        "row_id": "E20-s392002",
+        "features": [],
+        "variant": "reference_response",
+        "source_contract": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\releases\\cvs_e20_historical_adv3b02_20261012_r01\\source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01\\E20-s392002\\source",
+        "epochs": 20,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_adv3b02_e20",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "risk_recipe": {
+          "warmup_epochs": 20,
+          "auxiliary_every_steps": 4,
+          "auxiliary_batch_size": 32,
+          "auxiliary_lr": 0.0002,
+          "auxiliary_lr_min": 1e-06,
+          "reference_refresh_steps": 888,
+          "gradient_audit_every_steps": 888,
+          "epochs": 20,
+          "steps_per_epoch": 222,
+          "hidden": 48,
+          "branch_weights": {
+            "linear": 0.015,
+            "temporal": 0.015,
+            "joint": 0.02,
+            "receiver": 0.01
+          },
+          "proposal_candidates": 4,
+          "random_fraction": 0.25,
+          "receiver_tail_alpha": 0.25,
+          "proposal_risk_relative_tolerance": 0.25,
+          "proposal_risk_error_ema": 0.9,
+          "proposal_quality_bins": 4,
+          "proposal_min_distinct_audit_ids": 16,
+          "receiver_live_audit_reencode_max": 32,
+          "auxiliary_batch_scope": "at most32 fresh source-L packets; R may separately re-encode at most32 cached audit IQ packets; count both",
+          "receiver_max_age_steps": 888,
+          "resume": false,
+          "source_selection": "fixed final E20; historical seed392002",
+          "deployment": "identity_only",
+          "reference": "periodically frozen own student; no EMA teacher",
+          "action_scope": "bounded post-receive linear/phase increments; no satellite simulator in training",
+          "source_u_scope": "No U access in any arm"
+        },
+        "arm_plan": {
+          "paths": [],
+          "action_mode": "proposal",
+          "shared": false,
+          "r_target": "distribution",
+          "consistency_weight": 0.0,
+          "action_label_free": false,
+          "source_u_fit": false,
+          "replacements": [],
+          "conditional_edges": true
+        },
+        "source_stress": {
+          "seed": 2026101007,
+          "physical_selection": "all existing source V",
+          "batch_size": 256,
+          "views": [
+            "clean",
+            "linear",
+            "temporal",
+            "LT",
+            "TL",
+            "noise_fixed_LT",
+            "LTL_heldout",
+            "curvature_pressure"
+          ],
+          "clean_noninferiority_pp": 0.5,
+          "noise_tie_pp": 0.0,
+          "tail_alpha": 0.25,
+          "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
+          "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
+        },
+        "feature_plan": {
+          "relation": "none",
+          "style": false,
+          "fishr": "none",
+          "fishr_ratio": 0.0,
+          "r_identity": true,
+          "selection_required": false
+        },
+        "feature_recipe": {
+          "relation_every": 8,
+          "relation_weight": 0.1,
+          "relation_batch": 48,
+          "relation_calls": 5550,
+          "relation_packet_occurrences": 266400,
+          "positive_fishr_calls": 4995,
+          "relation_blocks": 30,
+          "source_rx": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "source_days": [
+            0,
+            1
+          ],
+          "source_classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "style_probability": 0.15,
+          "style_eta": 0.2,
+          "style_alpha": 0.1,
+          "style_location": "time_down",
+          "fishr_beta": 0.9,
+          "fishr_scale": 30.0,
+          "fishr_coordinates": 960,
+          "fishr_scene_weights": {
+            "clean": 1.0
+          },
+          "warmup_epochs": 20,
+          "ramp_epochs": 20,
+          "calibration_epoch": 20,
+          "calibration_target_ratios": [
+            0.03,
+            0.05,
+            0.1
+          ],
+          "calibration_scope": "mature source-L relation buckets; fixed once, no later weight adaptation",
+          "style_scope": "native labeled clean CE only; no extra CE or KL",
+          "statistical_ema": "gradient statistics only, not an EMA teacher",
+          "shared_hidden": 50,
+          "independent_hidden": 48,
+          "capacity_relative_tolerance": 0.002,
+          "deferred": [
+            "hard_resampling",
+            "DSU_alternative",
+            "fourth_interaction_network"
+          ]
+        },
+        "source_selection": {
+          "rule": "fixed final E20; V health only; no target-feedback selection"
+        },
+        "budget_arm": "E20",
+        "updates": 4440,
+        "checkpoint_selection": "final_only",
+        "test_views": [
+          "clean"
+        ],
+        "launch_owner": "codex/root/historical-adv3b02-e20-20261012",
+        "concurrency": {
+          "max_processes_per_gpu": 3,
+          "includes_existing": true,
+          "gpu_ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "historical_data": {
+          "source_rx": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "source_days": [
+            0,
+            1
+          ],
+          "target_rx": [
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "target_days": [
+            2,
+            3
+          ],
+          "L_s": 8400,
+          "U_s": 58800,
+          "V": 16800,
+          "ratios": [
+            0.1,
+            0.7,
+            0.2
+          ],
+          "rho_label": 0.125,
+          "equalized": 1,
+          "split": "per TX/RX/day/eq sorted sig_i; first100 L,next700 U,last200 V"
+        },
+        "test_splits": {
+          "unseen_day_seen_rx": 84000,
+          "seen_day_unseen_rx": 60000,
+          "unseen_day_unseen_rx": 60000
+        }
+      },
+      "method": "cvs_adv3b02_e20",
+      "purpose": "historical same-data/same-seed comparison",
+      "config_ref": "experiment.json#rows/E20-s392002",
+      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01\\E20-s392002\\source\\resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392002,
+        "split": 392002,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical ADV3B02 uses392002; physical split is sig_i-contiguous and seed-independent; seed controls initialization and labeled shuffles",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "AdamW",
+      "lr": {
+        "peak": 0.0002,
+        "min": 1e-06,
+        "schedule": "cosine"
+      },
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "20x222=4440 updates,batch128;retain currentE20 update budget",
+      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01\\E20-s392002\\source",
+      "log_path": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261012-phase1-e20-historical-adv3b02-manysig-s392002-r01\\logs\\train.log",
+      "command": "python -m experiments.cvs_adv3b02_e20.dispatch",
+      "expected_artifacts": [
+        "source/completion.json",
+        "source_frozen.json",
+        "data/capsule/manifest.json",
+        "prediction/complete.json",
+        "scores/scoring_complete.json",
+        "completion.json"
+      ]
+    }
+  ],
+  "registered_at": "2026-10-12T02:41:31+00:00"
+}
