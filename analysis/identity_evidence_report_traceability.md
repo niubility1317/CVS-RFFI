@@ -5,16 +5,16 @@
 |ID|来源|验收要求|目标文件|状态|验证|说明|
 |---|---|---|---|---|---|---|
 |R01|9.1|当前 conditional9 按原配置完整收尾、保留全部结果|原 run 的 collect/analyze/final report|verified|9/9 clean评分、39960完整源step、final_analysis.md|健康训练不干预、不重复启动|
-|R02|9.1|新核心假设设置同代码路径、同学生更新预算 CE/SSL 对照|下一批无显式 CFO 训练矩阵|verified|CE3训练/自动clean完成；同输入SSL/replay/六工程24行已登记，CUDA8/strict来源与日志解析PASS，实际24行队列发布VERIFIED，真实源预检PASS，评分进行中|历史 P0 另列，不能替代匹配控制|
+|R02|9.1|新核心假设设置同代码路径、同学生更新预算CE/SSL对照|cvs_nocfo_foundation／engineering|verified|CE3＋固定24行全完成；119880完整源step／4536000独立clean评分|历史P0不能替代匹配控制；SSL预训练教师和U成本单列|
 |R03|9.1|新身份输入不显式拼接 CFO；保留其他参考响应与补偿算法，明确边界|cvs_source_identity_readout/input_policy.py；后续训练模型|verified|冻结读出3seed＋新CE三行训练/预测同mask；完整13320源step及504000独立预测核验|历史 run 保留；屏蔽显式坐标不等于原始 IQ 无频偏|
 |R04|9.2|冻结浅／中／最终实际表示，L6300 全量分解 TX/RX/交互/within|cvs_source_identity_readout/core.py|verified|分解恒等式、PSD、全样本覆盖|不套用虚拟梯度的能量比例|
 |R05|9.2|收缩 PSD 分母的广义特征值，身份均值秩≤5；不删除全部交互|同上|verified|人工矩阵／类置换／退化条件检查|固定 alpha=beta=1、shrink=.1、eps；属于诊断|
 |R06|9.2|L 内物理 ID 交叉拟合，方向估计／原型与读出样本独立|同上|verified|fit/query 无交集；每 PID 每方法一次|跨 RX 只检验读出迁移，编码器已见五源 RX|
 |R07|9.3|比较合并 TX 原型与分别保留 RX 原型的读出|同上|verified|全部类别统一竞争、固定 tau|判断共同坐标假设，不由目标混淆指定 TX 权重|
-|R08|9.3|后续关系训练保留原 CE；关系任务与身份头、类 margin、修复／破坏分别评估|关系训练变体|implemented|固定15行关系训练已实现：CUDA5／strictcheckpoint5／22200合成源step；实际训练尚待发布|按报告先核验原型假设，再加入联合训练；不凭辅助损失下降宣称成功|
+|R08|9.3|关系训练保留CE；关系任务、身份头、类margin、修复／破坏分开评估|cvs_crossrx_relation|implemented|固定15行发布VERIFIED；CUDA5／严格自身checkpoint5／22200合成源step／独立收尾15；实际9行配置核验，自动测试进行中|原型参考eval/no_grad；只query梯度；未证明目标增益|
 |R09|9.4|作用网络先固定编码器、已知有限参数，验证留出 TX/day/质量迁移及线性／低秩基线|有限作用预测诊断|deferred|下一独立作用预测阶段；须先证明作用迁移再约束身份|拟合改进和真实 RX 残差覆盖分别量化，不称不同 RX 严格反事实|
 |R10|8.2、9.5|U 新监督优先同包已知操作／重复前导；先测辨识性、周期复现和不确定性|作用/前导诊断|deferred|与 R09 同阶段|不读取 U TX；不能把周期重复当新独立激励|
-|R11|9.6|工程优化单独归因，实际额外算力另列；新矩阵统一输入并配同路径控制|cvs_nocfo_engineering／foundation + 旧engineering未发布保留|verified|新24行CUDA8/自身checkpoint8/完整35520合成日志分析PASS|18 行旧输入版本尚未发布，保留实现和登记为未发布设计，避免按旧输入启动|
+|R11|9.6|工程优化单独归因；额外算力单列，同路径控制|cvs_nocfo_engineering／foundation|verified|实际24行完整106560源step和4032000评分、实测资源、全部负结果|旧engineering18保持未发布；新最高均值79.8986%，未达84%|
 |R12|全文|禁止目标 TX 特殊权重／目标反馈；全 seed 与负结果保留、报告准确名词|所有 config/report/scorer|verified|独立 P0/P1、truth-last 与完整结果|既有公开 benchmark 仅探索，不声称新盲测|
 
 R04–R07 三种子源诊断已完成，300前向／37800 L累计读出，未访问target。无CFO CE三行已完成，后24行同路径SSL/工程队列已发布。新的训练矩阵统一去除显式 CFO，并设置同路径 CE/SSL 对照，按固定 final20 自动 clean。R08–R10 的顺序来自报告本身，不是新增许可门槛。
@@ -28,3 +28,5 @@ R04–R07 三种子源诊断已完成，300前向／37800 L累计读出，未访
 R08独立跨RX关系15行已固定登记，浅中最终与final、合并与分RX、L30 CE控制；每4身份更新30独立L，无额外头，支持stopgrad仅query梯度。登记先于读取24行目标评分。R09/R10仍为后续有限作用/结构证据阶段。
 
 R02/R11/R12实际验证收尾：同输入CE3＋SSL/成本/工程24全部完成，119880完整源更新、4536000独立clean评分；24源日志自动全解析无缺项/异常。最高均值79.8986%（SSL_WARM_LR3），主组合78.8252%，未达到84%。关系15行在读取成绩前固定，不据目标评分改参/挑种子/重跑。
+
+当前验收计数：verified9、implemented1（R08）、deferred2（R09/R10）、rejected0、blocked0。R08已发布并排队，实际矩阵未完整完成，不能升级verified。后续源端设计见[有限作用与U证据](finite_action_next_stage.md)，仅设计未启动；最高风险仍是新增辅助知识能否迁移并实际保留身份判别。

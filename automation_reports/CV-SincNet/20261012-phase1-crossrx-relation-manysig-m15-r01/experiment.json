@@ -123,7 +123,7 @@
   "group_id": "cvs-crossrx-relation",
   "display_name": "独立源原型跨RX身份关系：最终层与浅中最终层对照",
   "description": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "aliases": [],
   "tags": [
     "scratch20",
@@ -252,7 +252,7 @@
       "arm": "L30_CE",
       "model_seed": 2026092701,
       "row_id": "L30_CE-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -730,13 +730,31 @@
         "support": 2026092701,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "pid": 605325,
+      "gpu": 2,
+      "launch_evidence": {
+        "pid": 605325,
+        "start_ticks": 102680664,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossrx_relation_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossrx_relation.dispatch",
+          "--worker",
+          "L30_CE-s2026092701"
+        ],
+        "gpu": "2"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "REL_FINAL_MERGED",
       "model_seed": 2026092701,
       "row_id": "REL_FINAL_MERGED-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -1216,13 +1234,31 @@
         "support": 2026092701,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "pid": 605418,
+      "gpu": 4,
+      "launch_evidence": {
+        "pid": 605418,
+        "start_ticks": 102680997,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossrx_relation_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossrx_relation.dispatch",
+          "--worker",
+          "REL_FINAL_MERGED-s2026092701"
+        ],
+        "gpu": "4"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "REL_FINAL_SEPARATE",
       "model_seed": 2026092701,
       "row_id": "REL_FINAL_SEPARATE-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -1702,13 +1738,31 @@
         "support": 2026092701,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "pid": 605496,
+      "gpu": 1,
+      "launch_evidence": {
+        "pid": 605496,
+        "start_ticks": 102681332,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossrx_relation_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossrx_relation.dispatch",
+          "--worker",
+          "REL_FINAL_SEPARATE-s2026092701"
+        ],
+        "gpu": "1"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "REL_MULTI_MERGED",
       "model_seed": 2026092701,
       "row_id": "REL_MULTI_MERGED-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -2190,13 +2244,31 @@
         "support": 2026092701,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "pid": 605579,
+      "gpu": 6,
+      "launch_evidence": {
+        "pid": 605579,
+        "start_ticks": 102681666,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossrx_relation_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossrx_relation.dispatch",
+          "--worker",
+          "REL_MULTI_MERGED-s2026092701"
+        ],
+        "gpu": "6"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "REL_MULTI_SEPARATE",
       "model_seed": 2026092701,
       "row_id": "REL_MULTI_SEPARATE-s2026092701",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -2678,13 +2750,31 @@
         "support": 2026092701,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "pid": 605661,
+      "gpu": 5,
+      "launch_evidence": {
+        "pid": 605661,
+        "start_ticks": 102681996,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossrx_relation_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossrx_relation.dispatch",
+          "--worker",
+          "REL_MULTI_SEPARATE-s2026092701"
+        ],
+        "gpu": "5"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "L30_CE",
       "model_seed": 2026092702,
       "row_id": "L30_CE-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -3162,13 +3252,31 @@
         "support": 2026092702,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "pid": 605739,
+      "gpu": 0,
+      "launch_evidence": {
+        "pid": 605739,
+        "start_ticks": 102682330,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossrx_relation_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossrx_relation.dispatch",
+          "--worker",
+          "L30_CE-s2026092702"
+        ],
+        "gpu": "0"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "REL_FINAL_MERGED",
       "model_seed": 2026092702,
       "row_id": "REL_FINAL_MERGED-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -3648,13 +3756,31 @@
         "support": 2026092702,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "pid": 605821,
+      "gpu": 7,
+      "launch_evidence": {
+        "pid": 605821,
+        "start_ticks": 102682659,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossrx_relation_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossrx_relation.dispatch",
+          "--worker",
+          "REL_FINAL_MERGED-s2026092702"
+        ],
+        "gpu": "7"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "REL_FINAL_SEPARATE",
       "model_seed": 2026092702,
       "row_id": "REL_FINAL_SEPARATE-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -4134,13 +4260,31 @@
         "support": 2026092702,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "pid": 605903,
+      "gpu": 3,
+      "launch_evidence": {
+        "pid": 605903,
+        "start_ticks": 102682989,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossrx_relation_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossrx_relation.dispatch",
+          "--worker",
+          "REL_FINAL_SEPARATE-s2026092702"
+        ],
+        "gpu": "3"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "REL_MULTI_MERGED",
       "model_seed": 2026092702,
       "row_id": "REL_MULTI_MERGED-s2026092702",
-      "status": "PLANNED",
+      "status": "RUNNING",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -4622,13 +4766,31 @@
         "support": 2026092702,
         "evaluation": null
       },
-      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
+      "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest",
+      "pid": 606497,
+      "gpu": 5,
+      "launch_evidence": {
+        "pid": 606497,
+        "start_ticks": 102688645,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossrx_relation_20261012_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossrx_relation.dispatch",
+          "--worker",
+          "REL_MULTI_MERGED-s2026092702"
+        ],
+        "gpu": "5"
+      },
+      "resolved_config_verified": true
     },
     {
       "arm": "REL_MULTI_SEPARATE",
       "model_seed": 2026092702,
       "row_id": "REL_MULTI_SEPARATE-s2026092702",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -5116,7 +5278,7 @@
       "arm": "L30_CE",
       "model_seed": 2026092703,
       "row_id": "L30_CE-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -5600,7 +5762,7 @@
       "arm": "REL_FINAL_MERGED",
       "model_seed": 2026092703,
       "row_id": "REL_FINAL_MERGED-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -6086,7 +6248,7 @@
       "arm": "REL_FINAL_SEPARATE",
       "model_seed": 2026092703,
       "row_id": "REL_FINAL_SEPARATE-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -6572,7 +6734,7 @@
       "arm": "REL_MULTI_MERGED",
       "model_seed": 2026092703,
       "row_id": "REL_MULTI_MERGED-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -7060,7 +7222,7 @@
       "arm": "REL_MULTI_SEPARATE",
       "model_seed": 2026092703,
       "row_id": "REL_MULTI_SEPARATE-s2026092703",
-      "status": "PLANNED",
+      "status": "QUEUED",
       "method": "cvs_crossrx_relation",
       "purpose": "五方案各三seed，20轮随机学生，保留L身份CE和固定源教师U软KL；独立L30支持构建合并或分RX六类关系，排除查询RX/PID；配L30额外CE成本控制",
       "config": {
@@ -7545,5 +7707,79 @@
       "seed_notes": "fixedphysicalroles;L=model+101,U=model+901337;support privateGenerator=model+step131071+276444;mainnoise=model+step9901;source daycycles1/2/3;fixedtest"
     }
   ],
-  "registered_at": "2026-10-12T04:20:10+00:00"
+  "registered_at": "2026-10-12T04:20:10+00:00",
+  "execution_commit": "3ec1801e104aa894335c0dd537e761bc5df7a4f0",
+  "delivery_verdict": "VERIFIED",
+  "progress": {
+    "launched": 9,
+    "resolved_verified": 9,
+    "queued": 6,
+    "failures": [],
+    "GPU_capacity": {
+      "0": {
+        "pids": [
+          590845,
+          602933,
+          605739
+        ],
+        "free_mb": 19689
+      },
+      "1": {
+        "pids": [
+          590919,
+          604340,
+          605496
+        ],
+        "free_mb": 20617
+      },
+      "2": {
+        "pids": [
+          589984,
+          604420,
+          605325
+        ],
+        "free_mb": 21487
+      },
+      "3": {
+        "pids": [
+          602294,
+          603007,
+          605903
+        ],
+        "free_mb": 18143
+      },
+      "4": {
+        "pids": [
+          590993,
+          591212,
+          605418
+        ],
+        "free_mb": 20899
+      },
+      "5": {
+        "pids": [
+          590136,
+          605661,
+          606497
+        ],
+        "free_mb": 20259
+      },
+      "6": {
+        "pids": [
+          590214,
+          602124,
+          605579
+        ],
+        "free_mb": 20345
+      },
+      "7": {
+        "pids": [
+          590696,
+          591510,
+          605821
+        ],
+        "free_mb": 19435
+      }
+    }
+  }
 }
