@@ -1,2 +1,3 @@
 {"at": "2026-10-12T17:40:36+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-12T17:51:54+00:00", "status": "ANALYZED", "note": "VERIFIED24fixedmaps3CE30parents4032000cleanpredictions432metricrecords independentlyrecounted;noVperformancegate/extraepochs;goal84 False", "evidence": ["final_analysis.md"], "row_id": null}
+{"at": "2026-10-12T18:32:50+00:00", "status": "ANALYZED", "note": "登记文字更正：旧源先导模板残留source_days0/1/2、source_only/no target、全部U未打开；本轮实际依据最新用户clean授权及冻结rowconfigs执行，源contract/resolved显示day1/2/3、正式两SSL使用隐藏U、全部clean测试。仅纠正登记元数据，原不可变release/run/spec及所有训练/预测/评分产物保留；不改变划分、roleIDs、方法、预算或已冻结矩阵。", "evidence": ["final_analysis.md"], "row_id": null}

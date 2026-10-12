@@ -29,9 +29,9 @@
   "data": {
     "dataset": "ManySig",
     "version": "existing source contract",
-    "representation": "raw received residual/post_sync/noeq IQ; fixed common temporal linear projection",
+    "representation": "received residual/post_sync/noeq clean IQ256; native CVS plus row-defined mechanism",
     "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids; /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/index.npz",
     "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "source_receivers": [
       1,
@@ -40,31 +40,44 @@
       6,
       8
     ],
-    "target_receivers": [],
-    "source_days": [
-      0,
-      1,
-      2
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
     ],
-    "target_days": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_01",
+      "2021_03_08",
+      "2021_03_15",
+      "2021_03_23"
+    ],
     "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "roles": {
       "L_s": 6300,
-      "U_s": "56700 hidden and unopened",
-      "V": 27000
+      "U_s": "56700 hidden; opened only UNIFORM_SSL/META_SSL",
+      "V": "27000 legallyloaded, neverforwarded or performance-selected"
     },
     "train_ratio": 0.07,
     "capsule_id": null,
     "split_id": null,
     "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-    "support_query_ref": null,
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/manifest.json and index.npz; Phase1clean168000;truthside /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json",
     "leo_config_ref": null
   },
   "permissions": {
-    "regime": "source_only",
-    "query_use": "no target; held sourceRX V after final30 frozen",
+    "regime": "pure_domain_generalization",
+    "query_use": "only fixed frozen clean prediction; no query training/fit/selection; independent truth-last after every same-row readout completes",
     "external_method_exception": null,
-    "claim_scope": "single packet quality-conditioned identity inductive bias; not pure RX decomposition or target support adaptation"
+    "claim_scope": "threeprimaryseed Phase1 clean ManySig groundproxy benchmark-exposed; no Phase2/in-orbit claim"
   },
   "checkpoint": {
     "initialization": "everymodel whole scratch; no oldteacher/oracle80/parentweights",
@@ -84,15 +97,16 @@
     "stop_rule": "wrong protocol/roles/checkpoint, target or U truth in training, output collision, unlaunchable or prediction/scorer closure failure; protect all unrelated workloads, retain partials; no stop/retry for low accuracy"
   },
   "expected_artifacts": [
-    "identity.pth",
-    "source_predictions.pt",
+    "source model.pth or FINAL/SWA.pth",
     "resolved_config.json",
     "source_contract.json",
-    "step_metrics.jsonl.gz",
-    "epoch_metrics.jsonl",
+    "source_frozen.json",
+    "sourcefit or fulltraining diagnostics",
+    "prediction/predictions.npz",
+    "prediction/complete.json",
+    "scores/metrics.json",
     "completion.json",
     "analysis.json",
-    "source_decision.json",
     "final_analysis.md"
   ],
   "metrics_plan": {
@@ -635,7 +649,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "CE_MATCHED-s2026092702",
@@ -1156,7 +1171,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "CE_MATCHED-s2026092703",
@@ -1677,7 +1693,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "UNIFORM_SSL-s2026092701",
@@ -2198,7 +2215,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "UNIFORM_SSL-s2026092702",
@@ -2719,7 +2737,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "UNIFORM_SSL-s2026092703",
@@ -3240,7 +3259,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "META_SSL-s2026092701",
@@ -3761,7 +3781,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "META_SSL-s2026092702",
@@ -4282,7 +4303,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "META_SSL-s2026092703",
@@ -4803,7 +4825,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "SWA_TRAJECTORY-s2026092701",
@@ -5325,7 +5348,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "SWA_TRAJECTORY-s2026092702",
@@ -5847,7 +5871,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "SWA_TRAJECTORY-s2026092703",
@@ -6369,7 +6394,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "SUBBAND_MODULATION-s2026092701",
@@ -6890,7 +6916,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "SUBBAND_MODULATION-s2026092702",
@@ -7411,7 +7438,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "SUBBAND_MODULATION-s2026092703",
@@ -7932,7 +7960,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "POLYNOMIAL-s2026092701",
@@ -8453,7 +8482,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "POLYNOMIAL-s2026092702",
@@ -8974,7 +9004,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "POLYNOMIAL-s2026092703",
@@ -9495,7 +9526,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "AFFINE_IQ-s2026092701",
@@ -10016,7 +10048,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "AFFINE_IQ-s2026092702",
@@ -10537,7 +10570,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "AFFINE_IQ-s2026092703",
@@ -11058,7 +11092,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "LOG_SPECTRUM-s2026092701",
@@ -11579,7 +11614,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "LOG_SPECTRUM-s2026092702",
@@ -12100,7 +12136,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "LOG_SPECTRUM-s2026092703",
@@ -12621,7 +12658,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "SCALAR_CLOSURE-s2026092701",
@@ -13142,7 +13180,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "SCALAR_CLOSURE-s2026092702",
@@ -13663,7 +13702,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "SCALAR_CLOSURE-s2026092703",
@@ -14184,7 +14224,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MATRIX_CLOSURE-s2026092701",
@@ -14705,7 +14746,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MATRIX_CLOSURE-s2026092702",
@@ -15226,7 +15268,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MATRIX_CLOSURE-s2026092703",
@@ -15747,7 +15790,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "TANGENT-s2026092701",
@@ -16268,7 +16312,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "TANGENT-s2026092702",
@@ -16789,7 +16834,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "TANGENT-s2026092703",
@@ -17310,7 +17356,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "C4_ORBIT-s2026092701",
@@ -17831,7 +17878,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "C4_ORBIT-s2026092702",
@@ -18352,7 +18400,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "C4_ORBIT-s2026092703",
@@ -18873,7 +18922,8 @@
           "SWA_schedule": "20cos2e-4to5e-5 thenalternating1e-4/5e-5",
           "source_gate": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     }
   ],
   "notes": [
@@ -18892,7 +18942,206 @@
     "Singleowner immutableoutputs/ordinaryaccount/GPUtotalprocesses<=3/free>=12000MB;systemictechnical/data/permission/output/illegalprediction stopsrunownedonly;no scorestop/hotmodify/restart oldhealthyprocess.",
     "Existingbenchmarkexposed,notnewblindtest. Phase2 commoncos refitshape smoke9classes only,not futureprotocolapproval."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-12T17:55:01+00:00",
-  "replaces_run_id": null
+  "replaces_run_id": null,
+  "execution_commit": "c16504cca2542d9eb342419f89acec420809277b",
+  "delivery_verdict": "VERIFIED",
+  "live_readback_ref": "local_artifacts/cvs_report_mechanisms_20261013_r01/readback.json",
+  "clean_result_summary": [
+    {
+      "arm": "CE_MATCHED",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7976507936507937,
+      "accuracy_sd": 0.013302133635596208,
+      "seed_accuracy": {
+        "2026092701": 0.8085952380952381,
+        "2026092702": 0.7828452380952381,
+        "2026092703": 0.8015119047619048
+      },
+      "macro_f1_mean": 0.7942533478486862,
+      "goal_84": false
+    },
+    {
+      "arm": "UNIFORM_SSL",
+      "readout": "FINAL",
+      "accuracy_mean": 0.800313492063492,
+      "accuracy_sd": 0.010245078828961755,
+      "seed_accuracy": {
+        "2026092701": 0.8084166666666667,
+        "2026092702": 0.788797619047619,
+        "2026092703": 0.8037261904761904
+      },
+      "macro_f1_mean": 0.797322333595577,
+      "goal_84": false
+    },
+    {
+      "arm": "META_SSL",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7996051587301587,
+      "accuracy_sd": 0.012334554679214882,
+      "seed_accuracy": {
+        "2026092701": 0.8072380952380952,
+        "2026092702": 0.785375,
+        "2026092703": 0.806202380952381
+      },
+      "macro_f1_mean": 0.7962995345350659,
+      "goal_84": false
+    },
+    {
+      "arm": "SWA_TRAJECTORY",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7951309523809523,
+      "accuracy_sd": 0.01447767360040346,
+      "seed_accuracy": {
+        "2026092701": 0.7956666666666666,
+        "2026092702": 0.7803928571428571,
+        "2026092703": 0.8093333333333333
+      },
+      "macro_f1_mean": 0.7906056471942021,
+      "goal_84": false
+    },
+    {
+      "arm": "SWA_TRAJECTORY",
+      "readout": "SWA",
+      "accuracy_mean": 0.7982718253968254,
+      "accuracy_sd": 0.013445394747949719,
+      "seed_accuracy": {
+        "2026092701": 0.8063214285714285,
+        "2026092702": 0.78275,
+        "2026092703": 0.8057440476190476
+      },
+      "macro_f1_mean": 0.7944400458790767,
+      "goal_84": false
+    },
+    {
+      "arm": "SUBBAND_MODULATION",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7963769841269841,
+      "accuracy_sd": 0.009262504061077714,
+      "seed_accuracy": {
+        "2026092701": 0.8059047619047619,
+        "2026092702": 0.7874047619047619,
+        "2026092703": 0.7958214285714286
+      },
+      "macro_f1_mean": 0.7919860478902232,
+      "goal_84": false
+    },
+    {
+      "arm": "POLYNOMIAL",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7289623015873016,
+      "accuracy_sd": 0.008499496311384646,
+      "seed_accuracy": {
+        "2026092701": 0.7387738095238096,
+        "2026092702": 0.7238511904761905,
+        "2026092703": 0.7242619047619048
+      },
+      "macro_f1_mean": 0.7261058994570015,
+      "goal_84": false
+    },
+    {
+      "arm": "AFFINE_IQ",
+      "readout": "FINAL",
+      "accuracy_mean": 0.8032857142857143,
+      "accuracy_sd": 0.009112885288863361,
+      "seed_accuracy": {
+        "2026092701": 0.8049583333333333,
+        "2026092702": 0.7934523809523809,
+        "2026092703": 0.8114464285714286
+      },
+      "macro_f1_mean": 0.7998826932554794,
+      "goal_84": false
+    },
+    {
+      "arm": "LOG_SPECTRUM",
+      "readout": "FINAL",
+      "accuracy_mean": 0.6640277777777778,
+      "accuracy_sd": 0.015243581989008758,
+      "seed_accuracy": {
+        "2026092701": 0.6645,
+        "2026092702": 0.6790297619047619,
+        "2026092703": 0.6485535714285714
+      },
+      "macro_f1_mean": 0.6666017315763947,
+      "goal_84": false
+    },
+    {
+      "arm": "SCALAR_CLOSURE",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7873789682539682,
+      "accuracy_sd": 0.019631364182248926,
+      "seed_accuracy": {
+        "2026092701": 0.7872321428571428,
+        "2026092702": 0.7678214285714285,
+        "2026092703": 0.8070833333333334
+      },
+      "macro_f1_mean": 0.7835851298023983,
+      "goal_84": false
+    },
+    {
+      "arm": "MATRIX_CLOSURE",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7950773809523809,
+      "accuracy_sd": 0.014210281999751847,
+      "seed_accuracy": {
+        "2026092701": 0.7984940476190476,
+        "2026092702": 0.7794702380952381,
+        "2026092703": 0.8072678571428571
+      },
+      "macro_f1_mean": 0.7916561879460448,
+      "goal_84": false
+    },
+    {
+      "arm": "TANGENT",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7956567460317461,
+      "accuracy_sd": 0.019150163271024048,
+      "seed_accuracy": {
+        "2026092701": 0.8039226190476191,
+        "2026092702": 0.7737619047619048,
+        "2026092703": 0.8092857142857143
+      },
+      "macro_f1_mean": 0.7919367623453833,
+      "goal_84": false
+    },
+    {
+      "arm": "C4_ORBIT",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7305198412698413,
+      "accuracy_sd": 0.02033265229473577,
+      "seed_accuracy": {
+        "2026092701": 0.7398511904761905,
+        "2026092702": 0.7071964285714286,
+        "2026092703": 0.7445119047619048
+      },
+      "macro_f1_mean": 0.725989225308093,
+      "goal_84": false
+    }
+  ],
+  "goal_84": false,
+  "post_run_metadata_correction": {
+    "before": {
+      "source_days": [
+        0,
+        1,
+        2
+      ],
+      "permissions": {
+        "regime": "pure_domain_generalization",
+        "query_use": "only fixed frozen clean prediction; no query training/fit/selection; independent truth-last after every same-row readout completes",
+        "external_method_exception": null,
+        "claim_scope": "threeprimaryseed Phase1 clean ManySig groundproxy benchmark-exposed; no Phase2/in-orbit claim"
+      },
+      "U_role": "56700 hidden and unopened"
+    },
+    "reason": "old sourcepilot template fields conflicted with latestuserclean authorization and fixed rowconfigs; actualSOURCE/roleIDs/resolved/training/prediction unchanged",
+    "actual_source_days": [
+      1,
+      2,
+      3
+    ],
+    "root_fields_consumed_by_launcher": false,
+    "immutable_release_and_run_specs_preserved": true
+  }
 }

@@ -451,3 +451,9 @@
 
 - [报告独立机制与元反馈/SWA：三种子30轮普通cos clean](../automation_reports/CV-SincNet/20261013-phase1-report-mechanisms-clean-manysig-m36-r01/report.md)（PLANNED）
 - [报告投影机制：普通 cos、三种子 clean 固定24行](../automation_reports/CV-SincNet/20261013-phase1-report-projection-clean-manysig-m24-r01/report.md)（ANALYZED）
+
+## 本轮关系互补与源端结论
+
+- [教师伪标签目标反馈：普通cos三种子30轮clean](../automation_reports/CV-SincNet/20261013-phase1-feedback-teacher-clean-manysig-m12-r01/report.md)（PLANNED）
+- [报告独立机制与元反馈/SWA：三种子30轮普通cos clean](../automation_reports/CV-SincNet/20261013-phase1-report-mechanisms-clean-manysig-m36-r01/report.md)（ANALYZED）
+- [报告投影机制：普通 cos、三种子 clean 固定24行](../automation_reports/CV-SincNet/20261013-phase1-report-projection-clean-manysig-m24-r01/report.md)（ANALYZED）
