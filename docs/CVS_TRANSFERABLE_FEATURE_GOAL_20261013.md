@@ -31,3 +31,5 @@ ManySig 源域 6 TX 都已参与 L/U/V 或 teacher，因此只能叫旧 TX；隐
 继续沿源数据与结构分析设计特征机制，保持默认头与旧门控＋cos 对比。用户原列出的 PA 跨延迟三阶乘性交互属于尚未实施的独立结构路线，可与同容量卷积独立消融；浅层/中层域稳定机制须记录实际层位、梯度对象、RX 域分组及身份保护配对。任何新行都直接默认头预测，不能调用历史 source_freshhead/readout 入口。
 
 另一活动对话“继续优化 Phase1 双骨干域泛化”当前路线是 GN 信息恢复/分支竞争抑制。本对话的功率化前跨频关系及后续 PA/特征机制与其不同；未擅自给其他对话发送任务。所有负结果保留，目标 84% 仍 active。
+
+新独立 PA 结构矩阵已实现、登记但尚未发布：20261014-phase1-pa-cross-delay-legacycos-clean-manysig-m9-r01，原旧PA baseline、同参数普通卷积PA_CONV、因子化跨延迟三阶PA_CROSS_DELAY；后两项各3scratch50，共6新模型，新fθ各576参数、旧EnvelopeGate保留。默认头6×160/scale30联合训练，无单独headfit，预测只有ORIGINAL_HEAD。数学/真实骨干/默认推理/21负例与九行合成汇总PASS，唯一一次独立P0/P1审查PASS；尚无真实性能结果。
