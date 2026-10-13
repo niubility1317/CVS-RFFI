@@ -32219,6 +32219,36 @@
       "U_accuracy_unknown": true,
       "result": "automation_reports/CV-SincNet/20261014-phase1-source-legacy-gate-audit-manysig-m3-r01/results.json",
       "report": "automation_reports/CV-SincNet/20261014-phase1-source-legacy-gate-audit-manysig-m3-r01/source_gate_analysis.md"
+    },
+    {
+      "run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r01",
+      "status": "LOCAL_VERIFIED",
+      "mechanism": "Allowed hidden-U physical-neighbor PAIRS vs native-matched RANDOM ordering only; original network/old gates/EMA/default head",
+      "code": "GIT_HEAD_AT_RELEASE",
+      "baseline": "OLD_GATE_COS50 exact33label+17pseudo/scratch50 historical default decisions; fresh RANDOM control",
+      "arms": [
+        "OLD_GATE_COS50",
+        "RANDOM_ORDER",
+        "PAIRED_ORDER"
+      ],
+      "new_model_cost": {
+        "models": 6,
+        "epochs": 300,
+        "updates": 66600
+      },
+      "historical_comparison_epochs": 150,
+      "separate_head_updates": 0,
+      "source_first_seed_threshold": {
+        "first_seed": 2026092701,
+        "maximum_final_L_CE": 0.5,
+        "minimum_paired_U_acceptance": 0.25,
+        "metric": "fixedfinal source LCE<=.5 both new controls and paired accepted U / total U>=.25 over fixed17pseudoepochs; no U truth, V/target ranking"
+      },
+      "local_checks": "PASS: actual56700synthetic native/RNG/tail/defaultfeature/6negatives",
+      "independent_P0P1": "PASS: unique new training integration only, native50 synthetic33/17 verified",
+      "source_qualification": "20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01",
+      "results": null,
+      "report": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r01/report.md"
     }
   ],
   "diagnostics": {
@@ -77184,8 +77214,8 @@
     "Oldgate coverage audit on legal labeled source proxies before altering SSL"
   ],
   "next_actions_max2": [
-    "Preserve completed fixed Sinc evidence; source-supported neighbor-pair/random order diagnosis under original gates, no U truth or head fit",
-    "Only after fixed source coverage/precision criterion passes, publish separate scratch50 oldgate/cos matched sampling matrix; do not combine Sinc/TIME or use target feedback"
+    "Launch source-qualified matched random/neighbor-pair scratch50 firstseed, original old gates/EMA/default head, automaticclean/truth-last; remainingseeds only fixedsource conditions",
+    "Complete same-row logs/Umetadata/source features/full3seeddefault metrics and upload code plus positive/negative results; no target tuning"
   ],
   "goal_84": false,
   "Phase2_development": false
