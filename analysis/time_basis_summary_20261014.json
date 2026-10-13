@@ -1,0 +1,116 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-single-basis-residual-oldgate-e50-clean-manysig-m6-r01",
+  "execution_commit": "a6d75a259949d66a7f8da80319ba904c1fc6d72a",
+  "registered_rows": 6,
+  "new_backbones": 3,
+  "historical_original_refs": 3,
+  "external_compact_refs": 3,
+  "new_model_epochs": 150,
+  "new_updates": 33300,
+  "historical_baseline_epochs": 150,
+  "historical_baseline_updates": 33300,
+  "historical_compact_epochs": 150,
+  "historical_compact_updates": 33300,
+  "new_prediction_count": 504000,
+  "reused_baseline_count": 504000,
+  "external_compact_decisions": 504000,
+  "recounted_decisions": 1512000,
+  "recounted_CM": 162,
+  "head_fit_updates": 0,
+  "summary": [
+    {
+      "arm": "BASE_REF",
+      "seed_count": 3,
+      "accuracy_mean": 0.8052678571428572,
+      "accuracy_sd": 0.023775723031464996,
+      "macro_f1_mean": 0.8000238637751929,
+      "worst_RX_mean": 0.6797083333333334,
+      "worst_day_mean": 0.7605555555555555
+    },
+    {
+      "arm": "COMPACT_LINEAR",
+      "seed_count": 3,
+      "accuracy_mean": 0.8121607142857142,
+      "accuracy_sd": 0.0055909906624230085,
+      "macro_f1_mean": 0.8067290238488403,
+      "worst_RX_mean": 0.7216111111111111,
+      "worst_day_mean": 0.7778015873015873
+    },
+    {
+      "arm": "SINGLE_BASIS",
+      "seed_count": 3,
+      "accuracy_mean": 0.8119999999999999,
+      "accuracy_sd": 0.015038813870084562,
+      "macro_f1_mean": 0.8065690425452676,
+      "worst_RX_mean": 0.7162083333333333,
+      "worst_day_mean": 0.767626984126984
+    }
+  ],
+  "paired": [
+    {
+      "treatment": "SINGLE_BASIS",
+      "control": "BASE_REF",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "differences": [
+        0.00948809523809524,
+        0.014499999999999957,
+        -0.0037916666666667487
+      ],
+      "mean_difference": 0.006732142857142816,
+      "sample_sd": 0.009452127935320674,
+      "positive_seeds": 2
+    },
+    {
+      "treatment": "SINGLE_BASIS",
+      "control": "COMPACT_LINEAR",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "differences": [
+        0.006184523809523834,
+        -0.012666666666666715,
+        0.006000000000000005
+      ],
+      "mean_difference": -0.0001607142857142918,
+      "sample_sd": 0.010830865430567285,
+      "positive_seeds": 2
+    }
+  ],
+  "actual_initial_matches": [
+    {
+      "seed": 2026092701,
+      "actual_non_time_initial_state_tensors_equal": 179,
+      "time_tensors_intentionally_different": true
+    },
+    {
+      "seed": 2026092702,
+      "actual_non_time_initial_state_tensors_equal": 179,
+      "time_tensors_intentionally_different": true
+    },
+    {
+      "seed": 2026092703,
+      "actual_non_time_initial_state_tensors_equal": 179,
+      "time_tensors_intentionally_different": true
+    }
+  ],
+  "source_U_truth_read": false,
+  "new_source_process_seconds": 6173.577766656876,
+  "process_time_not_exclusive_GPU": true,
+  "goal84": false,
+  "goal_gap_pp": 2.8000000000000025,
+  "operation_count_source": "time_basis_operation_counts_20261014.json",
+  "single_to_compact_time_MAC_ratio": 1.0015678896205706,
+  "limitations": [
+    "Different time functions and optimizer reparameterization; parameter/MAC equality does not equal function capacity",
+    "Kernel rank is not joint160 feature rank",
+    "Default-head outcome and measured source feature activity; no new-TX transfer, new headfit or satellite deployment evidence",
+    "Native standalone entropy component was not logged; complete CE/total/U count curves retained without reconstruction"
+  ]
+}

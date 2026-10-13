@@ -54,6 +54,16 @@ def summarize(source,pairs,compact,operations,root):
  for name,values in [('seeds',rows),('source_curves',curves),('source_geometry',geometries),('source_stages',stages),('U_feedback',feedback),('trained_parameters',feature),('error_transitions',p['error_transitions'])]:csv_out(out/f'time_basis_{name}_20261014.csv',values)
  csv_out(out/'time_basis_groups_20261014.csv',[{k:m[k] for k in ('row_id','arm','model_seed','dimension','stratum','accuracy','macro_f1','query_count')} for m in metrics])
  result=dict(status='VERIFIED',run_id=v['run_id'],execution_commit=v['release_commit'],registered_rows=6,new_backbones=3,historical_original_refs=3,external_compact_refs=3,new_model_epochs=150,new_updates=33300,historical_baseline_epochs=150,historical_baseline_updates=33300,historical_compact_epochs=150,historical_compact_updates=33300,new_prediction_count=504000,reused_baseline_count=504000,external_compact_decisions=504000,recounted_decisions=p['total_recounted_decisions'],recounted_CM=162,head_fit_updates=0,summary=summary,paired=paired,actual_initial_matches=p['actual_initial_matches'],source_U_truth_read=False,new_source_process_seconds=sum(r['source_process_seconds'] for r in new),process_time_not_exclusive_GPU=True,goal84=next(s['accuracy_mean'] for s in summary if s['arm']=='SINGLE_BASIS')>=.84,goal_gap_pp=100*(.84-next(s['accuracy_mean'] for s in summary if s['arm']=='SINGLE_BASIS')),operation_count_source='time_basis_operation_counts_20261014.json',single_to_compact_time_MAC_ratio=ops['single_to_compact_MAC_ratio'],limitations=['Different time functions and optimizer reparameterization; parameter/MAC equality does not equal function capacity','Kernel rank is not joint160 feature rank','Default-head outcome and measured source feature activity; no new-TX transfer, new headfit or satellite deployment evidence','Native standalone entropy component was not logged; complete CE/total/U count curves retained without reconstruction'])
+ table=root/'analysis/phase1_feature_evidence_seed_table_20261014.csv'
+ with table.open(encoding='utf-8-sig',newline='') as stream:
+  reader=csv.DictReader(stream);fields=reader.fieldnames;history=list(reader)
+ history=[r for r in history if r['run_id']!=v['run_id']]
+ for r in rows:
+  if r['arm']=='COMPACT_LINEAR':continue
+  s=next(s for s in summary if s['arm']==r['arm'])
+  history.append(dict(run_id=v['run_id'],recipe='A33_label17_pseudo',arm=r['arm'],readout='NATIVE_HEAD',head_recipe='joint11100steps',seed=r['seed'],accuracy=r['accuracy'],accuracy_mean=s['accuracy_mean'],accuracy_sd=s['accuracy_sd'],macro_f1_mean=s['macro_f1_mean'],worst_RX_mean=s['worst_RX_mean'],status='VERIFIED',seed_macro_f1=r['macro_f1'],seed_worst_RX=r['worst_RX'],seed_worst_day=r['worst_day'],worst_day_mean=s['worst_day_mean']))
+ with table.open('w',encoding='utf-8',newline='') as stream:
+  writer=csv.DictWriter(stream,fieldnames=fields);writer.writeheader();writer.writerows(history)
  (out/'time_basis_summary_20261014.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  plt.rcParams.update({'font.family':'DejaVu Sans','font.size':10});fig,ax=plt.subplots(2,2,figsize=(11,6.7),layout='constrained');colors={'BASE_REF':'#7b8794','COMPACT_LINEAR':'#3b82b8','SINGLE_BASIS':'#e07935'}
  for arm in arms:

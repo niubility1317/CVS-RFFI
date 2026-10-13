@@ -222,7 +222,7 @@
         "analysis.json",
         "final_analysis.md"
       ],
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "arm": "BASE_REF",
       "model_seed": 2026092701,
       "config": {
@@ -676,7 +676,7 @@
         "analysis.json",
         "final_analysis.md"
       ],
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "arm": "SINGLE_BASIS",
       "model_seed": 2026092701,
       "config": {
@@ -993,7 +993,7 @@
         "analysis.json",
         "final_analysis.md"
       ],
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "arm": "BASE_REF",
       "model_seed": 2026092702,
       "config": {
@@ -1447,7 +1447,7 @@
         "analysis.json",
         "final_analysis.md"
       ],
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "arm": "SINGLE_BASIS",
       "model_seed": 2026092702,
       "config": {
@@ -1764,7 +1764,7 @@
         "analysis.json",
         "final_analysis.md"
       ],
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "arm": "BASE_REF",
       "model_seed": 2026092703,
       "config": {
@@ -2218,7 +2218,7 @@
         "analysis.json",
         "final_analysis.md"
       ],
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "arm": "SINGLE_BASIS",
       "model_seed": 2026092703,
       "config": {
@@ -2496,7 +2496,7 @@
     "3existing compact prediction arrays and54CM reused only after all new registered rows score; not re-predict/re-fit or pretend9newrows.",
     "Observer adds5sourceV passes135000/model plusfixedL32/stage; no extraUforward or Utruth read. Complete full50/11100logs retained."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "local_verification": "PASS actual preGN operator/input-gradient fold, rank<=2, timecount81744vs81672+72, defaultW export invariant, strict teacher/checkpoint, L CE gradients/AdamW actual values/z changed, native RNG restored, source COMPACT reference gate negative.",
   "independent_review": {
     "status": "PASS",
@@ -2504,7 +2504,82 @@
     "scope": "one direct P0/P1 review; one targeted missing archive dependency confirmation",
     "fixed_issue": "P1 factorial dependency omitted from release PATHS; now explicitly included"
   },
-  "result": null,
+  "result": {
+    "status": "VERIFIED",
+    "summary": [
+      {
+        "arm": "BASE_REF",
+        "seed_count": 3,
+        "accuracy_mean": 0.8052678571428572,
+        "accuracy_sd": 0.023775723031464996,
+        "macro_f1_mean": 0.8000238637751929,
+        "worst_RX_mean": 0.6797083333333334,
+        "worst_day_mean": 0.7605555555555555
+      },
+      {
+        "arm": "COMPACT_LINEAR",
+        "seed_count": 3,
+        "accuracy_mean": 0.8121607142857142,
+        "accuracy_sd": 0.0055909906624230085,
+        "macro_f1_mean": 0.8067290238488403,
+        "worst_RX_mean": 0.7216111111111111,
+        "worst_day_mean": 0.7778015873015873
+      },
+      {
+        "arm": "SINGLE_BASIS",
+        "seed_count": 3,
+        "accuracy_mean": 0.8119999999999999,
+        "accuracy_sd": 0.015038813870084562,
+        "macro_f1_mean": 0.8065690425452676,
+        "worst_RX_mean": 0.7162083333333333,
+        "worst_day_mean": 0.767626984126984
+      }
+    ],
+    "paired": [
+      {
+        "treatment": "SINGLE_BASIS",
+        "control": "BASE_REF",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "differences": [
+          0.00948809523809524,
+          0.014499999999999957,
+          -0.0037916666666667487
+        ],
+        "mean_difference": 0.006732142857142816,
+        "sample_sd": 0.009452127935320674,
+        "positive_seeds": 2
+      },
+      {
+        "treatment": "SINGLE_BASIS",
+        "control": "COMPACT_LINEAR",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "differences": [
+          0.006184523809523834,
+          -0.012666666666666715,
+          0.006000000000000005
+        ],
+        "mean_difference": -0.0001607142857142918,
+        "sample_sd": 0.010830865430567285,
+        "positive_seeds": 2
+      }
+    ],
+    "goal84": false,
+    "goal_gap_pp": 2.8000000000000025,
+    "registered_prediction_count": 1008000,
+    "external_compact_reused_count": 504000,
+    "independent_confusions_recounted": 162,
+    "head_fit_updates": 0,
+    "execution_commit": "a6d75a259949d66a7f8da80319ba904c1fc6d72a",
+    "main_report": "analysis/phase1_feature_evidence_review_20261014.md"
+  },
   "registered_at": "2026-10-13T20:38:12+00:00",
   "launch_verification": {
     "status": "VERIFIED",
@@ -2524,10 +2599,10 @@
   "posttraining_analysis": {
     "source_collector": "tools/collect_phase1_feature_evidence.py --package experiments.cvs_time_basis50",
     "paired_collector": "tools/collect_time_basis_pairs.py",
-    "status": "FIRST_SEED_SOURCE_VERIFIED_FULL_MATRIX_PENDING",
+    "status": "COMPLETE_VERIFIED",
     "source_baseline_audits_reused": 3,
-    "current_complete_source_rows": 4,
-    "current_complete_scored_rows": 4,
+    "current_complete_source_rows": 6,
+    "current_complete_scored_rows": 6,
     "full_matrix_truth_read_guard": "PASS expected rejection before truth read while registered full matrix incomplete",
     "additional_training_or_head_updates": 0,
     "summary_tool": "tools/summarize_time_basis_evidence.py",

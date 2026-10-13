@@ -2,7 +2,7 @@
   "existing_sinc_run": "20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01",
   "execution_commit": "0f81373c25ba69a6cb9deec5c7ca652880fd62af",
   "read_at": 1791922429.7273867,
-  "status": "SINC_FULLY_ANALYZED_BASIS_RUNNING",
+  "status": "SINC_AND_TIME_BASIS_FULLY_ANALYZED",
   "dispatcher_verified": false,
   "rows": [
     {
@@ -213,12 +213,74 @@
   "single_basis_first_seed_epochs": 50,
   "single_basis_failure": null,
   "full_Sinc_frozen_results_consumed_for_analysis_only": true,
-  "single_basis_source_phase": "first seed complete50/11100 and scored; fixed source gate passed; two remaining seeds automatically launched",
-  "single_basis_complete_three_seed": false,
+  "single_basis_source_phase": "all3 new fixed50 and all6 registered default readouts complete; externalCOMPACT3 reused; full CM/log/feature audit VERIFIED",
+  "single_basis_complete_three_seed": true,
   "single_basis_first_seed_complete": true,
   "single_basis_first_seed_source_gate": "VERIFIED",
-  "single_basis_remaining_seeds": [
-    2026092702,
-    2026092703
+  "single_basis_remaining_seeds": [],
+  "single_basis_summary": [
+    {
+      "arm": "BASE_REF",
+      "seed_count": 3,
+      "accuracy_mean": 0.8052678571428572,
+      "accuracy_sd": 0.023775723031464996,
+      "macro_f1_mean": 0.8000238637751929,
+      "worst_RX_mean": 0.6797083333333334,
+      "worst_day_mean": 0.7605555555555555
+    },
+    {
+      "arm": "COMPACT_LINEAR",
+      "seed_count": 3,
+      "accuracy_mean": 0.8121607142857142,
+      "accuracy_sd": 0.0055909906624230085,
+      "macro_f1_mean": 0.8067290238488403,
+      "worst_RX_mean": 0.7216111111111111,
+      "worst_day_mean": 0.7778015873015873
+    },
+    {
+      "arm": "SINGLE_BASIS",
+      "seed_count": 3,
+      "accuracy_mean": 0.8119999999999999,
+      "accuracy_sd": 0.015038813870084562,
+      "macro_f1_mean": 0.8065690425452676,
+      "worst_RX_mean": 0.7162083333333333,
+      "worst_day_mean": 0.767626984126984
+    }
+  ],
+  "single_basis_paired": [
+    {
+      "treatment": "SINGLE_BASIS",
+      "control": "BASE_REF",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "differences": [
+        0.00948809523809524,
+        0.014499999999999957,
+        -0.0037916666666667487
+      ],
+      "mean_difference": 0.006732142857142816,
+      "sample_sd": 0.009452127935320674,
+      "positive_seeds": 2
+    },
+    {
+      "treatment": "SINGLE_BASIS",
+      "control": "COMPACT_LINEAR",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "differences": [
+        0.006184523809523834,
+        -0.012666666666666715,
+        0.006000000000000005
+      ],
+      "mean_difference": -0.0001607142857142918,
+      "sample_sd": 0.010830865430567285,
+      "positive_seeds": 2
+    }
   ]
 }
