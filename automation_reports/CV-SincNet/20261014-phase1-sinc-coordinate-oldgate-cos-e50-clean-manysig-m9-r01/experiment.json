@@ -2034,7 +2034,19 @@
     "Clean-only explicit scope; exposed benchmark, no new blindtest or satellite deployment claim. Fixed50 budget not convergence claim; actual curves/coverage/numerical movement retained. Relevant negative results delivered too."
   ],
   "registered_at": "2026-10-13T19:35:49+00:00",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "execution_commit": "0f81373c25ba69a6cb9deec5c7ca652880fd62af",
-  "launch_evidence": "launch_evidence.json"
+  "launch_evidence": "launch_evidence.json",
+  "actual_execution_commit": "0f81373c25ba69a6cb9deec5c7ca652880fd62af",
+  "actual_results": {
+    "models": 9,
+    "new_models": 6,
+    "epochs_per_model": 50,
+    "readout": "ORIGINAL_HEAD",
+    "prediction_count": 1512000,
+    "independent_recount": "VERIFIED",
+    "primary_accuracy_mean": 0.8076369047619048,
+    "goal_84": false,
+    "head_fit": false
+  }
 }

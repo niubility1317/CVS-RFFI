@@ -1,6 +1,6 @@
 # Sinc 原始 Hz 与居中缩放坐标对照
 
-状态：RUNNING。首种子两个新模型已启动；尚无本轮新模型目标性能结果。唯一 run：`20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01`；完整矩阵和配置以 [experiment.json](experiment.json) 为准。
+状态：ANALYZED。9 个 row 全部训练/固定预测/独立评分完成，完整原头三种子结果与机制证据见 [final_analysis.md](final_analysis.md)。唯一 run：`20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01`；完整矩阵和配置以 [experiment.json](experiment.json) 为准。
 
 ## 源证据与假设
 
@@ -57,3 +57,8 @@ clean-only 固定 ManySig 168000 包，旧六类、七个目标 RX、四日，�
 ## 首种子真实保存态与源特征证据
 
 两个模型均固定50/11100完成，原定源条件通过，剩余4模型自动释放。first_seed_source_evidence.json保存真实checkpoint/moment/EMA和L720结果：RAW核初末完全相同；CENTER全部48坐标更新，核相对L2=0.0039949785，EMA核相对L2=0.0039838781。仅在final临时副本恢复初始Sinc，CENTER真实joint160平均改变L2=0.08033414、margin均值差0.00773657，RAW不变；source默认accuracy在此小样本恢复前后相同。两模型feature-only导出与原z严格相同、W独立、θ/buffers未修改、0头拟合。剩余模型及完整三seed目标结果仍待，不能用单seed当最终目标。
+
+
+## 完整结果关闭
+
+全部9row完成；独立核验66600新step/450epoch/162指标/1512000默认决策PASS。CENTER三seed均值80.7637%，旧基线80.5268%，配对+0.2369pp，3/3正差，84%差3.2363pp。真实6模型Sinc/EMA/moment和feature-only边界均核实；0新头拟合。此前“待完成”段落是保留的历史状态，以 [完整同轮分析](final_analysis.md) 与 [results.json](results.json) 为当前结果。

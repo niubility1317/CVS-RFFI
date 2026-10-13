@@ -31974,7 +31974,7 @@
     },
     {
       "run_id": "20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01",
-      "status": "RUNNING; firstseed2trained/predicted/scored, source gate passed, remaining4training",
+      "status": "ANALYZED",
       "mechanism": "actual Sinc RAW_HZ vs centered 25000Hz offset coordinates; source numerical evidence driven; original feature architecture/default jointly trained head",
       "code": "0f81373c25ba69a6cb9deec5c7ca652880fd62af",
       "baseline": "OLD_GATE_COS5033+17 fixedfinal50 historical comparison only",
@@ -31999,8 +31999,129 @@
       },
       "local_checks": "PASS; synthetic only, not real training evidence",
       "independent_P0P1": "PASS; one review",
-      "results": null,
-      "report": "automation_reports/CV-SincNet/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01/report.md",
+      "results": {
+        "complete": true,
+        "models": 9,
+        "new_models": 6,
+        "readout": "ORIGINAL_HEAD",
+        "summary": [
+          {
+            "arm": "OLD_GATE_COS50",
+            "readout": "ORIGINAL_HEAD",
+            "view": "clean",
+            "seed_count": 3,
+            "accuracy_mean": 0.8052678571428572,
+            "accuracy_sd": 0.023775723031464996,
+            "seed_accuracy": {
+              "2026092701": 0.8066845238095238,
+              "2026092702": 0.7808154761904762,
+              "2026092703": 0.8283035714285715
+            },
+            "macro_f1_mean": 0.8000238637751929,
+            "worst_RX_mean": 0.6797083333333334,
+            "worst_day_mean": 0.7605555555555555,
+            "epoch_seconds_sum": 6887.0241458415985
+          },
+          {
+            "arm": "RAW_HZ",
+            "readout": "ORIGINAL_HEAD",
+            "view": "clean",
+            "seed_count": 3,
+            "accuracy_mean": 0.8052123015873016,
+            "accuracy_sd": 0.0225515552685449,
+            "seed_accuracy": {
+              "2026092701": 0.8073809523809524,
+              "2026092702": 0.7816547619047619,
+              "2026092703": 0.8266011904761905
+            },
+            "macro_f1_mean": 0.7999139655829933,
+            "worst_RX_mean": 0.6797638888888888,
+            "worst_day_mean": 0.7602857142857142,
+            "epoch_seconds_sum": 5849.5173597335815
+          },
+          {
+            "arm": "CENTER_25K",
+            "readout": "ORIGINAL_HEAD",
+            "view": "clean",
+            "seed_count": 3,
+            "accuracy_mean": 0.8076369047619048,
+            "accuracy_sd": 0.02196165376539554,
+            "seed_accuracy": {
+              "2026092701": 0.8089642857142857,
+              "2026092702": 0.7850416666666666,
+              "2026092703": 0.8289047619047619
+            },
+            "macro_f1_mean": 0.8024987728308802,
+            "worst_RX_mean": 0.6834722222222223,
+            "worst_day_mean": 0.7638809523809523,
+            "epoch_seconds_sum": 5860.998061180115
+          }
+        ],
+        "paired": [
+          {
+            "arm": "RAW_HZ",
+            "control": "OLD_GATE_COS50",
+            "readout": "ORIGINAL_HEAD",
+            "view": "clean",
+            "seeds": [
+              2026092701,
+              2026092702,
+              2026092703
+            ],
+            "seed_differences": [
+              0.0006964285714285978,
+              0.0008392857142857091,
+              -0.0017023809523809552
+            ],
+            "mean_difference": -0.00005555555555554944,
+            "sd_difference": 0.0014279802017318694,
+            "positive_seeds": 2
+          },
+          {
+            "arm": "CENTER_25K",
+            "control": "OLD_GATE_COS50",
+            "readout": "ORIGINAL_HEAD",
+            "view": "clean",
+            "seeds": [
+              2026092701,
+              2026092702,
+              2026092703
+            ],
+            "seed_differences": [
+              0.002279761904761868,
+              0.004226190476190439,
+              0.0006011904761904496
+            ],
+            "mean_difference": 0.0023690476190475853,
+            "sd_difference": 0.001814148616867321,
+            "positive_seeds": 3
+          },
+          {
+            "arm": "CENTER_25K",
+            "control": "RAW_HZ",
+            "readout": "ORIGINAL_HEAD",
+            "view": "clean",
+            "seeds": [
+              2026092701,
+              2026092702,
+              2026092703
+            ],
+            "seed_differences": [
+              0.00158333333333327,
+              0.00338690476190473,
+              0.002303571428571405
+            ],
+            "mean_difference": 0.002424603174603135,
+            "sd_difference": 0.0009078568098276517,
+            "positive_seeds": 3
+          }
+        ],
+        "prediction_count": 1512000,
+        "independent_recount": "VERIFIED",
+        "goal_84": false,
+        "gap_pp": 3.23630952380952
+      },
+      "report": "automation_reports/CV-SincNet/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01/final_analysis.md",
       "launch_evidence": "automation_reports/CV-SincNet/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01/launch_evidence.json",
       "early_source": {
         "epoch": 2,
@@ -32021,6 +32142,54 @@
         "W_independent": true,
         "center_Sinc_restoration_L2": 0.0803341418504715,
         "not_complete_three_seed_performance": true
+      },
+      "actual_execution_commit": "0f81373c25ba69a6cb9deec5c7ca652880fd62af",
+      "mechanism_evidence": {
+        "actual_saved_states": 6,
+        "all_optimizer_saved_shapes_match": true,
+        "all_initial_functions_match": true,
+        "all_feature_exports_exact": true,
+        "W_independent": true,
+        "separate_head_updates": 0,
+        "source_feature_report": "automation_reports/CV-SincNet/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01/source_features.json",
+        "kernel_relative_L2": [
+          {
+            "arm": "RAW_HZ",
+            "seed": 2026092701,
+            "student": 0,
+            "EMA": 0.0000033577803151274566
+          },
+          {
+            "arm": "CENTER_25K",
+            "seed": 2026092701,
+            "student": 0.0039949784986674786,
+            "EMA": 0.003983878064900637
+          },
+          {
+            "arm": "RAW_HZ",
+            "seed": 2026092702,
+            "student": 0,
+            "EMA": 0.0000033577803151274566
+          },
+          {
+            "arm": "CENTER_25K",
+            "seed": 2026092702,
+            "student": 0.0034871366806328297,
+            "EMA": 0.0034762562718242407
+          },
+          {
+            "arm": "RAW_HZ",
+            "seed": 2026092703,
+            "student": 1.170844665665527e-8,
+            "EMA": 0.0000033577803151274566
+          },
+          {
+            "arm": "CENTER_25K",
+            "seed": 2026092703,
+            "student": 0.00439809076488018,
+            "EMA": 0.0043848780915141106
+          }
+        ]
       }
     },
     {
@@ -76977,8 +77146,8 @@
     "Oldgate coverage audit on legal labeled source proxies before altering SSL"
   ],
   "next_actions_max2": [
-    "Finish fixed Sinc3seed default-only clean/truth-last matrix, full logs/actual kernels/EMA/source feature restoration and Git delivery; no target feedback",
-    "Source-supported physical-neighbor pair sampling diagnostic with original gates and same-path random order control; no hiddenTX or head fit; training only after separate fixed preregistration"
+    "Preserve completed fixed Sinc evidence; source-supported neighbor-pair/random order diagnosis under original gates, no U truth or head fit",
+    "Only after fixed source coverage/precision criterion passes, publish separate scratch50 oldgate/cos matched sampling matrix; do not combine Sinc/TIME or use target feedback"
   ],
   "goal_84": false,
   "Phase2_development": false

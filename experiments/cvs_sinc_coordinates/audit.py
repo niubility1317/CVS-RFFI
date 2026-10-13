@@ -55,8 +55,10 @@ for row in d.rows():
   sinc=diag_reader['row'](c)
  else:
   steps=11100;U=None;movement=None;changed=[];sinc=None
-  u=sum(round(e.get('train_pseudo_total',0)*222) for e in epochs)
-  accepted=sum(round(e.get('train_pseudo_selected',0)*222) for e in epochs)
+  # Native epoch reducer stores pseudo counters as epoch sums, not step means.
+  assert all(e.get('train_pseudo_total',0)==(0 if e['epoch']<=33 else 56700) for e in epochs)
+  u=sum(int(e.get('train_pseudo_total',0)) for e in epochs)
+  accepted=sum(int(e.get('train_pseudo_selected',0)) for e in epochs)
   assert u==963900
  metrics=d.read(d.BASE/row['row_id']/'scores/metrics.json')['records'];assert len(metrics)==18
  with np.load(d.BASE/row['row_id']/'prediction/predictions.npz',allow_pickle=False) as saved:

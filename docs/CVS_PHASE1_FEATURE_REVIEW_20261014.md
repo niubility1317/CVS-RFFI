@@ -60,18 +60,18 @@ run 20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01，实�
 2. TIME投影/基底归因：源实际等效核rank4与各支贡献证明路径活跃，但投影、容量仍未分开。可先用既有冻结weights做无训练projection/source撤除，若source支持再设同路径容量控制；不扫kernel/dilation、不叠加PA、不新增head。与本轮coverage×SiLU因素不同，预算≤50并预登记，推理撤除不冒充重训。
 3. 旧门控覆盖审计：source真实约1.6%接收包次，可能限制U利用。先在合法有标签L/V代理只用既有defaultteacher/student诊断coverage/正确率，固定批次/视图/门控，不解封U、不拟合分类器、不反向V。只有source证据支持时才另外预登记一个SSL因素，与原旧门控＋cos控制同预算；不按target错误分组调门控。
 
-当前最多两项：实现源证据驱动的Sinc坐标候选及其公平控制；补合法源代理门控诊断。当前TIME实现/配置/完整正负结果集中交付，其他方向排队，不无限扫描直到84%。主目标仍active，未宣称达成。
+当前最多两项：以完整源门控诊断为依据检验物理邻包成对随机采样；仅在预先固定的合法源条件通过后发布独立同路径scratch50训练矩阵。TIME/Sinc完整结果已回收，其他方向排队，不无限扫描直到84%。主目标仍active，未宣称达成。
 
 完整当前 [同轮分析](../automation_reports/CV-SincNet/20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01/final_analysis.md) 与 [机器台账](research_data/CVS_PHASE1_FEATURE_REVIEW_20261014.json)。历史当前运行身份、代码/来源/证据层级在台账中；大IQ、checkpoint、原NPZ/日志留原目录。默认head及clean范围来自用户最新明确要求；历史换头/LEO结果不删改，当前不借clean声明部署。
 
-## Sinc 坐标探索：源首种子已启动
+## Sinc 完整三种子与真实特征
 
-新 run `20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01` 已固定 RAW_HZ、CENTER_25K 及历史 OLD_GATE_COS50 三组 × 三种子。6 个新模型各从零 50 轮、33＋17、旧门控＋EMA＋cos；原时序/PA/频域/参考结构和默认联合训练头不改。两坐标方案同初始滤波器、joint160、logits、其他权重和构建随机状态，48 个 Sinc 参数与 optimizer/EMA 路径检查通过。每模型增加 48 个固定 origin buffer 元素，不能将完整坐标方案中的权重衰减/EMA 算术变化冒充纯学习率效果。
+固定run 20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01 全9row完成，代码 0f81373c25ba69a6cb9deec5c7ca652880fd62af。独立核验66600新step、450epoch、162CM/metric和1512000默认决策VERIFIED，全worker终止、无失败。CENTER_25K主候选80.7637%±2.1962pp，OLD80.5268%±2.3776pp，RAW80.5212%±2.2552pp；CENTER−OLD+0.2369pp、CENTER−RAW+0.2425pp，均3/3正差。RAW−OLD−0.0056pp负结果保留。主目标84%差3.2363pp，仍未达到。3模型不声称显著，也不改变主候选。
 
-首种子仅按两组 source final labeledCE≤.5 和 CENTER 实际核相对 L2≥1e−4 放行其余种子；每个合法训练完成 row 自动默认头 clean prediction 和独立 truth-last，目标分数不进入放行。合成整网、缓存/strict load、W 独立导出及源健康 RNG 检查通过，唯一 P0/P1 启动审查 PASS。实际执行 0f81373c25ba69a6cb9deec5c7ca652880fd62af，归档/compile/真实无查询 smoke 与 PID/CWD/argv/GPU/log-growth 已 VERIFIED；首2轮记录显示 RAW 核相对 L2 约1.17e−8、CENTER 约0.0015867。此为中间源机制记录，尚无新模型终轮性能或完整三种子结果，不能称性能改善。完整预算、来源、阈值、代码提交身份和执行路径见 [Sinc 预登记](../automation_reports/CV-SincNet/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01/report.md)。
+实际6模型optimizer全183参数与保存moments/step11100匹配；CENTER全部48坐标更新、真实核relativeL2=0.003487至0.004398，EMA接近学生；RAW核0/0/1.17e−8，EMA漂移约3.36e−6不能当作学到滤波器。固定L720的joint160feature-only导出与原前向逐元素一致，W置零不影响z，实际fθ176065保留全部norm/gain/reference。CENTER仅在临时final副本恢复初始Sinc使源z平均L2变化0.080334/0.043433/0.080260；不是独立重训因果DG消融，也不证明新TX。默认联合头正常训练，单独头拟合0。
 
-## 真实 Sinc 首种子与源门控诊断更新
+新6骨干300model-epochs/66600updates，历史对照150model-epochs单列复用，额外V12次/324000包，U额外前向0。全部source曲线和U RX/day计数完整，963900U/模型且真值隐藏；接收覆盖约1.57%。已修正reader对历史epoch合计再次乘222的断言错误，无重跑实验。完整[同轮分析](../automation_reports/CV-SincNet/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01/final_analysis.md)、[结果](../automation_reports/CV-SincNet/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01/results.json)、[真实特征](../automation_reports/CV-SincNet/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01/source_features.json)。
 
-Sinc 首seed 两个模型均完成50/11100且自动默认头预测/评分；源放行条件通过，剩余四模型已自动启动。实际保存态与epoch50记录核对：RAW只有1个cutoff坐标微变，band24个全未变，滤波核初末完全一致；CENTER全部48坐标变动，kernelrelativeL2=0.0039949785，EMA核=0.0039838781。固定L720恢复初始Sinc只在临时final副本进行：RAW的joint160不变，CENTER平均L2改变0.08033414、cosine0.99997026，默认margin平均差0.00773657。两者feature-only导出均逐元素一致，W置零不改变z，θ/buffers未修改。此为真实机制和可交接接口证据，不是新TX或完整三seed性能结论。
+## 源门控诊断与下一候选
 
 源门控诊断run 20261014-phase1-source-legacy-gate-audit-manysig-m3-r01 完整3模型完成，实际代码 0f514fa1ba4302bc7e5e25d0ad41337881acce7f。L/V明确合法标签仅在mask之后作观察，无U/target/头拟合/优化器/模型状态更新；CPU104.59秒/199800包次/360条聚合计数。V完整旧门控覆盖3.4099%，本次接收923/913/926均无错；confidence+strong覆盖92.2815%，precision99.8221%，错误54/41/38。分RX/day/source类计数与比率重新核对。uniformB256/window2的V邻包几何期望3.6978%，实测3.7630%；U56700/cell630只用协议常数算期望1.7807%，不是U正确率。下一优先独立假设为物理邻包成对随机采样，保留原门控；尚未发布训练，不据目标分数选择。完整 [源同轮分析](../automation_reports/CV-SincNet/20261014-phase1-source-legacy-gate-audit-manysig-m3-r01/source_gate_analysis.md) 与 [计数结果](../automation_reports/CV-SincNet/20261014-phase1-source-legacy-gate-audit-manysig-m3-r01/results.json)。
