@@ -1,0 +1,128 @@
+{
+  "schema": "phase1_sequence_features_v1",
+  "run_id": "20261013-phase1-localdistribution-pathsignature-oldgate-e50-clean-manysig-m24-r01",
+  "stage": "repair",
+  "arm": "RFF",
+  "model_seed": 2026092703,
+  "row_id": "RFF-s2026092703",
+  "features": [
+    "ema",
+    "pseudo",
+    "twostage"
+  ],
+  "variant": "reference_response",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-localdistribution-pathsignature-oldgate-e50-clean-manysig-m24-r01/RFF-s2026092703/source",
+  "epochs": 50,
+  "steps_per_epoch": 222,
+  "model_initialization": "scratch",
+  "checkpoint_sources": [],
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "method": "cvs_legacy_no_sat",
+  "target_access": false,
+  "pseudo_domain_gate": false,
+  "temporal_mode": "batch_neighbor",
+  "temporal_min_streak": 2,
+  "lr_schedule": "cosine",
+  "lr_min": 1e-06,
+  "launch_owner": "codex/root/sequence-features-20261013",
+  "label_epochs": 33,
+  "pseudo_epochs": 17,
+  "updates": 11100,
+  "legacy_reference_config": {
+    "schema": "legacy_no_sat_v1",
+    "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+    "stage": "repair",
+    "arm": "legacy_cosine_no_sat",
+    "model_seed": 2026092703,
+    "row_id": "legacy_cosine_no_sat-s2026092703",
+    "features": [
+      "ema",
+      "pseudo",
+      "twostage"
+    ],
+    "variant": "reference_response",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source",
+    "epochs": 200,
+    "steps_per_epoch": 222,
+    "model_initialization": "scratch",
+    "checkpoint_sources": [],
+    "numerical_policy": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "method": "cvs_legacy_no_sat",
+    "target_access": false,
+    "pseudo_domain_gate": false,
+    "temporal_mode": "batch_neighbor",
+    "temporal_min_streak": 2,
+    "lr_schedule": "cosine",
+    "lr_min": 1e-06
+  },
+  "source_falsification": {
+    "final_L_CE_max": 0.5,
+    "V_mean_drop_max": 0.01,
+    "V_worst_RX_drop_max": 0.02,
+    "selection": "all firstseed rows must satisfy fixed source health/noninferiority; no learned probe, candidate ranking or target feedback"
+  },
+  "training_recipe": "historical batch_neighbor pseudo gate+EMA+cos; no satellite; allarms identical",
+  "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+  "explicit_CFO_identity_feature": false,
+  "feature_extractor": {
+    "arm": "RFF",
+    "layer": "t2",
+    "local_dimension": 6,
+    "local_projection": "learned 1x1 then tanh; shared across controls",
+    "windows": 4,
+    "random_directions": 14,
+    "random_direction_seed": 2026101307,
+    "random_direction_scales": [
+      0.5,
+      1.0,
+      2.0
+    ],
+    "descriptor_width": 28,
+    "output_embedding": 160,
+    "parameter_matched": true,
+    "intrinsic_descriptor_rank_matched": false,
+    "classifier_changed": false,
+    "gain_initial": 0.05,
+    "gain_bound": 0.2,
+    "time_coordinate": false,
+    "per_packet": true
+  },
+  "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+  "test_views": [
+    "clean"
+  ],
+  "checkpoint_selection": "final_only",
+  "goal": {
+    "co_primary": [
+      "RFF",
+      "SIG_TIME"
+    ],
+    "clean_three_seed_mean": 0.84,
+    "readout": "NATIVE_HEAD",
+    "feedback_to_training": false
+  },
+  "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+  "cost_claim": "21 new scratch50 backbones and3 reused same-seed scratch50 references; no extra head optimization",
+  "baseline_reference": null,
+  "baseline_reuse": false,
+  "readouts": [
+    "NATIVE_HEAD"
+  ],
+  "separate_head_training": false
+}

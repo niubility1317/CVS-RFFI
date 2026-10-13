@@ -59,3 +59,23 @@
 五条件×三 seed 原 run 15 行已全部冻结、预测和独立评分，无技术失败。12 个新增骨干共 600 轮、133,200 次更新；3 个历史对照复用 150 轮、33,300 次更新。默认头 clean 均值依次为 BASE_REF 80.5268%、ORDINARY 80.3075%、RESTORE 80.2532%、COMP 80.5663%、RESTORE_COMP 80.1298%；84% 目标未达成。完整默认头逐 seed、分层指标与负结果见原 report 的最新追加段。
 
 对话报错为 stream disconnected before completion（连接层）；当前远端 run 已完整完成，不能将对话失败当作实验失败或重启理由。后续四条路线仍按原分阶段设计未执行，不依据本次 target 分数重排。
+
+## 局部分布与路径顺序：下一组 Phase1 实现跟踪
+
+本组继承用户六路线说明第三、第四节及最新默认分类头限制。使用既有合法源数据、旧伪标签门控＋EMA＋cos、scratch50（33＋17），先 seed 2026092701 做小矩阵，再按预登记源域健康条件决定扩展 02/03。仅 clean 自动预测和独立 truth-last 评分。目标仍为 clean 三 seed 均值 84%，不使用 target 分数更改方案或挑选初始化。
+
+| ID | 来源 | 要求 | 目标文件 | 状态 | 验证 | 说明 |
+|---|---|---|---|---|---|---|
+| D01a | 三.3 | t2 中层局部投影6维、固定14方向 cos/sin 分布编码，4固定窗口进入实际z160 | experiments/cvs_feature_sequence50/features.py | pending | RFF区分同均值同方差分布；真实模型z/梯度 | 共享有界局部投影；不是物理IQ FFT |
+| D02a | 三.4 | 均值、均值＋方差、均值后非线性、RFF控制 | features.py/design.py | pending | 数学边界与同训练/参数预算检查 | 固定映射使输出宽度相同，内在信息维度不宣称相同 |
+| S01a | 四.2/4 | 一阶与二阶反对称路径量；无时间/有时间控制 | features.py | pending | 已知闭合有向面积、反向与顺序置换 | 6信号维＋可选时间；4固定窗口 |
+| S02a | 四.4 | 相同局部投影均值＋协方差对照；冻结局部顺序诊断 | features.py/checks.py | pending | 同参数输出，RFF排列不变，signature顺序敏感 | 不打乱真实IQ作训练增强 |
+| H01a | 用户最新指令 | 默认分类头原结构、原联合训练，无单独头拟合/诊断头 | model.py/source.py/predict.py | pending | 默认head权重初值、单次前向一致、训练后直接原头预测 | 原六路线换头要求由用户覆盖 |
+| P01a | Phase1边界 | L/U/V权限、scratch来源、固定budget、逐row自动预测评分 | source.py/provenance.py/dispatch.py | pending | 权限负测、真实checkpoint noquery smoke、远端读回 | Phase2不在本轮范围 |
+| R01a | 对照与小矩阵 | BASE_REF/MEAN/MEAN_VAR/NONLINEAR_MEAN/RFF/COV/SIG/SIG_TIME | design.py/registration | pending | 固定seed/配置、source-only扩展，无target反馈 | 首种子8行，新增7独立scratch骨干 |
+
+REJECTED_EXTRA_GATE：额外设计/计划审批与重复独立审查不属于项目八项最小流程；按既有用户方案与授权推进，不要求新的设计许可。
+
+2026-10-14 本地实现更新：D01a/D02a/S01a/S02a/H01a 已在数学与真实模型中 verified；八组原生默认头结构/初值一致、新增方案参数精确18976、CE梯度覆盖新增特征与默认头、W不定义z、teacher deepcopy及strict checkpoint roundtrip PASS。P01a 本地协议负测与源码闭环 implemented，真实远端 source/score 尚待；R01a 实际八组×三seed与source-only非劣扩展配置、登记 verified。唯一 P1为native训练闭包中的RX/day/channel拟合诊断，已最小修复并通过针对性负测，定点复审尚待。
+
+2026-10-14 唯一 P0/P1审查和一次定点复审 PASS。当前本组7项：D01a/D02a/S01a/S02a/H01a/R01a 本地 verified（6项），P01a 本地 implemented、远端真实checkpoint与启动尚待（1项）；无 deferred/rejected/blocked 项。原第5/6路线仍保留历史 deferred 状态，不在当前发布阻塞范围。
