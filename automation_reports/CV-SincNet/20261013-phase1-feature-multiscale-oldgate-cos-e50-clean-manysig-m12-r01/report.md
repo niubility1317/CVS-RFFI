@@ -34,3 +34,5 @@ Git commit 为代码/配置身份，发布时记录 actual release_commit.txt。
 每轮实现、配置和对应结果报告提交并推送到 Git，独立核对远端 OID。结果报告保留逐种子指标、固定配对差、负结果与缺项；原始权重、预测、日志和数据留在 run 根，不入 Git。
 
 发布证据（2026-10-13）：实际运行代码 commit `5fa536f9ca2d90e7d30d547d58503a41b612d57f` 已推送，独立远端 OID 核对一致。一份归档比对、远端编译与真实同契约无 query smoke 均通过；首种子四组已完成第 1 轮并继续训练，PID/CWD/argv/GPU、日志增长及容量核验通过。实际 native args 的 EMA、U、batch_neighbor、强视图一致、cosine、50/33/17 与四组特征层位正确，分类头均为原 ResidualPhysicalHead。运行证据在 `local_artifacts/cvs_feature_multiscale50_20261013_r01/readback.json` 与 `runtime_verified.json`。尚无完整三种子目标成绩，不宣称达到 84%。
+
+阶段执行核验：首种子四组分别到第 39/41/41/40 轮，均已进入 pseudo 阶段。实际 EMA 更新和非零无标签损失持续执行，U_s 真值可用标志为 0，非有限损失及梯度跳步均为 0。该源端记录证明本轮确实使用历史半监督配方；不等同于完整日志审核、源域终轮门槛通过或目标性能提升。证据为 `local_artifacts/cvs_feature_multiscale50_20261013_r01/pseudo_phase_verified.json`，其间未读取目标分数。其余 8 行仍等待四组完整 sourcefreeze，当前无失败记录。

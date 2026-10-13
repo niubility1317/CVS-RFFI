@@ -18,4 +18,4 @@
 
 用户再次明确（2026-10-13）：每次优化探索的实现和对应实验结果都上传 Git。每轮代码、配置、预登记与逐 seed/配对/失败缺项的结果报告提交并推送，独立核对 remote branch OID 与 HEAD；checkpoint、原始预测、完整日志和数据留在原实验目录，用报告路径定位。当前全流程本地闭环与依赖检查已通过，旧配方四组已预登记；首种子的四组均完成 11100 次更新、冻结且各自末 222 次训练 L_s CE 均值 ≤0.5 后，自动扩展任意组的另两 seed，无 V/target 门槛。原生 15 域模型至预测模型的严格加载、四组首种子门槛与分类头不变检查均通过，独立定向 P1 复审 PASS，已发布并核实启动。
 
-当前运行：`20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01`，release `cvs_feature_multiscale50_20261013_r01`，执行 commit `5fa536f9ca2d90e7d30d547d58503a41b612d57f`。首种子四组均已到第 1 轮，运行配置/进程/日志增长 VERIFIED，无失败记录。首种子四组全部 source-only 通过后队列自动扩展，逐行自动 clean prediction 和独立评分；完整结果报告与实际种子数随后提交推送。目标仍 active。
+当前运行：`20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01`，release `cvs_feature_multiscale50_20261013_r01`，执行 commit `5fa536f9ca2d90e7d30d547d58503a41b612d57f`。首种子四组已到第 39/41/41/40 轮并均进入 pseudo 阶段，实际 EMA 更新与无标签损失执行、U_s 真值隐藏、无非有限跳步 VERIFIED，无失败记录。首种子四组全部 source-only 通过后队列自动扩展，逐行自动 clean prediction 和独立评分；完整结果报告与实际种子数随后提交推送。目标仍 active。
