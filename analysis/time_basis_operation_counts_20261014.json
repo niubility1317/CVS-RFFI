@@ -1,0 +1,542 @@
+{
+  "status": "VERIFIED",
+  "models": {
+    "BASE_REF": {
+      "identity_parameters": 177025,
+      "time_parameters": 21000,
+      "time_Conv1d_MAC_per_packet": 1242624,
+      "time_Conv1d_MAC_by_layer": {
+        "t1": 473088,
+        "t2": 465408,
+        "t3": 304128
+      },
+      "layers": [
+        {
+          "layer": "t1",
+          "module": "dw",
+          "input_shape_per_packet": [
+            48,
+            128
+          ],
+          "output_shape_per_packet": [
+            48,
+            128
+          ],
+          "kernel": 5,
+          "groups": 48,
+          "Conv1d_MAC_per_packet": 30720
+        },
+        {
+          "layer": "t1",
+          "module": "pw",
+          "input_shape_per_packet": [
+            48,
+            128
+          ],
+          "output_shape_per_packet": [
+            72,
+            128
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 442368
+        },
+        {
+          "layer": "t2",
+          "module": "dw",
+          "input_shape_per_packet": [
+            72,
+            64
+          ],
+          "output_shape_per_packet": [
+            72,
+            64
+          ],
+          "kernel": 5,
+          "groups": 72,
+          "Conv1d_MAC_per_packet": 23040
+        },
+        {
+          "layer": "t2",
+          "module": "pw",
+          "input_shape_per_packet": [
+            72,
+            64
+          ],
+          "output_shape_per_packet": [
+            96,
+            64
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 442368
+        },
+        {
+          "layer": "t3",
+          "module": "dw",
+          "input_shape_per_packet": [
+            96,
+            32
+          ],
+          "output_shape_per_packet": [
+            96,
+            32
+          ],
+          "kernel": 3,
+          "groups": 96,
+          "Conv1d_MAC_per_packet": 9216
+        },
+        {
+          "layer": "t3",
+          "module": "pw",
+          "input_shape_per_packet": [
+            96,
+            32
+          ],
+          "output_shape_per_packet": [
+            96,
+            32
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 294912
+        }
+      ]
+    },
+    "SINGLE_BASIS": {
+      "identity_parameters": 237769,
+      "time_parameters": 81744,
+      "time_Conv1d_MAC_per_packet": 4905984,
+      "time_Conv1d_MAC_by_layer": {
+        "t1": 1855488,
+        "t2": 1830912,
+        "t3": 1219584
+      },
+      "layers": [
+        {
+          "layer": "t1",
+          "module": "dw",
+          "input_shape_per_packet": [
+            48,
+            128
+          ],
+          "output_shape_per_packet": [
+            48,
+            128
+          ],
+          "kernel": 5,
+          "groups": 48,
+          "Conv1d_MAC_per_packet": 30720
+        },
+        {
+          "layer": "t1",
+          "module": "pw_expand",
+          "input_shape_per_packet": [
+            48,
+            128
+          ],
+          "output_shape_per_packet": [
+            90,
+            128
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 552960
+        },
+        {
+          "layer": "t1",
+          "module": "pw",
+          "input_shape_per_packet": [
+            90,
+            128
+          ],
+          "output_shape_per_packet": [
+            72,
+            128
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 829440
+        },
+        {
+          "layer": "t1",
+          "module": "skip",
+          "input_shape_per_packet": [
+            48,
+            128
+          ],
+          "output_shape_per_packet": [
+            72,
+            128
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 442368
+        },
+        {
+          "layer": "t2",
+          "module": "dw",
+          "input_shape_per_packet": [
+            72,
+            64
+          ],
+          "output_shape_per_packet": [
+            72,
+            64
+          ],
+          "kernel": 5,
+          "groups": 72,
+          "Conv1d_MAC_per_packet": 23040
+        },
+        {
+          "layer": "t2",
+          "module": "pw_expand",
+          "input_shape_per_packet": [
+            72,
+            64
+          ],
+          "output_shape_per_packet": [
+            127,
+            64
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 585216
+        },
+        {
+          "layer": "t2",
+          "module": "pw",
+          "input_shape_per_packet": [
+            127,
+            64
+          ],
+          "output_shape_per_packet": [
+            96,
+            64
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 780288
+        },
+        {
+          "layer": "t2",
+          "module": "skip",
+          "input_shape_per_packet": [
+            72,
+            64
+          ],
+          "output_shape_per_packet": [
+            96,
+            64
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 442368
+        },
+        {
+          "layer": "t3",
+          "module": "dw",
+          "input_shape_per_packet": [
+            96,
+            32
+          ],
+          "output_shape_per_packet": [
+            96,
+            32
+          ],
+          "kernel": 5,
+          "groups": 96,
+          "Conv1d_MAC_per_packet": 15360
+        },
+        {
+          "layer": "t3",
+          "module": "pw_expand",
+          "input_shape_per_packet": [
+            96,
+            32
+          ],
+          "output_shape_per_packet": [
+            148,
+            32
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 454656
+        },
+        {
+          "layer": "t3",
+          "module": "pw",
+          "input_shape_per_packet": [
+            148,
+            32
+          ],
+          "output_shape_per_packet": [
+            96,
+            32
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 454656
+        },
+        {
+          "layer": "t3",
+          "module": "skip",
+          "input_shape_per_packet": [
+            96,
+            32
+          ],
+          "output_shape_per_packet": [
+            96,
+            32
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 294912
+        }
+      ]
+    },
+    "COMPACT_LINEAR": {
+      "identity_parameters": 237697,
+      "time_parameters": 81672,
+      "time_Conv1d_MAC_per_packet": 4898304,
+      "time_Conv1d_MAC_by_layer": {
+        "t1": 1849344,
+        "t2": 1829376,
+        "t3": 1219584
+      },
+      "layers": [
+        {
+          "layer": "t1",
+          "module": "branches.0",
+          "input_shape_per_packet": [
+            48,
+            128
+          ],
+          "output_shape_per_packet": [
+            48,
+            128
+          ],
+          "kernel": 3,
+          "groups": 48,
+          "Conv1d_MAC_per_packet": 18432
+        },
+        {
+          "layer": "t1",
+          "module": "branches.1",
+          "input_shape_per_packet": [
+            48,
+            128
+          ],
+          "output_shape_per_packet": [
+            48,
+            128
+          ],
+          "kernel": 5,
+          "groups": 48,
+          "Conv1d_MAC_per_packet": 30720
+        },
+        {
+          "layer": "t1",
+          "module": "branches.2",
+          "input_shape_per_packet": [
+            48,
+            128
+          ],
+          "output_shape_per_packet": [
+            48,
+            128
+          ],
+          "kernel": 5,
+          "groups": 48,
+          "Conv1d_MAC_per_packet": 30720
+        },
+        {
+          "layer": "t1",
+          "module": "fuse",
+          "input_shape_per_packet": [
+            144,
+            128
+          ],
+          "output_shape_per_packet": [
+            72,
+            128
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 1327104
+        },
+        {
+          "layer": "t1",
+          "module": "skip",
+          "input_shape_per_packet": [
+            48,
+            128
+          ],
+          "output_shape_per_packet": [
+            72,
+            128
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 442368
+        },
+        {
+          "layer": "t2",
+          "module": "branches.0",
+          "input_shape_per_packet": [
+            72,
+            64
+          ],
+          "output_shape_per_packet": [
+            72,
+            64
+          ],
+          "kernel": 3,
+          "groups": 72,
+          "Conv1d_MAC_per_packet": 13824
+        },
+        {
+          "layer": "t2",
+          "module": "branches.1",
+          "input_shape_per_packet": [
+            72,
+            64
+          ],
+          "output_shape_per_packet": [
+            72,
+            64
+          ],
+          "kernel": 5,
+          "groups": 72,
+          "Conv1d_MAC_per_packet": 23040
+        },
+        {
+          "layer": "t2",
+          "module": "branches.2",
+          "input_shape_per_packet": [
+            72,
+            64
+          ],
+          "output_shape_per_packet": [
+            72,
+            64
+          ],
+          "kernel": 5,
+          "groups": 72,
+          "Conv1d_MAC_per_packet": 23040
+        },
+        {
+          "layer": "t2",
+          "module": "fuse",
+          "input_shape_per_packet": [
+            216,
+            64
+          ],
+          "output_shape_per_packet": [
+            96,
+            64
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 1327104
+        },
+        {
+          "layer": "t2",
+          "module": "skip",
+          "input_shape_per_packet": [
+            72,
+            64
+          ],
+          "output_shape_per_packet": [
+            96,
+            64
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 442368
+        },
+        {
+          "layer": "t3",
+          "module": "branches.0",
+          "input_shape_per_packet": [
+            96,
+            32
+          ],
+          "output_shape_per_packet": [
+            96,
+            32
+          ],
+          "kernel": 3,
+          "groups": 96,
+          "Conv1d_MAC_per_packet": 9216
+        },
+        {
+          "layer": "t3",
+          "module": "branches.1",
+          "input_shape_per_packet": [
+            96,
+            32
+          ],
+          "output_shape_per_packet": [
+            96,
+            32
+          ],
+          "kernel": 5,
+          "groups": 96,
+          "Conv1d_MAC_per_packet": 15360
+        },
+        {
+          "layer": "t3",
+          "module": "branches.2",
+          "input_shape_per_packet": [
+            96,
+            32
+          ],
+          "output_shape_per_packet": [
+            96,
+            32
+          ],
+          "kernel": 5,
+          "groups": 96,
+          "Conv1d_MAC_per_packet": 15360
+        },
+        {
+          "layer": "t3",
+          "module": "fuse",
+          "input_shape_per_packet": [
+            288,
+            32
+          ],
+          "output_shape_per_packet": [
+            96,
+            32
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 884736
+        },
+        {
+          "layer": "t3",
+          "module": "skip",
+          "input_shape_per_packet": [
+            96,
+            32
+          ],
+          "output_shape_per_packet": [
+            96,
+            32
+          ],
+          "kernel": 1,
+          "groups": 1,
+          "Conv1d_MAC_per_packet": 294912
+        }
+      ]
+    }
+  },
+  "single_minus_compact_MAC": 7680,
+  "single_to_compact_MAC_ratio": 1.0015678896205706,
+  "scope": "Only actual Conv1d multiplications/accumulations in modified t1/t2/t3; excludes unchanged Sinc/frequency/PA, norm/activation/add/pooling, FFT and memory/latency; MAC is not measured execution speed",
+  "IQ": "two synthetic zero packets, length256; no dataset/truth/checkpoint read",
+  "model_updates": 0,
+  "head_fit_updates": 0
+}

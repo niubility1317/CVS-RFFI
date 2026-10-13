@@ -242,3 +242,6 @@ RAW终轮核相对L2为0/0/1.1708e−8，分别24/24/23个核位元不变；CENT
 用户目标中仍未闭合的单尺度残差控制已实现、预登记并发布：20261014-phase1-single-basis-residual-oldgate-e50-clean-manysig-m6-r01，执行a6d75a259949d66a7f8da80319ba904c1fc6d72a，启动与远端版本/真实checkpoint无query smoke/进程日志增长均VERIFIED。3个新增scratch50，固定33＋17旧门控/EMA/default cosine；3个原基线复用，COMPACT_LINEAR历史三seed作为固定源健康及最终配对参照。新增时间参数81744对COMPACT81672（差72），k5 DW＋两层无中间激活pointwise＋skip；其他Sinc/频域/PA/参考/输入不变。preGN每输入时间核秩上界2对4，卷积最大覆盖一致，优化重参数化与不同初始函数作为限制披露。
 
 独立审查仅发现发布归档漏factorial依赖，修复并针对该问题复核PASS；本地接线/梯度/数值更新/z变化/W不依赖/初始非时间state及RNG匹配PASS。最新首新seed第13轮、健康无failure；原seed01参考行已自动完成预测/评分。这是运行进度，尚无SINGLE完整默认头结果。首seed完成固定50轮后仅按合法源LCE≤0.5、V均值相对COMPACT下降≤1个百分点/最差RX≤2个百分点放行后两seed；其自动target评分可以并行，但分数及评分是否完成不作科学资格依据。完整矩阵未返回前不新增候选、不热改健康任务。默认分类头联合训练、0单独训练分类头限制继续有效。
+
+
+单尺度残差计算成本补充（实际 CPU 前向 hook、两份256点合成零输入，无数据/权重/真值读取）：修改的t1/t2/t3卷积MAC/包为原基线1242624、COMPACT_LINEAR4898304、SINGLE_BASIS4905984。SINGLE相对COMPACT多7680 MAC/包（＋0.1568%），因此本控制不仅参数相近，修改模块的卷积乘加预算也接近。各层SINGLE为1855488/1830912/1219584，COMPACT为1849344/1829376/1219584。该计数排除不变的Sinc/频域/PA、FFT、归一化/激活/加法/池化及内存成本，不能替代整模型FLOPs或实测速率。实际身份模型参数确认177025/237697/237769；减去类别W的960个参数后fθ为176065/236737/236809。两模型函数族和优化参数化仍有明确差异，参数/MAC匹配并不证明等同函数容量。可复现入口tools/profile_time_basis_operations.py，逐卷积shape及乘加表time_basis_operation_counts_20261014.json。
