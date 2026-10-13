@@ -43,3 +43,5 @@
 预期：297项readout（33/row）、279个独立新头、实际source feature exact equality、source物理support ID、每头20轮完整loss序列、seed与support波动、混淆矩阵和同row分析。该诊断未进行新类或Phase2测试，不能据此声明旧新统一识别。
 
 独立P0/P1审查：纯特征接口一次PASS；新源域诊断输入/拟合/闭环一次PASS，无重复审查。focused refit checks14 negatives PASS、三臂feature synthetic精确一致/旧W删除/默认分类/每包独立/梯度与10 negatives PASS。
+
+兼容性直接P1修复：IdentityOnlyCVS仅在ResidualPhysicalHead下走feature_only，native多输出头保留旧return_aux特征。focused真实构造native/residual的特征精确一致PASS，一次限定复审PASS。
