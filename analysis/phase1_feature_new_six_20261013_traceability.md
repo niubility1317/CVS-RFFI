@@ -51,3 +51,11 @@
 本地原型检查PASS：五模型普通原头initial一致、部署z160/W独立、新增投影与alpha有限非零梯度、精确1225参数匹配、strict state roundtrip；四路径实际投影/频域rho和统计侧路屏蔽、响应旁路屏蔽、退出恢复、教师U不受L临时hooks影响、U/query/target角色拒绝、native唯一out_l/x_l_main/y_l AST定位。原12模型旧矩阵已完成，主目标84flag false；新alpha/mask设计在读取其目标指标前已固定。
 
 2026-10-13 正式闭环已实现并登记：20261013-phase1-restitution-competition-oldgate-e50-clean-manysig-m15-r01，五组×三seed，新增12 scratch50，复用3同seed固定历史对照；L_s-only普通cosine10轮及5留RX/1RX信息诊断，源V单组撤除保持固定W，双读出固定后fresh scoring。focused pipeline、release import、compile PASS；唯一独立P0/P1 review PASS。真实远端source训练/冻结换头/target评分尚待；Phase2匹配数据与同support旧新类联合证据仍未完成。
+
+## 2026-10-13 当前交接与用户覆盖
+
+分类头只使用网络默认头并随骨干联合训练，取消本记录 G05/N05/N06/B06 中任何单独拟合分类头的后续执行，以及 M02 中拟另训普通 cosine 头的旧设想。此前已完成的换头产物只作为历史诊断保留，不纳入正式性能或后续门槛；Phase2 如何使用默认判决机制尚待合法数据与方法匹配，不在此声明已经解决。
+
+五条件×三 seed 原 run 15 行已全部冻结、预测和独立评分，无技术失败。12 个新增骨干共 600 轮、133,200 次更新；3 个历史对照复用 150 轮、33,300 次更新。默认头 clean 均值依次为 BASE_REF 80.5268%、ORDINARY 80.3075%、RESTORE 80.2532%、COMP 80.5663%、RESTORE_COMP 80.1298%；84% 目标未达成。完整默认头逐 seed、分层指标与负结果见原 report 的最新追加段。
+
+对话报错为 stream disconnected before completion（连接层）；当前远端 run 已完整完成，不能将对话失败当作实验失败或重启理由。后续四条路线仍按原分阶段设计未执行，不依据本次 target 分数重排。
