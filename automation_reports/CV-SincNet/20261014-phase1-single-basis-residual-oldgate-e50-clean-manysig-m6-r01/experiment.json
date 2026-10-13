@@ -34,7 +34,8 @@
     "entrypoint": "experiments.cvs_time_basis50.dispatch",
     "checkout": "E:/type10-7/code/worktrees/report_physical_ssl_delivery_20261011",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_time_basis50_20261014_r01"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_time_basis50_20261014_r01",
+    "execution_commit": "a6d75a259949d66a7f8da80319ba904c1fc6d72a"
   },
   "data": {
     "dataset": "ManySig",
@@ -2495,7 +2496,7 @@
     "3existing compact prediction arrays and54CM reused only after all new registered rows score; not re-predict/re-fit or pretend9newrows.",
     "Observer adds5sourceV passes135000/model plusfixedL32/stage; no extraUforward or Utruth read. Complete full50/11100logs retained."
   ],
-  "status": "PLANNED",
+  "status": "RUNNING",
   "local_verification": "PASS actual preGN operator/input-gradient fold, rank<=2, timecount81744vs81672+72, defaultW export invariant, strict teacher/checkpoint, L CE gradients/AdamW actual values/z changed, native RNG restored, source COMPACT reference gate negative.",
   "independent_review": {
     "status": "PASS",
@@ -2504,5 +2505,20 @@
     "fixed_issue": "P1 factorial dependency omitted from release PATHS; now explicitly included"
   },
   "result": null,
-  "registered_at": "2026-10-13T20:38:12+00:00"
+  "registered_at": "2026-10-13T20:38:12+00:00",
+  "launch_verification": {
+    "status": "VERIFIED",
+    "release": "cvs_time_basis50_20261014_r01",
+    "preflight": "PASS real checkpoint no-query and frozen COMPACT source",
+    "archive_transport": "one local/remote archive comparison PASS before compile/preflight/dispatch; preserved package and submit artifact",
+    "first_new_row": "SINGLE_BASIS-s2026092701",
+    "first_new_gpu": 5,
+    "first_new_pid": 1844295,
+    "epoch_count": 1,
+    "log_bytes": 11735,
+    "source_only_selection": true,
+    "reference_row_scored": true,
+    "prediction_complete": false,
+    "full_matrix_complete": false
+  }
 }

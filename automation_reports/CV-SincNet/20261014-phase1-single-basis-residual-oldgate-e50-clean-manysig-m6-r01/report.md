@@ -1,6 +1,6 @@
 # 单时间滤波基残差与相近参数量控制预登记
 
-Run: 20261014-phase1-single-basis-residual-oldgate-e50-clean-manysig-m6-r01。状态：LOCAL_VERIFIED，尚未发布。代码/config 以发布归档内 release_commit.txt 的 Git 提交为执行版本；不使用报告自引用摘要。
+Run: 20261014-phase1-single-basis-residual-oldgate-e50-clean-manysig-m6-r01。状态：RUNNING。已发布执行提交 a6d75a259949d66a7f8da80319ba904c1fc6d72a，远端 OID 独立核实一致；一次归档传输比较和远端编译/真实 checkpoint 无 query smoke PASS。启动后 PID/CWD/argv/GPU 与日志增长 VERIFIED；首新行 SINGLE_BASIS-s2026092701 在 GPU5，第1轮，尚未完成训练/预测/评分。代码/config 以发布归档内 release_commit.txt 的 Git 提交为执行版本；不使用报告自引用摘要。
 
 本轮只检验一个假设：已完成 COMPACT_LINEAR 的多个时间滤波基，是否比相近参数量的单尺度残差控制更有价值。依据是合法源权重的 preGN 等效卷积核及多分支参与证据，以及用户明确要求补此对照。原头目标三种子 clean 均值 84% 保留，不承诺达标；目标成绩不进入配置、源资格、顺序、停止或选择性重跑。
 
