@@ -11,3 +11,5 @@
 现有benchmark已经暴露；本轮配置/数据角色/三个seed/预算在目标访问前固定，所有负结果保留，不按target错例或分数调参/挑seed/选epoch/重跑。84%依实际三primaryseedclean均值判断，当前尚未达成。仅声明地面代理纯域泛化，不称真实星地部署或Phase2已审计；commoncos九类refit接口已smoke。
 
 单owner、普通N607账号、不可覆盖run/release/output、共享capacitylock每GPU总实验进程≤3/free≥12000MB。一个实际Git代码/config提交、一次独立P0/P1、聚焦负测/真实合法checkpoint无querysmoke、单archiveSHA/compile/N607preflight、postlaunch PID/CWD/argv/GPU/loggrowth，只有runowned系统技术/数据/权限/输出或非法预测失败停止，保留产物、不干预健康旧任务。commit、命令、环境/CWD、路径/GPU、矩阵及产物见experiment.json/release/readback，完成后完整日志/原始预测独立重算、登记和Git交付。
+
+2026-10-13 发布 VERIFIED：执行提交 `97be12e127a2c187c4ccd735b79ee7644feb3b2e`；单归档校验、远端编译、真实权重无 query 检查 PASS，6 个 worker 的 PID/CWD/argv/GPU 与日志增长已读回。三种子实际初始化为 2026092701/02/03，登记 seeds/purpose/scenario 的旧模板文字按实际配置更正；原发布登记保留，训练不变。唯一独立 P0/P1 审查已在关联聊天完成 PASS，未重复审查。

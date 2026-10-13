@@ -457,3 +457,9 @@
 - [教师伪标签目标反馈：普通cos三种子30轮clean](../automation_reports/CV-SincNet/20261013-phase1-feedback-teacher-clean-manysig-m12-r01/report.md)（PLANNED）
 - [报告独立机制与元反馈/SWA：三种子30轮普通cos clean](../automation_reports/CV-SincNet/20261013-phase1-report-mechanisms-clean-manysig-m36-r01/report.md)（ANALYZED）
 - [报告投影机制：普通 cos、三种子 clean 固定24行](../automation_reports/CV-SincNet/20261013-phase1-report-projection-clean-manysig-m24-r01/report.md)（ANALYZED）
+
+
+当前接续记录（2026-10-13；其余工作树索引更新保留未暂存）：
+- [浅中层TX条件矩对齐：30轮三种子普通cos clean](../automation_reports/CV-SincNet/20261013-phase1-conditional-alignment-clean-manysig-m6-r01/report.md)：ANALYZED，model seeds=[2026092701, 2026092702, 2026092703]
+- [浅中层跨RX监督对比：30轮三种子普通cos clean](../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-clean-manysig-m6-r01/report.md)：PLANNED，model seeds=[2026092701, 2026092702, 2026092703]
+- [教师伪标签目标反馈：普通cos三种子30轮clean](../automation_reports/CV-SincNet/20261013-phase1-feedback-teacher-clean-manysig-m12-r01/report.md)：ANALYZED，model seeds=[2026092701]

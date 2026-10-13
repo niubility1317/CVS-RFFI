@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|教师伪标签目标反馈：普通cos三种子30轮clean|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-feedback-teacher-clean-manysig-m12-r01/report.md)|
+|教师伪标签目标反馈：三种子普通cos 30轮 clean|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-feedback-teacher-clean-manysig-m12-r01/report.md)|

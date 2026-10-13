@@ -13,3 +13,6 @@
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |CE＋旧门控＋cos：E15/E12各三种子压缩|managed_run|[打开](../../automation_reports/CV-SincNet/20261011-phase1-ce-epoch12-15-manysig-m6-r01/report.md)|
+|浅中层 TX 条件矩对齐：三种子 30 轮普通 cos clean|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-conditional-alignment-clean-manysig-m6-r01/report.md)|
+|浅中层跨 RX 监督对比：固定三种子 clean|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-clean-manysig-m6-r01/report.md)|
+|教师伪标签目标反馈：三种子普通cos 30轮 clean|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-feedback-teacher-clean-manysig-m12-r01/report.md)|

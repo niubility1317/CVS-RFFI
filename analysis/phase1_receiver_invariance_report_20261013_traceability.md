@@ -30,3 +30,7 @@
 当前18项均已实现并完成组件/实际证据核验；其中6项为明示近似、2项仅诊断，其余按所列理想条件核验。性能目标尚未达成。第一报告的教师目标调整备选已形成独立6联合row/12模型/30轮/clean方案，参数沿原未发布核心固定，不使用本轮target反馈调整；独立P0/P1与实际梯度PASS，已完成并独立重算，学生 FEEDBACK_TEACHER 为 79.9466%，同成本 TEACHER_SSL 为 79.9837%；教师actualseed为primary+10000，仅诊断，不能冒充学生primary三seed目标。
 
 2026-10-13 恢复：再次提供的附件与当前九类机制报告一致，复用上述已验证实现及实际结果。浅中层 TX 条件矩对齐与无条件矩对齐另作 6 模型固定实验，登记 `20261013-phase1-conditional-alignment-clean-manysig-m6-r01`。保持普通 cos、三主种子、从零 30 轮、仅 clean、无源 V 性能门槛；当前本地检查 PASS、上一聊天唯一独立 P0/P1 PASS，正式性能待完成。此为条件均值代理约束，不宣称严格消除真实 RX 作用。
+
+条件矩扩展正式完成 VERIFIED：6 模型从零30轮，共39960更新、1008000 clean预测和108条same-row指标完整重算；TX_CONDITIONAL79.9931%、UNCONDITIONAL79.8954%、匹配UNIFORM_SSL80.0313%，目标未达成。完整报告 `automation_reports/CV-SincNet/20261013-phase1-conditional-alignment-clean-manysig-m6-r01/final_analysis.md`。
+
+下一固定扩展为 `20261013-phase1-crossrx-contrastive-clean-manysig-m6-r01`，两种合法 L 样本级监督对比（ALL_TX/CROSS_RX_TX），原九类实现保持。配方在当前矩对齐 target 汇总之前固定，属于报告思想的训练扩展，非严格原投影公式；CPU/CUDA与普通 cos接口检查PASS。三项追踪见其report.md，完整性能尚待实际训练/clean独立评分。

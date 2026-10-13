@@ -133,7 +133,7 @@
     {
       "row_id": "UNCONDITIONAL-s2026092701",
       "method": "UNCONDITIONAL",
-      "purpose": "source falsification",
+      "purpose": "fixed full-source matched mechanism comparison",
       "config_ref": "experiments/cvs_report_alignment_clean/design.py",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-conditional-alignment-clean-manysig-m6-r01/UNCONDITIONAL-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -147,7 +147,7 @@
       },
       "seed_notes": "actualprimary2701/02/03 init/dropout;Lseed+101 RX/day/TX,Useed+901337 RX/day; strongnoise seed+step9901,privateUdropoutseed+step1979;originalsplit392005 unchanged",
       "k": null,
-      "scenario": "source heldRX clean only",
+      "scenario": "clean target test after fixed FINAL epoch30",
       "optimizer": "AdamW",
       "lr": 0.0002,
       "epochs": 30,
@@ -638,17 +638,20 @@
           "identity_protection": "sourceTXconditionalRXcentroids plusordinaryCE;not proof fullfutureTX identity preservation"
         },
         "matched_control": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-report-mechanisms-clean-manysig-m36-r01/UNIFORM_SSL-s2026092701/source"
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1243458,
+      "gpu": 0
     },
     {
       "row_id": "UNCONDITIONAL-s2026092702",
       "method": "UNCONDITIONAL",
-      "purpose": "source falsification",
+      "purpose": "fixed full-source matched mechanism comparison",
       "config_ref": "experiments/cvs_report_alignment_clean/design.py",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-conditional-alignment-clean-manysig-m6-r01/UNCONDITIONAL-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
-        "model": 2026092701,
+        "model": 2026092702,
         "split": null,
         "data": null,
         "augmentation": null,
@@ -657,7 +660,7 @@
       },
       "seed_notes": "actualprimary2701/02/03 init/dropout;Lseed+101 RX/day/TX,Useed+901337 RX/day; strongnoise seed+step9901,privateUdropoutseed+step1979;originalsplit392005 unchanged",
       "k": null,
-      "scenario": "source heldRX clean only",
+      "scenario": "clean target test after fixed FINAL epoch30",
       "optimizer": "AdamW",
       "lr": 0.0002,
       "epochs": 30,
@@ -1148,17 +1151,20 @@
           "identity_protection": "sourceTXconditionalRXcentroids plusordinaryCE;not proof fullfutureTX identity preservation"
         },
         "matched_control": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-report-mechanisms-clean-manysig-m36-r01/UNIFORM_SSL-s2026092702/source"
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1243550,
+      "gpu": 1
     },
     {
       "row_id": "UNCONDITIONAL-s2026092703",
       "method": "UNCONDITIONAL",
-      "purpose": "source falsification",
+      "purpose": "fixed full-source matched mechanism comparison",
       "config_ref": "experiments/cvs_report_alignment_clean/design.py",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-conditional-alignment-clean-manysig-m6-r01/UNCONDITIONAL-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
-        "model": 2026092701,
+        "model": 2026092703,
         "split": null,
         "data": null,
         "augmentation": null,
@@ -1167,7 +1173,7 @@
       },
       "seed_notes": "actualprimary2701/02/03 init/dropout;Lseed+101 RX/day/TX,Useed+901337 RX/day; strongnoise seed+step9901,privateUdropoutseed+step1979;originalsplit392005 unchanged",
       "k": null,
-      "scenario": "source heldRX clean only",
+      "scenario": "clean target test after fixed FINAL epoch30",
       "optimizer": "AdamW",
       "lr": 0.0002,
       "epochs": 30,
@@ -1658,12 +1664,15 @@
           "identity_protection": "sourceTXconditionalRXcentroids plusordinaryCE;not proof fullfutureTX identity preservation"
         },
         "matched_control": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-report-mechanisms-clean-manysig-m36-r01/UNIFORM_SSL-s2026092703/source"
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1243631,
+      "gpu": 2
     },
     {
       "row_id": "TX_CONDITIONAL-s2026092701",
       "method": "TX_CONDITIONAL",
-      "purpose": "source falsification",
+      "purpose": "fixed full-source matched mechanism comparison",
       "config_ref": "experiments/cvs_report_alignment_clean/design.py",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-conditional-alignment-clean-manysig-m6-r01/TX_CONDITIONAL-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -1677,7 +1686,7 @@
       },
       "seed_notes": "actualprimary2701/02/03 init/dropout;Lseed+101 RX/day/TX,Useed+901337 RX/day; strongnoise seed+step9901,privateUdropoutseed+step1979;originalsplit392005 unchanged",
       "k": null,
-      "scenario": "source heldRX clean only",
+      "scenario": "clean target test after fixed FINAL epoch30",
       "optimizer": "AdamW",
       "lr": 0.0002,
       "epochs": 30,
@@ -2168,17 +2177,20 @@
           "identity_protection": "sourceTXconditionalRXcentroids plusordinaryCE;not proof fullfutureTX identity preservation"
         },
         "matched_control": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-report-mechanisms-clean-manysig-m36-r01/UNIFORM_SSL-s2026092701/source"
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1243712,
+      "gpu": 3
     },
     {
       "row_id": "TX_CONDITIONAL-s2026092702",
       "method": "TX_CONDITIONAL",
-      "purpose": "source falsification",
+      "purpose": "fixed full-source matched mechanism comparison",
       "config_ref": "experiments/cvs_report_alignment_clean/design.py",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-conditional-alignment-clean-manysig-m6-r01/TX_CONDITIONAL-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
-        "model": 2026092701,
+        "model": 2026092702,
         "split": null,
         "data": null,
         "augmentation": null,
@@ -2187,7 +2199,7 @@
       },
       "seed_notes": "actualprimary2701/02/03 init/dropout;Lseed+101 RX/day/TX,Useed+901337 RX/day; strongnoise seed+step9901,privateUdropoutseed+step1979;originalsplit392005 unchanged",
       "k": null,
-      "scenario": "source heldRX clean only",
+      "scenario": "clean target test after fixed FINAL epoch30",
       "optimizer": "AdamW",
       "lr": 0.0002,
       "epochs": 30,
@@ -2678,17 +2690,20 @@
           "identity_protection": "sourceTXconditionalRXcentroids plusordinaryCE;not proof fullfutureTX identity preservation"
         },
         "matched_control": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-report-mechanisms-clean-manysig-m36-r01/UNIFORM_SSL-s2026092702/source"
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1243793,
+      "gpu": 4
     },
     {
       "row_id": "TX_CONDITIONAL-s2026092703",
       "method": "TX_CONDITIONAL",
-      "purpose": "source falsification",
+      "purpose": "fixed full-source matched mechanism comparison",
       "config_ref": "experiments/cvs_report_alignment_clean/design.py",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-conditional-alignment-clean-manysig-m6-r01/TX_CONDITIONAL-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
-        "model": 2026092701,
+        "model": 2026092703,
         "split": null,
         "data": null,
         "augmentation": null,
@@ -2697,7 +2712,7 @@
       },
       "seed_notes": "actualprimary2701/02/03 init/dropout;Lseed+101 RX/day/TX,Useed+901337 RX/day; strongnoise seed+step9901,privateUdropoutseed+step1979;originalsplit392005 unchanged",
       "k": null,
-      "scenario": "source heldRX clean only",
+      "scenario": "clean target test after fixed FINAL epoch30",
       "optimizer": "AdamW",
       "lr": 0.0002,
       "epochs": 30,
@@ -3188,7 +3203,10 @@
           "identity_protection": "sourceTXconditionalRXcentroids plusordinaryCE;not proof fullfutureTX identity preservation"
         },
         "matched_control": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-report-mechanisms-clean-manysig-m36-r01/UNIFORM_SSL-s2026092703/source"
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1243874,
+      "gpu": 5
     }
   ],
   "notes": [
@@ -3198,9 +3216,42 @@
     "SourceCE protects sixknownTX classdifference, not proof completefutureTXinformation or causalRXdecomposition. Alignmentgradient excludescosW (realautogradcheck None), no newmodelparam/head;actual177025nativeoptimizerparams/common30cos160. Phase2headrefit9smoke.",
     "SamesourceL/U objective/sampling/randomnessasexistingUNIFORM_SSL: L5RX26/26/26/25/25 TX/day balanced, U4otherRX32 rotateexcludedRX; currentownstudentq confidence95/twopass/KL.25/warm5/ramp5/noise.015, no externalteacher/EMA/satellite training. Remove unusedcontrolmetagradients only; mathematicalloss/backbonegradient equivalencetestPASS,not equalcomputeclaim.",
     "Original30cos2e-4to1e-6/AdamW WD1e-4/clip10/batch128/222steps epoch;alignmentwarm5/ramp10to.1. EveryrowfreezeFINAL30 thenautomaticallycleanpredict/scorer;oldUNIFORM_SSL controlfixedpredictionsall3 reusedonly forpairedreport, no targetrerun or checkpointinitialization.",
-    "Oneowner/ordinaryaccount/immutableoutputs,totalprocessesperGPU<=3/free>=12000MB;onlyrunownsystemictechnical/data/permission/output/illegalprediction failuresstop, preservehealthyothers/no scorestop/no selective rerun. Benchmarkalreadyexposed,notnewblindtest."
+    "Oneowner/ordinaryaccount/immutableoutputs,totalprocessesperGPU<=3/free>=12000MB;onlyrunownsystemictechnical/data/permission/output/illegalprediction failuresstop, preservehealthyothers/no scorestop/no selective rerun. Benchmarkalreadyexposed,notnewblindtest.",
+    "2026-10-13 metadata correction only: rows.seeds.model now matches unchanged row config/actual initialization; purpose/scenario corrected from old heldRX/source-only template. Original immutable release registration and running recipe preserved."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-12T19:16:43+00:00",
-  "replaces_run_id": null
+  "replaces_run_id": null,
+  "execution_commit": "97be12e127a2c187c4ccd735b79ee7644feb3b2e",
+  "delivery_verdict": "VERIFIED",
+  "live_readback_ref": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_report_alignment_clean_20261013_r01\\readback.json",
+  "clean_result_summary": [
+    {
+      "arm": "UNCONDITIONAL",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7989543650793651,
+      "accuracy_sd": 0.008989168048032408,
+      "seed_accuracy": {
+        "2026092701": 0.8059285714285714,
+        "2026092702": 0.7888095238095238,
+        "2026092703": 0.802125
+      },
+      "macro_f1_mean": 0.7957643319021687,
+      "goal_84": false
+    },
+    {
+      "arm": "TX_CONDITIONAL",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7999305555555556,
+      "accuracy_sd": 0.008939604955119078,
+      "seed_accuracy": {
+        "2026092701": 0.8055,
+        "2026092702": 0.7896190476190477,
+        "2026092703": 0.804672619047619
+      },
+      "macro_f1_mean": 0.796567740279445,
+      "goal_84": false
+    }
+  ],
+  "goal_84": false
 }
