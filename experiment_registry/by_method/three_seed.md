@@ -19,3 +19,4 @@
 |固定监督对比方案的三成员等权集成|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-ensemble-clean-manysig-m6-r01/report.md)|
 |教师伪标签目标反馈：三种子普通cos 30轮 clean|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-feedback-teacher-clean-manysig-m12-r01/report.md)|
 |可重复跨 RX 漂移上的鲁棒间隔：四组独立消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-repeated-rx-margin-clean-manysig-m12-r01/report.md)|
+|冻结源域伪目标健康与浅中层 RX 探针|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-pseudotarget-health-manysig-m3-r01/report.md)|

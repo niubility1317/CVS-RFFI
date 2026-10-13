@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |浅中层质量条件调制：源端30轮预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261012-phase1-quality-film-source-manysig-s2026092701-r01/report.md)|
+|冻结源域伪目标健康与浅中层 RX 探针|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-pseudotarget-health-manysig-m3-r01/report.md)|
