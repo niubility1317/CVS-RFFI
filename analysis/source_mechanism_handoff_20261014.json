@@ -210,9 +210,15 @@
   ],
   "single_basis_run": "20261014-phase1-single-basis-residual-oldgate-e50-clean-manysig-m6-r01",
   "single_basis_execution_commit": "a6d75a259949d66a7f8da80319ba904c1fc6d72a",
-  "single_basis_first_seed_epochs": 34,
+  "single_basis_first_seed_epochs": 50,
   "single_basis_failure": null,
   "full_Sinc_frozen_results_consumed_for_analysis_only": true,
-  "single_basis_source_phase": "pseudo epoch34; 56700 hidden U observations/921 accepted; no headfit or gatechange",
-  "single_basis_complete_three_seed": false
+  "single_basis_source_phase": "first seed complete50/11100 and scored; fixed source gate passed; two remaining seeds automatically launched",
+  "single_basis_complete_three_seed": false,
+  "single_basis_first_seed_complete": true,
+  "single_basis_first_seed_source_gate": "VERIFIED",
+  "single_basis_remaining_seeds": [
+    2026092702,
+    2026092703
+  ]
 }
