@@ -659,7 +659,8 @@
           "optimizer": "separateAdamW+cosine30",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "DETACHED_AUX-s2026092702",
@@ -1183,7 +1184,8 @@
           "optimizer": "separateAdamW+cosine30",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "DETACHED_AUX-s2026092703",
@@ -1707,7 +1709,8 @@
           "optimizer": "separateAdamW+cosine30",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MARGINAL_GRL-s2026092701",
@@ -2231,7 +2234,8 @@
           "optimizer": "separateAdamW+cosine30",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MARGINAL_GRL-s2026092702",
@@ -2755,7 +2759,8 @@
           "optimizer": "separateAdamW+cosine30",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MARGINAL_GRL-s2026092703",
@@ -3279,7 +3284,8 @@
           "optimizer": "separateAdamW+cosine30",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "TX_COND_GRL-s2026092701",
@@ -3803,7 +3809,8 @@
           "optimizer": "separateAdamW+cosine30",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "TX_COND_GRL-s2026092702",
@@ -4327,7 +4334,8 @@
           "optimizer": "separateAdamW+cosine30",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "TX_COND_GRL-s2026092703",
@@ -4851,7 +4859,8 @@
           "optimizer": "separateAdamW+cosine30",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     }
   ],
   "notes": [
@@ -4862,7 +4871,7 @@
     "Perstep domainCE/accuracy perlevel, mainloss/CE/KL, actualcoefficient andsourceLcounter; first/laststep per epoch record mainbase-vs-netdomain gradients andcosWnone, aux gradients separately. Shallowtimepath constraints do not directly erasefrequency/PA/reference response or guarantee fullfutureTXidentity/unknownRXperformance.",
     "No performance stop or promotiongate. EachrowautomaticFINAL30 clean168000prediction then independentexec truthlast;1512000predictions162metrics. Allnegative outcomes retained and no target feedback."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "registered_at": "2026-10-13T04:00:48+00:00",
   "replaces_run_id": null,
   "local_verification": "CPU/CUDA exactbase-gradient/clip/AdamW/RNG andauxupdates/nativecos160/9refit/GRLsign/count PASS;9row162metric syntheticaggregate PASS;compile PASS",
@@ -4870,22 +4879,65 @@
   "execution_commit": "4f6258bb230389198f7036e1c57a7f740d4dcb50",
   "delivery_verdict": "VERIFIED",
   "last_verified_remote_observation": {
-    "observed_at_utc": "2026-10-13T04:16:35.115Z",
+    "observed_at_unix": 1791865563.5782287,
     "workers": 9,
     "epoch_counts": [
-      25,
-      24,
-      25,
-      24,
-      24,
-      23,
-      23,
-      22,
-      22
+      30,
+      30,
+      30,
+      30,
+      30,
+      30,
+      30,
+      30,
+      30
     ],
     "preflight": "PASS",
-    "completion": false,
+    "completion": true,
     "failure": false
   },
-  "current_remote_status": "UNKNOWN_PENDING_READBACK"
+  "current_remote_status": "VERIFIED_EXPERIMENT_COMPLETE",
+  "clean_result_summary": [
+    {
+      "arm": "DETACHED_AUX",
+      "readout": "FINAL",
+      "accuracy_mean": 0.8004583333333334,
+      "accuracy_sd": 0.009754577679955462,
+      "seed_accuracy": {
+        "2026092701": 0.8083869047619048,
+        "2026092702": 0.7895654761904762,
+        "2026092703": 0.803422619047619
+      },
+      "macro_f1_mean": 0.7975604306427421,
+      "goal_84": false
+    },
+    {
+      "arm": "MARGINAL_GRL",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7969781746031745,
+      "accuracy_sd": 0.011932518732726924,
+      "seed_accuracy": {
+        "2026092701": 0.8042857142857143,
+        "2026092702": 0.7832083333333333,
+        "2026092703": 0.8034404761904762
+      },
+      "macro_f1_mean": 0.7937542548066387,
+      "goal_84": false
+    },
+    {
+      "arm": "TX_COND_GRL",
+      "readout": "FINAL",
+      "accuracy_mean": 0.8006051587301587,
+      "accuracy_sd": 0.01150778650011703,
+      "seed_accuracy": {
+        "2026092701": 0.8100119047619048,
+        "2026092702": 0.7877738095238095,
+        "2026092703": 0.8040297619047619
+      },
+      "macro_f1_mean": 0.7975750362515249,
+      "goal_84": false
+    }
+  ],
+  "goal_84": false,
+  "full_audit_ref": "final_analysis.md"
 }

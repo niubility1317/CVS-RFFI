@@ -1,3 +1,4 @@
 {"at": "2026-10-13T04:00:48+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-13T04:09:05+00:00", "status": "LOCAL_VERIFIED", "note": "CPU/CUDA exactmainloss/gradient/clip/AdamW/RNG control +auxupdate PASS; GRL/ordinarycos/9refit/synthetic9row aggregate; independentP0P1 PASS", "evidence": ["report.md"], "row_id": null}
 {"at": "2026-10-13T04:22:25+00:00", "status": "RUNNING", "note": "VERIFIED release commit/transfer/compile/noquery; saved9healthy workers E22-25; currentreadback UNKNOWN due shellpolicy, no remote mutation", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-10-13T04:28:41+00:00", "status": "ANALYZED", "note": "VERIFIED9scratch30/59940main+59940aux updates/119880layer540gradient records;1512000clean162metrics;goal84 False", "evidence": ["final_analysis.md"], "row_id": null}

@@ -460,12 +460,14 @@
 
 
 
+
 当前接续记录（2026-10-13；其余工作树索引更新保留未暂存）：
 - [浅中层TX条件矩对齐：30轮三种子普通cos clean](../automation_reports/CV-SincNet/20261013-phase1-conditional-alignment-clean-manysig-m6-r01/report.md)：ANALYZED，model seeds=[2026092701, 2026092702, 2026092703]
-- [浅中层RX对抗：无梯度控制/无条件/真实TX条件三种子](../automation_reports/CV-SincNet/20261013-phase1-conditional-rx-adversary-clean-manysig-m9-r01/report.md)：RUNNING，model seeds=[2026092701, 2026092702, 2026092703]
+- [浅中层RX对抗：无梯度控制/无条件/真实TX条件三种子](../automation_reports/CV-SincNet/20261013-phase1-conditional-rx-adversary-clean-manysig-m9-r01/report.md)：ANALYZED，model seeds=[2026092701, 2026092702, 2026092703]
 - [浅中层跨RX监督对比：30轮三种子普通cos clean](../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-clean-manysig-m6-r01/report.md)：ANALYZED，model seeds=[2026092701, 2026092702, 2026092703]
 - [固定三成员监督对比：零训练零预测汇总恢复](../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-ensemble-aggregate-manysig-m6-r02/report.md)：ANALYZED，model seeds=[]
 - [固定跨RX监督对比三成员集成：30轮三种子clean](../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-ensemble-clean-manysig-m6-r01/report.md)：ANALYZED，model seeds=[2026092701, 2026092702, 2026092703]
 - [教师伪标签目标反馈：普通cos三种子30轮clean](../automation_reports/CV-SincNet/20261013-phase1-feedback-teacher-clean-manysig-m12-r01/report.md)：ANALYZED，model seeds=[2026092701]
 - [可重复跨RX漂移鲁棒间隔：四组30轮三种子clean](../automation_reports/CV-SincNet/20261013-phase1-repeated-rx-margin-clean-manysig-m12-r01/report.md)：ANALYZED，model seeds=[2026092701, 2026092702, 2026092703]
+- [冻结 RX 对抗模型：九行源域独立线性探针](../automation_reports/CV-SincNet/20261013-source-conditional-rx-probe-health-manysig-m9-r01/report.md)：LOCAL_VERIFIED，model seeds=[2026092701, 2026092702, 2026092703]
 - [源域伪目标健康：三种子冻结模型与浅中层RX探针](../automation_reports/CV-SincNet/20261013-source-pseudotarget-health-manysig-m3-r01/report.md)：ANALYZED，model seeds=[2026092701, 2026092702, 2026092703]
