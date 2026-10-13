@@ -655,7 +655,8 @@
           "method_claim": "MPL-inspired frozenP firstorder finite-difference reward,not originalMPL/exactvirtualAdamW",
           "restore": "exact copy allvirtualstudentparams before actualstudentforward;noqueryvirtualfit"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "TEACHER_SSL-s2026092702",
@@ -1180,7 +1181,8 @@
           "method_claim": "MPL-inspired frozenP firstorder finite-difference reward,not originalMPL/exactvirtualAdamW",
           "restore": "exact copy allvirtualstudentparams before actualstudentforward;noqueryvirtualfit"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "TEACHER_SSL-s2026092703",
@@ -1705,7 +1707,8 @@
           "method_claim": "MPL-inspired frozenP firstorder finite-difference reward,not originalMPL/exactvirtualAdamW",
           "restore": "exact copy allvirtualstudentparams before actualstudentforward;noqueryvirtualfit"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "FEEDBACK_TEACHER-s2026092701",
@@ -2230,7 +2233,8 @@
           "method_claim": "MPL-inspired frozenP firstorder finite-difference reward,not originalMPL/exactvirtualAdamW",
           "restore": "exact copy allvirtualstudentparams before actualstudentforward;noqueryvirtualfit"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "FEEDBACK_TEACHER-s2026092702",
@@ -2755,7 +2759,8 @@
           "method_claim": "MPL-inspired frozenP firstorder finite-difference reward,not originalMPL/exactvirtualAdamW",
           "restore": "exact copy allvirtualstudentparams before actualstudentforward;noqueryvirtualfit"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "FEEDBACK_TEACHER-s2026092703",
@@ -3280,7 +3285,8 @@
           "method_claim": "MPL-inspired frozenP firstorder finite-difference reward,not originalMPL/exactvirtualAdamW",
           "restore": "exact copy allvirtualstudentparams before actualstudentforward;noqueryvirtualfit"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     }
   ],
   "notes": [
@@ -3294,7 +3300,73 @@
     "Oneowner immutablepaths/ordinaryaccount/totalexperimentprocessesperGPU<=3/free>=12000MB;systemictechnical/data/permission/output/illegalprediction stopsrunownedonly;nohotmodify/restarthealthyolderruns. No source-onlyscope/day012 template leftovers;immutablehistoricalrecords preserved.",
     "Benchmarkalreadyexposed; allactualseeds/allrownegative results retained, no targetbasedepoch/seed/params/rerun choice. Student primarythree-seedcleanmean84 remainsunmet inpreviousfixedmatrix."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-12T18:37:12+00:00",
-  "replaces_run_id": null
+  "replaces_run_id": null,
+  "execution_commit": "c594ecb04028daef08be04205fcc0a6d2c7b4280",
+  "delivery_verdict": "VERIFIED",
+  "live_readback_ref": "local_artifacts/cvs_feedback_teacher_clean_20261013_r01/readback.json",
+  "clean_result_summary": [
+    {
+      "arm": "TEACHER_SSL",
+      "readout": "STUDENT",
+      "accuracy_mean": 0.7998373015873016,
+      "accuracy_sd": 0.011863174881660655,
+      "seed_accuracy": {
+        "2026092701": 0.8094107142857143,
+        "2026092702": 0.7865654761904762,
+        "2026092703": 0.8035357142857142
+      },
+      "macro_f1_mean": 0.7968286139889195,
+      "primary_seed_role": true,
+      "goal_84": false,
+      "diagnostic_teacher_mean_above84": false
+    },
+    {
+      "arm": "TEACHER_SSL",
+      "readout": "TEACHER",
+      "accuracy_mean": 0.7985238095238095,
+      "accuracy_sd": 0.018178192335523962,
+      "seed_accuracy": {
+        "2026102701": 0.8158214285714286,
+        "2026102702": 0.800172619047619,
+        "2026102703": 0.7795773809523809
+      },
+      "macro_f1_mean": 0.7963826615092789,
+      "primary_seed_role": false,
+      "goal_84": false,
+      "diagnostic_teacher_mean_above84": false
+    },
+    {
+      "arm": "FEEDBACK_TEACHER",
+      "readout": "STUDENT",
+      "accuracy_mean": 0.7994662698412699,
+      "accuracy_sd": 0.012438007178855239,
+      "seed_accuracy": {
+        "2026092701": 0.8083095238095238,
+        "2026092702": 0.7852440476190476,
+        "2026092703": 0.8048452380952381
+      },
+      "macro_f1_mean": 0.7963471653095193,
+      "primary_seed_role": true,
+      "goal_84": false,
+      "diagnostic_teacher_mean_above84": false
+    },
+    {
+      "arm": "FEEDBACK_TEACHER",
+      "readout": "TEACHER",
+      "accuracy_mean": 0.7959305555555555,
+      "accuracy_sd": 0.020343577815915986,
+      "seed_accuracy": {
+        "2026102701": 0.8123511904761904,
+        "2026102702": 0.8022678571428571,
+        "2026102703": 0.773172619047619
+      },
+      "macro_f1_mean": 0.7931820232546165,
+      "primary_seed_role": false,
+      "goal_84": false,
+      "diagnostic_teacher_mean_above84": false
+    }
+  ],
+  "goal_84": false
 }

@@ -23,8 +23,10 @@
 |E1|用户覆盖|全源三seed、30轮、无sourceV性能门槛、clean-only自动truth-last|experiments/cvs_report_mechanisms/design.py/dispatch.py/predict.py/score.py|verified|36scratch30/39cleanreadouts/6552000预测与702指标、239760步及2010SWA张量完整重算|包括元反馈9模型与SWA3轨迹，保留旧源诊断；不追加practical|
 |E2|报告6|冻结原CVS的投影zero-gradient对照|experiments/cvs_report_projection/design.py/dispatch.py|verified|三真实CE30角色/祖先/noquerysmoke和24clean rows核实|三CE30父模型固定复用，不借oracle80权重或sourceU标签|
 
-方法总览：9类探索空间全部映射到具体实现；有效Fisher另有明确定义的Gaussian工作模型诊断。新报告不要求替换commoncos为切空间距离，故有界距离只诊断，不作为query决策。教师目标调整核心先保留未注册备选，不发布新的源留出矩阵；优先完成当前报告和已经承诺的元反馈/SWA正式clean验证。
+方法总览：9类探索空间全部映射到具体实现；有效Fisher另有明确定义的Gaussian工作模型诊断。新报告不要求替换commoncos为切空间距离，故有界距离只诊断，不作为query决策。教师目标反馈已完成正式 clean 验证，学生主种子均值仍未达到 84%；负结果已保留。
 
 本记录用于完整性追踪，不是额外发布审批、source性能筛选或hash gate。状态随实际代码/测试/远端证据更新；投影24行已完整独立重算，NATIVE79.4562%，其他73.0067%至76.0157%；84%未达成。其余36条新30轮轨迹/39clean读出预登记，数学、真实梯度、protocol负测与唯一独立P0/P1已PASS，正式39组clean已完成及独立重算。最高AFFINE_IQ80.3286%，META_SSL79.9605%，SWA79.8272%，84%仍未达成。实现状态不等于性能成功。
 
-当前18项均已实现并完成组件/实际证据核验；其中6项为明示近似、2项仅诊断，其余按所列理想条件核验。性能目标尚未达成。第一报告的教师目标调整备选已形成独立6联合row/12模型/30轮/clean方案，参数沿原未发布核心固定，不使用本轮target反馈调整；独立P0/P1与实际梯度PASS，尚未启动。教师actualseed为primary+10000，仅诊断，不能冒充学生primary三seed目标。
+当前18项均已实现并完成组件/实际证据核验；其中6项为明示近似、2项仅诊断，其余按所列理想条件核验。性能目标尚未达成。第一报告的教师目标调整备选已形成独立6联合row/12模型/30轮/clean方案，参数沿原未发布核心固定，不使用本轮target反馈调整；独立P0/P1与实际梯度PASS，已完成并独立重算，学生 FEEDBACK_TEACHER 为 79.9466%，同成本 TEACHER_SSL 为 79.9837%；教师actualseed为primary+10000，仅诊断，不能冒充学生primary三seed目标。
+
+2026-10-13 恢复：再次提供的附件与当前九类机制报告一致，复用上述已验证实现及实际结果。浅中层 TX 条件矩对齐与无条件矩对齐另作 6 模型固定实验，登记 `20261013-phase1-conditional-alignment-clean-manysig-m6-r01`。保持普通 cos、三主种子、从零 30 轮、仅 clean、无源 V 性能门槛；当前本地检查 PASS、上一聊天唯一独立 P0/P1 PASS，正式性能待完成。此为条件均值代理约束，不宣称严格消除真实 RX 作用。
