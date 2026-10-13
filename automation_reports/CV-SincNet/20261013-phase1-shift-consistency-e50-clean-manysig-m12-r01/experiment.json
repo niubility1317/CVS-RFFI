@@ -6426,5 +6426,19 @@
   "status": "LOCAL_VERIFIED",
   "local_verification": "Actual four arm gradients/forward counts/teacher detach, shift geometry, full50 counters, unauthorized branch andepoch51 rejection PASS; isolated release dependency import and truth-last full12 closure PASS.",
   "registered_at": "2026-10-13T09:18:12+00:00",
-  "independent_review": "One independent P0/P1 candidate review PASS: actual configs/budgets, source roles/U gate, shallow/mid gradient route, fixed final50, fresh truth-last full12 scoring and GPU limits verified; no changes requested."
+  "independent_review": "One independent P0/P1 candidate review PASS: actual configs/budgets, source roles/U gate, shallow/mid gradient route, fixed final50, fresh truth-last full12 scoring and GPU limits verified; no changes requested.",
+  "execution_commit": "319ed5bd5f0d2f98ba2c93e60e121122521f1acd",
+  "release_status": "VERIFIED_RUNNING",
+  "post_launch_verification": {
+    "status": "VERIFIED",
+    "rows_started": 12,
+    "no_failure": true,
+    "real_checkpoint_noquery": true,
+    "process_cwd_argv_gpu_verified": true,
+    "log_growth_verified_from_initial_zero": true,
+    "actual_U_only_primary": true,
+    "V_forward": false,
+    "epochs": 50,
+    "runtime_evidence": "local_artifacts/cvs_shift_consistency50_20261013_r01/readback.json"
+  }
 }

@@ -30,3 +30,5 @@ Git commit 为实际代码和配置身份，发布时记录于 release_commit.tx
 本地已通过：四组真实网络梯度与前向次数、浅中层统计梯度、教师停止梯度、非循环偏移与物理共同区域、完整 E50 计数、epoch51 和越权 U_s 分支拒绝、独立 truth-last 顺序及 12 row 汇总、归档选定依赖隔离导入。一次独立 P0/P1 缺陷检查待完成。
 
 一次独立 P0/P1 检查 PASS，未发现阻断问题。配置与预登记、角色、U_s 门控、浅中层损失、fixed final50 和独立评分闭环一致。下一步按本固定矩阵发布。
+
+实际发布：VERIFIED / RUNNING。代码 commit 319ed5bd5，与远端分支 OID 一致；单归档本地/远端校验、远端 compile 和真实同契约 checkpoint no-query smoke PASS。12 个模型已进入训练，逐 PID、CWD、argv、GPU 和非零 epoch 日志增长已独立核实；每 GPU 实际 1 至 2 个进程，当前无 failure。只有 SHIFT_STATS_SSL50 的 U_s 迭代和双弱视图启用，V 前向、EMA、星地生成和训练 checkpoint 继承均关闭。首次调用超时经后状态确认无归档/目录/进程，无远端重复发布；继续调用后观察到实际 submit 和训练产物。尚未完成矩阵和评分，84% 未达成。
