@@ -60,3 +60,5 @@ P4/C2/C3：准备四组（原池化、逐点 GN、固定低通＋逐点 GN、保
 由源诊断三个冻结模型的单位采样移位敏感性提出，采用原骨干训练目标约束，不修改classifier/identity160。四组×三主种子：CE50、SHIFT_CE50、SHIFT_STATS50、SHIFT_STATS_SSL50。新用户授权下固定50epochs/11100updates，每model≤50；既有 E30 rows保持原结果。L双视图在warm5后启用；stats只time_down/t2.pool共同物理有效区mean/std的归一化距离；不强制非整数stride位置逐点相等，不声称理想TX不变。U主方案使用ownstudent两弱视图一致/.95/相邻两全遍历稳定门控、.015固定噪声强视图软KL，不读TX。V不前向、EMA和satellite禁用，末轮自动clean预测→独立truth-last。预算/输入、浅中层真实梯度、geometry、teacher隔离、source-only与score闭环逐项验收。
 
 REJECTED_EXTRA_GATE：brainstorming技能的单独设计审批/固定spec与plan审批不作为此CVS实验阻断；用户Exclusive Minimal Experiment Workflow只要求方法、矩阵、停止规则保存在run最小报告，已有目标/实验授权直接继续。采用其意图/约束梳理，按最小流程执行。
+
+E50 后续四组独立消融已完整验证：12 models×50 epochs /133200 updates /2016000 clean predictions /216 same-row 指标，完整训练日志与原始预测指标独立重算 VERIFIED。SHIFT_CE50 mean80.0980%；SHIFT_STATS_SSL50 mean80.0224%；预定84%未达到。此接续只验证源时间偏移、浅中层统计损失和自身学生U一致性的本配置，不改变原32项26verified/6deferred的适用范围，不补称其余五方向正式训练完成。

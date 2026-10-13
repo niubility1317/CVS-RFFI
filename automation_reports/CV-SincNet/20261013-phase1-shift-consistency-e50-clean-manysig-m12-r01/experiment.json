@@ -6423,12 +6423,12 @@
     "Existing exposed benchmark; not a new independent blind test. Freeze every row at final50, predict once and score independently. All outcomes retained; no target-driven tuning, ranking, or selective repeats.",
     "References for general motivation: Zhang2019 shift invariance https://proceedings.mlr.press/v97/zhang19a.html ; Sohn2020 FixMatch https://papers.nips.cc/paper/2020/hash/06964dce9addb1c5cb5d6e3d9838f733-Abstract.html . RF transfer remains unproven."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "local_verification": "Actual four arm gradients/forward counts/teacher detach, shift geometry, full50 counters, unauthorized branch andepoch51 rejection PASS; isolated release dependency import and truth-last full12 closure PASS.",
   "registered_at": "2026-10-13T09:18:12+00:00",
   "independent_review": "One independent P0/P1 candidate review PASS: actual configs/budgets, source roles/U gate, shallow/mid gradient route, fixed final50, fresh truth-last full12 scoring and GPU limits verified; no changes requested.",
   "execution_commit": "319ed5bd5f0d2f98ba2c93e60e121122521f1acd",
-  "release_status": "VERIFIED_RUNNING",
+  "release_status": "VERIFIED_ANALYZED",
   "post_launch_verification": {
     "status": "VERIFIED",
     "rows_started": 12,
@@ -6440,5 +6440,20 @@
     "V_forward": false,
     "epochs": 50,
     "runtime_evidence": "local_artifacts/cvs_shift_consistency50_20261013_r01/readback.json"
+  },
+  "final_verification": {
+    "status": "VERIFIED",
+    "models": 12,
+    "epochs": 600,
+    "updates": 133200,
+    "predictions": 2016000,
+    "metric_records": 216,
+    "all_logs_parsed": true,
+    "raw_predictions_recounted": true,
+    "truth_last": true,
+    "goal_84": false,
+    "primary_clean_accuracy_mean": 0.8002242063492063,
+    "report": "final_results.md",
+    "audit": "local_artifacts/cvs_shift_consistency50_20261013_r01/final_audit.json"
   }
 }
