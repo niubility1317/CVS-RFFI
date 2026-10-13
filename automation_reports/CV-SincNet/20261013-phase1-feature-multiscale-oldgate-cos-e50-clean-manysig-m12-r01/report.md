@@ -36,3 +36,5 @@ Git commit 为代码/配置身份，发布时记录 actual release_commit.txt。
 发布证据（2026-10-13）：实际运行代码 commit `5fa536f9ca2d90e7d30d547d58503a41b612d57f` 已推送，独立远端 OID 核对一致。一份归档比对、远端编译与真实同契约无 query smoke 均通过；首种子四组已完成第 1 轮并继续训练，PID/CWD/argv/GPU、日志增长及容量核验通过。实际 native args 的 EMA、U、batch_neighbor、强视图一致、cosine、50/33/17 与四组特征层位正确，分类头均为原 ResidualPhysicalHead。运行证据在 `local_artifacts/cvs_feature_multiscale50_20261013_r01/readback.json` 与 `runtime_verified.json`。尚无完整三种子目标成绩，不宣称达到 84%。
 
 阶段执行核验：首种子四组分别到第 39/41/41/40 轮，均已进入 pseudo 阶段。实际 EMA 更新和非零无标签损失持续执行，U_s 真值可用标志为 0，非有限损失及梯度跳步均为 0。该源端记录证明本轮确实使用历史半监督配方；不等同于完整日志审核、源域终轮门槛通过或目标性能提升。证据为 `local_artifacts/cvs_feature_multiscale50_20261013_r01/pseudo_phase_verified.json`，其间未读取目标分数。其余 8 行仍等待四组完整 sourcefreeze，当前无失败记录。
+
+首种子扩展核验：四组均完成固定 50 轮、11100 次成功 optimizer/EMA 更新与逐行 clean prediction/独立评分。末轮源训练 CE（原网络/时序/PA/双分支）为 0.288426/0.249913/0.196179/0.193749，均通过预登记 ≤0.5 条件；该值不是目标性能指标。剩余 8 行已自动启动并到第 4 至 6 轮，全部实际进程存活，无失败记录，GPU 最大 3 个总进程、最少约 13.7 GB 空闲。未读取首种子目标指标来改变后续派发。当前只有 4/12 完整行，不能报告完整三种子均值或 84% 达标。源端汇总见 `first_seed_source_summary.json`。

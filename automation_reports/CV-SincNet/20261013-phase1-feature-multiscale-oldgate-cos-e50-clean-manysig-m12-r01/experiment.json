@@ -124,7 +124,9 @@
     "stop_rule": "wrong roles/checkpoint, hiddenTX or target fitting, wrongcheckout/outputcollision, nonfinite/unlaunchable or inability to closelegalprediction/scoring; preserve partialoutputs, stopnew dispatch anddrain healthyactive rows; no targetscore or Vstop. Preregistered allfour firstseed sourcefreeze andeach finalLCE<=.5 required; any failure prevents additionalseeds without changing firstseed budget; no selective target rerun",
     "execution_commit": "5fa536f9ca2d90e7d30d547d58503a41b612d57f",
     "post_launch_status": "VERIFIED",
-    "post_launch_evidence": "local_artifacts/cvs_feature_multiscale50_20261013_r01/readback.json andruntime_verified.json; firstfour epoch1, allPID/CWD/argv/GPU correct, loggrowth, fullhistoricalrecipe runtimeverified; max3GPU respected"
+    "post_launch_evidence": "local_artifacts/cvs_feature_multiscale50_20261013_r01/readback.json andruntime_verified.json; firstfour epoch1, allPID/CWD/argv/GPU correct, loggrowth, fullhistoricalrecipe runtimeverified; max3GPU respected",
+    "first_seed_gate": "VERIFIED allfour fixed50 sourcefreeze passed; remaining8 actualprocesses live; no targetfeedback",
+    "first_seed_source_summary_ref": "E:/type10-7/code/worktrees/report_physical_ssl_delivery_20261011/automation_reports/CV-SincNet/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/first_seed_source_summary.json"
   },
   "metrics_plan": {
     "view": "clean",
@@ -333,7 +335,7 @@
         "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
         "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
       },
-      "status": "RUNNING",
+      "status": "TRAINED_PREDICTED_SCORED",
       "pid": 1538604,
       "gpu": 0
     },
@@ -517,7 +519,7 @@
         "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
         "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
       },
-      "status": "RUNNING",
+      "status": "TRAINED_PREDICTED_SCORED",
       "pid": 1538700,
       "gpu": 1
     },
@@ -701,7 +703,7 @@
         "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
         "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
       },
-      "status": "RUNNING",
+      "status": "TRAINED_PREDICTED_SCORED",
       "pid": 1538781,
       "gpu": 2
     },
@@ -885,7 +887,7 @@
         "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
         "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
       },
-      "status": "RUNNING",
+      "status": "TRAINED_PREDICTED_SCORED",
       "pid": 1538871,
       "gpu": 3
     },
@@ -1069,9 +1071,9 @@
         "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
         "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
       },
-      "status": "PLANNED",
-      "pid": null,
-      "gpu": null
+      "status": "RUNNING",
+      "pid": 1563242,
+      "gpu": 1
     },
     {
       "row_id": "TIME_MS50-s2026092702",
@@ -1253,9 +1255,9 @@
         "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
         "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
       },
-      "status": "PLANNED",
-      "pid": null,
-      "gpu": null
+      "status": "RUNNING",
+      "pid": 1563321,
+      "gpu": 2
     },
     {
       "row_id": "PA_MS50-s2026092702",
@@ -1437,9 +1439,9 @@
         "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
         "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
       },
-      "status": "PLANNED",
-      "pid": null,
-      "gpu": null
+      "status": "RUNNING",
+      "pid": 1563403,
+      "gpu": 3
     },
     {
       "row_id": "JOINT_MS50-s2026092702",
@@ -1621,9 +1623,9 @@
         "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
         "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
       },
-      "status": "PLANNED",
-      "pid": null,
-      "gpu": null
+      "status": "RUNNING",
+      "pid": 1563484,
+      "gpu": 3
     },
     {
       "row_id": "OLD_GATE_COS50-s2026092703",
@@ -1805,9 +1807,9 @@
         "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
         "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
       },
-      "status": "PLANNED",
-      "pid": null,
-      "gpu": null
+      "status": "RUNNING",
+      "pid": 1563562,
+      "gpu": 1
     },
     {
       "row_id": "TIME_MS50-s2026092703",
@@ -1989,9 +1991,9 @@
         "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
         "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
       },
-      "status": "PLANNED",
-      "pid": null,
-      "gpu": null
+      "status": "RUNNING",
+      "pid": 1563638,
+      "gpu": 2
     },
     {
       "row_id": "PA_MS50-s2026092703",
@@ -2173,9 +2175,9 @@
         "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
         "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
       },
-      "status": "PLANNED",
-      "pid": null,
-      "gpu": null
+      "status": "RUNNING",
+      "pid": 1563716,
+      "gpu": 0
     },
     {
       "row_id": "JOINT_MS50-s2026092703",
@@ -2357,9 +2359,9 @@
         "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
         "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
       },
-      "status": "PLANNED",
-      "pid": null,
-      "gpu": null
+      "status": "RUNNING",
+      "pid": 1563794,
+      "gpu": 2
     }
   ],
   "notes": [

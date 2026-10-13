@@ -1,0 +1,69 @@
+{
+  "status": "FIRST_SEED_CLOSED_REMAINING_RUNNING",
+  "run_id": "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01",
+  "execution_commit": "5fa536f9ca2d90e7d30d547d58503a41b612d57f",
+  "rows": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "model_seed": 2026092701,
+      "epochs": 50,
+      "logged_steps": 11100,
+      "successful_optimizer_EMA_updates": 11100,
+      "final_source_training_CE": 0.2884262464940548,
+      "source_falsification_pass": true,
+      "clean_prediction_count": 168000,
+      "truth_last": true,
+      "row_status": "TRAINED_PREDICTED_SCORED",
+      "target_metrics_used_for_dispatch": false
+    },
+    {
+      "row_id": "TIME_MS50-s2026092701",
+      "model_seed": 2026092701,
+      "epochs": 50,
+      "logged_steps": 11100,
+      "successful_optimizer_EMA_updates": 11100,
+      "final_source_training_CE": 0.24991277947619156,
+      "source_falsification_pass": true,
+      "clean_prediction_count": 168000,
+      "truth_last": true,
+      "row_status": "TRAINED_PREDICTED_SCORED",
+      "target_metrics_used_for_dispatch": false
+    },
+    {
+      "row_id": "PA_MS50-s2026092701",
+      "model_seed": 2026092701,
+      "epochs": 50,
+      "logged_steps": 11100,
+      "successful_optimizer_EMA_updates": 11100,
+      "final_source_training_CE": 0.19617894906047229,
+      "source_falsification_pass": true,
+      "clean_prediction_count": 168000,
+      "truth_last": true,
+      "row_status": "TRAINED_PREDICTED_SCORED",
+      "target_metrics_used_for_dispatch": false
+    },
+    {
+      "row_id": "JOINT_MS50-s2026092701",
+      "model_seed": 2026092701,
+      "epochs": 50,
+      "logged_steps": 11100,
+      "successful_optimizer_EMA_updates": 11100,
+      "final_source_training_CE": 0.19374854768718686,
+      "source_falsification_pass": true,
+      "clean_prediction_count": 168000,
+      "truth_last": true,
+      "row_status": "TRAINED_PREDICTED_SCORED",
+      "target_metrics_used_for_dispatch": false
+    }
+  ],
+  "completed_models": 4,
+  "total_planned_models": 12,
+  "completed_epochs": 200,
+  "completed_optimizer_EMA_updates": 44400,
+  "completed_clean_predictions": 672000,
+  "remaining_models_started": 8,
+  "complete_three_seed_target_results": false,
+  "target_metric_values_read": false,
+  "goal_84_achieved": false,
+  "source_gate": "allfour fixed50 ownfreeze andfinal222 L_CEmean<=.5; no V or targetperformance gate"
+}
