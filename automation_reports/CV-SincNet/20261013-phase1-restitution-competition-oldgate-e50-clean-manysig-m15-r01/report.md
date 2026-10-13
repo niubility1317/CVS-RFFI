@@ -21,3 +21,5 @@ RESTORE 在 t1 GN8×72 前统计并保留组内相对均值、标准差；恢复
 冻结源V还进行四种确定性单组路径撤除，保持同一full-feature普通cosine W，比较部分特征和完整z。该诊断不用于扩展门槛、target屏蔽或额外头拟合；不把单组撤除冒充单一路径隔离。
 
 唯一独立P0/P1审查 PASS（/root/numpy_boundary_review），未发现阻断合法运行的问题。代码/config实际commit在archive的release_commit.txt、各source resolved_config和dispatcher execution_commit中记录，无自引用commit或报告hash门槛。
+
+发布与启动 VERIFIED。执行commit d1c274d1276a080dcdd66e1d7588a63dbe547e59；单archive SHA比较、remote compile和同契约真实checkpoint noquery smoke PASS。实际进程CWD/参数/GPU、日志增长与总容量核实。基线首seed已完成源冻结诊断、双读出prediction和fresh scorer；新增首seed四骨干已完成5/3/4/4轮（快照），无失败。首seed完整源门槛仍未判定，尚无完整三seed结果或84%结论；主Agent未读取新target指标参与训练。源诊断聚合保存source_diagnostics_available.json，完整结果仍待。

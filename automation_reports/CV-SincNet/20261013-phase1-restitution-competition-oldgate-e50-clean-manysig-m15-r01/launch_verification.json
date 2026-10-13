@@ -1,0 +1,70 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261013-phase1-restitution-competition-oldgate-e50-clean-manysig-m15-r01",
+  "execution_commit": "d1c274d1276a080dcdd66e1d7588a63dbe547e59",
+  "immutable_release": "cvs_feature_restitution_20261013_r01",
+  "single_archive_SHA_comparison": "PASS",
+  "remote_compile": "PASS",
+  "real_same_contract_checkpoint_noquery_smoke": "PASS",
+  "independent_P0_P1_review": "PASS",
+  "actual_PID_CWD_argv_GPU_check": "PASS",
+  "log_growth": "PASS",
+  "capacity_limit": 3,
+  "foreign_processes_counted": true,
+  "resource_capacity_check": "PASS",
+  "new_backbone_checkpoint_sources": [],
+  "source_role_match": "EXACT_MATCH L6300 U56700 hidden V27000; new four native contexts initialized",
+  "rows": [
+    {
+      "row_id": "BASE_REF-s2026092701",
+      "baseline_reference": true,
+      "new_source_epochs_completed": null,
+      "baseline_fixed_epoch": 50,
+      "source_probe_complete": true,
+      "two_readout_prediction_complete": true,
+      "independent_score_complete": true
+    },
+    {
+      "row_id": "ORDINARY-s2026092701",
+      "baseline_reference": false,
+      "new_source_epochs_completed": 5,
+      "baseline_fixed_epoch": null,
+      "source_probe_complete": false,
+      "two_readout_prediction_complete": false,
+      "independent_score_complete": false
+    },
+    {
+      "row_id": "RESTORE-s2026092701",
+      "baseline_reference": false,
+      "new_source_epochs_completed": 3,
+      "baseline_fixed_epoch": null,
+      "source_probe_complete": false,
+      "two_readout_prediction_complete": false,
+      "independent_score_complete": false
+    },
+    {
+      "row_id": "COMP-s2026092701",
+      "baseline_reference": false,
+      "new_source_epochs_completed": 4,
+      "baseline_fixed_epoch": null,
+      "source_probe_complete": false,
+      "two_readout_prediction_complete": false,
+      "independent_score_complete": false
+    },
+    {
+      "row_id": "RESTORE_COMP-s2026092701",
+      "baseline_reference": false,
+      "new_source_epochs_completed": 4,
+      "baseline_fixed_epoch": null,
+      "source_probe_complete": false,
+      "two_readout_prediction_complete": false,
+      "independent_score_complete": false
+    }
+  ],
+  "complete_rows": 1,
+  "total_registered_rows": 15,
+  "first_seed_expansion_pending": true,
+  "failures": [],
+  "full_matrix_results_available": false,
+  "target_metrics_read_by_primary": false
+}

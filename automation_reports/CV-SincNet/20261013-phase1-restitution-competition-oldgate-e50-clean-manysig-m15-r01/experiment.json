@@ -99,7 +99,7 @@
   "replaces_run_id": null,
   "authorization": "Current user: continue84% Phase1 feature extraction, historical old pseudo gate+EMA+cos baseline, each backbone<=50. Latest attached six-route proposal: first normalization restitution/competition independent ablations, same-parameter ordinary residual control, frozen ordinary cosine test and later legal Phase2. No new classification-head architecture; Phase2 not part of this Phase1 launch.",
   "code": {
-    "commit": "Git HEAD at packaging; actual OID in release_commit.txt and execution_commit",
+    "commit": "d1c274d1276a080dcdd66e1d7588a63dbe547e59",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_restitution_20261013_r01",
@@ -131,8 +131,8 @@
     "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_feature_restitution_20261013_r01",
     "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_feature_restitution.dispatch",
     "stop_rule": "Input/source/checkpoint mismatch, hidden U TX exposure, target fitting, output collision, nonfinite or inability to generate legal predictions/scoring: stop new dispatch, preserve artifacts and healthy active rows, no automatic retry. After all five firstseed source probes frozen, CE<=.5 and each variant source TX V drop<=.01, leaveRX mean drop<=.01 and worst drop<=.02 versus same-seed reference required to expand. No target score or candidate ordering stop. Scientific failure preserves firstseed rows and does not selectively rerun.",
-    "execution_commit": "Git HEAD at packaging; postlaunch recorded",
-    "post_launch_status": "PENDING",
+    "execution_commit": "d1c274d1276a080dcdd66e1d7588a63dbe547e59",
+    "post_launch_status": "VERIFIED",
     "post_launch_evidence": "local_artifacts/cvs_feature_multiscale50_20261013_r01/readback.json andruntime_verified.json; firstfour epoch1, allPID/CWD/argv/GPU correct, loggrowth, fullhistoricalrecipe runtimeverified; max3GPU respected",
     "first_seed_gate": "VERIFIED allfour fixed50 sourcefreeze passed; remaining8 actualprocesses live; no targetfeedback",
     "first_seed_source_summary_ref": "E:/type10-7/code/worktrees/report_physical_ssl_delivery_20261011/automation_reports/CV-SincNet/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/first_seed_source_summary.json"
@@ -3435,7 +3435,7 @@
     "Optional Phase2 ground summary permissions have been aligned with canonical project protocol. This Phase1 cache/probe file never becomes Phase2 runtime input; future small matching VALIDATED_ONCE support/query matrix requires own preregistration.",
     "SourceV also measures four deterministic actual path removals with full-feature probe W held fixed; these are diagnostic only, are not used for expansion, and do not claim single isolated path efficacy."
   ],
-  "status": "PLANNED",
+  "status": "RUNNING",
   "local_verification": "Focused source-only fit/backbone gradient isolation, oldgate schedule, no new backbone inheritance, all5 firstseed source barrier, source falsification negatives, two readout completion/truth order, synthetic15row/30readout closure and primary threshold: PASS. Isolated release import and compile PASS. Prototype actual deployment embedding/classifier independence, equal capacity, path masks and teacher isolation PASS previously; preflight repeats prototype on installed remote runtime and real legal oldgate checkpoint before training.",
   "registered_at": "2026-10-13T13:54:44.267079+00:00",
   "independent_review": {
@@ -3443,5 +3443,12 @@
     "scope": "one independent P0/P1 next-real-run review",
     "reviewer": "/root/numpy_boundary_review",
     "findings": "No P0/P1 defects found; read-only actual Native L-only context,15domains,new scratch inheritance,source-onlyprobes,all5 barrier,bothreadouttruthorder,strictload/release/resources checked"
+  },
+  "result": {
+    "status": "INCOMPLETE",
+    "full_matrix_results_available": false,
+    "launch_evidence": "launch_verification.json",
+    "source_diagnostics": "source_diagnostics_available.json",
+    "target_feedback": false
   }
 }
