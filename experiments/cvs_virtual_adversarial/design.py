@@ -3,7 +3,7 @@ from pathlib import Path
 from experiments.cvs_scratch30_baseline import design as parent
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,CAPSULE,TRUTH,CLASSES,SEEDS,FULL_FP32_POLICY,read,write=(getattr(parent,k) for k in ('PROJECT','SOURCE','CAPSULE','TRUTH','CLASSES','SEEDS','FULL_FP32_POLICY','read','write'))
-RUN='20261013-phase1-virtual-adversarial-clean-manysig-m12-r01';RELEASE='cvs_virtual_adversarial_20261013_r01';OWNER='codex/root/virtual-adversarial-20261013';BASE=Path(PROJECT)/'runs'/RUN
+RUN='20261013-phase1-virtual-adversarial-clean-manysig-m12-r02';RELEASE='cvs_virtual_adversarial_20261013_r02';OWNER='codex/root/virtual-adversarial-20261013-r02';BASE=Path(PROJECT)/'runs'/RUN
 EPOCHS=50;STEPS_PER_EPOCH=222;UPDATES=EPOCHS*STEPS_PER_EPOCH;ACTIVE_U_UPDATES=UPDATES-1110
 ARMS=('CE50','RANDOM_INPUT','VAT_INPUT','VAT_FEATURE');PRIMARY='VAT_FEATURE';VIEWS=('clean',);SCENES=parent.SCENES;VIEWS_ROOT=parent.VIEWS_ROOT;LEVELS=('time_down','t2.pool')
 def rows():return [dict(row_id=f'{a}-s{s}',arm=a,model_seed=s) for s in SEEDS for a in ARMS]

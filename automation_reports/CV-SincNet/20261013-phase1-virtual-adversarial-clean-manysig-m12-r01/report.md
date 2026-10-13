@@ -17,3 +17,5 @@
 用户在发布前授权由Agent自主选择epoch，但每模型最多50。此轮固定选择50，cosine日程分母49，末轮为epoch50，累计11100updates；数据/机制/seed/半径与源/目标权限不变。已完成旧run保留原预算。
 
 独立P0/P1机制与训练/预测/评分衔接审查通过，没有缺失发布依赖。用户随后授权预算最多50，发布前仅更新预算并完成11100/9990计数、50上限与cosine日程验算；不重复完整审查。
+
+最终技术状态：STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT。12行全部达到50轮，但旧30轮收尾计数阻止预测；详见failure_analysis.md。r01原产物保留，r02不继承其checkpoint，修复后重新执行相同固定矩阵。

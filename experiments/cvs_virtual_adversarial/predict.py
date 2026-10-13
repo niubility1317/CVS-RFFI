@@ -1,14 +1,14 @@
 import json,os,sys,time
 from pathlib import Path
 from . import design as d
+from .budget import expected_counts
 COUNT=168000
 def source_proof(c):
  d.validate(c);p=Path(c['output']);done=d.read(p/'completion.json');resolved=d.read(p/'resolved_config.json');frozen=d.read(p/'source_frozen.json')
- expected_U=d.ACTIVE_U_UPDATES*128 if c['source_U'] else 0
- if done['status']!='SOURCE_TRAINED' or done['config']!=c or done['epoch']!=d.EPOCHS or done['updates']!=d.UPDATES or done['logged_steps']!=6660 or done['target_access'] or done['U_truth_read'] or done['ancestors'] or done['counts']['L_packets']!=d.UPDATES*128 or done['counts']['U_packets']!=expected_U or done['counts']['identity_updates']!=6660 or done['distinct_U']!=(56700 if c['source_U'] else 0):raise ValueError('Scratch30 source provenance differs')
- if frozen!=dict(status='SOURCE_FROZEN',config=c,checkpoint=str(p/'identity.pth'),epoch=d.EPOCHS,updates=6660,selection='fixed_final_epoch50',target_access=False) or resolved['config']!=c or resolved['checkpoint_loaded'] or resolved['ancestors'] or resolved['EMA'] or resolved['satellite_generator'] or resolved['identity_input_policy']['explicit_CFO_identity_input']:raise ValueError('Scratch30 freeze/config differs')
- expected_extra=d.ACTIVE_U_UPDATES if c['source_U'] else 0
- if any(done['counts'].get(key)!=expected_extra for key in ('search_forwards','search_grad_calls','consistency_forwards')) or resolved.get('vat')!=c['vat'] or [v['level'] for v in resolved.get('actual_layers',[])]!=list(d.LEVELS):raise ValueError('Own VAT schedule/layers differ')
+ expected=expected_counts(c)
+ if done['status']!='SOURCE_TRAINED' or done['config']!=c or done['epoch']!=c['epochs'] or done['updates']!=c['updates'] or done['logged_steps']!=c['updates'] or done['target_access'] or done['U_truth_read'] or done['ancestors'] or any(done['counts'].get(k)!=v for k,v in expected.items()) or done['distinct_U']!=(56700 if c['source_U'] else 0):raise ValueError('Source provenance/budget differs')
+ if frozen!=dict(status='SOURCE_FROZEN',config=c,checkpoint=str(p/'identity.pth'),epoch=c['epochs'],updates=c['updates'],selection=c['checkpoint_selection'],target_access=False) or resolved['config']!=c or resolved['checkpoint_loaded'] or resolved['ancestors'] or resolved['EMA'] or resolved['satellite_generator'] or resolved['identity_input_policy']['explicit_CFO_identity_input'] or resolved['U_iterator']!=c['source_U']:raise ValueError('Source freeze/config differs')
+ if resolved.get('vat')!=c['vat'] or [v['level'] for v in resolved.get('actual_layers',[])]!=list(d.LEVELS):raise ValueError('Own VAT schedule/layers differ')
  from experiments.cvs_phase1_stack.recover import verify_contract
  verify_contract(d.read(p/'source_contract.json'),d.read(d.SOURCE))
  return p
@@ -16,7 +16,7 @@ def own_model(c,device):
  import torch
  from experiments.cvs_nocfo_foundation.model import build
  source=source_proof(c);ck=torch.load(source/'identity.pth',map_location='cpu',weights_only=False)
- if ck['config']!=c or ck['epoch']!=30 or ck['updates']!=6660 or ck['ancestors'] or ck['initialization']!='scratch' or ck['target_access'] or ck['checkpoint_selection']!='fixed_final_epoch30':raise ValueError('Own final50 checkpoint differs')
+ if ck['config']!=c or ck['epoch']!=c['epochs'] or ck['updates']!=c['updates'] or ck['ancestors'] or ck['initialization']!='scratch' or ck['target_access'] or ck['checkpoint_selection']!=c['checkpoint_selection']:raise ValueError('Own final50 checkpoint differs')
  model=build(c['source_loader_config'],device);model.load_state_dict(ck['model'],strict=True);model.eval().requires_grad_(False);return model
 def observation_metadata():
  from experiments.cvs_report_ssl.evaluate import physical_ids

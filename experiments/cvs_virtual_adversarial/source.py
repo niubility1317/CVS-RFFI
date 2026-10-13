@@ -20,6 +20,7 @@ def load(c):
  return L,U,V,contract
 
 from .objective import objective,layer_info
+from .budget import final_artifacts
 
 def train(rowid,device='cuda:0'):
  c=d.config(next(r for r in d.rows() if r['row_id']==rowid));d.validate(c);torch.set_num_threads(2);out=Path(c['output']);out.mkdir(parents=True,exist_ok=False);start=time.perf_counter();L,U,V,contract=load(c)
@@ -38,7 +39,7 @@ def train(rowid,device='cuda:0'):
      if U is not None and step>1110:
       ui,passes=ustream.batch(128);visited.update(ui.tolist());ux=U['x'][ui].to(device);uids=[U['ids'][i] for i in ui.tolist()]
      opt.zero_grad(set_to_none=True);loss,m,detail=objective(model,x,y,ux,uids,passes,bank,c,step)
-     if not torch.isfinite(loss):raise FloatingPointError('Scratch30 objective')
+     if not torch.isfinite(loss):raise FloatingPointError('Source objective')
      loss.backward();norm=torch.nn.utils.clip_grad_norm_(params,10.,error_if_nonfinite=True);opt.step();counts['identity_updates']+=1;counts['L_packets']+=128;counts['U_packets']+=detail['U_packets'];counts['accepted_U']+=detail['accepted_U'];counts['teacher_forwards']+=detail['teacher_forward_calls'];counts['search_forwards']+=detail['search_forwards'];counts['search_grad_calls']+=detail['search_grad_calls'];counts['consistency_forwards']+=detail['consistency_forwards'];counts['zero_direction_fallbacks']+=detail['zero_direction_fallbacks']
      values=dict(**m,total_loss=float(loss.detach()),gradient_norm=float(norm),**{k:v for k,v in detail.items() if k not in ('history',)})
      for key,value in values.items():sums[key]=sums.get(key,0.)+value
@@ -46,11 +47,6 @@ def train(rowid,device='cuda:0'):
     log.flush();v=validation(model,V,device) if epoch in (10,30,d.EPOCHS) else None
     if v:v.pop('source_selection_score',None)
     r=dict(epoch=epoch,updates=counts['identity_updates'],lr=lr,**{k:v/222 for k,v in sums.items()},counts=dict(counts),distinct_U=len(visited),validation=v);epochs.append(r);(out/'epoch_metrics.jsonl').write_text(''.join(json.dumps(e)+'\n' for e in epochs),encoding='utf-8');print('EPOCH '+json.dumps(r),flush=True)
-  for key in ('search_forwards','search_grad_calls','consistency_forwards'):
-   if counts[key]!=(d.ACTIVE_U_UPDATES if U else 0):raise ValueError('VAT fixed forward budget differs')
-  expected_U=5550*128 if U else 0
-  if counts['identity_updates']!=d.UPDATES or counts['L_packets']!=d.UPDATES*128 or counts['U_packets']!=expected_U or counts['teacher_forwards']!=(5550 if U else 0) or len(visited)!=(56700 if U else 0):raise ValueError('Scratch30 fixed role/update budget differs')
-  ck=dict(model=model.state_dict(),baseline_args=model._stage2_baseline_args,config=c,epoch=d.EPOCHS,updates=6660,ancestors=[],initialization='scratch',target_access=False,checkpoint_selection='fixed_final_epoch50');torch.save(ck,out/'identity.pth')
-  done=dict(status='SOURCE_TRAINED',config=c,epoch=30,updates=6660,logged_steps=6660,counts=counts,distinct_U=len(visited),target_access=False,U_truth_read=False,ancestors=[],elapsed_seconds=time.perf_counter()-start,parameters=resolved['trainable_parameters'])
-  d.write(out/'completion.json',done);d.write(out/'source_frozen.json',dict(status='SOURCE_FROZEN',config=c,checkpoint=str(out/'identity.pth'),epoch=30,updates=6660,selection='fixed_final_epoch30',target_access=False));print('SOURCE_TRAINED '+json.dumps(done),flush=True)
+  ck,done,frozen=final_artifacts(c,model,counts,len(visited),time.perf_counter()-start,resolved['trainable_parameters'])
+  torch.save(ck,out/'identity.pth');d.write(out/'completion.json',done);d.write(out/'source_frozen.json',frozen);print('SOURCE_TRAINED '+json.dumps(done),flush=True)
  return done
