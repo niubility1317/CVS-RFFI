@@ -13,8 +13,8 @@ from experiments.cvs_frequency_context_recovery import design as d
 def read(p):return json.loads(p.read_text()) if p.is_file() else None
 submit=read(release/'submit.json');actual=process(submit['pid']) if submit else None;failure=read(base/'failure.json');queue=read(base/'queue_state.json');failure=failure or ({'status':'FAILED','rows':queue['failures']} if queue and queue.get('failures') else None);done=read(base/'completion.json');launch=read(base/'launch.json') or {'rows':[]};workers=[]
 for r in launch['rows']:
- p=base/r['row_id'];log=base/'logs'/(r['row_id']+'.log');ep=Path(d.SOURCE_CONFIGS[r['row_id']]['output_root'])/'epoch_metrics.jsonl'
- workers.append(dict(r,process=process(r['pid']),resolved=read(p/'source/resolved_config.json'),source_completion=read(Path(d.SOURCE_CONFIGS[r['row_id']]['output_root'])/'completion.json'),prediction=read(p/'prediction/complete.json'),completion=read(p/'completion.json'),epoch_count=len(ep.read_text().splitlines()) if ep.is_file() else 0,log_bytes=log.stat().st_size if log.is_file() else 0))
+ p=base/r['row_id'];log=base/'logs'/(r['row_id']+'.log');ep=Path(d.config(next(v for v in d.rows() if v['row_id']==r['row_id']))['output_root'])/'epoch_metrics.jsonl'
+ workers.append(dict(r,process=process(r['pid']),resolved=read(p/'source/resolved_config.json'),source_completion=read(Path(d.config(next(v for v in d.rows() if v['row_id']==r['row_id']))['output_root'])/'completion.json'),prediction=read(p/'prediction/complete.json'),completion=read(p/'completion.json'),epoch_count=len(ep.read_text().splitlines()) if ep.is_file() else 0,log_bytes=log.stat().st_size if log.is_file() else 0))
 valid=bool(actual and actual['cwd']==str(release) and actual['argv']==submit['argv'])
 if done:
  if done['status']!='EXPERIMENT_COMPLETE' or done['models']!=len(d.rows()) or done['views']!=1 or done['prediction_count']!=len(d.rows())*d.QUERY_COUNT or not done['truth_last'] or len(workers)!=len(d.rows()):raise ValueError('Incomplete scratch30 matrix')
