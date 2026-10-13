@@ -1,0 +1,363 @@
+{
+  "run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02",
+  "status": "VERIFIED",
+  "source_only": true,
+  "U_truth_read": false,
+  "head_fit": false,
+  "training_rows": [
+    {
+      "row": "RANDOM_ORDER-s2026092701",
+      "arm": "RANDOM_ORDER",
+      "seed": 2026092701,
+      "final_L_CE": 0.2895532410155546,
+      "final_V_percent": 97.87037037037037,
+      "last10_CE_min": 0.2413933915128042,
+      "last10_CE_max": 0.3072522981008431,
+      "last10_V_min": 97.72592592592592,
+      "last10_V_max": 97.95555555555555,
+      "U_packets": 963900,
+      "U_accepted": 15226,
+      "U_acceptance": 0.015796244423695403,
+      "epoch_seconds": 1934.4053962230682,
+      "student_kernel_relative_L2": 1.170844665665527e-8,
+      "EMA_kernel_relative_L2": 0.0000033577803151274566
+    },
+    {
+      "row": "PAIRED_ORDER-s2026092701",
+      "arm": "PAIRED_ORDER",
+      "seed": 2026092701,
+      "final_L_CE": 0.286945536799796,
+      "final_V_percent": 97.91481481481482,
+      "last10_CE_min": 0.24045552961058445,
+      "last10_CE_max": 0.3055936646152724,
+      "last10_V_min": 97.77037037037037,
+      "last10_V_max": 97.98518518518519,
+      "U_packets": 963900,
+      "U_accepted": 867095,
+      "U_acceptance": 0.8995694574125946,
+      "epoch_seconds": 1956.3559882640839,
+      "student_kernel_relative_L2": 2.4071169946182636e-8,
+      "EMA_kernel_relative_L2": 0.0000033577803151274566
+    },
+    {
+      "row": "RANDOM_ORDER-s2026092702",
+      "arm": "RANDOM_ORDER",
+      "seed": 2026092702,
+      "final_L_CE": 0.2796904600082754,
+      "final_V_percent": 97.81851851851852,
+      "last10_CE_min": 0.2697740450904176,
+      "last10_CE_max": 0.31646856618625624,
+      "last10_V_min": 97.73703703703704,
+      "last10_V_max": 97.88888888888889,
+      "U_packets": 963900,
+      "U_accepted": 15096,
+      "U_acceptance": 0.01566137566137566,
+      "epoch_seconds": 1918.763496875763,
+      "student_kernel_relative_L2": 2.4071169946182636e-8,
+      "EMA_kernel_relative_L2": 0.0000033577803151274566
+    },
+    {
+      "row": "PAIRED_ORDER-s2026092702",
+      "arm": "PAIRED_ORDER",
+      "seed": 2026092702,
+      "final_L_CE": 0.28012114840450586,
+      "final_V_percent": 97.81481481481481,
+      "last10_CE_min": 0.270098365641929,
+      "last10_CE_max": 0.31655621239999393,
+      "last10_V_min": 97.77777777777777,
+      "last10_V_max": 97.85555555555555,
+      "U_packets": 963900,
+      "U_accepted": 852957,
+      "U_acceptance": 0.8849019607843137,
+      "epoch_seconds": 2201.372986316681,
+      "student_kernel_relative_L2": 1.170844665665527e-8,
+      "EMA_kernel_relative_L2": 0.0000033577803151274566
+    },
+    {
+      "row": "RANDOM_ORDER-s2026092703",
+      "arm": "RANDOM_ORDER",
+      "seed": 2026092703,
+      "final_L_CE": 0.27161806355322804,
+      "final_V_percent": 97.8962962962963,
+      "last10_CE_min": 0.2467836572511776,
+      "last10_CE_max": 0.3108201997841264,
+      "last10_V_min": 97.87037037037037,
+      "last10_V_max": 97.97407407407407,
+      "U_packets": 963900,
+      "U_accepted": 15155,
+      "U_acceptance": 0.015722585330428467,
+      "epoch_seconds": 1932.730860710144,
+      "student_kernel_relative_L2": 1.1987522086087665e-8,
+      "EMA_kernel_relative_L2": 0.0000033577803151274566
+    },
+    {
+      "row": "PAIRED_ORDER-s2026092703",
+      "arm": "PAIRED_ORDER",
+      "seed": 2026092703,
+      "final_L_CE": 0.2709396101601489,
+      "final_V_percent": 97.91851851851852,
+      "last10_CE_min": 0.24573352661084485,
+      "last10_CE_max": 0.30968080554996524,
+      "last10_V_min": 97.82592592592593,
+      "last10_V_max": 97.97037037037038,
+      "U_packets": 963900,
+      "U_accepted": 865102,
+      "U_acceptance": 0.8975018155410313,
+      "epoch_seconds": 1948.7915596961975,
+      "student_kernel_relative_L2": 1.170844665665527e-8,
+      "EMA_kernel_relative_L2": 0.0000033577803151274566
+    }
+  ],
+  "source_U_RX": [
+    {
+      "arm": "RANDOM_ORDER",
+      "receiver": 1,
+      "count": 578340,
+      "accepted": 10081,
+      "acceptance": 0.017430922986478543,
+      "student_strong_teacher_weak_agreement": 0.9952778642321126,
+      "predicted_class_counts": [
+        96374,
+        95475,
+        96878,
+        96857,
+        96502,
+        96254
+      ],
+      "accepted_predicted_class_counts": [
+        1754,
+        1591,
+        1671,
+        1625,
+        1734,
+        1706
+      ],
+      "U_truth_read": false
+    },
+    {
+      "arm": "RANDOM_ORDER",
+      "receiver": 3,
+      "count": 578340,
+      "accepted": 7463,
+      "acceptance": 0.012904174015285126,
+      "student_strong_teacher_weak_agreement": 0.946839229518968,
+      "predicted_class_counts": [
+        95981,
+        102830,
+        102327,
+        87070,
+        93652,
+        96480
+      ],
+      "accepted_predicted_class_counts": [
+        1452,
+        1097,
+        1560,
+        515,
+        1339,
+        1500
+      ],
+      "U_truth_read": false
+    },
+    {
+      "arm": "RANDOM_ORDER",
+      "receiver": 4,
+      "count": 578340,
+      "accepted": 9812,
+      "acceptance": 0.01696579866514507,
+      "student_strong_teacher_weak_agreement": 0.9919009579140298,
+      "predicted_class_counts": [
+        97550,
+        97748,
+        94473,
+        93612,
+        98117,
+        96840
+      ],
+      "accepted_predicted_class_counts": [
+        1757,
+        1601,
+        1581,
+        1533,
+        1735,
+        1605
+      ],
+      "U_truth_read": false
+    },
+    {
+      "arm": "RANDOM_ORDER",
+      "receiver": 6,
+      "count": 578340,
+      "accepted": 9830,
+      "acceptance": 0.016996922225680396,
+      "student_strong_teacher_weak_agreement": 0.9949579831932773,
+      "predicted_class_counts": [
+        96279,
+        96176,
+        96543,
+        96497,
+        96433,
+        96412
+      ],
+      "accepted_predicted_class_counts": [
+        1571,
+        1557,
+        1741,
+        1669,
+        1602,
+        1690
+      ],
+      "U_truth_read": false
+    },
+    {
+      "arm": "RANDOM_ORDER",
+      "receiver": 8,
+      "count": 578340,
+      "accepted": 8291,
+      "acceptance": 0.014335857799910088,
+      "student_strong_teacher_weak_agreement": 0.965146799460525,
+      "predicted_class_counts": [
+        96613,
+        103584,
+        97389,
+        87461,
+        97396,
+        95897
+      ],
+      "accepted_predicted_class_counts": [
+        1537,
+        1266,
+        1639,
+        594,
+        1600,
+        1655
+      ],
+      "U_truth_read": false
+    },
+    {
+      "arm": "PAIRED_ORDER",
+      "receiver": 1,
+      "count": 578340,
+      "accepted": 564493,
+      "acceptance": 0.9760573365148528,
+      "student_strong_teacher_weak_agreement": 0.995279593318809,
+      "predicted_class_counts": [
+        96438,
+        95514,
+        96845,
+        96802,
+        96490,
+        96251
+      ],
+      "accepted_predicted_class_counts": [
+        95442,
+        87268,
+        96387,
+        93065,
+        96382,
+        95949
+      ],
+      "U_truth_read": false
+    },
+    {
+      "arm": "PAIRED_ORDER",
+      "receiver": 3,
+      "count": 578340,
+      "accepted": 427144,
+      "acceptance": 0.7385690078500536,
+      "student_strong_teacher_weak_agreement": 0.9471297160839645,
+      "predicted_class_counts": [
+        95938,
+        102731,
+        102368,
+        87120,
+        93775,
+        96408
+      ],
+      "accepted_predicted_class_counts": [
+        80867,
+        63899,
+        89888,
+        28409,
+        74180,
+        89901
+      ],
+      "U_truth_read": false
+    },
+    {
+      "arm": "PAIRED_ORDER",
+      "receiver": 4,
+      "count": 578340,
+      "accepted": 551618,
+      "acceptance": 0.9537953452986133,
+      "student_strong_teacher_weak_agreement": 0.9920479302832244,
+      "predicted_class_counts": [
+        97580,
+        97761,
+        94461,
+        93635,
+        98094,
+        96809
+      ],
+      "accepted_predicted_class_counts": [
+        96043,
+        91892,
+        90256,
+        85539,
+        96238,
+        91650
+      ],
+      "U_truth_read": false
+    },
+    {
+      "arm": "PAIRED_ORDER",
+      "receiver": 6,
+      "count": 578340,
+      "accepted": 564110,
+      "acceptance": 0.975395096310129,
+      "student_strong_teacher_weak_agreement": 0.9949804613203306,
+      "predicted_class_counts": [
+        96267,
+        96160,
+        96544,
+        96505,
+        96444,
+        96420
+      ],
+      "accepted_predicted_class_counts": [
+        94468,
+        91250,
+        95889,
+        94444,
+        92865,
+        95194
+      ],
+      "U_truth_read": false
+    },
+    {
+      "arm": "PAIRED_ORDER",
+      "receiver": 8,
+      "count": 578340,
+      "accepted": 477789,
+      "acceptance": 0.826138603589584,
+      "student_strong_teacher_weak_agreement": 0.9649998270913304,
+      "predicted_class_counts": [
+        96539,
+        103854,
+        97421,
+        87185,
+        97453,
+        95888
+      ],
+      "accepted_predicted_class_counts": [
+        89004,
+        72793,
+        94261,
+        34245,
+        93246,
+        94240
+      ],
+      "U_truth_read": false
+    }
+  ]
+}

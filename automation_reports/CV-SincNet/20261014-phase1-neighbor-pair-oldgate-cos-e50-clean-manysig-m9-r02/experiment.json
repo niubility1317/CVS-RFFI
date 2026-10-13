@@ -38,7 +38,7 @@
   "data": {
     "dataset": "ManySig",
     "version": "existing source contract",
-    "representation": "raw/post_sync/noeq IQ2x256; native time/frequency/PA/reference/head; NoExplicitCFO and internal compensation; actual identity Sinc coordinate only",
+    "representation": "raw/post_sync/noeq IQ2x256; original time/frequency/PA/reference/default head, NoExplicitCFO with internal compensation; only hidden-U ordering differs",
     "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
     "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
@@ -98,7 +98,7 @@
     ],
     "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "provenance_verdict": "New students/EMA own scratch no ancestors. Historical baseline all3 source roles EXACT_MATCH oldgate33+17 final50 independently verified; no baseline weight inheritance.",
-    "selection_rule": "fixedfinal50; both first-seed final222 labeledCE<=.5 AND CENTER initial-final actual kernelrelativeL2>=1e-4 determine further seeds. No V/target ranking. All trained rows automatic default clean prediction and truth-last."
+    "selection_rule": "Fixed final50 for every new row. Both first-seed final222 labeled CE<=.5 and PAIRED17epochs accepted U/963900>=.25 release remaining4 models. No V/target ranking, no inherited checkpoint."
   },
   "execution": {
     "host": "N607 ordinary account",
@@ -495,7 +495,7 @@
         "source/initial_smoke.pt",
         "source/source_frozen.json",
         "source/source_U_epoch_diagnostic.json",
-        "source/source_Sinc_epoch_diagnostic.json"
+        "source/source_sampling_epoch_diagnostic.json"
       ],
       "config": {
         "schema": "neighbor_pair_default_v1",
@@ -657,7 +657,7 @@
         "source/initial_smoke.pt",
         "source/source_frozen.json",
         "source/source_U_epoch_diagnostic.json",
-        "source/source_Sinc_epoch_diagnostic.json"
+        "source/source_sampling_epoch_diagnostic.json"
       ],
       "config": {
         "schema": "neighbor_pair_default_v1",
@@ -1109,7 +1109,7 @@
         "source/initial_smoke.pt",
         "source/source_frozen.json",
         "source/source_U_epoch_diagnostic.json",
-        "source/source_Sinc_epoch_diagnostic.json"
+        "source/source_sampling_epoch_diagnostic.json"
       ],
       "config": {
         "schema": "neighbor_pair_default_v1",
@@ -1271,7 +1271,7 @@
         "source/initial_smoke.pt",
         "source/source_frozen.json",
         "source/source_U_epoch_diagnostic.json",
-        "source/source_Sinc_epoch_diagnostic.json"
+        "source/source_sampling_epoch_diagnostic.json"
       ],
       "config": {
         "schema": "neighbor_pair_default_v1",
@@ -1723,7 +1723,7 @@
         "source/initial_smoke.pt",
         "source/source_frozen.json",
         "source/source_U_epoch_diagnostic.json",
-        "source/source_Sinc_epoch_diagnostic.json"
+        "source/source_sampling_epoch_diagnostic.json"
       ],
       "config": {
         "schema": "neighbor_pair_default_v1",
@@ -1885,7 +1885,7 @@
         "source/initial_smoke.pt",
         "source/source_frozen.json",
         "source/source_U_epoch_diagnostic.json",
-        "source/source_Sinc_epoch_diagnostic.json"
+        "source/source_sampling_epoch_diagnostic.json"
       ],
       "config": {
         "schema": "neighbor_pair_default_v1",
@@ -2019,22 +2019,32 @@
     "New3seed tuple fixed2026092701/02/03, source split392005. No parameter scan, Sinc/TIME/old-head optimization, warm start, target stats/error-driven selection or selective rerun. Source diagnosis qualifies sampling hypothesis only; U accuracy remains unknown.",
     "Identity177025 and actual fθ176065 unchanged. Model budget300newepochs/66600updates; historical150epochs separated, extraV12/324000 and fixedL720 real feature diagnostics separately recorded; no separate classifier training.",
     "One execution Git commit, one independent directP0/P1 candidate review, one transfer archive SHAcomparison, remotecompile, one realnoquery smoke and postlaunch PID/CWD/argv/GPU/loggrowth. No extra signatures/seals/design approvals.",
-    "r01 preflight-only failure retained: NumPy int64 implicit Torch inference in synthetic check. Explicit .tolist()/torch.long synthetic fix PASS on same remote, production sampler unchanged, no real training/query r01. r02 unique outputs; same matrix/budget/thresholds."
+    "r01 preflight-only failure retained: NumPy int64 implicit Torch inference in synthetic check. Explicit .tolist()/torch.long synthetic fix PASS on same remote, production sampler unchanged, no real training/query r01. r02 unique outputs; same matrix/budget/thresholds.",
+    "Post-run metadata correction: inherited Sinc-coordinate representation/selection sentence and Sinc diagnostic expected filename were stale template prose. Immutable executed design, actual sampler, source threshold and metrics_plan already correctly specify neighbor pairs; no training/prediction/scoring mutation or rerun."
   ],
   "launch_evidence": "launch_evidence.json",
   "registered_at": "2026-10-13T21:29:55+00:00",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "execution_commit": "c5e67c46f2a04ec33ff3235d392037f38c000eff",
   "results": {
-    "status": "RUNNING",
-    "new_source_models_started": 2,
-    "new_source_epochs_observed": [
-      8,
-      8
-    ],
-    "new_target_results_available": false,
+    "status": "ANALYZED",
+    "models": 9,
+    "new_models": 6,
+    "reused_baseline_models": 3,
+    "source_feature_models": 6,
     "head_fit": false,
-    "source_only_training": true,
-    "previous_r01": "FAILED_PREFLIGHT_NO_TRAINING"
+    "primary_arm": "PAIRED_ORDER",
+    "primary_accuracy": {
+      "mean": 0.8072083333333333,
+      "sd": 0.021576641202426097,
+      "n": 3
+    },
+    "goal_84": false,
+    "gap_to_84_pp": 3.2791666666666663,
+    "results_ref": "results.json",
+    "source_features_ref": "source_features.json",
+    "report_ref": "final_analysis.md",
+    "audit": "VERIFIED full66600steps/450epochs/1512000predictions/162CMmetrics",
+    "failure": null
   }
 }

@@ -1,0 +1,34 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02",
+  "completion": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 9,
+    "new_trained_models": 6,
+    "reused_baseline_models": 3,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 1512000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "all_workers_terminal": true,
+  "failure": null,
+  "full_independent_audit": {
+    "status": "VERIFIED",
+    "missing": [],
+    "models": 9,
+    "new_step_records": 66600,
+    "epoch_records": 450,
+    "prediction_count": 1512000,
+    "metric_records": 162
+  },
+  "source_features": {
+    "status": "VERIFIED",
+    "models": 6,
+    "same_seed_initial_equality": 3,
+    "head_fit": false
+  }
+}

@@ -44,7 +44,7 @@ def plot(data,path):
   coverage=np.array([[100*e['train_pseudo_selected']/e['train_pseudo_total'] for e in r['source_epoch_curve'][33:]] for r in subset]);ax[1,0].plot(range(34,51),coverage.mean(0),color=color,label=arm);ax[1,0].fill_between(range(34,51),coverage.min(0),coverage.max(0),color=color,alpha=.12)
  ax[0,1].axvline(33.5,color='#888',ls=':');ax[0,1].set(xlabel='Epoch',ylabel='Source labeled CE',title='All 50 epochs; shading is seed min–max');ax[0,1].legend(fontsize=8)
  ax[1,0].set(xlabel='Pseudo epoch',ylabel='Accepted U packets (%)',ylim=(0,100),title='Original gates retained; U truth hidden')
- fp=data['source_features']['paired'];v=[p['source_features']['records'][0]['joint160_L2_mean'] for p in fp];ax[1,1].scatter(range(1,4),v,color=colors[d.PRIMARY],s=40);ax[1,1].set(xticks=[1,2,3],xticklabels=['Seed01','Seed02','Seed03'],ylabel='Mean source joint160 L2 difference',title='Final PAIRS vs RANDOM on fixed L720');ax[1,1].text(.02,.03,'Feature difference is not proof of new-TX transfer',transform=ax[1,1].transAxes,fontsize=8)
+ fp=data['source_features']['paired'];v=[p['source_features']['records'][0]['joint160_L2_mean'] for p in fp];ax[1,1].scatter(range(1,4),v,color=colors[d.PRIMARY],s=40);ax[1,1].set(xticks=[1,2,3],xticklabels=['Seed01','Seed02','Seed03'],ylabel='Mean source joint160 L2 difference',title='Final PAIRS vs RANDOM on fixed L720');ax[1,1].set_xlabel('Fixed model seeds\nFeature difference does not prove new-TX transfer',fontsize=9)
  for a in ax.flat:a.grid(alpha=.2)
  fig.suptitle('Neighbor-pair sampling — original backbone, old gates, EMA and default classifier',fontsize=13);fig.savefig(path,dpi=160);plt.close(fig)
 

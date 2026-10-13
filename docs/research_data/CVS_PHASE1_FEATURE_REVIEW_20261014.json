@@ -32263,7 +32263,7 @@
     },
     {
       "run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "mechanism": "Allowed hidden-U physical-neighbor PAIRS vs native-matched RANDOM ordering only; original network/old gates/EMA/default head",
       "code": "GIT_HEAD_AT_RELEASE",
       "baseline": "OLD_GATE_COS50 exact33label+17pseudo/scratch50 historical default decisions; fresh RANDOM control",
@@ -32288,7 +32288,405 @@
       "local_checks": "PASS: actual56700synthetic native/RNG/tail/defaultfeature/6negatives",
       "independent_P0P1": "PASS: unique new training integration only, native50 synthetic33/17 verified",
       "source_qualification": "20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01",
-      "results": null,
+      "results": {
+        "status": "ANALYZED",
+        "summary": [
+          {
+            "arm": "OLD_GATE_COS50",
+            "readout": "ORIGINAL_HEAD",
+            "view": "clean",
+            "seed_count": 3,
+            "accuracy": {
+              "mean": 0.8052678571428572,
+              "sd": 0.023775723031464996,
+              "n": 3
+            },
+            "macro_f1": {
+              "mean": 0.8000238637751929,
+              "sd": 0.024048902449112713,
+              "n": 3
+            },
+            "seed_accuracy": {
+              "2026092701": 0.8066845238095238,
+              "2026092702": 0.7808154761904762,
+              "2026092703": 0.8283035714285715
+            },
+            "worst_RX": {
+              "mean": 0.6797083333333334,
+              "sd": 0.08299649632832565,
+              "n": 3
+            },
+            "worst_day": {
+              "mean": 0.7605555555555555,
+              "sd": 0.022333756384120534,
+              "n": 3
+            },
+            "U_acceptance": {
+              "mean": 0.015749904900231697,
+              "sd": 0.00004998466359623533,
+              "n": 3
+            },
+            "epoch_seconds_sum": 6887.0241458415985
+          },
+          {
+            "arm": "RANDOM_ORDER",
+            "readout": "ORIGINAL_HEAD",
+            "view": "clean",
+            "seed_count": 3,
+            "accuracy": {
+              "mean": 0.8062242063492063,
+              "sd": 0.021857325491162132,
+              "n": 3
+            },
+            "macro_f1": {
+              "mean": 0.8009483862566035,
+              "sd": 0.021854872392815732,
+              "n": 3
+            },
+            "seed_accuracy": {
+              "2026092701": 0.806327380952381,
+              "2026092702": 0.7843154761904761,
+              "2026092703": 0.8280297619047619
+            },
+            "worst_RX": {
+              "mean": 0.6860138888888889,
+              "sd": 0.07265023148111267,
+              "n": 3
+            },
+            "worst_day": {
+              "mean": 0.7630476190476191,
+              "sd": 0.021709481506972682,
+              "n": 3
+            },
+            "U_acceptance": {
+              "mean": 0.015726735138499842,
+              "sd": 0.00006753007805923744,
+              "n": 3
+            },
+            "epoch_seconds_sum": 5785.899753808975
+          },
+          {
+            "arm": "PAIRED_ORDER",
+            "readout": "ORIGINAL_HEAD",
+            "view": "clean",
+            "seed_count": 3,
+            "accuracy": {
+              "mean": 0.8072083333333333,
+              "sd": 0.021576641202426097,
+              "n": 3
+            },
+            "macro_f1": {
+              "mean": 0.8020787546478882,
+              "sd": 0.021785459209011062,
+              "n": 3
+            },
+            "seed_accuracy": {
+              "2026092701": 0.8077559523809524,
+              "2026092702": 0.7853630952380952,
+              "2026092703": 0.8285059523809524
+            },
+            "worst_RX": {
+              "mean": 0.6836805555555555,
+              "sd": 0.07631884794024299,
+              "n": 3
+            },
+            "worst_day": {
+              "mean": 0.7628174603174603,
+              "sd": 0.020710636423666943,
+              "n": 3
+            },
+            "U_acceptance": {
+              "mean": 0.8939910779126465,
+              "sd": 0.007939006446443747,
+              "n": 3
+            },
+            "epoch_seconds_sum": 6106.520534276962
+          }
+        ],
+        "paired": [
+          {
+            "arm": "RANDOM_ORDER",
+            "control": "OLD_GATE_COS50",
+            "seeds": [
+              2026092701,
+              2026092702,
+              2026092703
+            ],
+            "seed_differences": [
+              -0.00035714285714283367,
+              0.0034999999999999476,
+              -0.00027380952380962054
+            ],
+            "difference": {
+              "mean": 0.0009563492063491644,
+              "sd": 0.002203260227740087,
+              "n": 3
+            },
+            "positive_seeds": 1,
+            "error_transitions": [
+              {
+                "arm": "RANDOM_ORDER",
+                "control": "OLD_GATE_COS50",
+                "seed": 2026092701,
+                "corrected_errors": 566,
+                "introduced_errors": 626,
+                "both_correct": 134897,
+                "both_wrong": 31911,
+                "count": 168000
+              },
+              {
+                "arm": "RANDOM_ORDER",
+                "control": "OLD_GATE_COS50",
+                "seed": 2026092702,
+                "corrected_errors": 1197,
+                "introduced_errors": 609,
+                "both_correct": 130568,
+                "both_wrong": 35626,
+                "count": 168000
+              },
+              {
+                "arm": "RANDOM_ORDER",
+                "control": "OLD_GATE_COS50",
+                "seed": 2026092703,
+                "corrected_errors": 665,
+                "introduced_errors": 711,
+                "both_correct": 138444,
+                "both_wrong": 28180,
+                "count": 168000
+              }
+            ]
+          },
+          {
+            "arm": "PAIRED_ORDER",
+            "control": "OLD_GATE_COS50",
+            "seeds": [
+              2026092701,
+              2026092702,
+              2026092703
+            ],
+            "seed_differences": [
+              0.001071428571428612,
+              0.004547619047619023,
+              0.00020238095238089837
+            ],
+            "difference": {
+              "mean": 0.0019404761904761776,
+              "sd": 0.0022992838774727976,
+              "n": 3
+            },
+            "positive_seeds": 3,
+            "error_transitions": [
+              {
+                "arm": "PAIRED_ORDER",
+                "control": "OLD_GATE_COS50",
+                "seed": 2026092701,
+                "corrected_errors": 639,
+                "introduced_errors": 459,
+                "both_correct": 135064,
+                "both_wrong": 31838,
+                "count": 168000
+              },
+              {
+                "arm": "PAIRED_ORDER",
+                "control": "OLD_GATE_COS50",
+                "seed": 2026092702,
+                "corrected_errors": 1241,
+                "introduced_errors": 477,
+                "both_correct": 130700,
+                "both_wrong": 35582,
+                "count": 168000
+              },
+              {
+                "arm": "PAIRED_ORDER",
+                "control": "OLD_GATE_COS50",
+                "seed": 2026092703,
+                "corrected_errors": 534,
+                "introduced_errors": 500,
+                "both_correct": 138655,
+                "both_wrong": 28311,
+                "count": 168000
+              }
+            ]
+          },
+          {
+            "arm": "PAIRED_ORDER",
+            "control": "RANDOM_ORDER",
+            "seeds": [
+              2026092701,
+              2026092702,
+              2026092703
+            ],
+            "seed_differences": [
+              0.0014285714285714457,
+              0.001047619047619075,
+              0.0004761904761905189
+            ],
+            "difference": {
+              "mean": 0.0009841269841270133,
+              "sd": 0.00047935456731876486,
+              "n": 3
+            },
+            "positive_seeds": 3,
+            "error_transitions": [
+              {
+                "arm": "PAIRED_ORDER",
+                "control": "RANDOM_ORDER",
+                "seed": 2026092701,
+                "corrected_errors": 732,
+                "introduced_errors": 492,
+                "both_correct": 134971,
+                "both_wrong": 31805,
+                "count": 168000
+              },
+              {
+                "arm": "PAIRED_ORDER",
+                "control": "RANDOM_ORDER",
+                "seed": 2026092702,
+                "corrected_errors": 873,
+                "introduced_errors": 697,
+                "both_correct": 131068,
+                "both_wrong": 35362,
+                "count": 168000
+              },
+              {
+                "arm": "PAIRED_ORDER",
+                "control": "RANDOM_ORDER",
+                "seed": 2026092703,
+                "corrected_errors": 706,
+                "introduced_errors": 626,
+                "both_correct": 138483,
+                "both_wrong": 28185,
+                "count": 168000
+              }
+            ]
+          }
+        ],
+        "primary": "PAIRED_ORDER",
+        "goal_84": false,
+        "gap_to_84_pp": 3.2791666666666663,
+        "all_models": 9,
+        "new_models": 6,
+        "missing": [],
+        "actual_audit": {
+          "status": "VERIFIED",
+          "updates": 66600,
+          "epochs": 450,
+          "predictions": 1512000,
+          "metrics": 162
+        },
+        "actual_features": {
+          "status": "VERIFIED",
+          "models": 6,
+          "parameters": 176065,
+          "class_W_parameters": 960,
+          "export_exact": true,
+          "W_independent": true,
+          "head_fit": false,
+          "paired": [
+            {
+              "seed": 2026092701,
+              "joint160_L2_mean": 2.446475028991699,
+              "cosine": 0.9780690670013428,
+              "feature_changed_elements": 174804
+            },
+            {
+              "seed": 2026092702,
+              "joint160_L2_mean": 1.7933305501937866,
+              "cosine": 0.9883394241333008,
+              "feature_changed_elements": 174267
+            },
+            {
+              "seed": 2026092703,
+              "joint160_L2_mean": 2.325155735015869,
+              "cosine": 0.9813063144683838,
+              "feature_changed_elements": 174757
+            }
+          ]
+        },
+        "source_U_RX": [
+          {
+            "arm": "RANDOM_ORDER",
+            "receiver": 1,
+            "acceptance": 0.017430922986478543,
+            "strong_weak_agreement": 0.9952778642321126,
+            "U_truth_read": false
+          },
+          {
+            "arm": "RANDOM_ORDER",
+            "receiver": 3,
+            "acceptance": 0.012904174015285126,
+            "strong_weak_agreement": 0.946839229518968,
+            "U_truth_read": false
+          },
+          {
+            "arm": "RANDOM_ORDER",
+            "receiver": 4,
+            "acceptance": 0.01696579866514507,
+            "strong_weak_agreement": 0.9919009579140298,
+            "U_truth_read": false
+          },
+          {
+            "arm": "RANDOM_ORDER",
+            "receiver": 6,
+            "acceptance": 0.016996922225680396,
+            "strong_weak_agreement": 0.9949579831932773,
+            "U_truth_read": false
+          },
+          {
+            "arm": "RANDOM_ORDER",
+            "receiver": 8,
+            "acceptance": 0.014335857799910088,
+            "strong_weak_agreement": 0.965146799460525,
+            "U_truth_read": false
+          },
+          {
+            "arm": "PAIRED_ORDER",
+            "receiver": 1,
+            "acceptance": 0.9760573365148528,
+            "strong_weak_agreement": 0.995279593318809,
+            "U_truth_read": false
+          },
+          {
+            "arm": "PAIRED_ORDER",
+            "receiver": 3,
+            "acceptance": 0.7385690078500536,
+            "strong_weak_agreement": 0.9471297160839645,
+            "U_truth_read": false
+          },
+          {
+            "arm": "PAIRED_ORDER",
+            "receiver": 4,
+            "acceptance": 0.9537953452986133,
+            "strong_weak_agreement": 0.9920479302832244,
+            "U_truth_read": false
+          },
+          {
+            "arm": "PAIRED_ORDER",
+            "receiver": 6,
+            "acceptance": 0.975395096310129,
+            "strong_weak_agreement": 0.9949804613203306,
+            "U_truth_read": false
+          },
+          {
+            "arm": "PAIRED_ORDER",
+            "receiver": 8,
+            "acceptance": 0.826138603589584,
+            "strong_weak_agreement": 0.9649998270913304,
+            "U_truth_read": false
+          }
+        ],
+        "cost": {
+          "new_model_epochs": 300,
+          "new_updates": 66600,
+          "historical_model_epochs_reused": 150,
+          "extra_source_V_passes": 12,
+          "extra_source_V_packets": 324000,
+          "extra_U_forwards": 0,
+          "separate_head_updates": 0,
+          "source_feature_models": 6,
+          "source_packets_per_feature_model": 720
+        }
+      },
       "report": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/report.md",
       "actual_execution_commit": "c5e67c46f2a04ec33ff3235d392037f38c000eff",
       "replaces_run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r01",
@@ -32311,7 +32709,7 @@
         "feature_helper": "experiments/cvs_neighbor_pair50/feature_check.py",
         "full_audit": "experiments/cvs_neighbor_pair50/audit.py",
         "synthetic_checks": "PASS local and sameN607, no actual input/read/fit",
-        "actual_final_results": "PENDING"
+        "actual_final_results": "VERIFIED: all6 features and complete9row fixed-target/default-head audit"
       },
       "pseudo_source_prefix": [
         {
@@ -32348,7 +32746,8 @@
         "separate_head_fit": false,
         "report": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/first_seed_source_evidence.json",
         "three_seed_target_result": false
-      }
+      },
+      "final_report": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/final_analysis.md"
     }
   ],
   "diagnostics": {
@@ -77306,6 +77705,17 @@
       },
       "independent_P0P1": "PASS: one source-only candidate review, allowed pair fields/all packets/tail/frozen states/provenance/CPU release verified; synthetic only, no real IQ/target",
       "actual_execution_commit": "7bde2923fae013495c3be1038504eb59d6e44602"
+    },
+    "neighbor_pair_actual_complete": {
+      "run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02",
+      "status": "VERIFIED",
+      "models": 6,
+      "head_fit": false,
+      "actual_initial_equality": 3,
+      "all_steps": 66600,
+      "source_features_ref": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/source_features.json",
+      "source_U_truth_read": false,
+      "target_feedback": false
     }
   },
   "next_directions": [
@@ -77318,5 +77728,9 @@
     "Complete same-row logs/Umetadata/source features/full3seeddefault metrics and upload code plus positive/negative results; no target tuning"
   ],
   "goal_84": false,
-  "Phase2_development": false
+  "Phase2_development": false,
+  "next_actions": [
+    "Source-only L/V default-loss feature gradient diagnosis on shallow/middle/joint160 paths, based on legal source RX3/8 agreement and acceptance differences; no parameter updates, U truth or target feedback.",
+    "Only if legal source evidence supports, preregister at most one independent shallow/middle feature mechanism with same oldgate+cos control and <=50 scratch epochs; no TIME/Sinc stacking or target-selected weights."
+  ]
 }

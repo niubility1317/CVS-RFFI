@@ -90,3 +90,14 @@ run 20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02，实际�
 ## 邻包采样首种子固定源训练与真实fθ
 
 20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02 首seed两新模型完整50/11100，sourceLCE0.289553/0.286946；22200step完整解析、EMA成功预算、原生optimizer183参数与moment形状核验。RANDOM U接收15226/963900（1.5796%），PAIR867095/963900（89.9569%），U真值隐藏且每17活跃epoch全池一次，label33不取U。固定源反证通过，其余4新模型自动运行，目标分数不参与放行。实际同seed初始全部states精确相同，L720 feature-only=原joint160、W独立、θ/buffers不变；终轮PAIR−RANDOM源z平均L2=2.446475、cos0.978069，fθ174804标量分量不同。此证明训练改变真实部署特征，不证明新TX或全部目标收益，单独头拟合0。完整[首seed源证据](../automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/first_seed_source_evidence.json)；新候选完整3seed target结论仍待。
+
+
+## 邻包采样完整三种子结果
+
+20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02 全 9 行完成，实际代码 c5e67c46f2a04ec33ff3235d392037f38c000eff。独立核验 66600 新 step、450 epoch、1512000 个默认决策、162 条 CM/metric 和全部 6 模型实际源特征，VERIFIED，无缺项或健康任务变更。主候选 PAIR 80.7208% ± 2.1577 pp，旧门控＋cos 80.5268% ± 2.3776 pp，匹配 RANDOM 80.6224% ± 2.1857 pp；PAIR−OLD +0.1940 pp，PAIR−RANDOM +0.0984 pp，均 3/3 正差，RANDOM−OLD 仅 1/3 正差。84% 尚差 3.2792 pp，目标保持 active。PAIR 对 RANDOM 的最差 RX/day 均值略低，负结果完整保留，不把平均正差称普遍稳定提升。
+
+17 轮 U 接收率 RANDOM 1.5727%→PAIR 89.3991%，真值隐藏，每活跃轮全池一次、label33 零 U 读取。源 RX3/8 的接收率与强弱一致性低于其他源 RX；排序改变几乎没有改变强弱一致性。6 模型实际 fθ176065 导出与原 joint160 完全一致、W 独立、分析零参数/buffer/头更新；同 seed 初始全状态一致，终轮源 z 的 PAIR−RANDOM L2 为 2.446475/1.793331/2.325156。只证明真实特征改变与接口正确，不证明新 TX，也不能把原头收益全归因于骨干。GPU 数值并非逐位确定，label33 前缀小差及 3 种子的证据边界如实披露。
+
+成本为 6 新骨干 300 model-epochs/66600 updates，历史对照 150 epochs 独立复用；额外 V12/324000，额外 U 前向 0、单独分类头拟合 0。本轮没有叠加 Sinc/TIME，保留 rawHz 原 Sinc，学生实际核变化仍在浮点极小量级。r01 合成 dtype 失败保留且零真实训练；r02 无失败/重跑。模板中的 Sinc 描述已更正，实际冻结 design 和源放行规则一直为本轮邻包方案。完整 [同轮分析](../automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/final_analysis.md)、[结果与完整核验](../automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/results.json)、[真实特征](../automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/source_features.json)。
+
+下一步最多两项：先在合法 L/V 检查默认损失对浅层、中层及 joint160 的实际梯度与尺度，不更新模型、不打开 U 真值、不拟合头；只有源证据支持后才预登记一个独立特征机制与匹配旧门控＋cos 控制。该依据来自代码和源 RX3/8 证据，不按目标分数扩大 λ、修改门控或挑父权重；不无限扫描直到 84%。

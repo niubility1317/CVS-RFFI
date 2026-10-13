@@ -1,6 +1,6 @@
 # 旧门控不变的 U 邻包成对采样特征训练
 
-状态RUNNING，首种子两个新模型已运行，完整三种子结果尚未返回。run `20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02`；唯一owner codex/root/neighbor-pair50-20261014。逐row矩阵/配置唯一来源 [experiment.json](experiment.json)。本路线不同于另一工作树单基时序残差控制。
+状态 ANALYZED，全部 9 行及完整三种子已核验；结果见 [完整分析](final_analysis.md)。以下保留预登记和历史阶段记录。run `20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02`；唯一owner codex/root/neighbor-pair50-20261014。逐row矩阵/配置唯一来源 [experiment.json](experiment.json)。本路线不同于另一工作树单基时序残差控制。
 
 依据为完整源诊断 `20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01`：同三个固定默认学生/EMA，RANDOM精确复现360计数；全720source统计已复算，V FULL覆盖3.4099%→89.9617%，PAIRS接收正确率99.9959%、错误3/0/0，三seed均满足预先冻结的coverage≥.5/precision≥.995/drop≤.0025。没有U或目标IQ/真值进入该诊断。仅证明物理邻包可见性机制，不能推断U正确率/目标收益。方案由这一源证据支持，不依据Sinc/TIME目标分数，不使用任何旧权重初始化。
 
@@ -47,3 +47,8 @@ RANDOM/PAIR均固定50/11100，完整22200step已复算、有序有限无跳过�
 两组实际初始全部state逐元素一致。固定L720真实feature-only与原joint160逐元素一致，W置零不改变z、θ/buffers不更新，实际fθ176065完整保留norm/gain/reference；PAIR vs RANDOM终轮fθ有174804个标量参数分量不同，所有115200源z分量不同，平均L2=2.446475、cos=0.978069。W960也随原joint训练正常不同，单独头拟合0；参数/feature不同不直接等于迁移改善，未验证新TX。真实原始Sinc核和EMA/moment亦保留为源证据，采样机制没有换Sinc坐标。完整first_seed_source_evidence.json含源RX/day分层与参数统计，不含原始权重。新候选完整三seed目标结论待后四模型及既定评分结束。
 
 完整结果汇总postprocess.py已准备并编译PASS：仅接收9row/6newmodel完整独立audit与全部6feature证据，固定主候选PAIRED_ORDER，生成原头三seed均值/样本SD、Macro-F1、最差RX/day、三组配对/错误迁移及成本/曲线；不读取新的训练/目标数据、不拟合、不改变运行归档。实际完整数据执行待剩余模型结束。
+
+
+## 完整结果回收
+
+全部 9 行完成；独立核验 66600 新 step、450 epoch、1512000 个默认决策、162 条 CM/metric 和全部 6 个真实特征模型。主候选 PAIR 均值 80.7208% ± 2.1577 pp，PAIR−OLD +0.1940 pp、PAIR−RANDOM +0.0984 pp，均 3/3 正差；84% 差距 3.2792 pp。U 接收率 1.5727%→89.3991%，特征导出真实且 W 独立，单独分类头训练为 0。完整正负分组、错误迁移、源机制和成本见 [完整分析](final_analysis.md)。实验记录已更正继承的 Sinc 模板文字；执行配置和科学条件未变，无重跑。
