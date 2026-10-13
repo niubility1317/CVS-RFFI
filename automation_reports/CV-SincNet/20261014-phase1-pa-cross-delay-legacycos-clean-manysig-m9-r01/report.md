@@ -1,6 +1,6 @@
 # PA 跨延迟特征探索最小预登记
 
-run_id：20261014-phase1-pa-cross-delay-legacycos-clean-manysig-m9-r01。状态 PLANNED，尚未发布、无真实训练结果。主目标是 PA_CROSS_DELAY 用原默认分类头获得 clean 三种子均值 ≥84%。本轮方案源于用户设计路线二，与另一个对话的 GN 信息恢复/分支竞争抑制不同。
+run_id：20261014-phase1-pa-cross-delay-legacycos-clean-manysig-m9-r01。状态 ANALYZED；全部训练、固定预测与独立评分已经完成。主目标是 PA_CROSS_DELAY 用原默认分类头获得 clean 三种子均值 ≥84%。本轮方案源于用户设计路线二，与另一个对话的 GN 信息恢复/分支竞争抑制不同。
 
 |结构|model seeds|训练|默认头测试|
 |---|---|---|---|
@@ -34,4 +34,6 @@ REJECTED_EXTRA_GATE：通用design/spec审批、额外签名或hash不在用户E
 
 独立发布后读回 VERIFIED：实际执行代码1f8814c046a8c68eba8a334e66a0aceb76e491e0，单archive SHA传输比较、remote compile、真实默认checkpoint no-query preflight PASS。6新worker实际PID/CWD/argv/visibleGPU/模式/commit一致，epoch由0增长到4至5且stdout增长；3baseline默认决定已复用并独立评分，failure0/pending0，每GPU总进程最多2（含其他owner）。当前RUNNING，无新目标成绩或收益声明。
 
-用户目标于发布后更新：收敛到Phase1近期复盘/源机制诊断/公平最小实验；不自动开发Phase2。新目标允许冻结骨干普通cos换头仅作特征诊断，主指标仍原头84%。本已发布run保持默认头单读出和固定预算，后续若需源诊断另行固定并单列成本，不热改本run。
+最新用户再次明确默认分类头、禁止单独训练分类头。本 run 始终为 ORIGINAL_HEAD 单读出，无独立头训练。
+
+结果：PA_CONV 80.7738%，PA_CROSS_DELAY 80.8133%，旧门控＋cos 80.6454%；均为三 seed clean 原头均值。完整核验 VERIFIED，84% 未达到，结论与缺项见 final_analysis.md / results.json。

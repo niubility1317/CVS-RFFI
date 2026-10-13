@@ -1887,7 +1887,121 @@
     "SourceUtruth hidden,sourceVhealth only,final50 fixed,no target feedback. Clean-only168000perrow;9defaultreadouts1512000decisions,baseline504000reused;162aggregate records.",
     "Report/code/config identity bound toactualGitHEAD inrelease_commit.txt bypublisher;code.commit completed bydispatch fromthe committedrelease. NoextraSHA/seal/designapproval gate."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "registered_at": "2026-10-13T16:12:52+00:00",
-  "execution_commit": "1f8814c046a8c68eba8a334e66a0aceb76e491e0"
+  "execution_commit": "1f8814c046a8c68eba8a334e66a0aceb76e491e0",
+  "results": {
+    "status": "VERIFIED",
+    "summary": [
+      {
+        "arm": "LEGACY50",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seed_count": 3,
+        "accuracy_mean": 0.8064543650793651,
+        "accuracy_sd": 0.02091839296658833,
+        "seed_accuracy": {
+          "2026092701": 0.8074166666666667,
+          "2026092702": 0.7850714285714285,
+          "2026092703": 0.826875
+        },
+        "macro_f1_mean": 0.8013809888459722,
+        "worst_RX_mean": 0.678611111111111
+      },
+      {
+        "arm": "PA_CONV",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seed_count": 3,
+        "accuracy_mean": 0.8077380952380953,
+        "accuracy_sd": 0.021914273135641333,
+        "seed_accuracy": {
+          "2026092701": 0.8075535714285714,
+          "2026092702": 0.7859166666666667,
+          "2026092703": 0.8297440476190476
+        },
+        "macro_f1_mean": 0.8027955948376032,
+        "worst_RX_mean": 0.682375
+      },
+      {
+        "arm": "PA_CROSS_DELAY",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seed_count": 3,
+        "accuracy_mean": 0.8081329365079365,
+        "accuracy_sd": 0.019363994875143033,
+        "seed_accuracy": {
+          "2026092701": 0.8088452380952381,
+          "2026092702": 0.788422619047619,
+          "2026092703": 0.8271309523809524
+        },
+        "macro_f1_mean": 0.8032789007436109,
+        "worst_RX_mean": 0.6856805555555555
+      }
+    ],
+    "paired": [
+      {
+        "arm": "PA_CONV",
+        "control": "LEGACY50",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.00013690476190475476,
+          0.0008452380952381766,
+          0.0028690476190476044
+        ],
+        "mean_difference": 0.0012837301587301786,
+        "sd_difference": 0.0014178708034472954,
+        "positive_seeds": 3
+      },
+      {
+        "arm": "PA_CROSS_DELAY",
+        "control": "LEGACY50",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.0014285714285714457,
+          0.00335119047619048,
+          0.00025595238095232897
+        ],
+        "mean_difference": 0.0016785714285714182,
+        "sd_difference": 0.0015626898977575056,
+        "positive_seeds": 3
+      },
+      {
+        "arm": "PA_CROSS_DELAY",
+        "control": "PA_CONV",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.001291666666666691,
+          0.002505952380952303,
+          -0.0026130952380952754
+        ],
+        "mean_difference": 0.00039484126984123957,
+        "sd_difference": 0.0026747680228035695,
+        "positive_seeds": 2
+      }
+    ],
+    "goal_84": false,
+    "aggregate_file": "results.json",
+    "analysis_file": "final_analysis.md",
+    "default_head_only": true,
+    "separate_head_updates": 0
+  }
 }
