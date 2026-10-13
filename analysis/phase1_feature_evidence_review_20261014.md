@@ -72,3 +72,5 @@ TIME_MS50三个seed×t1/t2/t3真实训练后核：每输入通道的等效输出
 |完整三seed/成本/负结果|12新scratch50＋3历史参考，600新增epoch＋150历史|未返回前不称结果完整或84%达标|
 
 唯一新run为20261014-phase1-time-coverage-nonlinearity-oldgate-e50-clean-manysig-m15-r01，最小报告和15row单一矩阵见automation_reports。同GPU最多3总实验进程，保留所有健康旧任务。源gate通过后扩seed，不借已暴露target进行筛选或选择性重跑。本地checks/registry valid、唯一P0/P1及一次针对修复确认PASS；Git/release/PID独立证据由同run报告更新。未授权Phase2、head refit、kernel scan或同时Sinc变化。
+
+2026-10-14发布更新：执行代码7b1e2fcbe1bf5d05f24bc91f86aa7d4b46d3ee95已commit/push并独立remoteOID一致；ordinary preflight、archive校验、remote compile、真实checkpoint noquery、实际PID/CWD/argv/GPU/log增长VERIFIED。第一seed四新条件健康训练，第1至2epoch；旧TIME seed01冻结source诊断已完成。剩余seed按固定source门槛自动扩展；目前不是完整三seed结果。

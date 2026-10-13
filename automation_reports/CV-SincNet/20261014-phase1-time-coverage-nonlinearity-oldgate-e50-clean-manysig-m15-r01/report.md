@@ -1,6 +1,6 @@
 # 时间覆盖 × 分支内非线性：最小预登记
 
-状态：PLANNED（本地检查 PASS，独立 P0/P1 审查进行中；尚未发布）。唯一维护矩阵见 experiment.json；实际配置见 configs，不复制多份矩阵。
+状态：RUNNING（发布与独立进程/日志读回VERIFIED；完整结果待训练、预测和独立评分）。唯一维护矩阵见 experiment.json；实际配置见 configs，不复制多份矩阵。
 
 ## 科学问题与范围
 
@@ -53,3 +53,7 @@ epoch32/33/34/40/50记录source V/RX指标、Sinc/t1/t2/t3/PA/频域/default hea
 独立审查发现并修复两个P1：U extra真实tuple格式需n._meta_from_extra；CPU-only fork_rng中torch.manual_seed会改CUDA RNG。现用CPU默认generator独立seed，实际CPU/CUDA状态均逐arm核验一致。真实native.move_batch/threshold/temporal和隐藏TX拒绝检查PASS。无改健康旧release。
 
 唯一独立P0/P1审查及一次问题针对性复查PASS：两项直接缺陷已修复；旧TIME冻结诊断和source-stage闭合无新P0/P1。审查结束，不增加重复审查。
+
+## 已发布的独立证据
+
+实际执行commit 7b1e2fcbe1bf5d05f24bc91f86aa7d4b46d3ee95，本地HEAD与upstream OID独立一致。一次ordinary N607 direct preflight、一次archive local/remote SHA比较、remote compile及真实同契约checkpoint noquery smoke均PASS。不可变release cvs_time_factorial50_20261014_r01 已发布。独立readback VERIFIED（原始证据保留local_artifacts/cvs_time_factorial50_20261014_r01/readback.json和startup_readback.json），dispatcher PID/CWD/argv匹配，四新worker正常、第1至2epoch、日志增长、默认head_only=true、native_fitted_probes_disabled=true、新增参数60672，GPU总进程max3。BASE_REF seed01已source诊断、旧TIME同seed冻结source撤除、复用固定native预测与truth-last评分闭合。其他10row按source gate等待，未称完整15row或84%达标。
