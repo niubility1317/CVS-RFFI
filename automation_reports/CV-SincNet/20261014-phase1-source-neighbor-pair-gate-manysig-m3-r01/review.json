@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "candidate": "20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01",
+  "scope": "one independent direct P0/P1 next-source-run review",
+  "reviewed": [
+    "design.py",
+    "order.py",
+    "audit.py",
+    "checks.py",
+    "preflight.py",
+    "publish.py"
+  ],
+  "source_IQ_read": false,
+  "U_read": false,
+  "target_read": false,
+  "findings": []
+}
