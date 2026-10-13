@@ -6375,8 +6375,8 @@
     "scores": 0,
     "weights_reused": false
   },
-  "baseline_definition": {
-    "display_name": "旧门控＋cos（CE训练，50轮匹配对照）",
+  "historical_CE_control": {
+    "display_name": "CE50: internal frequency/PA gates plus cosine architecture; CE-only training",
     "machine_arm": "CE50",
     "gates": [
       "FreqBandGate1d",
@@ -6390,6 +6390,15 @@
     "identity_trainable_parameters": 177025,
     "NoExplicitCFO": true,
     "historical_E20": "same gate/head architecture verified locally; original20epochs/input strategy retained; not equal total cost or identical full recipe",
-    "evidence": "local_artifacts/vat_delivery_r02/old_gate_baseline_verified.json"
+    "evidence": "local_artifacts/vat_delivery_r02/old_gate_baseline_verified.json",
+    "is_requested_legacy_recipe": false
+  },
+  "requested_baseline_correction": {
+    "definition": "historical batch_neighbor pseudo gating plus EMA plus cosine",
+    "user_evidence": "referenced thread01a13437 user reply: 历史配方：旧伪标签门控＋EMA＋cos",
+    "current_CE50_matches": false,
+    "current_CE50_score": 0.7954107142857143,
+    "history_outputs_preserved": true,
+    "future_comparison": "matching source contract, head and fixed<=50 budget; legacy pseudo/EMA enabled in all arms"
   }
 }

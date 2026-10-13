@@ -1,0 +1,102 @@
+{
+  "schema": "frequency_context_legacy50_v1",
+  "run_id": "20261013-phase1-frequency-context-legacycos-clean-manysig-m9-r01",
+  "stage": "frequency_context",
+  "arm": "GLOBAL_FREQ",
+  "model_seed": 2026092701,
+  "row_id": "GLOBAL_FREQ-s2026092701",
+  "features": [
+    "ema",
+    "pseudo",
+    "twostage"
+  ],
+  "variant": "reference_response",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-frequency-context-legacycos-clean-manysig-m9-r01/GLOBAL_FREQ-s2026092701/source",
+  "epochs": 50,
+  "steps_per_epoch": 222,
+  "model_initialization": "scratch",
+  "checkpoint_sources": [],
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "method": "cvs_frequency_context50",
+  "target_access": false,
+  "pseudo_domain_gate": false,
+  "temporal_mode": "batch_neighbor",
+  "temporal_min_streak": 2,
+  "lr_schedule": "cosine",
+  "lr_min": 1e-06,
+  "updates": 11100,
+  "label_epochs": 32,
+  "pseudo_epochs": 18,
+  "launch_owner": "codex/root/frequency-context-legacycos-20261013",
+  "checkpoint_selection": "final_only",
+  "test_views": [
+    "clean"
+  ],
+  "explicit_CFO_identity_input": false,
+  "training_target_access": false,
+  "baseline": "historical batch_neighbor pseudo gates + EMA + cosine; no satellite",
+  "legacy_recipe": {
+    "use_unlabeled": true,
+    "use_ema_teacher": true,
+    "ema_decay": 0.999,
+    "a1_ema_versioned_updates": true,
+    "a1_ema_startup_average": false,
+    "pseudo_threshold_mode": "rx_day_quantile",
+    "tau_min": 0.92,
+    "tau_max": 0.97,
+    "pseudo_quantile": 0.86,
+    "pseudo_domain_gate": false,
+    "pseudo_temporal_gate": true,
+    "pseudo_temporal_mode": "batch_neighbor",
+    "pseudo_temporal_window": 2,
+    "pseudo_temporal_min_conf": 0.8,
+    "pseudo_strong_agreement": true,
+    "strong_noise_std": 0.015,
+    "lambda_u": 0.16,
+    "lambda_ent": 0.01,
+    "label_smoothing": 0.01,
+    "use_aug": true,
+    "weight_decay": 0.0001,
+    "use_concat_sat_channel_aug": false,
+    "phase1_lr_schedule": "cosine",
+    "phase1_lr_min": 1e-06
+  },
+  "source_V": "health only; final checkpoint fixed at50, no source performance selection",
+  "frequency_context": {
+    "enabled": true,
+    "levels": [
+      "f1",
+      "f2"
+    ],
+    "channels": [
+      16,
+      32
+    ],
+    "positions": [
+      16,
+      8
+    ],
+    "mode": "global",
+    "local_radius": 1,
+    "attention_heads": 4,
+    "query_key_value_width_multiplier": 2,
+    "ffn_width_multiplier": 4,
+    "residual_scale": 0.01,
+    "position": "fixed sine/cosine frequency-band index; no receiver/TX metadata",
+    "classifier_change": false,
+    "per_packet_only": true
+  },
+  "goal": {
+    "primary": "GLOBAL_FREQ",
+    "clean_three_seed_mean": 0.84,
+    "feedback_to_training": false
+  }
+}
