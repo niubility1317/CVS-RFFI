@@ -1,31 +1,33 @@
 # 可迁移特征提取器目标
 
-当前用户约束（2026-10-13，再次明确）：分类头使用本网络默认分类头，仅随骨干联合训练；禁止冻结骨干后单独训练分类头，禁止以source换头、support-only W训练或其他分类器作为后续优化步骤。后续Phase1只用原默认头直接clean预测和评分；default residual cosine6x160/scale30的结构和算法保持。Phase2真正未见TX验证仍待完成，只能沿默认流程评价网络，不能专门优化/训练头。此条覆盖本文之前的换头诊断安排和support_cosine组件计划；历史已经完成的诊断保留，不能用于替代默认头阴性结果或声称84%达标。
+当前主目标：目标 clean 三 model-seed 均值 ≥84%，每个 Phase1 骨干训练不超过 50 轮。对比基线固定为历史旧伪标签门控＋EMA＋cos，不以纯 CE 替代。每次探索实现、配置及完整正负结果均提交、推送 Git，并独立核对远端分支 OID。目标仍未完成。
 
-主目标保留：固定目标clean三model-seed均值≥84%，每个Phase1骨干≤50轮。基线是历史旧伪标签门控＋EMA＋cos，不能以纯CE替代。每次实现、配置、完整正/负结果提交并推送Git。
+最新用户约束（2026-10-13）：分类头使用网络默认分类头，仅随骨干联合训练。禁止冻结骨干后专门训练分类头，禁止把 source 换头、support-only W 训练或其他分类器用作后续优化与评估步骤。Phase1 用原默认 ResidualPhysicalHead（6×160，scale30）直接 clean 推理，预测后没有 optimizer 更新。本约束覆盖此前 pasted design 的换头/临时分类器安排；历史已完成的诊断保留，不能替代默认头负结果或声称达标。未使用的 support_cosine 接口已删除，默认头纯推理入口在 experiments/cvs_default_head，政策代码 4a8235a4dab2fc9971e95d7b76ca5a22ff670732 已推送并核对远端。
 
-用户补充目标：Phase1类别W丢弃后，实际160维特征在普通cosine换头、固定少样本适应中仍有效，最终须验证旧＋真正未见新TX统一竞争。原头84%不能单独证明特征增强；来源/预算/数据和Phase2权限仍遵守PROJECT_PROTOCOL。
+## 优化对象与证据边界
 
-功能边界：fθ包含Sinc/时频/PA网络、base_norm/pa_norm/gain、ReferenceCVS response projection/gain和实际NoExplicitCFO输入策略；gW仅具体类别的weight/bias。本实现 ResidualPhysicalHead无bias，丢弃6×160 W，scale30作为新普通cosine统一常数。诊断h349不替代joint160。新feature_only路径复用原components，原训练仍CE联合学习，默认分类前向保持。
+研究对象是可迁移 fθ，包括 Sinc、时频、PA、参考响应、base_norm/pa_norm/gain 与实际 joint160 的类无关计算。h349 诊断向量不替代网络真正分类前的 joint160。保持默认头结构和训练算法，新增机制必须通过真实特征梯度与冻结后的默认头测试证明效果，不专门拟合 W。
 
-先做固定边界与换头验证：20261013-phase1-frozen-feature-rehead-source-manysig-m9-r01，9已冻结原终轮全部保留。L6300拟合新普通cosine头20轮，V27000评分；另5源RX轮换头拟合留出、K5/10、3固定support draws。不更新骨干，不打开U/target；所有RX/TX已经被骨干见过，此项不是新类/Phase2证据。
+ManySig 源域 6 TX 都已参与 L/U/V 或 teacher，因此只能叫旧 TX；隐藏 U 标签不等于网络没见过该 TX。真正未见 TX 不能在任何 Phase1 角色或祖先 checkpoint 中出现。新类/Phase2 证据仍未完成；未来按 PROJECT_PROTOCOL 的 p2_min_v1、VALIDATED_ONCE、固定 received IQ/support/query 权限和默认网络流程执行，不访问 source/clean，不用 query 拟合，不专门训练头。已查明 practical capsule 不能冒充 LEO_WEAK，旧弱场景 cache 的物理 ID 重叠不能直接作为当前正式数据。数据发现仅为只读元数据核验，没有启动新的 Phase2 实验。
 
-下一步采用用户给出的独立路线：临时support ridge分类器重建辅助训练（原骨干、原旧门控/EMA/cos不变），与PA三阶可学习跨延迟乘性交互独立消融；均从零≤50轮，不串接依据target挑选的权重。只有单独收益在换头后保留才组合。此对话先承担分类器重建辅助目标，另活动对话当前为时序/PA多尺度卷积，未擅自给其发送任务。复频谱跨频关系为后续独立结构路线，不把已做功率上下文attention当作相同机制。
+源 V 只检查健康，不依其微小涨分选择模型；本对话采用已授权 clean-only 完整三 seed 矩阵。方案在目标访问前固定，测试结果不回流调参、候选排序或选择性重跑；已暴露基准不声明独立盲测。健康其他 owner 的进程保持原计划，每 GPU 总实验进程最多 3。
 
-新类边界：目前ManySig6TX全部参与原Phase1，包括隐藏U，均只能叫old。真留TX研究必须从新数据契约起从零训练，heldTX从L/U/teacher全部排除；当前权重不能作为真新类的基座。正式Phase2只读p2_min_v1/VALIDATED_ONCE固定LEO receivedIQ与合法support，不读source/clean、不用query拟合，old+new全类逐包独立竞争。不能把源域support/V或clean头重训写成Phase2零适配DG。
+## 已完成探索
 
-证据状态：频域功率上下文三seed原头基线80.6454%、局部79.5353%、全局79.4298%，完整结果20261013-phase1-frequency-context-eval-recovery-manysig-m9-r01/final_analysis.md，未达84%，全部负结果保留。此结果不用于attention调参或选择性重跑。特征边界synthetic检查与一次P0/P1审查PASS；真实源域换头结果待回。
+|路线|固定默认头三 seed clean 均值|结论与报告|
+|---|---:|---|
+|旧门控＋EMA＋cos LEGACY50|80.6454%|已核实 source 来源、固定 final50，后续同 seed 对比复用|
+|局部/全局功率上下文|79.5353% / 79.4298%|均低于基线；20261013-phase1-frequency-context-eval-recovery-manysig-m9-r01，Git 60b2fa 已交付|
+|SAME_RX / CROSS_RX 历史 episodic 特征目标|80.6204% / 80.7494%|CROSS 仅 +0.1040 个百分点，1/3 为正；完整 9 行结果 Git 752a8f20f6dcbc51abc195f6f78b597ed89ea6bd|
+|同容量功率关系 POWER_RELATIONS|76.8591%|相对基线 −3.7863 个百分点，3/3 为负|
+|功率化前复频谱关系 COMPLEX_RELATIONS|79.3058%|相对基线 −1.3397 个百分点，1/3 为正；未达 84%|
 
-阶段证据更新：源域冻结换头20261013-phase1-frozen-feature-rehead-source-manysig-m9-r01全部9row/297readouts/279heads已完成；实际source特征差0，featureupdates0、旧W删除、targetaccessfalse，完整结果报告已推送5cb8b0ba8989767e63b1d0e7cc7016ef56d41a0d。基线source原头97.8864%、新cos头98.0580%、原型96.3951%、5/10shot头95.48395%/95.97860%；均不是target指标。
+最新跨频 run 为 20261013-phase1-cross-frequency-legacycos-clean-manysig-m9-r01，执行代码 9c171f9f13c7675eb06a4f2fc82d31105919becf。6 个新 scratch50 模型全部结束，完整 66600 step 记录、450 epoch 记录、9 个真实默认头 checkpoint 与 1512000 个 clean 决定已独立核验；162 条默认头聚合指标重新计算一致。新增特征参数实际改变，无非有限跳步，所有 queue/worker terminal。完整结果见 [final_analysis.md](../automation_reports/CV-SincNet/20261013-phase1-cross-frequency-legacycos-clean-manysig-m9-r01/final_analysis.md) 和同目录 results.json。
 
-路线六数学组件已实现但尚未接入源训练或启动：dual ridge=.1、scale10、normalize eps1e-4、160维/6类，线性solve不inverse，无持久head参数。focused primal等价误差7.11e-15、两侧梯度范数.380812/.365234、数值梯度、类置换/支持顺序置换/逐query独立/重复及秩亏支持/zero finite/外部autocast和19 negatives PASS。不把数学组件PASS写成实验性能收益。后续冻结cadence/sourceRX采样/辅助权重/预算与同预算基线读出矩阵后再发布。
+历史 source 冻结换头（9 行/297 读出）以及 episodic/cross-frequency 的全 L 新 cosine/原型诊断均在最新约束之前已经完成。θ 与原默认 W 保持冻结，历史结果完整保留；它们不算当前主指标，也不会继续作为未来步骤。source-only 诊断不冒充目标新类或 Phase2。跨频历史额外 324 条结果单独归档 historical_readout_results.json，避免与默认头结果混用。临时 ridge 分类器路线也不再作为新增实验。
 
-当前新冻结矩阵：20261013-phase1-episodic-feature-legacycos-clean-manysig-m9-r01，SAME_RX/CROSS_RX各3scratch50、baseline3同seed终轮复用；每4step辅助episode2775、sourceL12support/24query、ridge.1/scale10/weight.2。全部sourceRX轮换，主RNG保留，分类头结构不变。各row自动原头/全L普通cosine新头/原型三读出clean后truth-last；84%主指标固定CROSS_RX原头，但原头达84仍不单独证明新TX迁移。另一活动对话最新路线为GN信息恢复/分支竞争抑制，与本路线独立。
+## 后续方向
 
-路线六完整结果：20261013-phase1-episodic-feature-legacycos-clean-manysig-m9-r01 已完成全部 9 行/27 读出、4536000 决定、486 聚合记录独立重计；6 新 scratch50，共 66600updates/16650episodes。CROSS_RX 原头80.7494%（基线80.6454%，+0.1040pp，1/3正）；新普通cos78.0115%（+0.2478pp，1/3正）；原型75.7250%（+1.2863pp，3/3正）。未达84%，普通换头无稳定提升，不能声明新TX或Phase2迁移完成。负/边际结果完整上传；不追加目标反馈调参。当前先只读核实现有真实未见TX capsule与support-only普通cos接口，正式特征迁移证据尚未完成。
+继续沿源数据与结构分析设计特征机制，保持默认头与旧门控＋cos 对比。用户原列出的 PA 跨延迟三阶乘性交互属于尚未实施的独立结构路线，可与同容量卷积独立消融；浅层/中层域稳定机制须记录实际层位、梯度对象、RX 域分组及身份保护配对。任何新行都直接默认头预测，不能调用历史 source_freshhead/readout 入口。
 
-下一条独立结构路线已实现并登记 20261013-phase1-cross-frequency-legacycos-clean-manysig-m9-r01：功率化前cross-frequency复关系/同容量power关系，各3scratch50，baseline三读出完整复用；fθ新增45504params，旧W完全丢弃后实际joint160 maxdiff0。Vhealth-only，自动clean原头/普通换头/原型truth-last；尚未发布、尚无性能结果。已有practical Phase2 capsule不冒充LEO_WEAK，真正未见TX正式迁移证据仍未完成。
-
-复频谱路线已发布 VERIFIED，执行code 9c171f9f13c7675eb06a4f2fc82d31105919becf；6scratch50新行已核实真实进程与epoch10至12日志增长，baseline三读出完整复用闭环。所有新行方案已固定，不读新目标分数调参，训练后自动3读出clean评分。当前未完成，无84%或新TX/Phase2收益声明。
-
-普通support-only验证组件已参数化注册类数：cvs_transfer_features/support_cosine.py固定160维、scale30/无bias、新Xavier W/Adam.01/20fullbatch updates，唯一更新W、featureupdates0。合成6类与原读出相同预归一化流水线W/共有日志/logits完全一致，8/26/125类有限，类置换/逐query独立/zero/autocast/29negatives PASS。未读取真实数据，未接入当前Phase1的500update读出，未声称Phase2验证；正式入口仍须合法p2_min_v1/VALIDATED_ONCE输入与真实old/new注册映射。
+另一活动对话“继续优化 Phase1 双骨干域泛化”当前路线是 GN 信息恢复/分支竞争抑制。本对话的功率化前跨频关系及后续 PA/特征机制与其不同；未擅自给其他对话发送任务。所有负结果保留，目标 84% 仍 active。

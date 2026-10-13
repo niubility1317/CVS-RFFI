@@ -1,0 +1,10916 @@
+{
+  "schema": "default_head_phase1_results_v1",
+  "status": "VERIFIED",
+  "run_id": "20261013-phase1-cross-frequency-legacycos-clean-manysig-m9-r01",
+  "executing_code": "9c171f9f13c7675eb06a4f2fc82d31105919becf",
+  "reporting_policy": "Only the original jointly trained default ResidualPhysicalHead counts toward the objective; historical separate readouts are archived separately and will not be repeated.",
+  "head": {
+    "type": "ResidualPhysicalHead",
+    "weight_shape": [
+      6,
+      160
+    ],
+    "scale": 30,
+    "training": "joint with backbone",
+    "target_optimizer_updates": 0
+  },
+  "data": {
+    "source_split_seed": 392005,
+    "L": 6300,
+    "U": 56700,
+    "U_truth_hidden": true,
+    "V": 27000,
+    "V_role": "health only",
+    "test": "clean ManySig old-six TX; 7 target RX,4 days,168000 physical packets per row; exposed benchmark",
+    "source_contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "test_capsule_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/index.npz",
+    "Phase2": false,
+    "genuinely_unseen_TX": false
+  },
+  "cost": {
+    "new_models": 6,
+    "new_model_epochs_each": 50,
+    "new_total_epochs": 300,
+    "new_updates": 66600,
+    "reused_baseline_models": 3,
+    "reused_baseline_epochs": 150,
+    "new_head_only_updates_for_default_head": 0
+  },
+  "verification": {
+    "complete_new_step_logs": 66600,
+    "epoch_records": 450,
+    "no_nonfinite_skips": true,
+    "actual_new_feature_parameters_updated": true,
+    "all_processes_terminal": true,
+    "default_decisions": 1512000,
+    "baseline_default_decisions_reused": 504000,
+    "independent_metric_recounts": 162,
+    "truth_last": true,
+    "target_feedback": false
+  },
+  "summary": [
+    {
+      "arm": "LEGACY50",
+      "readout": "ORIGINAL_HEAD",
+      "view": "clean",
+      "seed_count": 3,
+      "accuracy_mean": 0.8064543650793651,
+      "accuracy_sd": 0.02091839296658833,
+      "seed_accuracy": {
+        "2026092701": 0.8074166666666667,
+        "2026092702": 0.7850714285714285,
+        "2026092703": 0.826875
+      },
+      "macro_f1_mean": 0.8013809888459722,
+      "worst_RX_mean": 0.678611111111111
+    },
+    {
+      "arm": "POWER_RELATIONS",
+      "readout": "ORIGINAL_HEAD",
+      "view": "clean",
+      "seed_count": 3,
+      "accuracy_mean": 0.7685912698412698,
+      "accuracy_sd": 0.023940491976662807,
+      "seed_accuracy": {
+        "2026092701": 0.7788809523809523,
+        "2026092702": 0.7412261904761904,
+        "2026092703": 0.7856666666666666
+      },
+      "macro_f1_mean": 0.7612182168058397,
+      "worst_RX_mean": 0.6227083333333333
+    },
+    {
+      "arm": "COMPLEX_RELATIONS",
+      "readout": "ORIGINAL_HEAD",
+      "view": "clean",
+      "seed_count": 3,
+      "accuracy_mean": 0.7930575396825397,
+      "accuracy_sd": 0.004939634657722785,
+      "seed_accuracy": {
+        "2026092701": 0.7951845238095238,
+        "2026092702": 0.7874107142857143,
+        "2026092703": 0.796577380952381
+      },
+      "macro_f1_mean": 0.7871879623453036,
+      "worst_RX_mean": 0.6369027777777778
+    }
+  ],
+  "paired": [
+    {
+      "arm": "POWER_RELATIONS",
+      "control": "LEGACY50",
+      "readout": "ORIGINAL_HEAD",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        -0.02853571428571433,
+        -0.043845238095238104,
+        -0.0412083333333334
+      ],
+      "mean_difference": -0.03786309523809528,
+      "sd_difference": 0.008184640691806093,
+      "positive_seeds": 0
+    },
+    {
+      "arm": "COMPLEX_RELATIONS",
+      "control": "LEGACY50",
+      "readout": "ORIGINAL_HEAD",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        -0.012232142857142914,
+        0.002339285714285766,
+        -0.030297619047619073
+      ],
+      "mean_difference": -0.013396825396825407,
+      "sd_difference": 0.016349594862659217,
+      "positive_seeds": 1
+    },
+    {
+      "arm": "COMPLEX_RELATIONS",
+      "control": "POWER_RELATIONS",
+      "readout": "ORIGINAL_HEAD",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.016303571428571417,
+        0.04618452380952387,
+        0.010910714285714329
+      ],
+      "mean_difference": 0.024466269841269872,
+      "sd_difference": 0.019000859023028446,
+      "positive_seeds": 3
+    }
+  ],
+  "records": [
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8074166666666667,
+      "macro_f1": 0.8023607248947079,
+      "macro_accuracy": 0.8074166666666667,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27335,
+          101,
+          210,
+          239,
+          70,
+          45
+        ],
+        [
+          620,
+          13628,
+          39,
+          13553,
+          129,
+          31
+        ],
+        [
+          673,
+          283,
+          22313,
+          242,
+          1145,
+          3344
+        ],
+        [
+          3362,
+          6521,
+          259,
+          17831,
+          9,
+          18
+        ],
+        [
+          6,
+          10,
+          24,
+          5,
+          27950,
+          5
+        ],
+        [
+          14,
+          13,
+          695,
+          4,
+          685,
+          26589
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8342916666666667,
+      "macro_f1": 0.8211918608157999,
+      "macro_accuracy": 0.8342916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3996,
+          2,
+          0,
+          1,
+          1,
+          0
+        ],
+        [
+          72,
+          1388,
+          2,
+          2537,
+          1,
+          0
+        ],
+        [
+          322,
+          4,
+          3479,
+          1,
+          0,
+          194
+        ],
+        [
+          179,
+          26,
+          2,
+          3793,
+          0,
+          0
+        ],
+        [
+          1,
+          3,
+          9,
+          1,
+          3986,
+          0
+        ],
+        [
+          4,
+          1,
+          610,
+          2,
+          2,
+          3381
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7036666666666667,
+      "macro_f1": 0.6828296460074106,
+      "macro_accuracy": 0.7036666666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3990,
+          0,
+          0,
+          10,
+          0,
+          0
+        ],
+        [
+          10,
+          2023,
+          0,
+          1965,
+          2,
+          0
+        ],
+        [
+          84,
+          1,
+          2877,
+          2,
+          3,
+          1033
+        ],
+        [
+          45,
+          3655,
+          237,
+          52,
+          1,
+          10
+        ],
+        [
+          0,
+          3,
+          3,
+          1,
+          3992,
+          1
+        ],
+        [
+          0,
+          1,
+          8,
+          1,
+          36,
+          3954
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8708333333333333,
+      "macro_f1": 0.8681274506742022,
+      "macro_accuracy": 0.8708333333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3563,
+          88,
+          172,
+          116,
+          61,
+          0
+        ],
+        [
+          8,
+          2069,
+          8,
+          1825,
+          77,
+          13
+        ],
+        [
+          24,
+          3,
+          3937,
+          11,
+          18,
+          7
+        ],
+        [
+          34,
+          610,
+          4,
+          3348,
+          1,
+          3
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          3998,
+          0
+        ],
+        [
+          0,
+          4,
+          9,
+          0,
+          2,
+          3985
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7338333333333333,
+      "macro_f1": 0.7341086709284589,
+      "macro_accuracy": 0.7338333333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3973,
+          3,
+          16,
+          4,
+          2,
+          2
+        ],
+        [
+          30,
+          1795,
+          3,
+          2146,
+          10,
+          16
+        ],
+        [
+          79,
+          160,
+          2577,
+          157,
+          958,
+          69
+        ],
+        [
+          31,
+          2026,
+          15,
+          1920,
+          7,
+          1
+        ],
+        [
+          5,
+          4,
+          8,
+          2,
+          3978,
+          3
+        ],
+        [
+          8,
+          3,
+          65,
+          0,
+          555,
+          3369
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8715833333333334,
+      "macro_f1": 0.8600808722314736,
+      "macro_accuracy": 0.8715833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3838,
+          0,
+          21,
+          93,
+          5,
+          43
+        ],
+        [
+          13,
+          1414,
+          5,
+          2564,
+          4,
+          0
+        ],
+        [
+          8,
+          6,
+          3818,
+          11,
+          144,
+          13
+        ],
+        [
+          9,
+          48,
+          0,
+          3942,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          1,
+          3,
+          1,
+          0,
+          88,
+          3907
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7945,
+      "macro_f1": 0.7769882406580129,
+      "macro_accuracy": 0.7944999999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3996,
+          4,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          485,
+          2316,
+          20,
+          1145,
+          32,
+          2
+        ],
+        [
+          28,
+          1,
+          3969,
+          1,
+          1,
+          0
+        ],
+        [
+          3061,
+          143,
+          0,
+          793,
+          0,
+          3
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          3995
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8432083333333333,
+      "macro_f1": 0.8303917531534264,
+      "macro_accuracy": 0.8432083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3979,
+          4,
+          1,
+          15,
+          1,
+          0
+        ],
+        [
+          2,
+          2623,
+          1,
+          1371,
+          3,
+          0
+        ],
+        [
+          128,
+          108,
+          1656,
+          59,
+          21,
+          2028
+        ],
+        [
+          3,
+          13,
+          1,
+          3983,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          1,
+          3998
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.97625,
+      "macro_f1": 0.16466371494834495,
+      "macro_accuracy": 0.97625,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27335,
+          101,
+          210,
+          239,
+          70,
+          45
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4867142857142857,
+      "macro_f1": 0.10912526824893502,
+      "macro_accuracy": 0.4867142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          620,
+          13628,
+          39,
+          13553,
+          129,
+          31
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7968928571428572,
+      "macro_f1": 0.14782793048847548,
+      "macro_accuracy": 0.7968928571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          673,
+          283,
+          22313,
+          242,
+          1145,
+          3344
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6368214285714285,
+      "macro_f1": 0.12968660222702247,
+      "macro_accuracy": 0.6368214285714285,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3362,
+          6521,
+          259,
+          17831,
+          9,
+          18
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9982142857142857,
+      "macro_f1": 0.16651772415847482,
+      "macro_accuracy": 0.9982142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          10,
+          24,
+          5,
+          27950,
+          5
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9496071428571429,
+      "macro_f1": 0.16235871695762882,
+      "macro_accuracy": 0.9496071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          14,
+          13,
+          695,
+          4,
+          685,
+          26589
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7954761904761904,
+      "macro_f1": 0.7890117337834668,
+      "macro_accuracy": 0.7954761904761906,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6660,
+          30,
+          95,
+          154,
+          18,
+          43
+        ],
+        [
+          194,
+          2946,
+          23,
+          3741,
+          77,
+          19
+        ],
+        [
+          104,
+          32,
+          5411,
+          208,
+          74,
+          1171
+        ],
+        [
+          857,
+          1461,
+          141,
+          4534,
+          5,
+          2
+        ],
+        [
+          1,
+          2,
+          10,
+          1,
+          6985,
+          1
+        ],
+        [
+          2,
+          3,
+          69,
+          1,
+          51,
+          6874
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8333571428571429,
+      "macro_f1": 0.8297689239540241,
+      "macro_accuracy": 0.8333571428571429,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6827,
+          30,
+          99,
+          5,
+          38,
+          1
+        ],
+        [
+          63,
+          3984,
+          5,
+          2942,
+          5,
+          1
+        ],
+        [
+          142,
+          83,
+          6235,
+          20,
+          58,
+          462
+        ],
+        [
+          960,
+          1967,
+          35,
+          4026,
+          3,
+          9
+        ],
+        [
+          2,
+          4,
+          6,
+          1,
+          6984,
+          3
+        ],
+        [
+          7,
+          0,
+          7,
+          0,
+          41,
+          6945
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7556666666666667,
+      "macro_f1": 0.7483140479796241,
+      "macro_accuracy": 0.7556666666666666,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6901,
+          12,
+          13,
+          63,
+          11,
+          0
+        ],
+        [
+          165,
+          2707,
+          6,
+          4101,
+          15,
+          6
+        ],
+        [
+          416,
+          152,
+          5324,
+          11,
+          180,
+          917
+        ],
+        [
+          993,
+          2025,
+          6,
+          3973,
+          0,
+          3
+        ],
+        [
+          2,
+          1,
+          4,
+          3,
+          6989,
+          1
+        ],
+        [
+          0,
+          7,
+          576,
+          1,
+          572,
+          5844
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "model_seed": 2026092701,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8451666666666666,
+      "macro_f1": 0.840379076099198,
+      "macro_accuracy": 0.8451666666666667,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6947,
+          29,
+          3,
+          17,
+          3,
+          1
+        ],
+        [
+          198,
+          3991,
+          5,
+          2769,
+          32,
+          5
+        ],
+        [
+          11,
+          16,
+          5343,
+          3,
+          833,
+          794
+        ],
+        [
+          552,
+          1068,
+          77,
+          5298,
+          1,
+          4
+        ],
+        [
+          1,
+          3,
+          4,
+          0,
+          6992,
+          0
+        ],
+        [
+          5,
+          3,
+          43,
+          2,
+          21,
+          6926
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7788809523809523,
+      "macro_f1": 0.7723465283546598,
+      "macro_accuracy": 0.7788809523809523,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26978,
+          549,
+          98,
+          298,
+          76,
+          1
+        ],
+        [
+          1107,
+          11207,
+          60,
+          15445,
+          132,
+          49
+        ],
+        [
+          897,
+          638,
+          22751,
+          131,
+          340,
+          3243
+        ],
+        [
+          3875,
+          6961,
+          636,
+          16486,
+          20,
+          22
+        ],
+        [
+          18,
+          139,
+          52,
+          10,
+          27777,
+          4
+        ],
+        [
+          53,
+          91,
+          1093,
+          35,
+          1075,
+          25653
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7870416666666666,
+      "macro_f1": 0.7707611111572357,
+      "macro_accuracy": 0.7870416666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3983,
+          4,
+          9,
+          3,
+          1,
+          0
+        ],
+        [
+          273,
+          1138,
+          6,
+          2583,
+          0,
+          0
+        ],
+        [
+          400,
+          5,
+          3448,
+          2,
+          0,
+          145
+        ],
+        [
+          698,
+          43,
+          0,
+          3259,
+          0,
+          0
+        ],
+        [
+          11,
+          1,
+          3,
+          5,
+          3980,
+          0
+        ],
+        [
+          6,
+          76,
+          830,
+          5,
+          2,
+          3081
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6601666666666667,
+      "macro_f1": 0.6489360690616729,
+      "macro_accuracy": 0.6601666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3977,
+          0,
+          0,
+          23,
+          0,
+          0
+        ],
+        [
+          8,
+          1229,
+          0,
+          2749,
+          14,
+          0
+        ],
+        [
+          1,
+          110,
+          3011,
+          7,
+          23,
+          848
+        ],
+        [
+          16,
+          3573,
+          373,
+          20,
+          1,
+          17
+        ],
+        [
+          1,
+          2,
+          5,
+          0,
+          3992,
+          0
+        ],
+        [
+          0,
+          1,
+          166,
+          4,
+          214,
+          3615
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8378333333333333,
+      "macro_f1": 0.8375209851614308,
+      "macro_accuracy": 0.8378333333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3257,
+          490,
+          66,
+          120,
+          67,
+          0
+        ],
+        [
+          6,
+          1844,
+          26,
+          2053,
+          67,
+          4
+        ],
+        [
+          20,
+          7,
+          3951,
+          19,
+          3,
+          0
+        ],
+        [
+          14,
+          890,
+          0,
+          3089,
+          6,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          1,
+          5,
+          9,
+          5,
+          10,
+          3970
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7504166666666666,
+      "macro_f1": 0.7519975197563388,
+      "macro_accuracy": 0.7504166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3980,
+          5,
+          3,
+          6,
+          5,
+          1
+        ],
+        [
+          13,
+          1357,
+          18,
+          2592,
+          14,
+          6
+        ],
+        [
+          142,
+          131,
+          3391,
+          36,
+          110,
+          190
+        ],
+        [
+          47,
+          2163,
+          13,
+          1767,
+          10,
+          0
+        ],
+        [
+          6,
+          136,
+          39,
+          3,
+          3813,
+          3
+        ],
+        [
+          11,
+          5,
+          61,
+          19,
+          202,
+          3702
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8364583333333333,
+      "macro_f1": 0.8260874078491719,
+      "macro_accuracy": 0.8364583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3872,
+          0,
+          4,
+          123,
+          1,
+          0
+        ],
+        [
+          4,
+          1393,
+          1,
+          2560,
+          5,
+          37
+        ],
+        [
+          3,
+          275,
+          3509,
+          13,
+          198,
+          2
+        ],
+        [
+          6,
+          43,
+          0,
+          3948,
+          2,
+          1
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          643,
+          3355
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.768125,
+      "macro_f1": 0.7422338466738981,
+      "macro_accuracy": 0.7681250000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3982,
+          18,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          803,
+          2395,
+          9,
+          784,
+          9,
+          0
+        ],
+        [
+          297,
+          1,
+          3700,
+          0,
+          2,
+          0
+        ],
+        [
+          3094,
+          224,
+          250,
+          429,
+          1,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          35,
+          1,
+          27,
+          2,
+          4,
+          3931
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.812125,
+      "macro_f1": 0.7964768329536916,
+      "macro_accuracy": 0.812125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3927,
+          32,
+          16,
+          23,
+          2,
+          0
+        ],
+        [
+          0,
+          1851,
+          0,
+          2124,
+          23,
+          2
+        ],
+        [
+          34,
+          109,
+          1741,
+          54,
+          4,
+          2058
+        ],
+        [
+          0,
+          25,
+          0,
+          3974,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9635,
+      "macro_f1": 0.16356845768610476,
+      "macro_accuracy": 0.9635,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26978,
+          549,
+          98,
+          298,
+          76,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.40025,
+      "macro_f1": 0.09528060465393084,
+      "macro_accuracy": 0.40025,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1107,
+          11207,
+          60,
+          15445,
+          132,
+          49
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8125357142857143,
+      "macro_f1": 0.14942891108877984,
+      "macro_accuracy": 0.8125357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          897,
+          638,
+          22751,
+          131,
+          340,
+          3243
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.5887857142857142,
+      "macro_f1": 0.12352949991757706,
+      "macro_accuracy": 0.5887857142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3875,
+          6961,
+          636,
+          16486,
+          20,
+          22
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9920357142857142,
+      "macro_f1": 0.16600032271366336,
+      "macro_accuracy": 0.9920357142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          18,
+          139,
+          52,
+          10,
+          27777,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9161785714285714,
+      "macro_f1": 0.1593759901589846,
+      "macro_accuracy": 0.9161785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          53,
+          91,
+          1093,
+          35,
+          1075,
+          25653
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7577380952380952,
+      "macro_f1": 0.7441087378235042,
+      "macro_accuracy": 0.7577380952380953,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6770,
+          31,
+          51,
+          144,
+          3,
+          1
+        ],
+        [
+          444,
+          1850,
+          34,
+          4634,
+          36,
+          2
+        ],
+        [
+          52,
+          62,
+          5407,
+          72,
+          25,
+          1382
+        ],
+        [
+          853,
+          1662,
+          301,
+          4175,
+          8,
+          1
+        ],
+        [
+          1,
+          31,
+          10,
+          1,
+          6955,
+          2
+        ],
+        [
+          5,
+          2,
+          186,
+          10,
+          129,
+          6668
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8145476190476191,
+      "macro_f1": 0.8116535218811899,
+      "macro_accuracy": 0.8145476190476191,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6705,
+          127,
+          27,
+          82,
+          59,
+          0
+        ],
+        [
+          25,
+          3614,
+          5,
+          3344,
+          8,
+          4
+        ],
+        [
+          65,
+          202,
+          6415,
+          8,
+          145,
+          165
+        ],
+        [
+          1013,
+          1947,
+          183,
+          3847,
+          2,
+          8
+        ],
+        [
+          7,
+          106,
+          19,
+          1,
+          6866,
+          1
+        ],
+        [
+          25,
+          2,
+          46,
+          7,
+          156,
+          6764
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7188571428571429,
+      "macro_f1": 0.7076447751827035,
+      "macro_accuracy": 0.7188571428571429,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6949,
+          6,
+          8,
+          28,
+          9,
+          0
+        ],
+        [
+          285,
+          2003,
+          7,
+          4681,
+          23,
+          1
+        ],
+        [
+          661,
+          230,
+          5156,
+          33,
+          27,
+          893
+        ],
+        [
+          1232,
+          2066,
+          29,
+          3666,
+          4,
+          3
+        ],
+        [
+          2,
+          2,
+          2,
+          8,
+          6985,
+          1
+        ],
+        [
+          16,
+          83,
+          794,
+          7,
+          667,
+          5433
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8243809523809524,
+      "macro_f1": 0.8205959951780372,
+      "macro_accuracy": 0.8243809523809524,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6554,
+          385,
+          12,
+          44,
+          5,
+          0
+        ],
+        [
+          353,
+          3740,
+          14,
+          2786,
+          65,
+          42
+        ],
+        [
+          119,
+          144,
+          5773,
+          18,
+          143,
+          803
+        ],
+        [
+          777,
+          1286,
+          123,
+          4798,
+          6,
+          10
+        ],
+        [
+          8,
+          0,
+          21,
+          0,
+          6971,
+          0
+        ],
+        [
+          7,
+          4,
+          67,
+          11,
+          123,
+          6788
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7951845238095238,
+      "macro_f1": 0.7878673899285337,
+      "macro_accuracy": 0.7951845238095238,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27387,
+          224,
+          64,
+          244,
+          68,
+          13
+        ],
+        [
+          831,
+          10911,
+          33,
+          15997,
+          85,
+          143
+        ],
+        [
+          360,
+          319,
+          23701,
+          137,
+          216,
+          3267
+        ],
+        [
+          2792,
+          6596,
+          901,
+          17653,
+          12,
+          46
+        ],
+        [
+          6,
+          11,
+          21,
+          3,
+          27950,
+          9
+        ],
+        [
+          29,
+          9,
+          808,
+          9,
+          1156,
+          25989
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8203333333333334,
+      "macro_f1": 0.8020175537355066,
+      "macro_accuracy": 0.8203333333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3997,
+          1,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          56,
+          1061,
+          4,
+          2870,
+          1,
+          8
+        ],
+        [
+          291,
+          4,
+          3659,
+          0,
+          2,
+          44
+        ],
+        [
+          237,
+          91,
+          0,
+          3672,
+          0,
+          0
+        ],
+        [
+          1,
+          5,
+          1,
+          1,
+          3991,
+          1
+        ],
+        [
+          6,
+          2,
+          678,
+          2,
+          4,
+          3308
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6262916666666667,
+      "macro_f1": 0.6179102004915719,
+      "macro_accuracy": 0.6262916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3994,
+          0,
+          0,
+          6,
+          0,
+          0
+        ],
+        [
+          8,
+          72,
+          0,
+          3918,
+          2,
+          0
+        ],
+        [
+          4,
+          123,
+          2860,
+          90,
+          55,
+          868
+        ],
+        [
+          23,
+          3314,
+          516,
+          113,
+          2,
+          32
+        ],
+        [
+          1,
+          1,
+          1,
+          0,
+          3996,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          3,
+          1,
+          3996
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8737083333333333,
+      "macro_f1": 0.8720931733893998,
+      "macro_accuracy": 0.8737083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3590,
+          162,
+          59,
+          123,
+          61,
+          5
+        ],
+        [
+          5,
+          2114,
+          3,
+          1805,
+          63,
+          10
+        ],
+        [
+          12,
+          27,
+          3930,
+          14,
+          14,
+          3
+        ],
+        [
+          28,
+          614,
+          1,
+          3353,
+          1,
+          3
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          3998,
+          0
+        ],
+        [
+          0,
+          4,
+          4,
+          1,
+          7,
+          3984
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7664166666666666,
+      "macro_f1": 0.765983044425704,
+      "macro_accuracy": 0.7664166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3921,
+          17,
+          1,
+          54,
+          5,
+          2
+        ],
+        [
+          32,
+          1845,
+          17,
+          2064,
+          11,
+          31
+        ],
+        [
+          17,
+          30,
+          3788,
+          19,
+          105,
+          41
+        ],
+        [
+          17,
+          2318,
+          8,
+          1648,
+          8,
+          1
+        ],
+        [
+          4,
+          5,
+          16,
+          1,
+          3968,
+          6
+        ],
+        [
+          22,
+          1,
+          123,
+          3,
+          627,
+          3224
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8588333333333333,
+      "macro_f1": 0.8460354701497765,
+      "macro_accuracy": 0.8588333333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3975,
+          0,
+          1,
+          17,
+          1,
+          6
+        ],
+        [
+          9,
+          1374,
+          5,
+          2610,
+          2,
+          0
+        ],
+        [
+          7,
+          11,
+          3839,
+          5,
+          38,
+          100
+        ],
+        [
+          5,
+          50,
+          0,
+          3944,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          1,
+          1,
+          3,
+          0,
+          514,
+          3481
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.817,
+      "macro_f1": 0.7976847050896797,
+      "macro_accuracy": 0.8170000000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3995,
+          4,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          720,
+          2669,
+          1,
+          591,
+          3,
+          16
+        ],
+        [
+          3,
+          2,
+          3993,
+          1,
+          1,
+          0
+        ],
+        [
+          2482,
+          178,
+          376,
+          955,
+          0,
+          9
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3,
+          3997
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8037083333333334,
+      "macro_f1": 0.7862823438064824,
+      "macro_accuracy": 0.8037083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3915,
+          40,
+          3,
+          41,
+          1,
+          0
+        ],
+        [
+          1,
+          1776,
+          3,
+          2139,
+          3,
+          78
+        ],
+        [
+          26,
+          122,
+          1632,
+          8,
+          1,
+          2211
+        ],
+        [
+          0,
+          31,
+          0,
+          3968,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9781071428571428,
+      "macro_f1": 0.16482207016086806,
+      "macro_accuracy": 0.9781071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27387,
+          224,
+          64,
+          244,
+          68,
+          13
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.38967857142857143,
+      "macro_f1": 0.09346971293464573,
+      "macro_accuracy": 0.38967857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          831,
+          10911,
+          33,
+          15997,
+          85,
+          143
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8464642857142857,
+      "macro_f1": 0.15280813394969794,
+      "macro_accuracy": 0.8464642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          360,
+          319,
+          23701,
+          137,
+          216,
+          3267
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6304642857142857,
+      "macro_f1": 0.12889258829284675,
+      "macro_accuracy": 0.6304642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2792,
+          6596,
+          901,
+          17653,
+          12,
+          46
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9982142857142857,
+      "macro_f1": 0.16651772415847482,
+      "macro_accuracy": 0.9982142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          11,
+          21,
+          3,
+          27950,
+          9
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9281785714285714,
+      "macro_f1": 0.16045861193946914,
+      "macro_accuracy": 0.9281785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          29,
+          9,
+          808,
+          9,
+          1156,
+          25989
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7941428571428572,
+      "macro_f1": 0.7853684097133827,
+      "macro_accuracy": 0.794142857142857,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6846,
+          17,
+          40,
+          78,
+          11,
+          8
+        ],
+        [
+          290,
+          2435,
+          8,
+          4199,
+          35,
+          33
+        ],
+        [
+          36,
+          187,
+          5829,
+          21,
+          35,
+          892
+        ],
+        [
+          451,
+          1685,
+          395,
+          4462,
+          5,
+          2
+        ],
+        [
+          3,
+          1,
+          9,
+          0,
+          6982,
+          5
+        ],
+        [
+          9,
+          2,
+          126,
+          2,
+          61,
+          6800
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8213571428571429,
+      "macro_f1": 0.8158257696858094,
+      "macro_accuracy": 0.8213571428571429,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6876,
+          38,
+          24,
+          16,
+          43,
+          3
+        ],
+        [
+          183,
+          3364,
+          5,
+          3431,
+          3,
+          14
+        ],
+        [
+          8,
+          84,
+          6403,
+          96,
+          86,
+          323
+        ],
+        [
+          882,
+          1751,
+          312,
+          4023,
+          2,
+          30
+        ],
+        [
+          2,
+          3,
+          8,
+          1,
+          6983,
+          3
+        ],
+        [
+          6,
+          0,
+          1,
+          1,
+          144,
+          6848
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7323095238095239,
+      "macro_f1": 0.7210039787903412,
+      "macro_accuracy": 0.7323095238095237,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6917,
+          41,
+          0,
+          32,
+          10,
+          0
+        ],
+        [
+          218,
+          2001,
+          5,
+          4757,
+          16,
+          3
+        ],
+        [
+          300,
+          19,
+          5615,
+          9,
+          32,
+          1025
+        ],
+        [
+          967,
+          2185,
+          29,
+          3808,
+          3,
+          8
+        ],
+        [
+          1,
+          3,
+          3,
+          2,
+          6990,
+          1
+        ],
+        [
+          3,
+          7,
+          655,
+          3,
+          906,
+          5426
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092701,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8329285714285715,
+      "macro_f1": 0.8268170480753878,
+      "macro_accuracy": 0.8329285714285715,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6748,
+          128,
+          0,
+          118,
+          4,
+          2
+        ],
+        [
+          140,
+          3111,
+          15,
+          3610,
+          31,
+          93
+        ],
+        [
+          16,
+          29,
+          5854,
+          11,
+          63,
+          1027
+        ],
+        [
+          492,
+          975,
+          165,
+          5360,
+          2,
+          6
+        ],
+        [
+          0,
+          4,
+          1,
+          0,
+          6995,
+          0
+        ],
+        [
+          11,
+          0,
+          26,
+          3,
+          45,
+          6915
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7850714285714285,
+      "macro_f1": 0.7800196045667204,
+      "macro_accuracy": 0.7850714285714285,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27519,
+          150,
+          83,
+          190,
+          42,
+          16
+        ],
+        [
+          643,
+          12407,
+          36,
+          14811,
+          71,
+          32
+        ],
+        [
+          1583,
+          1654,
+          19756,
+          471,
+          643,
+          3893
+        ],
+        [
+          3084,
+          7076,
+          92,
+          17679,
+          15,
+          54
+        ],
+        [
+          8,
+          9,
+          20,
+          8,
+          27954,
+          1
+        ],
+        [
+          32,
+          238,
+          357,
+          11,
+          785,
+          26577
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8488333333333333,
+      "macro_f1": 0.8345486904406396,
+      "macro_accuracy": 0.8488333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3996,
+          1,
+          1,
+          1,
+          1,
+          0
+        ],
+        [
+          145,
+          1326,
+          4,
+          2525,
+          0,
+          0
+        ],
+        [
+          33,
+          2,
+          3432,
+          2,
+          3,
+          528
+        ],
+        [
+          252,
+          26,
+          0,
+          3722,
+          0,
+          0
+        ],
+        [
+          1,
+          5,
+          7,
+          2,
+          3985,
+          0
+        ],
+        [
+          3,
+          71,
+          9,
+          2,
+          4,
+          3911
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.5954583333333333,
+      "macro_f1": 0.587825684236547,
+      "macro_accuracy": 0.5954583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          20,
+          784,
+          0,
+          3194,
+          2,
+          0
+        ],
+        [
+          227,
+          667,
+          1662,
+          1,
+          44,
+          1399
+        ],
+        [
+          18,
+          3865,
+          45,
+          26,
+          1,
+          45
+        ],
+        [
+          0,
+          1,
+          1,
+          1,
+          3997,
+          0
+        ],
+        [
+          1,
+          1,
+          176,
+          0,
+          0,
+          3822
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8552916666666667,
+      "macro_f1": 0.8553992222611696,
+      "macro_accuracy": 0.8552916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3692,
+          135,
+          64,
+          71,
+          34,
+          4
+        ],
+        [
+          9,
+          2236,
+          3,
+          1701,
+          30,
+          21
+        ],
+        [
+          282,
+          260,
+          3424,
+          18,
+          9,
+          7
+        ],
+        [
+          25,
+          758,
+          5,
+          3209,
+          1,
+          2
+        ],
+        [
+          0,
+          1,
+          1,
+          2,
+          3996,
+          0
+        ],
+        [
+          0,
+          1,
+          5,
+          0,
+          24,
+          3970
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.711125,
+      "macro_f1": 0.7170964338247314,
+      "macro_accuracy": 0.711125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3979,
+          1,
+          11,
+          2,
+          5,
+          2
+        ],
+        [
+          26,
+          1586,
+          15,
+          2359,
+          10,
+          4
+        ],
+        [
+          202,
+          533,
+          2829,
+          320,
+          52,
+          64
+        ],
+        [
+          19,
+          2192,
+          20,
+          1762,
+          6,
+          1
+        ],
+        [
+          7,
+          2,
+          8,
+          3,
+          3980,
+          0
+        ],
+        [
+          17,
+          149,
+          165,
+          9,
+          729,
+          2931
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.860125,
+      "macro_f1": 0.849749002659734,
+      "macro_accuracy": 0.860125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3879,
+          0,
+          6,
+          104,
+          1,
+          10
+        ],
+        [
+          11,
+          1503,
+          2,
+          2478,
+          6,
+          0
+        ],
+        [
+          13,
+          45,
+          3352,
+          5,
+          530,
+          55
+        ],
+        [
+          6,
+          37,
+          1,
+          3952,
+          4,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          1,
+          15,
+          2,
+          0,
+          24,
+          3958
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7935833333333333,
+      "macro_f1": 0.7846384366166937,
+      "macro_accuracy": 0.7935833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3993,
+          7,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          431,
+          2789,
+          10,
+          740,
+          23,
+          7
+        ],
+        [
+          694,
+          51,
+          3246,
+          6,
+          1,
+          2
+        ],
+        [
+          2763,
+          176,
+          20,
+          1032,
+          3,
+          6
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          10,
+          0,
+          0,
+          0,
+          3,
+          3987
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8310833333333333,
+      "macro_f1": 0.8182133073881134,
+      "macro_accuracy": 0.8310833333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3980,
+          6,
+          1,
+          12,
+          1,
+          0
+        ],
+        [
+          1,
+          2183,
+          2,
+          1814,
+          0,
+          0
+        ],
+        [
+          132,
+          96,
+          1811,
+          119,
+          4,
+          1838
+        ],
+        [
+          1,
+          22,
+          1,
+          3976,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          1,
+          3998
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9828214285714286,
+      "macro_f1": 0.16522271654748824,
+      "macro_accuracy": 0.9828214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27519,
+          150,
+          83,
+          190,
+          42,
+          16
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.44310714285714287,
+      "macro_f1": 0.10235025284397918,
+      "macro_accuracy": 0.44310714285714287,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          643,
+          12407,
+          36,
+          14811,
+          71,
+          32
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7055714285714285,
+      "macro_f1": 0.1378954127928079,
+      "macro_accuracy": 0.7055714285714285,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1583,
+          1654,
+          19756,
+          471,
+          643,
+          3893
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6313928571428571,
+      "macro_f1": 0.12900895378620372,
+      "macro_accuracy": 0.6313928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3084,
+          7076,
+          92,
+          17679,
+          15,
+          54
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9983571428571428,
+      "macro_f1": 0.1665296493548272,
+      "macro_accuracy": 0.9983571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          8,
+          9,
+          20,
+          8,
+          27954,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9491785714285714,
+      "macro_f1": 0.16232112428312293,
+      "macro_accuracy": 0.9491785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          32,
+          238,
+          357,
+          11,
+          785,
+          26577
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7571666666666667,
+      "macro_f1": 0.7500287408312897,
+      "macro_accuracy": 0.7571666666666665,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6757,
+          23,
+          41,
+          149,
+          18,
+          12
+        ],
+        [
+          170,
+          2898,
+          10,
+          3880,
+          33,
+          9
+        ],
+        [
+          589,
+          335,
+          4149,
+          419,
+          46,
+          1462
+        ],
+        [
+          837,
+          1728,
+          20,
+          4407,
+          5,
+          3
+        ],
+        [
+          1,
+          2,
+          9,
+          1,
+          6986,
+          1
+        ],
+        [
+          18,
+          4,
+          318,
+          2,
+          54,
+          6604
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8269761904761905,
+      "macro_f1": 0.8238299213877046,
+      "macro_accuracy": 0.8269761904761905,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6919,
+          26,
+          36,
+          5,
+          12,
+          2
+        ],
+        [
+          85,
+          3589,
+          2,
+          3312,
+          9,
+          3
+        ],
+        [
+          151,
+          187,
+          6035,
+          14,
+          52,
+          561
+        ],
+        [
+          670,
+          2004,
+          36,
+          4260,
+          3,
+          27
+        ],
+        [
+          5,
+          3,
+          2,
+          3,
+          6987,
+          0
+        ],
+        [
+          4,
+          4,
+          20,
+          0,
+          29,
+          6943
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7471428571428571,
+      "macro_f1": 0.7389075351950449,
+      "macro_accuracy": 0.7471428571428572,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6970,
+          12,
+          4,
+          6,
+          8,
+          0
+        ],
+        [
+          217,
+          2425,
+          7,
+          4330,
+          11,
+          10
+        ],
+        [
+          674,
+          262,
+          4894,
+          37,
+          176,
+          957
+        ],
+        [
+          969,
+          2140,
+          9,
+          3876,
+          4,
+          2
+        ],
+        [
+          1,
+          1,
+          7,
+          3,
+          6988,
+          0
+        ],
+        [
+          2,
+          85,
+          8,
+          1,
+          677,
+          6227
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "model_seed": 2026092702,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.809,
+      "macro_f1": 0.804495258567619,
+      "macro_accuracy": 0.809,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6873,
+          89,
+          2,
+          30,
+          4,
+          2
+        ],
+        [
+          171,
+          3495,
+          17,
+          3289,
+          18,
+          10
+        ],
+        [
+          169,
+          870,
+          4678,
+          1,
+          369,
+          913
+        ],
+        [
+          608,
+          1204,
+          27,
+          5136,
+          3,
+          22
+        ],
+        [
+          1,
+          3,
+          2,
+          1,
+          6993,
+          0
+        ],
+        [
+          8,
+          145,
+          11,
+          8,
+          25,
+          6803
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7412261904761904,
+      "macro_f1": 0.7322333563382394,
+      "macro_accuracy": 0.7412261904761905,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26980,
+          579,
+          71,
+          345,
+          22,
+          3
+        ],
+        [
+          1474,
+          9355,
+          78,
+          16860,
+          69,
+          164
+        ],
+        [
+          1694,
+          1788,
+          18243,
+          678,
+          1685,
+          3912
+        ],
+        [
+          4075,
+          7529,
+          631,
+          15664,
+          29,
+          72
+        ],
+        [
+          22,
+          34,
+          12,
+          8,
+          27919,
+          5
+        ],
+        [
+          20,
+          555,
+          199,
+          17,
+          844,
+          26365
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.786125,
+      "macro_f1": 0.7691183488834724,
+      "macro_accuracy": 0.7861250000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3992,
+          2,
+          2,
+          3,
+          1,
+          0
+        ],
+        [
+          460,
+          959,
+          8,
+          2570,
+          3,
+          0
+        ],
+        [
+          150,
+          4,
+          3472,
+          2,
+          0,
+          372
+        ],
+        [
+          926,
+          38,
+          0,
+          3036,
+          0,
+          0
+        ],
+        [
+          11,
+          1,
+          2,
+          5,
+          3981,
+          0
+        ],
+        [
+          7,
+          542,
+          17,
+          4,
+          3,
+          3427
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.5464166666666667,
+      "macro_f1": 0.5311000013669956,
+      "macro_accuracy": 0.5464166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3983,
+          0,
+          0,
+          17,
+          0,
+          0
+        ],
+        [
+          21,
+          57,
+          0,
+          3920,
+          2,
+          0
+        ],
+        [
+          1,
+          949,
+          1073,
+          4,
+          673,
+          1300
+        ],
+        [
+          37,
+          3667,
+          215,
+          13,
+          2,
+          66
+        ],
+        [
+          3,
+          1,
+          5,
+          0,
+          3991,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          0,
+          3997
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.82125,
+      "macro_f1": 0.8220617958032009,
+      "macro_accuracy": 0.82125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3300,
+          534,
+          40,
+          113,
+          11,
+          2
+        ],
+        [
+          113,
+          1673,
+          4,
+          2169,
+          36,
+          5
+        ],
+        [
+          18,
+          59,
+          3899,
+          23,
+          1,
+          0
+        ],
+        [
+          19,
+          1112,
+          0,
+          2860,
+          7,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          0,
+          3,
+          7,
+          4,
+          5,
+          3981
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.6417083333333333,
+      "macro_f1": 0.640181043952918,
+      "macro_accuracy": 0.6417083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3968,
+          5,
+          4,
+          18,
+          4,
+          1
+        ],
+        [
+          35,
+          746,
+          58,
+          3006,
+          11,
+          144
+        ],
+        [
+          183,
+          581,
+          1971,
+          394,
+          512,
+          359
+        ],
+        [
+          23,
+          2477,
+          11,
+          1474,
+          15,
+          0
+        ],
+        [
+          8,
+          32,
+          3,
+          1,
+          3953,
+          3
+        ],
+        [
+          8,
+          5,
+          140,
+          6,
+          552,
+          3289
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8413333333333334,
+      "macro_f1": 0.8308520589109373,
+      "macro_accuracy": 0.8413333333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3822,
+          0,
+          5,
+          172,
+          1,
+          0
+        ],
+        [
+          8,
+          1402,
+          0,
+          2571,
+          8,
+          11
+        ],
+        [
+          5,
+          157,
+          3327,
+          11,
+          381,
+          119
+        ],
+        [
+          5,
+          62,
+          0,
+          3931,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          2,
+          4,
+          0,
+          1,
+          282,
+          3711
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7405416666666667,
+      "macro_f1": 0.7175365659395746,
+      "macro_accuracy": 0.7405416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3985,
+          15,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          836,
+          2619,
+          7,
+          527,
+          8,
+          3
+        ],
+        [
+          1138,
+          18,
+          2832,
+          1,
+          11,
+          0
+        ],
+        [
+          3064,
+          150,
+          403,
+          377,
+          2,
+          4
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          3,
+          0,
+          34,
+          0,
+          2,
+          3961
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8112083333333333,
+      "macro_f1": 0.7939332786418533,
+      "macro_accuracy": 0.8112083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3930,
+          23,
+          20,
+          22,
+          5,
+          0
+        ],
+        [
+          1,
+          1899,
+          1,
+          2097,
+          1,
+          1
+        ],
+        [
+          199,
+          20,
+          1669,
+          243,
+          107,
+          1762
+        ],
+        [
+          1,
+          23,
+          2,
+          3973,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9635714285714285,
+      "macro_f1": 0.1635746331999515,
+      "macro_accuracy": 0.9635714285714285,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26980,
+          579,
+          71,
+          345,
+          22,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.3341071428571429,
+      "macro_f1": 0.08347833846428411,
+      "macro_accuracy": 0.3341071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1474,
+          9355,
+          78,
+          16860,
+          69,
+          164
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6515357142857143,
+      "macro_f1": 0.13150098393270332,
+      "macro_accuracy": 0.6515357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1694,
+          1788,
+          18243,
+          678,
+          1685,
+          3912
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.5594285714285714,
+      "macro_f1": 0.11957982166849884,
+      "macro_accuracy": 0.5594285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          4075,
+          7529,
+          631,
+          15664,
+          29,
+          72
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9971071428571429,
+      "macro_f1": 0.16642524604040368,
+      "macro_accuracy": 0.9971071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          22,
+          34,
+          12,
+          8,
+          27919,
+          5
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9416071428571429,
+      "macro_f1": 0.16165425059014685,
+      "macro_accuracy": 0.9416071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          20,
+          555,
+          199,
+          17,
+          844,
+          26365
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7207380952380953,
+      "macro_f1": 0.7026910266628984,
+      "macro_accuracy": 0.7207380952380952,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6736,
+          48,
+          46,
+          166,
+          3,
+          1
+        ],
+        [
+          354,
+          1495,
+          11,
+          4969,
+          27,
+          144
+        ],
+        [
+          223,
+          121,
+          4355,
+          234,
+          429,
+          1638
+        ],
+        [
+          1031,
+          1788,
+          206,
+          3962,
+          12,
+          1
+        ],
+        [
+          2,
+          4,
+          5,
+          0,
+          6986,
+          3
+        ],
+        [
+          3,
+          4,
+          137,
+          6,
+          113,
+          6737
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.7935476190476191,
+      "macro_f1": 0.7894575321317879,
+      "macro_accuracy": 0.7935476190476191,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6817,
+          69,
+          22,
+          83,
+          7,
+          2
+        ],
+        [
+          40,
+          3462,
+          6,
+          3481,
+          10,
+          1
+        ],
+        [
+          145,
+          395,
+          5312,
+          173,
+          291,
+          684
+        ],
+        [
+          888,
+          1927,
+          334,
+          3821,
+          2,
+          28
+        ],
+        [
+          7,
+          28,
+          4,
+          1,
+          6959,
+          1
+        ],
+        [
+          7,
+          3,
+          1,
+          3,
+          28,
+          6958
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.6864523809523809,
+      "macro_f1": 0.6757793507889981,
+      "macro_accuracy": 0.6864523809523809,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6966,
+          5,
+          2,
+          18,
+          9,
+          0
+        ],
+        [
+          589,
+          1806,
+          3,
+          4586,
+          13,
+          3
+        ],
+        [
+          865,
+          685,
+          3918,
+          253,
+          620,
+          659
+        ],
+        [
+          1296,
+          2230,
+          74,
+          3390,
+          9,
+          1
+        ],
+        [
+          4,
+          2,
+          3,
+          7,
+          6983,
+          1
+        ],
+        [
+          2,
+          544,
+          41,
+          3,
+          642,
+          5768
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.7641666666666667,
+      "macro_f1": 0.7567877133588702,
+      "macro_accuracy": 0.7641666666666667,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6461,
+          457,
+          1,
+          78,
+          3,
+          0
+        ],
+        [
+          491,
+          2592,
+          58,
+          3824,
+          19,
+          16
+        ],
+        [
+          461,
+          587,
+          4658,
+          18,
+          345,
+          931
+        ],
+        [
+          860,
+          1584,
+          17,
+          4491,
+          6,
+          42
+        ],
+        [
+          9,
+          0,
+          0,
+          0,
+          6991,
+          0
+        ],
+        [
+          8,
+          4,
+          20,
+          5,
+          61,
+          6902
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7874107142857143,
+      "macro_f1": 0.780998963478272,
+      "macro_accuracy": 0.7874107142857142,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27416,
+          195,
+          79,
+          230,
+          64,
+          16
+        ],
+        [
+          878,
+          9875,
+          64,
+          16925,
+          42,
+          216
+        ],
+        [
+          121,
+          824,
+          22925,
+          1126,
+          317,
+          2687
+        ],
+        [
+          2504,
+          7095,
+          637,
+          17657,
+          15,
+          92
+        ],
+        [
+          8,
+          8,
+          15,
+          12,
+          27952,
+          5
+        ],
+        [
+          36,
+          147,
+          409,
+          67,
+          881,
+          26460
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8673333333333333,
+      "macro_f1": 0.8525266084048707,
+      "macro_accuracy": 0.8673333333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3991,
+          0,
+          1,
+          5,
+          3,
+          0
+        ],
+        [
+          98,
+          1260,
+          1,
+          2627,
+          1,
+          13
+        ],
+        [
+          3,
+          4,
+          3933,
+          2,
+          1,
+          57
+        ],
+        [
+          168,
+          71,
+          1,
+          3760,
+          0,
+          0
+        ],
+        [
+          1,
+          4,
+          2,
+          4,
+          3988,
+          1
+        ],
+        [
+          6,
+          74,
+          31,
+          1,
+          4,
+          3884
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6031666666666666,
+      "macro_f1": 0.6011989165827276,
+      "macro_accuracy": 0.6031666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3996,
+          0,
+          0,
+          4,
+          0,
+          0
+        ],
+        [
+          21,
+          90,
+          0,
+          3887,
+          2,
+          0
+        ],
+        [
+          0,
+          437,
+          2492,
+          2,
+          101,
+          968
+        ],
+        [
+          10,
+          3624,
+          246,
+          48,
+          1,
+          71
+        ],
+        [
+          1,
+          1,
+          1,
+          0,
+          3997,
+          0
+        ],
+        [
+          0,
+          3,
+          144,
+          0,
+          0,
+          3853
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8553333333333333,
+      "macro_f1": 0.8538048211864949,
+      "macro_accuracy": 0.8553333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3620,
+          165,
+          69,
+          80,
+          58,
+          8
+        ],
+        [
+          8,
+          1858,
+          2,
+          2100,
+          23,
+          9
+        ],
+        [
+          6,
+          254,
+          3705,
+          25,
+          9,
+          1
+        ],
+        [
+          24,
+          603,
+          5,
+          3366,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          3,
+          3996,
+          0
+        ],
+        [
+          0,
+          5,
+          4,
+          1,
+          7,
+          3983
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7150416666666667,
+      "macro_f1": 0.7165336986659615,
+      "macro_accuracy": 0.7150416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3939,
+          2,
+          7,
+          49,
+          1,
+          2
+        ],
+        [
+          29,
+          1027,
+          54,
+          2862,
+          8,
+          20
+        ],
+        [
+          27,
+          37,
+          3540,
+          308,
+          62,
+          26
+        ],
+        [
+          14,
+          2276,
+          11,
+          1690,
+          8,
+          1
+        ],
+        [
+          6,
+          3,
+          8,
+          5,
+          3975,
+          3
+        ],
+        [
+          15,
+          41,
+          223,
+          65,
+          666,
+          2990
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8724166666666666,
+      "macro_f1": 0.8624706048645785,
+      "macro_accuracy": 0.8724166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3929,
+          0,
+          0,
+          64,
+          1,
+          6
+        ],
+        [
+          4,
+          1532,
+          2,
+          2456,
+          5,
+          1
+        ],
+        [
+          10,
+          6,
+          3757,
+          6,
+          133,
+          88
+        ],
+        [
+          0,
+          41,
+          1,
+          3952,
+          4,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          3,
+          23,
+          6,
+          0,
+          199,
+          3769
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8094583333333333,
+      "macro_f1": 0.7850150768191481,
+      "macro_accuracy": 0.8094583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3996,
+          4,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          718,
+          2659,
+          3,
+          445,
+          2,
+          173
+        ],
+        [
+          48,
+          9,
+          3934,
+          8,
+          1,
+          0
+        ],
+        [
+          2285,
+          468,
+          373,
+          856,
+          1,
+          17
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          12,
+          0,
+          1,
+          0,
+          4,
+          3983
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.789125,
+      "macro_f1": 0.7684628408484014,
+      "macro_accuracy": 0.789125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3945,
+          24,
+          2,
+          28,
+          1,
+          0
+        ],
+        [
+          0,
+          1449,
+          2,
+          2548,
+          1,
+          0
+        ],
+        [
+          27,
+          77,
+          1564,
+          775,
+          10,
+          1547
+        ],
+        [
+          3,
+          12,
+          0,
+          3985,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          1,
+          3998
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9791428571428571,
+      "macro_f1": 0.16491025455945335,
+      "macro_accuracy": 0.9791428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27416,
+          195,
+          79,
+          230,
+          64,
+          16
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.35267857142857145,
+      "macro_f1": 0.08690869086908691,
+      "macro_accuracy": 0.35267857142857145,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          878,
+          9875,
+          64,
+          16925,
+          42,
+          216
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.81875,
+      "macro_f1": 0.15005727376861397,
+      "macro_accuracy": 0.81875,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          121,
+          824,
+          22925,
+          1126,
+          317,
+          2687
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6306071428571428,
+      "macro_f1": 0.12891049930277212,
+      "macro_accuracy": 0.6306071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2504,
+          7095,
+          637,
+          17657,
+          15,
+          92
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9982857142857143,
+      "macro_f1": 0.16652368696978362,
+      "macro_accuracy": 0.9982857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          8,
+          8,
+          15,
+          12,
+          27952,
+          5
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.945,
+      "macro_f1": 0.16195372750642675,
+      "macro_accuracy": 0.945,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          36,
+          147,
+          409,
+          67,
+          881,
+          26460
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.76,
+      "macro_f1": 0.750012386541267,
+      "macro_accuracy": 0.7600000000000001,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6819,
+          7,
+          46,
+          108,
+          12,
+          8
+        ],
+        [
+          361,
+          1984,
+          30,
+          4589,
+          9,
+          27
+        ],
+        [
+          36,
+          79,
+          5204,
+          473,
+          40,
+          1168
+        ],
+        [
+          524,
+          1761,
+          303,
+          4405,
+          5,
+          2
+        ],
+        [
+          1,
+          2,
+          9,
+          2,
+          6981,
+          5
+        ],
+        [
+          18,
+          43,
+          354,
+          3,
+          55,
+          6527
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.81,
+      "macro_f1": 0.806498556918684,
+      "macro_accuracy": 0.81,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6901,
+          25,
+          30,
+          19,
+          25,
+          0
+        ],
+        [
+          124,
+          3159,
+          2,
+          3540,
+          7,
+          168
+        ],
+        [
+          11,
+          686,
+          6042,
+          21,
+          110,
+          130
+        ],
+        [
+          655,
+          2031,
+          230,
+          4016,
+          3,
+          65
+        ],
+        [
+          5,
+          2,
+          3,
+          2,
+          6988,
+          0
+        ],
+        [
+          4,
+          1,
+          4,
+          11,
+          66,
+          6914
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7583809523809524,
+      "macro_f1": 0.7525058081628506,
+      "macro_accuracy": 0.7583809523809525,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6956,
+          15,
+          1,
+          11,
+          17,
+          0
+        ],
+        [
+          250,
+          2132,
+          7,
+          4594,
+          13,
+          4
+        ],
+        [
+          53,
+          25,
+          5768,
+          623,
+          147,
+          384
+        ],
+        [
+          844,
+          2229,
+          31,
+          3879,
+          4,
+          13
+        ],
+        [
+          2,
+          0,
+          3,
+          6,
+          6989,
+          0
+        ],
+        [
+          4,
+          100,
+          25,
+          1,
+          742,
+          6128
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092702,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8212619047619047,
+      "macro_f1": 0.8134819372376594,
+      "macro_accuracy": 0.8212619047619047,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6740,
+          148,
+          2,
+          92,
+          10,
+          8
+        ],
+        [
+          143,
+          2600,
+          25,
+          4202,
+          13,
+          17
+        ],
+        [
+          21,
+          34,
+          5911,
+          9,
+          20,
+          1005
+        ],
+        [
+          481,
+          1074,
+          73,
+          5357,
+          3,
+          12
+        ],
+        [
+          0,
+          4,
+          0,
+          2,
+          6994,
+          0
+        ],
+        [
+          10,
+          3,
+          26,
+          52,
+          18,
+          6891
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.826875,
+      "macro_f1": 0.8217626370764882,
+      "macro_accuracy": 0.8268749999999999,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27005,
+          110,
+          402,
+          386,
+          58,
+          39
+        ],
+        [
+          469,
+          13367,
+          227,
+          13729,
+          180,
+          28
+        ],
+        [
+          403,
+          114,
+          25579,
+          41,
+          328,
+          1535
+        ],
+        [
+          2688,
+          5954,
+          1080,
+          18194,
+          15,
+          69
+        ],
+        [
+          8,
+          8,
+          16,
+          5,
+          27957,
+          6
+        ],
+        [
+          7,
+          39,
+          488,
+          6,
+          647,
+          26813
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8417083333333333,
+      "macro_f1": 0.8258409376423038,
+      "macro_accuracy": 0.8417083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3985,
+          3,
+          8,
+          2,
+          2,
+          0
+        ],
+        [
+          73,
+          1230,
+          1,
+          2695,
+          0,
+          1
+        ],
+        [
+          341,
+          1,
+          3438,
+          2,
+          0,
+          218
+        ],
+        [
+          124,
+          23,
+          1,
+          3852,
+          0,
+          0
+        ],
+        [
+          2,
+          3,
+          4,
+          0,
+          3988,
+          3
+        ],
+        [
+          2,
+          33,
+          245,
+          3,
+          9,
+          3708
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7367083333333333,
+      "macro_f1": 0.7118311578510023,
+      "macro_accuracy": 0.7367083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3889,
+          0,
+          0,
+          111,
+          0,
+          0
+        ],
+        [
+          14,
+          1943,
+          0,
+          2038,
+          5,
+          0
+        ],
+        [
+          23,
+          6,
+          3839,
+          1,
+          2,
+          129
+        ],
+        [
+          3,
+          2916,
+          993,
+          35,
+          4,
+          49
+        ],
+        [
+          1,
+          2,
+          2,
+          0,
+          3995,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          1,
+          18,
+          3980
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8673333333333333,
+      "macro_f1": 0.8621654999988673,
+      "macro_accuracy": 0.8673333333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3554,
+          99,
+          237,
+          57,
+          47,
+          6
+        ],
+        [
+          10,
+          1963,
+          185,
+          1695,
+          128,
+          19
+        ],
+        [
+          8,
+          4,
+          3950,
+          12,
+          18,
+          8
+        ],
+        [
+          19,
+          603,
+          6,
+          3366,
+          1,
+          5
+        ],
+        [
+          0,
+          1,
+          2,
+          1,
+          3996,
+          0
+        ],
+        [
+          1,
+          1,
+          6,
+          1,
+          4,
+          3987
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7874166666666667,
+      "macro_f1": 0.7876511187885954,
+      "macro_accuracy": 0.7874166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3909,
+          2,
+          10,
+          67,
+          8,
+          4
+        ],
+        [
+          16,
+          2193,
+          1,
+          1769,
+          15,
+          6
+        ],
+        [
+          21,
+          83,
+          3660,
+          21,
+          153,
+          62
+        ],
+        [
+          18,
+          1970,
+          18,
+          1988,
+          5,
+          1
+        ],
+        [
+          5,
+          2,
+          8,
+          4,
+          3980,
+          1
+        ],
+        [
+          3,
+          1,
+          234,
+          1,
+          593,
+          3168
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8712083333333334,
+      "macro_f1": 0.8588216548531874,
+      "macro_accuracy": 0.8712083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3763,
+          1,
+          146,
+          61,
+          0,
+          29
+        ],
+        [
+          16,
+          1390,
+          4,
+          2586,
+          4,
+          0
+        ],
+        [
+          2,
+          4,
+          3832,
+          2,
+          152,
+          8
+        ],
+        [
+          3,
+          39,
+          2,
+          3950,
+          3,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          2,
+          2,
+          0,
+          21,
+          3975
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8030833333333334,
+      "macro_f1": 0.7869124919224832,
+      "macro_accuracy": 0.8030833333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3995,
+          4,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          340,
+          2257,
+          34,
+          1343,
+          24,
+          2
+        ],
+        [
+          4,
+          1,
+          3993,
+          1,
+          1,
+          0
+        ],
+        [
+          2521,
+          375,
+          60,
+          1032,
+          1,
+          11
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          2,
+          3997
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8806666666666667,
+      "macro_f1": 0.8773732324547528,
+      "macro_accuracy": 0.8806666666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3910,
+          1,
+          1,
+          87,
+          1,
+          0
+        ],
+        [
+          0,
+          2391,
+          2,
+          1603,
+          4,
+          0
+        ],
+        [
+          4,
+          15,
+          2867,
+          2,
+          2,
+          1110
+        ],
+        [
+          0,
+          28,
+          0,
+          3971,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          0,
+          3998
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9644642857142857,
+      "macro_f1": 0.163651789231282,
+      "macro_accuracy": 0.9644642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27005,
+          110,
+          402,
+          386,
+          58,
+          39
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4773928571428571,
+      "macro_f1": 0.10771065503098283,
+      "macro_accuracy": 0.4773928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          469,
+          13367,
+          227,
+          13729,
+          180,
+          28
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.9135357142857143,
+      "macro_f1": 0.15913573103890205,
+      "macro_accuracy": 0.9135357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          403,
+          114,
+          25579,
+          41,
+          328,
+          1535
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6497857142857143,
+      "macro_f1": 0.13128689151549264,
+      "macro_accuracy": 0.6497857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2688,
+          5954,
+          1080,
+          18194,
+          15,
+          69
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9984642857142857,
+      "macro_f1": 0.16653859213324518,
+      "macro_accuracy": 0.9984642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          8,
+          8,
+          16,
+          5,
+          27957,
+          6
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9576071428571429,
+      "macro_f1": 0.16305742554989996,
+      "macro_accuracy": 0.9576071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          7,
+          39,
+          488,
+          6,
+          647,
+          26813
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8212619047619047,
+      "macro_f1": 0.8144981521885293,
+      "macro_accuracy": 0.8212619047619047,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6570,
+          28,
+          253,
+          105,
+          13,
+          31
+        ],
+        [
+          146,
+          3180,
+          198,
+          3353,
+          115,
+          8
+        ],
+        [
+          39,
+          16,
+          6496,
+          27,
+          56,
+          366
+        ],
+        [
+          728,
+          1296,
+          331,
+          4635,
+          7,
+          3
+        ],
+        [
+          1,
+          2,
+          3,
+          1,
+          6990,
+          3
+        ],
+        [
+          1,
+          1,
+          217,
+          2,
+          157,
+          6622
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8439047619047619,
+      "macro_f1": 0.8389302585494849,
+      "macro_accuracy": 0.8439047619047618,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6754,
+          21,
+          128,
+          53,
+          39,
+          5
+        ],
+        [
+          53,
+          3765,
+          4,
+          3155,
+          21,
+          2
+        ],
+        [
+          10,
+          29,
+          6910,
+          7,
+          13,
+          31
+        ],
+        [
+          805,
+          1640,
+          476,
+          4053,
+          2,
+          24
+        ],
+        [
+          3,
+          2,
+          6,
+          3,
+          6986,
+          0
+        ],
+        [
+          2,
+          2,
+          7,
+          0,
+          13,
+          6976
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7842380952380953,
+      "macro_f1": 0.7758080739719757,
+      "macro_accuracy": 0.7842380952380953,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6934,
+          12,
+          16,
+          33,
+          4,
+          1
+        ],
+        [
+          163,
+          2355,
+          11,
+          4445,
+          16,
+          10
+        ],
+        [
+          267,
+          61,
+          6271,
+          5,
+          30,
+          366
+        ],
+        [
+          874,
+          1969,
+          140,
+          4004,
+          3,
+          10
+        ],
+        [
+          2,
+          4,
+          4,
+          1,
+          6987,
+          2
+        ],
+        [
+          1,
+          35,
+          128,
+          2,
+          447,
+          6387
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "model_seed": 2026092703,
+      "stage": "evaluation_reuse",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8580952380952381,
+      "macro_f1": 0.8556778445378406,
+      "macro_accuracy": 0.8580952380952379,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6747,
+          49,
+          5,
+          195,
+          2,
+          2
+        ],
+        [
+          107,
+          4067,
+          14,
+          2776,
+          28,
+          8
+        ],
+        [
+          87,
+          8,
+          5902,
+          2,
+          229,
+          772
+        ],
+        [
+          281,
+          1049,
+          133,
+          5502,
+          3,
+          32
+        ],
+        [
+          2,
+          0,
+          3,
+          0,
+          6994,
+          1
+        ],
+        [
+          3,
+          1,
+          136,
+          2,
+          30,
+          6828
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7856666666666666,
+      "macro_f1": 0.7790747657246199,
+      "macro_accuracy": 0.7856666666666667,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26453,
+          578,
+          100,
+          792,
+          71,
+          6
+        ],
+        [
+          1102,
+          12097,
+          70,
+          14445,
+          211,
+          75
+        ],
+        [
+          880,
+          389,
+          21964,
+          76,
+          810,
+          3881
+        ],
+        [
+          2308,
+          5420,
+          2619,
+          17583,
+          19,
+          51
+        ],
+        [
+          13,
+          20,
+          235,
+          11,
+          27717,
+          4
+        ],
+        [
+          22,
+          379,
+          397,
+          29,
+          995,
+          26178
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8377083333333334,
+      "macro_f1": 0.819463646779381,
+      "macro_accuracy": 0.8377083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3976,
+          8,
+          9,
+          6,
+          1,
+          0
+        ],
+        [
+          300,
+          1067,
+          9,
+          2619,
+          5,
+          0
+        ],
+        [
+          3,
+          2,
+          3988,
+          3,
+          1,
+          3
+        ],
+        [
+          273,
+          26,
+          3,
+          3698,
+          0,
+          0
+        ],
+        [
+          7,
+          1,
+          2,
+          7,
+          3983,
+          0
+        ],
+        [
+          5,
+          375,
+          219,
+          6,
+          2,
+          3393
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6615416666666667,
+      "macro_f1": 0.6356104479158907,
+      "macro_accuracy": 0.6615416666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3914,
+          0,
+          0,
+          86,
+          0,
+          0
+        ],
+        [
+          15,
+          1365,
+          0,
+          2613,
+          7,
+          0
+        ],
+        [
+          1,
+          2,
+          2599,
+          6,
+          465,
+          927
+        ],
+        [
+          5,
+          2348,
+          1582,
+          22,
+          2,
+          41
+        ],
+        [
+          0,
+          2,
+          6,
+          0,
+          3992,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          3,
+          12,
+          3985
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8525416666666666,
+      "macro_f1": 0.8531815490509391,
+      "macro_accuracy": 0.8525416666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3251,
+          496,
+          79,
+          130,
+          39,
+          5
+        ],
+        [
+          6,
+          2165,
+          19,
+          1719,
+          82,
+          9
+        ],
+        [
+          19,
+          15,
+          3943,
+          18,
+          3,
+          2
+        ],
+        [
+          14,
+          851,
+          0,
+          3126,
+          7,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          2,
+          0,
+          5,
+          4,
+          10,
+          3979
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7426666666666667,
+      "macro_f1": 0.7444585230867244,
+      "macro_accuracy": 0.7426666666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3677,
+          5,
+          5,
+          307,
+          5,
+          1
+        ],
+        [
+          14,
+          1464,
+          21,
+          2376,
+          76,
+          49
+        ],
+        [
+          72,
+          119,
+          3411,
+          29,
+          295,
+          74
+        ],
+        [
+          44,
+          1855,
+          21,
+          2074,
+          6,
+          0
+        ],
+        [
+          6,
+          17,
+          225,
+          2,
+          3749,
+          1
+        ],
+        [
+          14,
+          2,
+          172,
+          16,
+          347,
+          3449
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8482916666666667,
+      "macro_f1": 0.8385333844049517,
+      "macro_accuracy": 0.8482916666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3858,
+          2,
+          4,
+          136,
+          0,
+          0
+        ],
+        [
+          13,
+          1473,
+          1,
+          2488,
+          10,
+          15
+        ],
+        [
+          3,
+          201,
+          3689,
+          5,
+          13,
+          89
+        ],
+        [
+          3,
+          47,
+          0,
+          3949,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          609,
+          3391
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7655,
+      "macro_f1": 0.743866140966702,
+      "macro_accuracy": 0.7655,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3959,
+          41,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          754,
+          2465,
+          20,
+          753,
+          6,
+          2
+        ],
+        [
+          769,
+          3,
+          3224,
+          0,
+          3,
+          1
+        ],
+        [
+          1969,
+          268,
+          1012,
+          743,
+          0,
+          8
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          1,
+          0,
+          1,
+          0,
+          15,
+          3983
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7914166666666667,
+      "macro_f1": 0.7686903246478941,
+      "macro_accuracy": 0.7914166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3818,
+          26,
+          3,
+          127,
+          26,
+          0
+        ],
+        [
+          0,
+          2098,
+          0,
+          1877,
+          25,
+          0
+        ],
+        [
+          13,
+          47,
+          1110,
+          15,
+          30,
+          2785
+        ],
+        [
+          0,
+          25,
+          1,
+          3971,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          3998
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.94475,
+      "macro_f1": 0.16193169644770108,
+      "macro_accuracy": 0.94475,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26453,
+          578,
+          100,
+          792,
+          71,
+          6
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4320357142857143,
+      "macro_f1": 0.1005644645069041,
+      "macro_accuracy": 0.4320357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1102,
+          12097,
+          70,
+          14445,
+          211,
+          75
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7844285714285715,
+      "macro_f1": 0.14653216982894351,
+      "macro_accuracy": 0.7844285714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          880,
+          389,
+          21964,
+          76,
+          810,
+          3881
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6279642857142858,
+      "macro_f1": 0.12857863677248096,
+      "macro_accuracy": 0.6279642857142858,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2308,
+          5420,
+          2619,
+          17583,
+          19,
+          51
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9898928571428571,
+      "macro_f1": 0.16582012671177557,
+      "macro_accuracy": 0.9898928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          13,
+          20,
+          235,
+          11,
+          27717,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9349285714285714,
+      "macro_f1": 0.16106168555502234,
+      "macro_accuracy": 0.9349285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          22,
+          379,
+          397,
+          29,
+          995,
+          26178
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7686428571428572,
+      "macro_f1": 0.757733507572976,
+      "macro_accuracy": 0.7686428571428571,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6702,
+          57,
+          32,
+          197,
+          12,
+          0
+        ],
+        [
+          194,
+          2379,
+          22,
+          4258,
+          98,
+          49
+        ],
+        [
+          25,
+          71,
+          5191,
+          44,
+          52,
+          1617
+        ],
+        [
+          551,
+          1194,
+          840,
+          4409,
+          6,
+          0
+        ],
+        [
+          1,
+          7,
+          27,
+          0,
+          6962,
+          3
+        ],
+        [
+          6,
+          2,
+          140,
+          10,
+          202,
+          6640
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8173095238095238,
+      "macro_f1": 0.8134899270539258,
+      "macro_accuracy": 0.8173095238095237,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6606,
+          174,
+          58,
+          122,
+          35,
+          5
+        ],
+        [
+          24,
+          3786,
+          7,
+          3168,
+          12,
+          3
+        ],
+        [
+          37,
+          217,
+          6080,
+          9,
+          482,
+          175
+        ],
+        [
+          361,
+          1488,
+          1108,
+          4009,
+          3,
+          31
+        ],
+        [
+          4,
+          11,
+          12,
+          1,
+          6972,
+          0
+        ],
+        [
+          4,
+          2,
+          15,
+          6,
+          99,
+          6874
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7300238095238095,
+      "macro_f1": 0.7169764230275474,
+      "macro_accuracy": 0.7300238095238095,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6939,
+          16,
+          6,
+          30,
+          8,
+          1
+        ],
+        [
+          530,
+          2067,
+          7,
+          4369,
+          23,
+          4
+        ],
+        [
+          749,
+          54,
+          4916,
+          12,
+          255,
+          1014
+        ],
+        [
+          1024,
+          1655,
+          403,
+          3912,
+          4,
+          2
+        ],
+        [
+          2,
+          2,
+          1,
+          9,
+          6985,
+          1
+        ],
+        [
+          2,
+          358,
+          186,
+          3,
+          609,
+          5842
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8266904761904762,
+      "macro_f1": 0.8243970784746507,
+      "macro_accuracy": 0.8266904761904761,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6206,
+          331,
+          4,
+          443,
+          16,
+          0
+        ],
+        [
+          354,
+          3865,
+          34,
+          2650,
+          78,
+          19
+        ],
+        [
+          69,
+          47,
+          5777,
+          11,
+          21,
+          1075
+        ],
+        [
+          372,
+          1083,
+          268,
+          5253,
+          6,
+          18
+        ],
+        [
+          6,
+          0,
+          195,
+          1,
+          6798,
+          0
+        ],
+        [
+          10,
+          17,
+          56,
+          10,
+          85,
+          6822
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.796577380952381,
+      "macro_f1": 0.7926975336291053,
+      "macro_accuracy": 0.7965773809523808,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26162,
+          579,
+          89,
+          1081,
+          77,
+          12
+        ],
+        [
+          917,
+          11725,
+          37,
+          15119,
+          117,
+          85
+        ],
+        [
+          36,
+          893,
+          23997,
+          460,
+          426,
+          2188
+        ],
+        [
+          1352,
+          6607,
+          1882,
+          18087,
+          13,
+          59
+        ],
+        [
+          7,
+          8,
+          23,
+          9,
+          27946,
+          7
+        ],
+        [
+          20,
+          22,
+          1179,
+          11,
+          860,
+          25908
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8422916666666667,
+      "macro_f1": 0.8235335912448849,
+      "macro_accuracy": 0.8422916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3989,
+          1,
+          4,
+          3,
+          3,
+          0
+        ],
+        [
+          32,
+          1056,
+          4,
+          2899,
+          1,
+          8
+        ],
+        [
+          9,
+          2,
+          3987,
+          2,
+          0,
+          0
+        ],
+        [
+          20,
+          99,
+          0,
+          3881,
+          0,
+          0
+        ],
+        [
+          1,
+          4,
+          1,
+          4,
+          3990,
+          0
+        ],
+        [
+          3,
+          10,
+          666,
+          4,
+          5,
+          3312
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.68125,
+      "macro_f1": 0.6738048783624491,
+      "macro_accuracy": 0.68125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3953,
+          0,
+          0,
+          47,
+          0,
+          0
+        ],
+        [
+          16,
+          1333,
+          0,
+          2648,
+          3,
+          0
+        ],
+        [
+          0,
+          371,
+          3047,
+          399,
+          17,
+          166
+        ],
+        [
+          6,
+          3038,
+          881,
+          33,
+          3,
+          39
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3995,
+          3
+        ],
+        [
+          0,
+          4,
+          0,
+          0,
+          7,
+          3989
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8539583333333334,
+      "macro_f1": 0.8536574344215895,
+      "macro_accuracy": 0.8539583333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3590,
+          220,
+          63,
+          53,
+          67,
+          7
+        ],
+        [
+          8,
+          2008,
+          5,
+          1883,
+          86,
+          10
+        ],
+        [
+          3,
+          458,
+          3494,
+          31,
+          11,
+          3
+        ],
+        [
+          24,
+          539,
+          4,
+          3430,
+          1,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          3998,
+          0
+        ],
+        [
+          0,
+          5,
+          11,
+          3,
+          6,
+          3975
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7325416666666666,
+      "macro_f1": 0.736459717437644,
+      "macro_accuracy": 0.7325416666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3246,
+          118,
+          7,
+          620,
+          6,
+          3
+        ],
+        [
+          20,
+          1908,
+          17,
+          2014,
+          14,
+          27
+        ],
+        [
+          12,
+          8,
+          3830,
+          11,
+          97,
+          42
+        ],
+        [
+          14,
+          2135,
+          18,
+          1826,
+          7,
+          0
+        ],
+        [
+          6,
+          4,
+          19,
+          3,
+          3966,
+          2
+        ],
+        [
+          16,
+          2,
+          497,
+          4,
+          676,
+          2805
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8660833333333333,
+      "macro_f1": 0.8538621307350308,
+      "macro_accuracy": 0.8660833333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3939,
+          0,
+          6,
+          53,
+          0,
+          2
+        ],
+        [
+          11,
+          1387,
+          2,
+          2593,
+          7,
+          0
+        ],
+        [
+          5,
+          7,
+          3672,
+          6,
+          291,
+          19
+        ],
+        [
+          4,
+          38,
+          0,
+          3957,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          1,
+          0,
+          5,
+          0,
+          162,
+          3832
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8050416666666667,
+      "macro_f1": 0.7794095462522682,
+      "macro_accuracy": 0.8050416666666665,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3994,
+          6,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          830,
+          2362,
+          9,
+          769,
+          2,
+          28
+        ],
+        [
+          3,
+          4,
+          3991,
+          1,
+          1,
+          0
+        ],
+        [
+          1284,
+          739,
+          979,
+          979,
+          1,
+          18
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4,
+          3996
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.794875,
+      "macro_f1": 0.7828258627299315,
+      "macro_accuracy": 0.7948750000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3451,
+          234,
+          9,
+          305,
+          1,
+          0
+        ],
+        [
+          0,
+          1671,
+          0,
+          2313,
+          4,
+          12
+        ],
+        [
+          4,
+          43,
+          1976,
+          10,
+          9,
+          1958
+        ],
+        [
+          0,
+          19,
+          0,
+          3981,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9343571428571429,
+      "macro_f1": 0.16101079477616534,
+      "macro_accuracy": 0.9343571428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26162,
+          579,
+          89,
+          1081,
+          77,
+          12
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.41875,
+      "macro_f1": 0.09838472834067548,
+      "macro_accuracy": 0.41875,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          917,
+          11725,
+          37,
+          15119,
+          117,
+          85
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8570357142857142,
+      "macro_f1": 0.15383579821912804,
+      "macro_accuracy": 0.8570357142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          36,
+          893,
+          23997,
+          460,
+          426,
+          2188
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6459642857142858,
+      "macro_f1": 0.13081780111528196,
+      "macro_accuracy": 0.6459642857142858,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1352,
+          6607,
+          1882,
+          18087,
+          13,
+          59
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9980714285714286,
+      "macro_f1": 0.16650579725687867,
+      "macro_accuracy": 0.9980714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          7,
+          8,
+          23,
+          9,
+          27946,
+          7
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9252857142857143,
+      "macro_f1": 0.16019885731245825,
+      "macro_accuracy": 0.9252857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          20,
+          22,
+          1179,
+          11,
+          860,
+          25908
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8157857142857143,
+      "macro_f1": 0.8112206254040061,
+      "macro_accuracy": 0.8157857142857142,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6602,
+          188,
+          42,
+          146,
+          17,
+          5
+        ],
+        [
+          347,
+          3202,
+          12,
+          3357,
+          53,
+          29
+        ],
+        [
+          11,
+          171,
+          6519,
+          16,
+          52,
+          231
+        ],
+        [
+          230,
+          1612,
+          663,
+          4484,
+          8,
+          3
+        ],
+        [
+          2,
+          3,
+          11,
+          0,
+          6981,
+          3
+        ],
+        [
+          4,
+          5,
+          395,
+          5,
+          116,
+          6475
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8014285714285714,
+      "macro_f1": 0.7988024122097394,
+      "macro_accuracy": 0.8014285714285715,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6820,
+          39,
+          42,
+          54,
+          42,
+          3
+        ],
+        [
+          183,
+          3124,
+          1,
+          3652,
+          14,
+          26
+        ],
+        [
+          9,
+          699,
+          5816,
+          409,
+          30,
+          37
+        ],
+        [
+          444,
+          1688,
+          837,
+          3985,
+          2,
+          44
+        ],
+        [
+          3,
+          2,
+          5,
+          2,
+          6985,
+          3
+        ],
+        [
+          4,
+          1,
+          8,
+          3,
+          54,
+          6930
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7392380952380952,
+      "macro_f1": 0.7302031105679075,
+      "macro_accuracy": 0.7392380952380954,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6628,
+          200,
+          1,
+          157,
+          14,
+          0
+        ],
+        [
+          280,
+          1864,
+          8,
+          4816,
+          28,
+          4
+        ],
+        [
+          7,
+          8,
+          5774,
+          26,
+          278,
+          907
+        ],
+        [
+          550,
+          2324,
+          109,
+          4009,
+          2,
+          6
+        ],
+        [
+          1,
+          3,
+          4,
+          5,
+          6986,
+          1
+        ],
+        [
+          2,
+          12,
+          543,
+          2,
+          654,
+          5787
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "model_seed": 2026092703,
+      "stage": "cross_frequency",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8298571428571428,
+      "macro_f1": 0.8285641290613576,
+      "macro_accuracy": 0.8298571428571427,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6112,
+          152,
+          4,
+          724,
+          4,
+          4
+        ],
+        [
+          107,
+          3535,
+          16,
+          3294,
+          22,
+          26
+        ],
+        [
+          9,
+          15,
+          5888,
+          9,
+          66,
+          1013
+        ],
+        [
+          128,
+          983,
+          273,
+          5609,
+          1,
+          6
+        ],
+        [
+          1,
+          0,
+          3,
+          2,
+          6994,
+          0
+        ],
+        [
+          10,
+          4,
+          233,
+          1,
+          36,
+          6716
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    }
+  ],
+  "rows": [
+    {
+      "row_id": "LEGACY50-s2026092701",
+      "arm": "LEGACY50",
+      "seed": 2026092701,
+      "epochs": 50,
+      "updates": 11100,
+      "source_reused": true,
+      "U_forward_packets": null,
+      "U_accepted_packets": null,
+      "nonfinite_skips": 0,
+      "default_head": "ResidualPhysicalHead cosine6x160 scale30; jointly trained",
+      "default_head_no_query_smoke": true,
+      "extra_feature_parameters_updated": [],
+      "source_feature_parameters_unchanged_after_diagnostic_fit": true,
+      "source_final_V": 97.85185185185185,
+      "default_prediction_count": 168000,
+      "default_metric_records": 18
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092701",
+      "arm": "POWER_RELATIONS",
+      "seed": 2026092701,
+      "epochs": 50,
+      "updates": 11100,
+      "source_reused": false,
+      "U_forward_packets": 1020600,
+      "U_accepted_packets": 16879,
+      "nonfinite_skips": 0,
+      "default_head": "ResidualPhysicalHead cosine6x160 scale30; jointly trained",
+      "default_head_no_query_smoke": true,
+      "extra_feature_parameters_updated": [
+        {
+          "parameter": "spectral_gain",
+          "max_abs_update": 0.2673632502555847
+        },
+        {
+          "parameter": "0.weight",
+          "max_abs_update": 0.3114374279975891
+        },
+        {
+          "parameter": "0.bias",
+          "max_abs_update": 0.06580058485269547
+        },
+        {
+          "parameter": "2.weight",
+          "max_abs_update": 0.2692061960697174
+        },
+        {
+          "parameter": "2.bias",
+          "max_abs_update": 0.056017253547906876
+        },
+        {
+          "parameter": "6.weight",
+          "max_abs_update": 0.23024386167526245
+        },
+        {
+          "parameter": "6.bias",
+          "max_abs_update": 0.014446329325437546
+        },
+        {
+          "parameter": "7.weight",
+          "max_abs_update": 0.3403775691986084
+        },
+        {
+          "parameter": "7.bias",
+          "max_abs_update": 0.20503468811511993
+        }
+      ],
+      "source_feature_parameters_unchanged_after_diagnostic_fit": true,
+      "source_final_V": 98.08888888888889,
+      "default_prediction_count": 168000,
+      "default_metric_records": 18
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092701",
+      "arm": "COMPLEX_RELATIONS",
+      "seed": 2026092701,
+      "epochs": 50,
+      "updates": 11100,
+      "source_reused": false,
+      "U_forward_packets": 1020600,
+      "U_accepted_packets": 16911,
+      "nonfinite_skips": 0,
+      "default_head": "ResidualPhysicalHead cosine6x160 scale30; jointly trained",
+      "default_head_no_query_smoke": true,
+      "extra_feature_parameters_updated": [
+        {
+          "parameter": "spectral_gain",
+          "max_abs_update": 0.24841229617595673
+        },
+        {
+          "parameter": "0.weight",
+          "max_abs_update": 0.2716636061668396
+        },
+        {
+          "parameter": "0.bias",
+          "max_abs_update": 0.05558539927005768
+        },
+        {
+          "parameter": "2.weight",
+          "max_abs_update": 0.20813684165477753
+        },
+        {
+          "parameter": "2.bias",
+          "max_abs_update": 0.03970514237880707
+        },
+        {
+          "parameter": "6.weight",
+          "max_abs_update": 0.2729038596153259
+        },
+        {
+          "parameter": "6.bias",
+          "max_abs_update": 0.019128821790218353
+        },
+        {
+          "parameter": "7.weight",
+          "max_abs_update": 0.34363389015197754
+        },
+        {
+          "parameter": "7.bias",
+          "max_abs_update": 0.21362429857254028
+        }
+      ],
+      "source_feature_parameters_unchanged_after_diagnostic_fit": true,
+      "source_final_V": 98.24444444444444,
+      "default_prediction_count": 168000,
+      "default_metric_records": 18
+    },
+    {
+      "row_id": "LEGACY50-s2026092702",
+      "arm": "LEGACY50",
+      "seed": 2026092702,
+      "epochs": 50,
+      "updates": 11100,
+      "source_reused": true,
+      "U_forward_packets": null,
+      "U_accepted_packets": null,
+      "nonfinite_skips": 0,
+      "default_head": "ResidualPhysicalHead cosine6x160 scale30; jointly trained",
+      "default_head_no_query_smoke": true,
+      "extra_feature_parameters_updated": [],
+      "source_feature_parameters_unchanged_after_diagnostic_fit": true,
+      "source_final_V": 97.91111111111111,
+      "default_prediction_count": 168000,
+      "default_metric_records": 18
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092702",
+      "arm": "POWER_RELATIONS",
+      "seed": 2026092702,
+      "epochs": 50,
+      "updates": 11100,
+      "source_reused": false,
+      "U_forward_packets": 1020600,
+      "U_accepted_packets": 16260,
+      "nonfinite_skips": 0,
+      "default_head": "ResidualPhysicalHead cosine6x160 scale30; jointly trained",
+      "default_head_no_query_smoke": true,
+      "extra_feature_parameters_updated": [
+        {
+          "parameter": "spectral_gain",
+          "max_abs_update": 0.27800923585891724
+        },
+        {
+          "parameter": "0.weight",
+          "max_abs_update": 0.3355049788951874
+        },
+        {
+          "parameter": "0.bias",
+          "max_abs_update": 0.039669379591941833
+        },
+        {
+          "parameter": "2.weight",
+          "max_abs_update": 0.19081440567970276
+        },
+        {
+          "parameter": "2.bias",
+          "max_abs_update": 0.03137193247675896
+        },
+        {
+          "parameter": "6.weight",
+          "max_abs_update": 0.1859516203403473
+        },
+        {
+          "parameter": "6.bias",
+          "max_abs_update": 0.018937990069389343
+        },
+        {
+          "parameter": "7.weight",
+          "max_abs_update": 0.39863789081573486
+        },
+        {
+          "parameter": "7.bias",
+          "max_abs_update": 0.2194904088973999
+        }
+      ],
+      "source_feature_parameters_unchanged_after_diagnostic_fit": true,
+      "source_final_V": 97.98148148148148,
+      "default_prediction_count": 168000,
+      "default_metric_records": 18
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092702",
+      "arm": "COMPLEX_RELATIONS",
+      "seed": 2026092702,
+      "epochs": 50,
+      "updates": 11100,
+      "source_reused": false,
+      "U_forward_packets": 1020600,
+      "U_accepted_packets": 16348,
+      "nonfinite_skips": 0,
+      "default_head": "ResidualPhysicalHead cosine6x160 scale30; jointly trained",
+      "default_head_no_query_smoke": true,
+      "extra_feature_parameters_updated": [
+        {
+          "parameter": "spectral_gain",
+          "max_abs_update": 0.27100393176078796
+        },
+        {
+          "parameter": "0.weight",
+          "max_abs_update": 0.2941597104072571
+        },
+        {
+          "parameter": "0.bias",
+          "max_abs_update": 0.028421863913536072
+        },
+        {
+          "parameter": "2.weight",
+          "max_abs_update": 0.20063062012195587
+        },
+        {
+          "parameter": "2.bias",
+          "max_abs_update": 0.03632461279630661
+        },
+        {
+          "parameter": "6.weight",
+          "max_abs_update": 0.28982672095298767
+        },
+        {
+          "parameter": "6.bias",
+          "max_abs_update": 0.01737039163708687
+        },
+        {
+          "parameter": "7.weight",
+          "max_abs_update": 0.3707515001296997
+        },
+        {
+          "parameter": "7.bias",
+          "max_abs_update": 0.2296036034822464
+        }
+      ],
+      "source_feature_parameters_unchanged_after_diagnostic_fit": true,
+      "source_final_V": 98.33703703703704,
+      "default_prediction_count": 168000,
+      "default_metric_records": 18
+    },
+    {
+      "row_id": "LEGACY50-s2026092703",
+      "arm": "LEGACY50",
+      "seed": 2026092703,
+      "epochs": 50,
+      "updates": 11100,
+      "source_reused": true,
+      "U_forward_packets": null,
+      "U_accepted_packets": null,
+      "nonfinite_skips": 0,
+      "default_head": "ResidualPhysicalHead cosine6x160 scale30; jointly trained",
+      "default_head_no_query_smoke": true,
+      "extra_feature_parameters_updated": [],
+      "source_feature_parameters_unchanged_after_diagnostic_fit": true,
+      "source_final_V": 97.8962962962963,
+      "default_prediction_count": 168000,
+      "default_metric_records": 18
+    },
+    {
+      "row_id": "POWER_RELATIONS-s2026092703",
+      "arm": "POWER_RELATIONS",
+      "seed": 2026092703,
+      "epochs": 50,
+      "updates": 11100,
+      "source_reused": false,
+      "U_forward_packets": 1020600,
+      "U_accepted_packets": 16591,
+      "nonfinite_skips": 0,
+      "default_head": "ResidualPhysicalHead cosine6x160 scale30; jointly trained",
+      "default_head_no_query_smoke": true,
+      "extra_feature_parameters_updated": [
+        {
+          "parameter": "spectral_gain",
+          "max_abs_update": 0.27610379457473755
+        },
+        {
+          "parameter": "0.weight",
+          "max_abs_update": 0.33086007833480835
+        },
+        {
+          "parameter": "0.bias",
+          "max_abs_update": 0.04059668630361557
+        },
+        {
+          "parameter": "2.weight",
+          "max_abs_update": 0.16982485353946686
+        },
+        {
+          "parameter": "2.bias",
+          "max_abs_update": 0.03803510218858719
+        },
+        {
+          "parameter": "6.weight",
+          "max_abs_update": 0.1861066222190857
+        },
+        {
+          "parameter": "6.bias",
+          "max_abs_update": 0.01749076135456562
+        },
+        {
+          "parameter": "7.weight",
+          "max_abs_update": 0.3798640966415405
+        },
+        {
+          "parameter": "7.bias",
+          "max_abs_update": 0.21508048474788666
+        }
+      ],
+      "source_feature_parameters_unchanged_after_diagnostic_fit": true,
+      "source_final_V": 98.1037037037037,
+      "default_prediction_count": 168000,
+      "default_metric_records": 18
+    },
+    {
+      "row_id": "COMPLEX_RELATIONS-s2026092703",
+      "arm": "COMPLEX_RELATIONS",
+      "seed": 2026092703,
+      "epochs": 50,
+      "updates": 11100,
+      "source_reused": false,
+      "U_forward_packets": 1020600,
+      "U_accepted_packets": 16571,
+      "nonfinite_skips": 0,
+      "default_head": "ResidualPhysicalHead cosine6x160 scale30; jointly trained",
+      "default_head_no_query_smoke": true,
+      "extra_feature_parameters_updated": [
+        {
+          "parameter": "spectral_gain",
+          "max_abs_update": 0.25928589701652527
+        },
+        {
+          "parameter": "0.weight",
+          "max_abs_update": 0.22096848487854004
+        },
+        {
+          "parameter": "0.bias",
+          "max_abs_update": 0.025875048711895943
+        },
+        {
+          "parameter": "2.weight",
+          "max_abs_update": 0.17732392251491547
+        },
+        {
+          "parameter": "2.bias",
+          "max_abs_update": 0.01731765642762184
+        },
+        {
+          "parameter": "6.weight",
+          "max_abs_update": 0.3032272458076477
+        },
+        {
+          "parameter": "6.bias",
+          "max_abs_update": 0.02511454001069069
+        },
+        {
+          "parameter": "7.weight",
+          "max_abs_update": 0.3650369644165039
+        },
+        {
+          "parameter": "7.bias",
+          "max_abs_update": 0.2240237146615982
+        }
+      ],
+      "source_feature_parameters_unchanged_after_diagnostic_fit": true,
+      "source_final_V": 98.34444444444445,
+      "default_prediction_count": 168000,
+      "default_metric_records": 18
+    }
+  ],
+  "goal_84": false,
+  "artifact_root_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-cross-frequency-legacycos-clean-manysig-m9-r01",
+  "historical_archive_ref": "historical_readout_results.json"
+}

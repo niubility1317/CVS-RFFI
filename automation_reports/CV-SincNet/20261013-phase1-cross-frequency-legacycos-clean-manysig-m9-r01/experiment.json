@@ -2033,7 +2033,15 @@
     "50epochs/32label18pseudo; finalonly; Vhealth only no performance gate. Fixed9row allseeds automaticclean scoring; target feedback prohibited. Exposed benchmark not independentblindtest.",
     "REJECTED_EXTRA_GATE: generic design/spec approval outside Exclusive Minimal Experiment Workflow; concrete implementation and focused checks within existing user authorization."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "registered_at": "2026-10-13T14:40:11+00:00",
-  "execution_commit": "9c171f9f13c7675eb06a4f2fc82d31105919becf"
+  "execution_commit": "9c171f9f13c7675eb06a4f2fc82d31105919becf",
+  "results": {
+    "verification": "VERIFIED",
+    "default_head_results": "results.json",
+    "historical_nondefault_readouts": "historical_readout_results.json",
+    "report": "final_analysis.md",
+    "goal_84": false
+  },
+  "latest_user_policy": "Future experiments use the original default classifier jointly trained with the feature extractor; no separate head fitting or replacement. Original preregistered configs below remain historical and unmodified."
 }
