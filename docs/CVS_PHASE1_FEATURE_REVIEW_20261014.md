@@ -75,3 +75,8 @@ run 20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01，实�
 ## 源门控诊断与下一候选
 
 源门控诊断run 20261014-phase1-source-legacy-gate-audit-manysig-m3-r01 完整3模型完成，实际代码 0f514fa1ba4302bc7e5e25d0ad41337881acce7f。L/V明确合法标签仅在mask之后作观察，无U/target/头拟合/优化器/模型状态更新；CPU104.59秒/199800包次/360条聚合计数。V完整旧门控覆盖3.4099%，本次接收923/913/926均无错；confidence+strong覆盖92.2815%，precision99.8221%，错误54/41/38。分RX/day/source类计数与比率重新核对。uniformB256/window2的V邻包几何期望3.6978%，实测3.7630%；U56700/cell630只用协议常数算期望1.7807%，不是U正确率。下一优先独立假设为物理邻包成对随机采样，保留原门控；尚未发布训练，不据目标分数选择。完整 [源同轮分析](../automation_reports/CV-SincNet/20261014-phase1-source-legacy-gate-audit-manysig-m3-r01/source_gate_analysis.md) 与 [计数结果](../automation_reports/CV-SincNet/20261014-phase1-source-legacy-gate-audit-manysig-m3-r01/results.json)。
+
+
+## 物理邻包成对随机采样源反证完成
+
+run 20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01 全3模型source-only完成，实际执行7bde2923fae013495c3be1038504eb59d6e44602。旧门控全部保留，L/V每sampler所有包恰一次、pair内同允许RX/day/eq且sig/basegap1–2。360条RANDOM旧统计精确复现，720条总计数/比率/分组加和独立核验。V FULL覆盖3.4099%→89.9617%，PAIRS正确率99.9959%，接收24390/24069/24410，错误3/0/0；L覆盖13.3598%→92.9312%，错误0/0/0。全3通过固定coverage≥.5/precision≥.995/drop≤.0025源条件。0U/target/头拟合/参数更新、CPU215.21秒/399600包次，未访问U真值。支持独立采样训练假设，不证明U准确率或DG；不是丢弃temporal gate。下一动作只有匹配RANDOM/PAIRS的独立scratch50旧门控cos训练，与另一树单基time control路线不同，不叠加Sinc/TIME、不用target调参。完整[同轮分析](../automation_reports/CV-SincNet/20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01/final_analysis.md)。

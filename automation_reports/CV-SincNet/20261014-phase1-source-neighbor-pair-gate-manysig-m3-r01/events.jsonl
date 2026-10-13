@@ -1,2 +1,3 @@
 {"at": "2026-10-13T21:04:54+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at":"2026-10-13T21:06:02.520Z","status":"LOCAL_VERIFIED","note":"10synthetic negative cases/pairs/tail/random control/globalRNG checks PASS; fixed source criteria; no IQ,target,training or fitting launch","evidence":["experiments/cvs_source_neighbor_pairs/checks.py"],"row_id":null}
+{"at":"2026-10-13T21:14:00.640Z","status":"ANALYZED","note":"All3CPU source-only rows complete; fixed criteria pass;720counts independently recounted and360original random records reproduced; no U/target/fit","evidence":["results.json","final_analysis.md"],"row_id":null}

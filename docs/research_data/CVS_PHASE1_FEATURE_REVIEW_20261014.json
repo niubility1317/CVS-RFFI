@@ -77141,7 +77141,7 @@
     },
     "source_neighbor_pairs": {
       "run_id": "20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01",
-      "status": "LOCAL_VERIFIED",
+      "status": "ANALYZED",
       "mechanism": "Source frozen default student/EMA RANDOM versus physical-neighbor PAIRS, all original gates retained; no training",
       "code": "GIT_HEAD_AT_RELEASE",
       "source_basis": "Completed source_gate_audit r01, not target results",
@@ -77161,9 +77161,21 @@
         "every_seed_V_full_precision_min": 0.995,
         "every_seed_V_full_precision_drop_max": 0.0025
       },
-      "report": "automation_reports/CV-SincNet/20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01/report.md",
-      "results": null,
-      "independent_P0P1": "PASS: one source-only candidate review, allowed pair fields/all packets/tail/frozen states/provenance/CPU release verified; synthetic only, no real IQ/target"
+      "report": "automation_reports/CV-SincNet/20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01/final_analysis.md",
+      "results": {
+        "models": 3,
+        "source_criterion_pass": true,
+        "aggregate_count_records": 720,
+        "independent_recount": "VERIFIED",
+        "random_original_records_reproduced": 360,
+        "V_PAIR_coverage_mean": 0.8996172839506172,
+        "V_PAIR_precision_mean": 0.9999589995899959,
+        "head_updates": 0,
+        "query_access": false,
+        "U_truth_read": false
+      },
+      "independent_P0P1": "PASS: one source-only candidate review, allowed pair fields/all packets/tail/frozen states/provenance/CPU release verified; synthetic only, no real IQ/target",
+      "actual_execution_commit": "7bde2923fae013495c3be1038504eb59d6e44602"
     }
   },
   "next_directions": [

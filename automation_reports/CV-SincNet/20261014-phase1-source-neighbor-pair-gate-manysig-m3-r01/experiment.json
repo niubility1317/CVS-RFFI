@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "Persistent user Phase1 feature-extractor goal authorizes source-only mechanism exploration and at most2 hypotheses; original default jointly trained head, existing source permissions and all current healthy work preserved.",
   "code": {
-    "commit": "GIT_HEAD_AT_RELEASE",
+    "commit": "7bde2923fae013495c3be1038504eb59d6e44602",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32/CPU, native verified local Python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_neighbor_pairs_20261014_r01",
@@ -802,5 +802,18 @@
     "Actual execution identity is release_commit.txt Git HEAD; no self-referential SHA. No package/member seals or extra approvals."
   ],
   "registered_at": "2026-10-13T21:04:54+00:00",
-  "status": "LOCAL_VERIFIED"
+  "status": "ANALYZED",
+  "execution_commit": "7bde2923fae013495c3be1038504eb59d6e44602",
+  "results": {
+    "models": 3,
+    "source_criterion_pass": true,
+    "aggregate_count_records": 720,
+    "independent_recount": "VERIFIED",
+    "random_original_records_reproduced": 360,
+    "V_PAIR_coverage_mean": 0.8996172839506172,
+    "V_PAIR_precision_mean": 0.9999589995899959,
+    "head_updates": 0,
+    "query_access": false,
+    "U_truth_read": false
+  }
 }

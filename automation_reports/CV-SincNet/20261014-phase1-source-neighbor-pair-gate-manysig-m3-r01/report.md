@@ -1,6 +1,6 @@
 # 保留旧门控的物理邻包成对采样源诊断
 
-状态：LOCAL_VERIFIED，尚未真实运行。run `20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01`；唯一 owner codex/root/source-neighbor-pairs-20261014。完整矩阵和实际配置只在 [experiment.json](experiment.json) 维护。
+状态：ANALYZED，完整3seed源观察已完成。run `20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01`；唯一 owner codex/root/source-neighbor-pairs-20261014。完整矩阵和实际配置只在 [experiment.json](experiment.json) 维护。
 
 已完成源证据：r01三个旧默认学生/EMA的V完整门控覆盖3.4099%，confidence+strong覆盖92.2815%、精度99.8221%；uniformB256/w2物理邻包几何V期望3.6978%，U56700/cell630仅用协议常数推导1.7807%。这是合法L/V观察及采样几何，不是U精度或目标收益。下一假设：随机批次缺少邻包限制了U身份梯度；成对shuffle能让原门控看到相邻包，并可能在保留精度时增加进入真实fθ的训练信号。此run只诊断，不开始训练。
 
@@ -17,3 +17,5 @@ RANDOM保持r01私有generator shuffle2026101410/20。PAIRS仅读取RX/day/eq/si
 精确入口 python -u -m experiments.cvs_source_neighbor_pairs.audit；CWD /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_neighbor_pairs_20261014_r01；普通N607用户既有CVS-RFFI fullFP32 CPU，OMP/MKL/OpenBLAS/Torch线程2。执行身份是release_commit.txt内实际Git HEAD。不可变run/output根 /home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01，每row独占output，已有时核实、不覆盖。一次独立postlaunch PID/CWD/argv、CPU限定和log增长检查。技术stop：所属来源/metadata/非有限/状态改变/默认头不符时写failure.json、停止当前诊断调度、保留partial，无自动retry、无其他owner操作。只有完成同row分析与Git交付后记ANALYZED，原IQ/权重/log留原存储。
 
 唯一独立 P0/P1 审查 PASS，未发现直接阻止本次源诊断的缺陷；另核对真实L/V规模的合成尾批156/120、全包访问与CPU发布入口。无真实IQ/target读入。
+
+实际执行7bde2923fae013495c3be1038504eb59d6e44602，全3source criterion PASS；V覆盖3.4099%→89.9617%，PAIR正确率99.9959%，错误3/0/0；0U/target/头拟合/参数更新。完整 [同轮分析](final_analysis.md) 与 [计数](results.json)。
