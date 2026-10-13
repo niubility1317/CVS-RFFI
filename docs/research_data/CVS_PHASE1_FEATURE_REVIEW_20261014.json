@@ -32306,7 +32306,27 @@
           0.32390480280459466
         ],
         "full_default_target_result": false
-      }
+      },
+      "readonly_analysis": {
+        "feature_helper": "experiments/cvs_neighbor_pair50/feature_check.py",
+        "full_audit": "experiments/cvs_neighbor_pair50/audit.py",
+        "synthetic_checks": "PASS local and sameN607, no actual input/read/fit",
+        "actual_final_results": "PENDING"
+      },
+      "pseudo_source_prefix": [
+        {
+          "arm": "RANDOM_ORDER",
+          "epochs": 45,
+          "U_packets": 680400,
+          "U_accepted": 10785
+        },
+        {
+          "arm": "PAIRED_ORDER",
+          "epochs": 44,
+          "U_packets": 623700,
+          "U_accepted": 559773
+        }
+      ]
     }
   ],
   "diagnostics": {

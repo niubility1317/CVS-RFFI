@@ -31,3 +31,10 @@ r02技术恢复：r01远端合成NumPy dtype推断失败、未进入真实训练
 ## r02实际启动
 
 实际代码c5e67c46f2a04ec33ff3235d392037f38c000eff。一次归档校验/remotecompile/真实CP零IQnoquery smoke/sourcequalification全部PASS；dispatcher与两个新worker PID/CWD/argv/GPU/日志增长独立读回VERIFIED。RANDOM GPU2、PAIR GPU4均完成8轮，sourceLCE0.323161/0.323905；label阶段sampler未迭代、U总数0、target训练总数0，默认头正常联合，无单独拟合。无技术失败，不按中间值改变50/33+17预算或放行阈值。原三个baseline默认决策复用已完成，当前不能据此宣称新候选完整目标结果。见launch_evidence.json。
+
+
+## 终轮只读分析已准备
+
+feature_check.py在固定合法L720核对实际初末fθ参数与joint160，并比较同seed PAIR/RANDOM最终特征。类别W960仅作分离计数，base_norm/pa_norm/gain/reference等特征变换保留，源RX/day分层无任何新头拟合；真实结果须source_frozen后执行。audit.py完整解析新66600step、全部450epoch、17活跃U采样、保存optimizer/Sinc/EMA与162CM/default predictions，未完成时默认拒绝全矩阵truth读取，completed-only如实列缺项。合成预算/CM/F1和W仅变不影响z、特征norm变化被计入均PASS，已在同N607环境临时只读namespace验证，未改发布归档、训练进程/配方，未读真实source/query/weights。
+
+截至本次源前缀快照RANDOM45轮/12pseudo，680400U接收10785；PAIR44轮/11pseudo，623700U接收559773，分别约1.585%和89.750%。每活跃轮56700包一次，label33无U迭代，真值隐藏。额外V33/34健康RANDOM97.7815→97.6444%、PAIR97.8259→97.8185%，仅健康诊断不用于调参/选模。两个首seed仍训练，前缀不能代替固定final50/完整三seed结果。
