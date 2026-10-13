@@ -28,4 +28,7 @@ class IdentityOnlyCVS(nn.Module):
         return self.id_backbone(x, y=None, return_aux=False)
 
     def features(self, x):
+        from experiments.cvs_residual_identity.model import ResidualPhysicalHead
+        if type(self.id_backbone.cls_head) is ResidualPhysicalHead:
+            return self.id_backbone(x, y=None, feature_only=True)
         return self.id_backbone(x, y=None, return_aux=True)['feat_joint']

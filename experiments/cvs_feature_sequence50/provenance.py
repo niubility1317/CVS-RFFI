@@ -1,7 +1,8 @@
 from pathlib import Path
 from . import design as d
 
-def source_proof(c):
+def source_proof(c,design=d,report_validator=None):
+ d=design
  d.validate(c)
  if c['baseline_reuse']:
   from experiments.cvs_feature_multiscale50.predict import source_proof as original
@@ -17,8 +18,10 @@ def source_proof(c):
  if done['identity_input_policy']['explicit_CFO_identity_input'] or resolved['identity_input_policy']['explicit_CFO_identity_input']:raise ValueError('CFO input policy differs')
  if not done.get('native_fitted_probes_disabled') or done.get('native_disabled_probe_calls')!=1 or done.get('head_fit_updates')!=0 or not resolved.get('native_fitted_probes_disabled'):raise ValueError('Native separate classifier fitting was not disabled')
  report=done['feature_extractor']
- if report['arm']!=c['arm'] or report['classifier_changed'] or report['output_embedding']!=160 or not report['default_head_only'] or report['separate_head_training'] or report['layer']!='t2':raise ValueError('Actual sequence/default-head mechanism differs')
- if report['extra_parameters']!=6*report['local_channels']+18400:raise ValueError('Feature parameter count differs')
+ if report_validator is not None:report_validator(report,c)
+ else:
+  if report['arm']!=c['arm'] or report['classifier_changed'] or report['output_embedding']!=160 or not report['default_head_only'] or report['separate_head_training'] or report['layer']!='t2':raise ValueError('Actual sequence/default-head mechanism differs')
+  if report['extra_parameters']!=6*report['local_channels']+18400:raise ValueError('Feature parameter count differs')
  if any(done['mask_counts'].values()):raise ValueError('Sequence route does not use evidence masking')
  if resolved['actual_feature_extractor']!=report or done['baseline_recipe']!='historicaloldgate+EMA+cos' or done['label_epochs']!=33 or done['pseudo_epochs']!=17:raise ValueError('Actual oldgate recipe differs')
  # Use this candidate's native arguments, not a same-name historical configuration.
@@ -30,12 +33,14 @@ def source_proof(c):
   if args.get(key)!=reference.get(key) or args.get(key)!=getattr(expected,key):raise ValueError('Historical recipe differs: '+key)
  verify_contract(d.read(p/'source_contract.json'),d.read(d.SOURCE));return p
 
-def own_model(c,device):
+def own_model(c,device,design=d,proof=source_proof,builder=None):
+ d=design;source_proof=proof
  import torch
  if c['baseline_reuse']:
   from experiments.cvs_feature_multiscale50.predict import own_model as original
   return original(c['baseline_reference'],device)
  from .model import build
+ if builder is not None:build=builder
  p=source_proof(c);ck=torch.load(p/'final_ssdg.pth',map_location='cpu',weights_only=False)
  if ck['epoch']!=50 or ck['candidate_id']!=c['row_id'] or ck['run_id']!=d.RUN or ck['checkpoint_selection']!='final_only' or ck['a1_ema_successful_updates']!=11100:raise ValueError('Fixed final checkpoint differs')
  model=build(c,device);model.load_state_dict(ck['model'],strict=True);model.eval().requires_grad_(False);return model

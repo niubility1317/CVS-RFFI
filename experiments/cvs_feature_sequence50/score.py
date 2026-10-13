@@ -2,9 +2,11 @@
 import json
 from . import design as d
 
-def score(row):
+def score(row,design=d,prediction_preflight=None):
+ d=design
  import numpy as np
  from .predict import preflight
+ if prediction_preflight is not None:preflight=prediction_preflight
  from experiments.cvs_report_ssl.evaluate import truth_arrays,metric_rows
  c,ids=preflight(row);out=d.BASE/row/'scores'
  if out.exists():raise FileExistsError('Existing scoring output; preserve it')
@@ -18,7 +20,8 @@ def score(row):
  d.write(d.BASE/row/'completion.json',dict(status='TRAINED_DEFAULT_PREDICTED_SCORED',config=c,views=['clean'],readouts=list(d.READOUTS),count_per_readout=168000,metric_records=18,truth_last=True,independent_recount='VERIFIED'))
  print('SCORED '+row,flush=True)
 
-def finish():
+def finish(design=d):
+ d=design
  import statistics as st
  records=[];source=[]
  for row in d.rows():
@@ -36,12 +39,14 @@ def finish():
    if len(rr)!=3 or {r['model_seed'] for r in rr}!=set(d.SEEDS):raise ValueError('Incomplete three-seed matrix')
    summary.append(dict(arm=arm,readout=readout,accuracy_mean=st.mean(a),accuracy_sd=st.stdev(a),macro_f1_mean=st.mean(r['macro_f1'] for r in rr),seed_accuracy={str(r['model_seed']):r['accuracy'] for r in rr}))
   index={(r['arm'],r['model_seed']):r['accuracy'] for r in records if r['readout']==readout and r['dimension']=='overall'}
-  for treatment,control in [(a,'BASE_REF') for a in d.ARMS[1:]]+[(a,'RFF') for a in ('MEAN','MEAN_VAR','NONLINEAR_MEAN')]+[('SIG','COV'),('SIG_TIME','COV'),('SIG_TIME','SIG')]:
+  pairs=d.PAIRS if hasattr(d,'PAIRS') else [(a,'BASE_REF') for a in d.ARMS[1:]]+[(a,'RFF') for a in ('MEAN','MEAN_VAR','NONLINEAR_MEAN')]+[('SIG','COV'),('SIG_TIME','COV'),('SIG_TIME','SIG')]
+  for treatment,control in pairs:
    delta=[index[treatment,seed]-index[control,seed] for seed in d.SEEDS];paired.append(dict(readout=readout,treatment=treatment,control=control,seed_differences=delta,mean_difference=st.mean(delta),positive_seeds=sum(v>0 for v in delta)))
  verdict={a:next(r for r in summary if r['arm']==a)['accuracy_mean']>=.84 for a in d.PRIMARY}
  result=dict(status='VERIFIED',run_id=d.RUN,rows=24,new_backbones=21,existing_backbone_references=3,readouts=24,views=['clean'],prediction_count=4032000,reused_native_decisions=504000,new_prediction_decisions=3528000,metric_records=432,head_fit_updates=0,default_classifier_only=True,backbone_updates_new=233100,historical_baseline_updates=33300,summary=summary,paired=paired,source_diagnostics=source,records=records,co_primary=list(d.PRIMARY),goal_by_primary=verdict,goal_84=any(verdict.values()),truth_last=True,exposed_benchmark=True)
+ if hasattr(d,'result_metadata'):result.update(d.result_metadata())
  d.write(d.BASE/'analysis.json',result)
- lines=['# 局部分布与路径顺序：默认分类头完整结果','','|结构|准确率均值|SD|Macro-F1|','|---|---:|---:|---:|']
+ lines=['# '+getattr(d,'TITLE','局部分布与路径顺序：默认分类头完整结果'),'','|结构|准确率均值|SD|Macro-F1|','|---|---:|---:|---:|']
  for r in summary:lines.append(f"|{r['arm']}|{r['accuracy_mean']:.4%}|{r['accuracy_sd']:.4%}|{r['macro_f1_mean']:.6f}|")
  lines+=['','固定默认 ResidualPhysicalHead 随骨干联合训练；无另训或替换分类头。每新增骨干独立 scratch50、33标签＋17旧伪标签门控、EMA＋cos，不使用星地训练。仅 clean 自动预测后独立 truth-last 评分。所有预登记控制和负结果保留；source V、特征几何和局部顺序诊断不拟合任何分类头。结果不回流训练、参数、候选排序或选择性重跑。本轮仅 Phase1，已暴露基准，不称新的独立盲测。']
  (d.BASE/'final_analysis.md').write_text('\n'.join(lines)+'\n',encoding='utf-8');return result

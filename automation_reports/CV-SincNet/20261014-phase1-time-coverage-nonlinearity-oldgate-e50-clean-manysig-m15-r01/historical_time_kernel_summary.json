@@ -1,0 +1,81 @@
+{
+  "status": "VERIFIED",
+  "scope": "existing fixed source weights only",
+  "query_or_source_IQ_read": false,
+  "truth_read": false,
+  "head_fit_updates": 0,
+  "rows": [
+    {
+      "seed": 2026092701,
+      "fold_max": 2.6645352591003757e-15,
+      "layers": {
+        "t1": {
+          "far_energy_fraction": 0.04131466858454521,
+          "effective_rank_mean": 3.069718451375492,
+          "numerical_rank_min": 4,
+          "numerical_rank_max": 4
+        },
+        "t2": {
+          "far_energy_fraction": 0.039628597120327624,
+          "effective_rank_mean": 3.068220437309395,
+          "numerical_rank_min": 4,
+          "numerical_rank_max": 4
+        },
+        "t3": {
+          "far_energy_fraction": 0.04611622264518865,
+          "effective_rank_mean": 3.1574216410852265,
+          "numerical_rank_min": 4,
+          "numerical_rank_max": 4
+        }
+      }
+    },
+    {
+      "seed": 2026092702,
+      "fold_max": 3.3306690738754696e-15,
+      "layers": {
+        "t1": {
+          "far_energy_fraction": 0.034190450101976334,
+          "effective_rank_mean": 3.1008445107469043,
+          "numerical_rank_min": 4,
+          "numerical_rank_max": 4
+        },
+        "t2": {
+          "far_energy_fraction": 0.04795391670935746,
+          "effective_rank_mean": 3.1446236223702204,
+          "numerical_rank_min": 4,
+          "numerical_rank_max": 4
+        },
+        "t3": {
+          "far_energy_fraction": 0.04568117727690379,
+          "effective_rank_mean": 3.111193392020837,
+          "numerical_rank_min": 4,
+          "numerical_rank_max": 4
+        }
+      }
+    },
+    {
+      "seed": 2026092703,
+      "fold_max": 3.1086244689504383e-15,
+      "layers": {
+        "t1": {
+          "far_energy_fraction": 0.03855645969513352,
+          "effective_rank_mean": 3.0777022022878193,
+          "numerical_rank_min": 4,
+          "numerical_rank_max": 4
+        },
+        "t2": {
+          "far_energy_fraction": 0.045540067502598744,
+          "effective_rank_mean": 3.101081010255889,
+          "numerical_rank_min": 4,
+          "numerical_rank_max": 4
+        },
+        "t3": {
+          "far_energy_fraction": 0.043626158022744235,
+          "effective_rank_mean": 3.1314320633005095,
+          "numerical_rank_min": 4,
+          "numerical_rank_max": 4
+        }
+      }
+    }
+  ]
+}

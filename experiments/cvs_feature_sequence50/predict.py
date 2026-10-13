@@ -5,7 +5,8 @@ from . import design as d
 from .provenance import source_proof,own_model
 COUNT=168000
 
-def predict(row):
+def predict(row,design=d,proof=None,load=None):
+ d=design;source_proof=proof or globals()["source_proof"];own_model=load or globals()["own_model"]
  import numpy as np
  from experiments.cvs_report_ssl.evaluate import iq_tensor,physical_ids
  from experiments.cvs_equivariant_identity.precision import numerical_context
@@ -39,7 +40,8 @@ def predict(row):
   d.write(out/'complete.json',dict(status='PREDICTIONS_COMPLETE',config=c,count=COUNT,views=['clean'],readouts=['NATIVE_HEAD'],truth_read=False,query_fit=False,head_fit_updates=0,wall_seconds=time.perf_counter()-start))
  print('PREDICTIONS_COMPLETE '+row,flush=True)
 
-def preflight(row):
+def preflight(row,design=d,proof=None):
+ d=design;source_proof=proof or globals()["source_proof"]
  import numpy as np
  from experiments.cvs_report_ssl.evaluate import physical_ids
  c=d.config(next(r for r in d.rows() if r['row_id']==row));source=source_proof(c);out=d.BASE/row/'prediction';done=d.read(out/'complete.json');p=d.read(out/'provenance.json')

@@ -60,7 +60,14 @@ def native_default_head_only(native):
         evidence['active']=False
 
 
-def train(c):
+def train(c,design=None,model_api=None,observer=None):
+    if design is not None:
+        validate,make_args,read,write,SOURCE,FULL_FP32_POLICY,ROOT=(getattr(design,k) for k in ("validate","make_args","read","write","SOURCE","FULL_FP32_POLICY","ROOT"))
+    else:
+        from . import design as design
+        validate,make_args,read,write,SOURCE,FULL_FP32_POLICY,ROOT=(getattr(design,k) for k in ("validate","make_args","read","write","SOURCE","FULL_FP32_POLICY","ROOT"))
+    if model_api is None:
+        from . import model as model_api
     validate(c);out=Path(c['output_root'])
     if c['baseline_reuse']:raise ValueError('Reference control cannot be retrained')
     if out.exists():raise FileExistsError(out)
@@ -74,7 +81,7 @@ def train(c):
             ctx=build_data(*args,**kw)
             if ctx['named_test_loaders'] or role_ids_from_native(ctx)!=expected['role_ids']:raise ValueError('Physical source roles/target construction mismatch')
             if len(ctx['unlabeled_loader'])!=222:raise ValueError('Unexpected U-based step count')
-            from .model import source_domain_count
+            source_domain_count=model_api.source_domain_count
             if ctx['num_domains']!=source_domain_count(a):raise ValueError('Historical RX/day source model dimensions differ')
             state['ctx']=ctx
             write(out/'source_contract.json',dict(expected,native_role_comparison='EXACT_MATCH'))
@@ -83,7 +90,7 @@ def train(c):
         def checked_model(args,dev):
             m=build_model(args,dev)
             from experiments.cvs_source_identity_readout.input_policy import apply
-            from .model import install
+            install=model_api.install
             m._identity_input_policy=apply(m);m=install(m,c).to(dev)
             if actual_flags()!=FULL_FP32_POLICY:raise ValueError('Numerical policy changed inside native trainer')
             p=out/'initial_smoke.pt';torch.save(dict(model=m.state_dict(),scratch_only=True),p)
@@ -91,6 +98,7 @@ def train(c):
             with torch.no_grad():z=m(torch.zeros(2,2,256,device=dev))
             if z.shape!=(2,6) or not torch.isfinite(z).all():raise ValueError('Initial checkpoint smoke failed')
             state['model']=m
+            if observer is not None:observer.initialize(m,c,out)
             write(out/'resolved_config.json',dict(c,pid=os.getpid(),cwd=os.getcwd(),python=sys.executable,
                 commit=(ROOT/'release_commit.txt').read_text().strip(),torch_version=torch.__version__,native_fitted_probes_disabled=diagnostic_guard['active'],
                 cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),total_parameters=sum(p.numel() for p in m.parameters()),
@@ -113,6 +121,7 @@ def train(c):
             return result
         def telemetry(cp,jp,rows):
             writer(cp,jp,rows)
+            if observer is not None:observer.epoch(state["model"],state["ctx"],rows,out,device)
             # Native complete telemetry is retained; scalar-only companion is
             # rewritten once per epoch, with nonfinite/missing values as null.
             compact=[{k:clean(v) for k,v in row.items() if not isinstance(v,(list,dict,tuple))} for row in rows]
@@ -123,7 +132,9 @@ def train(c):
                 w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(compact)
         n._build_ssdg_wisig_data=checked_data;n.build_baseline_model=checked_model;n._write_ssdg_epoch_telemetry=telemetry;n._detach_log_mapping=step_log
         try:
-            code=n.train(a)
+            if observer is None:code=n.train(a)
+            else:
+                with observer.native_scope(n):code=n.train(a)
             if code:raise RuntimeError('Native train returned '+str(code))
         finally:
             n._build_ssdg_wisig_data=build_data;n.build_baseline_model=build_model;n._write_ssdg_epoch_telemetry=writer;n._detach_log_mapping=detach
