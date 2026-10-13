@@ -51,3 +51,5 @@
 - MEASURED_MEAN：三primary clean均值80.0109%、SD1.0427%；goal84=False。
 - MEASURED_ROBUST：三primary clean均值79.8565%、SD1.0921%；goal84=False。
 12真实checkpoint/6300合法L和56700隐藏U来源、无V前向、从零FINAL30、全79920步与360epoch、360刷新2268000额外Lforward packets、388800方向/720净梯度记录、2016000原始预测/216指标/162净重分类完整核实。所有四组和负结果保留；无target回流参数/结构/seed/重跑。完整报告 `automation_reports/CV-SincNet/20261013-phase1-repeated-rx-margin-clean-manysig-m12-r01/final_analysis.md`。
+
+持续目标下一步：20261013-source-pseudotarget-health-manysig-m3-r01 H1至H5全部verified，三个固定FINAL30源扫描270000次、63RX探针189混淆与概率分组全量核对，无identity/V更新或target/Utruth访问。源V识别97.6%至97.8%，高置信错误<.72%；合法L探针heldfold2同TX浅RX96.3%至96.7%、中97.5%至97.9%。本证据不证明pureRX因果或未知RX成功，也不替代84目标。由上述L-only源证据固定新候选 `20261013-phase1-conditional-rx-adversary-clean-manysig-m9-r01`：ordinarycos/UNIFORM_SSL，DETACHED辅助控制/边缘GRL/真实TX条件GRL，两时间层的RX判别分布约束，非硬均值投影或上轮半径调整。9scratch30所有primary预固定；CPU/CUDA、主辅clip/optimizer/RNG隔离和唯一P0P1 PASS，正式结果待返回，目标仍active。

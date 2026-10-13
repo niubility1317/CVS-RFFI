@@ -678,7 +678,8 @@
         "source_performance_gate": false,
         "target_metrics": false,
         "purpose": "source diagnostic; does not update or promote identity models"
-      }
+      },
+      "status": "SOURCE_HEALTH_COMPLETE"
     },
     {
       "row_id": "MATCHED_BASE-s2026092702",
@@ -1234,7 +1235,8 @@
         "source_performance_gate": false,
         "target_metrics": false,
         "purpose": "source diagnostic; does not update or promote identity models"
-      }
+      },
+      "status": "SOURCE_HEALTH_COMPLETE"
     },
     {
       "row_id": "MATCHED_BASE-s2026092703",
@@ -1790,7 +1792,8 @@
         "source_performance_gate": false,
         "target_metrics": false,
         "purpose": "source diagnostic; does not update or promote identity models"
-      }
+      },
+      "status": "SOURCE_HEALTH_COMPLETE"
     }
   ],
   "notes": [
@@ -1799,9 +1802,200 @@
     "All3 fixedmodels/same L/V/U physicalIDs; source probes train onlyLfold0/1 (cell IDsort modulo3); sourceLfold2/V just healthread, no performance gate. Fixed100steps/lr.01/wd.001/seedprimary+31337, no threshold tuning.",
     "SourceHealth is an intermediate diagnostic, not a new prediction candidate; no new Phase1 identity training and no targettest applicable. Full goal84 stillrequires a future frozen3seedclean independent result."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-13T03:44:13+00:00",
   "replaces_run_id": null,
   "local_verification": "CPU/CUDA synthetic focusedchecks andcompileall PASS; actual67identityparam coverage audited",
-  "independent_review": "one P0/P1: preflight CUDA default fixed to explicitCPU; one targetedrereview PASS"
+  "independent_review": "one P0/P1: preflight CUDA default fixed to explicitCPU; one targetedrereview PASS",
+  "execution_commit": "70f4b0f80b10b718e7de70c72320b19c9d9852ef",
+  "delivery_verdict": "VERIFIED",
+  "source_health_summary": [
+    {
+      "row": "MATCHED_BASE-s2026092701",
+      "L_accuracy": 0.9974603056907654,
+      "V_accuracy": 0.9776296019554138,
+      "V_confident_error": 0.006887264332435552,
+      "V_high_coverage": 0.9625925925925926,
+      "U_high_coverage": 0.9625220458553791,
+      "U_peer_agreement": 0.9869135618209839,
+      "V_peer_delta": 0.0012592592592592592,
+      "V_peer_selected": {
+        "count": 25680,
+        "coverage": 0.9511111111111111,
+        "own_peer_agreement_count": 25651,
+        "own_prediction_counts": [
+          4437,
+          4178,
+          4442,
+          3778,
+          4409,
+          4436
+        ],
+        "peer_prediction_counts": [
+          4433,
+          4177,
+          4441,
+          3776,
+          4416,
+          4437
+        ],
+        "own_error_count": 118,
+        "peer_error_count": 105,
+        "own_error_coverage": 0.19536423841059603,
+        "peer_corrected_own_errors": 18,
+        "peer_harmed_own_correct": 5,
+        "net_correct_change": 13
+      }
+    },
+    {
+      "row": "MATCHED_BASE-s2026092702",
+      "L_accuracy": 0.9961904883384705,
+      "V_accuracy": 0.9770740866661072,
+      "V_confident_error": 0.0067783554785287884,
+      "V_high_coverage": 0.9616666666666667,
+      "U_high_coverage": 0.9619929453262787,
+      "U_peer_agreement": 0.9864550232887268,
+      "V_peer_delta": 0.0015555555555555555,
+      "V_peer_selected": {
+        "count": 25678,
+        "coverage": 0.951037037037037,
+        "own_peer_agreement_count": 25647,
+        "own_prediction_counts": [
+          4441,
+          4181,
+          4445,
+          3778,
+          4402,
+          4431
+        ],
+        "peer_prediction_counts": [
+          4438,
+          4173,
+          4447,
+          3788,
+          4400,
+          4432
+        ],
+        "own_error_count": 120,
+        "peer_error_count": 108,
+        "own_error_coverage": 0.1938610662358643,
+        "peer_corrected_own_errors": 18,
+        "peer_harmed_own_correct": 6,
+        "net_correct_change": 12
+      }
+    },
+    {
+      "row": "MATCHED_BASE-s2026092703",
+      "L_accuracy": 0.9985714554786682,
+      "V_accuracy": 0.9762222170829773,
+      "V_confident_error": 0.007197585326213141,
+      "V_high_coverage": 0.9571111111111111,
+      "U_high_coverage": 0.958042328042328,
+      "U_peer_agreement": 0.9852733612060547,
+      "V_peer_delta": 0.002851851851851852,
+      "V_peer_selected": {
+        "count": 25785,
+        "coverage": 0.955,
+        "own_peer_agreement_count": 25736,
+        "own_prediction_counts": [
+          4449,
+          4241,
+          4444,
+          3817,
+          4399,
+          4435
+        ],
+        "peer_prediction_counts": [
+          4464,
+          4235,
+          4439,
+          3813,
+          4398,
+          4436
+        ],
+        "own_error_count": 139,
+        "peer_error_count": 115,
+        "own_error_coverage": 0.21651090342679127,
+        "peer_corrected_own_errors": 31,
+        "peer_harmed_own_correct": 7,
+        "net_correct_change": 24
+      }
+    }
+  ],
+  "source_RX_probe_summary": [
+    {
+      "row": "MATCHED_BASE-s2026092701",
+      "level": "time_down",
+      "L_unconditional": 0.8323671221733093,
+      "V_unconditional": 0.8435184955596924,
+      "L_TX_conditional_mean": 0.9671497941017151,
+      "V_TX_conditional_mean": 0.9680740833282471
+    },
+    {
+      "row": "MATCHED_BASE-s2026092701",
+      "level": "t2.pool",
+      "L_unconditional": 0.9164251089096069,
+      "V_unconditional": 0.9249999523162842,
+      "L_TX_conditional_mean": 0.979227085908254,
+      "V_TX_conditional_mean": 0.9810000161329905
+    },
+    {
+      "row": "MATCHED_BASE-s2026092701",
+      "level": "joint160",
+      "L_unconditional": 0.9014492630958557,
+      "V_unconditional": 0.9020000100135803,
+      "L_TX_conditional_mean": 0.9724638064702352,
+      "V_TX_conditional_mean": 0.9686296482880911
+    },
+    {
+      "row": "MATCHED_BASE-s2026092702",
+      "level": "time_down",
+      "L_unconditional": 0.8328502178192139,
+      "V_unconditional": 0.8438147902488708,
+      "L_TX_conditional_mean": 0.9632850587368011,
+      "V_TX_conditional_mean": 0.9671851893266042
+    },
+    {
+      "row": "MATCHED_BASE-s2026092702",
+      "level": "t2.pool",
+      "L_unconditional": 0.9304347634315491,
+      "V_unconditional": 0.9311110973358154,
+      "L_TX_conditional_mean": 0.9753623604774475,
+      "V_TX_conditional_mean": 0.9802963236967722
+    },
+    {
+      "row": "MATCHED_BASE-s2026092702",
+      "level": "joint160",
+      "L_unconditional": 0.8908212184906006,
+      "V_unconditional": 0.8915555477142334,
+      "L_TX_conditional_mean": 0.9628019630908966,
+      "V_TX_conditional_mean": 0.9612592657407125
+    },
+    {
+      "row": "MATCHED_BASE-s2026092703",
+      "level": "time_down",
+      "L_unconditional": 0.8280193209648132,
+      "V_unconditional": 0.83818519115448,
+      "L_TX_conditional_mean": 0.9661836127440134,
+      "V_TX_conditional_mean": 0.9682963192462921
+    },
+    {
+      "row": "MATCHED_BASE-s2026092703",
+      "level": "t2.pool",
+      "L_unconditional": 0.9289854764938354,
+      "V_unconditional": 0.9275184869766235,
+      "L_TX_conditional_mean": 0.9763285319010416,
+      "V_TX_conditional_mean": 0.9770000080267588
+    },
+    {
+      "row": "MATCHED_BASE-s2026092703",
+      "level": "joint160",
+      "L_unconditional": 0.908695638179779,
+      "V_unconditional": 0.899481475353241,
+      "L_TX_conditional_mean": 0.9724637965361277,
+      "V_TX_conditional_mean": 0.9657777945200602
+    }
+  ],
+  "target_performance_result": null,
+  "goal_84": null
 }

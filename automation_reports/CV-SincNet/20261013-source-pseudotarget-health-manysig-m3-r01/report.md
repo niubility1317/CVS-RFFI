@@ -24,10 +24,12 @@ sourceV只健康，U无真值，全部输入和阈值在诊断前固定。本扫
 
 |ID|验收|状态|证据边界|
 |---|---|---|---|
-|H1|固定3model合法同契约、仅源L/V/U|implemented|代码/真实noquery首步待核实|
-|H2|L/V质量与U truthblind分组|implemented|组件/完整270000源扫描待返回|
-|H3|另两seed固定peer信息，不伪造EMA/历史|implemented|同row源统计待返回|
-|H4|浅/中/joint RX probe仅L fold0/1训练|implemented|组件fold/梯度与真实源probe待返回|
-|H5|冻结identity状态/RNG，V无更新/无晋级|implemented|实际诊断待返回|
+|H1|固定3model合法同契约、仅源L/V/U|verified|代码/真实noquery首步待核实|
+|H2|L/V质量与U truthblind分组|verified|组件/完整270000源扫描待返回|
+|H3|另两seed固定peer信息，不伪造EMA/历史|verified|同row源统计待返回|
+|H4|浅/中/joint RX probe仅L fold0/1训练|verified|组件fold/梯度与真实源probe待返回|
+|H5|冻结identity状态/RNG，V无更新/无晋级|verified|实际诊断待返回|
 
 CPU/CUDA组件检查与compileall PASS：U标签拒绝/合法概率与置信错误精算/固定peer覆盖/Lfold2排除/实际96、192、160特征接口/21probe每seed/identity状态与RNG保持/覆盖与登记差异拒绝。一次独立P0/P1发现CPU预检未显式传device，修复后定点复核PASS；实际REMOTE AST确认preflight CPU、正式run CUDA。未读取target IQ/truth/预测/评分。Lfold2仅对新线性RX探针独立，冻结identity历史用过全部L；本探针不被称为身份新盲测。peer_high是另两模型T1平均概率max≥.95，peer_agree是两argmax相同；未附加每个peer单独.95条件。63个probe固定训练参数无选择，identity不更新。
+
+真实源诊断全矩阵已完成：270000 forward、63probe/189混淆、全量源概率/分组重算、完整stdout及冻结身份/RNG核验VERIFIED。H1至H5全部verified；目标84仍active。实际结果见final_analysis.md。
