@@ -23,3 +23,5 @@
 REJECTED_EXTRA_GATE：brainstorming的另行设计/审批前置与项目排他最小工作流冲突，本授权目标内的可逆结构选择直接执行；只保留本最小报告，不创建额外审批链或report-only审查。
 
 唯一独立 P0/P1 审查 PASS：旧伪标签门控/EMA实际启用，第33轮pseudo，新增参数进入optimizer/EMA；50轮11100更新与预测衔接一致，9行配置匹配，发布依赖齐全，源性能早停/卫星/目标训练关闭。审查只读，无源/目标IQ或truth访问。
+
+发布 VERIFIED：执行commit43bd20494aa470568a68553ce664dc76811b9707，远端OID已核对一致。单归档SHA传输比对、远端compile及真实E20 no-query smoke PASS；dispatcher PID1540996。9个worker实际PID/CWD/argv/GPU匹配，全部日志增长，当前第12至14轮，错误队列为空，每GPU总进程最多2（上限3）。实际resolved args确认50轮32label+18pseudo、旧batch_neighbor/strong gate、EMA versioned0.999、label_smoothing0.01、cosine50；CFO显式坐标关闭，全组匹配。性能结果仍等待固定训练、预测、独立评分完成。
