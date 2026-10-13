@@ -31,7 +31,7 @@
   "replaces_run_id": null,
   "authorization": "Active goal01a13438: <=50epochs,feature extractor,old pseudo gates+EMA+cos; latest user prohibits any separate classifier fitting; fixed clean-only all3seeds authorized.",
   "code": {
-    "commit": null,
+    "commit": "1f8814c046a8c68eba8a334e66a0aceb76e491e0",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "native verified Python/CVS-RFFI fullFP32;ordinary N607",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_pa_cross_delay_20261014_r01",
@@ -213,7 +213,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -249,7 +249,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -313,7 +313,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "updates": 11100,
           "label_epochs": 32,
           "pseudo_epochs": 18,
@@ -349,7 +349,7 @@
             "weight_decay": 0.0001,
             "use_concat_sat_channel_aug": false,
             "phase1_lr_schedule": "cosine",
-            "phase1_lr_min": 1e-06
+            "phase1_lr_min": 0.000001
           },
           "source_V": "health only; final checkpoint fixed at50, no source performance selection",
           "frequency_context": {
@@ -384,7 +384,7 @@
           "memory": 9,
           "output_channels": 24,
           "filter_normalization": "row L2 eps1e-4",
-          "input_clip": 2.0,
+          "input_clip": 2,
           "initial_gain": 0.05,
           "activation": "SiLU after local terms",
           "projection": "Conv1d16to24 k1",
@@ -472,7 +472,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -508,7 +508,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -545,7 +545,7 @@
           "memory": 9,
           "output_channels": 24,
           "filter_normalization": "row L2 eps1e-4",
-          "input_clip": 2.0,
+          "input_clip": 2,
           "initial_gain": 0.05,
           "activation": "SiLU after local terms",
           "projection": "Conv1d16to24 k1",
@@ -633,7 +633,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -669,7 +669,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -706,7 +706,7 @@
           "memory": 9,
           "output_channels": 24,
           "filter_normalization": "row L2 eps1e-4",
-          "input_clip": 2.0,
+          "input_clip": 2,
           "initial_gain": 0.05,
           "activation": "SiLU after local terms",
           "projection": "Conv1d16to24 k1",
@@ -790,7 +790,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -826,7 +826,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -890,7 +890,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "updates": 11100,
           "label_epochs": 32,
           "pseudo_epochs": 18,
@@ -926,7 +926,7 @@
             "weight_decay": 0.0001,
             "use_concat_sat_channel_aug": false,
             "phase1_lr_schedule": "cosine",
-            "phase1_lr_min": 1e-06
+            "phase1_lr_min": 0.000001
           },
           "source_V": "health only; final checkpoint fixed at50, no source performance selection",
           "frequency_context": {
@@ -961,7 +961,7 @@
           "memory": 9,
           "output_channels": 24,
           "filter_normalization": "row L2 eps1e-4",
-          "input_clip": 2.0,
+          "input_clip": 2,
           "initial_gain": 0.05,
           "activation": "SiLU after local terms",
           "projection": "Conv1d16to24 k1",
@@ -1049,7 +1049,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -1085,7 +1085,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -1122,7 +1122,7 @@
           "memory": 9,
           "output_channels": 24,
           "filter_normalization": "row L2 eps1e-4",
-          "input_clip": 2.0,
+          "input_clip": 2,
           "initial_gain": 0.05,
           "activation": "SiLU after local terms",
           "projection": "Conv1d16to24 k1",
@@ -1210,7 +1210,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -1246,7 +1246,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -1283,7 +1283,7 @@
           "memory": 9,
           "output_channels": 24,
           "filter_normalization": "row L2 eps1e-4",
-          "input_clip": 2.0,
+          "input_clip": 2,
           "initial_gain": 0.05,
           "activation": "SiLU after local terms",
           "projection": "Conv1d16to24 k1",
@@ -1367,7 +1367,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -1403,7 +1403,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -1467,7 +1467,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "updates": 11100,
           "label_epochs": 32,
           "pseudo_epochs": 18,
@@ -1503,7 +1503,7 @@
             "weight_decay": 0.0001,
             "use_concat_sat_channel_aug": false,
             "phase1_lr_schedule": "cosine",
-            "phase1_lr_min": 1e-06
+            "phase1_lr_min": 0.000001
           },
           "source_V": "health only; final checkpoint fixed at50, no source performance selection",
           "frequency_context": {
@@ -1538,7 +1538,7 @@
           "memory": 9,
           "output_channels": 24,
           "filter_normalization": "row L2 eps1e-4",
-          "input_clip": 2.0,
+          "input_clip": 2,
           "initial_gain": 0.05,
           "activation": "SiLU after local terms",
           "projection": "Conv1d16to24 k1",
@@ -1626,7 +1626,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -1662,7 +1662,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -1699,7 +1699,7 @@
           "memory": 9,
           "output_channels": 24,
           "filter_normalization": "row L2 eps1e-4",
-          "input_clip": 2.0,
+          "input_clip": 2,
           "initial_gain": 0.05,
           "activation": "SiLU after local terms",
           "projection": "Conv1d16to24 k1",
@@ -1787,7 +1787,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -1823,7 +1823,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -1860,7 +1860,7 @@
           "memory": 9,
           "output_channels": 24,
           "filter_normalization": "row L2 eps1e-4",
-          "input_clip": 2.0,
+          "input_clip": 2,
           "initial_gain": 0.05,
           "activation": "SiLU after local terms",
           "projection": "Conv1d16to24 k1",
@@ -1887,6 +1887,7 @@
     "SourceUtruth hidden,sourceVhealth only,final50 fixed,no target feedback. Clean-only168000perrow;9defaultreadouts1512000decisions,baseline504000reused;162aggregate records.",
     "Report/code/config identity bound toactualGitHEAD inrelease_commit.txt bypublisher;code.commit completed bydispatch fromthe committedrelease. NoextraSHA/seal/designapproval gate."
   ],
-  "status": "PLANNED",
-  "registered_at": "2026-10-13T16:12:52+00:00"
+  "status": "RUNNING",
+  "registered_at": "2026-10-13T16:12:52+00:00",
+  "execution_commit": "1f8814c046a8c68eba8a334e66a0aceb76e491e0"
 }

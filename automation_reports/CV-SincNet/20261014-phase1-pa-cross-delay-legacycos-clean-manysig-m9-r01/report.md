@@ -31,3 +31,7 @@ run_id：20261014-phase1-pa-cross-delay-legacycos-clean-manysig-m9-r01。状态 
 REJECTED_EXTRA_GATE：通用design/spec审批、额外签名或hash不在用户Exclusive Minimal Experiment Workflow白名单内；按已有授权执行本固定矩阵。
 
 唯一一次独立下一真实run P0/P1审查 PASS：scratch来源/旧配方、同初始化、仅pa_lift改动、默认头联合训练、EMA与strict checkpoint重建、单ORIGINAL_HEAD预测/LEGACY50完整复用、独立truth-last、九行162指标/3paired、发布依赖和GPU容量规则无直接缺陷。审查只读，无真实数据或远端动作；不增加重复全review或报告审查。
+
+独立发布后读回 VERIFIED：实际执行代码1f8814c046a8c68eba8a334e66a0aceb76e491e0，单archive SHA传输比较、remote compile、真实默认checkpoint no-query preflight PASS。6新worker实际PID/CWD/argv/visibleGPU/模式/commit一致，epoch由0增长到4至5且stdout增长；3baseline默认决定已复用并独立评分，failure0/pending0，每GPU总进程最多2（含其他owner）。当前RUNNING，无新目标成绩或收益声明。
+
+用户目标于发布后更新：收敛到Phase1近期复盘/源机制诊断/公平最小实验；不自动开发Phase2。新目标允许冻结骨干普通cos换头仅作特征诊断，主指标仍原头84%。本已发布run保持默认头单读出和固定预算，后续若需源诊断另行固定并单列成本，不热改本run。

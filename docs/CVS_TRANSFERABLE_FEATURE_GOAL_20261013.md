@@ -1,35 +1,17 @@
-# 可迁移特征提取器目标
+# Phase1 可迁移特征提取器目标
 
-当前主目标：目标 clean 三 model-seed 均值 ≥84%，每个 Phase1 骨干训练不超过 50 轮。对比基线固定为历史旧伪标签门控＋EMA＋cos，不以纯 CE 替代。每次探索实现、配置及完整正负结果均提交、推送 Git，并独立核对远端分支 OID。目标仍未完成。
+以2026-10-14用户更新goal-objective.md为最新范围：持续复盘→合法源机制诊断→方向选择→最小实现→公平实验→结果分析。主任务仅Phase1，实际导出joint160的fθ增强与原头clean三预定义seed均值84%分别验收；不承诺必达，不追分调参。
 
-最新用户约束（2026-10-13）：分类头使用网络默认分类头，仅随骨干联合训练。禁止冻结骨干后专门训练分类头，禁止把 source 换头、support-only W 训练或其他分类器用作后续优化与评估步骤。Phase1 用原默认 ResidualPhysicalHead（6×160，scale30）直接 clean 推理，预测后没有 optimizer 更新。本约束覆盖此前 pasted design 的换头/临时分类器安排；历史已完成的诊断保留，不能替代默认头负结果或声称达标。未使用的 support_cosine 接口已删除，默认头纯推理入口在 experiments/cvs_default_head，政策代码 4a8235a4dab2fc9971e95d7b76ca5a22ff670732 已推送并核对远端。
+默认ResidualPhysicalHead普通cos6×160/scale30随骨干按原损失联合训练，不通过复杂head/RX路由/类别专属参数优化。最新目标明确允许冻结骨干、丢弃旧W后仅L_s拟合同形式ordinarycosine作为特征诊断，预算单列、theta/buffers不变；此授权覆盖此前禁止一切source换头的目标表述。它不授权support调参或Phase2开发，不改变已发布PA单ORIGINAL_HEAD计划。
 
-## 优化对象与证据边界
+唯一后续基线：历史batch_neighbor伪标签门控＋EMA＋普通cos的LEGACY50，32label＋18pseudo，50epoch/11100updates，seeds2026092701/02/03，同原ManySigsource契约、NoExplicitCFO及内部补偿。MS/RC的33＋17与10轮AdamW诊断和本对话32＋18/20轮Adam诊断分别保留，不合并为同配方。
 
-研究对象是可迁移 fθ，包括 Sinc、时频、PA、参考响应、base_norm/pa_norm/gain 与实际 joint160 的类无关计算。h349 诊断向量不替代网络真正分类前的 joint160。保持默认头结构和训练算法，新增机制必须通过真实特征梯度与冻结后的默认头测试证明效果，不专门拟合 W。
+Phase1骨干每模型≤50，优先从零；L6300/U56700隐藏/V27000，训练池标注10%，split/sourceRX/day/TX/物理ID不变。V用途按预登记不更新模型，不增加星地训练。目标IQ/标签/统计/缓存/误差不进入结构、参数、父权重或停止选择；冻结后逐包预测与truth-last，已暴露基准不称独立盲测。
 
-ManySig 源域 6 TX 都已参与 L/U/V 或 teacher，因此只能叫旧 TX；隐藏 U 标签不等于网络没见过该 TX。真正未见 TX 不能在任何 Phase1 角色或祖先 checkpoint 中出现。新类/Phase2 证据仍未完成；未来按 PROJECT_PROTOCOL 的 p2_min_v1、VALIDATED_ONCE、固定 received IQ/support/query 权限和默认网络流程执行，不访问 source/clean，不用 query 拟合，不专门训练头。已查明 practical capsule 不能冒充 LEO_WEAK，旧弱场景 cache 的物理 ID 重叠不能直接作为当前正式数据。数据发现仅为只读元数据核验，没有启动新的 Phase2 实验。
+主复盘报告和必要台账集中在 [CVS_PHASE1_FEATURE_REVIEW_20261014.md](CVS_PHASE1_FEATURE_REVIEW_20261014.md)，不把Phase2完成作为Phase1前置条件。过去Phase2数据定位只作历史接口参考，不继续开发适配器/注册/capsule构建。
 
-源 V 只检查健康，不依其微小涨分选择模型；本对话采用已授权 clean-only 完整三 seed 矩阵。方案在目标访问前固定，测试结果不回流调参、候选排序或选择性重跑；已暴露基准不声明独立盲测。健康其他 owner 的进程保持原计划，每 GPU 总实验进程最多 3。
+最新已核实：MS12、EPI9、RC15、CF9全部完整终态；各路线原头均值均未84%。源几何真实7/15行，不能据低秩认定塌缩。近期原头与冻结cos/proto、全部负结果和证据层级在主台账中保留。
 
-## 已完成探索
+当前健康run：20261014-phase1-pa-cross-delay-legacycos-clean-manysig-m9-r01，代码1f8814c046a8c68eba8a334e66a0aceb76e491e0。基线3同seed原默认决定复用并评分；6新scratch50、浅层PA加576参数（同容量卷积/因子化跨延迟三阶），分类头原对象，零单独head训练。真实baseline noquery smoke、focusedchecks、唯一独立P0/P1审查、archive传输/remotecompile PASS；6worker实际PID/CWD/argv/GPU/commit匹配，epoch4至5且loggrowth VERIFIED，failure0。此run保持固定预算和默认头单读出，训练后自动clean评分；目前无新性能结果。
 
-|路线|固定默认头三 seed clean 均值|结论与报告|
-|---|---:|---|
-|旧门控＋EMA＋cos LEGACY50|80.6454%|已核实 source 来源、固定 final50，后续同 seed 对比复用|
-|局部/全局功率上下文|79.5353% / 79.4298%|均低于基线；20261013-phase1-frequency-context-eval-recovery-manysig-m9-r01，Git 60b2fa 已交付|
-|SAME_RX / CROSS_RX 历史 episodic 特征目标|80.6204% / 80.7494%|CROSS 仅 +0.1040 个百分点，1/3 为正；完整 9 行结果 Git 752a8f20f6dcbc51abc195f6f78b597ed89ea6bd|
-|同容量功率关系 POWER_RELATIONS|76.8591%|相对基线 −3.7863 个百分点，3/3 为负|
-|功率化前复频谱关系 COMPLEX_RELATIONS|79.3058%|相对基线 −1.3397 个百分点，1/3 为正；未达 84%|
-
-最新跨频 run 为 20261013-phase1-cross-frequency-legacycos-clean-manysig-m9-r01，执行代码 9c171f9f13c7675eb06a4f2fc82d31105919becf。6 个新 scratch50 模型全部结束，完整 66600 step 记录、450 epoch 记录、9 个真实默认头 checkpoint 与 1512000 个 clean 决定已独立核验；162 条默认头聚合指标重新计算一致。新增特征参数实际改变，无非有限跳步，所有 queue/worker terminal。完整结果见 [final_analysis.md](../automation_reports/CV-SincNet/20261013-phase1-cross-frequency-legacycos-clean-manysig-m9-r01/final_analysis.md) 和同目录 results.json。
-
-历史 source 冻结换头（9 行/297 读出）以及 episodic/cross-frequency 的全 L 新 cosine/原型诊断均在最新约束之前已经完成。θ 与原默认 W 保持冻结，历史结果完整保留；它们不算当前主指标，也不会继续作为未来步骤。source-only 诊断不冒充目标新类或 Phase2。跨频历史额外 324 条结果单独归档 historical_readout_results.json，避免与默认头结果混用。临时 ridge 分类器路线也不再作为新增实验。
-
-## 后续方向
-
-继续沿源数据与结构分析设计特征机制，保持默认头与旧门控＋cos 对比。用户原列出的 PA 跨延迟三阶乘性交互属于尚未实施的独立结构路线，可与同容量卷积独立消融；浅层/中层域稳定机制须记录实际层位、梯度对象、RX 域分组及身份保护配对。任何新行都直接默认头预测，不能调用历史 source_freshhead/readout 入口。
-
-另一活动对话“继续优化 Phase1 双骨干域泛化”当前路线是 GN 信息恢复/分支竞争抑制。本对话的功率化前跨频关系及后续 PA/特征机制与其不同；未擅自给其他对话发送任务。所有负结果保留，目标 84% 仍 active。
-
-新独立 PA 结构矩阵已实现、登记但尚未发布：20261014-phase1-pa-cross-delay-legacycos-clean-manysig-m9-r01，原旧PA baseline、同参数普通卷积PA_CONV、因子化跨延迟三阶PA_CROSS_DELAY；后两项各3scratch50，共6新模型，新fθ各576参数、旧EnvelopeGate保留。默认头6×160/scale30联合训练，无单独headfit，预测只有ORIGINAL_HEAD。数学/真实骨干/默认推理/21负例与九行合成汇总PASS，唯一一次独立P0/P1审查PASS；尚无真实性能结果。
+下一步最多两个动作：只读真实Sinc checkpoint运动及回收既有表征诊断；继续当前PA闭环。源诊断无梯度/optimizer，不能仅非零gradient就宣称实际更新或迁移；后续候选先写源证据、接线、同容量控制、成本和失败判据。每次实现/config/主报告/必要聚合结果提交push，并独立比较remote OID；大原始产物保持原目录。
