@@ -4,9 +4,9 @@ from experiments.cvs_source_pseudotarget_health import design as health
 
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,SEEDS,FULL_FP32_POLICY,read,write=(getattr(parent,k) for k in ('PROJECT','SOURCE','SEEDS','FULL_FP32_POLICY','read','write'))
-RUN='20261013-source-six-direction-mechanisms-manysig-m3-r01'
-RELEASE='cvs_six_direction_mechanisms_20261013_r01'
-OWNER='codex/root/six-direction-mechanisms-20261013'
+RUN='20261013-source-six-direction-mechanisms-manysig-m3-r02'
+RELEASE='cvs_six_direction_mechanisms_20261013_r02'
+OWNER='codex/root/six-direction-mechanisms-20261013-r02'
 BASE=Path(PROJECT)/'runs'/RUN
 RX=health.RX;DAYS=health.DAYS;CLASSES=6;BATCH_SIZE=256
 ROLE_COUNTS={'L_s':6300,'V':27000,'U_s':56700}

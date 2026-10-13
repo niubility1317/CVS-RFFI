@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |六方向源机制诊断：冻结 CE30 三主种子|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-six-direction-mechanisms-manysig-m3-r01/report.md)|
+|六方向源机制诊断：NumPy 整数兼容恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-six-direction-mechanisms-manysig-m3-r02/report.md)|

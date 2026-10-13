@@ -1,2 +1,3 @@
 {"at": "2026-10-13T06:48:52+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-13T07:23:18+00:00", "status": "LOCAL_VERIFIED", "note": "All focused six-module/native-interface/pipeline fixture checks PASS; single independent P0P1 PASS; real checkpoint/source18 cells pending; no target or identity updates", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-10-13T07:58:59+00:00", "status": "FAILED", "note": "VERIFIED process exited; matching NumPy dtype error before any completed direction; all artifacts preserved; recovery r02 registered", "evidence": ["local_artifacts/cvs_six_direction_mechanisms_20261013_r01/readback.json"], "row_id": null}

@@ -74,7 +74,10 @@ def partial_plan(cost, k):
     rows, columns = hungarian(padded)
     keep = (rows < n) & (columns < n)
     plan = torch.zeros(n, n, dtype=torch.float64)
-    plan[torch.as_tensor(rows[keep]), torch.as_tensor(columns[keep])] = 1 / n
+    # Python integers avoid NumPy 2 dtype inference in the Torch 2.1 runtime.
+    row_index = torch.tensor(rows[keep].tolist(), dtype=torch.long)
+    column_index = torch.tensor(columns[keep].tolist(), dtype=torch.long)
+    plan[row_index, column_index] = 1 / n
     validate_plan(plan, n, k)
     return plan
 

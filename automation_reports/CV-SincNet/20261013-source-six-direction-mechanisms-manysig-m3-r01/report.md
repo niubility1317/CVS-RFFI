@@ -50,3 +50,7 @@
 
 
 本地状态 LOCAL_VERIFIED：六项聚焦数学/输入负例/合成源入口检查、真实随机 native 架构与 identity-only 小参数块接口，以及 3×6 完整关闭/失败保存/不可覆盖的流水线 fixture 均 PASS。独立一次代码 P0/P1 审查 PASS。合成结果只用于组件核验；真实三 checkpoint 无 query smoke 是发布首步，真实源适用性与身份性能尚无新结果。V 未参与拟合或晋级，U 无真值。
+
+## 2026-10-13 实际发布与技术退出
+
+VERIFIED：发布 commit 828bc3468；单归档校验、远端编译、3 个真实 checkpoint 无 query smoke 通过。第一项 matching 索引转换失败（Torch 2.1.0 / NumPy 2.2.5），0/18 cells，源扫描与 model_contract 已保存；进程退出，无 target/U truth/持久身份更新。原输出保留。替代运行 20261013-source-six-direction-mechanisms-manysig-m3-r02 只修复同一整数边界，科学矩阵不变。
