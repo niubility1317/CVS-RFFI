@@ -1,0 +1,197 @@
+{
+  "run_id": "20261014-phase1-single-basis-residual-oldgate-e50-clean-manysig-m6-r01",
+  "row_id": "SINGLE_BASIS-s2026092701",
+  "scope": "PARTIAL SOURCE ONLY; first seed stages32/33/34; no final freeze/score; no training feedback",
+  "head_fit_updates": 0,
+  "target_read": false,
+  "stages": [
+    {
+      "epoch": 32,
+      "source": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.983037037037037,
+        "source_val_rx_accuracy": {
+          "1": 0.9966666666666667,
+          "3": 0.9555555555555556,
+          "4": 0.9831481481481481,
+          "6": 0.9959259259259259,
+          "8": 0.9838888888888889
+        },
+        "source_val_worst_rx": 0.9555555555555556
+      },
+      "feature_change_vs_epoch33_L32": null,
+      "parameter_updates": {
+        "sinc": {
+          "changed_values": 1,
+          "l2_change": 0.000270843505859375
+        },
+        "t1": {
+          "changed_values": 14640,
+          "l2_change": 2.7521010393632683
+        },
+        "t2": {
+          "changed_values": 28800,
+          "l2_change": 3.443117068015068
+        },
+        "t3": {
+          "changed_values": 38304,
+          "l2_change": 3.5679686354055984
+        },
+        "f_proj": {
+          "changed_values": 5280,
+          "l2_change": 1.1852176388210227
+        },
+        "pa_b1": {
+          "changed_values": 8160,
+          "l2_change": 3.0637135759040164
+        },
+        "pa_b2": {
+          "changed_values": 21632,
+          "l2_change": 3.4149816632049053
+        },
+        "pa_b3": {
+          "changed_values": 20608,
+          "l2_change": 4.55200708623767
+        },
+        "cls_head": {
+          "changed_values": 1760,
+          "l2_change": 1.7352860158757188
+        }
+      }
+    },
+    {
+      "epoch": 33,
+      "source": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9834444444444445,
+        "source_val_rx_accuracy": {
+          "1": 0.9955555555555555,
+          "3": 0.957037037037037,
+          "4": 0.9833333333333333,
+          "6": 0.9959259259259259,
+          "8": 0.9853703703703703
+        },
+        "source_val_worst_rx": 0.957037037037037
+      },
+      "feature_change_vs_epoch33_L32": 0,
+      "parameter_updates": {
+        "sinc": {
+          "changed_values": 1,
+          "l2_change": 0.000270843505859375
+        },
+        "t1": {
+          "changed_values": 14640,
+          "l2_change": 2.7585477899019426
+        },
+        "t2": {
+          "changed_values": 28800,
+          "l2_change": 3.4550723649424944
+        },
+        "t3": {
+          "changed_values": 38304,
+          "l2_change": 3.5829176431353233
+        },
+        "f_proj": {
+          "changed_values": 5280,
+          "l2_change": 1.192393449709322
+        },
+        "pa_b1": {
+          "changed_values": 8160,
+          "l2_change": 3.0723370142413122
+        },
+        "pa_b2": {
+          "changed_values": 21632,
+          "l2_change": 3.423858116375426
+        },
+        "pa_b3": {
+          "changed_values": 20608,
+          "l2_change": 4.566675012639899
+        },
+        "cls_head": {
+          "changed_values": 1760,
+          "l2_change": 1.745034153419274
+        }
+      }
+    },
+    {
+      "epoch": 34,
+      "source": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9848888888888889,
+        "source_val_rx_accuracy": {
+          "1": 0.9961111111111111,
+          "3": 0.96,
+          "4": 0.9844444444444445,
+          "6": 0.9966666666666667,
+          "8": 0.9872222222222222
+        },
+        "source_val_worst_rx": 0.96
+      },
+      "feature_change_vs_epoch33_L32": 1.7757598161697388,
+      "parameter_updates": {
+        "sinc": {
+          "changed_values": 1,
+          "l2_change": 0.000270843505859375
+        },
+        "t1": {
+          "changed_values": 14640,
+          "l2_change": 2.7661637560017724
+        },
+        "t2": {
+          "changed_values": 28800,
+          "l2_change": 3.465650335030958
+        },
+        "t3": {
+          "changed_values": 38304,
+          "l2_change": 3.595666443706564
+        },
+        "f_proj": {
+          "changed_values": 5280,
+          "l2_change": 1.1952661352577507
+        },
+        "pa_b1": {
+          "changed_values": 8160,
+          "l2_change": 3.0772893547108344
+        },
+        "pa_b2": {
+          "changed_values": 21632,
+          "l2_change": 3.432536173335209
+        },
+        "pa_b3": {
+          "changed_values": 20608,
+          "l2_change": 4.577407412062682
+        },
+        "cls_head": {
+          "changed_values": 1760,
+          "l2_change": 1.7550417881678104
+        }
+      }
+    }
+  ],
+  "U_feedback": [
+    {
+      "epoch": 32,
+      "observations": 0,
+      "accepted": 0,
+      "truth_read": false,
+      "head_fit_updates": 0,
+      "gate_changed": false
+    },
+    {
+      "epoch": 33,
+      "observations": 0,
+      "accepted": 0,
+      "truth_read": false,
+      "head_fit_updates": 0,
+      "gate_changed": false
+    },
+    {
+      "epoch": 34,
+      "observations": 56700,
+      "accepted": 921,
+      "truth_read": false,
+      "head_fit_updates": 0,
+      "gate_changed": false
+    }
+  ]
+}
