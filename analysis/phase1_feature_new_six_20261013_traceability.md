@@ -66,16 +66,18 @@
 
 | ID | 来源 | 要求 | 目标文件 | 状态 | 验证 | 说明 |
 |---|---|---|---|---|---|---|
-| D01a | 三.3 | t2 中层局部投影6维、固定14方向 cos/sin 分布编码，4固定窗口进入实际z160 | experiments/cvs_feature_sequence50/features.py | pending | RFF区分同均值同方差分布；真实模型z/梯度 | 共享有界局部投影；不是物理IQ FFT |
-| D02a | 三.4 | 均值、均值＋方差、均值后非线性、RFF控制 | features.py/design.py | pending | 数学边界与同训练/参数预算检查 | 固定映射使输出宽度相同，内在信息维度不宣称相同 |
-| S01a | 四.2/4 | 一阶与二阶反对称路径量；无时间/有时间控制 | features.py | pending | 已知闭合有向面积、反向与顺序置换 | 6信号维＋可选时间；4固定窗口 |
-| S02a | 四.4 | 相同局部投影均值＋协方差对照；冻结局部顺序诊断 | features.py/checks.py | pending | 同参数输出，RFF排列不变，signature顺序敏感 | 不打乱真实IQ作训练增强 |
-| H01a | 用户最新指令 | 默认分类头原结构、原联合训练，无单独头拟合/诊断头 | model.py/source.py/predict.py | pending | 默认head权重初值、单次前向一致、训练后直接原头预测 | 原六路线换头要求由用户覆盖 |
-| P01a | Phase1边界 | L/U/V权限、scratch来源、固定budget、逐row自动预测评分 | source.py/provenance.py/dispatch.py | pending | 权限负测、真实checkpoint noquery smoke、远端读回 | Phase2不在本轮范围 |
-| R01a | 对照与小矩阵 | BASE_REF/MEAN/MEAN_VAR/NONLINEAR_MEAN/RFF/COV/SIG/SIG_TIME | design.py/registration | pending | 固定seed/配置、source-only扩展，无target反馈 | 首种子8行，新增7独立scratch骨干 |
+| D01a | 三.3 | t2 中层局部投影6维、固定14方向 cos/sin 分布编码，4固定窗口进入实际z160 | experiments/cvs_feature_sequence50/features.py | verified | RFF区分同均值同方差分布；真实模型z/梯度 | 共享有界局部投影；不是物理IQ FFT |
+| D02a | 三.4 | 均值、均值＋方差、均值后非线性、RFF控制 | features.py/design.py | verified | 数学边界与同训练/参数预算检查 | 固定映射使输出宽度相同，内在信息维度不宣称相同 |
+| S01a | 四.2/4 | 一阶与二阶反对称路径量；无时间/有时间控制 | features.py | verified | 已知闭合有向面积、反向与顺序置换 | 6信号维＋可选时间；4固定窗口 |
+| S02a | 四.4 | 相同局部投影均值＋协方差对照；冻结局部顺序诊断 | features.py/checks.py | verified | 同参数输出，RFF排列不变，signature顺序敏感 | 不打乱真实IQ作训练增强 |
+| H01a | 用户最新指令 | 默认分类头原结构、原联合训练，无单独头拟合/诊断头 | model.py/source.py/predict.py | verified | 默认head权重初值、单次前向一致、训练后直接原头预测 | 原六路线换头要求由用户覆盖 |
+| P01a | Phase1边界 | L/U/V权限、scratch来源、固定budget、逐row自动预测评分 | source.py/provenance.py/dispatch.py | implemented | 权限负测、真实checkpoint noquery smoke、远端读回 | Phase2不在本轮范围 |
+| R01a | 对照与小矩阵 | BASE_REF/MEAN/MEAN_VAR/NONLINEAR_MEAN/RFF/COV/SIG/SIG_TIME | design.py/registration | verified | 固定seed/配置、source-only扩展，无target反馈 | 首种子8行，新增7独立scratch骨干 |
 
 REJECTED_EXTRA_GATE：额外设计/计划审批与重复独立审查不属于项目八项最小流程；按既有用户方案与授权推进，不要求新的设计许可。
 
 2026-10-14 本地实现更新：D01a/D02a/S01a/S02a/H01a 已在数学与真实模型中 verified；八组原生默认头结构/初值一致、新增方案参数精确18976、CE梯度覆盖新增特征与默认头、W不定义z、teacher deepcopy及strict checkpoint roundtrip PASS。P01a 本地协议负测与源码闭环 implemented，真实远端 source/score 尚待；R01a 实际八组×三seed与source-only非劣扩展配置、登记 verified。唯一 P1为native训练闭包中的RX/day/channel拟合诊断，已最小修复并通过针对性负测，定点复审尚待。
 
 2026-10-14 唯一 P0/P1审查和一次定点复审 PASS。当前本组7项：D01a/D02a/S01a/S02a/H01a/R01a 本地 verified（6项），P01a 本地 implemented、远端真实checkpoint与启动尚待（1项）；无 deferred/rejected/blocked 项。原第5/6路线仍保留历史 deferred 状态，不在当前发布阻塞范围。
+
+2026-10-14 N607真实checkpoint无query smoke、一次archive传输校验、compile与启动 VERIFIED。首种子七个新增source进程 live，2至3epoch；default_head_only和native_fitted_probes_disabled实际resolved为true。当前6项verified、1项implemented（完整真实source→prediction→score尚待），0项blocked；未声称84%目标完成。

@@ -31,3 +31,11 @@ COV 对相同 6 维路径计算均值＋协方差上三角，共 27 分量。SIG
 2026-10-14 唯一独立审查发现一项直接 P1：native train_ssdg 在结束时无条件拟合 RX/day/channel ridge probe。候选 source 入口已用 scoped native_default_head_only 禁用该调用并在退出时恢复；resolved/completion 记录实际禁用一次、head_fit_updates=0，source proof 检查同一证据。针对性负测将真实 native frozen_ridge_linear_probe 替换为异常哨兵，确认整个受控闭包不调用拟合函数，原生非必需 gate 不触发，函数恢复；检查 PASS。原默认分类头仍在原 optimizer 中随骨干联合训练。定点复审尚待。
 
 唯一独立 P0/P1 审查与唯一 P1 定点复审 PASS（/root/sequence_p0_review）。已核实真实 native optimizer 收到全部新增参数、EMA 在安装后复制、默认头联合训练、source-only扩展、预测评分数量与实际发布入口。没有新增 blocker、重复全面审查或另训分类头。
+
+## 2026-10-14 N607 发布和启动核验
+
+发布与启动 VERIFIED。执行版本 c1bf3b74c7bc38b03e4e29931d9b90dc60f4a296；本地 HEAD 与远端 branch OID 独立比较一致。一次 archive SHA 比较、远端 compile 和真实同契约 checkpoint noquery preflight PASS，检查未读取 query IQ/truth，head_fit_updates=0。普通账户/直连预检通过。
+
+首种子8行已派发：BASE_REF完成合法源诊断、原默认预测复用和独立scorer闭环；七个新增scratch模型实际进程存活、CWD/argv与本run一致，epoch为3/3/3/3/2/2/2（启动快照），日志已增长。resolved config均确认default_head_only=true、native_fitted_probes_disabled=true、新增参数18976。最高每GPU总实验进程1，低于上限3；不干预其他任务。后两seed16行仍等待固定首种子源域条件。
+
+没有新性能结论或84%完成声明。完整训练预算、无标签阶段、原生禁用probe闭包、冻结后的参数无更新诊断和逐row完整prediction/score仍待实际结束。运行状态与启动证据保留在local_artifacts/cvs_feature_sequence50_20261013_r01/{package,readback,startup_readback}.json及原远端run；这些运行产物不进入Git。
