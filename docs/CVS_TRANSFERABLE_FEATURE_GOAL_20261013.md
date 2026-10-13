@@ -19,3 +19,5 @@
 路线六数学组件已实现但尚未接入源训练或启动：dual ridge=.1、scale10、normalize eps1e-4、160维/6类，线性solve不inverse，无持久head参数。focused primal等价误差7.11e-15、两侧梯度范数.380812/.365234、数值梯度、类置换/支持顺序置换/逐query独立/重复及秩亏支持/zero finite/外部autocast和19 negatives PASS。不把数学组件PASS写成实验性能收益。后续冻结cadence/sourceRX采样/辅助权重/预算与同预算基线读出矩阵后再发布。
 
 当前新冻结矩阵：20261013-phase1-episodic-feature-legacycos-clean-manysig-m9-r01，SAME_RX/CROSS_RX各3scratch50、baseline3同seed终轮复用；每4step辅助episode2775、sourceL12support/24query、ridge.1/scale10/weight.2。全部sourceRX轮换，主RNG保留，分类头结构不变。各row自动原头/全L普通cosine新头/原型三读出clean后truth-last；84%主指标固定CROSS_RX原头，但原头达84仍不单独证明新TX迁移。另一活动对话最新路线为GN信息恢复/分支竞争抑制，与本路线独立。
+
+路线六完整结果：20261013-phase1-episodic-feature-legacycos-clean-manysig-m9-r01 已完成全部 9 行/27 读出、4536000 决定、486 聚合记录独立重计；6 新 scratch50，共 66600updates/16650episodes。CROSS_RX 原头80.7494%（基线80.6454%，+0.1040pp，1/3正）；新普通cos78.0115%（+0.2478pp，1/3正）；原型75.7250%（+1.2863pp，3/3正）。未达84%，普通换头无稳定提升，不能声明新TX或Phase2迁移完成。负/边际结果完整上传；不追加目标反馈调参。当前先只读核实现有真实未见TX capsule与support-only普通cos接口，正式特征迁移证据尚未完成。

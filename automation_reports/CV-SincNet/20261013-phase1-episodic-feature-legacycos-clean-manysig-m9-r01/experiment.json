@@ -30,7 +30,7 @@
   "replaces_run_id": null,
   "authorization": "Active goal01a13438; user<=50epochs, feature extractor focus, old gates+cos. Referenced human reply explicitly chooses historical pseudo gates+EMA+cos.",
   "code": {
-    "commit": null,
+    "commit": "d001edf7c03c6c0831679ff37cfbaf1f9ed80eb7",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "native verified Python/CVS-RFFI; fullFP32; ordinary N607",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_episodic_feature_20261013_r01",
@@ -177,7 +177,7 @@
       "command": "python -u -m experiments.cvs_episodic_transfer.dispatch --worker LEGACY50-s2026092701",
       "expected_artifacts": [
         "prediction/predictions.npz",
-        "prediction/readout_frozen.json",
+        "prediction/head_frozen.json",
         "prediction/complete.json",
         "scores/metrics.json",
         "completion.json"
@@ -453,7 +453,7 @@
       "command": "python -u -m experiments.cvs_episodic_transfer.dispatch --worker EPISODE_SAME_RX-s2026092701",
       "expected_artifacts": [
         "prediction/predictions.npz",
-        "prediction/readout_frozen.json",
+        "prediction/head_frozen.json",
         "prediction/complete.json",
         "scores/metrics.json",
         "completion.json",
@@ -635,7 +635,7 @@
       "command": "python -u -m experiments.cvs_episodic_transfer.dispatch --worker EPISODE_CROSS_RX-s2026092701",
       "expected_artifacts": [
         "prediction/predictions.npz",
-        "prediction/readout_frozen.json",
+        "prediction/head_frozen.json",
         "prediction/complete.json",
         "scores/metrics.json",
         "completion.json",
@@ -817,7 +817,7 @@
       "command": "python -u -m experiments.cvs_episodic_transfer.dispatch --worker LEGACY50-s2026092702",
       "expected_artifacts": [
         "prediction/predictions.npz",
-        "prediction/readout_frozen.json",
+        "prediction/head_frozen.json",
         "prediction/complete.json",
         "scores/metrics.json",
         "completion.json"
@@ -1093,7 +1093,7 @@
       "command": "python -u -m experiments.cvs_episodic_transfer.dispatch --worker EPISODE_SAME_RX-s2026092702",
       "expected_artifacts": [
         "prediction/predictions.npz",
-        "prediction/readout_frozen.json",
+        "prediction/head_frozen.json",
         "prediction/complete.json",
         "scores/metrics.json",
         "completion.json",
@@ -1275,7 +1275,7 @@
       "command": "python -u -m experiments.cvs_episodic_transfer.dispatch --worker EPISODE_CROSS_RX-s2026092702",
       "expected_artifacts": [
         "prediction/predictions.npz",
-        "prediction/readout_frozen.json",
+        "prediction/head_frozen.json",
         "prediction/complete.json",
         "scores/metrics.json",
         "completion.json",
@@ -1457,7 +1457,7 @@
       "command": "python -u -m experiments.cvs_episodic_transfer.dispatch --worker LEGACY50-s2026092703",
       "expected_artifacts": [
         "prediction/predictions.npz",
-        "prediction/readout_frozen.json",
+        "prediction/head_frozen.json",
         "prediction/complete.json",
         "scores/metrics.json",
         "completion.json"
@@ -1733,7 +1733,7 @@
       "command": "python -u -m experiments.cvs_episodic_transfer.dispatch --worker EPISODE_SAME_RX-s2026092703",
       "expected_artifacts": [
         "prediction/predictions.npz",
-        "prediction/readout_frozen.json",
+        "prediction/head_frozen.json",
         "prediction/complete.json",
         "scores/metrics.json",
         "completion.json",
@@ -1915,7 +1915,7 @@
       "command": "python -u -m experiments.cvs_episodic_transfer.dispatch --worker EPISODE_CROSS_RX-s2026092703",
       "expected_artifacts": [
         "prediction/predictions.npz",
-        "prediction/readout_frozen.json",
+        "prediction/head_frozen.json",
         "prediction/complete.json",
         "scores/metrics.json",
         "completion.json",
@@ -2078,6 +2078,8 @@
     "Baseline ORIGINAL_HEAD predictions reused from completed frequency evaluation recovery; no repeat prediction launch. Baseline fresh/proto are new fixed readouts and all frozen before truth scoring.",
     "Existing benchmark already exposed. Fixed matrix/recipe source-designed; no target-driven tuning/reordering/selective rerun. All6ManySig TX seen includingU, cannot call any newTX."
   ],
-  "status": "PREREGISTERED",
-  "registered_at": "2026-10-13T12:51:55+00:00"
+  "status": "ANALYZED",
+  "registered_at": "2026-10-13T12:51:55+00:00",
+  "results_ref": "final_analysis.md",
+  "aggregated_metrics_ref": "results.json"
 }

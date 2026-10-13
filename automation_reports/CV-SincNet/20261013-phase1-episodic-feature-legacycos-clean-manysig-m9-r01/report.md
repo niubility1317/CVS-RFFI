@@ -3,7 +3,7 @@
 - run_id：`20261013-phase1-episodic-feature-legacycos-clean-manysig-m9-r01`
 - group_id：`source-episodic-transfer-20261013`；类别：`cvs`；阶段：`phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+已完成 9 行、三读出 clean 评分及完整复核，结果见 [final_analysis.md](final_analysis.md) 和 [results.json](results.json)。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -46,6 +46,8 @@
 
 停止：数据/查询越权、source/scratch/clock/cadence不符、非有限loss/gradient、预算/episodecount或预测评分不能闭环等技术失败停止新调度，健康active行完成，保留产物，不影响其他owner；不以性能停止/重排/选择性重跑。step日志每步验证真实episodecadence与12/24packets，避免空机制完成50轮。
 
-focused checks：数学primal/dual与数值梯度、置换/逐query独立、秩亏/zero/autocast及19negatives PASS；actualbackbone辅助W梯度None、backbone梯度finite/nonzero、主RNG保留、2775任务RX555each、实际native总loss插入前backward与默认None不变、11negatives PASS；真实nativeparser/resolved 50/32/18/旧EMA/gates PASS；predict/score36metadata/CM/goal＋10NPZ/preflight/nohook negatives PASS。release首步真实checkpoint/合法sourceL no-query smoke，PASS后直接启动。一次独立下一run P0/P1 review待完成。
+focused checks：数学primal/dual与数值梯度、置换/逐query独立、秩亏/zero/autocast及19negatives PASS；actualbackbone辅助W梯度None、backbone梯度finite/nonzero、主RNG保留、2775任务RX555each、实际native总loss插入前backward与默认None不变、11negatives PASS；真实nativeparser/resolved 50/32/18/旧EMA/gates PASS；predict/score36metadata/CM/goal＋10NPZ/preflight/nohook negatives PASS。release首步真实checkpoint/合法sourceL no-query smoke，PASS后直接启动。一次独立下一 run P0/P1 review PASS，证据见后续预登记记录。
 
 独立P0/P1 review：本新候选一次PASS，无直接阻断缺陷。补充本地cold import曾超时；有界2threads配置独立进程读回exit0，已到既定remote preparation文件读取边界（本机不存在，未读dataset），无import错误。不能据此声称remote launch完成，实际release预检仍须PASS。原生默认None路径、预测nohook、source frozen readout三列评分已审查。
+
+完成读回：code d001edf7c03c6c0831679ff37cfbaf1f9ed80eb7，新骨干 6×50，复用基线 3×50；完整 486 聚合记录独立重计 VERIFIED，目标 84% 未达到。实际发布与资源证据保存本地 delivery，原始产物保留 N607；全部进程自然结束。
