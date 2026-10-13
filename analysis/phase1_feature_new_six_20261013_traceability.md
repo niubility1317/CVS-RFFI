@@ -49,3 +49,5 @@
 已执行：实际原模型CPU构建与源码计算图读取、native labeled out_l调用定位；没有新训练/target读取。其余路线按用户给定分阶段顺序延期，不宣称已实现或验证。
 
 本地原型检查PASS：五模型普通原头initial一致、部署z160/W独立、新增投影与alpha有限非零梯度、精确1225参数匹配、strict state roundtrip；四路径实际投影/频域rho和统计侧路屏蔽、响应旁路屏蔽、退出恢复、教师U不受L临时hooks影响、U/query/target角色拒绝、native唯一out_l/x_l_main/y_l AST定位。原12模型旧矩阵已完成，主目标84flag false；新alpha/mask设计在读取其目标指标前已固定。
+
+2026-10-13 正式闭环已实现并登记：20261013-phase1-restitution-competition-oldgate-e50-clean-manysig-m15-r01，五组×三seed，新增12 scratch50，复用3同seed固定历史对照；L_s-only普通cosine10轮及5留RX/1RX信息诊断，源V单组撤除保持固定W，双读出固定后fresh scoring。focused pipeline、release import、compile PASS；唯一独立P0/P1 review PASS。真实远端source训练/冻结换头/target评分尚待；Phase2匹配数据与同support旧新类联合证据仍未完成。

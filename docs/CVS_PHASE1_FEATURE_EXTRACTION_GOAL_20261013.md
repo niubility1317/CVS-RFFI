@@ -25,3 +25,5 @@
 2026-10-13 完整更新：历史门控E50多尺度12模型全部完成与完整审计 VERIFIED，clean均值 OLD/TIME/PA/JOINT=80.526786%/81.690476%/79.003175%/81.289484%，主目标84%未达。全部seed和负结果已保存于该run final_results.md/result_summary.json/CSV，须推送核对。旧run实际代码5fa536f9c，不追溯修改。
 
 用户新六路线说明已存 docs/design_reports/phase1_feature_six_routes_20261013.md。后续改为归一化信息恢复与分支竞争首轮，BASE/同参数普通残差/NORM/COMP/NORM_COMP；NORM仅t1浅层，恢复当前样本GN前相对mu/std，alpha初值.05有界.2；两种旁路均新增1225 identity参数。COMP p=.1、5epoch warmup后L_s学生随机撤去4种实际证据路径之一，处理频域rho/PA统计侧路及独立reference_projection，U/EMA生成方式和推理全部路径保持。当前只有本地原型和无query检查PASS，冻结骨干普通cos refit与source/RX诊断、实际全流程矩阵及Phase2同support旧新类比较仍待实现/验证，不能称机制有效。四条后续路线分阶段保留，编码率先做几何诊断。新参数在读取现多尺度目标值前已固定，不依据该目标结果调整。
+
+2026-10-13 新路线正式闭环已登记：20261013-phase1-restitution-competition-oldgate-e50-clean-manysig-m15-r01。五条件BASE_REF/ORDINARY/RESTORE/COMP/RESTORE_COMP固定，12新增scratch50＋3同seed历史基线复用。L_s-only冻结普通cos10轮及源RX/部分路径诊断均已实现，成本独立披露；source-only首seed完整屏障、不劣界限及双readout truth-last checks PASS，唯一独立P0/P1 review PASS。下一步提交发布与真实checkpoint smoke，不把代码检查称为识别提升；Phase2仍未验证，84%目标保持active。
