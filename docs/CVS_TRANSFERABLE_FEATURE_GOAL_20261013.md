@@ -25,3 +25,5 @@
 下一条独立结构路线已实现并登记 20261013-phase1-cross-frequency-legacycos-clean-manysig-m9-r01：功率化前cross-frequency复关系/同容量power关系，各3scratch50，baseline三读出完整复用；fθ新增45504params，旧W完全丢弃后实际joint160 maxdiff0。Vhealth-only，自动clean原头/普通换头/原型truth-last；尚未发布、尚无性能结果。已有practical Phase2 capsule不冒充LEO_WEAK，真正未见TX正式迁移证据仍未完成。
 
 复频谱路线已发布 VERIFIED，执行code 9c171f9f13c7675eb06a4f2fc82d31105919becf；6scratch50新行已核实真实进程与epoch10至12日志增长，baseline三读出完整复用闭环。所有新行方案已固定，不读新目标分数调参，训练后自动3读出clean评分。当前未完成，无84%或新TX/Phase2收益声明。
+
+普通support-only验证组件已参数化注册类数：cvs_transfer_features/support_cosine.py固定160维、scale30/无bias、新Xavier W/Adam.01/20fullbatch updates，唯一更新W、featureupdates0。合成6类与原读出相同预归一化流水线W/共有日志/logits完全一致，8/26/125类有限，类置换/逐query独立/zero/autocast/29negatives PASS。未读取真实数据，未接入当前Phase1的500update读出，未声称Phase2验证；正式入口仍须合法p2_min_v1/VALIDATED_ONCE输入与真实old/new注册映射。
