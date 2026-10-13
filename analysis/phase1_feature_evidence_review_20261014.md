@@ -173,3 +173,9 @@ SIG_TIME相对同seed原基线纠正/引入错误：2026092701＝9483/4829，净
 |本TIME四条件A33/17|7b1e2fcbe1bf5d05f24bc91f86aa7d4b46d3ee95|12scratch50＋3历史参考|600新增ep/133200step＋150历史ep|15/1/2520000/270|4path各60672新增；真初始state/RNGmatched；default-only|
 
 各run同一物理SOURCE契约L6300/U56700(hidden)/V27000、6TX/5sourceRX×3day，targetclean168000，NoExplicitCFO；32/18与33/17分组、10/20epoch head配方不合并。所有新增骨干无未知ancestor、无target初始化/训练/选择，基线只作固定同seed比较。逐row resolved/native配置、source合同/初始化/freeze、原始log/weight/prediction路径在各run experiment.json，完整引用，不把索引状态代替实时证据。后续source/time run及另一owner重复发布路径均保持独立身份，不混成6seed。
+
+## 后续源机制工作与重复派发保护
+
+跨分支只读核对发现，另一 owner 已用提交0f81373c25ba69a6cb9deec5c7ca652880fd62af发布20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01：RAW_HZ 与 CENTER_25K、原始基线，各三seed；实际初始核和joint160相同，33＋17/scratch50、默认头联合训练、0另训头。2026-10-14独立进程/产物读回VERIFIED，首seed两模型第3轮、0failure，后两seed仍等待固定源条件。未读取其partial target指标选方案。该居中缩放同时改变优化/权衰减/EMA坐标，不能称纯尺度因果测试。本对话尚未发布的固定二进制单位实现与局部检查移至本地保存，不并行启动另一单位试验，不停止或改动已有run。
+
+当前独立动作是20261014-diagnostic-source-labeled-gate-oldgate-manysig-m3-r01：只读历史固定默认student/ownEMA，用合法已见L_s6300/seed测原门控代理精度、RX/day/TX覆盖以及相同元数据的可配对邻居上限，0训练/EMA/headfit，0target或U前向。原门控与健康Sinc训练保持。代理不能替代实际隐藏U精度或泛化验证；完整结果返回后在本主报告集中更新。预登记和3行路径见对应experiment.json/report.md。
