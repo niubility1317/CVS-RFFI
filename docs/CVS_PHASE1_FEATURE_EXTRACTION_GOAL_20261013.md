@@ -21,3 +21,7 @@
 当前运行：`20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01`，release `cvs_feature_multiscale50_20261013_r01`，执行 commit `5fa536f9ca2d90e7d30d547d58503a41b612d57f`。首种子四组已到第 39/41/41/40 轮并均进入 pseudo 阶段，实际 EMA 更新与无标签损失执行、U_s 真值隐藏、无非有限跳步 VERIFIED，无失败记录。首种子四组全部 source-only 通过后队列自动扩展，逐行自动 clean prediction 和独立评分；完整结果报告与实际种子数随后提交推送。目标仍 active。
 
 后续扩展已核实：首种子四组完整闭环，终轮源训练 CE 0.288426/0.249913/0.196179/0.193749 全部通过既定条件，剩余 8 行已自动启动并到第 4 至 6 轮，无失败。当前实际完整种子数仅 1，尚无三种子完整均值；未读取目标分数参与扩展。仓库保留 `first_seed_source_summary.json`，全矩阵结果完成后仍须审计和上传。
+
+2026-10-13 完整更新：历史门控E50多尺度12模型全部完成与完整审计 VERIFIED，clean均值 OLD/TIME/PA/JOINT=80.526786%/81.690476%/79.003175%/81.289484%，主目标84%未达。全部seed和负结果已保存于该run final_results.md/result_summary.json/CSV，须推送核对。旧run实际代码5fa536f9c，不追溯修改。
+
+用户新六路线说明已存 docs/design_reports/phase1_feature_six_routes_20261013.md。后续改为归一化信息恢复与分支竞争首轮，BASE/同参数普通残差/NORM/COMP/NORM_COMP；NORM仅t1浅层，恢复当前样本GN前相对mu/std，alpha初值.05有界.2；两种旁路均新增1225 identity参数。COMP p=.1、5epoch warmup后L_s学生随机撤去4种实际证据路径之一，处理频域rho/PA统计侧路及独立reference_projection，U/EMA生成方式和推理全部路径保持。当前只有本地原型和无query检查PASS，冻结骨干普通cos refit与source/RX诊断、实际全流程矩阵及Phase2同support旧新类比较仍待实现/验证，不能称机制有效。四条后续路线分阶段保留，编码率先做几何诊断。新参数在读取现多尺度目标值前已固定，不依据该目标结果调整。

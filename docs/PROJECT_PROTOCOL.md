@@ -64,36 +64,69 @@ rho_label ≤ 0.1
 
 固定对比row训练完成并按预登记规则冻结后，由发布队列自动接续测试；涉及跨候选源域选择时先完成必要source-only选择。逐row所有预登记视图预测固定后独立truth-last评分，测试结果不回流其他训练或选模。既有健康运行和历史实验保持各自已冻结计划；用户明确指定的测试范围优先。
 
-## Phase2最小数据协议
+## 5. Phase2最小数据协议
 
-### 单物理样本单LEO接收观测
+### 5.1 单物理样本单LEO接收观测
 
-每个clean/raw物理IQ在进入Phase2前只允许叠加一次随机LEO弱信道：
+每个clean/raw物理IQ记录在进入Phase2前只允许进行一次随机LEO弱信道叠加：
 
 ```text
-received_i = H(c_i,seed_i)(clean_i)
-c_i ∈ {leo_clear_weak,leo_low_elev_weak,leo_rain_weak}
+received_i = H(c_i, seed_i)(clean_i)
+c_i ∈ {leo_clear_weak, leo_low_elev_weak, leo_rain_weak}
 ```
 
-一个稳定`physical_sample_id`只能绑定一个场景、一个随机信道实现和一份固定接收IQ。禁止由同一物理样本生成多场景、多随机实现或多LEO状态副本。三场景物理ID两两不交；单场景support/query物理ID不交。
+对每个稳定`physical_sample_id`，只能绑定一个`c_i`、一个随机`seed_i`和一份固定`received_i`。禁止把同一clean/raw物理样本复制后分别叠加多种场景、多个随机信道实现或多个LEO状态，再作为多份support/query进入Phase2。
 
-`K-shot`表示每类K个互不重复的物理support。由固定接收IQ计算的均衡、FFT、归一化或其他数学表征不增加K，不得调用LEO模拟器、恢复clean或生成第二份LEO观测。support计算view可参与状态更新；query计算view只能用于当前逐样本推理，不能更新任何状态或参与选择。
+三种LEO场景用于评估不同接收条件；同一matched实验切片中，三个场景的物理样本ID集合必须两两不交。单场景内support与query的物理样本ID也必须不交。
 
-### 允许输入与禁止输入
+### 5.2 K-shot与接收后计算view
 
-Phase2运行时采用穷尽式白名单，只允许读取：`p2_min_v1`、`VALIDATED_ONCE`固定目标域LEO received IQ及匹配的`capsule_id/split_id`；当前row合法target support标签、必要注册类别表和无query真值/角色split；地面预先计算、随checkpoint上传并保持不可变的类原型及必要类别映射；冻结checkpoint和预登记算法配置。
+`K-shot`表示每个已注册类别有K个互不重复的物理support样本。由同一固定接收IQ计算的均衡、裁剪、相位/幅度归一化、FFT或其他确定性/随机数学表征仍属于同一个物理样本，不增加K。
 
-除此之外，不得读取、构造或恢复任何地面source/clean样本、源域数据加载器、source replay/cache、源域特征、样本级embedding、源域统计量、源域BatchNorm状态、伪源域样本、生成式源数据、可还原源样本的中间信息或其他外部source状态。不得读取query真值、query角色、真实query batch类别集合/数量或其他query反馈。
+接收后计算view必须满足：
 
-地面类原型只能作为不可训练的类别锚点和冻结判决依据；不得反向更新、在线重估、追加源域信息，或扩展为D92式协方差、LDA、持久分类头、样本级记忆或类条件源域统计。缺少合规原型时不得回读地面样本重建。
+- 输入只能是固定、已封存的`received_i`；
+- 不得调用LEO信道模拟器，不得恢复clean参考，不得产生第二个LEO观测；
+- support view可以参与适配、注册和状态更新；
+- query view只用于该query的逐样本推理，不得更新模型、原型、阈值、温度、门控、候选选择、早停或回滚状态。
 
-### query只测试
+### 5.3 Phase2允许输入
 
-每个query独立面对全部已注册类别。禁止query真值/角色、真实query batch类别集合或数量、每类配额、标签排序/分块以及Hungarian、optimal transport或其他跨query全局重排。预测artifact先冻结，独立scorer之后才连接真值；评分结果不得回流。
+Phase2运行时采用穷尽式白名单，只允许读取：
 
-### 一次验证、跨方法复用
+1. `p2_min_v1`、`VALIDATED_ONCE`固定目标域LEO received IQ及其匹配的`capsule_id/split_id`；
+2. 当前row合法target support标签、必要注册类别表和不含query真值/角色的split；
+3. 地面预先计算、随checkpoint上传并在Phase2保持不可变的类原型、必要类别映射，以及符合5.3.2节的量化聚合Phase1分布摘要；
+4. 冻结checkpoint和预登记算法配置。
 
-数据builder完成唯一观测、物理ID、集合和禁止成员检查后输出最小句柄：
+除此之外，Phase2不得读取、构造或恢复任何地面source/clean样本、源域数据加载器、source replay、source cache、未按5.3.2节联合冻结的源域特征或统计量、样本级embedding、源域BatchNorm状态、伪源域样本、生成式源数据、可还原源样本的中间信息、dataset构建路径或能够影响决策的其他外部source状态。不得读取query真值、query角色、真实query batch类别集合/数量或其他query反馈。
+
+#### 5.3.1 冻结类原型边界
+
+白名单内的地面类原型只能作为不可训练的类别锚点和冻结判决依据。Phase2不得对其反向更新、在线重估、追加源域信息，或由类原型在线拟合D92式协方差、LDA、持久分类头、样本级记忆、类条件源域统计或其他可训练判决状态。符合5.3.2节的量化聚合Phase1分布摘要不是由Phase2扩展类原型得到的状态。类原型和该摘要均不增加K、不生成第二个LEO view，也不能替代Stage2-B/C的合法target support。缺少合规原型或摘要时，Phase2不得回读地面样本重建。
+
+#### 5.3.2 量化聚合Phase1分布摘要
+
+经2026-08-30用户明确授权，`p2_min_v1`允许一个可选的量化聚合Phase1分布摘要随checkpoint联合冻结并上传。该摘要只能在Phase1地面阶段由多个source物理样本或多个source接收域聚合产生，运行时保持不可训练、不可追加、不可在线重估。允许成员穷尽为：int8域×类聚合中心及有效槽mask，或其int8类中心、int8低秩域残差方向、int8域系数和int8类半径压缩形式，以及反量化所需的FP16尺度；如方法预登记确有需要，可增加不含BatchNorm运行状态的FP16全局逐特征location/scale。类别、域和特征维度映射必须随摘要冻结。
+
+摘要不得包含source/clean IQ、样本级embedding、逐样本索引、可访问source数据的路径、源域BatchNorm状态、生成式源样本或能够恢复单个物理样本的信息。Phase2只能按预登记公式将摘要用作固定分布锚点、确定性虚拟特征点或normalization参考；不得对摘要反向传播，不得将反量化结果持久化为新的源特征库，也不得用query更新、选择或校准摘要。
+
+该可选摘要不改变target received IQ、物理ID、receiver/TX集合、scenario、K或support/query划分，因此不使匹配的`VALIDATED_ONCE`数据capsule失效，也不触发数据重验证。未携带该摘要的既有`p2_min_v1`bundle仍然合法；需要该摘要的方法必须在运行前核对其与checkpoint、类别映射和特征schema一致。
+
+### 5.4 query只用于测试
+
+Phase2 predictor的状态只能由Phase1 bundle和注册support决定。每个query必须独立面对全部已注册类别；禁止访问或利用：
+
+- query真值以及真实old/new/unknown角色；
+- 真实query batch类别集合或各类数量；
+- 每类query配额、标签排序或分块；
+- Hungarian、optimal transport、global quota或其他跨query全局重排。
+
+预测必须先形成不可变预测artifact；之后独立scorer才可按opaque query ID连接真值并计算指标。scorer输出不得回流到适配、注册、阈值、选择、排序或重跑决策。
+
+### 5.5 一次验证、跨方法复用
+
+Phase2数据builder完成唯一观测、物理ID互斥、support/query互斥、接收机/TX集合和禁止成员检查后，输出：
 
 ```text
 protocol_schema = p2_min_v1
@@ -106,7 +139,11 @@ query_fit_access = false
 query_decision_policy = per_sample_all_registered_classes
 ```
 
-只有固定接收IQ字节、物理ID、receiver/TX集合、scenario、K、support/query划分或协议schema变化才重验。候选、adapter、超参数、epoch、原型规则、method lock、模型状态和资源预算变化不使data capsule失效。hash、签名、allowlist、访问账本和pre-open检查由builder/validator一次性自动完成，见[PHASE2_DATA_VALIDATION_APPENDIX.md](PHASE2_DATA_VALIDATION_APPENDIX.md)。
+研发和评估流程只核对以上最小句柄并直接运行。只有以下数据事实变化时才重做数据验证：固定接收IQ字节、物理ID、receiver/TX集合、scenario分配、K、support/query划分或协议schema。
+
+候选方法、adapter、超参数、epoch、原型更新规则、method lock、checkpoint推理状态、资源预算或报告格式变化，不得使数据capsule失效，也不得触发重新追溯clean/source构建过程。若验证失败，只修复直接失败的数据项；其他`VALIDATED_ONCE`切片继续实验。
+
+hash、签名、allowlist、访问账本和pre-open检查由数据builder/validator一次性自动完成，详见Git承载面的`docs/PHASE2_DATA_VALIDATION_APPENDIX.md`。它们是实现证据，不在每个方法目标或实验报告中重复展开。
 
 ## Stage2权限
 

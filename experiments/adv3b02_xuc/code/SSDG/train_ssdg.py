@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextlib import nullcontext
 import argparse
 import csv
 import hashlib
@@ -9028,26 +9029,28 @@ def train(args) -> int:
                 if bool(args.concat_sat_fused_ce_only) and concat_sat_ce_view is not None:
                     from cvsrffi.original_leo import FusedCleanSatelliteForward
                     forward_model = FusedCleanSatelliteForward(model, _safe_iq_tensor(concat_sat_ce_view.x))
-                out_l = forward_model(
-                    x_l_main,
-                    y_tx=y_l,
-                    grl_lambda=(
-                        0.0
-                        if str(args.identity_domain_objective_mode) == "bounded_confusion"
-                        else 1.0
-                    ),
-                    return_aux=True,
-                    return_physical_gate_diag=bool(args.a1_fisher_supervision),
-                    domain_labels=d_l,
-                    update_crra_support=bool(getattr(args, "use_crra", False)),
-                    crra_support_mask=(
-                        torch.arange(x_l_main.size(0), device=x_l_main.device) < int(concat_sat_clean_bsz)
-                        if bool(getattr(args, "use_crra", False))
-                        and concat_sat_full_batch
-                        and concat_sat_clean_bsz > 0
-                        else None
-                    ),
-                )
+                labeled_context = getattr(model, "_phase1_labeled_feature_context", nullcontext)
+                with labeled_context():
+                    out_l = forward_model(
+                        x_l_main,
+                        y_tx=y_l,
+                        grl_lambda=(
+                            0.0
+                            if str(args.identity_domain_objective_mode) == "bounded_confusion"
+                            else 1.0
+                        ),
+                        return_aux=True,
+                        return_physical_gate_diag=bool(args.a1_fisher_supervision),
+                        domain_labels=d_l,
+                        update_crra_support=bool(getattr(args, "use_crra", False)),
+                        crra_support_mask=(
+                            torch.arange(x_l_main.size(0), device=x_l_main.device) < int(concat_sat_clean_bsz)
+                            if bool(getattr(args, "use_crra", False))
+                            and concat_sat_full_batch
+                            and concat_sat_clean_bsz > 0
+                            else None
+                        ),
+                    )
                 if forward_model is not model:
                     fused_sat_output = forward_model.satellite_output
                     concat_sat_info["fused_forward_batch_size"] = float(2 * x_l_main.shape[0])

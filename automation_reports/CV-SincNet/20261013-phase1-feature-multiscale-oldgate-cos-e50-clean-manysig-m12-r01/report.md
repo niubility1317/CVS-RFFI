@@ -1,6 +1,6 @@
 # 特征提取四组：历史旧门控＋EMA＋cos E50 预登记
 
-状态：RUNNING，远端启动 VERIFIED。主方案 JOINT_MS50 的验收为三个固定种子 clean 准确率均值至少 84%。性能尚未证明，全部负结果保留。
+状态：ANALYZED，12/12 完整训练/预测/评分/完整日志和raw指标复核 VERIFIED。主方案 JOINT_MS50 的验收为三个固定种子 clean 准确率均值至少 84%。性能尚未证明，全部负结果保留。
 
 用户已明确优化网络特征提取能力，分类头保持现有结构，并明确选择历史 batch_neighbor 伪标签门控＋EMA＋cos 完整配方作为主对照。此前纯 CE E50 保留为独立历史实验，不用它替代本轮基线。用户允许自行选择训练 epoch，原则不超过每模型 50；本轮全部从零 50 轮，以历史 130＋70 的阶段比例预先缩为 33 轮 label＋17 轮 pseudo。原 E200 仅为配方参考，不继承其权重或成本。
 
@@ -38,3 +38,5 @@ Git commit 为代码/配置身份，发布时记录 actual release_commit.txt。
 阶段执行核验：首种子四组分别到第 39/41/41/40 轮，均已进入 pseudo 阶段。实际 EMA 更新和非零无标签损失持续执行，U_s 真值可用标志为 0，非有限损失及梯度跳步均为 0。该源端记录证明本轮确实使用历史半监督配方；不等同于完整日志审核、源域终轮门槛通过或目标性能提升。证据为 `local_artifacts/cvs_feature_multiscale50_20261013_r01/pseudo_phase_verified.json`，其间未读取目标分数。其余 8 行仍等待四组完整 sourcefreeze，当前无失败记录。
 
 首种子扩展核验：四组均完成固定 50 轮、11100 次成功 optimizer/EMA 更新与逐行 clean prediction/独立评分。末轮源训练 CE（原网络/时序/PA/双分支）为 0.288426/0.249913/0.196179/0.193749，均通过预登记 ≤0.5 条件；该值不是目标性能指标。剩余 8 行已自动启动并到第 4 至 6 轮，全部实际进程存活，无失败记录，GPU 最大 3 个总进程、最少约 13.7 GB 空闲。未读取首种子目标指标来改变后续派发。当前只有 4/12 完整行，不能报告完整三种子均值或 84% 达标。源端汇总见 `first_seed_source_summary.json`。
+
+完整结果：OLD_GATE_COS50/TIME_MS50/PA_MS50/JOINT_MS50 clean均值80.526786%/81.690476%/79.003175%/81.289484%；主目标未达。全部三seed、600epoch、133200updates、2016000predictions与216rawCM/F1记录验证通过，详见final_results.md、result_summary.json、per_seed_results.csv、paired_differences.csv。没有技术失败、缺seed或选择性重跑。

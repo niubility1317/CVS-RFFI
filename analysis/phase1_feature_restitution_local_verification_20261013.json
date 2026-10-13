@@ -1,0 +1,43 @@
+{
+  "status": "LOCAL_PASS_NOT_EXPERIMENT_RESULT",
+  "checks_executed": "python -X utf8 native_polyphase_runner.py experiments.cvs_feature_restitution.checks",
+  "syntax_check": "compileall new module andmodified native train_ssdg",
+  "actual_classifier_unchanged": true,
+  "z_W_independence": true,
+  "z_shape": [
+    12,
+    160
+  ],
+  "GN_block_channels": 72,
+  "GN_groups": 8,
+  "ordinary_extra_parameters": 1225,
+  "restore_extra_parameters": 1225,
+  "identity_parameters": {
+    "BASE": 177025,
+    "ORDINARY": 178250,
+    "RESTORE": 178250,
+    "COMP": 177025,
+    "RESTORE_COMP": 178250
+  },
+  "full_registered_parameters": {
+    "BASE": 844754,
+    "ORDINARY": 845979,
+    "RESTORE": 845979,
+    "COMP": 844754,
+    "RESTORE_COMP": 845979
+  },
+  "live_finite_projection_alpha_gradients": true,
+  "strict_state_roundtrip": true,
+  "all4actual_path_mask_checks": true,
+  "frequency_rho_stat_sidepaths_zeroed": true,
+  "reference_increment_masked": true,
+  "teacher_forward_unaffected": true,
+  "mask_cleanup_and_eval_restored": true,
+  "U_query_target_mask_roles_rejected": true,
+  "native_unique_out_l_x_l_main_y_l_context": true,
+  "model_checkpoint_loaded": false,
+  "data_or_target_read": false,
+  "real_native_training_verified": false,
+  "frozen_cosine_refit_verified": false,
+  "Phase2_old_new_verified": false
+}
