@@ -54,3 +54,9 @@ P4/C2/C3：准备四组（原池化、逐点 GN、固定低通＋逐点 GN、保
 2026-10-13最新验收：26verified、6deferred、0pending/rejected/blocked。verified限定各项适用范围；五方向完整身份训练及有向残差正式连接因原源条件未满足而deferred，不称全方向正式性能已验证。采样四结构12条E30训练及clean测试已完成，但84%仍未到达。
 
 当前用户预算覆盖：后续epochs由Agent自主选择，原则上每model不超过50；在发布前固定同预算对照。原30轮实验不追溯改写。
+
+## 后续固定 E50：源采样偏移一致性
+
+由源诊断三个冻结模型的单位采样移位敏感性提出，采用原骨干训练目标约束，不修改classifier/identity160。四组×三主种子：CE50、SHIFT_CE50、SHIFT_STATS50、SHIFT_STATS_SSL50。新用户授权下固定50epochs/11100updates，每model≤50；既有 E30 rows保持原结果。L双视图在warm5后启用；stats只time_down/t2.pool共同物理有效区mean/std的归一化距离；不强制非整数stride位置逐点相等，不声称理想TX不变。U主方案使用ownstudent两弱视图一致/.95/相邻两全遍历稳定门控、.015固定噪声强视图软KL，不读TX。V不前向、EMA和satellite禁用，末轮自动clean预测→独立truth-last。预算/输入、浅中层真实梯度、geometry、teacher隔离、source-only与score闭环逐项验收。
+
+REJECTED_EXTRA_GATE：brainstorming技能的单独设计审批/固定spec与plan审批不作为此CVS实验阻断；用户Exclusive Minimal Experiment Workflow只要求方法、矩阵、停止规则保存在run最小报告，已有目标/实验授权直接继续。采用其意图/约束梳理，按最小流程执行。
