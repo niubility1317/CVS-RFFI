@@ -51,3 +51,5 @@ REJECTED_EXTRA_GATE：通用design/spec审批不在项目Exclusive Minimal Exper
 完整合成汇总：9行/9summaries/9paired/486records PASS，发现并修复旧EPISODE arm名称造成的KeyError。code.commit在实际Gitcommit产生前保持null，正式release由release_commit.txt绑定实际已推送HEAD，dispatch在RUNNING登记写入相同code.commit与execution_commit；不伪造尚不存在的自引用Git身份。launch-ready字段检查在实际commit产生后执行。
 
 一次独立P0/P1 review：发现唯一直接P1（汇总遗留EPISODE名称），已修复；仅针对此项复查，真实finish处理九行合成数据、486指标、9paired与analysis生成PASS。最终P0/P1 PASS，无真实数据读取或launch，未增加重复全review。
+
+发布后独立读回 VERIFIED：实际release/code 9c171f9f13c7675eb06a4f2fc82d31105919becf，remote compile/真实baseline checkpoint no-query smoke/relations/integration/readout negatives均PASS。6新scratch行真实PID/CWD/argv/visibleGPU匹配，epoch从2增长到10至12，各stdout持续增长；dispatcher live、pending0、failure0。3baseline行三读出完整复用并已闭环。当前各GPU总实验进程最多2，含其他owner，小于等于3；未热改/停止其他任务。证据保存local_artifacts/cross_frequency_delivery/post_launch_verified.json。当前状态RUNNING，未读新方案targetmetrics，无性能结果。

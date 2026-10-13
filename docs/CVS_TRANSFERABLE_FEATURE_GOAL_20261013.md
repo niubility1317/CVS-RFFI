@@ -23,3 +23,5 @@
 路线六完整结果：20261013-phase1-episodic-feature-legacycos-clean-manysig-m9-r01 已完成全部 9 行/27 读出、4536000 决定、486 聚合记录独立重计；6 新 scratch50，共 66600updates/16650episodes。CROSS_RX 原头80.7494%（基线80.6454%，+0.1040pp，1/3正）；新普通cos78.0115%（+0.2478pp，1/3正）；原型75.7250%（+1.2863pp，3/3正）。未达84%，普通换头无稳定提升，不能声明新TX或Phase2迁移完成。负/边际结果完整上传；不追加目标反馈调参。当前先只读核实现有真实未见TX capsule与support-only普通cos接口，正式特征迁移证据尚未完成。
 
 下一条独立结构路线已实现并登记 20261013-phase1-cross-frequency-legacycos-clean-manysig-m9-r01：功率化前cross-frequency复关系/同容量power关系，各3scratch50，baseline三读出完整复用；fθ新增45504params，旧W完全丢弃后实际joint160 maxdiff0。Vhealth-only，自动clean原头/普通换头/原型truth-last；尚未发布、尚无性能结果。已有practical Phase2 capsule不冒充LEO_WEAK，真正未见TX正式迁移证据仍未完成。
+
+复频谱路线已发布 VERIFIED，执行code 9c171f9f13c7675eb06a4f2fc82d31105919becf；6scratch50新行已核实真实进程与epoch10至12日志增长，baseline三读出完整复用闭环。所有新行方案已固定，不读新目标分数调参，训练后自动3读出clean评分。当前未完成，无84%或新TX/Phase2收益声明。

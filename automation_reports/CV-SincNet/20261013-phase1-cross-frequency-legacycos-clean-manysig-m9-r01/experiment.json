@@ -30,7 +30,7 @@
   "replaces_run_id": null,
   "authorization": "Active goal01a13438; user<=50epochs, feature extractor focus, old gates+cos. Referenced human reply explicitly chooses historical pseudo gates+EMA+cos.",
   "code": {
-    "commit": null,
+    "commit": "9c171f9f13c7675eb06a4f2fc82d31105919becf",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "native verified Python/CVS-RFFI; fullFP32; ordinary N607",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_cross_frequency_20261013_r01",
@@ -214,7 +214,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -250,7 +250,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -314,7 +314,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "updates": 11100,
           "label_epochs": 32,
           "pseudo_epochs": 18,
@@ -350,7 +350,7 @@
             "weight_decay": 0.0001,
             "use_concat_sat_channel_aug": false,
             "phase1_lr_schedule": "cosine",
-            "phase1_lr_min": 1e-06
+            "phase1_lr_min": 0.000001
           },
           "source_V": "health only; final checkpoint fixed at50, no source performance selection",
           "frequency_context": {
@@ -489,7 +489,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -525,7 +525,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -666,7 +666,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -702,7 +702,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -839,7 +839,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -875,7 +875,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -939,7 +939,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "updates": 11100,
           "label_epochs": 32,
           "pseudo_epochs": 18,
@@ -975,7 +975,7 @@
             "weight_decay": 0.0001,
             "use_concat_sat_channel_aug": false,
             "phase1_lr_schedule": "cosine",
-            "phase1_lr_min": 1e-06
+            "phase1_lr_min": 0.000001
           },
           "source_V": "health only; final checkpoint fixed at50, no source performance selection",
           "frequency_context": {
@@ -1114,7 +1114,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -1150,7 +1150,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -1291,7 +1291,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -1327,7 +1327,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -1464,7 +1464,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -1500,7 +1500,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -1564,7 +1564,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "updates": 11100,
           "label_epochs": 32,
           "pseudo_epochs": 18,
@@ -1600,7 +1600,7 @@
             "weight_decay": 0.0001,
             "use_concat_sat_channel_aug": false,
             "phase1_lr_schedule": "cosine",
-            "phase1_lr_min": 1e-06
+            "phase1_lr_min": 0.000001
           },
           "source_V": "health only; final checkpoint fixed at50, no source performance selection",
           "frequency_context": {
@@ -1739,7 +1739,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -1775,7 +1775,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -1916,7 +1916,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "updates": 11100,
         "label_epochs": 32,
         "pseudo_epochs": 18,
@@ -1952,7 +1952,7 @@
           "weight_decay": 0.0001,
           "use_concat_sat_channel_aug": false,
           "phase1_lr_schedule": "cosine",
-          "phase1_lr_min": 1e-06
+          "phase1_lr_min": 0.000001
         },
         "source_V": "health only; final50 fixed, no performance selection",
         "frequency_context": {
@@ -2033,6 +2033,7 @@
     "50epochs/32label18pseudo; finalonly; Vhealth only no performance gate. Fixed9row allseeds automaticclean scoring; target feedback prohibited. Exposed benchmark not independentblindtest.",
     "REJECTED_EXTRA_GATE: generic design/spec approval outside Exclusive Minimal Experiment Workflow; concrete implementation and focused checks within existing user authorization."
   ],
-  "status": "PLANNED",
-  "registered_at": "2026-10-13T14:40:11+00:00"
+  "status": "RUNNING",
+  "registered_at": "2026-10-13T14:40:11+00:00",
+  "execution_commit": "9c171f9f13c7675eb06a4f2fc82d31105919becf"
 }
