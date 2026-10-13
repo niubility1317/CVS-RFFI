@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "Persistent user feature-extractor84goal, <=50epochs, baselineoldgate+cos, default jointly trained head only; source-qualified independent sampling route distinct from other single-basis temporal control.",
   "code": {
-    "commit": "GIT_HEAD_AT_RELEASE",
+    "commit": "72d566b5b4915e43cfdf898a021e18e726e89800",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32; Torch/OMP/MKL/OpenBLAS2threads; local native verified Python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neighbor_pair50_20261014_r01",
@@ -2022,5 +2022,17 @@
   ],
   "launch_evidence": "launch_evidence.json",
   "registered_at": "2026-10-13T21:22:11+00:00",
-  "status": "LOCAL_VERIFIED"
+  "status": "FAILED",
+  "execution_commit": "72d566b5b4915e43cfdf898a021e18e726e89800",
+  "results": {
+    "status": "FAILED",
+    "layer": "REMOTE_PREFLIGHT_SYNTHETIC_NUMPY_DTYPE",
+    "new_training_models": 0,
+    "predictions": 0,
+    "run_root_created": false,
+    "submit_artifact_exists": false,
+    "reason": "torch.tensor(numpy.int64 array) cannot infer dtype in remote Torch/NumPy combination",
+    "target_access": false,
+    "weights_or_real_IQ_read_by_failed_checks": false
+  }
 }

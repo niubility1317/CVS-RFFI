@@ -32222,6 +32222,47 @@
     },
     {
       "run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r01",
+      "status": "FAILED",
+      "mechanism": "Allowed hidden-U physical-neighbor PAIRS vs native-matched RANDOM ordering only; original network/old gates/EMA/default head",
+      "code": "GIT_HEAD_AT_RELEASE",
+      "baseline": "OLD_GATE_COS50 exact33label+17pseudo/scratch50 historical default decisions; fresh RANDOM control",
+      "arms": [
+        "OLD_GATE_COS50",
+        "RANDOM_ORDER",
+        "PAIRED_ORDER"
+      ],
+      "new_model_cost": {
+        "models": 6,
+        "epochs": 300,
+        "updates": 66600
+      },
+      "historical_comparison_epochs": 150,
+      "separate_head_updates": 0,
+      "source_first_seed_threshold": {
+        "first_seed": 2026092701,
+        "maximum_final_L_CE": 0.5,
+        "minimum_paired_U_acceptance": 0.25,
+        "metric": "fixedfinal source LCE<=.5 both new controls and paired accepted U / total U>=.25 over fixed17pseudoepochs; no U truth, V/target ranking"
+      },
+      "local_checks": "PASS: actual56700synthetic native/RNG/tail/defaultfeature/6negatives",
+      "independent_P0P1": "PASS: unique new training integration only, native50 synthetic33/17 verified",
+      "source_qualification": "20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01",
+      "results": {
+        "status": "FAILED",
+        "layer": "REMOTE_PREFLIGHT_SYNTHETIC_NUMPY_DTYPE",
+        "new_training_models": 0,
+        "predictions": 0,
+        "run_root_created": false,
+        "submit_artifact_exists": false,
+        "reason": "torch.tensor(numpy.int64 array) cannot infer dtype in remote Torch/NumPy combination",
+        "target_access": false,
+        "weights_or_real_IQ_read_by_failed_checks": false
+      },
+      "report": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r01/report.md",
+      "actual_execution_commit": "72d566b5b4915e43cfdf898a021e18e726e89800"
+    },
+    {
+      "run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02",
       "status": "LOCAL_VERIFIED",
       "mechanism": "Allowed hidden-U physical-neighbor PAIRS vs native-matched RANDOM ordering only; original network/old gates/EMA/default head",
       "code": "GIT_HEAD_AT_RELEASE",
@@ -32248,7 +32289,9 @@
       "independent_P0P1": "PASS: unique new training integration only, native50 synthetic33/17 verified",
       "source_qualification": "20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01",
       "results": null,
-      "report": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r01/report.md"
+      "report": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/report.md",
+      "actual_execution_commit": null,
+      "replaces_run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r01"
     }
   ],
   "diagnostics": {

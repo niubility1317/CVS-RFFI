@@ -23,3 +23,8 @@
 系统技术失败（所属来源/roles/nonfinite/budget/hiddenU/sampler/defaultpredict/score）关闭新dispatch，保留所有健康row与产物，不自动retry，不操作其他owner。科学源反证失败同样保留partial。所有implementation/config/正负result/report Git交付并核对remoteOID；原IQ/权重/大NPZ/log留原存储，完成训练不称全部实验完成。
 
 唯一新训练集成P0/P1审查PASS；独立合成原生50轮确认label33零U迭代、pseudo17完整56700/尾124，总963900，未读真实IQ/目标/权重，无第二次旧源诊断审查。
+
+
+## r01预检技术失败保留
+
+实际代码72d566b5b4915e43cfdf898a021e18e726e89800，远端compile/归档校验后，在合成检查torch.tensor(numpy.int64array)出现dtype推断错误。实际submit/run根均不存在，0训练/预测/score启动，未读真实IQ或checkpoint。生产采样meta已用selected.tolist()+torch.long。仅修复合成检查转换，原环境只读临时执行PASS，不改旧release。保留此失败，以r02独立run/release恢复，配方/种子/矩阵/条件完全不变，不按target重跑。

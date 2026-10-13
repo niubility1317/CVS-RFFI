@@ -27,7 +27,7 @@ def checks():
  assert torch.equal(old,new) and torch.equal(old_rng,new_rng) and torch.equal(old_rng,pair_rng)
  assert lengths==newlengths==pairlengths==[256]*221+[124]
  assert torch.equal(pairs.sort().values,torch.arange(56700))
- physical=torch.tensor(ds.selected)[pairs].reshape(-1,2);assert (physical.diff(dim=1).abs()==1).all()
+ physical=torch.tensor(ds.selected.tolist(),dtype=torch.long)[pairs].reshape(-1,2);assert (physical.diff(dim=1).abs()==1).all()
  assert random.sampler.history[-1]['delivered_count']==paired.sampler.history[-1]['delivered_count']==56700
  from experiments.cvs_phase1_overlay.model import native_modules
  native=native_modules();L=DataLoader(torch.arange(6300),batch_size=128,shuffle=True,drop_last=True)

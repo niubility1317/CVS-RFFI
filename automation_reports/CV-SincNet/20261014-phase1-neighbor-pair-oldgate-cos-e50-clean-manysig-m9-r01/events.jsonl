@@ -1,2 +1,3 @@
 {"at": "2026-10-13T21:22:11+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at":"2026-10-13T21:24:47.633Z","status":"LOCAL_VERIFIED","note":"Matched native random and exteriorRNG/source pool222/tail124/label noU/model-feature-default equality/6protocol negatives PASS; qualification prior source3complete; no new training/query/head fit","evidence":["experiments/cvs_neighbor_pair50/checks.py"],"row_id":null}
+{"at":"2026-10-13T21:28:51.332Z","status":"FAILED","note":"Remote synthetic preflight NumPy int64 dtype interoperability failure before realCP/data/train; submit absent/runroot absent. Fix verified on same host; preserve r01, replace with distinct r02.","evidence":["experiment.json","report.md"],"row_id":null}

@@ -4,8 +4,8 @@ from pathlib import Path
 from experiments.cvs_feature_multiscale50 import design as old
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,CAPSULE,TRUTH,CLASSES,SEEDS,FULL_FP32_POLICY,read,write=(getattr(old,k) for k in ('PROJECT','SOURCE','CAPSULE','TRUTH','CLASSES','SEEDS','FULL_FP32_POLICY','read','write'))
-RUN='20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r01'
-RELEASE='cvs_neighbor_pair50_20261014_r01';OWNER='codex/root/neighbor-pair50-20261014'
+RUN='20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02'
+RELEASE='cvs_neighbor_pair50_20261014_r02';OWNER='codex/root/neighbor-pair50-20261014'
 BASE=Path(PROJECT)/'runs'/RUN
 ARMS=('OLD_GATE_COS50','RANDOM_ORDER','PAIRED_ORDER');BASELINE_ARM='OLD_GATE_COS50';PRIMARY='PAIRED_ORDER'
 PAIRS=[('RANDOM_ORDER',BASELINE_ARM),('PAIRED_ORDER',BASELINE_ARM),('PAIRED_ORDER','RANDOM_ORDER')]
