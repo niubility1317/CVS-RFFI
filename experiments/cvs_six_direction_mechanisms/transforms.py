@@ -205,6 +205,26 @@ def diagnose(ctx, output: Path, device):
                        torch.isin(L["day"], torch.tensor(train_days)))
                 bins, state_fit = _state_bins(raw_q, fit)
                 fit_centers = _centers(h, L, folds, bins, train_txs, train_days, fit_fold)
+                if not fit_centers:
+                    # No cross-RX state overlap falsifies applicability. Preserve
+                    # the registered block and continue other source hypotheses.
+                    expected = len(held_txs)*RECIPE["state_bins"]*len(RECIPE["endpoint_fold_pairs"])*len(d.RX)*(len(d.RX)-1)
+                    block = dict(fit_fold=fit_fold, held_TX=held_txs, held_day=held_day,
+                                 training_TX=train_txs, training_days=train_days,
+                                 fit_count=int(fit.sum()), fit_state_cells=0,
+                                 endpoint_pairs=0, expected_endpoint_pairs=expected,
+                                 coverage=0., status="SOURCE_INAPPLICABLE",
+                                 reason="No complete source state-conditioned fit cell",
+                                 MSE={name:None for name in RECIPE["controls"]},
+                                 mean_unscaled_cosine_margin={name:None for name in RECIPE["controls"]},
+                                 positive_vs_zero_and_random=False,
+                                 coordinate_condition=None, max_condition=None,
+                                 mean_delta_norm=0., source_V_health=dict(fit=False, performance_gate=False))
+                    blocks.append(block); records.append(block)
+                    audit.append(dict(summary=block, fit_indices=torch.where(fit)[0],
+                                      state_fit=state_fit, bins=bins, model=None,
+                                      endpoints=[], source_V_health=None))
+                    continue
                 model = _fit_coordinates(fit_centers, h[fit], ctx["seed"] + 4200 + fit_fold*100 + holdout_index*10 + int(held_day))
                 reference = _reference_translation(h, L, folds, bins, train_days, fit_fold)
                 vscore = ((vraw_q-state_fit["mean"])/state_fit["scale"]) @ state_fit["axis"]
@@ -250,15 +270,16 @@ def diagnose(ctx, output: Path, device):
                 audit.append(dict(summary=block, fit_indices=torch.where(fit)[0], state_fit=state_fit,
                                   bins=bins, model=model, per_TX_translation=reference, endpoints=endpoints,
                                   source_V_health=vhealth, source_V_bins=vbins))
-        mse = {name: sum(b["MSE"][name]*b["endpoint_pairs"] for b in blocks if b["MSE"][name] is not None)/max(1, sum(b["endpoint_pairs"] for b in blocks)) for name in RECIPE["controls"]}
-        zero_improvement = 1-mse["shared_lowrank"]/max(mse["zero"], 1e-30)
-        random_improvement = 1-mse["shared_lowrank"]/max(mse["random_common_coordinates"], 1e-30)
+        endpoint_count = sum(b["endpoint_pairs"] for b in blocks)
+        mse = {name: sum(b["MSE"][name]*b["endpoint_pairs"] for b in blocks if b["MSE"][name] is not None)/endpoint_count if endpoint_count else None for name in RECIPE["controls"]}
+        zero_improvement = 1-mse["shared_lowrank"]/max(mse["zero"], 1e-30) if endpoint_count else None
+        random_improvement = 1-mse["shared_lowrank"]/max(mse["random_common_coordinates"], 1e-30) if endpoint_count else None
         positive = sum(b["positive_vs_zero_and_random"] for b in blocks)
         coverage = sum(b["endpoint_pairs"] for b in blocks)/sum(b["expected_endpoint_pairs"] for b in blocks)
         fit_results.append(dict(fit_fold=fit_fold, MSE=mse, improvement_over_zero=zero_improvement,
                                 improvement_over_random=random_improvement, positive_blocks=positive,
                                 endpoint_coverage=coverage,
-                                passed=bool(zero_improvement >= .02 and random_improvement >= .02 and positive >= 6 and coverage >= .8 and all(b["max_condition"] <= 1.36 for b in blocks) and sum(b["mean_delta_norm"] for b in blocks)/9 > 1e-6)))
+                                passed=bool(endpoint_count and zero_improvement >= .02 and random_improvement >= .02 and positive >= 6 and coverage >= .8 and all(b["max_condition"] is not None and b["max_condition"] <= 1.36 for b in blocks) and sum(b["mean_delta_norm"] for b in blocks)/9 > 1e-6)))
     torch.save(dict(recipe=RECIPE, criteria=CRITERIA, source_ids=L["ids"], source_TX=L["y"],
                     source_RX=L["rx"], source_day=L["day"], folds=folds,
                     features=h, raw_state_q=raw_q, source_V=dict(ids=V["ids"], TX=V["y"], RX=V["rx"],
@@ -271,7 +292,7 @@ def diagnose(ctx, output: Path, device):
                 applicability=dict(passed=passed, criteria=CRITERIA,
                                    reason="Both independent source fits meet held-TX/day endpoint conditions" if passed else "Shared RX coordinates did not meet every preregistered independent held-TX/day condition"),
                 fit_results=fit_results, blocks=records, elapsed_seconds=time.monotonic()-started,
-                fit_updates=len(audit)*RECIPE["fit_steps"], auxiliary_parameters=24,
+                fit_updates=sum(a["model"] is not None for a in audit)*RECIPE["fit_steps"], auxiliary_parameters=24,
                 identity_backward_calls=0, deployment_parameters=0,
                 random_control="Common near-identity coordinates share fitted P, exactly matched per-RX B singular values and c norms, randomized orientations; separate equal-amplitude edge displacement is descriptive only",
                 audit_artifact="audit.pt", caveat="Cycle identities are mathematical construction; only independent endpoint prediction tests transfer. State q and feature drift may still include receiver/channel conditions.")

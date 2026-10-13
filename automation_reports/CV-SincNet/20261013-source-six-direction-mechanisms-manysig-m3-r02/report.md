@@ -58,3 +58,7 @@
 本地受限 NumPy bridge 回归修复前失败、修复后 PASS；精确配对最优值 .05、mass .5、2 pairs 正常。新运行还须完成实际源诊断；没有目标域性能结果。
 
 聚焦复核：全部 720 个合成匹配组的最优配对、质量、容量、同 TX 正例／异 TX 负例、重复物理 ID 隔离及不可覆盖检查 PASS。一次针对原整数边界和 r02 配置的独立 P0/P1 定点审查 PASS，无阻断问题。
+
+## r02 实际运行结果与技术退出
+
+VERIFIED：NumPy 整数修复已跨过原故障。第一主种子 matching 不适用、sampling 通过、update 不适用，共3/18cells；transform 空拟合组导致诊断退出，进程已自然结束，partial source artifacts 保留。替代 20261013-source-six-direction-mechanisms-manysig-m3-r03 仅完整记录该适用性负结果，科学矩阵和阈值不变。
