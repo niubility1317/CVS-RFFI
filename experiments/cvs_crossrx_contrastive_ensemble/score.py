@@ -2,6 +2,7 @@ from pathlib import Path
 """Independent addressspace opens truth only after every same-row readout."""
 import json
 from . import design as d
+from .predict import preflight
 def score(row):
  import numpy as np
  from .predict import preflight
@@ -13,7 +14,7 @@ def score(row):
    for r in rr+dd:r.update(view='clean',readout=name)
    records+=rr+dd
  d.write(out/'metrics.json',dict(records=records,truth_last=True,independent_recount='VERIFIED'));d.write(d.BASE/row/'completion.json',dict(status='TRAINED_PREDICTED_SCORED',config=c,views=['clean'],readouts=list(d.readouts(c)),count_per_view=168000,metric_records=len(records),truth_last=True,independent_recount='VERIFIED'));print('SCORED '+row,flush=True)
-def finish():
+def finish(output=None,run_id=None):
  import statistics as st
  records=[]
  for row in d.rows():
@@ -51,9 +52,11 @@ def finish():
  ce_index={r['model_seed']:r['accuracy'] for r in ce_records if r['dimension']=='overall'}
  for arm in d.ARMS:
   delta=[index[arm,seed,'ENSEMBLE']-ce_index[seed] for seed in d.SEEDS];paired.append(dict(treatment=arm+' ensemble',control='historical CE ensemble (sampling differs)',seed_differences=delta,mean_difference=st.mean(delta),positive_seeds=sum(v>0 for v in delta)))
- a=dict(status='VERIFIED',run_id=d.RUN,models=18,new_models=12,readouts=6,views=['clean'],prediction_count=1008000,gradient_updates=79920,cumulative_member_updates=119880,summary=summary,paired=paired,goal_84=any(s['goal_84'] for s in summary),truth_last=True,records=records,control_records=control_records);d.write(d.BASE/'analysis.json',a);lines=['# 固定三成员监督对比集成：完整三seedclean结果','','|机制|三seed均值|SD|≥84%|','|---|---:|---:|---|']
+ target=d.BASE if output is None else Path(output)
+ if output is not None:target.mkdir(parents=True,exist_ok=False)
+ a=dict(status='VERIFIED',run_id=run_id or d.RUN,input_run_id=d.RUN,models=18,new_models=12,readouts=6,views=['clean'],prediction_count=1008000,gradient_updates=79920,cumulative_member_updates=119880,summary=summary,paired=paired,goal_84=any(s['goal_84'] for s in summary),truth_last=True,records=records,control_records=control_records);d.write(target/'analysis.json',a);lines=['# 固定三成员监督对比集成：完整三seedclean结果','','|机制|三seed均值|SD|≥84%|','|---|---:|---:|---|']
  for r in summary:lines.append(f"|{r['arm']}|{r['accuracy_mean']:.4%}|{r['accuracy_sd']:.4%}|{r['goal_84']}|")
  lines+=['','|比较|三seed配对差均值|正向seed|','|---|---:|---:|']
  for r in paired:lines.append(f"|{r['treatment']}-{r['control']}|{r['mean_difference']:.4%}|{r['positive_seeds']}|")
  lines+=['','六个三成员集成组，复用六个固定成员0，另十二成员从零各30轮/6660更新，累计540模型轮/119880更新，当前新增79920更新；每组531075参数/3倍单模型成本，各成员均普通cos。sourceU全程TX标签隐藏，V不前向，无性能测试门槛。固定浅中层归一时间mean/std，温度.2，warm5/ramp10至.1。每行固定clean预测后独立truth-last，复用既有UNIFORM_SSL匹配控制原预测。属于条件样本级监督对比扩展，不声称严格接收不变、未来TX完整信息或独立盲测。']
- (d.BASE/'final_analysis.md').write_text('\n'.join(lines)+'\n',encoding='utf-8');return a
+ (target/'final_analysis.md').write_text('\n'.join(lines)+'\n',encoding='utf-8');return a

@@ -38,3 +38,5 @@
 样本级监督对比扩展完整 VERIFIED：ALL_TX80.3891%、CROSS_RX_TX80.4974%，匹配UNIFORM_SSL80.0313%；两方案均三个seed正向，CROSS_RX_TX比ALL_TX仅1/3seed正向，84%未达。该扩展report的R1/R2/R3均verified，日志39960步和1008000原始预测独立重算。报告原18项保留，6项近似/2项诊断边界不变。
 
 固定三成员验证 `20261013-phase1-crossrx-contrastive-ensemble-clean-manysig-m6-r01`：两方案均进入、12新成员从零各30、6原成员0只推理、累计119880成员更新；3倍单模型参数/累计训练/推理成本。此矩阵在父单模型target汇总前固定，不挑赢家。成员个体都为普通cos，T1等权概率不含训练融合参数；一次P0/P1及一次dropout种子问题定点复核PASS。源契约、实际运行和最终三组成绩待正式执行核实。
+
+三成员验证原run已完成12新成员/6组clean预测与独立评分，最终总表遗漏preflight导入。技术层仅聚合，不影响既有训练、冻结预测和行级评分；新恢复run `20261013-phase1-crossrx-contrastive-ensemble-aggregate-manysig-m6-r02` 0新增训练/预测/评分，原产物保留。合成回归先复现再修复PASS，导入/新exclusive输出的定点P0/P1 PASS。正式聚合/原始预测重算未完成前不标全目标达成。

@@ -1616,7 +1616,8 @@
           "member": 2,
           "member_init_seed": 2026112701
         }
-      ]
+      ],
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "ALL_TX-s2026092702",
@@ -3095,7 +3096,8 @@
           "member": 2,
           "member_init_seed": 2026112702
         }
-      ]
+      ],
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "ALL_TX-s2026092703",
@@ -4574,7 +4576,8 @@
           "member": 2,
           "member_init_seed": 2026112703
         }
-      ]
+      ],
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "CROSS_RX_TX-s2026092701",
@@ -6053,7 +6056,8 @@
           "member": 2,
           "member_init_seed": 2026112701
         }
-      ]
+      ],
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "CROSS_RX_TX-s2026092702",
@@ -7532,7 +7536,8 @@
           "member": 2,
           "member_init_seed": 2026112702
         }
-      ]
+      ],
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "CROSS_RX_TX-s2026092703",
@@ -9011,7 +9016,8 @@
           "member": 2,
           "member_init_seed": 2026112703
         }
-      ]
+      ],
+      "status": "TRAINED_PREDICTED_SCORED"
     }
   ],
   "notes": [
@@ -9020,7 +9026,12 @@
     "12member configs nested in sixgroup rows, parentmember0 legal source proof and actual roleIDs before loading; originalsource/wts/predictions untouched. Ordinarycos eachmember160/refit, no claimensemblePhase2deployment.",
     "Samephysical clean168000 each group then independenttruthlast; pairedmember0 and historicalCEensemble (samplingdiffers) disclosed. Fullsixgroupsmustclose; no selective rerun."
   ],
-  "status": "PLANNED",
+  "status": "ARTIFACTS_COMPLETE",
   "registered_at": "2026-10-13T01:59:38+00:00",
-  "replaces_run_id": null
+  "replaces_run_id": null,
+  "execution_commit": "034f51beb436b6ee734ce8154c2fbe35fa2ccae4",
+  "delivery_verdict": "FAILED_AGGREGATION_ONLY",
+  "failure_layer": "final aggregation NameError preflight not imported;all6rows trained/predicted/scored",
+  "aggregation_status": "FAILED",
+  "aggregate_recovery_run_id": "20261013-phase1-crossrx-contrastive-ensemble-aggregate-manysig-m6-r02"
 }

@@ -17,3 +17,5 @@
 普通账号、唯一owner、不可覆盖root。每GPU最多3个总实验进程，free>=12000MB；现行健康任务不热改或停止。仅明确runowned数据/权限/query/输出/非有限/无法闭合prediction等系统技术失败停止，不按低精度停止。一次P0/P1、一个代码/config提交、单archiveSHA/compile、真实checkpoint noquery首步及postlaunch PID/CWD/argv/GPU/log增长；精确矩阵、commit、路径、命令、环境和输出见experiment.json。成员0必须先正常冻结，未冻结时不加载、不启动该组训练。
 
 唯一独立 P0/P1 审查发现 U 强前向仍用 primary dropout seed；已仅修正为 actual member_init_seed+step1979，强噪声保持primary+step9901。真实前向hook的CUDA检查及该问题唯一定点复核PASS，其余无P0/P1。未新增完整复审。初始化检查先冻结为真实optimizer身份参数，67张量中29随机张量不同；构造阶段183可训练标记不当作训练参数数目。member FINAL与group ENSEMBLE的冻结读出明确区分。
+
+运行后 VERIFIED：12新成员各30轮完成，6组1008000 clean预测及独立评分均完成。最终总汇总因score.finish未导入preflight而FAILED；原dispatcher已退出，未终止其他任务。既有行级结果完整，不重新训练、预测或评分。以新run/output 20261013-phase1-crossrx-contrastive-ensemble-aggregate-manysig-m6-r02 只恢复总表，保留原错误/产物。
