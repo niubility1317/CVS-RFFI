@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |浅中层跨 RX 监督对比：固定三种子 clean|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-clean-manysig-m6-r01/report.md)|
+|固定监督对比方案的三成员等权集成|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-ensemble-clean-manysig-m6-r01/report.md)|

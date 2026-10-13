@@ -640,7 +640,8 @@
           "persistent_state": false,
           "identity_protection": "sameTX positives plusordinaryCE;not proof fullfutureTX preservation"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "ALL_TX-s2026092702",
@@ -1152,7 +1153,8 @@
           "persistent_state": false,
           "identity_protection": "sameTX positives plusordinaryCE;not proof fullfutureTX preservation"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "ALL_TX-s2026092703",
@@ -1664,7 +1666,8 @@
           "persistent_state": false,
           "identity_protection": "sameTX positives plusordinaryCE;not proof fullfutureTX preservation"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "CROSS_RX_TX-s2026092701",
@@ -2176,7 +2179,8 @@
           "persistent_state": false,
           "identity_protection": "sameTX positives plusordinaryCE;not proof fullfutureTX preservation"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "CROSS_RX_TX-s2026092702",
@@ -2688,7 +2692,8 @@
           "persistent_state": false,
           "identity_protection": "sameTX positives plusordinaryCE;not proof fullfutureTX preservation"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "CROSS_RX_TX-s2026092703",
@@ -3200,7 +3205,8 @@
           "persistent_state": false,
           "identity_protection": "sameTX positives plusordinaryCE;not proof fullfutureTX preservation"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     }
   ],
   "notes": [
@@ -3208,7 +3214,38 @@
     "沿已固定辅助预算.1/warm5/ramp10，temp.2；全部三seed/层位/系数在本run targetaccess之前冻结。不继承对照权重，不复测旧控制target。",
     "普通cos177025参数/160接口/sourceU真值隐藏/无satellite/无queryfit/从零30。共享GPU总进程<=3，自有输出不可覆盖，健康旧任务保持。"
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-13T01:46:18+00:00",
-  "replaces_run_id": null
+  "replaces_run_id": null,
+  "execution_commit": "0902914fe10a7e3616fbea322f121fdd2d79b6d0",
+  "delivery_verdict": "VERIFIED",
+  "clean_result_summary": [
+    {
+      "arm": "ALL_TX",
+      "readout": "FINAL",
+      "accuracy_mean": 0.803890873015873,
+      "accuracy_sd": 0.010565106186233011,
+      "seed_accuracy": {
+        "2026092701": 0.8095357142857142,
+        "2026092702": 0.791702380952381,
+        "2026092703": 0.8104345238095239
+      },
+      "macro_f1_mean": 0.7991895087589383,
+      "goal_84": false
+    },
+    {
+      "arm": "CROSS_RX_TX",
+      "readout": "FINAL",
+      "accuracy_mean": 0.8049742063492064,
+      "accuracy_sd": 0.011710538159587298,
+      "seed_accuracy": {
+        "2026092701": 0.8130773809523809,
+        "2026092702": 0.791547619047619,
+        "2026092703": 0.8102976190476191
+      },
+      "macro_f1_mean": 0.8003478076951236,
+      "goal_84": false
+    }
+  ],
+  "goal_84": false
 }

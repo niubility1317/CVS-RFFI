@@ -34,3 +34,7 @@
 条件矩扩展正式完成 VERIFIED：6 模型从零30轮，共39960更新、1008000 clean预测和108条same-row指标完整重算；TX_CONDITIONAL79.9931%、UNCONDITIONAL79.8954%、匹配UNIFORM_SSL80.0313%，目标未达成。完整报告 `automation_reports/CV-SincNet/20261013-phase1-conditional-alignment-clean-manysig-m6-r01/final_analysis.md`。
 
 下一固定扩展为 `20261013-phase1-crossrx-contrastive-clean-manysig-m6-r01`，两种合法 L 样本级监督对比（ALL_TX/CROSS_RX_TX），原九类实现保持。配方在当前矩对齐 target 汇总之前固定，属于报告思想的训练扩展，非严格原投影公式；CPU/CUDA与普通 cos接口检查PASS。三项追踪见其report.md，完整性能尚待实际训练/clean独立评分。
+
+样本级监督对比扩展完整 VERIFIED：ALL_TX80.3891%、CROSS_RX_TX80.4974%，匹配UNIFORM_SSL80.0313%；两方案均三个seed正向，CROSS_RX_TX比ALL_TX仅1/3seed正向，84%未达。该扩展report的R1/R2/R3均verified，日志39960步和1008000原始预测独立重算。报告原18项保留，6项近似/2项诊断边界不变。
+
+固定三成员验证 `20261013-phase1-crossrx-contrastive-ensemble-clean-manysig-m6-r01`：两方案均进入、12新成员从零各30、6原成员0只推理、累计119880成员更新；3倍单模型参数/累计训练/推理成本。此矩阵在父单模型target汇总前固定，不挑赢家。成员个体都为普通cos，T1等权概率不含训练融合参数；一次P0/P1及一次dropout种子问题定点复核PASS。源契约、实际运行和最终三组成绩待正式执行核实。

@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |固定三成员概率集成：整源RX留出30轮方差检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261012-phase1-stochastic-ensemble-source-manysig-s2026092701-r01/report.md)|
+|固定监督对比方案的三成员等权集成|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-ensemble-clean-manysig-m6-r01/report.md)|
