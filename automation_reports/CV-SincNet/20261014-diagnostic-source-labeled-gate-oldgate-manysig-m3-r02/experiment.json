@@ -56,9 +56,9 @@
       "8-8"
     ],
     "source_days": [
-      0,
       1,
-      2
+      2,
+      3
     ],
     "target_days": [
       "2021_03_01",
@@ -77,7 +77,13 @@
     "split_id": "original registered source/target physical split; reuse unchanged",
     "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/index.npz",
-    "leo_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261002-phase1-cvs-residual-sixscene-manysig-m8-r01\\received_views\\manifest.json"
+    "leo_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261002-phase1-cvs-residual-sixscene-manysig-m8-r01\\received_views\\manifest.json",
+    "original_source_days_metadata": [
+      0,
+      1,
+      2
+    ],
+    "source_days_correction": "Descriptive metadata corrected from [0,1,2] to actual native wisig_train_days/day_i [1,2,3]; same exact physical role IDs, no data or run change"
   },
   "permissions": {
     "L_s": "6300 original training-source labels for downstream proxy metrics only; model/gate always label-blind",
@@ -758,7 +764,7 @@
     "No new classification head, RX/day fit, prototype, temperature, support or query.",
     "3seed labels and physical IDs fixed; sampler offset79021 fixed before source access; no scan or rerun selection."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "local_verification": "PASS: fresh-process worker import regression fails before fix and passes after bootstrap; native gate negatives remain PASS",
   "independent_review": {
     "status": "PASS_TARGETED",
@@ -766,6 +772,22 @@
     "issue": "ModuleNotFoundError before native_modules",
     "fresh_process_verified": true
   },
-  "result": null,
+  "result": {
+    "status": "VERIFIED_COMPLETE_SOURCE_DIAGNOSTIC",
+    "execution_commit": "41c55b237059b7af4ab6d4e943dd8663d7f2faae",
+    "models": 3,
+    "source_L_observations": 18900,
+    "forward_packets": 56700,
+    "updates": 0,
+    "head_fit_updates": 0,
+    "EMA_updates": 0,
+    "target_access": false,
+    "aggregate_ref": "analysis/source_gate_proxy_summary_20261014.json",
+    "group_ref": "analysis/source_gate_proxy_groups_20261014.csv",
+    "source_train_mode_accepted": 2495,
+    "source_train_mode_correct": 2495,
+    "hidden_U_precision": "NOT_MEASURED",
+    "processes_exited": true
+  },
   "registered_at": "2026-10-13T19:54:52+00:00"
 }

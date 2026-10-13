@@ -35,3 +35,5 @@
 2026-10-14完整结果：sequence24row已ANALYZED，默认co-primary RFF81.5742%、SIG_TIME83.0393%（对基线＋2.5125pp/3正），84%尚未达；完整日志、分组、纠正/引入错误、真实参数更新与pureexport证据回收。CUDA初始化对基线的混杂保留，未热改历史run。另一分支也发布同构TIME，初始化offset62103与本run48213、source门槛/诊断预算不同；保护两份健康不可变run、不混合6seed、不再加第三套，只继续本run闭环。详见主证据报告。
 
 2026-10-14 TIME15row完整ANALYZED：四条件均值81.2161/81.3268/81.4810/81.8115%，预定LONG_SILU距84%2.1885pp。紧凑SiLU相对linear＋0.2649pp/3正；SiLU下长覆盖＋0.3306pp/3正，线性长覆盖仅1正。12个真实final-model导出W删改不改z、featureparams/buffers诊断不变；60阶段/180RXday反馈、270CM、252万决定/600新增ep全部核验。原头收益与迁移结论分开，当前禁止新headfit。完整source/seed/group/误差/成本与剩余容量/旁路归因统一主报告，不按目标重跑或额外扫核。
+
+源门控已完成r02的三seed只读L代理：参数/buffers/EMA/headfit更新0，完整18900次观察/56700前向、1260分组阶段及25batch/seed复算VERIFIED。confidence94.2804%、结构邻居上限14.2011%、最终接受13.2011%，2495接受标签无观测错误；仅已见L代理，不解封/推断U精度，不据此改gate。r01fresh-native-import技术失败保存、一次针对性修复后r02完成。实际源day为native1/2/3，旧0/1/2登记描述纠正，不改变固定角色物理ID。另一分支Sinc坐标0f81373c健康38/37轮，未完成3seed；本对话不重复发布另一unit试验。主报告保持全部正负结果，84%未达到。

@@ -8,7 +8,7 @@
 
 复用两分支完整已提交汇总、源实际配置核验、既有全日志/原始confusion审计。当前没有重扫历史全部stdout，因此全日志PASS引用原审计，不称本次重新全量扫描。新直接证据为12份历史初始/末轮Sinc参数及optimizer状态核对、三份TIME_MS50真实source checkpoint等效核/数学fold检查。旧source权重的只读尺度撤除在当前新run中自动执行，与新训练统计分开。
 
-完整同seed表见phase1_feature_evidence_seed_table_20261014.csv。不能跨配方合并：A为33标签＋17伪标签，B为32＋18。A基线mean80.5268%，B基线80.6454%，不能因为名字或head相同当成同基线。两者都保留历史batch_neighbor gate、EMA、cos、50epoch/11100步；数据契约L6300/U56700隐藏TX/V27000固定物理ID一致，TX6、sourceRX1/3/4/6/8×3day，目标clean168000，NoExplicitCFO。source day显示0/1/2或1/2/3应区分索引/显示编号，不据此认定实际role改变。V只读，目标不参与训练/选择。
+完整同seed表见phase1_feature_evidence_seed_table_20261014.csv。不能跨配方合并：A为33标签＋17伪标签，B为32＋18。A基线mean80.5268%，B基线80.6454%，不能因为名字或head相同当成同基线。两者都保留历史batch_neighbor gate、EMA、cos、50epoch/11100步；数据契约L6300/U56700隐藏TX/V27000固定物理ID一致，TX6、sourceRX1/3/4/6/8×3day，目标clean168000，NoExplicitCFO。实际native wisig_train_days及day_i均为1/2/3；旧登记0/1/2描述错误已更正，角色物理ID保持。V只读，目标不参与训练/选择。
 
 ## 默认头完整结果
 
@@ -181,3 +181,30 @@ SIG_TIME相对同seed原基线纠正/引入错误：2026092701＝9483/4829，净
 当前独立动作是20261014-diagnostic-source-labeled-gate-oldgate-manysig-m3-r01：只读历史固定默认student/ownEMA，用合法已见L_s6300/seed测原门控代理精度、RX/day/TX覆盖以及相同元数据的可配对邻居上限，0训练/EMA/headfit，0target或U前向。原门控与健康Sinc训练保持。代理不能替代实际隐藏U精度或泛化验证；完整结果返回后在本主报告集中更新。预登记和3行路径见对应experiment.json/report.md。
 
 源门控诊断r01读取数据前出现fresh-worker原生模块路径错误，实际L观察0。原进程自然退出，原产物保留；本地独立进程复现/修复路径问题后改用r02新root，原三seed/采样/零更新预算不变，不干预已有Sinc，不把失败计为完成。
+
+## 有标签源门控代理：完整三seed结果
+
+20261014-diagnostic-source-labeled-gate-oldgate-manysig-m3-r02已SOURCE_DIAGNOSTICS_COMPLETE/独立VERIFIED，执行41c55b237059b7af4ab6d4e943dd8663d7f2faae。三名义seed均完整6300个固定L_s样本、25批；合计18900次L观察（同一固定6300包×3模型seed）、56700次前向，1260个分组/阶段计数与全部25批进度日志复算一致。各自实际student和ownEMA均严格加载历史final50，全部参数/buffers诊断前后相同，0 backbone/headfit/EMA更新，0 U或target前向，3worker及dispatcher自然退出。实际过程时间合计22.77秒，含加载与诊断，不含传输/编译，不称exclusive GPU成本。
+
+|源代理阶段|三seed覆盖均值%|覆盖sample SD百分点|对应教师标签精度均值%|
+|---|---:|---:|---:|
+|原EMA全部弱视图|100.0000|0.0000|99.4444|
+|置信度通过|94.2804|0.8767|99.9889|
+|盲元数据邻居可用上限|14.2011|0.5613|99.4049|
+|原temporal通过|13.7196|0.5504|100.0000|
+|confidence∩temporal|13.2222|0.5390|100.0000|
+|再加训练Dropout学生一致|13.2011|0.5465|100.0000|
+
+训练模式最终接受807/817/871，共2495，实际错误0；eval学生接受810/817/872，共2499，错误0。同一弱EMA和强噪声输入下，全部样本弱强一致率从训练模式98.8254%变为eval99.8624%，但在已有base gate后只多4次接受，即0.0212pp。冻结source代理的覆盖损失主要发生在可配对邻居约束；这支持检验随机batch的结构限制，不证明它就是实际U或泛化瓶颈，不因此放松gate。
+
+训练模式分组接受覆盖：RX11.4286%至15.2381%，day12.0000%至14.5238%，TX9.6190%至16.2857%，RX×day9.0476%至17.1429%；各分组接受标签在本代理上均无观测错误。上述精度仅对应已见有标签训练source，可能乐观，不能称隐藏U精度100%、不能直接外推U覆盖，也不提供未见RX/新TX迁移证据。batch分布、pool大小、真实U与已见L的差异不能忽略；实际U真值保持隐藏。没有拟合头、改温度或补原型，模型/gate看不到L truth，仅下游计量连接合法L标签。
+
+原native门控按同RX/day/eq的sig_i与base_index邻近再检验预测/置信；结构上限用同一元数据、恒定同类高置信预测计算，仍调用原函数。它是可能邻居的必要条件，不是修改后的训练gate。两个模式的confidence/temporal/base/structural计数和弱教师预测分布逐项相同，student差异只用于无梯度诊断。阶段数值表source_gate_proxy_seeds_20261014.csv、全部分组source_gate_proxy_groups_20261014.csv、身份/过程/聚合source_gate_proxy_summary_20261014.json已保存。
+
+![源门控代理覆盖与接受数量](source_gate_proxy_20261014.png)
+
+r01技术失败保留：fresh worker在原生模块路径引导前导入cvsrffi，L观察0。一次局部复现和仅该P1的针对性复核后使用r02独立root，实际完成，未覆盖旧根/停止他人/重复科学矩阵。修复不改变任何训练配方或数据权限。
+
+源日期记载纠正：原native args为wisig_train_days=1,2,3，实际day_i也是1/2/3。部分早期登记的source_days=[0,1,2]为描述错误，现保留原字段值的更正记录并写明实际1/2/3；不能未经证据把它解释为索引/显示编号差异。EXACT_MATCH物理ID及已运行数据始终保持，不重训、不重验数据、不改科学协议。
+
+当前后续仅回收已有Sinc坐标run。最新独立读回首seedRAW_HZ38轮/CENTER_25K37轮、健康无failure，后两seed仍按固定源阈值等待；该进度不代表完整三seed或84%目标达成。本对话未并行派发另一Sinc单位扫描。默认分类头联合训练、0另训头的限制继续有效。

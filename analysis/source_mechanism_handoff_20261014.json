@@ -1,7 +1,7 @@
 {
   "existing_sinc_run": "20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01",
   "execution_commit": "0f81373c25ba69a6cb9deec5c7ca652880fd62af",
-  "read_at": 1791920430.556421,
+  "read_at": 1791921643.3905485,
   "status": "VERIFIED",
   "dispatcher_verified": false,
   "rows": [
@@ -12,12 +12,12 @@
     },
     {
       "row_id": "RAW_HZ-s2026092701",
-      "epochs": 3,
+      "epochs": 38,
       "live": true
     },
     {
       "row_id": "CENTER_25K-s2026092701",
-      "epochs": 3,
+      "epochs": 37,
       "live": true
     },
     {
@@ -32,8 +32,12 @@
     }
   ],
   "own_duplicate_sinc_run": "NOT_LAUNCHED",
-  "new_source_diagnostic_run": "20261014-diagnostic-source-labeled-gate-oldgate-manysig-m3-r01",
-  "classifier_policy": "DEFAULT_JOINT_ONLY",
+  "source_diagnostic_run": "20261014-diagnostic-source-labeled-gate-oldgate-manysig-m3-r02",
+  "source_diagnostic_status": "VERIFIED_ANALYZED",
+  "source_observations": 18900,
+  "source_forward_packets": 56700,
+  "backbone_updates": 0,
   "head_fit_updates": 0,
+  "EMA_updates": 0,
   "target_partial_metrics_consumed": false
 }
