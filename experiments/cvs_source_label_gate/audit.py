@@ -43,6 +43,13 @@ def finish(records):
 def unchanged(model,before):
  if any(not torch.equal(v.detach().cpu(),before[k]) for k,v in model.state_dict().items()):raise ValueError('Frozen source proxy mutated model parameters/buffers')
 
+def native_role_reader():
+ # A worker starts fresh; preflight imports cannot bootstrap its native path.
+ from experiments.cvs_phase1_overlay.model import native_modules
+ native_modules()
+ from cvsrffi.xuc_fusion.native import role_ids_from_native
+ return role_ids_from_native
+
 def run(row_id):
  c=d.config(next(r for r in d.rows() if r['row_id']==row_id));d.validate(c);out=Path(c['output_root'])
  if out.exists():raise FileExistsError(out)
@@ -53,7 +60,7 @@ def run(row_id):
  from experiments.cvs_equivariant_identity.precision import numerical_context
  from experiments.cvs_receiver_residual_capacity4.control import lock
  from experiments.cvs_multi_state_action.dispatch import capacity
- from cvsrffi.xuc_fusion.native import role_ids_from_native
+ role_ids_from_native=native_role_reader()
  source=source_proof(c['source_config']);payload=torch.load(source/'final_ssdg.pth',map_location='cpu',weights_only=False)
  if payload['ema_model'] is None or payload['epoch']!=50 or payload['a1_ema_successful_updates']!=11100:raise ValueError('Actual own final EMA not available')
  student=own_model(c['source_config'],'cpu');teacher=deepcopy(student);teacher.load_state_dict(payload['ema_model'],strict=True);teacher.eval().requires_grad_(False);student.requires_grad_(False)
@@ -91,6 +98,7 @@ def run(row_id):
 
 def check():
  from experiments.cvs_phase1_stack.runtime import installed
+ assert native_role_reader().__module__=='cvsrffi.xuc_fusion.native'
  c=d.baseline_config(d.SEEDS[0]);args=d.old.make_args(c,'cpu');meta={k:torch.tensor(v) for k,v in dict(rx_i=[1,1,1,1],day_i=[0,0,0,0],eq_i=[0,0,0,0],sig_i=[0,1,7,8],base_index=[0,1,7,8]).items()};extra=(torch.zeros(4,dtype=torch.long),meta);logits=torch.tensor([[9.,0.,0.,0.,0.,0.]]*4);domain=torch.zeros(4,dtype=torch.long)
  with installed(c) as n:
   pseudo,masks=gate(n,args,logits,logits,extra,domain);assert masks['structural'].all() and masks['accepted'].all();records={};update(records,pseudo,masks,torch.tensor([0,1,0,1]),meta);assert finish(records)['overall']['stages']['accepted']['precision']==.5
@@ -104,6 +112,6 @@ def check():
  try:d.validate(bad)
  except ValueError:pass
  else:raise AssertionError('Head fit accepted')
- return dict(status='PASS',native_gate_executed=True,TX_metadata_rejected=True,structural_upper_bound_and_strong_rejection=True,labels_only_downstream=True,empty_precision_null=True,head_fit_config_rejected=True,target_read=False)
+ return dict(status='PASS',native_gate_executed=True,fresh_worker_native_import=True,TX_metadata_rejected=True,structural_upper_bound_and_strong_rejection=True,labels_only_downstream=True,empty_precision_null=True,head_fit_config_rejected=True,target_read=False)
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');p.add_argument('--row');a=p.parse_args();v=check() if a.check else run(a.row);print(json.dumps(v if a.check else dict(status=v['status'],row_id=a.row,source_count=6300,head_fit_updates=0)),flush=True)

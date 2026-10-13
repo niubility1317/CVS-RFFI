@@ -17,3 +17,5 @@
 按全局已有锁检查所有 owner，每 GPU 总进程少于3且空闲至少12000 MiB才在锁内建立本诊断 GPU 上下文；三行顺序执行，实际 GPU/PID/CWD/argv/log 写入产物。一次归档本地/远端 SHA、一次 compile 和上述 smoke，随后独立读回。已存在根不覆盖、不重发。错误角色/来源/EMA、计数、非有限值、参数buffer变化或执行失败停止后续新诊断，保留全部产物；不停止、重启或热改他人的健康 Sinc 训练。指标只用于解释，不改训练、选模、阈值或重跑。
 
 独立审查结论：未发现直接 P0/P1。实际模型无 BatchNorm，训练模式无梯度前向不更新参数/buffers；历史自有 EMA、L 标签下游计量、全局容量锁、失败保留及入口均已核对。审查未修改文件或操作健康训练。
+
+实际状态：FAILED。执行ee551b5aca2badb0803fafb85c3556bb8aee5d59。fresh audit进程在已有native_modules路径引导前导入cvsrffi，ModuleNotFoundError；失败发生在读取权重/源数据之前，实际L观察0、拟合0。所属dispatcher/worker已自然退出，独立进程证据和原日志保留。局部独立Python进程已复现原错误；修复仅先调用既有native_modules后导入role helper。修复后fresh进程负例PASS。新r02不覆盖本root，原矩阵/采样seed/预算保持；若同指纹再发生不继续盲重启。其他owner健康Sinc任务未干预。

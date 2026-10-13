@@ -766,6 +766,16 @@
     "reviewer": "sequence_p0_review",
     "head_fitting": 0
   },
-  "result": null,
+  "result": {
+    "status": "FAILED",
+    "failed_layer": "fresh audit worker native import",
+    "failure": "ModuleNotFoundError cvsrffi before checkpoint/data read",
+    "source_L_packets": 0,
+    "head_fit_updates": 0,
+    "backbone_updates": 0,
+    "all_owned_processes_exited": true,
+    "outputs_preserved": true,
+    "replacement_run": "20261014-diagnostic-source-labeled-gate-oldgate-manysig-m3-r02"
+  },
   "registered_at": "2026-10-13T19:48:07+00:00"
 }

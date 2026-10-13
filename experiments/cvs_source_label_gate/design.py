@@ -3,8 +3,8 @@ from pathlib import Path
 from experiments.cvs_feature_multiscale50 import design as old
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,SEEDS,read,write,FULL_FP32_POLICY=(getattr(old,k) for k in ('PROJECT','SOURCE','SEEDS','read','write','FULL_FP32_POLICY'))
-RUN='20261014-diagnostic-source-labeled-gate-oldgate-manysig-m3-r01'
-RELEASE='cvs_source_label_gate_20261014_r01';OWNER='codex/root/source-label-gate-20261014'
+RUN='20261014-diagnostic-source-labeled-gate-oldgate-manysig-m3-r02'
+RELEASE='cvs_source_label_gate_20261014_r02';OWNER='codex/root/source-label-gate-20261014'
 BASE=Path(PROJECT)/'runs'/RUN
 SEED_OFFSET=79021
 FORBIDDEN_TX=('tx','tx_i','true_tx_i','tx_label','y_tx')

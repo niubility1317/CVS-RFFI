@@ -179,3 +179,5 @@ SIG_TIME相对同seed原基线纠正/引入错误：2026092701＝9483/4829，净
 跨分支只读核对发现，另一 owner 已用提交0f81373c25ba69a6cb9deec5c7ca652880fd62af发布20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01：RAW_HZ 与 CENTER_25K、原始基线，各三seed；实际初始核和joint160相同，33＋17/scratch50、默认头联合训练、0另训头。2026-10-14独立进程/产物读回VERIFIED，首seed两模型第3轮、0failure，后两seed仍等待固定源条件。未读取其partial target指标选方案。该居中缩放同时改变优化/权衰减/EMA坐标，不能称纯尺度因果测试。本对话尚未发布的固定二进制单位实现与局部检查移至本地保存，不并行启动另一单位试验，不停止或改动已有run。
 
 当前独立动作是20261014-diagnostic-source-labeled-gate-oldgate-manysig-m3-r01：只读历史固定默认student/ownEMA，用合法已见L_s6300/seed测原门控代理精度、RX/day/TX覆盖以及相同元数据的可配对邻居上限，0训练/EMA/headfit，0target或U前向。原门控与健康Sinc训练保持。代理不能替代实际隐藏U精度或泛化验证；完整结果返回后在本主报告集中更新。预登记和3行路径见对应experiment.json/report.md。
+
+源门控诊断r01读取数据前出现fresh-worker原生模块路径错误，实际L观察0。原进程自然退出，原产物保留；本地独立进程复现/修复路径问题后改用r02新root，原三seed/采样/零更新预算不变，不干预已有Sinc，不把失败计为完成。
