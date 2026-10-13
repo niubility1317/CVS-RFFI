@@ -1,6 +1,6 @@
 # TIME 覆盖范围与分支非线性：最小预登记
 
-run_id：20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01。状态 PLANNED。主候选 LONG_SILU，默认联合训练分类头 clean 三固定 seed 均值84%为研究目标，不保证达到。此路线来自用户最新说明，另一对话的归一化恢复/分支竞争实验已自然结束；本轮只改时间特征提取路径。
+run_id：20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01。状态 RUNNING。主候选 LONG_SILU，默认联合训练分类头 clean 三固定 seed 均值84%为研究目标，不保证达到。此路线来自用户最新说明，另一对话的归一化恢复/分支竞争实验已自然结束；本轮只改时间特征提取路径。
 
 |条件|三个depthwise分支(k,d)|分支激活|seed/预算|
 |---|---|---|---|
@@ -27,3 +27,5 @@ clean-only固定168000包/row，旧6TX×7targetRX×4day；15rows/2520000默认�
 发布依次：focused negatives与唯一一次独立下一run P0/P1审查；一个代码/config commit；单release archive一次本地/远端SHA比较、remotecompile与真实baseline noquery checkpoint smoke；PASS即启动。一次PID/CWD/argv/GPU/commit/loggrowth核验。系统技术错误关闭本owner新调度，保留已运行健康row及所有输出；不停止/重启其他owner，无性能失败重试。通用designapproval/hash/seal/report-onlyreview均NONBLOCKING/REJECTED_EXTRA_GATE。
 
 唯一一次独立下一真实run P0/P1审查PASS：TIME整包、shared defaultPipeline、PA参数化source/predict/score/dispatch、历史来源快照、scratch50/33＋17、RNG保持、默认头零独立训练、源首seedCE门槛、U/V诊断、truthlast动态15行、发布依赖/入口核对无直接P0/P1。审查仅只读，没有真实IQ/truth/remote动作；native实际解析为已打包adv3b02_xuc/code/SSDG/train_ssdg.py，15rows/12new、checkpoint路径空、hookNone和ORIGINAL_HEAD一致。focused模型与优化器/EMA/joint160验证PASS，完整15行270指标/8配对/交互/固定重入及16预测负例PASS。未新增设计审批、报告review或额外hash。
+
+实际发布后核验 VERIFIED：执行Git 351e35cd0d298a6832c0865628bba28ab5a14cbe，单archive SHA比较、remotecompile、真实默认checkpoint noquery smoke PASS。首seed4worker PID/CWD/argv/GPU/commit完全一致，epoch0→4、日志增长；4份真实initial_smoke全部200参数/buffer tensors一致。GPU3/4/1/6各1个本run进程，所有owner每GPU最大2；3历史OLD默认决定已经复用并独立评分，failure0。其余8模型等待固定source门槛；暂无新目标分数，不作收益或完成声明。

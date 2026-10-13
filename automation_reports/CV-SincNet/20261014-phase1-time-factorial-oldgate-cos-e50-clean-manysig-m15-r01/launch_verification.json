@@ -1,0 +1,262 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01",
+  "executing_code": "351e35cd0d298a6832c0865628bba28ab5a14cbe",
+  "archive_transfer_SHA_once": "PASS",
+  "remote_compile": "PASS",
+  "real_checkpoint_no_query_smoke": true,
+  "default_classifier_joint_training": true,
+  "separate_head_fit": false,
+  "separate_head_updates": 0,
+  "real_initial_states_identical": {
+    "status": "VERIFIED",
+    "real_initial_checkpoints": 4,
+    "same_model_seed": 2026092701,
+    "identical_parameter_and_buffer_tensors": {
+      "COMPACT_LINEAR": true,
+      "LONG_LINEAR": true,
+      "COMPACT_SILU": true,
+      "LONG_SILU": true
+    },
+    "state_tensors": 200,
+    "query_read": false,
+    "updates": 0
+  },
+  "source_first_seed_gate": "remaining8models pending, no target selection",
+  "new_workers": [
+    {
+      "row_id": "COMPACT_LINEAR-s2026092701",
+      "status": "VERIFIED",
+      "pid": 1745465,
+      "gpu": 3,
+      "epochs_before": 0,
+      "epochs_after": 4,
+      "log_bytes_before": 6558,
+      "log_bytes_after": 27275,
+      "commit": "351e35cd0d298a6832c0865628bba28ab5a14cbe",
+      "actual_feature_contract": {
+        "enabled": true,
+        "layers": [
+          "t1",
+          "t2",
+          "t3"
+        ],
+        "settings": [
+          [
+            3,
+            1
+          ],
+          [
+            5,
+            1
+          ],
+          [
+            5,
+            1
+          ]
+        ],
+        "branch_activation": "none",
+        "preserve": [
+          "PA",
+          "frequency",
+          "reference",
+          "GroupNorm",
+          "output_ReLU",
+          "pool",
+          "dropout",
+          "default_head"
+        ],
+        "private_init_offset": 62103,
+        "added_identity_parameters": 60672,
+        "same_parameter_values_across_four_arms": true,
+        "same_initial_function_across_activations": false,
+        "head": "unchanged cosine6x160",
+        "pseudo_EMA": "historical unmodified",
+        "separate_head_fit": false,
+        "outer_torch_RNG_preserved": true
+      }
+    },
+    {
+      "row_id": "LONG_LINEAR-s2026092701",
+      "status": "VERIFIED",
+      "pid": 1745547,
+      "gpu": 4,
+      "epochs_before": 0,
+      "epochs_after": 4,
+      "log_bytes_before": 6534,
+      "log_bytes_after": 27223,
+      "commit": "351e35cd0d298a6832c0865628bba28ab5a14cbe",
+      "actual_feature_contract": {
+        "enabled": true,
+        "layers": [
+          "t1",
+          "t2",
+          "t3"
+        ],
+        "settings": [
+          [
+            3,
+            1
+          ],
+          [
+            5,
+            1
+          ],
+          [
+            5,
+            2
+          ]
+        ],
+        "branch_activation": "none",
+        "preserve": [
+          "PA",
+          "frequency",
+          "reference",
+          "GroupNorm",
+          "output_ReLU",
+          "pool",
+          "dropout",
+          "default_head"
+        ],
+        "private_init_offset": 62103,
+        "added_identity_parameters": 60672,
+        "same_parameter_values_across_four_arms": true,
+        "same_initial_function_across_activations": false,
+        "head": "unchanged cosine6x160",
+        "pseudo_EMA": "historical unmodified",
+        "separate_head_fit": false,
+        "outer_torch_RNG_preserved": true
+      }
+    },
+    {
+      "row_id": "COMPACT_SILU-s2026092701",
+      "status": "VERIFIED",
+      "pid": 1745632,
+      "gpu": 1,
+      "epochs_before": 0,
+      "epochs_after": 4,
+      "log_bytes_before": 6542,
+      "log_bytes_after": 27243,
+      "commit": "351e35cd0d298a6832c0865628bba28ab5a14cbe",
+      "actual_feature_contract": {
+        "enabled": true,
+        "layers": [
+          "t1",
+          "t2",
+          "t3"
+        ],
+        "settings": [
+          [
+            3,
+            1
+          ],
+          [
+            5,
+            1
+          ],
+          [
+            5,
+            1
+          ]
+        ],
+        "branch_activation": "silu",
+        "preserve": [
+          "PA",
+          "frequency",
+          "reference",
+          "GroupNorm",
+          "output_ReLU",
+          "pool",
+          "dropout",
+          "default_head"
+        ],
+        "private_init_offset": 62103,
+        "added_identity_parameters": 60672,
+        "same_parameter_values_across_four_arms": true,
+        "same_initial_function_across_activations": false,
+        "head": "unchanged cosine6x160",
+        "pseudo_EMA": "historical unmodified",
+        "separate_head_fit": false,
+        "outer_torch_RNG_preserved": true
+      }
+    },
+    {
+      "row_id": "LONG_SILU-s2026092701",
+      "status": "VERIFIED",
+      "pid": 1745718,
+      "gpu": 6,
+      "epochs_before": 0,
+      "epochs_after": 4,
+      "log_bytes_before": 6518,
+      "log_bytes_after": 27199,
+      "commit": "351e35cd0d298a6832c0865628bba28ab5a14cbe",
+      "actual_feature_contract": {
+        "enabled": true,
+        "layers": [
+          "t1",
+          "t2",
+          "t3"
+        ],
+        "settings": [
+          [
+            3,
+            1
+          ],
+          [
+            5,
+            1
+          ],
+          [
+            5,
+            2
+          ]
+        ],
+        "branch_activation": "silu",
+        "preserve": [
+          "PA",
+          "frequency",
+          "reference",
+          "GroupNorm",
+          "output_ReLU",
+          "pool",
+          "dropout",
+          "default_head"
+        ],
+        "private_init_offset": 62103,
+        "added_identity_parameters": 60672,
+        "same_parameter_values_across_four_arms": true,
+        "same_initial_function_across_activations": false,
+        "head": "unchanged cosine6x160",
+        "pseudo_EMA": "historical unmodified",
+        "separate_head_fit": false,
+        "outer_torch_RNG_preserved": true
+      }
+    }
+  ],
+  "baseline_rows": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "status": "TRAINED_PREDICTED_SCORED",
+      "original_predictions_reused": true,
+      "truth_last": true,
+      "metric_records": 18
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "status": "TRAINED_PREDICTED_SCORED",
+      "original_predictions_reused": true,
+      "truth_last": true,
+      "metric_records": 18
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "status": "TRAINED_PREDICTED_SCORED",
+      "original_predictions_reused": true,
+      "truth_last": true,
+      "metric_records": 18
+    }
+  ],
+  "failure": null,
+  "capacity_max_total_processes": 2,
+  "read_at": 1791913505.0235214
+}

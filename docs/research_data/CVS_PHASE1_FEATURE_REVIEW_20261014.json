@@ -30211,6 +30211,52 @@
         "all_processes_terminal": true
       },
       "judgment": "Default classifier only; cross-delay gain over equal-capacity CONV is 0.03948 percentage points, two positive seeds; no mechanism or deployment success established."
+    },
+    {
+      "run_id": "20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01",
+      "mechanism": "TIME coverage x branch-internal SiLU; matched capacity, default head only",
+      "code_commit": "351e35cd0d298a6832c0865628bba28ab5a14cbe",
+      "status": "RUNNING",
+      "new_models": 12,
+      "complete_new_seeds": 0,
+      "completed_baseline_seeds": 3,
+      "new_backbone_budget_epochs": 600,
+      "new_update_budget": 133200,
+      "recipe": "scratch50 33+17 oldgates/EMA/cos",
+      "head_change": false,
+      "separate_head_updates": 0,
+      "matched_real_initial_tensors": 200,
+      "new_workers": [
+        {
+          "row_id": "COMPACT_LINEAR-s2026092701",
+          "gpu": 3,
+          "epoch": 4,
+          "status": "VERIFIED"
+        },
+        {
+          "row_id": "LONG_LINEAR-s2026092701",
+          "gpu": 4,
+          "epoch": 4,
+          "status": "VERIFIED"
+        },
+        {
+          "row_id": "COMPACT_SILU-s2026092701",
+          "gpu": 1,
+          "epoch": 4,
+          "status": "VERIFIED"
+        },
+        {
+          "row_id": "LONG_SILU-s2026092701",
+          "gpu": 6,
+          "epoch": 4,
+          "status": "VERIFIED"
+        }
+      ],
+      "first_seed_source_gate": "final222 labeledCE <=.5 for all4, then remaining2seeds",
+      "missing": [
+        "new model final50/default clean scores"
+      ],
+      "target_feedback": false
     }
   ],
   "diagnostics": {
