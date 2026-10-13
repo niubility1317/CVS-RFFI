@@ -44,3 +44,10 @@
 三成员实验和零训练恢复均已ANALYZED/VERIFIED：全部79920新step/360epoch/18真实checkpoint/6个集成公式与1008000原始预测108指标独立重算；CROSS_RX_TX ensemble81.39345%、ALL_TX ensemble81.32817%，原CE ensemble81.32540%，三成员并未完成84目标。原末尾NameError只在聚合，r02恢复不覆盖任何原产物，0新增训练/预测/评分。
 
 用户于2026-10-13新报告覆盖下一方向：暂停新增解析不变量分支，优先“可重复TX×RX×day观测漂移驱动鲁棒间隔”。已准备的source_rx_spectrum未发布、无远端训练，deferred（用户新路线）；现登记20261013-phase1-repeated-rx-margin-clean-manysig-m12-r01，UNIFORM_SSL底座四组×三primary、各从零30、普通cos160、clean/noVgate。报告N1至N11逐项追溯：5项verified组件及边界，6项implemented且待真实运行证据；无rejected/blocked。严格执行有限候选公式，不以投影、Jacobian或Gaussian近似代替；漂移仍为观测统计非纯RX因果。原18项历史结果和近似边界保留。
+
+新报告下一轮全流程已完成 VERIFIED：`20261013-phase1-repeated-rx-margin-clean-manysig-m12-r01` N1至N11共11项verified；上一份未发布谱候选1项deferred（用户改路线），0 rejected/blocked。有限候选公式严格落实、原模型和普通cos保持；独立统计依然只有观测解释，不宣称RX因果或任意未知RX保证。
+- MATCHED_BASE：三primary clean均值79.9867%、SD1.1127%；goal84=False。
+- RANDOM_ROBUST：三primary clean均值79.9101%、SD1.1840%；goal84=False。
+- MEASURED_MEAN：三primary clean均值80.0109%、SD1.0427%；goal84=False。
+- MEASURED_ROBUST：三primary clean均值79.8565%、SD1.0921%；goal84=False。
+12真实checkpoint/6300合法L和56700隐藏U来源、无V前向、从零FINAL30、全79920步与360epoch、360刷新2268000额外Lforward packets、388800方向/720净梯度记录、2016000原始预测/216指标/162净重分类完整核实。所有四组和负结果保留；无target回流参数/结构/seed/重跑。完整报告 `automation_reports/CV-SincNet/20261013-phase1-repeated-rx-margin-clean-manysig-m12-r01/final_analysis.md`。

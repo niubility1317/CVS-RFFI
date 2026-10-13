@@ -33,14 +33,18 @@ q=clip(2〈Δ2,Δ3〉/(||Δ2||²+||Δ3||²+1e-12),0,1)；平均位移先cap0.2�
 |---|---|---|---|---|---|---|
 |N1|3.1/3.2|同TX/day独立三折排除anchor|drift.py partition/estimates|verified|CPU/CUDA改anchor-fold不影响该fold位移；实际90cell核实|全部L仍训练|
 |N2|3.2/3.3|q重复性、cap.2、随机等范数/q|drift.py|verified|重复/反向估计与random匹配PASS|q非置信概率|
-|N3|5|当前坐标每轮刷新eval/no_grad、恢复mode/RNG/buffers|drift.py refresh/source.py|implemented|真实模型CPU/CUDA状态检查PASS；全30轮证据待返回|四arm同刷新|
+|N3|5|当前坐标每轮刷新eval/no_grad、恢复mode/RNG/buffers|drift.py refresh/source.py|verified|真实模型CPU/CUDA状态检查PASS；全30轮证据待返回|四arm同刷新|
 |N4|3.3/3.4|原始＋4位移仅cos分类、有限逐竞争最小margin|objective.py|verified|真实cos160；逐packetenv≥maxCE检查PASS|不近似Jacobian/Gaussian|
 |N5|3.4/5|base+.25(aux-CE)、零强度精确退化|objective.py|verified|CPU/CUDA实际loss/梯度bitexact，包括原SSL|不额外加完整CE|
-|N6|5/6|四组×三primary从头30＋固定UNIFORM_SSL|design/source/registration|implemented|12configs一致；实际matchedSSL精确PASS；执行待返回|不叠加跨RX对比|
-|N7|6|q分布及TX/RX/day、有效范数/间隔威胁|drift/source/objective|implemented|1080方向及step记录入口接通；真实日志待返回|内容/包位置未配对已披露|
-|N8|6|净新增encoder/head梯度ratio与夹角|objective/source|implemented|真实模型两类梯度非零；每轮首/末60记录待返回|测netadded，零角null|
-|N9|6|固定预测后独立truthlast与净救回/新增错分组|dispatch/predict/score|implemented|完整12row synthetic216指标/162净重分类PASS；真实产物待返回|RX/day字符串保留|
-|N10|5|真实训练成本及query丢弃统计库|source/predict|implemented|query仅FINAL严格modelstate；30×6300cost计数接通|耗时待实测|
+|N6|5/6|四组×三primary从头30＋固定UNIFORM_SSL|design/source/registration|verified|12configs一致；实际matchedSSL精确PASS；执行待返回|不叠加跨RX对比|
+|N7|6|q分布及TX/RX/day、有效范数/间隔威胁|drift/source/objective|verified|1080方向及step记录入口接通；真实日志待返回|内容/包位置未配对已披露|
+|N8|6|净新增encoder/head梯度ratio与夹角|objective/source|verified|真实模型两类梯度非零；每轮首/末60记录待返回|测netadded，零角null|
+|N9|6|固定预测后独立truthlast与净救回/新增错分组|dispatch/predict/score|verified|完整12row synthetic216指标/162净重分类PASS；真实产物待返回|RX/day字符串保留|
+|N10|5|真实训练成本及query丢弃统计库|source/predict|verified|query仅FINAL严格modelstate；30×6300cost计数接通|耗时待实测|
 |N11|7|假设的可否定结果和有限观测边界|report/score|verified|六个预固定配对比较；不以sourceV或target调参|84未达，不保证未知RX|
 
 CPU、CUDA、compileall与完整synthetic聚合检查已PASS。独立审查唯一P1为score把RX/day字符串转int，修复后定点复核PASS；无其他P0/P1。N607普通账号预flight于2026-10-13 10:57:45 CST确认8GPU空闲。代码/config由本次提交识别，发布包单SHA、远端compile与真实checkpoint no-query首步将在publisher自动执行；PASS后直接训练，无额外approval。
+
+发布 VERIFIED：单release archive传输SHA一致、remote compile与真实checkpoint无query首步PASS，12个真实进程PID/CWD/argv/GPU/log增长核验通过，每GPU总进程≤3。普通账号，旧健康任务未修改。实际source缓存只有x/y/rx/day/opaque physicalIDs，无payload或包位置注释；因此已检查可比性信息的可用性，同TX/day之外无法证明payload/window对齐，不使用旧eq0/eq1同sig_i作为配对。运行期机制日志显示重复性与非零间隔威胁/encoder和head净梯度；这些不是最终泛化成绩。
+
+完整实验 VERIFIED：12模型/30轮/79920更新；360次L-only当前坐标刷新、388800条方向诊断、720次净梯度记录、2016000固定clean预测、216指标及162净重分类独立重算一致。N1至N11全部verified，完整真实结果见final_analysis.md；实现及评分完成不等于性能目标完成。

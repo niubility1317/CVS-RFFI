@@ -654,7 +654,8 @@
           "gradient_diagnostics": "first and last optimizer step each epoch; netadded versus CE+SSL; encoder and cosW",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MATCHED_BASE-s2026092702",
@@ -1173,7 +1174,8 @@
           "gradient_diagnostics": "first and last optimizer step each epoch; netadded versus CE+SSL; encoder and cosW",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MATCHED_BASE-s2026092703",
@@ -1692,7 +1694,8 @@
           "gradient_diagnostics": "first and last optimizer step each epoch; netadded versus CE+SSL; encoder and cosW",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "RANDOM_ROBUST-s2026092701",
@@ -2211,7 +2214,8 @@
           "gradient_diagnostics": "first and last optimizer step each epoch; netadded versus CE+SSL; encoder and cosW",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "RANDOM_ROBUST-s2026092702",
@@ -2730,7 +2734,8 @@
           "gradient_diagnostics": "first and last optimizer step each epoch; netadded versus CE+SSL; encoder and cosW",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "RANDOM_ROBUST-s2026092703",
@@ -3249,7 +3254,8 @@
           "gradient_diagnostics": "first and last optimizer step each epoch; netadded versus CE+SSL; encoder and cosW",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MEASURED_MEAN-s2026092701",
@@ -3768,7 +3774,8 @@
           "gradient_diagnostics": "first and last optimizer step each epoch; netadded versus CE+SSL; encoder and cosW",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MEASURED_MEAN-s2026092702",
@@ -4287,7 +4294,8 @@
           "gradient_diagnostics": "first and last optimizer step each epoch; netadded versus CE+SSL; encoder and cosW",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MEASURED_MEAN-s2026092703",
@@ -4806,7 +4814,8 @@
           "gradient_diagnostics": "first and last optimizer step each epoch; netadded versus CE+SSL; encoder and cosW",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MEASURED_ROBUST-s2026092701",
@@ -5325,7 +5334,8 @@
           "gradient_diagnostics": "first and last optimizer step each epoch; netadded versus CE+SSL; encoder and cosW",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MEASURED_ROBUST-s2026092702",
@@ -5844,7 +5854,8 @@
           "gradient_diagnostics": "first and last optimizer step each epoch; netadded versus CE+SSL; encoder and cosW",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "MEASURED_ROBUST-s2026092703",
@@ -6363,7 +6374,8 @@
           "gradient_diagnostics": "first and last optimizer step each epoch; netadded versus CE+SSL; encoder and cosW",
           "persistent_query_state": false
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED"
     }
   ],
   "notes": [
@@ -6374,9 +6386,68 @@
     "q distributions/full1080directionrecords/90cellcounts perrefresh; batch effective norms and original-to-worst-margin threats; netadded versus CE+SSL gradient normratio/cosine separately encoder/head on first+laststep each epoch. Sample physicalID ranges recorded; sameTX/day doesnot guarantee pairedpayload/window content or pureRXcausality.",
     "All12 fixed clean168000 each =>2016000 decisions216same-row metrics. Independent addressspace truth-last after eachrow predictions; summarize all3seeds, accuracy/MacroF1/RX/TX/day plus oldwrong-newright and oldright-newwrong/net reclassification perseed/RX/TX/day. No sourceVpromotiongate/targettuning/selectivererun. Training-only stat banks discarded from query; no Phase2 deployment claim."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-13T02:55:14+00:00",
   "replaces_run_id": null,
   "local_verification": "CPU/CUDA full mechanism/zero-strength/UNIFORM_SSL exact gradients; synthetic12row216metrics162reclassify PASS; compileall PASS",
-  "independent_review": "one P0/P1; RX/day int conversion fixed; one targeted rereview PASS"
+  "independent_review": "one P0/P1; RX/day int conversion fixed; one targeted rereview PASS",
+  "execution_commit": "a855a47084029f342096e535c8d28cb0f9f20151",
+  "delivery_verdict": "VERIFIED",
+  "live_readback_ref": "local artifact readback.json / original immutable source logs",
+  "clean_result_summary": [
+    {
+      "arm": "MATCHED_BASE",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7998670634920635,
+      "accuracy_sd": 0.011126508428739678,
+      "seed_accuracy": {
+        "2026092701": 0.807625,
+        "2026092702": 0.7871190476190476,
+        "2026092703": 0.8048571428571428
+      },
+      "macro_f1_mean": 0.7967846820917556,
+      "goal_84": false
+    },
+    {
+      "arm": "RANDOM_ROBUST",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7991011904761905,
+      "accuracy_sd": 0.011840270255216006,
+      "seed_accuracy": {
+        "2026092701": 0.8094404761904762,
+        "2026092702": 0.7861845238095239,
+        "2026092703": 0.8016785714285715
+      },
+      "macro_f1_mean": 0.7960426226137316,
+      "goal_84": false
+    },
+    {
+      "arm": "MEASURED_MEAN",
+      "readout": "FINAL",
+      "accuracy_mean": 0.800109126984127,
+      "accuracy_sd": 0.010426521415525901,
+      "seed_accuracy": {
+        "2026092701": 0.8086607142857143,
+        "2026092702": 0.7884940476190476,
+        "2026092703": 0.803172619047619
+      },
+      "macro_f1_mean": 0.7971215807942497,
+      "goal_84": false
+    },
+    {
+      "arm": "MEASURED_ROBUST",
+      "readout": "FINAL",
+      "accuracy_mean": 0.7985654761904762,
+      "accuracy_sd": 0.010920651503078966,
+      "seed_accuracy": {
+        "2026092701": 0.806875,
+        "2026092702": 0.7861964285714286,
+        "2026092703": 0.802625
+      },
+      "macro_f1_mean": 0.7954599445454812,
+      "goal_84": false
+    }
+  ],
+  "goal_84": false,
+  "full_audit_ref": "final_analysis.md"
 }

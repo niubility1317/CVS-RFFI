@@ -1,2 +1,4 @@
 {"at": "2026-10-13T02:55:14+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-13T03:00:04+00:00", "status": "LOCAL_VERIFIED", "note": "CPU/CUDA/compile/syntheticaggregate PASS; independentP0P1+one targetedfix PASS; fixed12scratch30 cleanonly noVgate", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-10-13T03:05:47+00:00", "status": "RUNNING", "note": "VERIFIED archive/compile/noquerypreflight;12 PID CWD argv GPU loggrowth; no technicalfailure; immutable fixedrecipe", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-10-13T03:10:41+00:00", "status": "ANALYZED", "note": "VERIFIED12scratch30/79920steps360refresh388800directions720gradientrecords;2016000clean216metrics162netreclassify;84 False", "evidence": ["final_analysis.md"], "row_id": null}
