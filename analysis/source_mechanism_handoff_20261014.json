@@ -1,34 +1,81 @@
 {
   "existing_sinc_run": "20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01",
   "execution_commit": "0f81373c25ba69a6cb9deec5c7ca652880fd62af",
-  "read_at": 1791921643.3905485,
+  "read_at": 1791922429.7273867,
   "status": "VERIFIED",
   "dispatcher_verified": false,
   "rows": [
     {
       "row_id": "OLD_GATE_COS50-s2026092701",
       "epochs": 50,
-      "live": false
+      "live": false,
+      "source_complete": true,
+      "predicted": true,
+      "scored": true
     },
     {
       "row_id": "RAW_HZ-s2026092701",
-      "epochs": 38,
-      "live": true
+      "epochs": 50,
+      "live": false,
+      "source_complete": true,
+      "predicted": true,
+      "scored": true
     },
     {
       "row_id": "CENTER_25K-s2026092701",
-      "epochs": 37,
-      "live": true
+      "epochs": 50,
+      "live": false,
+      "source_complete": true,
+      "predicted": true,
+      "scored": true
     },
     {
       "row_id": "OLD_GATE_COS50-s2026092702",
       "epochs": 50,
-      "live": false
+      "live": false,
+      "source_complete": true,
+      "predicted": true,
+      "scored": true
     },
     {
       "row_id": "OLD_GATE_COS50-s2026092703",
       "epochs": 50,
-      "live": false
+      "live": false,
+      "source_complete": true,
+      "predicted": true,
+      "scored": true
+    },
+    {
+      "row_id": "RAW_HZ-s2026092702",
+      "epochs": 2,
+      "live": true,
+      "source_complete": false,
+      "predicted": false,
+      "scored": false
+    },
+    {
+      "row_id": "CENTER_25K-s2026092702",
+      "epochs": 2,
+      "live": true,
+      "source_complete": false,
+      "predicted": false,
+      "scored": false
+    },
+    {
+      "row_id": "RAW_HZ-s2026092703",
+      "epochs": 2,
+      "live": true,
+      "source_complete": false,
+      "predicted": false,
+      "scored": false
+    },
+    {
+      "row_id": "CENTER_25K-s2026092703",
+      "epochs": 2,
+      "live": true,
+      "source_complete": false,
+      "predicted": false,
+      "scored": false
     }
   ],
   "own_duplicate_sinc_run": "NOT_LAUNCHED",
@@ -39,5 +86,7 @@
   "backbone_updates": 0,
   "head_fit_updates": 0,
   "EMA_updates": 0,
-  "target_partial_metrics_consumed": false
+  "target_partial_metrics_consumed": false,
+  "Sinc_first_seed_source_screen": "PASSED; four fixed remaining training rows released by immutable source-only gate",
+  "Sinc_complete_three_seed": false
 }

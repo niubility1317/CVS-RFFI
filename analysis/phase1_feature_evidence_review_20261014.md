@@ -208,3 +208,5 @@ r01技术失败保留：fresh worker在原生模块路径引导前导入cvsrffi�
 源日期记载纠正：原native args为wisig_train_days=1,2,3，实际day_i也是1/2/3。部分早期登记的source_days=[0,1,2]为描述错误，现保留原字段值的更正记录并写明实际1/2/3；不能未经证据把它解释为索引/显示编号差异。EXACT_MATCH物理ID及已运行数据始终保持，不重训、不重验数据、不改科学协议。
 
 当前后续仅回收已有Sinc坐标run。最新独立读回首seedRAW_HZ38轮/CENTER_25K37轮、健康无failure，后两seed仍按固定源阈值等待；该进度不代表完整三seed或84%目标达成。本对话未并行派发另一Sinc单位扫描。默认分类头联合训练、0另训头的限制继续有效。
+
+Sinc进度更新：首seed RAW_HZ与CENTER_25K均完成固定50轮及本row自动预测/独立评分；固定源门槛通过，程序已释放后两个seed的4个预登记训练，最新均第2轮，pending0/failure0，独立PID/CWD/产物读回VERIFIED。当前仅更新源与执行状态，未读取partial target分数作方案判断，仍不称完整三seed结果或84%达成。具体快照见source_mechanism_handoff_20261014.json。
