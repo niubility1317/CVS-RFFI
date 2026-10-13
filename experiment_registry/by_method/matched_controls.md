@@ -13,3 +13,4 @@
 |教师伪标签目标反馈：三种子普通cos 30轮 clean|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-feedback-teacher-clean-manysig-m12-r01/report.md)|
 |可重复跨 RX 漂移上的鲁棒间隔：四组独立消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-repeated-rx-margin-clean-manysig-m12-r01/report.md)|
 |九行冻结 RX 对抗模型的源域独立探针|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-conditional-rx-probe-health-manysig-m9-r01/report.md)|
+|六方向源机制诊断：冻结 CE30 三主种子|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-six-direction-mechanisms-manysig-m3-r01/report.md)|

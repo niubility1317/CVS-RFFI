@@ -5368,10 +5368,12 @@
     "L TX/RX/day physicalIDsort modulo3; probe fit onlyfold0/1, normalization onlyfitL; fixed100fullbatch AdamW lr.01/wd.001 seedprimary+31337. Identity saw all L previously: fold2 independent onlyfor newprobe. V is knownRX health.",
     "21 probes/row, 189total,18900 probe updates,0identityupdates; extra independent refit audit18900 updates separately disclosed. No probe weight deployed, no U or target read."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "REPLACED",
   "registered_at": "2026-10-13T04:37:35+00:00",
   "replaces_run_id": null,
   "local_verification": "CPU189syntheticprobe/18900updates/567confusions; negative roles/labels/detached/fold/registration/overwrite; actualnative96/192/160; frozenstate/RNG; configmatch and compile PASS",
   "independent_review": "oneP0P1 plus one targeted missingdependency fix review PASS; no remainingP0P1",
-  "release_status": "NOT_PUBLISHED_LOCAL_CLIENT_PERMISSION_FAILED"
+  "release_status": "DEFERRED_BY_NEW_SIX_DIRECTION_REPORT",
+  "successor_run_id": "20261013-source-six-direction-mechanisms-manysig-m3-r01",
+  "current_remote_status": "not launched; read-only preflight later succeeded, no run mutation or healthy job stop"
 }
