@@ -1,0 +1,397 @@
+{
+  "schema": "phase1_time_basis_v1",
+  "run_id": "20261014-phase1-single-basis-residual-oldgate-e50-clean-manysig-m6-r01",
+  "stage": "repair",
+  "arm": "BASE_REF",
+  "model_seed": 2026092702,
+  "row_id": "BASE_REF-s2026092702",
+  "features": [
+    "ema",
+    "pseudo",
+    "twostage"
+  ],
+  "variant": "reference_response",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-single-basis-residual-oldgate-e50-clean-manysig-m6-r01/BASE_REF-s2026092702/source",
+  "epochs": 50,
+  "steps_per_epoch": 222,
+  "model_initialization": "scratch",
+  "checkpoint_sources": [],
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "method": "cvs_legacy_no_sat",
+  "target_access": false,
+  "pseudo_domain_gate": false,
+  "temporal_mode": "batch_neighbor",
+  "temporal_min_streak": 2,
+  "lr_schedule": "cosine",
+  "lr_min": 1e-06,
+  "launch_owner": "codex/root/time-basis-20261014",
+  "label_epochs": 33,
+  "pseudo_epochs": 17,
+  "updates": 11100,
+  "legacy_reference_config": {
+    "schema": "legacy_no_sat_v1",
+    "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+    "stage": "repair",
+    "arm": "legacy_cosine_no_sat",
+    "model_seed": 2026092702,
+    "row_id": "legacy_cosine_no_sat-s2026092702",
+    "features": [
+      "ema",
+      "pseudo",
+      "twostage"
+    ],
+    "variant": "reference_response",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source",
+    "epochs": 200,
+    "steps_per_epoch": 222,
+    "model_initialization": "scratch",
+    "checkpoint_sources": [],
+    "numerical_policy": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "method": "cvs_legacy_no_sat",
+    "target_access": false,
+    "pseudo_domain_gate": false,
+    "temporal_mode": "batch_neighbor",
+    "temporal_min_streak": 2,
+    "lr_schedule": "cosine",
+    "lr_min": 1e-06
+  },
+  "source_falsification": {
+    "final_L_CE_max": 0.5,
+    "V_mean_drop_max": 0.01,
+    "V_worst_RX_drop_max": 0.02,
+    "comparison": "fixedfinal COMPACT_LINEAR same seed"
+  },
+  "training_recipe": "historical batch_neighbor pseudo gate+EMA+cos; no satellite; allarms identical",
+  "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+  "explicit_CFO_identity_feature": false,
+  "feature_extractor": {
+    "time_layers": [
+      "t1",
+      "t2",
+      "t3"
+    ],
+    "kernel_size": [
+      5,
+      5,
+      3
+    ],
+    "bases_per_input": 1,
+    "preGN_rank_bound": 1,
+    "pointwise": "original single1x1",
+    "skip": "none",
+    "postprocessing": "unchanged GN/ReLU/pool/dropout",
+    "time_parameters": 21000,
+    "matched_compact_time_parameters": 81672,
+    "parameter_difference_to_compact": 72,
+    "extra_parameters": 0,
+    "PA_changed": false,
+    "frequency_changed": false,
+    "Sinc_changed": false,
+    "reference_changed": false,
+    "output_embedding": 160,
+    "classifier_changed": false,
+    "initialization_seed_offset": 48213,
+    "RNG_policy": "CPU default_generator fork only; no additional CUDA/global loader/augmentation draw; same native forward stochastic shape"
+  },
+  "classifier": "unchanged native ResidualPhysicalHead6x160 scale30; normal joint CE/old pseudo",
+  "test_views": [
+    "clean"
+  ],
+  "checkpoint_selection": "final_only",
+  "goal": {
+    "primary": "SINGLE_BASIS",
+    "clean_three_seed_mean": 0.84,
+    "feedback_to_training": false
+  },
+  "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+  "cost_claim": "3 new scratch50; original baseline and completed compact controls are historical comparison only; no weight inheritance or headfit",
+  "baseline_reference": {
+    "schema": "feature_multiscale_oldgate50_v1",
+    "run_id": "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01",
+    "stage": "repair",
+    "arm": "OLD_GATE_COS50",
+    "model_seed": 2026092702,
+    "row_id": "OLD_GATE_COS50-s2026092702",
+    "features": [
+      "ema",
+      "pseudo",
+      "twostage"
+    ],
+    "variant": "reference_response",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092702/source",
+    "epochs": 50,
+    "steps_per_epoch": 222,
+    "model_initialization": "scratch",
+    "checkpoint_sources": [],
+    "numerical_policy": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "method": "cvs_legacy_no_sat",
+    "target_access": false,
+    "pseudo_domain_gate": false,
+    "temporal_mode": "batch_neighbor",
+    "temporal_min_streak": 2,
+    "lr_schedule": "cosine",
+    "lr_min": 1e-06,
+    "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
+    "label_epochs": 33,
+    "pseudo_epochs": 17,
+    "updates": 11100,
+    "legacy_reference_config": {
+      "schema": "legacy_no_sat_v1",
+      "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+      "stage": "repair",
+      "arm": "legacy_cosine_no_sat",
+      "model_seed": 2026092702,
+      "row_id": "legacy_cosine_no_sat-s2026092702",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_legacy_no_sat",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06
+    },
+    "source_falsification": {
+      "first_seed": 2026092701,
+      "maximum_final_L_CE": 0.5,
+      "metric": "mean train/loss_tx_labeled over final222updates; no V or target feedback"
+    },
+    "training_recipe": "historical batch_neighbor pseudo gate+EMA+cos; no satellite; allarms identical",
+    "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+    "explicit_CFO_identity_feature": false,
+    "feature_extractor": {
+      "time": false,
+      "PA": false,
+      "time_layers": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "PA_layers": [
+        "pa_b1",
+        "pa_b2",
+        "pa_b3"
+      ],
+      "time_kernel_dilation": [
+        [
+          3,
+          1
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          2
+        ]
+      ],
+      "PA_kernels": [
+        3,
+        5,
+        7
+      ],
+      "PA_dilation_by_layer": [
+        1,
+        2,
+        4
+      ],
+      "residual": "learned1x1 shortcut before original norm/activation/pool/dropout",
+      "output_embedding": 160
+    },
+    "classifier": "unchanged baseline ResidualPhysicalHead/6x160 cosine/scale30/branchLN/gain; no newhead/readout/calibration",
+    "test_views": [
+      "clean"
+    ],
+    "checkpoint_selection": "final_only",
+    "goal": {
+      "primary": "JOINT_MS50",
+      "clean_three_seed_mean": 0.84,
+      "feedback_to_training": false
+    },
+    "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+    "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
+  },
+  "baseline_reuse": true,
+  "source_control": {
+    "schema": "phase1_time_factorial_v1",
+    "run_id": "20261014-phase1-time-coverage-nonlinearity-oldgate-e50-clean-manysig-m15-r01",
+    "stage": "repair",
+    "arm": "COMPACT_LINEAR",
+    "model_seed": 2026092702,
+    "row_id": "COMPACT_LINEAR-s2026092702",
+    "features": [
+      "ema",
+      "pseudo",
+      "twostage"
+    ],
+    "variant": "reference_response",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-time-coverage-nonlinearity-oldgate-e50-clean-manysig-m15-r01/COMPACT_LINEAR-s2026092702/source",
+    "epochs": 50,
+    "steps_per_epoch": 222,
+    "model_initialization": "scratch",
+    "checkpoint_sources": [],
+    "numerical_policy": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "method": "cvs_legacy_no_sat",
+    "target_access": false,
+    "pseudo_domain_gate": false,
+    "temporal_mode": "batch_neighbor",
+    "temporal_min_streak": 2,
+    "lr_schedule": "cosine",
+    "lr_min": 1e-06,
+    "launch_owner": "codex/root/time-factorial-20261014",
+    "label_epochs": 33,
+    "pseudo_epochs": 17,
+    "updates": 11100,
+    "legacy_reference_config": {
+      "schema": "legacy_no_sat_v1",
+      "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+      "stage": "repair",
+      "arm": "legacy_cosine_no_sat",
+      "model_seed": 2026092702,
+      "row_id": "legacy_cosine_no_sat-s2026092702",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_legacy_no_sat",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06
+    },
+    "source_falsification": {
+      "final_L_CE_max": 0.5,
+      "V_mean_drop_max": 0.01,
+      "V_worst_RX_drop_max": 0.02
+    },
+    "training_recipe": "historical batch_neighbor pseudo gate+EMA+cos; no satellite; allarms identical",
+    "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+    "explicit_CFO_identity_feature": false,
+    "feature_extractor": {
+      "time_layers": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "PA_changed": false,
+      "frequency_changed": false,
+      "reference_changed": false,
+      "settings": [
+        [
+          3,
+          1
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "branch_activation": "identity",
+      "postprocessing": "unchanged GN/ReLU/pool/dropout",
+      "skip": "unchanged learned1x1 before original GN",
+      "output_embedding": 160,
+      "extra_parameters": 60672,
+      "classifier_changed": false,
+      "matched_new_arm_parameters": true,
+      "initial_functions_equal": "compact/long dilation differs",
+      "initialization_seed_offset": 48213,
+      "RNG_policy": "CPU fork_rng during added module init; restore native CPU/global loader/augmentation stream; no new stochastic forward ops"
+    },
+    "classifier": "unchanged native ResidualPhysicalHead6x160 scale30; joint CE/old pseudo training only",
+    "test_views": [
+      "clean"
+    ],
+    "checkpoint_selection": "final_only",
+    "goal": {
+      "primary": "LONG_SILU",
+      "clean_three_seed_mean": 0.84,
+      "feedback_to_training": false
+    },
+    "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+    "cost_claim": "12 new independent scratch50 and3 historical same-seed fixed50 references; no inherited initialization or extra head fitting",
+    "baseline_reference": null,
+    "baseline_reuse": false,
+    "readouts": [
+      "NATIVE_HEAD"
+    ],
+    "separate_head_training": false
+  },
+  "readouts": [
+    "NATIVE_HEAD"
+  ],
+  "separate_head_training": false
+}

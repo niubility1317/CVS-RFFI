@@ -35,7 +35,7 @@ def eligible(row,design=d,proof=None):
  for c in first:
   source=source_proof(c);v=d.read(source/'completion.json');evidence[c['arm']]=v['final_source_metrics']
   if not 0<=v['final_training_L_CE']<=d.SOURCE_GATE['final_L_CE_max']:raise ValueError('Source health falsification failed: '+c['arm'])
- base=evidence['BASE_REF']
+ base=d.source_reference_metrics(d.SEEDS[0]) if hasattr(d,'source_reference_metrics') else evidence['BASE_REF']
  for arm in d.ARMS[1:]:
   v=evidence[arm]
   for key,margin in [('source_val_accuracy',d.SOURCE_GATE['V_mean_drop_max']),('source_val_worst_rx',d.SOURCE_GATE['V_worst_RX_drop_max'])]:
