@@ -32326,7 +32326,29 @@
           "U_packets": 623700,
           "U_accepted": 559773
         }
-      ]
+      ],
+      "first_seed_source": {
+        "fixed_models": 2,
+        "epochs_each": 50,
+        "steps_each": 11100,
+        "full_steps_parsed": 22200,
+        "U_packets_each": 963900,
+        "U_accepted": [
+          15226,
+          867095
+        ],
+        "U_truth_read": false,
+        "source_condition_pass": true,
+        "actual_initial_states_equal": true,
+        "actual_feature_export_exact": true,
+        "W_independent": true,
+        "paired_feature_L2": 2.446475028991699,
+        "paired_feature_cosine": 0.9780690670013428,
+        "feature_parameters": 176065,
+        "separate_head_fit": false,
+        "report": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/first_seed_source_evidence.json",
+        "three_seed_target_result": false
+      }
     }
   ],
   "diagnostics": {

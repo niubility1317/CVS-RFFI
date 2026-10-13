@@ -38,3 +38,10 @@ r02技术恢复：r01远端合成NumPy dtype推断失败、未进入真实训练
 feature_check.py在固定合法L720核对实际初末fθ参数与joint160，并比较同seed PAIR/RANDOM最终特征。类别W960仅作分离计数，base_norm/pa_norm/gain/reference等特征变换保留，源RX/day分层无任何新头拟合；真实结果须source_frozen后执行。audit.py完整解析新66600step、全部450epoch、17活跃U采样、保存optimizer/Sinc/EMA与162CM/default predictions，未完成时默认拒绝全矩阵truth读取，completed-only如实列缺项。合成预算/CM/F1和W仅变不影响z、特征norm变化被计入均PASS，已在同N607环境临时只读namespace验证，未改发布归档、训练进程/配方，未读真实source/query/weights。
 
 截至本次源前缀快照RANDOM45轮/12pseudo，680400U接收10785；PAIR44轮/11pseudo，623700U接收559773，分别约1.585%和89.750%。每活跃轮56700包一次，label33无U迭代，真值隐藏。额外V33/34健康RANDOM97.7815→97.6444%、PAIR97.8259→97.8185%，仅健康诊断不用于调参/选模。两个首seed仍训练，前缀不能代替固定final50/完整三seed结果。
+
+
+## 首种子完整源与真实特征证据
+
+RANDOM/PAIR均固定50/11100，完整22200step已复算、有序有限无跳过，EMA.999成功更新全预算；183个实际optimizer参数顺序与保存moment形状核验。17pseudo U各963900包、真值隐藏，RANDOM接收15226（1.5796%），PAIR867095（89.9569%），每活跃epoch全池一次/尾124；label33无U迭代。最终sourceLCE0.289553/0.286946，固定源条件通过、其余四模型已自动释放，目标分数未参与。
+
+两组实际初始全部state逐元素一致。固定L720真实feature-only与原joint160逐元素一致，W置零不改变z、θ/buffers不更新，实际fθ176065完整保留norm/gain/reference；PAIR vs RANDOM终轮fθ有174804个标量参数分量不同，所有115200源z分量不同，平均L2=2.446475、cos=0.978069。W960也随原joint训练正常不同，单独头拟合0；参数/feature不同不直接等于迁移改善，未验证新TX。真实原始Sinc核和EMA/moment亦保留为源证据，采样机制没有换Sinc坐标。完整first_seed_source_evidence.json含源RX/day分层与参数统计，不含原始权重。新候选完整三seed目标结论待后四模型及既定评分结束。
