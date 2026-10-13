@@ -6374,5 +6374,22 @@
     "predictions": 0,
     "scores": 0,
     "weights_reused": false
+  },
+  "baseline_definition": {
+    "display_name": "旧门控＋cos（CE训练，50轮匹配对照）",
+    "machine_arm": "CE50",
+    "gates": [
+      "FreqBandGate1d",
+      "EnvelopeGate1d"
+    ],
+    "classification_head": "unchanged ResidualPhysicalHead cosine classify, weight6x160, scale30",
+    "learning_rate_schedule": "cosine50",
+    "loss": "source L_s CE; no source_U or extra mechanism",
+    "actual_checkpoint_verified": true,
+    "no_query_forward_gate_calls": "freq_gate1/pa_gate1 for all three model seeds",
+    "identity_trainable_parameters": 177025,
+    "NoExplicitCFO": true,
+    "historical_E20": "same gate/head architecture verified locally; original20epochs/input strategy retained; not equal total cost or identical full recipe",
+    "evidence": "local_artifacts/vat_delivery_r02/old_gate_baseline_verified.json"
   }
 }
