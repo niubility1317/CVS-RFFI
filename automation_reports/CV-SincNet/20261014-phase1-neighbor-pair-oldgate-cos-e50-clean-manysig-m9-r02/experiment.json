@@ -26,7 +26,7 @@
   "replaces_run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r01",
   "authorization": "Persistent user feature-extractor84goal, <=50epochs, baselineoldgate+cos, default jointly trained head only; source-qualified independent sampling route distinct from other single-basis temporal control.",
   "code": {
-    "commit": "GIT_HEAD_AT_RELEASE",
+    "commit": "c5e67c46f2a04ec33ff3235d392037f38c000eff",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32; Torch/OMP/MKL/OpenBLAS2threads; local native verified Python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neighbor_pair50_20261014_r02",
@@ -2023,5 +2023,18 @@
   ],
   "launch_evidence": "launch_evidence.json",
   "registered_at": "2026-10-13T21:29:55+00:00",
-  "status": "LOCAL_VERIFIED"
+  "status": "RUNNING",
+  "execution_commit": "c5e67c46f2a04ec33ff3235d392037f38c000eff",
+  "results": {
+    "status": "RUNNING",
+    "new_source_models_started": 2,
+    "new_source_epochs_observed": [
+      8,
+      8
+    ],
+    "new_target_results_available": false,
+    "head_fit": false,
+    "source_only_training": true,
+    "previous_r01": "FAILED_PREFLIGHT_NO_TRAINING"
+  }
 }

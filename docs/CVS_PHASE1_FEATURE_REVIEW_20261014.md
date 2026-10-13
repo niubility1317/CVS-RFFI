@@ -80,3 +80,8 @@ run 20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01，实�
 ## 物理邻包成对随机采样源反证完成
 
 run 20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01 全3模型source-only完成，实际执行7bde2923fae013495c3be1038504eb59d6e44602。旧门控全部保留，L/V每sampler所有包恰一次、pair内同允许RX/day/eq且sig/basegap1–2。360条RANDOM旧统计精确复现，720条总计数/比率/分组加和独立核验。V FULL覆盖3.4099%→89.9617%，PAIRS正确率99.9959%，接收24390/24069/24410，错误3/0/0；L覆盖13.3598%→92.9312%，错误0/0/0。全3通过固定coverage≥.5/precision≥.995/drop≤.0025源条件。0U/target/头拟合/参数更新、CPU215.21秒/399600包次，未访问U真值。支持独立采样训练假设，不证明U准确率或DG；不是丢弃temporal gate。下一动作只有匹配RANDOM/PAIRS的独立scratch50旧门控cos训练，与另一树单基time control路线不同，不叠加Sinc/TIME、不用target调参。完整[同轮分析](../automation_reports/CV-SincNet/20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01/final_analysis.md)。
+
+
+## 独立采样训练r02已启动
+
+run 20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02，实际代码c5e67c46f2a04ec33ff3235d392037f38c000eff。r01仅合成预检NumPy dtype互操作失败，0真实训练/预测，失败保留；显式Python整数列表/torch.long修复在原环境PASS，唯一针对性复核PASS，r02新不可变root，配方/矩阵/阈值不变。首seed RANDOM/PAIR两个scratch50模型GPU2/4，独立启动及日志增长核验通过，均完成8轮sourceLCE约0.323。label33阶段U迭代/前向0，target训练0；后17轮才实施U随机vs物理pair对照。旧门控/EMA/loss/defaultcos头及全部网络不改，单独头拟合0，无Sinc/TIME叠加，与另一树单基time路线不同。50/11100终轮固定，首seed两LCE≤.5且PAIR17U接收率≥.25才放行后4models。未有新候选完整target结果，84%目标仍未达成。完整[预登记与启动证据](../automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/report.md)。

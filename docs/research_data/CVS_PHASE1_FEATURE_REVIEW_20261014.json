@@ -32263,7 +32263,7 @@
     },
     {
       "run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02",
-      "status": "LOCAL_VERIFIED",
+      "status": "RUNNING",
       "mechanism": "Allowed hidden-U physical-neighbor PAIRS vs native-matched RANDOM ordering only; original network/old gates/EMA/default head",
       "code": "GIT_HEAD_AT_RELEASE",
       "baseline": "OLD_GATE_COS50 exact33label+17pseudo/scratch50 historical default decisions; fresh RANDOM control",
@@ -32290,8 +32290,23 @@
       "source_qualification": "20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01",
       "results": null,
       "report": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/report.md",
-      "actual_execution_commit": null,
-      "replaces_run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r01"
+      "actual_execution_commit": "c5e67c46f2a04ec33ff3235d392037f38c000eff",
+      "replaces_run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r01",
+      "launch_evidence": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/launch_evidence.json",
+      "early_source": {
+        "rows": 2,
+        "epochs": [
+          8,
+          8
+        ],
+        "U_training_samples": 0,
+        "target_training_samples": 0,
+        "source_L_CE": [
+          0.3231614177694192,
+          0.32390480280459466
+        ],
+        "full_default_target_result": false
+      }
     }
   ],
   "diagnostics": {

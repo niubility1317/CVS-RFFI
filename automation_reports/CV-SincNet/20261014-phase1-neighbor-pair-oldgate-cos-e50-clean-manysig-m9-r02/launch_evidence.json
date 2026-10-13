@@ -1,0 +1,125 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02",
+  "actual_execution_commit": "c5e67c46f2a04ec33ff3235d392037f38c000eff",
+  "archive_transfer_one_comparison": "PASS by remote publisher, preserved package/submit artifacts",
+  "remote_compile": "PASS",
+  "preflight": {
+    "status": "PASS",
+    "integration": {
+      "status": "PASS",
+      "same_initial_all_states_and_default_features": true,
+      "actual_feature_export_exact": true,
+      "W_independent": true,
+      "identity_parameters": 177025,
+      "feature_parameters": 176065,
+      "matched_random_loader_exact": true,
+      "outside_sampler_RNG_identical": true,
+      "hidden_TX_access_trap_pass": true,
+      "source_U_pool": 56700,
+      "batches": 222,
+      "tail": 124,
+      "label_epoch_never_fetches_U": true,
+      "negative_checks": 6,
+      "synthetic_only": true,
+      "no_real_IQ_or_query": true,
+      "no_head_fit": true
+    },
+    "source_qualification": {
+      "run_id": "20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01",
+      "models": 3,
+      "status": "PASS",
+      "source_only": true
+    },
+    "real_checkpoint_no_query_smoke": true,
+    "old_weights_used": "smoke and historical comparison only",
+    "training_inherits_old_weights": false,
+    "query_read": false,
+    "head_fit": false
+  },
+  "dispatcher_identity_verified": true,
+  "workers": [
+    {
+      "row_id": "RANDOM_ORDER-s2026092701",
+      "pid": 1873752,
+      "gpu": 2,
+      "own_identity_verified": true,
+      "epoch_count": 8,
+      "log_bytes": 47912,
+      "log_growth_since_initial": 36218,
+      "actual_resolved_commit": "c5e67c46f2a04ec33ff3235d392037f38c000eff",
+      "actual_sampler": {
+        "enabled": true,
+        "mode": "RANDOM",
+        "pool": "original hidden U_s56700 only",
+        "allowed_fields": [
+          "base_index",
+          "day_i",
+          "eq_i",
+          "rx_i",
+          "sig_i"
+        ],
+        "batch": 256,
+        "drop_last": false,
+        "all_packets_once": true,
+        "original_gates": true,
+        "extra_parameters": 0,
+        "seed_policy": "same one global Torch seed draw per native sampler iterator, private order generator",
+        "head": "unchanged cosine6x160",
+        "pseudo_EMA": "historical unmodified",
+        "separate_head_fit": false
+      },
+      "source_last_L_CE": 0.3231614177694192,
+      "U_total_at_current_label_epoch": 0,
+      "training_target_count": 0
+    },
+    {
+      "row_id": "PAIRED_ORDER-s2026092701",
+      "pid": 1873830,
+      "gpu": 4,
+      "own_identity_verified": true,
+      "epoch_count": 8,
+      "log_bytes": 47920,
+      "log_growth_since_initial": 36223,
+      "actual_resolved_commit": "c5e67c46f2a04ec33ff3235d392037f38c000eff",
+      "actual_sampler": {
+        "enabled": true,
+        "mode": "PAIRS",
+        "pool": "original hidden U_s56700 only",
+        "allowed_fields": [
+          "base_index",
+          "day_i",
+          "eq_i",
+          "rx_i",
+          "sig_i"
+        ],
+        "batch": 256,
+        "drop_last": false,
+        "all_packets_once": true,
+        "original_gates": true,
+        "extra_parameters": 0,
+        "seed_policy": "same one global Torch seed draw per native sampler iterator, private order generator",
+        "head": "unchanged cosine6x160",
+        "pseudo_EMA": "historical unmodified",
+        "separate_head_fit": false
+      },
+      "source_last_L_CE": 0.32390480280459466,
+      "U_total_at_current_label_epoch": 0,
+      "training_target_count": 0
+    }
+  ],
+  "GPU_capacity": {
+    "2": {
+      "process_count": 1,
+      "free_mb": 20773
+    },
+    "4": {
+      "process_count": 1,
+      "free_mb": 20773
+    }
+  },
+  "baseline_rows_complete": 3,
+  "new_target_results_read": false,
+  "source_falsification_not_yet_evaluated": true,
+  "failure": null
+}

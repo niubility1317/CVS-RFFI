@@ -1,6 +1,6 @@
 # 旧门控不变的 U 邻包成对采样特征训练
 
-状态LOCAL_VERIFIED，尚未训练。run `20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02`；唯一owner codex/root/neighbor-pair50-20261014。逐row矩阵/配置唯一来源 [experiment.json](experiment.json)。本路线不同于另一工作树单基时序残差控制。
+状态RUNNING，首种子两个新模型已运行，完整三种子结果尚未返回。run `20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02`；唯一owner codex/root/neighbor-pair50-20261014。逐row矩阵/配置唯一来源 [experiment.json](experiment.json)。本路线不同于另一工作树单基时序残差控制。
 
 依据为完整源诊断 `20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01`：同三个固定默认学生/EMA，RANDOM精确复现360计数；全720source统计已复算，V FULL覆盖3.4099%→89.9617%，PAIRS接收正确率99.9959%、错误3/0/0，三seed均满足预先冻结的coverage≥.5/precision≥.995/drop≤.0025。没有U或目标IQ/真值进入该诊断。仅证明物理邻包可见性机制，不能推断U正确率/目标收益。方案由这一源证据支持，不依据Sinc/TIME目标分数，不使用任何旧权重初始化。
 
@@ -26,3 +26,8 @@
 
 
 r02技术恢复：r01远端合成NumPy dtype推断失败、未进入真实训练。仅显式整数转换修复，同原环境检查PASS；生产模型/采样/优化/阈值不变、原失败保留。仅对此互操作问题一次针对性复核PASS，无全量重复审查。
+
+
+## r02实际启动
+
+实际代码c5e67c46f2a04ec33ff3235d392037f38c000eff。一次归档校验/remotecompile/真实CP零IQnoquery smoke/sourcequalification全部PASS；dispatcher与两个新worker PID/CWD/argv/GPU/日志增长独立读回VERIFIED。RANDOM GPU2、PAIR GPU4均完成8轮，sourceLCE0.323161/0.323905；label阶段sampler未迭代、U总数0、target训练总数0，默认头正常联合，无单独拟合。无技术失败，不按中间值改变50/33+17预算或放行阈值。原三个baseline默认决策复用已完成，当前不能据此宣称新候选完整目标结果。见launch_evidence.json。
