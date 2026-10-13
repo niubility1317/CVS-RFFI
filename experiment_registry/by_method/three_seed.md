@@ -15,5 +15,7 @@
 |CE＋旧门控＋cos：E15/E12各三种子压缩|managed_run|[打开](../../automation_reports/CV-SincNet/20261011-phase1-ce-epoch12-15-manysig-m6-r01/report.md)|
 |浅中层 TX 条件矩对齐：三种子 30 轮普通 cos clean|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-conditional-alignment-clean-manysig-m6-r01/report.md)|
 |浅中层跨 RX 监督对比：固定三种子 clean|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-clean-manysig-m6-r01/report.md)|
+|固定集成的零训练汇总恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-ensemble-aggregate-manysig-m6-r02/report.md)|
 |固定监督对比方案的三成员等权集成|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-ensemble-clean-manysig-m6-r01/report.md)|
 |教师伪标签目标反馈：三种子普通cos 30轮 clean|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-feedback-teacher-clean-manysig-m12-r01/report.md)|
+|可重复跨 RX 漂移上的鲁棒间隔：四组独立消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-repeated-rx-margin-clean-manysig-m12-r01/report.md)|

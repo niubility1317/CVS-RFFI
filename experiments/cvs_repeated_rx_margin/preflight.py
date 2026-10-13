@@ -1,0 +1,17 @@
+import argparse,json
+from pathlib import Path
+import torch
+from . import design as d
+from .checks import run as checks
+from experiments.cvs_report_projection.preflight import run as real_check
+from .source import load
+from .drift import partition,refresh
+from .model import build
+from .checks_aggregate import run as aggregate_checks
+def run():
+ torch.set_num_threads(2);result=checks();aggregation=aggregate_checks();proof=real_check();L,U,contract=load(d.config(next(r for r in d.rows() if r['arm']=='MEASURED_ROBUST')))
+ if len(L['ids'])!=6300 or len(U['ids'])!=56700 or 'y' in U:raise ValueError('Actualfullsource hiddenU contract')
+ c=d.config(next(r for r in d.rows() if r['arm']=='MEASURED_ROBUST'));folds,partition_diag=partition(L);stats,diag=refresh(build(c,'cpu'),L,folds,'cpu',c,1)
+ return dict(status='PASS',checks=result,aggregate_checks=aggregation,real_checkpoint_noquery=proof['real_checkpoint_noquery'],source_L=6300,source_U_hidden=56700,actual_source_partition=partition_diag,initial_current_model_statistic=diag,query_IQ_or_truth_read=False,sourceVperformance_gate=False)
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('--remote-preflight',action='store_true');p.add_argument('--output',type=Path,required=True);a=p.parse_args();v=run();d.write(a.output,v);print(json.dumps(dict(status='PASS',clean_only=True,query_IQ_or_truth_read=False)))

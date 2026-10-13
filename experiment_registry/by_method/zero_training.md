@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |固定三成员概率集成：零训练技术恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261012-phase1-ensemble-final30-recovery-manysig-m3-r02/report.md)|
+|固定集成的零训练汇总恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-ensemble-aggregate-manysig-m6-r02/report.md)|

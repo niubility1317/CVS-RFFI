@@ -40,3 +40,7 @@
 固定三成员验证 `20261013-phase1-crossrx-contrastive-ensemble-clean-manysig-m6-r01`：两方案均进入、12新成员从零各30、6原成员0只推理、累计119880成员更新；3倍单模型参数/累计训练/推理成本。此矩阵在父单模型target汇总前固定，不挑赢家。成员个体都为普通cos，T1等权概率不含训练融合参数；一次P0/P1及一次dropout种子问题定点复核PASS。源契约、实际运行和最终三组成绩待正式执行核实。
 
 三成员验证原run已完成12新成员/6组clean预测与独立评分，最终总表遗漏preflight导入。技术层仅聚合，不影响既有训练、冻结预测和行级评分；新恢复run `20261013-phase1-crossrx-contrastive-ensemble-aggregate-manysig-m6-r02` 0新增训练/预测/评分，原产物保留。合成回归先复现再修复PASS，导入/新exclusive输出的定点P0/P1 PASS。正式聚合/原始预测重算未完成前不标全目标达成。
+
+三成员实验和零训练恢复均已ANALYZED/VERIFIED：全部79920新step/360epoch/18真实checkpoint/6个集成公式与1008000原始预测108指标独立重算；CROSS_RX_TX ensemble81.39345%、ALL_TX ensemble81.32817%，原CE ensemble81.32540%，三成员并未完成84目标。原末尾NameError只在聚合，r02恢复不覆盖任何原产物，0新增训练/预测/评分。
+
+用户于2026-10-13新报告覆盖下一方向：暂停新增解析不变量分支，优先“可重复TX×RX×day观测漂移驱动鲁棒间隔”。已准备的source_rx_spectrum未发布、无远端训练，deferred（用户新路线）；现登记20261013-phase1-repeated-rx-margin-clean-manysig-m12-r01，UNIFORM_SSL底座四组×三primary、各从零30、普通cos160、clean/noVgate。报告N1至N11逐项追溯：5项verified组件及边界，6项implemented且待真实运行证据；无rejected/blocked。严格执行有限候选公式，不以投影、Jacobian或Gaussian近似代替；漂移仍为观测统计非纯RX因果。原18项历史结果和近似边界保留。

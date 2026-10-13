@@ -23,3 +23,4 @@
 |CVS 信道与非线性运算次序：独立 clean 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/report.md)|
 |CVS 约束响应融合：独立 clean 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-response-fusion-clean-manysig-m44-r01/report.md)|
 |CVS 频谱时序关系：独立 clean 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-spectral-relation-clean-manysig-m48-r01/report.md)|
+|固定集成的零训练汇总恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-phase1-crossrx-contrastive-ensemble-aggregate-manysig-m6-r02/report.md)|

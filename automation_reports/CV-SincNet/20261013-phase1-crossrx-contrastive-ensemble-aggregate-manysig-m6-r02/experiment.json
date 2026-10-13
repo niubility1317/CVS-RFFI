@@ -12898,7 +12898,8 @@
           ],
           "input_output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-crossrx-contrastive-ensemble-clean-manysig-m6-r01/CROSS_RX_TX-s2026092703"
         }
-      ]
+      ],
+      "status": "AGGREGATION_RECOVERY_COMPLETE"
     }
   ],
   "notes": [
@@ -12906,7 +12907,41 @@
     "Inputoriginalrun/source/score/predictions unchanged;outputnewrun 20261013-phase1-crossrx-contrastive-ensemble-aggregate-manysig-m6-r02 exclusive. Missingimport reproduced syntheticfixture beforefix;newout/overwriteguard andcomplete6groups pairedfixture PASS.",
     "No second modelsmoke because no modelcode/checkpoint executionconsumed in aggregate stage;original realcheckpointnoqueryPASS reused. Archiveonce/compile/ordinaryaccount/poststate stillchecked."
   ],
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-13T02:41:16+00:00",
-  "replaces_run_id": "20261013-phase1-crossrx-contrastive-ensemble-clean-manysig-m6-r01"
+  "replaces_run_id": "20261013-phase1-crossrx-contrastive-ensemble-clean-manysig-m6-r01",
+  "aggregation_status": "RECOVERED_VERIFIED",
+  "aggregate_recovery_run_id": "20261013-phase1-crossrx-contrastive-ensemble-aggregate-manysig-m6-r02",
+  "clean_result_summary": [
+    {
+      "arm": "ALL_TX",
+      "readout": "ENSEMBLE",
+      "accuracy_mean": 0.8132817460317461,
+      "accuracy_sd": 0.007829443267455695,
+      "seed_accuracy": {
+        "2026092701": 0.8219285714285715,
+        "2026092702": 0.806672619047619,
+        "2026092703": 0.8112440476190477
+      },
+      "macro_f1_mean": 0.8098408332656827,
+      "goal_84": false
+    },
+    {
+      "arm": "CROSS_RX_TX",
+      "readout": "ENSEMBLE",
+      "accuracy_mean": 0.8139345238095238,
+      "accuracy_sd": 0.009426459299261523,
+      "seed_accuracy": {
+        "2026092701": 0.8242440476190476,
+        "2026092702": 0.8057559523809524,
+        "2026092703": 0.8118035714285714
+      },
+      "macro_f1_mean": 0.8104443162542845,
+      "goal_84": false
+    }
+  ],
+  "goal_84": false,
+  "delivery_verdict": "VERIFIED",
+  "full_audit_ref": "final_analysis.md",
+  "execution_commit": "a41c3423ac7208ae041979a0e189c97f444a69b3"
 }
