@@ -2,7 +2,7 @@
   "existing_sinc_run": "20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01",
   "execution_commit": "0f81373c25ba69a6cb9deec5c7ca652880fd62af",
   "read_at": 1791922429.7273867,
-  "status": "VERIFIED",
+  "status": "SINC_FULLY_ANALYZED_BASIS_RUNNING",
   "dispatcher_verified": false,
   "rows": [
     {
@@ -88,5 +88,129 @@
   "EMA_updates": 0,
   "target_partial_metrics_consumed": false,
   "Sinc_first_seed_source_screen": "PASSED; four fixed remaining training rows released by immutable source-only gate",
-  "Sinc_complete_three_seed": false
+  "Sinc_complete_three_seed": true,
+  "Sinc_completion": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 9,
+    "new_trained_models": 6,
+    "reused_baseline_models": 3,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 1512000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "Sinc_summary": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "readout": "ORIGINAL_HEAD",
+      "view": "clean",
+      "seed_count": 3,
+      "accuracy_mean": 0.8052678571428572,
+      "accuracy_sd": 0.023775723031464996,
+      "seed_accuracy": {
+        "2026092701": 0.8066845238095238,
+        "2026092702": 0.7808154761904762,
+        "2026092703": 0.8283035714285715
+      },
+      "macro_f1_mean": 0.8000238637751929,
+      "worst_RX_mean": 0.6797083333333334
+    },
+    {
+      "arm": "RAW_HZ",
+      "readout": "ORIGINAL_HEAD",
+      "view": "clean",
+      "seed_count": 3,
+      "accuracy_mean": 0.8052123015873016,
+      "accuracy_sd": 0.0225515552685449,
+      "seed_accuracy": {
+        "2026092701": 0.8073809523809524,
+        "2026092702": 0.7816547619047619,
+        "2026092703": 0.8266011904761905
+      },
+      "macro_f1_mean": 0.7999139655829933,
+      "worst_RX_mean": 0.6797638888888888
+    },
+    {
+      "arm": "CENTER_25K",
+      "readout": "ORIGINAL_HEAD",
+      "view": "clean",
+      "seed_count": 3,
+      "accuracy_mean": 0.8076369047619048,
+      "accuracy_sd": 0.02196165376539554,
+      "seed_accuracy": {
+        "2026092701": 0.8089642857142857,
+        "2026092702": 0.7850416666666666,
+        "2026092703": 0.8289047619047619
+      },
+      "macro_f1_mean": 0.8024987728308802,
+      "worst_RX_mean": 0.6834722222222223
+    }
+  ],
+  "Sinc_paired": [
+    {
+      "arm": "RAW_HZ",
+      "control": "OLD_GATE_COS50",
+      "readout": "ORIGINAL_HEAD",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.0006964285714285978,
+        0.0008392857142857091,
+        -0.0017023809523809552
+      ],
+      "mean_difference": -0.00005555555555554944,
+      "sd_difference": 0.0014279802017318694,
+      "positive_seeds": 2
+    },
+    {
+      "arm": "CENTER_25K",
+      "control": "OLD_GATE_COS50",
+      "readout": "ORIGINAL_HEAD",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.002279761904761868,
+        0.004226190476190439,
+        0.0006011904761904496
+      ],
+      "mean_difference": 0.0023690476190475853,
+      "sd_difference": 0.001814148616867321,
+      "positive_seeds": 3
+    },
+    {
+      "arm": "CENTER_25K",
+      "control": "RAW_HZ",
+      "readout": "ORIGINAL_HEAD",
+      "view": "clean",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.00158333333333327,
+        0.00338690476190473,
+        0.002303571428571405
+      ],
+      "mean_difference": 0.002424603174603135,
+      "sd_difference": 0.0009078568098276517,
+      "positive_seeds": 3
+    }
+  ],
+  "single_basis_run": "20261014-phase1-single-basis-residual-oldgate-e50-clean-manysig-m6-r01",
+  "single_basis_execution_commit": "a6d75a259949d66a7f8da80319ba904c1fc6d72a",
+  "single_basis_first_seed_epochs": 13,
+  "single_basis_failure": null,
+  "full_Sinc_frozen_results_consumed_for_analysis_only": true
 }
