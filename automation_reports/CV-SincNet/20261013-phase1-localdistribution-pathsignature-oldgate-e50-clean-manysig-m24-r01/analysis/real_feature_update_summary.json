@@ -1,0 +1,895 @@
+{
+  "status": "VERIFIED",
+  "training_commit": "c1bf3b74c7bc38b03e4e29931d9b90dc60f4a296",
+  "export_code_commit": "7b1e2fcbe1bf5d05f24bc91f86aa7d4b46d3ee95",
+  "rows": [
+    {
+      "row_id": "MEAN-s2026092701",
+      "arm": "MEAN",
+      "model_seed": 2026092701,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3116598129272461,
+          "l2_change": 2.044816255569458
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.11652937531471252,
+          "l2_change": 0.7231665849685669
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.13936030864715576,
+          "l2_change": 3.8048903942108154
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.33703911304473877,
+          "l2_change": 2.1913702487945557
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.1777353137731552,
+          "l2_change": 0.3414359986782074
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.103818416595459,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "MEAN_VAR-s2026092701",
+      "arm": "MEAN_VAR",
+      "model_seed": 2026092701,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.31658679246902466,
+          "l2_change": 2.2694802284240723
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.15541145205497742,
+          "l2_change": 0.8898646831512451
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.17732150852680206,
+          "l2_change": 4.5017008781433105
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3447997570037842,
+          "l2_change": 2.4427616596221924
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.1861792951822281,
+          "l2_change": 0.3584758937358856
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.2102421522140503,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "NONLINEAR_MEAN-s2026092701",
+      "arm": "NONLINEAR_MEAN",
+      "model_seed": 2026092701,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.30327165126800537,
+          "l2_change": 1.8881044387817383
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.21800072491168976,
+          "l2_change": 0.8988571763038635
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.22631271183490753,
+          "l2_change": 3.7813949584960938
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.32268810272216797,
+          "l2_change": 2.0035133361816406
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.1710294634103775,
+          "l2_change": 0.3027985394001007
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.1009429693222046,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "RFF-s2026092701",
+      "arm": "RFF",
+      "model_seed": 2026092701,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2835034132003784,
+          "l2_change": 1.827123999595642
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.19746525585651398,
+          "l2_change": 0.9116024971008301
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.2240593433380127,
+          "l2_change": 3.676863193511963
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3017224073410034,
+          "l2_change": 1.934204339981079
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.17012830078601837,
+          "l2_change": 0.30175378918647766
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.0859085321426392,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "COV-s2026092701",
+      "arm": "COV",
+      "model_seed": 2026092701,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2956676483154297,
+          "l2_change": 2.3911945819854736
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.10478624701499939,
+          "l2_change": 0.8049572706222534
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.17537707090377808,
+          "l2_change": 4.856894016265869
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.32427966594696045,
+          "l2_change": 2.577699661254883
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.20921845734119415,
+          "l2_change": 0.39838123321533203
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.2559595108032227,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "SIG-s2026092701",
+      "arm": "SIG",
+      "model_seed": 2026092701,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2813307046890259,
+          "l2_change": 2.4799132347106934
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.15158694982528687,
+          "l2_change": 1.0147439241409302
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.1745186150074005,
+          "l2_change": 4.766753196716309
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.29943907260894775,
+          "l2_change": 2.687161445617676
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.20419824123382568,
+          "l2_change": 0.4298415184020996
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.3080037832260132,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.29902005195617676,
+          "l2_change": 2.544548988342285
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.1511860191822052,
+          "l2_change": 1.0034289360046387
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.18901367485523224,
+          "l2_change": 5.5502471923828125
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.33439648151397705,
+          "l2_change": 2.7670605182647705
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.21642403304576874,
+          "l2_change": 0.4388362169265747
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.290125846862793,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "MEAN-s2026092702",
+      "arm": "MEAN",
+      "model_seed": 2026092702,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2792971134185791,
+          "l2_change": 2.0854763984680176
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.11808541417121887,
+          "l2_change": 0.712306559085846
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.1332482248544693,
+          "l2_change": 3.9564099311828613
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.30464982986450195,
+          "l2_change": 2.2285916805267334
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.188279390335083,
+          "l2_change": 0.3745642900466919
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.1377689838409424,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "MEAN_VAR-s2026092702",
+      "arm": "MEAN_VAR",
+      "model_seed": 2026092702,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.30263906717300415,
+          "l2_change": 2.285642147064209
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.18234743177890778,
+          "l2_change": 0.8427539467811584
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.14290118217468262,
+          "l2_change": 4.866085052490234
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3301689624786377,
+          "l2_change": 2.450416326522827
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.20384840667247772,
+          "l2_change": 0.3994910717010498
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.1670501232147217,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "NONLINEAR_MEAN-s2026092702",
+      "arm": "NONLINEAR_MEAN",
+      "model_seed": 2026092702,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3160417675971985,
+          "l2_change": 1.8982726335525513
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.18856646120548248,
+          "l2_change": 0.98558109998703
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.23610422015190125,
+          "l2_change": 3.6194777488708496
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3394416570663452,
+          "l2_change": 2.0182111263275146
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.15808998048305511,
+          "l2_change": 0.33681297302246094
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.102463722229004,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "RFF-s2026092702",
+      "arm": "RFF",
+      "model_seed": 2026092702,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2915460467338562,
+          "l2_change": 1.9159488677978516
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.16969360411167145,
+          "l2_change": 1.0052711963653564
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.20175470411777496,
+          "l2_change": 3.5741472244262695
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.31333160400390625,
+          "l2_change": 2.0361738204956055
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.16493681073188782,
+          "l2_change": 0.3462482690811157
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.1234476566314697,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "COV-s2026092702",
+      "arm": "COV",
+      "model_seed": 2026092702,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.31213510036468506,
+          "l2_change": 2.4299561977386475
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.20296871662139893,
+          "l2_change": 0.85428386926651
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.1432313621044159,
+          "l2_change": 4.641600131988525
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3378638029098511,
+          "l2_change": 2.622086524963379
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2018611580133438,
+          "l2_change": 0.40148818492889404
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.2654166221618652,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "SIG-s2026092702",
+      "arm": "SIG",
+      "model_seed": 2026092702,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.28347349166870117,
+          "l2_change": 2.275677442550659
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.15547488629817963,
+          "l2_change": 1.014255404472351
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.16927176713943481,
+          "l2_change": 4.873743534088135
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3089430332183838,
+          "l2_change": 2.448117256164551
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2055055946111679,
+          "l2_change": 0.40802207589149475
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.2307305335998535,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2817644476890564,
+          "l2_change": 2.4477267265319824
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.20148366689682007,
+          "l2_change": 1.0597501993179321
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.19276928901672363,
+          "l2_change": 5.575862407684326
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3116410970687866,
+          "l2_change": 2.6495864391326904
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2024264931678772,
+          "l2_change": 0.43856561183929443
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.2777669429779053,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "MEAN-s2026092703",
+      "arm": "MEAN",
+      "model_seed": 2026092703,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3229331374168396,
+          "l2_change": 2.074336528778076
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.15824413299560547,
+          "l2_change": 0.8022055625915527
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.13938353955745697,
+          "l2_change": 3.825528621673584
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.35364067554473877,
+          "l2_change": 2.212674379348755
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2167961448431015,
+          "l2_change": 0.4221699833869934
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.1775425672531128,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "MEAN_VAR-s2026092703",
+      "arm": "MEAN_VAR",
+      "model_seed": 2026092703,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.29703402519226074,
+          "l2_change": 2.184244394302368
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.14843609929084778,
+          "l2_change": 0.8739966154098511
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.15330258011817932,
+          "l2_change": 4.705879211425781
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3263818025588989,
+          "l2_change": 2.3409786224365234
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.22449836134910583,
+          "l2_change": 0.43934282660484314
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.1615521907806396,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "NONLINEAR_MEAN-s2026092703",
+      "arm": "NONLINEAR_MEAN",
+      "model_seed": 2026092703,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2633984088897705,
+          "l2_change": 1.7644966840744019
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.24894015491008759,
+          "l2_change": 1.1207996606826782
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.194548100233078,
+          "l2_change": 3.952389717102051
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2822856903076172,
+          "l2_change": 1.8554073572158813
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.20136085152626038,
+          "l2_change": 0.39242419600486755
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.0537539720535278,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "RFF-s2026092703",
+      "arm": "RFF",
+      "model_seed": 2026092703,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2571043372154236,
+          "l2_change": 1.7196218967437744
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.23484055697917938,
+          "l2_change": 1.115706205368042
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.20763474702835083,
+          "l2_change": 3.945488214492798
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.27576661109924316,
+          "l2_change": 1.8090827465057373
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.20036879181861877,
+          "l2_change": 0.3881533145904541
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.032932162284851,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "COV-s2026092703",
+      "arm": "COV",
+      "model_seed": 2026092703,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.31502389907836914,
+          "l2_change": 2.413257360458374
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.18938764929771423,
+          "l2_change": 0.8955727219581604
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.16219545900821686,
+          "l2_change": 4.947078227996826
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3482919931411743,
+          "l2_change": 2.6012024879455566
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.22345203161239624,
+          "l2_change": 0.44026297330856323
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.2552284002304077,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "SIG-s2026092703",
+      "arm": "SIG",
+      "model_seed": 2026092703,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3491109013557434,
+          "l2_change": 2.375875949859619
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.16848979890346527,
+          "l2_change": 1.1115487813949585
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.1872577667236328,
+          "l2_change": 4.972493648529053
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3870368003845215,
+          "l2_change": 2.5646562576293945
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2286328822374344,
+          "l2_change": 0.4360944330692291
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.263113260269165,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "parameters": {
+        "id_backbone.encoder.sequence_pool.gain_raw": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3217434287071228,
+          "l2_change": 2.5656239986419678
+        },
+        "id_backbone.encoder.sequence_pool.local_projection.weight": {
+          "count": 576,
+          "changed": 576,
+          "max_abs_change": 0.14038920402526855,
+          "l2_change": 1.0787436962127686
+        },
+        "id_backbone.encoder.sequence_pool.output_projection.weight": {
+          "count": 17920,
+          "changed": 17920,
+          "max_abs_change": 0.23697476089000702,
+          "l2_change": 6.041161060333252
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.weight": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.3564976453781128,
+          "l2_change": 2.785644054412842
+        },
+        "id_backbone.encoder.sequence_pool.output_norm.bias": {
+          "count": 160,
+          "changed": 160,
+          "max_abs_change": 0.2256060242652893,
+          "l2_change": 0.44907477498054504
+        }
+      },
+      "fixed_buffers_unchanged": true,
+      "pure_export_actual_z_equal": true,
+      "W_modified_deleted_export_invariant": true,
+      "actual_trained_branch_delta_norm_on_fixed_artificial_packets": 1.3021135330200195,
+      "head_fit_updates": 0
+    }
+  ],
+  "query_or_source_IQ_read": false,
+  "truth_read": false,
+  "head_fit_updates": 0,
+  "model_training_updates": 0,
+  "scope": "actual initial/final source weights; branch effect and pure-feature boundary on fixed artificial packets, not recognition evidence",
+  "read_at": 1791913768.7390225
+}

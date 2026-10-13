@@ -74,3 +74,40 @@ TIME_MS50三个seed×t1/t2/t3真实训练后核：每输入通道的等效输出
 唯一新run为20261014-phase1-time-coverage-nonlinearity-oldgate-e50-clean-manysig-m15-r01，最小报告和15row单一矩阵见automation_reports。同GPU最多3总实验进程，保留所有健康旧任务。源gate通过后扩seed，不借已暴露target进行筛选或选择性重跑。本地checks/registry valid、唯一P0/P1及一次针对修复确认PASS；Git/release/PID独立证据由同run报告更新。未授权Phase2、head refit、kernel scan或同时Sinc变化。
 
 2026-10-14发布更新：执行代码7b1e2fcbe1bf5d05f24bc91f86aa7d4b46d3ee95已commit/push并独立remoteOID一致；ordinary preflight、archive校验、remote compile、真实checkpoint noquery、实际PID/CWD/argv/GPU/log增长VERIFIED。第一seed四新条件健康训练，第1至2epoch；旧TIME seed01冻结source诊断已完成。剩余seed按固定source门槛自动扩展；目前不是完整三seed结果。
+
+## 局部分布与路径实验：完整冻结结果
+
+20261013-phase1-localdistribution-pathsignature-oldgate-e50-clean-manysig-m24-r01 已EXPERIMENT_COMPLETE，dispatcher及全部worker自然退出，独立进程/产物读回VERIFIED。实际训练commit c1bf3b74c7bc38b03e4e29931d9b90dc60f4a296。24行全部50epoch；21新scratch模型1050epoch/233100 optimizer及EMA更新，3历史基线150epoch/33300更新分开。4032000固定默认决定、432条原始CM/accuracy/F1独立重算一致。所有新增模型无另训头、U真值可用0、nonfinite/跳步0，完整stdout、50epoch、11100step逐行实际分析，未使用tail替代。
+
+|条件|clean均值%|样本SD百分点|Macro-F1|每seed最差RX均值%|每seed最差day均值%|配对基线差百分点|正差seed|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|BASE_REF|80.5268|2.3776|0.800024|67.9708|76.0556|—|—|
+|MEAN|82.0734|0.8367|0.815588|68.4542|77.5865|1.5466|2/3|
+|MEAN_VAR|82.4536|1.1572|0.819609|69.2875|78.7278|1.9268|3/3|
+|NONLINEAR_MEAN|81.8990|1.3385|0.813819|68.6736|77.4286|1.3722|2/3|
+|RFF|81.5742|1.3390|0.810201|67.6972|76.9659|1.0474|2/3|
+|COV|82.5778|1.5350|0.820782|69.9583|78.3937|2.0510|3/3|
+|SIG|82.8476|1.0954|0.822917|69.0986|79.0294|2.3208|3/3|
+|SIG_TIME|83.0393|1.4557|0.825453|70.3431|79.3587|2.5125|3/3|
+
+预登记co-primary分别报告：RFF81.5742%（相对BASE＋1.0474pp，2/3正），SIG_TIME83.0393%（＋2.5125pp，3/3正），均未达84%；SIG_TIME距目标0.9607pp。不能把单seed超过84%当达标。RFF低于MEAN/MEAN_VAR/NONLINEAR_MEAN，三种简单控制均3/3高于RFF，因此本轮不支持随机非线性分布读出比同参数简单池化更有价值。SIG_TIME相对COV＋0.4615pp、3/3正；相对SIG＋0.1917pp仅2/3正，仍是3模型seed证据，不泛化为新TX或普遍定理。
+
+SIG_TIME相对同seed原基线纠正/引入错误：2026092701＝9483/4829，净4654；2026092702＝10400/4782，净5618；2026092703＝8259/5868，净2391。这些是预测全部冻结后独立CPU truth侧连接的报告，未反馈训练。完整逐RX/day/TX错误transition和分组表见本run analysis/paired_error_counts.json、group_metrics.csv。
+
+机制与边界：21份真实initial/final模型的新增五类参数全部出现实际数值变化、固定omega/lift buffers不变；使用执行7b1e2fcbe1bf5d05f24bc91f86aa7d4b46d3ee95的纯特征接口严格加载原权重，actual joint160与feature-only一致，修改/删除W后z逐位不变。固定人工IQ下真实训练新分支Δz均值范数1.033至1.308，证明分支活跃，不是识别效果或新TX证据。真实source L几何21row和V27000/row顺序诊断已返回：RFF/COV置乱改变默认决定0，maxz差≤9.54e−7；SIG/SIG_TIME分别改变2647至4301、2062至2867个源V决定，说明有序分支在实际fθ中起作用。撤除/置乱会破坏共同适应，不能替代scratch消融。仅默认头收益，缺普通换头证据（当前用户禁止新增headfit），不宣称通用新类迁移。
+
+公平性限制明确保留：原sequence初始化在CPU-only fork中调用torch.manual_seed，也改变CUDA RNG。7个新控制/候选之间新模块初始化与CUDA起点匹配，但对BASE_REF的新增参数和CUDA随机流仍混杂。不能将所有对BASE增益独立归因为descriptor。该健康run保持原注册计划、未重启/热改；当前TIME新矩阵已用CPU default_generator修正并验证CPU/CUDA RNG。参数匹配也不证明descriptor intrinsic rank相等。
+
+源训练与成本：源码原loss_unlabeled是伪标签CE；CE权重0.16、熵权重0.01。原日志没有单独熵分量，表保留native伪标签CE和total−L差，不假造完整熵曲线。源CE下降/更新有限证据完整；对所有损失逐项重构仍有此观测缺项。每新模型U处理963900次物理观察（17×56700），全21模型20241900；weak teacher和strong student是两次前向，物理观察计一次。接受比例1.5829%至1.6301%，不能解读为精度。新模型source执行进程时间合计13.7878小时，含原验证/闭合且GPU并发负载不同，不是exclusive GPU时长或加速结论。source_curves.csv和静态source_training_curves.png保留全部50轮，33/17交界标明；不按50轮预算就断言已收敛。
+
+![完整源训练曲线](../automation_reports/CV-SincNet/20261013-phase1-localdistribution-pathsignature-oldgate-e50-clean-manysig-m24-r01/analysis/source_training_curves.png)
+
+## 另一分支的新完成证据与重叠发布
+
+只读最新HEAD/upstream＝0b3c498b4695f8c6e435531b10b995a4323fc173。PA_CROSS_DELAY实际执行1f8814c046a8c68eba8a334e66a0aceb76e491e0，32＋18的9row已完整，3历史基线＋6新scratch50/300新增epoch/66600更新。baseline80.6454%，PA_CONV80.7738%，PA_CROSS_DELAY80.8133%；后者相对同容量CONV＋0.0395pp仅2/3正，不确认三阶机制收益。当前复用该owner完整audit/162CM报告，未称本次重新扫描其原始日志。其同源监督/伪标签配方与33＋17组分开。
+
+另一owner已独立发布同构TIME：20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01，执行351e35cd0d298a6832c0865628bba28ab5a14cbe。该新发布在本次最新只读盘点才确认，存在研究问题重叠。它的CPU初始化offset62103、首seed门槛仅finalLCE≤.5、额外源V33/34共54000包及固定L720包/seed历史撤除；本run offset48213、加固定默认V总体/最差RX非劣门槛、5个阶段V共135000包及历史V27000撤除。两份各自内部4条件权重匹配，但不跨run合并成六个独立seed，也不从target择优。已发布健康任务全部保留，不再新增第三套同类矩阵；本对话后续只对本run完成闭环，并按明确配方单列另一owner证据。
+
+当前最多两个动作：完成正在运行的TIME四条件及真实stage/参数/U反馈/尺度诊断；随后依据合法源证据明确是否需要post-fusion SiLU或层位对照，暂不发布新矩阵。Sinc坐标修复保留独立源证据，未混入当前运行。
+
+补充机器表：phase1_feature_group_table_20261014.csv含所有已回收近期run/readout的1998条同row分组指标，配方分组和readout不合并；逐seed表补齐每seed Macro-F1、最差RX/day及三seed最差day均值。历史内容复用已验证CM汇总，未新增head拟合或历史原始日志重扫。

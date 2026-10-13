@@ -39,3 +39,7 @@ COV 对相同 6 维路径计算均值＋协方差上三角，共 27 分量。SIG
 首种子8行已派发：BASE_REF完成合法源诊断、原默认预测复用和独立scorer闭环；七个新增scratch模型实际进程存活、CWD/argv与本run一致，epoch为3/3/3/3/2/2/2（启动快照），日志已增长。resolved config均确认default_head_only=true、native_fitted_probes_disabled=true、新增参数18976。最高每GPU总实验进程1，低于上限3；不干预其他任务。后两seed16行仍等待固定首种子源域条件。
 
 没有新性能结论或84%完成声明。完整训练预算、无标签阶段、原生禁用probe闭包、冻结后的参数无更新诊断和逐row完整prediction/score仍待实际结束。运行状态与启动证据保留在local_artifacts/cvs_feature_sequence50_20261013_r01/{package,readback,startup_readback}.json及原远端run；这些运行产物不进入Git。
+
+## 2026-10-14 完整收尾
+
+状态ANALYZED，24row全部预测/独立评分/原始CM重算与完整源日志核验完成；4032000决定、432指标，21新模型1050epoch/233100更新，0另训head，goal84=false。RFF81.5742%、SIG_TIME83.0393%，后者对基线+2.5125pp且3/3正，距目标0.9607pp。完整逐seed/分组/最差RX-day/配对误差/源曲线与真实参数更新见analysis下聚合数据；机制、初始化CUDA RNG对基线混杂、损失熵观测缺项和不能支持的迁移结论集中在analysis/phase1_feature_evidence_review_20261014.md，不重复叙述。该历史run全部自然退出，未热改/重启或依据target重跑。
