@@ -30,3 +30,7 @@ r01 的 Git/upstream一致、归档校验及remotecompile通过，但preflight�
 ## 实际启动核验
 
 VERIFIED / RUNNING：release commit76b39dc73，上游OID一致；单归档校验、remotecompile、真实同契约CE30 checkpoint无query首步及实际源条件检查PASS。12rows全部进入训练，逐PID/CWD/argv/GPU和日志增长独立读回，actualresolved确认U、teacher、EMA、卫星和V前向关闭，当前无failure。每GPU实际1至2个总进程，保留原任务。未完成训练和目标评分，84%未达成。
+
+## 完整训练与目标测试完成
+
+ANALYZED / VERIFIED：12models×30epochs、79920updates、2016000rawcleanpredictions、216same-row metrics及全部日志核验。原结构79.3752%，逐点GN79.8659%，低通79.7534%，carry77.7887%，均未到84%。carry三seed均负差，完整结果与成本见[final_results.md](final_results.md)。目标继续，用户新预算上限50仅适用于后续固定方案。

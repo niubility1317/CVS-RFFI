@@ -9,8 +9,8 @@
 |ID|报告位置|验收要求|目标模块/产物|状态|验证|边界|
 |---|---|---|---|---|---|---|
 |C1|全局/8|只合法L/U/V；U TX隐藏；checkpoint角色与完整来源匹配|design/common/登记|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|复用已验证数据，不新增hash/ledger|
-|C2|全局/8|独立消融、随机及成本对照、三primary、从头30|登记/训练/同row分析|implemented|采样四组闭环已实现、本地检查PASS；真实训练/目标评分待执行|不把sameepoch称samecompute|
-|C3|全局/8|冻结后逐row自动预测与独立truth-last；全部失败保留|dispatch/predict/score|implemented|采样四组闭环已实现、本地检查PASS；真实训练/目标评分待执行|不按target调参/排名/重跑|
+|C2|全局/8|独立消融、随机及成本对照、三primary、从头30|登记/训练/同row分析|verified|E30采样四组12rows完整日志79920updates/2016000原始cleanpredictions/216same-row指标独立重算|不把sameepoch称samecompute|
+|C3|全局/8|冻结后逐row自动预测与独立truth-last；全部失败保留|dispatch/predict/score|verified|E30采样四组12rows完整日志79920updates/2016000原始cleanpredictions/216same-row指标独立重算|不按target调参/排名/重跑|
 |C4|全局|普通cos160可供Phase2重新拟合；辅助训练状态弃掉|model/query检查|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|当前Phase1 clean不作部署声明|
 |M1|2.1/2.2|q定义及其跨RX可比较性诊断；承认received-IQ含RX|matching.py/源分组|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|不称理想激励/同波形配对|
 |M2|2.2|固定参考或stopgrad表示；cost含q及参考距离|matching.py|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|当前表示不得靠改变matcher直接降低loss|
@@ -20,7 +20,7 @@
 |P1|3.1|S2无损拆分、逆、1采样交换加carry|sampling.py|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|采样位置不是载波相位|
 |P2|3.2|共享处理严格尊重交换/carry；不接任意phase1x1|sampling.py/model|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|有限窗口GN边界需明示|
 |P3|3.3|无循环拼缝小偏移；共同内容区域、累计stride对齐后逐层差/间隔变化|sampling.py/源诊断|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|不把正常位置移动算失稳|
-|P4|3.2/3.3|只改源证据定位层；普通/归一化/低通/多相对照|model/训练矩阵|implemented|采样四组闭环已实现、本地检查PASS；真实训练/目标评分待执行|低通可删TX细节，局部性质非整网不变|
+|P4|3.2/3.3|只改源证据定位层；普通/归一化/低通/多相对照|model/训练矩阵|verified|E30采样四组12rows完整日志79920updates/2016000原始cleanpredictions/216same-row指标独立重算|低通可删TX细节，局部性质非整网不变|
 |U1|4.2/4.4|独立source批次真实RX与随机分组更新迁移G矩阵，全部RX轮换|update.py/源诊断|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|不永久留出RX不训练|
 |U2|4.2/4.3|小参数块单步virtual update与完整可微outer|update.py/objective|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|no_grad复制诊断不能冒充训练目标|
 |U3|4.3|近似版本必须注明忽略项；部署无innerloop|update.py/query|deferred|完整30轮身份训练/部署连接有意暂缓：源条件未满足|训练计算单列|
@@ -33,13 +33,13 @@
 |D2|6.1/6.2|固定序列倒序transpose/sign；tau0=0；低秩公式因子2|directed.py|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|不承诺原IQ倒序整网性质|
 |D3|6.3/6.4|固定embedding增量判别、错误补救/新增错误跨RX独立包重复|directed.py/源诊断|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|RX/信道也有记忆，非天然TX不变量|
 |D4|6.4|同容量静态二阶与打乱有向对照；打乱保留边缘与C0|directed.py/训练矩阵|deferred|完整30轮身份训练/部署连接有意暂缓：源条件未满足|收益不依赖时序不能归因有向动态|
-|D5|6.4|160维小残差；仅末层零初始化、上游正常初始化，后续梯度恢复|model|implemented|独立残差模块零出口梯度PASS；未进入正式模型|额外部署参数/计算实测|
+|D5|6.4|160维小残差；仅末层零初始化、上游正常初始化，后续梯度恢复|model|deferred|独立残差组件数学/梯度已测；源条件不满足，未连接完整身份训练|额外部署参数/计算实测|
 |S1|7前提/7.3|U与L候选TX集合一致，真值隐藏；先构造集合后用合法L检查|sets.py/源诊断|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|不看U隐藏标签调整|
 |S2|7.2|精确logsumexp集合loss、singleton CE、全集loss/grad0|sets.py|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|集合内比例可能改变|
 |S3|7.3|保守可信判断集合，不盲目取交集；coverage与size同报|sets.py/源分组|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|source覆盖非target保证|
 |S4|7.4|hard/soft/set相同U/teacher/流/mask/预算；含模糊但小集合|objective/训练矩阵|deferred|完整30轮身份训练/部署连接有意暂缓：源条件未满足|只高置信singleton不检验该假设|
 |A1|8|六假设各有真实源机制结果、适用/失败条件及后续说明|analysis/report|verified|r03完整18cells/各源方向JSON＋已有聚焦检查；仅组件/源诊断证据|不重命名已存在机制|
-|A2|8|报告实际训练/aux/forward/backward/参数/时间成本和负结果|logs/同row分析|pending|真实训练日志/目标prediction待返回|84%仍须独立实际三seed验证|
+|A2|8|报告实际训练/aux/forward/backward/参数/时间成本和负结果|logs/同row分析|verified|E30采样四组12rows完整日志79920updates/2016000原始cleanpredictions/216same-row指标独立重算|84%仍须独立实际三seed验证|
 
 当前32项pending，0verified/deferred/rejected/blocked。源码只读审计已定位实质缺口，尚不等于实际实现或正式性能；后续按实际证据更新每项。
 
@@ -50,3 +50,7 @@
 P4/C2/C3：准备四组（原池化、逐点 GN、固定低通＋逐点 GN、保留两相位＋carry＋逐点 GN）×三主种子从头 30 轮纯 CE，6660 次更新，普通 cos160、无显式 CFO、无 U/教师/EMA/卫星分支，固定末轮后自动 clean prediction→独立 truth-last。不改目标分数驱动的强度，部署成本与结果分别报告。来源是当前六方向固定源诊断；采样结构第一种子适用，三种子完整适用性仍待 r03，不据此宣称性能提升。
 
 当前验收状态（覆盖旧32项pending声明）：{"verified": 22, "implemented": 4, "deferred": 5, "pending": 1, "rejected": 0, "blocked": 0}。verified限该项的数学/组件/固定源诊断证据；不代表84%或全方向端到端训练完成。最高风险仍是采样改变的实际目标识别收益未知。
+
+2026-10-13最新验收：26verified、6deferred、0pending/rejected/blocked。verified限定各项适用范围；五方向完整身份训练及有向残差正式连接因原源条件未满足而deferred，不称全方向正式性能已验证。采样四结构12条E30训练及clean测试已完成，但84%仍未到达。
+
+当前用户预算覆盖：后续epochs由Agent自主选择，原则上每model不超过50；在发布前固定同预算对照。原30轮实验不追溯改写。

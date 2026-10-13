@@ -6165,7 +6165,7 @@
   "live_readback_ref": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_polyphase30_clean_20261013_r02\\readback.json",
   "local_verification": "Four actualnative shape/head/CEgradient/optimizer/state-roundtripchecksPASS; sourceUtoggle/scratch-load/truth-order/full12closure/primarygoalnegativechecksPASS",
   "independent_review": "One targeted P0/P1 missing-release-dependency re-review PASS, isolatedimport independentlyPASS; prior fullcandidatePASS; no scientificchanges",
-  "release_status": "VERIFIED_RUNNING",
+  "release_status": "VERIFIED_ANALYZED",
   "post_launch_verification": {
     "status": "VERIFIED",
     "rows_started": 12,
@@ -6180,5 +6180,20 @@
     "process_cwd_argv_gpu_verified": true,
     "log_growth_verified_from_initial_zero": true,
     "runtime_evidence": "local_artifacts/cvs_polyphase30_clean_20261013_r02/readback.json"
-  }
+  },
+  "final_verification": {
+    "status": "VERIFIED",
+    "models": 12,
+    "epochs": 360,
+    "updates": 79920,
+    "predictions": 2016000,
+    "metric_records": 216,
+    "all_logs_parsed": true,
+    "raw_predictions_recounted": true,
+    "truth_last": true,
+    "goal_84": false,
+    "report": "final_results.md",
+    "audit": "local_artifacts/cvs_polyphase30_clean_20261013_r02/final_audit.json"
+  },
+  "future_budget_authorization": "User incurrentchat: Agentchooseepochs, normally<=50/model; existing30 matrix unchanged"
 }
