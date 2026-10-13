@@ -84,4 +84,4 @@ def collect(package,output):
  result=json.loads(ssh(wrapper));path.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  print(json.dumps({k:result[k] for k in ('run_id','complete_source_rows','complete_scored_rows','all_rows_complete')}));return result
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--package',required=True,choices=['experiments.cvs_feature_sequence50','experiments.cvs_time_factorial50']);p.add_argument('--output',type=Path,required=True);a=p.parse_args();collect(a.package,a.output)
+ p=argparse.ArgumentParser();p.add_argument('--package',required=True,choices=['experiments.cvs_feature_sequence50','experiments.cvs_time_factorial50','experiments.cvs_time_basis50']);p.add_argument('--output',type=Path,required=True);a=p.parse_args();collect(a.package,a.output)

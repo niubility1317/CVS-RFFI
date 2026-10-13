@@ -2520,5 +2520,15 @@
     "reference_row_scored": true,
     "prediction_complete": false,
     "full_matrix_complete": false
+  },
+  "posttraining_analysis": {
+    "source_collector": "tools/collect_phase1_feature_evidence.py --package experiments.cvs_time_basis50",
+    "paired_collector": "tools/collect_time_basis_pairs.py",
+    "status": "PREPARED_NOT_FULLY_EXECUTED",
+    "source_baseline_audits_reused": 3,
+    "current_complete_source_rows": 3,
+    "current_complete_scored_rows": 1,
+    "full_matrix_truth_read_guard": "PASS expected rejection before truth read while registered full matrix incomplete",
+    "additional_training_or_head_updates": 0
   }
 }
