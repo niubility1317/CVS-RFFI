@@ -45,3 +45,5 @@
 独立P0/P1审查：纯特征接口一次PASS；新源域诊断输入/拟合/闭环一次PASS，无重复审查。focused refit checks14 negatives PASS、三臂feature synthetic精确一致/旧W删除/默认分类/每包独立/梯度与10 negatives PASS。
 
 兼容性直接P1修复：IdentityOnlyCVS仅在ResidualPhysicalHead下走feature_only，native多输出头保留旧return_aux特征。focused真实构造native/residual的特征精确一致PASS，一次限定复审PASS。
+
+完整结果：见final_analysis.md；9row/297reads/279heads/9900W updates VERIFIED；actualsource feature差0、featureupdates0、targetaccessfalse。
