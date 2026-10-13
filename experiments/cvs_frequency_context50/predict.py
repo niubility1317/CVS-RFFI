@@ -17,7 +17,10 @@ def own_model(c,device):
  import torch
  from types import SimpleNamespace
  from .model import installed
- p=source_proof(c);ck=torch.load(p/'final_ssdg.pth',map_location='cpu',weights_only=False)
+ p=source_proof(c)
+ from experiments.cvs_phase1_overlay.model import native_modules
+ native_modules() # Resolve native pickled argument types before torch.load.
+ ck=torch.load(p/'final_ssdg.pth',map_location='cpu',weights_only=False)
  if ck['epoch']!=c['epochs'] or ck['a1_ema_successful_updates']!=c['updates'] or ck['run_id']!=d.RUN or ck['candidate_id']!=c['row_id'] or ck['checkpoint_selection']!='final_only' or ck['args']['baseline_ckpt'] or ck['args']['teacher_ckpt'] or not ck['args']['from_scratch']:raise ValueError('Own final checkpoint differs')
  with installed(c) as n:model=n.build_baseline_model(SimpleNamespace(**ck['baseline_args']),torch.device(device))
  model.load_state_dict(ck['model'],strict=True);model.eval().requires_grad_(False);return model
