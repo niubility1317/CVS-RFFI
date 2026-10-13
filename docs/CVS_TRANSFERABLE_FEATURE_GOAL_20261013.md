@@ -17,3 +17,5 @@
 阶段证据更新：源域冻结换头20261013-phase1-frozen-feature-rehead-source-manysig-m9-r01全部9row/297readouts/279heads已完成；实际source特征差0，featureupdates0、旧W删除、targetaccessfalse，完整结果报告已推送5cb8b0ba8989767e63b1d0e7cc7016ef56d41a0d。基线source原头97.8864%、新cos头98.0580%、原型96.3951%、5/10shot头95.48395%/95.97860%；均不是target指标。
 
 路线六数学组件已实现但尚未接入源训练或启动：dual ridge=.1、scale10、normalize eps1e-4、160维/6类，线性solve不inverse，无持久head参数。focused primal等价误差7.11e-15、两侧梯度范数.380812/.365234、数值梯度、类置换/支持顺序置换/逐query独立/重复及秩亏支持/zero finite/外部autocast和19 negatives PASS。不把数学组件PASS写成实验性能收益。后续冻结cadence/sourceRX采样/辅助权重/预算与同预算基线读出矩阵后再发布。
+
+当前新冻结矩阵：20261013-phase1-episodic-feature-legacycos-clean-manysig-m9-r01，SAME_RX/CROSS_RX各3scratch50、baseline3同seed终轮复用；每4step辅助episode2775、sourceL12support/24query、ridge.1/scale10/weight.2。全部sourceRX轮换，主RNG保留，分类头结构不变。各row自动原头/全L普通cosine新头/原型三读出clean后truth-last；84%主指标固定CROSS_RX原头，但原头达84仍不单独证明新TX迁移。另一活动对话最新路线为GN信息恢复/分支竞争抑制，与本路线独立。

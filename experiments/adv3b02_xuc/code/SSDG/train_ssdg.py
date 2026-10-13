@@ -14,6 +14,9 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
+# Scoped source-only feature objective; default baseline execution is unchanged.
+_source_feature_auxiliary_hook = None
+
 import numpy as np
 
 if __package__ in (None, ""):
@@ -11416,6 +11419,11 @@ def train(args) -> int:
                     "rc4/cos_Pcond_to_labeled": gradient_cosines.get("partial_conditional", float("nan")),
                     "rc4/gradient_telemetry_active": 1.0,
                 }
+            feature_auxiliary_metrics = {}
+            if _source_feature_auxiliary_hook is not None:
+                auxiliary_loss, feature_auxiliary_metrics = _source_feature_auxiliary_hook(model, r3_optimizer_steps + 1)
+                loss = loss + auxiliary_loss
+                scaled_closed_loss = scaled_closed_loss + auxiliary_loss
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
@@ -11672,6 +11680,7 @@ def train(args) -> int:
                     **r3_l_logs,
                     **r3_u_logs,
                     **ecrs_cross_rx_logs,
+                    **feature_auxiliary_metrics,
                     "train/ecrs_cross_rx_successful_steps": float(ecrs_cross_rx_successful_steps),
                     "train/a1_runtime_fast": float(bool(args.a1_runtime_fast)),
                     "train/a1_ema_effective_decay": a1_effective_ema_decay,
