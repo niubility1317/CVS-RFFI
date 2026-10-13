@@ -47,3 +47,7 @@ PA 完整结果与 TIME 诊断实现已上传 f38bf6233aaa0f75857e6bba2bf206bf73
 新TIME矩阵 20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01：四组same237697identity参数/初始state，compact/long×linear/branchSiLU，各scratch50、33＋17，OLD_GATE_COS50三seed外部基线复用。真实builder检查发现历史TIME主RNG与私有CPU初始化的新矩阵不同，LONG_LINEAR因此重新训练。旧PA/frequency/reference/outputnorm/defaulthead保持；独立headfit0。首seed4组源L末222stepCE≤.5后才放行其他2seed；全部训练行自动clean/truth-last，无target选择或热修改健康任务。额外源V33/34健康54000包与逐epoch层运动、U预测类别/RX/day接收统计成本单列。代码/config与最小report将一起绑定实际发布GitHEAD。Sinc坐标修复排队，不混入此轮。
 
 TIME 已实际发布，执行代码351e35cd0d298a6832c0865628bba28ab5a14cbe。唯一P0/P1审查、archive传输、remotecompile、真实默认checkpoint smoke PASS；首seed4个PID/CWD/argv/GPU/resolvedcommit一致，epoch0→4且loggrowth VERIFIED。4份真实初始checkpoint的200个参数/buffer tensors逐项一致，单独headfit0。3历史baseline原默认决定复用已评分，8个后续模型等待预定sourceL门槛，没有新target收益声明。完整发布证据在同run launch_verification.json。旧健康任务未热改/重启。
+
+## Sinc 已保存优化器与 EMA 的只读补查
+
+等待 TIME 固定训练期间，按已登记的9个同源scratch final50（LEGACY32＋18三seed、OLD/TIME33＋17各三seed）补查保存的AdamW参数顺序/完整state形状、Sinc低频/带宽各24参数的step与moments，以及实际EMA Sinc核。仅已核实source-provenance checkpoint与native真实参数收集函数；不读取IQ/目标truth，不执行optimizer或head更新，不在运行TIME中添加机制。最后保存LR/moments重建的adaptive项仅是末端代数测量，不当作完整训练中实际尝试步长历史；若映射无法核实，如实记缺项。真实初始/学生/EMA的差异分别报告，不能把EMA变动当作学生学到了滤波器。
