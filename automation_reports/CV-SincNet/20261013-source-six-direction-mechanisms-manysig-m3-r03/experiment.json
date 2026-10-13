@@ -217,13 +217,13 @@
               "temporal_mode": "batch_neighbor",
               "temporal_min_streak": 2,
               "lr_schedule": "cosine",
-              "lr_min": 0.000001,
+              "lr_min": 1e-06,
               "risk_recipe": {
                 "warmup_epochs": 20,
                 "auxiliary_every_steps": 4,
                 "auxiliary_batch_size": 32,
                 "auxiliary_lr": 0.0002,
-                "auxiliary_lr_min": 0.000001,
+                "auxiliary_lr_min": 1e-06,
                 "reference_refresh_steps": 888,
                 "gradient_audit_every_steps": 888,
                 "epochs": 20,
@@ -402,7 +402,7 @@
             "optimizer": {
               "name": "AdamW",
               "peak_lr": 0.0002,
-              "min_lr": 0.000001,
+              "min_lr": 1e-06,
               "weight_decay": 0.0001,
               "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
             },
@@ -459,7 +459,7 @@
               "fishr_calibration_pairs": 12,
               "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
               "statistic": "none",
-              "sensitivity_eps": 0.000001,
+              "sensitivity_eps": 1e-06,
               "style_selection": "none",
               "candidates": 4,
               "joint_gradient_cap": {
@@ -571,7 +571,7 @@
           "updates": 6660,
           "batch_size": 128,
           "peak_lr": 0.0002,
-          "min_lr": 0.000001,
+          "min_lr": 1e-06,
           "weight_decay": 0.0001,
           "gradient_clip": 10,
           "checkpoint_sources": [],
@@ -732,13 +732,13 @@
               "temporal_mode": "batch_neighbor",
               "temporal_min_streak": 2,
               "lr_schedule": "cosine",
-              "lr_min": 0.000001,
+              "lr_min": 1e-06,
               "risk_recipe": {
                 "warmup_epochs": 20,
                 "auxiliary_every_steps": 4,
                 "auxiliary_batch_size": 32,
                 "auxiliary_lr": 0.0002,
-                "auxiliary_lr_min": 0.000001,
+                "auxiliary_lr_min": 1e-06,
                 "reference_refresh_steps": 888,
                 "gradient_audit_every_steps": 888,
                 "epochs": 20,
@@ -917,7 +917,7 @@
             "optimizer": {
               "name": "AdamW",
               "peak_lr": 0.0002,
-              "min_lr": 0.000001,
+              "min_lr": 1e-06,
               "weight_decay": 0.0001,
               "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
             },
@@ -974,7 +974,7 @@
               "fishr_calibration_pairs": 12,
               "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
               "statistic": "none",
-              "sensitivity_eps": 0.000001,
+              "sensitivity_eps": 1e-06,
               "style_selection": "none",
               "candidates": 4,
               "joint_gradient_cap": {
@@ -1086,7 +1086,7 @@
           "updates": 6660,
           "batch_size": 128,
           "peak_lr": 0.0002,
-          "min_lr": 0.000001,
+          "min_lr": 1e-06,
           "weight_decay": 0.0001,
           "gradient_clip": 10,
           "checkpoint_sources": [],
@@ -1247,13 +1247,13 @@
               "temporal_mode": "batch_neighbor",
               "temporal_min_streak": 2,
               "lr_schedule": "cosine",
-              "lr_min": 0.000001,
+              "lr_min": 1e-06,
               "risk_recipe": {
                 "warmup_epochs": 20,
                 "auxiliary_every_steps": 4,
                 "auxiliary_batch_size": 32,
                 "auxiliary_lr": 0.0002,
-                "auxiliary_lr_min": 0.000001,
+                "auxiliary_lr_min": 1e-06,
                 "reference_refresh_steps": 888,
                 "gradient_audit_every_steps": 888,
                 "epochs": 20,
@@ -1432,7 +1432,7 @@
             "optimizer": {
               "name": "AdamW",
               "peak_lr": 0.0002,
-              "min_lr": 0.000001,
+              "min_lr": 1e-06,
               "weight_decay": 0.0001,
               "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
             },
@@ -1489,7 +1489,7 @@
               "fishr_calibration_pairs": 12,
               "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
               "statistic": "none",
-              "sensitivity_eps": 0.000001,
+              "sensitivity_eps": 1e-06,
               "style_selection": "none",
               "candidates": 4,
               "joint_gradient_cap": {
@@ -1601,7 +1601,7 @@
           "updates": 6660,
           "batch_size": 128,
           "peak_lr": 0.0002,
-          "min_lr": 0.000001,
+          "min_lr": 1e-06,
           "weight_decay": 0.0001,
           "gradient_clip": 10,
           "checkpoint_sources": [],
@@ -1686,5 +1686,44 @@
   "registered_at": "2026-10-13T08:07:49+00:00",
   "local_verification": "RED GREEN coverage regression PASS; normal18fit7200/control/endpoint/isolation/sets checksPASS",
   "independent_review": "One independent targeted P0/P1 review of empty-state coverage bookkeeping andr03 identity PASS; no blockers; prior fullcandidate review remainsPASS",
-  "source_results": "r02 firstseed3 diagnostic cells preserved: matching false, sampling true, update false; no target performance; r03 actual18cells pending"
+  "source_results": {
+    "status": "VERIFIED",
+    "rows": 3,
+    "direction_cells": 18,
+    "identity_updates": 0,
+    "target_access": false,
+    "seed_passes": {
+      "matching": [
+        false,
+        false,
+        false
+      ],
+      "sampling": [
+        true,
+        true,
+        true
+      ],
+      "update": [
+        false,
+        false,
+        false
+      ],
+      "transform": [
+        false,
+        false,
+        false
+      ],
+      "directed": [
+        false,
+        false,
+        false
+      ],
+      "sets": [
+        false,
+        false,
+        false
+      ]
+    },
+    "report": "source_findings.md"
+  }
 }
