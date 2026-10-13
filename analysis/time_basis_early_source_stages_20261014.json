@@ -1,7 +1,7 @@
 {
   "run_id": "20261014-phase1-single-basis-residual-oldgate-e50-clean-manysig-m6-r01",
   "row_id": "SINGLE_BASIS-s2026092701",
-  "scope": "PARTIAL SOURCE ONLY; first seed stages32/33/34; no final freeze/score; no training feedback",
+  "scope": "PARTIAL SOURCE ONLY; all3 seeds stages32/33/34; only seed01 final freeze/score complete; no complete three-seed target result or training feedback",
   "head_fit_updates": 0,
   "target_read": false,
   "stages": [
@@ -192,6 +192,358 @@
       "truth_read": false,
       "head_fit_updates": 0,
       "gate_changed": false
+    }
+  ],
+  "remaining_seed_source_stages": [
+    {
+      "seed": 2026092702,
+      "source_stages": [
+        {
+          "epoch": 32,
+          "source": {
+            "source_val_count": 27000,
+            "source_val_accuracy": 0.9819629629629629,
+            "source_val_rx_accuracy": {
+              "1": 0.9955555555555555,
+              "3": 0.9525925925925925,
+              "4": 0.9833333333333333,
+              "6": 0.9972222222222222,
+              "8": 0.9811111111111112
+            },
+            "source_val_worst_rx": 0.9525925925925925
+          },
+          "parameter_updates": {
+            "sinc": {
+              "changed_values": 1,
+              "l2_change": 0.000026702880859375
+            },
+            "t1": {
+              "changed_values": 14640,
+              "l2_change": 2.466762150212737
+            },
+            "t2": {
+              "changed_values": 28800,
+              "l2_change": 3.4755966237807727
+            },
+            "t3": {
+              "changed_values": 38304,
+              "l2_change": 3.4896898971010333
+            },
+            "f_proj": {
+              "changed_values": 5280,
+              "l2_change": 1.4041500067807353
+            },
+            "pa_b1": {
+              "changed_values": 8160,
+              "l2_change": 2.886037247639947
+            },
+            "pa_b2": {
+              "changed_values": 21632,
+              "l2_change": 3.2325037539619634
+            },
+            "pa_b3": {
+              "changed_values": 20608,
+              "l2_change": 4.228547755993703
+            },
+            "cls_head": {
+              "changed_values": 1760,
+              "l2_change": 1.6769458279871887
+            }
+          },
+          "feature_change_vs_epoch33_L32": null
+        },
+        {
+          "epoch": 33,
+          "source": {
+            "source_val_count": 27000,
+            "source_val_accuracy": 0.9829629629629629,
+            "source_val_rx_accuracy": {
+              "1": 0.9961111111111111,
+              "3": 0.9540740740740741,
+              "4": 0.985,
+              "6": 0.997037037037037,
+              "8": 0.9825925925925926
+            },
+            "source_val_worst_rx": 0.9540740740740741
+          },
+          "parameter_updates": {
+            "sinc": {
+              "changed_values": 1,
+              "l2_change": 0.000026702880859375
+            },
+            "t1": {
+              "changed_values": 14640,
+              "l2_change": 2.47578721027674
+            },
+            "t2": {
+              "changed_values": 28800,
+              "l2_change": 3.4874453579004285
+            },
+            "t3": {
+              "changed_values": 38304,
+              "l2_change": 3.504764710607737
+            },
+            "f_proj": {
+              "changed_values": 5280,
+              "l2_change": 1.4113032733034203
+            },
+            "pa_b1": {
+              "changed_values": 8160,
+              "l2_change": 2.8946671928562706
+            },
+            "pa_b2": {
+              "changed_values": 21632,
+              "l2_change": 3.2422053687051355
+            },
+            "pa_b3": {
+              "changed_values": 20608,
+              "l2_change": 4.241590510780483
+            },
+            "cls_head": {
+              "changed_values": 1760,
+              "l2_change": 1.6906182152590814
+            }
+          },
+          "feature_change_vs_epoch33_L32": 0
+        },
+        {
+          "epoch": 34,
+          "source": {
+            "source_val_count": 27000,
+            "source_val_accuracy": 0.9806296296296296,
+            "source_val_rx_accuracy": {
+              "1": 0.9953703703703703,
+              "3": 0.947962962962963,
+              "4": 0.9837037037037037,
+              "6": 0.9975925925925926,
+              "8": 0.9785185185185186
+            },
+            "source_val_worst_rx": 0.947962962962963
+          },
+          "parameter_updates": {
+            "sinc": {
+              "changed_values": 1,
+              "l2_change": 0.000026702880859375
+            },
+            "t1": {
+              "changed_values": 14640,
+              "l2_change": 2.4840845067154027
+            },
+            "t2": {
+              "changed_values": 28800,
+              "l2_change": 3.4991815096395262
+            },
+            "t3": {
+              "changed_values": 38304,
+              "l2_change": 3.521307866379909
+            },
+            "f_proj": {
+              "changed_values": 5280,
+              "l2_change": 1.411309526855716
+            },
+            "pa_b1": {
+              "changed_values": 8160,
+              "l2_change": 2.9003125132051166
+            },
+            "pa_b2": {
+              "changed_values": 21632,
+              "l2_change": 3.2520830380491352
+            },
+            "pa_b3": {
+              "changed_values": 20608,
+              "l2_change": 4.252673466143681
+            },
+            "cls_head": {
+              "changed_values": 1760,
+              "l2_change": 1.7019933420892521
+            }
+          },
+          "feature_change_vs_epoch33_L32": 1.6989235877990723
+        }
+      ],
+      "epoch34": {
+        "observations": 56700,
+        "accepted": 970,
+        "agreement": 55825,
+        "truth_read": false,
+        "head_fit_updates": 0,
+        "gate_changed": false
+      }
+    },
+    {
+      "seed": 2026092703,
+      "source_stages": [
+        {
+          "epoch": 32,
+          "source": {
+            "source_val_count": 27000,
+            "source_val_accuracy": 0.9845185185185186,
+            "source_val_rx_accuracy": {
+              "1": 0.995,
+              "3": 0.957037037037037,
+              "4": 0.9853703703703703,
+              "6": 0.997037037037037,
+              "8": 0.9881481481481481
+            },
+            "source_val_worst_rx": 0.957037037037037
+          },
+          "parameter_updates": {
+            "sinc": {
+              "changed_values": 1,
+              "l2_change": 0.00005340576171875
+            },
+            "t1": {
+              "changed_values": 14640,
+              "l2_change": 2.542469026463979
+            },
+            "t2": {
+              "changed_values": 28800,
+              "l2_change": 3.3907153171385063
+            },
+            "t3": {
+              "changed_values": 38304,
+              "l2_change": 3.7136253433165267
+            },
+            "f_proj": {
+              "changed_values": 5280,
+              "l2_change": 0.9131191987084123
+            },
+            "pa_b1": {
+              "changed_values": 8160,
+              "l2_change": 2.822269502557909
+            },
+            "pa_b2": {
+              "changed_values": 21632,
+              "l2_change": 3.3286665483677833
+            },
+            "pa_b3": {
+              "changed_values": 20608,
+              "l2_change": 4.1960387853283585
+            },
+            "cls_head": {
+              "changed_values": 1760,
+              "l2_change": 1.8627742341425615
+            }
+          },
+          "feature_change_vs_epoch33_L32": null
+        },
+        {
+          "epoch": 33,
+          "source": {
+            "source_val_count": 27000,
+            "source_val_accuracy": 0.9841111111111112,
+            "source_val_rx_accuracy": {
+              "1": 0.9944444444444445,
+              "3": 0.957962962962963,
+              "4": 0.9855555555555555,
+              "6": 0.9968518518518519,
+              "8": 0.9857407407407407
+            },
+            "source_val_worst_rx": 0.957962962962963
+          },
+          "parameter_updates": {
+            "sinc": {
+              "changed_values": 1,
+              "l2_change": 0.00005340576171875
+            },
+            "t1": {
+              "changed_values": 14640,
+              "l2_change": 2.549445079806788
+            },
+            "t2": {
+              "changed_values": 28800,
+              "l2_change": 3.4048236782926065
+            },
+            "t3": {
+              "changed_values": 38304,
+              "l2_change": 3.728109290515764
+            },
+            "f_proj": {
+              "changed_values": 5280,
+              "l2_change": 0.9177643365727383
+            },
+            "pa_b1": {
+              "changed_values": 8160,
+              "l2_change": 2.8264921587839464
+            },
+            "pa_b2": {
+              "changed_values": 21632,
+              "l2_change": 3.339898445841549
+            },
+            "pa_b3": {
+              "changed_values": 20608,
+              "l2_change": 4.210819669368328
+            },
+            "cls_head": {
+              "changed_values": 1760,
+              "l2_change": 1.8770101312322374
+            }
+          },
+          "feature_change_vs_epoch33_L32": 0
+        },
+        {
+          "epoch": 34,
+          "source": {
+            "source_val_count": 27000,
+            "source_val_accuracy": 0.9843703703703703,
+            "source_val_rx_accuracy": {
+              "1": 0.9948148148148148,
+              "3": 0.9590740740740741,
+              "4": 0.9848148148148148,
+              "6": 0.9972222222222222,
+              "8": 0.9859259259259259
+            },
+            "source_val_worst_rx": 0.9590740740740741
+          },
+          "parameter_updates": {
+            "sinc": {
+              "changed_values": 1,
+              "l2_change": 0.00005340576171875
+            },
+            "t1": {
+              "changed_values": 14640,
+              "l2_change": 2.5565781152192617
+            },
+            "t2": {
+              "changed_values": 28800,
+              "l2_change": 3.417140201416563
+            },
+            "t3": {
+              "changed_values": 38304,
+              "l2_change": 3.7416688539999563
+            },
+            "f_proj": {
+              "changed_values": 5280,
+              "l2_change": 0.9212201583995112
+            },
+            "pa_b1": {
+              "changed_values": 8160,
+              "l2_change": 2.8330943072375527
+            },
+            "pa_b2": {
+              "changed_values": 21632,
+              "l2_change": 3.348987576962378
+            },
+            "pa_b3": {
+              "changed_values": 20608,
+              "l2_change": 4.222742600312372
+            },
+            "cls_head": {
+              "changed_values": 1760,
+              "l2_change": 1.8885079670724252
+            }
+          },
+          "feature_change_vs_epoch33_L32": 1.8245022296905518
+        }
+      ],
+      "epoch34": {
+        "observations": 56700,
+        "accepted": 908,
+        "agreement": 55908,
+        "truth_read": false,
+        "head_fit_updates": 0,
+        "gate_changed": false
+      }
     }
   ]
 }
