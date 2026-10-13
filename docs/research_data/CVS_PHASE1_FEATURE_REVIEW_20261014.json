@@ -31974,9 +31974,9 @@
     },
     {
       "run_id": "20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01",
-      "status": "LOCAL_VERIFIED; not yet remotely launched",
+      "status": "RUNNING; first-seed RAW/CENTER source training, historical3default comparisons closed",
       "mechanism": "actual Sinc RAW_HZ vs centered 25000Hz offset coordinates; source numerical evidence driven; original feature architecture/default jointly trained head",
-      "code": "actual Git HEAD at immutable release packaging",
+      "code": "0f81373c25ba69a6cb9deec5c7ca652880fd62af",
       "baseline": "OLD_GATE_COS5033+17 fixedfinal50 historical comparison only",
       "arms": [
         "OLD_GATE_COS50",
@@ -32000,7 +32000,15 @@
       "local_checks": "PASS; synthetic only, not real training evidence",
       "independent_P0P1": "PASS; one review",
       "results": null,
-      "report": "automation_reports/CV-SincNet/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01/report.md"
+      "report": "automation_reports/CV-SincNet/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01/report.md",
+      "launch_evidence": "automation_reports/CV-SincNet/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01/launch_evidence.json",
+      "early_source": {
+        "epoch": 2,
+        "raw_kernel_relative_L2": 1.170844665665527e-8,
+        "center_kernel_relative_L2": 0.0015866640023887157,
+        "terminal": false,
+        "performance_claim": false
+      }
     }
   ],
   "diagnostics": {

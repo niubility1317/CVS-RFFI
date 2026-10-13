@@ -30,7 +30,7 @@
   "replaces_run_id": null,
   "authorization": "Persistent user Phase1 feature goal: <=50 epochs, old pseudo gates+EMA+cos baseline, actual transferable joint160, default jointly trained head only, source evidence driven experiments, automatic clean truth-last and Git delivery.",
   "code": {
-    "commit": "Actual committed Git HEAD is embedded as release_commit.txt by package; dispatcher writes same OID to experiment.json before first row",
+    "commit": "0f81373c25ba69a6cb9deec5c7ca652880fd62af",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "native verified Python / ordinary N607 CVS-RFFI fullFP32",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sinc_coordinates_20261014_r01",
@@ -2034,5 +2034,7 @@
     "Clean-only explicit scope; exposed benchmark, no new blindtest or satellite deployment claim. Fixed50 budget not convergence claim; actual curves/coverage/numerical movement retained. Relevant negative results delivered too."
   ],
   "registered_at": "2026-10-13T19:35:49+00:00",
-  "status": "LOCAL_VERIFIED"
+  "status": "RUNNING",
+  "execution_commit": "0f81373c25ba69a6cb9deec5c7ca652880fd62af",
+  "launch_evidence": "launch_evidence.json"
 }

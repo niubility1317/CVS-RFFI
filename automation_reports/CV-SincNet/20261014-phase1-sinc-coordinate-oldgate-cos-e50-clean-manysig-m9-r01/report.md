@@ -1,6 +1,6 @@
 # Sinc 原始 Hz 与居中缩放坐标对照
 
-状态：LOCAL_VERIFIED，尚未发布，尚无本轮真实训练或目标性能结果。唯一 run：`20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01`；完整矩阵和配置以 [experiment.json](experiment.json) 为准。
+状态：RUNNING。首种子两个新模型已启动；尚无本轮新模型目标性能结果。唯一 run：`20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01`；完整矩阵和配置以 [experiment.json](experiment.json) 为准。
 
 ## 源证据与假设
 
@@ -45,3 +45,7 @@ clean-only 固定 ManySig 168000 包，旧六类、七个目标 RX、四日，�
 输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01`。每 row 独占根/owner，已存在时核实而不覆盖。共享锁按所有 owner 统计，每 GPU 最多 3 个实验进程且至少 12000 MiB 空闲，具体 GPU 由 launch.json 记录。发布一次归档 SHA 本地/远端比较、远端 compile 和真实历史 checkpoint 无查询 smoke；PASS 后立即 dispatch。随后独立核验 PID/CWD/argv/GPU/log 增长。
 
 所属输入/来源、隐藏 U、预算、非有限值、预测或评分技术失败会关闭新任务调度，保留正在健康执行的 row 和所有产物，不自动重试、不操作其他 owner。首种子源反证失败同样保留实际结果并明确 PARTIAL，不能标完整矩阵。运行后在同 run 更新实际状态、曲线、数值参数/核/EMA变化、joint160 边界及正负结果，全部相应实现和聚合报告提交并推送 Git。权重、原始日志、IQ、预测留在既定远端。
+
+## 实际启动与早期源记录
+
+执行提交 0f81373c25ba69a6cb9deec5c7ca652880fd62af 已推送并独立核对上游。一次归档传输校验、远端 compile 和真实历史 checkpoint 无查询 smoke PASS；dispatcher 及两个新 worker 的 PID/CWD/argv/GPU、日志增长独立读回 VERIFIED，见 launch_evidence.json。RAW_HZ/CENTER_25K 在 GPU1/2，历史三个对照已按登记复用原默认决策并独立评分。第2轮实际源训练记录：RAW kernelrelativeL2=1.1708446657e−8，CENTER=0.0015866640；这是中间机制记录，不是终轮/三种子结果，也不提前使用终轮扩种子阈值。配方和预算保持原登记。
