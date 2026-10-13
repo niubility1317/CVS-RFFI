@@ -45,3 +45,5 @@ feature_check.py在固定合法L720核对实际初末fθ参数与joint160，并�
 RANDOM/PAIR均固定50/11100，完整22200step已复算、有序有限无跳过，EMA.999成功更新全预算；183个实际optimizer参数顺序与保存moment形状核验。17pseudo U各963900包、真值隐藏，RANDOM接收15226（1.5796%），PAIR867095（89.9569%），每活跃epoch全池一次/尾124；label33无U迭代。最终sourceLCE0.289553/0.286946，固定源条件通过、其余四模型已自动释放，目标分数未参与。
 
 两组实际初始全部state逐元素一致。固定L720真实feature-only与原joint160逐元素一致，W置零不改变z、θ/buffers不更新，实际fθ176065完整保留norm/gain/reference；PAIR vs RANDOM终轮fθ有174804个标量参数分量不同，所有115200源z分量不同，平均L2=2.446475、cos=0.978069。W960也随原joint训练正常不同，单独头拟合0；参数/feature不同不直接等于迁移改善，未验证新TX。真实原始Sinc核和EMA/moment亦保留为源证据，采样机制没有换Sinc坐标。完整first_seed_source_evidence.json含源RX/day分层与参数统计，不含原始权重。新候选完整三seed目标结论待后四模型及既定评分结束。
+
+完整结果汇总postprocess.py已准备并编译PASS：仅接收9row/6newmodel完整独立audit与全部6feature证据，固定主候选PAIRED_ORDER，生成原头三seed均值/样本SD、Macro-F1、最差RX/day、三组配对/错误迁移及成本/曲线；不读取新的训练/目标数据、不拟合、不改变运行归档。实际完整数据执行待剩余模型结束。
