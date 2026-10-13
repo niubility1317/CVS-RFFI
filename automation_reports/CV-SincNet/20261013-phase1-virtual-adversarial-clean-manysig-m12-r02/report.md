@@ -21,3 +21,9 @@
 修复 r02：替代未产生预测的 r01 技术失败。统一 expected_counts 和 final_artifacts，producer→source_proof→own_model 回归通过并拒绝旧30轮字段；VAT机制、数据、seed、半径和50轮预算保持。12模型全部从零，旧产物保留且不加载，失败成本另列。该问题只进行一次定点P0/P1复审。
 
 原问题一次定点P0/P1复审PASS：预算闭合与产物处理无残留P0/P1。旧30字段负测和完整producer→proof→checkpoint恢复回归通过。
+
+发布 VERIFIED：执行 commit 79f51363a9027b39d1f107c749025aa4f5d5f966；单一归档传输比对、远端编译、普通账户预检及 real-checkpoint no-query smoke 均通过，dispatcher PID 1503330，独占 r02 release/run 根。训练完全从零；不继承 r01 权重。首批 PID/CWD/argv/GPU 及 epoch/log 增长已核对。
+
+用户 2026-10-13 进一步明确：84% 目标通过提升特征提取网络追求，分类头形式保持固定。当前 VAT 保留 ordinary cosine 6×160 头，输入/浅中层特征一致性更新骨干；后续结构探索必须继续与其他对话路线区分。
+
+完整收尾 VERIFIED / ANALYZED：12×50 轮、133200 更新、2016000 clean 预测、216 同 row 指标。全日志、预测文件、checkpoint 和混淆指标核验通过。主方案三种子 79.0274%，84% 未达到；所有负结果及失败尝试成本见 final_analysis.md。

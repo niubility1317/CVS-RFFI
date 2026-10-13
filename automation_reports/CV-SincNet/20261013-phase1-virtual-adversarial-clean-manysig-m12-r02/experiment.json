@@ -21,11 +21,11 @@
   "replaces_run_id": "20261013-phase1-virtual-adversarial-clean-manysig-m12-r01",
   "authorization": "Active goal01a13438: different route toward84%; retained user scratch30, ordinarycos160, all fixed variants clean, sourceV health only; current user explicitly permits freely chosen epochs with maximum50; all12 fixedscratch50",
   "code": {
-    "commit": "execution commit from release_commit.txt",
+    "commit": "79f51363a9027b39d1f107c749025aa4f5d5f966",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "verified project Python; full FP32; native direct SSH; no pwsh/Bash",
     "cwd": "release root on N607",
-    "commit_notes": "actual execution commit is fixed by release_commit.txt and readback; source code commit self-reference is not a gate"
+    "commit_notes": "release_commit.txt and submit/readback agree; upstream OID verified"
   },
   "data": {
     "dataset": "ManySig",
@@ -149,7 +149,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "epoch cosine30"
       },
       "epochs": 50,
@@ -222,13 +222,13 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06,
+            "lr_min": 0.000001,
             "risk_recipe": {
               "warmup_epochs": 20,
               "auxiliary_every_steps": 4,
               "auxiliary_batch_size": 32,
               "auxiliary_lr": 0.0002,
-              "auxiliary_lr_min": 1e-06,
+              "auxiliary_lr_min": 0.000001,
               "reference_refresh_steps": 888,
               "gradient_audit_every_steps": 888,
               "epochs": 20,
@@ -262,7 +262,7 @@
               "action_mode": "proposal",
               "shared": false,
               "r_target": "distribution",
-              "consistency_weight": 0.0,
+              "consistency_weight": 0,
               "action_label_free": false,
               "source_u_fit": false,
               "replacements": [],
@@ -283,7 +283,7 @@
                 "curvature_pressure"
               ],
               "clean_noninferiority_pp": 0.5,
-              "noise_tie_pp": 0.0,
+              "noise_tie_pp": 0,
               "tail_alpha": 0.25,
               "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
               "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -292,7 +292,7 @@
               "relation": "none",
               "style": false,
               "fishr": "none",
-              "fishr_ratio": 0.0,
+              "fishr_ratio": 0,
               "r_identity": true,
               "selection_required": false
             },
@@ -329,10 +329,10 @@
               "style_alpha": 0.1,
               "style_location": "time_down",
               "fishr_beta": 0.9,
-              "fishr_scale": 30.0,
+              "fishr_scale": 30,
               "fishr_coordinates": 960,
               "fishr_scene_weights": {
-                "clean": 1.0
+                "clean": 1
               },
               "warmup_epochs": 20,
               "ramp_epochs": 20,
@@ -398,7 +398,7 @@
             "confidence": 0.95,
             "seeds": [],
             "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
-            "temperature": 1.0
+            "temperature": 1
           },
           "epochs": 20,
           "steps_per_epoch": 222,
@@ -407,7 +407,7 @@
           "optimizer": {
             "name": "AdamW",
             "peak_lr": 0.0002,
-            "min_lr": 1e-06,
+            "min_lr": 0.000001,
             "weight_decay": 0.0001,
             "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
           },
@@ -419,10 +419,10 @@
             "target_provider": "none"
           },
           "losses": {
-            "ce": 1.0,
-            "KL": 0.0,
-            "feature": 0.0,
-            "margin": 0.0
+            "ce": 1,
+            "KL": 0,
+            "feature": 0,
+            "margin": 0
           },
           "multilevel": {
             "enabled": false,
@@ -432,13 +432,13 @@
             "interval": 4,
             "batch_size": 120,
             "aux_ce_weight": 0.1,
-            "fishr_raw_weight": 2.0,
+            "fishr_raw_weight": 2,
             "fishr_ratio": 0.2,
-            "fishr_cap": 10000.0,
+            "fishr_cap": 10000,
             "fishr_eps": 1e-12,
-            "mixstyle_p": 1.0,
+            "mixstyle_p": 1,
             "mixstyle_alpha": 0.1,
-            "mixstyle_strength": 1.0,
+            "mixstyle_strength": 1,
             "style_confidence": 0.95,
             "levels": [
               "time_down",
@@ -460,11 +460,11 @@
             "fishr_estimator": "cross",
             "pair_batch_size": 60,
             "pair_quota": 2,
-            "style_ce_weight": 1.0,
+            "style_ce_weight": 1,
             "fishr_calibration_pairs": 12,
             "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
             "statistic": "none",
-            "sensitivity_eps": 1e-06,
+            "sensitivity_eps": 0.000001,
             "style_selection": "none",
             "candidates": 4,
             "joint_gradient_cap": {
@@ -480,9 +480,9 @@
             "taps": 33,
             "scales": [
               0.5,
-              1.0
+              1
             ],
-            "max_amplitude_dB": 3.0,
+            "max_amplitude_dB": 3,
             "start_after_updates": 888,
             "ramp_updates": 888,
             "L_augmented_CE_fraction": 0.5,
@@ -540,7 +540,7 @@
           },
           "initialization_checkpoint_sources": [],
           "scratch_scope": "student_identity_only",
-          "label_smoothing": 0.0,
+          "label_smoothing": 0,
           "engineering": {
             "sam": false,
             "sam_rho": 0.02,
@@ -555,10 +555,10 @@
               "t2.pool"
             ],
             "mix_layer_policy": "alternate from active step445; exactly one layer per update",
-            "mix_beta_alpha": 2.0,
+            "mix_beta_alpha": 2,
             "mix_lambda_policy": "max(lambda,1-lambda)",
             "mix_source": "L_s only; different TX donors; repeated donors allowed",
-            "mix_weight": 1.0,
+            "mix_weight": 1,
             "mix_inference": false,
             "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
           },
@@ -576,9 +576,9 @@
         "updates": 11100,
         "batch_size": 128,
         "peak_lr": 0.0002,
-        "min_lr": 1e-06,
+        "min_lr": 0.000001,
         "weight_decay": 0.0001,
-        "gradient_clip": 10.0,
+        "gradient_clip": 10,
         "checkpoint_sources": [],
         "initialization": "full native CVS identity scratch; no E20/E200/teacher weights",
         "checkpoint_selection": "fixed_final_epoch50",
@@ -596,7 +596,7 @@
         },
         "satellite_training": false,
         "auxiliary": false,
-        "label_smoothing": 0.0,
+        "label_smoothing": 0,
         "explicit_CFO_identity_feature": false,
         "source_validation": "original V health only at epochs10/20/30; no selection/promotion",
         "training_target_access": false,
@@ -638,7 +638,7 @@
           "identity_only": true
         }
       },
-      "status": "PLANNED"
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "RANDOM_INPUT-s2026092701",
@@ -665,7 +665,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "epoch cosine30"
       },
       "epochs": 50,
@@ -738,13 +738,13 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06,
+            "lr_min": 0.000001,
             "risk_recipe": {
               "warmup_epochs": 20,
               "auxiliary_every_steps": 4,
               "auxiliary_batch_size": 32,
               "auxiliary_lr": 0.0002,
-              "auxiliary_lr_min": 1e-06,
+              "auxiliary_lr_min": 0.000001,
               "reference_refresh_steps": 888,
               "gradient_audit_every_steps": 888,
               "epochs": 20,
@@ -778,7 +778,7 @@
               "action_mode": "proposal",
               "shared": false,
               "r_target": "distribution",
-              "consistency_weight": 0.0,
+              "consistency_weight": 0,
               "action_label_free": false,
               "source_u_fit": false,
               "replacements": [],
@@ -799,7 +799,7 @@
                 "curvature_pressure"
               ],
               "clean_noninferiority_pp": 0.5,
-              "noise_tie_pp": 0.0,
+              "noise_tie_pp": 0,
               "tail_alpha": 0.25,
               "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
               "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -808,7 +808,7 @@
               "relation": "none",
               "style": false,
               "fishr": "none",
-              "fishr_ratio": 0.0,
+              "fishr_ratio": 0,
               "r_identity": true,
               "selection_required": false
             },
@@ -845,10 +845,10 @@
               "style_alpha": 0.1,
               "style_location": "time_down",
               "fishr_beta": 0.9,
-              "fishr_scale": 30.0,
+              "fishr_scale": 30,
               "fishr_coordinates": 960,
               "fishr_scene_weights": {
-                "clean": 1.0
+                "clean": 1
               },
               "warmup_epochs": 20,
               "ramp_epochs": 20,
@@ -914,7 +914,7 @@
             "confidence": 0.95,
             "seeds": [],
             "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
-            "temperature": 1.0
+            "temperature": 1
           },
           "epochs": 20,
           "steps_per_epoch": 222,
@@ -923,7 +923,7 @@
           "optimizer": {
             "name": "AdamW",
             "peak_lr": 0.0002,
-            "min_lr": 1e-06,
+            "min_lr": 0.000001,
             "weight_decay": 0.0001,
             "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
           },
@@ -935,10 +935,10 @@
             "target_provider": "none"
           },
           "losses": {
-            "ce": 1.0,
-            "KL": 0.0,
-            "feature": 0.0,
-            "margin": 0.0
+            "ce": 1,
+            "KL": 0,
+            "feature": 0,
+            "margin": 0
           },
           "multilevel": {
             "enabled": false,
@@ -948,13 +948,13 @@
             "interval": 4,
             "batch_size": 120,
             "aux_ce_weight": 0.1,
-            "fishr_raw_weight": 2.0,
+            "fishr_raw_weight": 2,
             "fishr_ratio": 0.2,
-            "fishr_cap": 10000.0,
+            "fishr_cap": 10000,
             "fishr_eps": 1e-12,
-            "mixstyle_p": 1.0,
+            "mixstyle_p": 1,
             "mixstyle_alpha": 0.1,
-            "mixstyle_strength": 1.0,
+            "mixstyle_strength": 1,
             "style_confidence": 0.95,
             "levels": [
               "time_down",
@@ -976,11 +976,11 @@
             "fishr_estimator": "cross",
             "pair_batch_size": 60,
             "pair_quota": 2,
-            "style_ce_weight": 1.0,
+            "style_ce_weight": 1,
             "fishr_calibration_pairs": 12,
             "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
             "statistic": "none",
-            "sensitivity_eps": 1e-06,
+            "sensitivity_eps": 0.000001,
             "style_selection": "none",
             "candidates": 4,
             "joint_gradient_cap": {
@@ -996,9 +996,9 @@
             "taps": 33,
             "scales": [
               0.5,
-              1.0
+              1
             ],
-            "max_amplitude_dB": 3.0,
+            "max_amplitude_dB": 3,
             "start_after_updates": 888,
             "ramp_updates": 888,
             "L_augmented_CE_fraction": 0.5,
@@ -1056,7 +1056,7 @@
           },
           "initialization_checkpoint_sources": [],
           "scratch_scope": "student_identity_only",
-          "label_smoothing": 0.0,
+          "label_smoothing": 0,
           "engineering": {
             "sam": false,
             "sam_rho": 0.02,
@@ -1071,10 +1071,10 @@
               "t2.pool"
             ],
             "mix_layer_policy": "alternate from active step445; exactly one layer per update",
-            "mix_beta_alpha": 2.0,
+            "mix_beta_alpha": 2,
             "mix_lambda_policy": "max(lambda,1-lambda)",
             "mix_source": "L_s only; different TX donors; repeated donors allowed",
-            "mix_weight": 1.0,
+            "mix_weight": 1,
             "mix_inference": false,
             "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
           },
@@ -1092,9 +1092,9 @@
         "updates": 11100,
         "batch_size": 128,
         "peak_lr": 0.0002,
-        "min_lr": 1e-06,
+        "min_lr": 0.000001,
         "weight_decay": 0.0001,
-        "gradient_clip": 10.0,
+        "gradient_clip": 10,
         "checkpoint_sources": [],
         "initialization": "full native CVS identity scratch; no E20/E200/teacher weights",
         "checkpoint_selection": "fixed_final_epoch50",
@@ -1112,7 +1112,7 @@
         },
         "satellite_training": false,
         "auxiliary": false,
-        "label_smoothing": 0.0,
+        "label_smoothing": 0,
         "explicit_CFO_identity_feature": false,
         "source_validation": "original V health only at epochs10/20/30; no selection/promotion",
         "training_target_access": false,
@@ -1154,7 +1154,7 @@
           "identity_only": true
         }
       },
-      "status": "PLANNED"
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "VAT_INPUT-s2026092701",
@@ -1181,7 +1181,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "epoch cosine30"
       },
       "epochs": 50,
@@ -1254,13 +1254,13 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06,
+            "lr_min": 0.000001,
             "risk_recipe": {
               "warmup_epochs": 20,
               "auxiliary_every_steps": 4,
               "auxiliary_batch_size": 32,
               "auxiliary_lr": 0.0002,
-              "auxiliary_lr_min": 1e-06,
+              "auxiliary_lr_min": 0.000001,
               "reference_refresh_steps": 888,
               "gradient_audit_every_steps": 888,
               "epochs": 20,
@@ -1294,7 +1294,7 @@
               "action_mode": "proposal",
               "shared": false,
               "r_target": "distribution",
-              "consistency_weight": 0.0,
+              "consistency_weight": 0,
               "action_label_free": false,
               "source_u_fit": false,
               "replacements": [],
@@ -1315,7 +1315,7 @@
                 "curvature_pressure"
               ],
               "clean_noninferiority_pp": 0.5,
-              "noise_tie_pp": 0.0,
+              "noise_tie_pp": 0,
               "tail_alpha": 0.25,
               "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
               "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -1324,7 +1324,7 @@
               "relation": "none",
               "style": false,
               "fishr": "none",
-              "fishr_ratio": 0.0,
+              "fishr_ratio": 0,
               "r_identity": true,
               "selection_required": false
             },
@@ -1361,10 +1361,10 @@
               "style_alpha": 0.1,
               "style_location": "time_down",
               "fishr_beta": 0.9,
-              "fishr_scale": 30.0,
+              "fishr_scale": 30,
               "fishr_coordinates": 960,
               "fishr_scene_weights": {
-                "clean": 1.0
+                "clean": 1
               },
               "warmup_epochs": 20,
               "ramp_epochs": 20,
@@ -1430,7 +1430,7 @@
             "confidence": 0.95,
             "seeds": [],
             "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
-            "temperature": 1.0
+            "temperature": 1
           },
           "epochs": 20,
           "steps_per_epoch": 222,
@@ -1439,7 +1439,7 @@
           "optimizer": {
             "name": "AdamW",
             "peak_lr": 0.0002,
-            "min_lr": 1e-06,
+            "min_lr": 0.000001,
             "weight_decay": 0.0001,
             "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
           },
@@ -1451,10 +1451,10 @@
             "target_provider": "none"
           },
           "losses": {
-            "ce": 1.0,
-            "KL": 0.0,
-            "feature": 0.0,
-            "margin": 0.0
+            "ce": 1,
+            "KL": 0,
+            "feature": 0,
+            "margin": 0
           },
           "multilevel": {
             "enabled": false,
@@ -1464,13 +1464,13 @@
             "interval": 4,
             "batch_size": 120,
             "aux_ce_weight": 0.1,
-            "fishr_raw_weight": 2.0,
+            "fishr_raw_weight": 2,
             "fishr_ratio": 0.2,
-            "fishr_cap": 10000.0,
+            "fishr_cap": 10000,
             "fishr_eps": 1e-12,
-            "mixstyle_p": 1.0,
+            "mixstyle_p": 1,
             "mixstyle_alpha": 0.1,
-            "mixstyle_strength": 1.0,
+            "mixstyle_strength": 1,
             "style_confidence": 0.95,
             "levels": [
               "time_down",
@@ -1492,11 +1492,11 @@
             "fishr_estimator": "cross",
             "pair_batch_size": 60,
             "pair_quota": 2,
-            "style_ce_weight": 1.0,
+            "style_ce_weight": 1,
             "fishr_calibration_pairs": 12,
             "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
             "statistic": "none",
-            "sensitivity_eps": 1e-06,
+            "sensitivity_eps": 0.000001,
             "style_selection": "none",
             "candidates": 4,
             "joint_gradient_cap": {
@@ -1512,9 +1512,9 @@
             "taps": 33,
             "scales": [
               0.5,
-              1.0
+              1
             ],
-            "max_amplitude_dB": 3.0,
+            "max_amplitude_dB": 3,
             "start_after_updates": 888,
             "ramp_updates": 888,
             "L_augmented_CE_fraction": 0.5,
@@ -1572,7 +1572,7 @@
           },
           "initialization_checkpoint_sources": [],
           "scratch_scope": "student_identity_only",
-          "label_smoothing": 0.0,
+          "label_smoothing": 0,
           "engineering": {
             "sam": false,
             "sam_rho": 0.02,
@@ -1587,10 +1587,10 @@
               "t2.pool"
             ],
             "mix_layer_policy": "alternate from active step445; exactly one layer per update",
-            "mix_beta_alpha": 2.0,
+            "mix_beta_alpha": 2,
             "mix_lambda_policy": "max(lambda,1-lambda)",
             "mix_source": "L_s only; different TX donors; repeated donors allowed",
-            "mix_weight": 1.0,
+            "mix_weight": 1,
             "mix_inference": false,
             "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
           },
@@ -1608,9 +1608,9 @@
         "updates": 11100,
         "batch_size": 128,
         "peak_lr": 0.0002,
-        "min_lr": 1e-06,
+        "min_lr": 0.000001,
         "weight_decay": 0.0001,
-        "gradient_clip": 10.0,
+        "gradient_clip": 10,
         "checkpoint_sources": [],
         "initialization": "full native CVS identity scratch; no E20/E200/teacher weights",
         "checkpoint_selection": "fixed_final_epoch50",
@@ -1628,7 +1628,7 @@
         },
         "satellite_training": false,
         "auxiliary": false,
-        "label_smoothing": 0.0,
+        "label_smoothing": 0,
         "explicit_CFO_identity_feature": false,
         "source_validation": "original V health only at epochs10/20/30; no selection/promotion",
         "training_target_access": false,
@@ -1670,7 +1670,7 @@
           "identity_only": true
         }
       },
-      "status": "PLANNED"
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "VAT_FEATURE-s2026092701",
@@ -1697,7 +1697,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "epoch cosine30"
       },
       "epochs": 50,
@@ -1770,13 +1770,13 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06,
+            "lr_min": 0.000001,
             "risk_recipe": {
               "warmup_epochs": 20,
               "auxiliary_every_steps": 4,
               "auxiliary_batch_size": 32,
               "auxiliary_lr": 0.0002,
-              "auxiliary_lr_min": 1e-06,
+              "auxiliary_lr_min": 0.000001,
               "reference_refresh_steps": 888,
               "gradient_audit_every_steps": 888,
               "epochs": 20,
@@ -1810,7 +1810,7 @@
               "action_mode": "proposal",
               "shared": false,
               "r_target": "distribution",
-              "consistency_weight": 0.0,
+              "consistency_weight": 0,
               "action_label_free": false,
               "source_u_fit": false,
               "replacements": [],
@@ -1831,7 +1831,7 @@
                 "curvature_pressure"
               ],
               "clean_noninferiority_pp": 0.5,
-              "noise_tie_pp": 0.0,
+              "noise_tie_pp": 0,
               "tail_alpha": 0.25,
               "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
               "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -1840,7 +1840,7 @@
               "relation": "none",
               "style": false,
               "fishr": "none",
-              "fishr_ratio": 0.0,
+              "fishr_ratio": 0,
               "r_identity": true,
               "selection_required": false
             },
@@ -1877,10 +1877,10 @@
               "style_alpha": 0.1,
               "style_location": "time_down",
               "fishr_beta": 0.9,
-              "fishr_scale": 30.0,
+              "fishr_scale": 30,
               "fishr_coordinates": 960,
               "fishr_scene_weights": {
-                "clean": 1.0
+                "clean": 1
               },
               "warmup_epochs": 20,
               "ramp_epochs": 20,
@@ -1946,7 +1946,7 @@
             "confidence": 0.95,
             "seeds": [],
             "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
-            "temperature": 1.0
+            "temperature": 1
           },
           "epochs": 20,
           "steps_per_epoch": 222,
@@ -1955,7 +1955,7 @@
           "optimizer": {
             "name": "AdamW",
             "peak_lr": 0.0002,
-            "min_lr": 1e-06,
+            "min_lr": 0.000001,
             "weight_decay": 0.0001,
             "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
           },
@@ -1967,10 +1967,10 @@
             "target_provider": "none"
           },
           "losses": {
-            "ce": 1.0,
-            "KL": 0.0,
-            "feature": 0.0,
-            "margin": 0.0
+            "ce": 1,
+            "KL": 0,
+            "feature": 0,
+            "margin": 0
           },
           "multilevel": {
             "enabled": false,
@@ -1980,13 +1980,13 @@
             "interval": 4,
             "batch_size": 120,
             "aux_ce_weight": 0.1,
-            "fishr_raw_weight": 2.0,
+            "fishr_raw_weight": 2,
             "fishr_ratio": 0.2,
-            "fishr_cap": 10000.0,
+            "fishr_cap": 10000,
             "fishr_eps": 1e-12,
-            "mixstyle_p": 1.0,
+            "mixstyle_p": 1,
             "mixstyle_alpha": 0.1,
-            "mixstyle_strength": 1.0,
+            "mixstyle_strength": 1,
             "style_confidence": 0.95,
             "levels": [
               "time_down",
@@ -2008,11 +2008,11 @@
             "fishr_estimator": "cross",
             "pair_batch_size": 60,
             "pair_quota": 2,
-            "style_ce_weight": 1.0,
+            "style_ce_weight": 1,
             "fishr_calibration_pairs": 12,
             "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
             "statistic": "none",
-            "sensitivity_eps": 1e-06,
+            "sensitivity_eps": 0.000001,
             "style_selection": "none",
             "candidates": 4,
             "joint_gradient_cap": {
@@ -2028,9 +2028,9 @@
             "taps": 33,
             "scales": [
               0.5,
-              1.0
+              1
             ],
-            "max_amplitude_dB": 3.0,
+            "max_amplitude_dB": 3,
             "start_after_updates": 888,
             "ramp_updates": 888,
             "L_augmented_CE_fraction": 0.5,
@@ -2088,7 +2088,7 @@
           },
           "initialization_checkpoint_sources": [],
           "scratch_scope": "student_identity_only",
-          "label_smoothing": 0.0,
+          "label_smoothing": 0,
           "engineering": {
             "sam": false,
             "sam_rho": 0.02,
@@ -2103,10 +2103,10 @@
               "t2.pool"
             ],
             "mix_layer_policy": "alternate from active step445; exactly one layer per update",
-            "mix_beta_alpha": 2.0,
+            "mix_beta_alpha": 2,
             "mix_lambda_policy": "max(lambda,1-lambda)",
             "mix_source": "L_s only; different TX donors; repeated donors allowed",
-            "mix_weight": 1.0,
+            "mix_weight": 1,
             "mix_inference": false,
             "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
           },
@@ -2124,9 +2124,9 @@
         "updates": 11100,
         "batch_size": 128,
         "peak_lr": 0.0002,
-        "min_lr": 1e-06,
+        "min_lr": 0.000001,
         "weight_decay": 0.0001,
-        "gradient_clip": 10.0,
+        "gradient_clip": 10,
         "checkpoint_sources": [],
         "initialization": "full native CVS identity scratch; no E20/E200/teacher weights",
         "checkpoint_selection": "fixed_final_epoch50",
@@ -2144,7 +2144,7 @@
         },
         "satellite_training": false,
         "auxiliary": false,
-        "label_smoothing": 0.0,
+        "label_smoothing": 0,
         "explicit_CFO_identity_feature": false,
         "source_validation": "original V health only at epochs10/20/30; no selection/promotion",
         "training_target_access": false,
@@ -2189,7 +2189,7 @@
           "identity_only": true
         }
       },
-      "status": "PLANNED"
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "CE50-s2026092702",
@@ -2216,7 +2216,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "epoch cosine30"
       },
       "epochs": 50,
@@ -2289,13 +2289,13 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06,
+            "lr_min": 0.000001,
             "risk_recipe": {
               "warmup_epochs": 20,
               "auxiliary_every_steps": 4,
               "auxiliary_batch_size": 32,
               "auxiliary_lr": 0.0002,
-              "auxiliary_lr_min": 1e-06,
+              "auxiliary_lr_min": 0.000001,
               "reference_refresh_steps": 888,
               "gradient_audit_every_steps": 888,
               "epochs": 20,
@@ -2329,7 +2329,7 @@
               "action_mode": "proposal",
               "shared": false,
               "r_target": "distribution",
-              "consistency_weight": 0.0,
+              "consistency_weight": 0,
               "action_label_free": false,
               "source_u_fit": false,
               "replacements": [],
@@ -2350,7 +2350,7 @@
                 "curvature_pressure"
               ],
               "clean_noninferiority_pp": 0.5,
-              "noise_tie_pp": 0.0,
+              "noise_tie_pp": 0,
               "tail_alpha": 0.25,
               "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
               "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -2359,7 +2359,7 @@
               "relation": "none",
               "style": false,
               "fishr": "none",
-              "fishr_ratio": 0.0,
+              "fishr_ratio": 0,
               "r_identity": true,
               "selection_required": false
             },
@@ -2396,10 +2396,10 @@
               "style_alpha": 0.1,
               "style_location": "time_down",
               "fishr_beta": 0.9,
-              "fishr_scale": 30.0,
+              "fishr_scale": 30,
               "fishr_coordinates": 960,
               "fishr_scene_weights": {
-                "clean": 1.0
+                "clean": 1
               },
               "warmup_epochs": 20,
               "ramp_epochs": 20,
@@ -2465,7 +2465,7 @@
             "confidence": 0.95,
             "seeds": [],
             "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
-            "temperature": 1.0
+            "temperature": 1
           },
           "epochs": 20,
           "steps_per_epoch": 222,
@@ -2474,7 +2474,7 @@
           "optimizer": {
             "name": "AdamW",
             "peak_lr": 0.0002,
-            "min_lr": 1e-06,
+            "min_lr": 0.000001,
             "weight_decay": 0.0001,
             "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
           },
@@ -2486,10 +2486,10 @@
             "target_provider": "none"
           },
           "losses": {
-            "ce": 1.0,
-            "KL": 0.0,
-            "feature": 0.0,
-            "margin": 0.0
+            "ce": 1,
+            "KL": 0,
+            "feature": 0,
+            "margin": 0
           },
           "multilevel": {
             "enabled": false,
@@ -2499,13 +2499,13 @@
             "interval": 4,
             "batch_size": 120,
             "aux_ce_weight": 0.1,
-            "fishr_raw_weight": 2.0,
+            "fishr_raw_weight": 2,
             "fishr_ratio": 0.2,
-            "fishr_cap": 10000.0,
+            "fishr_cap": 10000,
             "fishr_eps": 1e-12,
-            "mixstyle_p": 1.0,
+            "mixstyle_p": 1,
             "mixstyle_alpha": 0.1,
-            "mixstyle_strength": 1.0,
+            "mixstyle_strength": 1,
             "style_confidence": 0.95,
             "levels": [
               "time_down",
@@ -2527,11 +2527,11 @@
             "fishr_estimator": "cross",
             "pair_batch_size": 60,
             "pair_quota": 2,
-            "style_ce_weight": 1.0,
+            "style_ce_weight": 1,
             "fishr_calibration_pairs": 12,
             "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
             "statistic": "none",
-            "sensitivity_eps": 1e-06,
+            "sensitivity_eps": 0.000001,
             "style_selection": "none",
             "candidates": 4,
             "joint_gradient_cap": {
@@ -2547,9 +2547,9 @@
             "taps": 33,
             "scales": [
               0.5,
-              1.0
+              1
             ],
-            "max_amplitude_dB": 3.0,
+            "max_amplitude_dB": 3,
             "start_after_updates": 888,
             "ramp_updates": 888,
             "L_augmented_CE_fraction": 0.5,
@@ -2607,7 +2607,7 @@
           },
           "initialization_checkpoint_sources": [],
           "scratch_scope": "student_identity_only",
-          "label_smoothing": 0.0,
+          "label_smoothing": 0,
           "engineering": {
             "sam": false,
             "sam_rho": 0.02,
@@ -2622,10 +2622,10 @@
               "t2.pool"
             ],
             "mix_layer_policy": "alternate from active step445; exactly one layer per update",
-            "mix_beta_alpha": 2.0,
+            "mix_beta_alpha": 2,
             "mix_lambda_policy": "max(lambda,1-lambda)",
             "mix_source": "L_s only; different TX donors; repeated donors allowed",
-            "mix_weight": 1.0,
+            "mix_weight": 1,
             "mix_inference": false,
             "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
           },
@@ -2643,9 +2643,9 @@
         "updates": 11100,
         "batch_size": 128,
         "peak_lr": 0.0002,
-        "min_lr": 1e-06,
+        "min_lr": 0.000001,
         "weight_decay": 0.0001,
-        "gradient_clip": 10.0,
+        "gradient_clip": 10,
         "checkpoint_sources": [],
         "initialization": "full native CVS identity scratch; no E20/E200/teacher weights",
         "checkpoint_selection": "fixed_final_epoch50",
@@ -2663,7 +2663,7 @@
         },
         "satellite_training": false,
         "auxiliary": false,
-        "label_smoothing": 0.0,
+        "label_smoothing": 0,
         "explicit_CFO_identity_feature": false,
         "source_validation": "original V health only at epochs10/20/30; no selection/promotion",
         "training_target_access": false,
@@ -2705,7 +2705,7 @@
           "identity_only": true
         }
       },
-      "status": "PLANNED"
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "RANDOM_INPUT-s2026092702",
@@ -2732,7 +2732,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "epoch cosine30"
       },
       "epochs": 50,
@@ -2805,13 +2805,13 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06,
+            "lr_min": 0.000001,
             "risk_recipe": {
               "warmup_epochs": 20,
               "auxiliary_every_steps": 4,
               "auxiliary_batch_size": 32,
               "auxiliary_lr": 0.0002,
-              "auxiliary_lr_min": 1e-06,
+              "auxiliary_lr_min": 0.000001,
               "reference_refresh_steps": 888,
               "gradient_audit_every_steps": 888,
               "epochs": 20,
@@ -2845,7 +2845,7 @@
               "action_mode": "proposal",
               "shared": false,
               "r_target": "distribution",
-              "consistency_weight": 0.0,
+              "consistency_weight": 0,
               "action_label_free": false,
               "source_u_fit": false,
               "replacements": [],
@@ -2866,7 +2866,7 @@
                 "curvature_pressure"
               ],
               "clean_noninferiority_pp": 0.5,
-              "noise_tie_pp": 0.0,
+              "noise_tie_pp": 0,
               "tail_alpha": 0.25,
               "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
               "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -2875,7 +2875,7 @@
               "relation": "none",
               "style": false,
               "fishr": "none",
-              "fishr_ratio": 0.0,
+              "fishr_ratio": 0,
               "r_identity": true,
               "selection_required": false
             },
@@ -2912,10 +2912,10 @@
               "style_alpha": 0.1,
               "style_location": "time_down",
               "fishr_beta": 0.9,
-              "fishr_scale": 30.0,
+              "fishr_scale": 30,
               "fishr_coordinates": 960,
               "fishr_scene_weights": {
-                "clean": 1.0
+                "clean": 1
               },
               "warmup_epochs": 20,
               "ramp_epochs": 20,
@@ -2981,7 +2981,7 @@
             "confidence": 0.95,
             "seeds": [],
             "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
-            "temperature": 1.0
+            "temperature": 1
           },
           "epochs": 20,
           "steps_per_epoch": 222,
@@ -2990,7 +2990,7 @@
           "optimizer": {
             "name": "AdamW",
             "peak_lr": 0.0002,
-            "min_lr": 1e-06,
+            "min_lr": 0.000001,
             "weight_decay": 0.0001,
             "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
           },
@@ -3002,10 +3002,10 @@
             "target_provider": "none"
           },
           "losses": {
-            "ce": 1.0,
-            "KL": 0.0,
-            "feature": 0.0,
-            "margin": 0.0
+            "ce": 1,
+            "KL": 0,
+            "feature": 0,
+            "margin": 0
           },
           "multilevel": {
             "enabled": false,
@@ -3015,13 +3015,13 @@
             "interval": 4,
             "batch_size": 120,
             "aux_ce_weight": 0.1,
-            "fishr_raw_weight": 2.0,
+            "fishr_raw_weight": 2,
             "fishr_ratio": 0.2,
-            "fishr_cap": 10000.0,
+            "fishr_cap": 10000,
             "fishr_eps": 1e-12,
-            "mixstyle_p": 1.0,
+            "mixstyle_p": 1,
             "mixstyle_alpha": 0.1,
-            "mixstyle_strength": 1.0,
+            "mixstyle_strength": 1,
             "style_confidence": 0.95,
             "levels": [
               "time_down",
@@ -3043,11 +3043,11 @@
             "fishr_estimator": "cross",
             "pair_batch_size": 60,
             "pair_quota": 2,
-            "style_ce_weight": 1.0,
+            "style_ce_weight": 1,
             "fishr_calibration_pairs": 12,
             "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
             "statistic": "none",
-            "sensitivity_eps": 1e-06,
+            "sensitivity_eps": 0.000001,
             "style_selection": "none",
             "candidates": 4,
             "joint_gradient_cap": {
@@ -3063,9 +3063,9 @@
             "taps": 33,
             "scales": [
               0.5,
-              1.0
+              1
             ],
-            "max_amplitude_dB": 3.0,
+            "max_amplitude_dB": 3,
             "start_after_updates": 888,
             "ramp_updates": 888,
             "L_augmented_CE_fraction": 0.5,
@@ -3123,7 +3123,7 @@
           },
           "initialization_checkpoint_sources": [],
           "scratch_scope": "student_identity_only",
-          "label_smoothing": 0.0,
+          "label_smoothing": 0,
           "engineering": {
             "sam": false,
             "sam_rho": 0.02,
@@ -3138,10 +3138,10 @@
               "t2.pool"
             ],
             "mix_layer_policy": "alternate from active step445; exactly one layer per update",
-            "mix_beta_alpha": 2.0,
+            "mix_beta_alpha": 2,
             "mix_lambda_policy": "max(lambda,1-lambda)",
             "mix_source": "L_s only; different TX donors; repeated donors allowed",
-            "mix_weight": 1.0,
+            "mix_weight": 1,
             "mix_inference": false,
             "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
           },
@@ -3159,9 +3159,9 @@
         "updates": 11100,
         "batch_size": 128,
         "peak_lr": 0.0002,
-        "min_lr": 1e-06,
+        "min_lr": 0.000001,
         "weight_decay": 0.0001,
-        "gradient_clip": 10.0,
+        "gradient_clip": 10,
         "checkpoint_sources": [],
         "initialization": "full native CVS identity scratch; no E20/E200/teacher weights",
         "checkpoint_selection": "fixed_final_epoch50",
@@ -3179,7 +3179,7 @@
         },
         "satellite_training": false,
         "auxiliary": false,
-        "label_smoothing": 0.0,
+        "label_smoothing": 0,
         "explicit_CFO_identity_feature": false,
         "source_validation": "original V health only at epochs10/20/30; no selection/promotion",
         "training_target_access": false,
@@ -3221,7 +3221,7 @@
           "identity_only": true
         }
       },
-      "status": "PLANNED"
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "VAT_INPUT-s2026092702",
@@ -3248,7 +3248,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "epoch cosine30"
       },
       "epochs": 50,
@@ -3321,13 +3321,13 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06,
+            "lr_min": 0.000001,
             "risk_recipe": {
               "warmup_epochs": 20,
               "auxiliary_every_steps": 4,
               "auxiliary_batch_size": 32,
               "auxiliary_lr": 0.0002,
-              "auxiliary_lr_min": 1e-06,
+              "auxiliary_lr_min": 0.000001,
               "reference_refresh_steps": 888,
               "gradient_audit_every_steps": 888,
               "epochs": 20,
@@ -3361,7 +3361,7 @@
               "action_mode": "proposal",
               "shared": false,
               "r_target": "distribution",
-              "consistency_weight": 0.0,
+              "consistency_weight": 0,
               "action_label_free": false,
               "source_u_fit": false,
               "replacements": [],
@@ -3382,7 +3382,7 @@
                 "curvature_pressure"
               ],
               "clean_noninferiority_pp": 0.5,
-              "noise_tie_pp": 0.0,
+              "noise_tie_pp": 0,
               "tail_alpha": 0.25,
               "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
               "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -3391,7 +3391,7 @@
               "relation": "none",
               "style": false,
               "fishr": "none",
-              "fishr_ratio": 0.0,
+              "fishr_ratio": 0,
               "r_identity": true,
               "selection_required": false
             },
@@ -3428,10 +3428,10 @@
               "style_alpha": 0.1,
               "style_location": "time_down",
               "fishr_beta": 0.9,
-              "fishr_scale": 30.0,
+              "fishr_scale": 30,
               "fishr_coordinates": 960,
               "fishr_scene_weights": {
-                "clean": 1.0
+                "clean": 1
               },
               "warmup_epochs": 20,
               "ramp_epochs": 20,
@@ -3497,7 +3497,7 @@
             "confidence": 0.95,
             "seeds": [],
             "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
-            "temperature": 1.0
+            "temperature": 1
           },
           "epochs": 20,
           "steps_per_epoch": 222,
@@ -3506,7 +3506,7 @@
           "optimizer": {
             "name": "AdamW",
             "peak_lr": 0.0002,
-            "min_lr": 1e-06,
+            "min_lr": 0.000001,
             "weight_decay": 0.0001,
             "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
           },
@@ -3518,10 +3518,10 @@
             "target_provider": "none"
           },
           "losses": {
-            "ce": 1.0,
-            "KL": 0.0,
-            "feature": 0.0,
-            "margin": 0.0
+            "ce": 1,
+            "KL": 0,
+            "feature": 0,
+            "margin": 0
           },
           "multilevel": {
             "enabled": false,
@@ -3531,13 +3531,13 @@
             "interval": 4,
             "batch_size": 120,
             "aux_ce_weight": 0.1,
-            "fishr_raw_weight": 2.0,
+            "fishr_raw_weight": 2,
             "fishr_ratio": 0.2,
-            "fishr_cap": 10000.0,
+            "fishr_cap": 10000,
             "fishr_eps": 1e-12,
-            "mixstyle_p": 1.0,
+            "mixstyle_p": 1,
             "mixstyle_alpha": 0.1,
-            "mixstyle_strength": 1.0,
+            "mixstyle_strength": 1,
             "style_confidence": 0.95,
             "levels": [
               "time_down",
@@ -3559,11 +3559,11 @@
             "fishr_estimator": "cross",
             "pair_batch_size": 60,
             "pair_quota": 2,
-            "style_ce_weight": 1.0,
+            "style_ce_weight": 1,
             "fishr_calibration_pairs": 12,
             "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
             "statistic": "none",
-            "sensitivity_eps": 1e-06,
+            "sensitivity_eps": 0.000001,
             "style_selection": "none",
             "candidates": 4,
             "joint_gradient_cap": {
@@ -3579,9 +3579,9 @@
             "taps": 33,
             "scales": [
               0.5,
-              1.0
+              1
             ],
-            "max_amplitude_dB": 3.0,
+            "max_amplitude_dB": 3,
             "start_after_updates": 888,
             "ramp_updates": 888,
             "L_augmented_CE_fraction": 0.5,
@@ -3639,7 +3639,7 @@
           },
           "initialization_checkpoint_sources": [],
           "scratch_scope": "student_identity_only",
-          "label_smoothing": 0.0,
+          "label_smoothing": 0,
           "engineering": {
             "sam": false,
             "sam_rho": 0.02,
@@ -3654,10 +3654,10 @@
               "t2.pool"
             ],
             "mix_layer_policy": "alternate from active step445; exactly one layer per update",
-            "mix_beta_alpha": 2.0,
+            "mix_beta_alpha": 2,
             "mix_lambda_policy": "max(lambda,1-lambda)",
             "mix_source": "L_s only; different TX donors; repeated donors allowed",
-            "mix_weight": 1.0,
+            "mix_weight": 1,
             "mix_inference": false,
             "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
           },
@@ -3675,9 +3675,9 @@
         "updates": 11100,
         "batch_size": 128,
         "peak_lr": 0.0002,
-        "min_lr": 1e-06,
+        "min_lr": 0.000001,
         "weight_decay": 0.0001,
-        "gradient_clip": 10.0,
+        "gradient_clip": 10,
         "checkpoint_sources": [],
         "initialization": "full native CVS identity scratch; no E20/E200/teacher weights",
         "checkpoint_selection": "fixed_final_epoch50",
@@ -3695,7 +3695,7 @@
         },
         "satellite_training": false,
         "auxiliary": false,
-        "label_smoothing": 0.0,
+        "label_smoothing": 0,
         "explicit_CFO_identity_feature": false,
         "source_validation": "original V health only at epochs10/20/30; no selection/promotion",
         "training_target_access": false,
@@ -3737,7 +3737,7 @@
           "identity_only": true
         }
       },
-      "status": "PLANNED"
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "VAT_FEATURE-s2026092702",
@@ -3764,7 +3764,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "epoch cosine30"
       },
       "epochs": 50,
@@ -3837,13 +3837,13 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06,
+            "lr_min": 0.000001,
             "risk_recipe": {
               "warmup_epochs": 20,
               "auxiliary_every_steps": 4,
               "auxiliary_batch_size": 32,
               "auxiliary_lr": 0.0002,
-              "auxiliary_lr_min": 1e-06,
+              "auxiliary_lr_min": 0.000001,
               "reference_refresh_steps": 888,
               "gradient_audit_every_steps": 888,
               "epochs": 20,
@@ -3877,7 +3877,7 @@
               "action_mode": "proposal",
               "shared": false,
               "r_target": "distribution",
-              "consistency_weight": 0.0,
+              "consistency_weight": 0,
               "action_label_free": false,
               "source_u_fit": false,
               "replacements": [],
@@ -3898,7 +3898,7 @@
                 "curvature_pressure"
               ],
               "clean_noninferiority_pp": 0.5,
-              "noise_tie_pp": 0.0,
+              "noise_tie_pp": 0,
               "tail_alpha": 0.25,
               "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
               "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -3907,7 +3907,7 @@
               "relation": "none",
               "style": false,
               "fishr": "none",
-              "fishr_ratio": 0.0,
+              "fishr_ratio": 0,
               "r_identity": true,
               "selection_required": false
             },
@@ -3944,10 +3944,10 @@
               "style_alpha": 0.1,
               "style_location": "time_down",
               "fishr_beta": 0.9,
-              "fishr_scale": 30.0,
+              "fishr_scale": 30,
               "fishr_coordinates": 960,
               "fishr_scene_weights": {
-                "clean": 1.0
+                "clean": 1
               },
               "warmup_epochs": 20,
               "ramp_epochs": 20,
@@ -4013,7 +4013,7 @@
             "confidence": 0.95,
             "seeds": [],
             "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
-            "temperature": 1.0
+            "temperature": 1
           },
           "epochs": 20,
           "steps_per_epoch": 222,
@@ -4022,7 +4022,7 @@
           "optimizer": {
             "name": "AdamW",
             "peak_lr": 0.0002,
-            "min_lr": 1e-06,
+            "min_lr": 0.000001,
             "weight_decay": 0.0001,
             "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
           },
@@ -4034,10 +4034,10 @@
             "target_provider": "none"
           },
           "losses": {
-            "ce": 1.0,
-            "KL": 0.0,
-            "feature": 0.0,
-            "margin": 0.0
+            "ce": 1,
+            "KL": 0,
+            "feature": 0,
+            "margin": 0
           },
           "multilevel": {
             "enabled": false,
@@ -4047,13 +4047,13 @@
             "interval": 4,
             "batch_size": 120,
             "aux_ce_weight": 0.1,
-            "fishr_raw_weight": 2.0,
+            "fishr_raw_weight": 2,
             "fishr_ratio": 0.2,
-            "fishr_cap": 10000.0,
+            "fishr_cap": 10000,
             "fishr_eps": 1e-12,
-            "mixstyle_p": 1.0,
+            "mixstyle_p": 1,
             "mixstyle_alpha": 0.1,
-            "mixstyle_strength": 1.0,
+            "mixstyle_strength": 1,
             "style_confidence": 0.95,
             "levels": [
               "time_down",
@@ -4075,11 +4075,11 @@
             "fishr_estimator": "cross",
             "pair_batch_size": 60,
             "pair_quota": 2,
-            "style_ce_weight": 1.0,
+            "style_ce_weight": 1,
             "fishr_calibration_pairs": 12,
             "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
             "statistic": "none",
-            "sensitivity_eps": 1e-06,
+            "sensitivity_eps": 0.000001,
             "style_selection": "none",
             "candidates": 4,
             "joint_gradient_cap": {
@@ -4095,9 +4095,9 @@
             "taps": 33,
             "scales": [
               0.5,
-              1.0
+              1
             ],
-            "max_amplitude_dB": 3.0,
+            "max_amplitude_dB": 3,
             "start_after_updates": 888,
             "ramp_updates": 888,
             "L_augmented_CE_fraction": 0.5,
@@ -4155,7 +4155,7 @@
           },
           "initialization_checkpoint_sources": [],
           "scratch_scope": "student_identity_only",
-          "label_smoothing": 0.0,
+          "label_smoothing": 0,
           "engineering": {
             "sam": false,
             "sam_rho": 0.02,
@@ -4170,10 +4170,10 @@
               "t2.pool"
             ],
             "mix_layer_policy": "alternate from active step445; exactly one layer per update",
-            "mix_beta_alpha": 2.0,
+            "mix_beta_alpha": 2,
             "mix_lambda_policy": "max(lambda,1-lambda)",
             "mix_source": "L_s only; different TX donors; repeated donors allowed",
-            "mix_weight": 1.0,
+            "mix_weight": 1,
             "mix_inference": false,
             "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
           },
@@ -4191,9 +4191,9 @@
         "updates": 11100,
         "batch_size": 128,
         "peak_lr": 0.0002,
-        "min_lr": 1e-06,
+        "min_lr": 0.000001,
         "weight_decay": 0.0001,
-        "gradient_clip": 10.0,
+        "gradient_clip": 10,
         "checkpoint_sources": [],
         "initialization": "full native CVS identity scratch; no E20/E200/teacher weights",
         "checkpoint_selection": "fixed_final_epoch50",
@@ -4211,7 +4211,7 @@
         },
         "satellite_training": false,
         "auxiliary": false,
-        "label_smoothing": 0.0,
+        "label_smoothing": 0,
         "explicit_CFO_identity_feature": false,
         "source_validation": "original V health only at epochs10/20/30; no selection/promotion",
         "training_target_access": false,
@@ -4256,7 +4256,7 @@
           "identity_only": true
         }
       },
-      "status": "PLANNED"
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "CE50-s2026092703",
@@ -4283,7 +4283,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "epoch cosine30"
       },
       "epochs": 50,
@@ -4356,13 +4356,13 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06,
+            "lr_min": 0.000001,
             "risk_recipe": {
               "warmup_epochs": 20,
               "auxiliary_every_steps": 4,
               "auxiliary_batch_size": 32,
               "auxiliary_lr": 0.0002,
-              "auxiliary_lr_min": 1e-06,
+              "auxiliary_lr_min": 0.000001,
               "reference_refresh_steps": 888,
               "gradient_audit_every_steps": 888,
               "epochs": 20,
@@ -4396,7 +4396,7 @@
               "action_mode": "proposal",
               "shared": false,
               "r_target": "distribution",
-              "consistency_weight": 0.0,
+              "consistency_weight": 0,
               "action_label_free": false,
               "source_u_fit": false,
               "replacements": [],
@@ -4417,7 +4417,7 @@
                 "curvature_pressure"
               ],
               "clean_noninferiority_pp": 0.5,
-              "noise_tie_pp": 0.0,
+              "noise_tie_pp": 0,
               "tail_alpha": 0.25,
               "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
               "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -4426,7 +4426,7 @@
               "relation": "none",
               "style": false,
               "fishr": "none",
-              "fishr_ratio": 0.0,
+              "fishr_ratio": 0,
               "r_identity": true,
               "selection_required": false
             },
@@ -4463,10 +4463,10 @@
               "style_alpha": 0.1,
               "style_location": "time_down",
               "fishr_beta": 0.9,
-              "fishr_scale": 30.0,
+              "fishr_scale": 30,
               "fishr_coordinates": 960,
               "fishr_scene_weights": {
-                "clean": 1.0
+                "clean": 1
               },
               "warmup_epochs": 20,
               "ramp_epochs": 20,
@@ -4532,7 +4532,7 @@
             "confidence": 0.95,
             "seeds": [],
             "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
-            "temperature": 1.0
+            "temperature": 1
           },
           "epochs": 20,
           "steps_per_epoch": 222,
@@ -4541,7 +4541,7 @@
           "optimizer": {
             "name": "AdamW",
             "peak_lr": 0.0002,
-            "min_lr": 1e-06,
+            "min_lr": 0.000001,
             "weight_decay": 0.0001,
             "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
           },
@@ -4553,10 +4553,10 @@
             "target_provider": "none"
           },
           "losses": {
-            "ce": 1.0,
-            "KL": 0.0,
-            "feature": 0.0,
-            "margin": 0.0
+            "ce": 1,
+            "KL": 0,
+            "feature": 0,
+            "margin": 0
           },
           "multilevel": {
             "enabled": false,
@@ -4566,13 +4566,13 @@
             "interval": 4,
             "batch_size": 120,
             "aux_ce_weight": 0.1,
-            "fishr_raw_weight": 2.0,
+            "fishr_raw_weight": 2,
             "fishr_ratio": 0.2,
-            "fishr_cap": 10000.0,
+            "fishr_cap": 10000,
             "fishr_eps": 1e-12,
-            "mixstyle_p": 1.0,
+            "mixstyle_p": 1,
             "mixstyle_alpha": 0.1,
-            "mixstyle_strength": 1.0,
+            "mixstyle_strength": 1,
             "style_confidence": 0.95,
             "levels": [
               "time_down",
@@ -4594,11 +4594,11 @@
             "fishr_estimator": "cross",
             "pair_batch_size": 60,
             "pair_quota": 2,
-            "style_ce_weight": 1.0,
+            "style_ce_weight": 1,
             "fishr_calibration_pairs": 12,
             "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
             "statistic": "none",
-            "sensitivity_eps": 1e-06,
+            "sensitivity_eps": 0.000001,
             "style_selection": "none",
             "candidates": 4,
             "joint_gradient_cap": {
@@ -4614,9 +4614,9 @@
             "taps": 33,
             "scales": [
               0.5,
-              1.0
+              1
             ],
-            "max_amplitude_dB": 3.0,
+            "max_amplitude_dB": 3,
             "start_after_updates": 888,
             "ramp_updates": 888,
             "L_augmented_CE_fraction": 0.5,
@@ -4674,7 +4674,7 @@
           },
           "initialization_checkpoint_sources": [],
           "scratch_scope": "student_identity_only",
-          "label_smoothing": 0.0,
+          "label_smoothing": 0,
           "engineering": {
             "sam": false,
             "sam_rho": 0.02,
@@ -4689,10 +4689,10 @@
               "t2.pool"
             ],
             "mix_layer_policy": "alternate from active step445; exactly one layer per update",
-            "mix_beta_alpha": 2.0,
+            "mix_beta_alpha": 2,
             "mix_lambda_policy": "max(lambda,1-lambda)",
             "mix_source": "L_s only; different TX donors; repeated donors allowed",
-            "mix_weight": 1.0,
+            "mix_weight": 1,
             "mix_inference": false,
             "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
           },
@@ -4710,9 +4710,9 @@
         "updates": 11100,
         "batch_size": 128,
         "peak_lr": 0.0002,
-        "min_lr": 1e-06,
+        "min_lr": 0.000001,
         "weight_decay": 0.0001,
-        "gradient_clip": 10.0,
+        "gradient_clip": 10,
         "checkpoint_sources": [],
         "initialization": "full native CVS identity scratch; no E20/E200/teacher weights",
         "checkpoint_selection": "fixed_final_epoch50",
@@ -4730,7 +4730,7 @@
         },
         "satellite_training": false,
         "auxiliary": false,
-        "label_smoothing": 0.0,
+        "label_smoothing": 0,
         "explicit_CFO_identity_feature": false,
         "source_validation": "original V health only at epochs10/20/30; no selection/promotion",
         "training_target_access": false,
@@ -4772,7 +4772,7 @@
           "identity_only": true
         }
       },
-      "status": "PLANNED"
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "RANDOM_INPUT-s2026092703",
@@ -4799,7 +4799,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "epoch cosine30"
       },
       "epochs": 50,
@@ -4872,13 +4872,13 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06,
+            "lr_min": 0.000001,
             "risk_recipe": {
               "warmup_epochs": 20,
               "auxiliary_every_steps": 4,
               "auxiliary_batch_size": 32,
               "auxiliary_lr": 0.0002,
-              "auxiliary_lr_min": 1e-06,
+              "auxiliary_lr_min": 0.000001,
               "reference_refresh_steps": 888,
               "gradient_audit_every_steps": 888,
               "epochs": 20,
@@ -4912,7 +4912,7 @@
               "action_mode": "proposal",
               "shared": false,
               "r_target": "distribution",
-              "consistency_weight": 0.0,
+              "consistency_weight": 0,
               "action_label_free": false,
               "source_u_fit": false,
               "replacements": [],
@@ -4933,7 +4933,7 @@
                 "curvature_pressure"
               ],
               "clean_noninferiority_pp": 0.5,
-              "noise_tie_pp": 0.0,
+              "noise_tie_pp": 0,
               "tail_alpha": 0.25,
               "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
               "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -4942,7 +4942,7 @@
               "relation": "none",
               "style": false,
               "fishr": "none",
-              "fishr_ratio": 0.0,
+              "fishr_ratio": 0,
               "r_identity": true,
               "selection_required": false
             },
@@ -4979,10 +4979,10 @@
               "style_alpha": 0.1,
               "style_location": "time_down",
               "fishr_beta": 0.9,
-              "fishr_scale": 30.0,
+              "fishr_scale": 30,
               "fishr_coordinates": 960,
               "fishr_scene_weights": {
-                "clean": 1.0
+                "clean": 1
               },
               "warmup_epochs": 20,
               "ramp_epochs": 20,
@@ -5048,7 +5048,7 @@
             "confidence": 0.95,
             "seeds": [],
             "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
-            "temperature": 1.0
+            "temperature": 1
           },
           "epochs": 20,
           "steps_per_epoch": 222,
@@ -5057,7 +5057,7 @@
           "optimizer": {
             "name": "AdamW",
             "peak_lr": 0.0002,
-            "min_lr": 1e-06,
+            "min_lr": 0.000001,
             "weight_decay": 0.0001,
             "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
           },
@@ -5069,10 +5069,10 @@
             "target_provider": "none"
           },
           "losses": {
-            "ce": 1.0,
-            "KL": 0.0,
-            "feature": 0.0,
-            "margin": 0.0
+            "ce": 1,
+            "KL": 0,
+            "feature": 0,
+            "margin": 0
           },
           "multilevel": {
             "enabled": false,
@@ -5082,13 +5082,13 @@
             "interval": 4,
             "batch_size": 120,
             "aux_ce_weight": 0.1,
-            "fishr_raw_weight": 2.0,
+            "fishr_raw_weight": 2,
             "fishr_ratio": 0.2,
-            "fishr_cap": 10000.0,
+            "fishr_cap": 10000,
             "fishr_eps": 1e-12,
-            "mixstyle_p": 1.0,
+            "mixstyle_p": 1,
             "mixstyle_alpha": 0.1,
-            "mixstyle_strength": 1.0,
+            "mixstyle_strength": 1,
             "style_confidence": 0.95,
             "levels": [
               "time_down",
@@ -5110,11 +5110,11 @@
             "fishr_estimator": "cross",
             "pair_batch_size": 60,
             "pair_quota": 2,
-            "style_ce_weight": 1.0,
+            "style_ce_weight": 1,
             "fishr_calibration_pairs": 12,
             "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
             "statistic": "none",
-            "sensitivity_eps": 1e-06,
+            "sensitivity_eps": 0.000001,
             "style_selection": "none",
             "candidates": 4,
             "joint_gradient_cap": {
@@ -5130,9 +5130,9 @@
             "taps": 33,
             "scales": [
               0.5,
-              1.0
+              1
             ],
-            "max_amplitude_dB": 3.0,
+            "max_amplitude_dB": 3,
             "start_after_updates": 888,
             "ramp_updates": 888,
             "L_augmented_CE_fraction": 0.5,
@@ -5190,7 +5190,7 @@
           },
           "initialization_checkpoint_sources": [],
           "scratch_scope": "student_identity_only",
-          "label_smoothing": 0.0,
+          "label_smoothing": 0,
           "engineering": {
             "sam": false,
             "sam_rho": 0.02,
@@ -5205,10 +5205,10 @@
               "t2.pool"
             ],
             "mix_layer_policy": "alternate from active step445; exactly one layer per update",
-            "mix_beta_alpha": 2.0,
+            "mix_beta_alpha": 2,
             "mix_lambda_policy": "max(lambda,1-lambda)",
             "mix_source": "L_s only; different TX donors; repeated donors allowed",
-            "mix_weight": 1.0,
+            "mix_weight": 1,
             "mix_inference": false,
             "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
           },
@@ -5226,9 +5226,9 @@
         "updates": 11100,
         "batch_size": 128,
         "peak_lr": 0.0002,
-        "min_lr": 1e-06,
+        "min_lr": 0.000001,
         "weight_decay": 0.0001,
-        "gradient_clip": 10.0,
+        "gradient_clip": 10,
         "checkpoint_sources": [],
         "initialization": "full native CVS identity scratch; no E20/E200/teacher weights",
         "checkpoint_selection": "fixed_final_epoch50",
@@ -5246,7 +5246,7 @@
         },
         "satellite_training": false,
         "auxiliary": false,
-        "label_smoothing": 0.0,
+        "label_smoothing": 0,
         "explicit_CFO_identity_feature": false,
         "source_validation": "original V health only at epochs10/20/30; no selection/promotion",
         "training_target_access": false,
@@ -5288,7 +5288,7 @@
           "identity_only": true
         }
       },
-      "status": "PLANNED"
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "VAT_INPUT-s2026092703",
@@ -5315,7 +5315,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "epoch cosine30"
       },
       "epochs": 50,
@@ -5388,13 +5388,13 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06,
+            "lr_min": 0.000001,
             "risk_recipe": {
               "warmup_epochs": 20,
               "auxiliary_every_steps": 4,
               "auxiliary_batch_size": 32,
               "auxiliary_lr": 0.0002,
-              "auxiliary_lr_min": 1e-06,
+              "auxiliary_lr_min": 0.000001,
               "reference_refresh_steps": 888,
               "gradient_audit_every_steps": 888,
               "epochs": 20,
@@ -5428,7 +5428,7 @@
               "action_mode": "proposal",
               "shared": false,
               "r_target": "distribution",
-              "consistency_weight": 0.0,
+              "consistency_weight": 0,
               "action_label_free": false,
               "source_u_fit": false,
               "replacements": [],
@@ -5449,7 +5449,7 @@
                 "curvature_pressure"
               ],
               "clean_noninferiority_pp": 0.5,
-              "noise_tie_pp": 0.0,
+              "noise_tie_pp": 0,
               "tail_alpha": 0.25,
               "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
               "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -5458,7 +5458,7 @@
               "relation": "none",
               "style": false,
               "fishr": "none",
-              "fishr_ratio": 0.0,
+              "fishr_ratio": 0,
               "r_identity": true,
               "selection_required": false
             },
@@ -5495,10 +5495,10 @@
               "style_alpha": 0.1,
               "style_location": "time_down",
               "fishr_beta": 0.9,
-              "fishr_scale": 30.0,
+              "fishr_scale": 30,
               "fishr_coordinates": 960,
               "fishr_scene_weights": {
-                "clean": 1.0
+                "clean": 1
               },
               "warmup_epochs": 20,
               "ramp_epochs": 20,
@@ -5564,7 +5564,7 @@
             "confidence": 0.95,
             "seeds": [],
             "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
-            "temperature": 1.0
+            "temperature": 1
           },
           "epochs": 20,
           "steps_per_epoch": 222,
@@ -5573,7 +5573,7 @@
           "optimizer": {
             "name": "AdamW",
             "peak_lr": 0.0002,
-            "min_lr": 1e-06,
+            "min_lr": 0.000001,
             "weight_decay": 0.0001,
             "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
           },
@@ -5585,10 +5585,10 @@
             "target_provider": "none"
           },
           "losses": {
-            "ce": 1.0,
-            "KL": 0.0,
-            "feature": 0.0,
-            "margin": 0.0
+            "ce": 1,
+            "KL": 0,
+            "feature": 0,
+            "margin": 0
           },
           "multilevel": {
             "enabled": false,
@@ -5598,13 +5598,13 @@
             "interval": 4,
             "batch_size": 120,
             "aux_ce_weight": 0.1,
-            "fishr_raw_weight": 2.0,
+            "fishr_raw_weight": 2,
             "fishr_ratio": 0.2,
-            "fishr_cap": 10000.0,
+            "fishr_cap": 10000,
             "fishr_eps": 1e-12,
-            "mixstyle_p": 1.0,
+            "mixstyle_p": 1,
             "mixstyle_alpha": 0.1,
-            "mixstyle_strength": 1.0,
+            "mixstyle_strength": 1,
             "style_confidence": 0.95,
             "levels": [
               "time_down",
@@ -5626,11 +5626,11 @@
             "fishr_estimator": "cross",
             "pair_batch_size": 60,
             "pair_quota": 2,
-            "style_ce_weight": 1.0,
+            "style_ce_weight": 1,
             "fishr_calibration_pairs": 12,
             "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
             "statistic": "none",
-            "sensitivity_eps": 1e-06,
+            "sensitivity_eps": 0.000001,
             "style_selection": "none",
             "candidates": 4,
             "joint_gradient_cap": {
@@ -5646,9 +5646,9 @@
             "taps": 33,
             "scales": [
               0.5,
-              1.0
+              1
             ],
-            "max_amplitude_dB": 3.0,
+            "max_amplitude_dB": 3,
             "start_after_updates": 888,
             "ramp_updates": 888,
             "L_augmented_CE_fraction": 0.5,
@@ -5706,7 +5706,7 @@
           },
           "initialization_checkpoint_sources": [],
           "scratch_scope": "student_identity_only",
-          "label_smoothing": 0.0,
+          "label_smoothing": 0,
           "engineering": {
             "sam": false,
             "sam_rho": 0.02,
@@ -5721,10 +5721,10 @@
               "t2.pool"
             ],
             "mix_layer_policy": "alternate from active step445; exactly one layer per update",
-            "mix_beta_alpha": 2.0,
+            "mix_beta_alpha": 2,
             "mix_lambda_policy": "max(lambda,1-lambda)",
             "mix_source": "L_s only; different TX donors; repeated donors allowed",
-            "mix_weight": 1.0,
+            "mix_weight": 1,
             "mix_inference": false,
             "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
           },
@@ -5742,9 +5742,9 @@
         "updates": 11100,
         "batch_size": 128,
         "peak_lr": 0.0002,
-        "min_lr": 1e-06,
+        "min_lr": 0.000001,
         "weight_decay": 0.0001,
-        "gradient_clip": 10.0,
+        "gradient_clip": 10,
         "checkpoint_sources": [],
         "initialization": "full native CVS identity scratch; no E20/E200/teacher weights",
         "checkpoint_selection": "fixed_final_epoch50",
@@ -5762,7 +5762,7 @@
         },
         "satellite_training": false,
         "auxiliary": false,
-        "label_smoothing": 0.0,
+        "label_smoothing": 0,
         "explicit_CFO_identity_feature": false,
         "source_validation": "original V health only at epochs10/20/30; no selection/promotion",
         "training_target_access": false,
@@ -5804,7 +5804,7 @@
           "identity_only": true
         }
       },
-      "status": "PLANNED"
+      "status": "TRAINED_PREDICTED_SCORED"
     },
     {
       "row_id": "VAT_FEATURE-s2026092703",
@@ -5831,7 +5831,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "epoch cosine30"
       },
       "epochs": 50,
@@ -5904,13 +5904,13 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06,
+            "lr_min": 0.000001,
             "risk_recipe": {
               "warmup_epochs": 20,
               "auxiliary_every_steps": 4,
               "auxiliary_batch_size": 32,
               "auxiliary_lr": 0.0002,
-              "auxiliary_lr_min": 1e-06,
+              "auxiliary_lr_min": 0.000001,
               "reference_refresh_steps": 888,
               "gradient_audit_every_steps": 888,
               "epochs": 20,
@@ -5944,7 +5944,7 @@
               "action_mode": "proposal",
               "shared": false,
               "r_target": "distribution",
-              "consistency_weight": 0.0,
+              "consistency_weight": 0,
               "action_label_free": false,
               "source_u_fit": false,
               "replacements": [],
@@ -5965,7 +5965,7 @@
                 "curvature_pressure"
               ],
               "clean_noninferiority_pp": 0.5,
-              "noise_tie_pp": 0.0,
+              "noise_tie_pp": 0,
               "tail_alpha": 0.25,
               "ranking": "clean feasibility then stress mean+worst RX risk; descriptive source-only ranking across three seeds; within .2pp prefer fewer auxiliary parameters",
               "selection": "three-seed source V only; clean feasibility .5pp then mean+worstRX performance; exact ties lower ratio"
@@ -5974,7 +5974,7 @@
               "relation": "none",
               "style": false,
               "fishr": "none",
-              "fishr_ratio": 0.0,
+              "fishr_ratio": 0,
               "r_identity": true,
               "selection_required": false
             },
@@ -6011,10 +6011,10 @@
               "style_alpha": 0.1,
               "style_location": "time_down",
               "fishr_beta": 0.9,
-              "fishr_scale": 30.0,
+              "fishr_scale": 30,
               "fishr_coordinates": 960,
               "fishr_scene_weights": {
-                "clean": 1.0
+                "clean": 1
               },
               "warmup_epochs": 20,
               "ramp_epochs": 20,
@@ -6080,7 +6080,7 @@
             "confidence": 0.95,
             "seeds": [],
             "cache_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-nocfo-ce-foundation-manysig-m3-r01/peer_cache",
-            "temperature": 1.0
+            "temperature": 1
           },
           "epochs": 20,
           "steps_per_epoch": 222,
@@ -6089,7 +6089,7 @@
           "optimizer": {
             "name": "AdamW",
             "peak_lr": 0.0002,
-            "min_lr": 1e-06,
+            "min_lr": 0.000001,
             "weight_decay": 0.0001,
             "schedule": "epoch cosine20; same scratch source path;explicitCFO identity slot zero"
           },
@@ -6101,10 +6101,10 @@
             "target_provider": "none"
           },
           "losses": {
-            "ce": 1.0,
-            "KL": 0.0,
-            "feature": 0.0,
-            "margin": 0.0
+            "ce": 1,
+            "KL": 0,
+            "feature": 0,
+            "margin": 0
           },
           "multilevel": {
             "enabled": false,
@@ -6114,13 +6114,13 @@
             "interval": 4,
             "batch_size": 120,
             "aux_ce_weight": 0.1,
-            "fishr_raw_weight": 2.0,
+            "fishr_raw_weight": 2,
             "fishr_ratio": 0.2,
-            "fishr_cap": 10000.0,
+            "fishr_cap": 10000,
             "fishr_eps": 1e-12,
-            "mixstyle_p": 1.0,
+            "mixstyle_p": 1,
             "mixstyle_alpha": 0.1,
-            "mixstyle_strength": 1.0,
+            "mixstyle_strength": 1,
             "style_confidence": 0.95,
             "levels": [
               "time_down",
@@ -6142,11 +6142,11 @@
             "fishr_estimator": "cross",
             "pair_batch_size": 60,
             "pair_quota": 2,
-            "style_ce_weight": 1.0,
+            "style_ce_weight": 1,
             "fishr_calibration_pairs": 12,
             "style_scope": "4 legal sameTX/day crossRX distinctPID L style candidates; eval batch-mean CE chooses hard; random control has identical search cost; selected train forward shares clean dropout RNG",
             "statistic": "none",
-            "sensitivity_eps": 1e-06,
+            "sensitivity_eps": 0.000001,
             "style_selection": "none",
             "candidates": 4,
             "joint_gradient_cap": {
@@ -6162,9 +6162,9 @@
             "taps": 33,
             "scales": [
               0.5,
-              1.0
+              1
             ],
-            "max_amplitude_dB": 3.0,
+            "max_amplitude_dB": 3,
             "start_after_updates": 888,
             "ramp_updates": 888,
             "L_augmented_CE_fraction": 0.5,
@@ -6222,7 +6222,7 @@
           },
           "initialization_checkpoint_sources": [],
           "scratch_scope": "student_identity_only",
-          "label_smoothing": 0.0,
+          "label_smoothing": 0,
           "engineering": {
             "sam": false,
             "sam_rho": 0.02,
@@ -6237,10 +6237,10 @@
               "t2.pool"
             ],
             "mix_layer_policy": "alternate from active step445; exactly one layer per update",
-            "mix_beta_alpha": 2.0,
+            "mix_beta_alpha": 2,
             "mix_lambda_policy": "max(lambda,1-lambda)",
             "mix_source": "L_s only; different TX donors; repeated donors allowed",
-            "mix_weight": 1.0,
+            "mix_weight": 1,
             "mix_inference": false,
             "labels_smoothing_scope": "L identity CE only; fixed peer U targets unchanged"
           },
@@ -6258,9 +6258,9 @@
         "updates": 11100,
         "batch_size": 128,
         "peak_lr": 0.0002,
-        "min_lr": 1e-06,
+        "min_lr": 0.000001,
         "weight_decay": 0.0001,
-        "gradient_clip": 10.0,
+        "gradient_clip": 10,
         "checkpoint_sources": [],
         "initialization": "full native CVS identity scratch; no E20/E200/teacher weights",
         "checkpoint_selection": "fixed_final_epoch50",
@@ -6278,7 +6278,7 @@
         },
         "satellite_training": false,
         "auxiliary": false,
-        "label_smoothing": 0.0,
+        "label_smoothing": 0,
         "explicit_CFO_identity_feature": false,
         "source_validation": "original V health only at epochs10/20/30; no selection/promotion",
         "training_target_access": false,
@@ -6323,7 +6323,7 @@
           "identity_only": true
         }
       },
-      "status": "PLANNED"
+      "status": "TRAINED_PREDICTED_SCORED"
     }
   ],
   "notes": [
@@ -6334,10 +6334,45 @@
     "VAT_FEATURE alternates time_down48/t2.pool96; fixed perpacket relativeL2 epsilon.02, xi.001, onepowerstep. This is local representation robustness, not physical invariance or verified satellite channel model.",
     "Current experimental choice follows label-free VAT literature and source protocol; previous exposed target benchmarks are not new blind tests and are not used to select parameters.",
     "User20261013: chooseepochs independently, maximum50; final registeredchoice50 for allarms; changed before first launch and before any target access.",
-    "r01 incurred133200updates and11508480U packets but no predictions; all r02 models fresh scratch50, no oldcheckpoint or optimizer; costs separated"
+    "r01 incurred133200updates and11508480U packets but no predictions; all r02 models fresh scratch50, no oldcheckpoint or optimizer; costs separated",
+    "Nonblocking descriptive metadata source_validation retains old10/20/30 text; actual source loop and epoch logs use10/30/50 health only. Resolved config remains immutable; no V selection."
   ],
-  "status": "LOCAL_VERIFIED",
-  "registered_at": "2026-10-12T10:36:11+00:00",
+  "status": "ANALYZED",
+  "registered_at": "2026-10-13T09:59:44+00:00",
   "delivery_verdict": "VERIFIED",
-  "live_readback_ref": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_scratch30_baseline_20261012_r02\\readback.json"
+  "live_readback_ref": "local_artifacts/vat_delivery_r02/readback.json",
+  "launch_evidence": {
+    "status": "VERIFIED",
+    "archive_transport": "SHA comparison passed in publisher before compile/preflight",
+    "remote_compile": "PASS",
+    "real_checkpoint_no_query_smoke": "PASS",
+    "submission_pid": 1503330,
+    "evidence": "local_artifacts/vat_delivery_r02/readback.json"
+  },
+  "release_status": "VERIFIED_ANALYZED",
+  "final_verification": {
+    "status": "VERIFIED",
+    "models": 12,
+    "epochs": 600,
+    "optimizer_updates": 133200,
+    "predictions": 2016000,
+    "metric_records": 216,
+    "full_logs_parsed": true,
+    "prediction_files_checked": true,
+    "confusion_metrics_recounted": true,
+    "truth_last": true,
+    "goal_84": false,
+    "primary_clean_accuracy_mean": 0.7902738095238095,
+    "audit": "local_artifacts/vat_delivery_r02/full_audit.json",
+    "report": "final_analysis.md"
+  },
+  "failed_attempt_cost": {
+    "run_id": "20261013-phase1-virtual-adversarial-clean-manysig-m12-r01",
+    "updates": 133200,
+    "L_packets": 17049600,
+    "U_packets": 11508480,
+    "predictions": 0,
+    "scores": 0,
+    "weights_reused": false
+  }
 }
