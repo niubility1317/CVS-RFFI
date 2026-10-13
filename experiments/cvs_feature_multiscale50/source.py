@@ -57,9 +57,11 @@ def train(c):
             ctx=build_data(*args,**kw)
             if ctx['named_test_loaders'] or role_ids_from_native(ctx)!=expected['role_ids']:raise ValueError('Physical source roles/target construction mismatch')
             if len(ctx['unlabeled_loader'])!=222:raise ValueError('Unexpected U-based step count')
+            from .model import source_domain_count
+            if ctx['num_domains']!=source_domain_count(a):raise ValueError('Historical RX/day source model dimensions differ')
             state['ctx']=ctx
             write(out/'source_contract.json',dict(expected,native_role_comparison='EXACT_MATCH'))
-            write(out/'resolved_native_args.json',clean(resolved_config(a)))
+            write(out/'resolved_native_args.json',clean(resolved_config(a)));write(out/'actual_native_args.json',clean(resolved_config(a)))
             return ctx
         def checked_model(args,dev):
             m=build_model(args,dev)
@@ -75,7 +77,7 @@ def train(c):
             write(out/'resolved_config.json',dict(c,pid=os.getpid(),cwd=os.getcwd(),python=sys.executable,
                 commit=(ROOT/'release_commit.txt').read_text().strip(),torch_version=torch.__version__,
                 cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),total_parameters=sum(p.numel() for p in m.parameters()),
-                hardware=torch.cuda.get_device_name(dev),backend_flags=actual_flags(),native_args_ref=str(out/'resolved_native_args.json'),execution_policy=POLICY,feature_extractor=m._feature_extractor,identity_input_policy=m._identity_input_policy,baseline_recipe='historicaloldgate+EMA+cos',label_epochs=33,pseudo_epochs=17))
+                hardware=torch.cuda.get_device_name(dev),backend_flags=actual_flags(),native_args_ref=str(out/'resolved_native_args.json'),execution_policy=POLICY,config=c,actual_feature_extractor=m._feature_extractor,identity_input_policy=m._identity_input_policy,baseline_recipe='historicaloldgate+EMA+cos',label_epochs=33,pseudo_epochs=17))
             write(out/'initialization.json',dict(scratch_only=True,checkpoint_sources=[],ancestors=[],source_roles='EXACT_MATCH',target_contact=False,teacher_origin='own scratch student only',seed=c['model_seed']))
             print('SMOKE PASS own scratch checkpoint; query_read=false',flush=True)
             return m
@@ -84,7 +86,10 @@ def train(c):
             if 'train/loss' in result:
                 state['steps']=state.get('steps',0)+1
                 if 'step_file' not in state:state['step_file']=gzip.open(out/'step_metrics.jsonl.gz','xt',encoding='utf-8',compresslevel=3)
-                state['step_file'].write(json.dumps(dict(step=state['steps'],epoch=(state['steps']-1)//222+1,metrics=batch_clean(result)),allow_nan=False)+'\n')
+                metrics=batch_clean(result)
+                if state['steps']>7326 and float(metrics.get('train/pseudo_truth_available',0.) or 0.)!=0:raise ValueError('Hidden U TX became available during pseudo training')
+                state['step_file'].write(json.dumps(dict(step=state['steps'],epoch=(state['steps']-1)//222+1,metrics=metrics),allow_nan=False)+'\n')
+                if state['steps']>10878:state['final_L_CE_sum']=state.get('final_L_CE_sum',0.)+float(metrics['train/loss_tx_labeled'])
                 if result.get('train/skipped_nonfinite_loss',0) or result.get('train/skipped_nonfinite_grad',0):
                     state['step_file'].flush()
                     raise FloatingPointError('Native nonfinite loss/gradient: preserve artifacts; no automatic retry')
@@ -110,11 +115,11 @@ def train(c):
         if payload['epoch']!=50 or payload['args']['baseline_ckpt'] or payload['args']['teacher_ckpt'] or payload['checkpoint_selection']!='final_only':raise ValueError('Final checkpoint contract mismatch')
         require_budget(state.get('steps',0),payload['a1_ema_successful_updates'])
         m=state['model'];m.load_state_dict(payload['model'],strict=True)
-        write(out/'resolved_native_args.json',clean(resolved_config(SimpleNamespace(**payload['args']))))
+        write(out/'resolved_native_args.json',clean(resolved_config(SimpleNamespace(**payload['args']))));write(out/'actual_native_args.json',clean(resolved_config(SimpleNamespace(**payload['args']))))
         metrics=source_validation(m,state['ctx']['val_loader'],device)
         write(out/'completion.json',dict(status='SOURCE_TRAINED',epoch=50,checkpoint=str(out/'final_ssdg.pth'),
             elapsed_seconds=time.time()-started,final_source_metrics=metrics,target_access=False,target_evaluated=False,
-            checkpoint_sources=[],config=c,logged_steps=state.get('steps',0),optimizer_steps=payload['a1_ema_successful_updates'],feature_extractor=m._feature_extractor,identity_input_policy=m._identity_input_policy,baseline_recipe='historicaloldgate+EMA+cos',label_epochs=33,pseudo_epochs=17,ancestors=[],initialization='scratch'))
+            checkpoint_sources=[],config=c,logged_steps=state.get('steps',0),optimizer_steps=payload['a1_ema_successful_updates'],feature_extractor=m._feature_extractor,identity_input_policy=m._identity_input_policy,baseline_recipe='historicaloldgate+EMA+cos',label_epochs=33,pseudo_epochs=17,final_training_L_CE=state['final_L_CE_sum']/222,ancestors=[],initialization='scratch'))
         write(out/'source_frozen.json',dict(status='SOURCE_FROZEN',config=c,checkpoint=str(out/'final_ssdg.pth'),epoch=50,selection='final_only',target_access=False))
 
 

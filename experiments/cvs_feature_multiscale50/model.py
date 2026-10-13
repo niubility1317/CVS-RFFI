@@ -34,8 +34,13 @@ def install(model,c):
 def classifier(model):
  modules,paths=_paths(model);return modules[paths['time_down'].rsplit('.',1)[0]].cls_head
 
+def source_domain_count(args):
+ if args.wisig_domain!='rx_day':raise ValueError('Historical source domain mapping differs')
+ rxs={int(v) for v in args.wisig_train_rxs.split(',')};days={int(v) for v in args.wisig_train_days.split(',')}
+ return len(rxs)*len(days)
+
 def build(c,device):
- d.validate(c);a=d.make_args(c,str(device));a.num_domains=5;a.input_len=256
+ d.validate(c);a=d.make_args(c,str(device));a.num_domains=source_domain_count(a);a.input_len=256
  torch.manual_seed(c['model_seed'])
  with installed(c['legacy_reference_config']) as native:model=native.build_baseline_model(a,torch.device(device))
  from experiments.cvs_source_identity_readout.input_policy import apply

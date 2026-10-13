@@ -3,7 +3,7 @@ from copy import deepcopy
 import torch
 from torch.nn import functional as F
 from . import design as d
-from .model import build,groups,MultiscaleFeatureBlock,classifier
+from .model import build,groups,MultiscaleFeatureBlock,classifier,install,source_domain_count
 from experiments.cvs_e20_cross_style.style import _paths
 
 def check():
@@ -34,7 +34,17 @@ def check():
    teacher=deepcopy(model).eval().requires_grad_(False)
    with torch.no_grad():tz=teacher.forward_identity_only(torch.zeros(2,2,256))['tx_logits']
    assert tz.shape==(2,6) and torch.isfinite(tz).all() and teacher._identity_input_policy['explicit_CFO_identity_input'] is False
-   clone=build(c,'cpu');clone.load_state_dict(model.state_dict(),strict=True);clone.eval();model.eval();assert torch.equal(clone(x),model(x))
+   # Reproduce the native trainer's data_ctx.num_domains=15 construction.
+   from experiments.cvs_phase1_stack.runtime import installed
+   from experiments.cvs_source_identity_readout.input_policy import apply
+   native_args=d.make_args(c,'cpu');native_args.num_domains=15;native_args.input_len=256
+   assert source_domain_count(native_args)==15
+   with installed(c['legacy_reference_config']) as native:trained=native.build_baseline_model(native_args,torch.device('cpu'))
+   trained._identity_input_policy=apply(trained);trained=install(trained,c).eval()
+   clone=build(c,'cpu');clone.load_state_dict(trained.state_dict(),strict=True);clone.eval()
+   assert torch.equal(clone(x),trained(x))
+   assert clone.state_dict()['dom_head.net.3.weight'].shape==(15,80) and clone.state_dict()['adv_head.net.3.bias'].shape==(15,)
+   clone.load_state_dict(model.state_dict(),strict=True);model.eval();assert torch.equal(clone(x),model(x))
    if row['arm']=='OLD_GATE_COS50':references['joint']=out['id_feat_joint'].detach()
    else:assert not torch.allclose(out['id_feat_joint'],references['joint'])
    bad=dict(c,epochs=51)
@@ -51,6 +61,6 @@ def check():
   from experiments.cvs_phase1_stack.runtime import blind_sample
   sample=blind_sample((torch.zeros(2,256),3,1,dict(tx=3,tx_i=3,true_tx_i=3,tx_label=3,y_tx=3,pid='source-U-id',rx_i=1,day_i=1)))
   assert sample[1]==-1 and not any(k in sample[3] for k in ('tx','tx_i','true_tx_i','tx_label','y_tx')) and sample[3]['tx_label_visible'] is False
-  return dict(status='PASS',records=records,old_gate_EMA_cos_recipe=True,EMA_model_noquery_finite=True,hidden_U_batch_masks_TX=True,wrong_budget_rejected=True,training_checkpoint_loaded=False,epoch51_rejected=True,feature_output_changed=True,target_access=False)
+  return dict(status='PASS',records=records,native15_domain_to_prediction_strict_roundtrip=True,old_gate_EMA_cos_recipe=True,EMA_model_noquery_finite=True,hidden_U_batch_masks_TX=True,wrong_budget_rejected=True,training_checkpoint_loaded=False,epoch51_rejected=True,feature_output_changed=True,target_access=False)
  finally:torch.load=original_load
 if __name__=='__main__':print(json.dumps(check()))
