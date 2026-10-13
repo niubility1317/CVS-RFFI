@@ -1661,7 +1661,14 @@ class CVSincNet(nn.Module):
         crra_support_mask: Optional[torch.Tensor] = None,
         update_nmfdu_support: bool = False,
         return_physical_gate_diag: bool = False,
+        feature_only: bool = False,
     ):
+        if feature_only:
+            from experiments.cvs_residual_identity.model import ResidualPhysicalHead
+            if type(self.cls_head) is not ResidualPhysicalHead or self.nmfdu_gate is not None:
+                raise ValueError('Pure features require residual fusion without NMFDu')
+            if y is not None or return_aux or return_physical_gate_diag:
+                raise ValueError('Pure features accept no labels or auxiliary classification output')
         x = pad_crop_iq(x, self.input_len, mode=self.pad_crop_mode)
         B = x.size(0)
         zero_emb = x.new_zeros((B, self.emb_dim))
@@ -1792,6 +1799,8 @@ class CVSincNet(nn.Module):
             base_parts.append(zero_emb)
         base_in = torch.cat(base_parts, dim=1)
         base = self.fuse(base_in)
+        if feature_only:
+            return self.cls_head.components(base, pa_local, pa_delta)[2]
 
         nmfdu_out = None
         if self.nmfdu_gate is not None:

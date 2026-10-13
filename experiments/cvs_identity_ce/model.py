@@ -28,4 +28,4 @@ class IdentityOnlyCVS(nn.Module):
         return self.id_backbone(x, y=None, return_aux=False)
 
     def features(self, x):
-        return self.id_backbone(x, y=None, return_aux=True)['feat_joint']
+        return self.id_backbone(x, y=None, feature_only=True)
