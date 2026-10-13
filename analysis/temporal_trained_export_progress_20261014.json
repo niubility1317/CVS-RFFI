@@ -1,0 +1,73 @@
+{
+  "run_id": "20261014-phase1-time-coverage-nonlinearity-oldgate-e50-clean-manysig-m15-r01",
+  "status": "VERIFIED",
+  "execution_commit": "7b1e2fcbe1bf5d05f24bc91f86aa7d4b46d3ee95",
+  "completed_models": 4,
+  "expected_models": 12,
+  "all_models_complete": false,
+  "scope": "actual initial/final source weights; exact feature boundary and movement on fixed artificial packets, not recognition or transfer proof",
+  "rows": [
+    {
+      "row_id": "COMPACT_LINEAR-s2026092701",
+      "arm": "COMPACT_LINEAR",
+      "seed": 2026092701,
+      "temporal_parameters": 81672,
+      "updated_tensors": {
+        "t1": 7,
+        "t2": 7,
+        "t3": 7
+      },
+      "actual_z_equals_pure_export": true,
+      "W_deleted_invariant": true,
+      "feature_params_buffers_unchanged": true,
+      "actual_z_change": 14.52531623840332
+    },
+    {
+      "row_id": "LONG_LINEAR-s2026092701",
+      "arm": "LONG_LINEAR",
+      "seed": 2026092701,
+      "temporal_parameters": 81672,
+      "updated_tensors": {
+        "t1": 7,
+        "t2": 7,
+        "t3": 7
+      },
+      "actual_z_equals_pure_export": true,
+      "W_deleted_invariant": true,
+      "feature_params_buffers_unchanged": true,
+      "actual_z_change": 14.668968200683594
+    },
+    {
+      "row_id": "COMPACT_SILU-s2026092701",
+      "arm": "COMPACT_SILU",
+      "seed": 2026092701,
+      "temporal_parameters": 81672,
+      "updated_tensors": {
+        "t1": 7,
+        "t2": 7,
+        "t3": 7
+      },
+      "actual_z_equals_pure_export": true,
+      "W_deleted_invariant": true,
+      "feature_params_buffers_unchanged": true,
+      "actual_z_change": 14.88379192352295
+    },
+    {
+      "row_id": "LONG_SILU-s2026092701",
+      "arm": "LONG_SILU",
+      "seed": 2026092701,
+      "temporal_parameters": 81672,
+      "updated_tensors": {
+        "t1": 7,
+        "t2": 7,
+        "t3": 7
+      },
+      "actual_z_equals_pure_export": true,
+      "W_deleted_invariant": true,
+      "feature_params_buffers_unchanged": true,
+      "actual_z_change": 14.65109920501709
+    }
+  ],
+  "query_or_source_IQ_read": false,
+  "head_fit_updates": 0
+}

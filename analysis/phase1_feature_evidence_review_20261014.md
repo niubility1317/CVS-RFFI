@@ -123,3 +123,5 @@ SIG_TIME相对同seed原基线纠正/引入错误：2026092701＝9483/4829，净
 旧TIME_MS50三seed、V各27000的九次branch撤除已完成且参数/buffers不变：t1长跨度branch2净纠正1904/544/532，t2为7/550/143，t3为121/211/72。它展示层位及seed相关的使用差异，不能按单seed t2较小便删掉中层，也不把source撤除性能当scratch消融。逐branch纠正/引入错误与margin见historical_time_source_branch_table_20261014.csv。当前仍不改已发布矩阵。
 
 候选方向的预算/失败界限进一步明确（尚未发布）：层位控制的t1+t2版本新增32064identity参数，t2-only新增21312，比较全层新增60672，全部从零同50轮/11100步；最小先一seed同row源诊断，源CE非有限/预固定健康非劣不通过则不扩seed。分支SiLU若没有合法源一致改善，不直接进入层级结构；若源支持，再加不改变已有卷积参数的post-fusion SiLU位置控制。独立Sinc单位参数化不增加learned参数，初始核必须相同、同预算/原head/门控；真实filter仍不改变则证伪其优化机制，不靠target反复试单位。训练阶段/U反馈审计为源只读零参数方向，必要L代理精度额外前向成本单列；原gate不因覆盖低而放松。
+
+真实终轮特征核验当前4/12模型通过：全部t1/t2/t3参数张量发生数值变化，actual joint160等于pure export，改写/删除W后export逐位不变，恢复W后所有特征参数/buffers与诊断前一致。真实initial/final权重在固定人工IQ上产生不同z，仅证明真实训练的功能变化，不称识别或迁移效果；没有source/target IQ读取、梯度、optimizer/headfit。另8模型继续固定50轮，待完整后补核验，当前证据范围见temporal_trained_export_progress_20261014.json。
