@@ -58,7 +58,13 @@ for row in d.rows():
   if name not in states[1] or not torch.equal(value,states[1][name]):raise ValueError('Actual non-time initial state differs')
   compared+=1
  initial.append(dict(seed=row['model_seed'],actual_non_time_initial_state_tensors_equal=compared,time_tensors_intentionally_different=True))
- updates.append(dict(row_id=row['row_id'],parameter_updates=diag['parameter_updates'],kernels=diag['kernels'],export=diag['trained_export'],source_L_geometry=diag['geometry']))
+ stages=[d.read(p/f'source_stage_epoch{epoch}.json') for epoch in (32,33,34,40,50)]
+ feedback=[json.loads(line) for line in (p/'source_mechanism_epochs.jsonl').read_text().splitlines()]
+ if [r['epoch'] for r in feedback]!=list(range(1,51)):raise ValueError('Source U epochs missing')
+ for r in feedback:
+  if r['U_truth_read'] or r['gate_changed'] or r['head_fit_updates'] or sum(g['total'] for g in r['groups'].values())!=(56700 if r['epoch']>=34 else 0):raise ValueError('Source U permission/count differs')
+  if any(sum(g['predicted_class'])!=g['total'] or sum(g['accepted_class'])!=g['accepted'] for g in r['groups'].values()):raise ValueError('U predicted class histogram differs')
+ updates.append(dict(row_id=row['row_id'],parameter_updates=diag['parameter_updates'],kernels=diag['kernels'],export=diag['trained_export'],source_L_geometry=diag['geometry'],source_stages=stages,source_U_feedback=feedback,U_truth_read=False))
 print(json.dumps(dict(status='VERIFIED',run_id=d.RUN,execution_commit=(root/'release_commit.txt').read_text().strip(),registered_rows=6,external_completed_controls=3,new_prediction_count=504000,reused_baseline_count=504000,external_compact_prediction_count=504000,total_recounted_decisions=1512000,independent_confusions_recounted=len(metrics),all_prediction_sets_fixed_before_truth=True,target_IQ_read=False,training_updates=0,head_fit_updates=0,feedback_to_training=False,error_transitions=errors,actual_initial_matches=initial,trained_feature_evidence=updates,read_at=time.time())))
 '''
 def collect(output):

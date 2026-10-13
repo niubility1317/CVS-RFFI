@@ -2529,7 +2529,20 @@
     "current_complete_source_rows": 4,
     "current_complete_scored_rows": 4,
     "full_matrix_truth_read_guard": "PASS expected rejection before truth read while registered full matrix incomplete",
-    "additional_training_or_head_updates": 0
+    "additional_training_or_head_updates": 0,
+    "summary_tool": "tools/summarize_time_basis_evidence.py",
+    "summary_validation": "Python compile PASS; observed incomplete4/6-row state rejected before aggregation; complete execution pending final rows",
+    "machine_tables": [
+      "time_basis_seeds",
+      "time_basis_groups",
+      "time_basis_error_transitions",
+      "time_basis_source_curves",
+      "time_basis_source_geometry",
+      "time_basis_source_stages",
+      "time_basis_U_feedback",
+      "time_basis_trained_parameters",
+      "time_basis_summary"
+    ]
   },
   "first_seed_source_gate_summary": "LCE .248543; Vmean/worstRX differences -.0778/-.0556pp vs fixed COMPACT; PASS source-only, two remaining seeds automatically launched"
 }
