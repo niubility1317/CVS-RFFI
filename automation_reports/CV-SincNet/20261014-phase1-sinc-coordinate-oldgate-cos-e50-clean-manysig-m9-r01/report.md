@@ -49,3 +49,7 @@ clean-only 固定 ManySig 168000 包，旧六类、七个目标 RX、四日，�
 ## 实际启动与早期源记录
 
 执行提交 0f81373c25ba69a6cb9deec5c7ca652880fd62af 已推送并独立核对上游。一次归档传输校验、远端 compile 和真实历史 checkpoint 无查询 smoke PASS；dispatcher 及两个新 worker 的 PID/CWD/argv/GPU、日志增长独立读回 VERIFIED，见 launch_evidence.json。RAW_HZ/CENTER_25K 在 GPU1/2，历史三个对照已按登记复用原默认决策并独立评分。第2轮实际源训练记录：RAW kernelrelativeL2=1.1708446657e−8，CENTER=0.0015866640；这是中间机制记录，不是终轮/三种子结果，也不提前使用终轮扩种子阈值。配方和预算保持原登记。
+
+## 终轮诊断入口已准备，实际结果待冻结
+
+新增 diagnose.py 从真实保存状态核对实际坐标、物理滤波核、EMA 与原生完整 optimizer 参数顺序/moment，不执行优化器更新；坐标与 Hz 的单位分别报告。feature_check.py 在固定合法 L720 上核对默认 joint160、feature-only 导出、W 独立性，并仅在临时 final 副本恢复初始 Sinc，测量相同下游状态下的源 feature/default-margin 敏感性；这不是独立训练消融或新 TX 证明。两项合成算术/敏感性检查 PASS，真实终轮结果待 source_frozen 后执行。audit.py 预备完整读取 66600 新 step、450 epoch、162 CM 与纠错/新增错误，全部 row 预测完成后才连接 truth；尚未运行该完整复算，不能称其已通过。以上诊断不修改发布归档或健康 worker。
