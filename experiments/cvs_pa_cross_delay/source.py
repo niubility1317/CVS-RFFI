@@ -11,6 +11,7 @@ from types import SimpleNamespace
 ROOT=Path(__file__).resolve().parents[2];sys.path[:0]=[str(ROOT),str(ROOT/'code')]
 import torch
 from .design import *
+from . import design as default_design
 from .model import installed
 from experiments.cvs_phase1_stack.fast_execution import configure,batch_clean,incremental_native_writer,POLICY
 from experiments.cvs_equivariant_identity.precision import numerical_context,actual_flags
@@ -47,19 +48,23 @@ def source_validation(model,loader,device):
 def model_details(model):
  return dict(identity_input_policy=model._identity_input_policy,actual_pa_cross_delay=model._pa_cross_delay_contract)
 
-def closing_records(c,elapsed,metrics,logged,successful):
- validate(c);require_budget(logged,successful,c['updates']);out=Path(c['output_root'])
+def closing_records(c,elapsed,metrics,logged,successful,validator=None):
+ (validator or validate)(c);require_budget(logged,successful,c['updates']);out=Path(c['output_root'])
  done=dict(status='SOURCE_TRAINED',epoch=c['epochs'],checkpoint=str(out/'final_ssdg.pth'),elapsed_seconds=elapsed,final_source_metrics=metrics,target_access=False,target_evaluated=False,checkpoint_sources=[],config=c,logged_steps=logged,optimizer_steps=successful)
  frozen=dict(status='SOURCE_FROZEN',config=c,epoch=c['epochs'],updates=c['updates'],checkpoint=str(out/'final_ssdg.pth'),selection='final_only',target_access=False)
  return done,frozen
 
-def train(c):
+def train(c,*,design=None,installer=None,details=None,epoch_callback=None):
+    design=design or default_design
+    validate,make_args,read,write,ROOT,SOURCE,FULL_FP32_POLICY=(getattr(design,k) for k in ("validate","make_args","read","write","ROOT","SOURCE","FULL_FP32_POLICY"))
+    install_context=installer or installed
+    describe=details or model_details
     validate(c);out=Path(c['output_root'])
     if c['stage']=='r2':raise ValueError('Recovery reuses completed R2 artifacts; never retrain them')
     if out.exists():raise FileExistsError(out)
     device=torch.device('cuda:0');torch.set_num_threads(2)
     a=configure(make_args(c));expected=read(SOURCE);state={};started=time.time()
-    with numerical_context(FULL_FP32_POLICY),installed(c,training=True) as n,incremental_native_writer(n):
+    with numerical_context(FULL_FP32_POLICY),install_context(c,training=True) as n,incremental_native_writer(n):
         from cvsrffi.xuc_fusion.native import role_ids_from_native
         from scripts.train_daot_rc4_baseline import resolved_config
         build_data=n._build_ssdg_wisig_data;build_model=n.build_baseline_model;writer=n._write_ssdg_epoch_telemetry;detach=n._detach_log_mapping
@@ -67,6 +72,7 @@ def train(c):
             ctx=build_data(*args,**kw)
             if ctx['named_test_loaders'] or role_ids_from_native(ctx)!=expected['role_ids']:raise ValueError('Physical source roles/target construction mismatch')
             if len(ctx['unlabeled_loader'])!=222:raise ValueError('Unexpected U-based step count')
+            if getattr(design,'SOURCE_DOMAINS',ctx['num_domains'])!=ctx['num_domains']:raise ValueError('Physical RX/day source domain count differs')
             state['ctx']=ctx
             write(out/'source_contract.json',dict(expected,native_role_comparison='EXACT_MATCH'))
             write(out/'resolved_native_args.json',clean(resolved_config(a)))
@@ -82,7 +88,7 @@ def train(c):
             write(out/'resolved_config.json',dict(c,pid=os.getpid(),cwd=os.getcwd(),python=sys.executable,
                 commit=(ROOT/'release_commit.txt').read_text().strip(),torch_version=torch.__version__,
                 cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),total_parameters=sum(p.numel() for p in m.parameters()),
-                hardware=torch.cuda.get_device_name(dev),backend_flags=actual_flags(),native_args_ref=str(out/'resolved_native_args.json'),execution_policy=POLICY,**model_details(m)))
+                hardware=torch.cuda.get_device_name(dev),backend_flags=actual_flags(),native_args_ref=str(out/'resolved_native_args.json'),execution_policy=POLICY,**describe(m)))
             write(out/'initialization.json',dict(scratch_only=True,checkpoint_sources=[],ancestors=[],source_roles='EXACT_MATCH',target_contact=False,teacher_origin='own scratch student only',seed=c['model_seed']))
             print('SMOKE PASS own scratch checkpoint; query_read=false',flush=True)
             return m
@@ -92,6 +98,8 @@ def train(c):
                 state['steps']=state.get('steps',0)+1
                 if 'step_file' not in state:state['step_file']=gzip.open(out/'step_metrics.jsonl.gz','xt',encoding='utf-8',compresslevel=3)
                 state['step_file'].write(json.dumps(dict(step=state['steps'],epoch=(state['steps']-1)//222+1,metrics=batch_clean(result)),allow_nan=False)+'\n')
+                if state['steps']>(c['epochs']-1)*222:state['final_L_CE_sum']=state.get('final_L_CE_sum',0.)+float(result['train/loss_tx_labeled'])
+                if state['steps']>c['label_epochs']*222 and float(result.get('train/pseudo_truth_available',0.) or 0.)!=0:raise ValueError('Hidden U truth became available')
                 if result.get('train/skipped_nonfinite_loss',0) or result.get('train/skipped_nonfinite_grad',0):
                     state['step_file'].flush()
                     raise FloatingPointError('Native nonfinite loss/gradient: preserve artifacts; no automatic retry')
@@ -106,6 +114,7 @@ def train(c):
             fields=sorted({k for r in compact for k in r})
             with (out/'epoch_metrics.csv').open('w',encoding='utf-8',newline='') as f:
                 w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(compact)
+            if epoch_callback is not None:epoch_callback(c,state,compact[-1])
         n._build_ssdg_wisig_data=checked_data;n.build_baseline_model=checked_model;n._write_ssdg_epoch_telemetry=telemetry;n._detach_log_mapping=step_log
         try:
             code=n.train(a)
@@ -119,7 +128,8 @@ def train(c):
         m=state['model'];m.load_state_dict(payload['model'],strict=True)
         write(out/'resolved_native_args.json',clean(resolved_config(SimpleNamespace(**payload['args']))))
         metrics=source_validation(m,state['ctx']['val_loader'],device)
-        done,frozen=closing_records(c,time.time()-started,metrics,state.get('steps',0),payload['a1_ema_successful_updates'])
+        done,frozen=closing_records(c,time.time()-started,metrics,state.get('steps',0),payload['a1_ema_successful_updates'],validator=validate)
+        done['final_training_L_CE']=state['final_L_CE_sum']/222
         write(out/'completion.json',done);write(out/'source_frozen.json',frozen)
 
 

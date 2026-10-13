@@ -4,7 +4,7 @@
 
 ## 当前事实与配方边界
 
-两分支已只读核对HEAD和远端：本分支1f8814c046a8c68eba8a334e66a0aceb76e491e0，另分支48325acd1f7781411cba214269fdf5353a2d6e9e，均一致。四个既有run远端completion为EXPERIMENT_COMPLETE，queue无active/pending/failure，原worker全部自然退出。没有重新启动、合并或覆盖另一owner工作。
+此前历史发布点，两分支已只读核对当时HEAD和远端：本分支1f8814c046a8c68eba8a334e66a0aceb76e491e0，另分支48325acd1f7781411cba214269fdf5353a2d6e9e，均一致。四个既有run远端completion为EXPERIMENT_COMPLETE，queue无active/pending/failure，原worker全部自然退出。没有重新启动、合并或覆盖另一owner工作。
 
 已结束本对话 PA/CF/EPI 对照是32label＋18pseudo的LEGACY50三seed固定final50；来源为原frequency-context run及其独立evaluation recovery。旧多尺度和归一化恢复路线为33＋17，保留各自历史baseline，不与32＋18合并。RC换头为10轮AdamW.001/wd.0001/seed+43019；本对话EPI/CF为20轮Adam.01/wd0/seed+60013，均scale30/160维/L_s，但不同预算和算法，不能直接合并。
 
@@ -39,3 +39,9 @@
 ## 完整历史普通cos诊断回收
 
 RC历史10轮AdamW普通cos的三seed均值：BASE78.5657%，ORD78.3613%，RESTORE78.5956%，COMP78.5095%，组合78.1139%。RESTORE相对BASE仅＋0.0300pp（2/3正），相对同容量ORD＋0.2343pp（2/3正）；组合相对BASE−0.4518pp，仅1/3正，且三个seed都低于RESTORE。未建立原头和ordinarycos同时稳定改善的证据。完整逐seed/样本SD、14条配对、最差RX/day和合法源probe指标已在主台账回收，不把此10轮诊断与本对话20轮Adam直接合并。
+
+## TIME 只读诊断已返回与下一固定矩阵
+
+PA 完整结果与 TIME 诊断实现已上传 f38bf6233aaa0f75857e6bba2bf206bf735b853a，remote OID一致。真实TIME3seed源角色/祖先/固定final50严格重建后，各t1/t2/t3的preGN等效9-tap核最大rank4，doublefold误差≤3.34e−15；外±4偏移能量合计3.4%至4.8%。固定L720包/seed的9次branch撤除全部改变joint160和默认margin，影响随seed/layer变化；零θ/buffer/head更新，不把branch撤除视为独立训练消融。完整源统计见新run source_time_diagnostic.json与主台账。源L选样规则已在诊断执行前固定，无U/target IQ。
+
+新TIME矩阵 20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01：四组same237697identity参数/初始state，compact/long×linear/branchSiLU，各scratch50、33＋17，OLD_GATE_COS50三seed外部基线复用。真实builder检查发现历史TIME主RNG与私有CPU初始化的新矩阵不同，LONG_LINEAR因此重新训练。旧PA/frequency/reference/outputnorm/defaulthead保持；独立headfit0。首seed4组源L末222stepCE≤.5后才放行其他2seed；全部训练行自动clean/truth-last，无target选择或热修改健康任务。额外源V33/34健康54000包与逐epoch层运动、U预测类别/RX/day接收统计成本单列。代码/config与最小report将一起绑定实际发布GitHEAD。Sinc坐标修复排队，不混入此轮。

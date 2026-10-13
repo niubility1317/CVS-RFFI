@@ -2,7 +2,8 @@
 import json
 import math
 import statistics as st
-from . import design as d
+from . import design as default_design
+d=default_design
 
 
 def recount_record(record):
@@ -21,7 +22,8 @@ def recount_record(record):
         raise ValueError('Independent accuracy/F1 recount differs')
 
 
-def validate_records(c, records):
+def validate_records(c, records, *, design=None):
+    d=design or default_design
     from experiments.cvs_report_ssl.evaluate import HELDOUT_RX, TARGET_DAYS
     strata = dict(overall=['ALL'], receiver=list(HELDOUT_RX), transmitter=list(d.CLASSES), day=list(TARGET_DAYS))
     expected = {(readout, dimension, stratum) for readout in d.READOUTS
@@ -44,16 +46,19 @@ def validate_records(c, records):
     return len(expected)
 
 
-def row_completion(c, record_count):
+def row_completion(c, record_count, *, design=None):
+    d=design or default_design
     return dict(status='TRAINED_PREDICTED_SCORED', config=c, views=list(d.VIEWS),
                 readouts=list(d.READOUTS), count_per_readout=d.QUERY_COUNT,
                 metric_records=record_count, truth_last=True, independent_recount='VERIFIED',
-                baseline_original_reused=c['arm'] == 'LEGACY50', Phase2_claim=False)
+                baseline_original_reused=c.get('source_config') is not None, Phase2_claim=False)
 
 
-def score(row):
+def score(row, *, design=None, preflight_fn=None):
+    d=design or default_design
     import numpy as np
-    from .predict import preflight
+    from .predict import preflight as original_preflight
+    preflight=preflight_fn or original_preflight
     from experiments.cvs_report_ssl.evaluate import truth_arrays, metric_rows
     c, ids = preflight(row)  # The original joint model and default predictions are fixed before truth is opened.
     output = d.BASE / row / 'scores'
@@ -69,22 +74,23 @@ def score(row):
             for record in main + day:
                 record['readout'] = readout
             records.extend(main + day)
-    count = validate_records(c, records)
+    count = validate_records(c, records, design=d)
     d.write(output / 'metrics.json', dict(records=records, readouts=list(d.READOUTS),
             count_per_readout=d.QUERY_COUNT, truth_last=True, independent_recount='VERIFIED',
             default_classifier_only=True, Phase2_claim=False))
-    d.write(d.BASE / row / 'completion.json', row_completion(c, count))
+    d.write(d.BASE / row / 'completion.json', row_completion(c, count, design=d))
     print('SCORED ' + json.dumps(dict(row_id=row, readouts=list(d.READOUTS),
                                     metric_records=count, truth_last=True)), flush=True)
 
 
-def finish():
+def finish(*, design=None, analysis_callback=None):
+    d=design or default_design
     records = []
     for row in d.rows():
         c = d.config(row)
         done = d.read(d.BASE / row['row_id'] / 'completion.json')
         value = d.read(d.BASE / row['row_id'] / 'scores/metrics.json')
-        count = validate_records(c, value.get('records', []))
+        count = validate_records(c, value.get('records', []), design=d)
         if (done != row_completion(c, count) or value.get('truth_last') is not True
                 or value.get('independent_recount') != 'VERIFIED'
                 or value.get('readouts') != list(d.READOUTS) or value.get('count_per_readout') != d.QUERY_COUNT
@@ -107,8 +113,7 @@ def finish():
                     macro_f1_mean=st.mean(r['macro_f1'] for r in group), worst_RX_mean=st.mean(worst_rx)))
         index = {(r['arm'], r['model_seed']): r['accuracy'] for r in records
                  if r['readout'] == readout and r['view'] == 'clean' and r['dimension'] == 'overall'}
-        for arm, control in [('PA_CONV', 'LEGACY50'), ('PA_CROSS_DELAY', 'LEGACY50'),
-                             ('PA_CROSS_DELAY', 'PA_CONV')]:
+        for arm, control in getattr(d,'PAIRS',[('PA_CONV','LEGACY50'),('PA_CROSS_DELAY','LEGACY50'),('PA_CROSS_DELAY','PA_CONV')]):
             differences = [index[arm, seed] - index[control, seed] for seed in d.SEEDS]
             paired.append(dict(arm=arm, control=control, readout=readout, view='clean',
                     seeds=list(d.SEEDS), seed_differences=differences, mean_difference=st.mean(differences),
@@ -121,13 +126,14 @@ def finish():
             readouts=list(d.READOUTS), views=list(d.VIEWS), query_count_per_row=d.QUERY_COUNT,
             prediction_count=len(d.rows()) * len(d.READOUTS) * d.QUERY_COUNT,
             baseline_original_prediction_reuse_count=(len(d.rows()) - len(d.training_rows())) * d.QUERY_COUNT,
-            baseline_all_readout_prediction_reuse_count=3 * len(d.READOUTS) * d.QUERY_COUNT,
+            baseline_all_readout_prediction_reuse_count=(len(d.rows())-len(d.training_rows())) * len(d.READOUTS) * d.QUERY_COUNT,
             new_prediction_count=len(d.training_rows()) * len(d.READOUTS) * d.QUERY_COUNT,
             summary=summary, paired=paired, records=records, truth_last=True, independent_recount='VERIFIED',
             primary_arm=d.PRIMARY, primary_readout=goal_config['readout'],
             goal_84=primary['accuracy_mean'] >= goal_config['clean_three_seed_mean'],
             target_feedback_to_training=False, Phase2_claim=False,
             feature_evidence_scope='six old source TX; original default jointly trained classifier; no separate head fitting or target adaptation')
+    if analysis_callback is not None:analysis_callback(value)
     output = d.BASE / 'analysis.json'
     if output.exists():
         if d.read(output) != value:

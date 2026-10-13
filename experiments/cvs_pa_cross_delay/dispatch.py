@@ -1,10 +1,12 @@
 import argparse,json,os,subprocess,sys,time
 from pathlib import Path
-from . import design as d
+from . import design as default_design
+d=default_design
 from experiments.cvs_receiver_residual_capacity4.control import lock
 from experiments.cvs_multi_state_action.dispatch import capacity
-def replace(mode,row):os.execv(sys.executable,[sys.executable,'-u','-m','experiments.cvs_pa_cross_delay.dispatch',mode,row])
-def worker(row):
+def replace(mode,row,module='experiments.cvs_pa_cross_delay.dispatch'):os.execv(sys.executable,[sys.executable,'-u','-m',module,mode,row])
+def worker(row,*,design=None,train_fn=None,proof_fn=None,module="experiments.cvs_pa_cross_delay.dispatch"):
+ d=design or default_design
  gpu=int(os.environ['CUDA_VISIBLE_DEVICES'])
  with lock(d.BASE/(row+'.owner.lock'),nonblocking=True):
   while True:
@@ -15,10 +17,11 @@ def worker(row):
   from .source import train
   from .predict import source_proof
   c=d.config(next(r for r in d.rows() if r['row_id']==row))
-  if c['arm']!='LEGACY50':train(c)
-  source_proof(c)
- replace('--predict',row)
-def dispatch():
+  if c.get('source_config') is None:(train_fn or train)(c)
+  (proof_fn or source_proof)(c)
+ replace('--predict',row,module)
+def dispatch(*,design=None,eligible_fn=None,finish_fn=None,module="experiments.cvs_pa_cross_delay.dispatch"):
+ d=design or default_design
  with lock(d.ROOT/'owner.lock',nonblocking=True):
   d.BASE.mkdir(parents=True,exist_ok=False);(d.BASE/'logs').mkdir();spec=d.read(d.ROOT/'registration/experiment.json')
   if spec['run_id']!=d.RUN or [r['config'] for r in spec['rows']]!=[d.config(r) for r in d.rows()]:raise ValueError('PA/default-head preregistration differs')
@@ -33,13 +36,15 @@ def dispatch():
     else:completed.append(rowid)
     del active[rowid]
    if pending and not failures:
+    try:ready_rows=[r for r in pending if eligible_fn is None or eligible_fn(r)]
+    except ValueError as exc:failures.append(dict(error=str(exc),kind='SOURCE_FALSIFICATION'));ready_rows=[]
     with lock(Path(d.PROJECT)/'runs/receiver_residual_capacity4.lock'):
      states=capacity();reserved={r['pid']:r['gpu'] for r in receipts if r['row_id'] in active};ready=[]
      for gpu,state in states.items():
       pids=state['pids']|{pid for pid,g in reserved.items() if g==gpu}
       if len(pids)<3 and state['free_mb']>=12000:ready.append((len(pids),-state['free_mb'],gpu))
-     if ready:
-      gpu=min(ready)[2];row=pending.pop(0);cmd=[sys.executable,'-u','-m','experiments.cvs_pa_cross_delay.dispatch','--worker',row['row_id']];log=d.BASE/'logs'/f"{row['row_id']}.log"
+     if ready and ready_rows:
+      gpu=min(ready)[2];row=ready_rows[0];pending.remove(row);cmd=[sys.executable,'-u','-m',module,'--worker',row['row_id']];log=d.BASE/'logs'/f"{row['row_id']}.log"
       with log.open('x') as f:child=subprocess.Popen(cmd,cwd=d.ROOT,env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(gpu)),stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT,start_new_session=True)
       active[row['row_id']]=child;receipts.append(dict(row_id=row['row_id'],pid=child.pid,gpu=gpu,cwd=str(d.ROOT),argv=cmd,log=str(log)));d.write(d.BASE/'launch.json',dict(rows=receipts))
    d.write(d.BASE/'queue_state.json',dict(active=list(active),pending=pending,completed=completed,failures=failures,max_total_processes_per_GPU=3,updated_at=time.time()))
@@ -49,7 +54,7 @@ def dispatch():
    d.write(d.BASE/'failure.json',dict(status='FAILED',rows=failures,no_automatic_retry=True));raise RuntimeError('PA/default-head technical failure; preserve all rows')
   if len(completed)!=len(d.rows()):raise ValueError('Incomplete PA/default-head comparison')
   from .score import finish
-  result=finish();d.write(d.BASE/'completion.json',dict(status='EXPERIMENT_COMPLETE',models=len(d.rows()),new_trained_models=len(d.training_rows()),reused_baseline_models=3,views=len(d.VIEWS),readouts=list(d.READOUTS),prediction_count=len(d.rows())*len(d.READOUTS)*d.QUERY_COUNT,truth_last=True,goal_84=result['goal_84']))
+  result=(finish_fn or finish)();d.write(d.BASE/'completion.json',dict(status='EXPERIMENT_COMPLETE',models=len(d.rows()),new_trained_models=len(d.training_rows()),reused_baseline_models=3,views=len(d.VIEWS),readouts=list(d.READOUTS),prediction_count=len(d.rows())*len(d.READOUTS)*d.QUERY_COUNT,truth_last=True,goal_84=result['goal_84']))
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--worker');p.add_argument('--predict');p.add_argument('--score');a=p.parse_args()
  if a.worker:worker(a.worker)

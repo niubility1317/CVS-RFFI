@@ -128,51 +128,9 @@ def provenance(c,source):
 def completion(c):
  return dict(status='PREDICTIONS_COMPLETE',config=c,count=COUNT,views=list(d.VIEWS),readouts=list(d.READOUTS),truth_read=False,query_fit=False,model_frozen_before_target_IQ=True,separate_head_fit=False,separate_head_updates=0,baseline_original_reused=c['arm']=='LEGACY50')
 
-def predict(row):
- import numpy as np
- import torch
- from experiments.cvs_default_head.predict import logits as default_logits
- from experiments.cvs_equivariant_identity.precision import numerical_context
- from experiments.cvs_report_ssl.evaluate import iq_tensor
+def pipeline():
+ from experiments.cvs_default_head.pipeline import DefaultPipeline
  from experiments.cvs_frequency_context50.predict import observation_metadata
- c=d.config(next(r for r in d.rows() if r['row_id']==row));source=source_proof(c)
- output=d.BASE/row/'prediction'
- if output.exists():raise FileExistsError('Existing prediction must be reconciled, never overwritten')
- output.mkdir(parents=True,exist_ok=False);torch.set_num_threads(2);started=time.perf_counter()
- # No source IQ loader, additional training, classifier construction or optimizer.
- if c['arm']=='LEGACY50':
-  ids,unused=observation_metadata();values=baseline_original(c,ids)
-  d.write(output/'default_frozen.json',frozen_metadata(c));d.write(output/'provenance.json',provenance(c,source))
-  np.savez_compressed(output/'predictions.npz',ids=ids,ORIGINAL_HEAD=values)
-  d.write(output/'complete.json',dict(completion(c),inference_seconds=0.,wall_seconds=time.perf_counter()-started));preflight(row)
-  print('DEFAULT_PREDICTIONS_REUSED '+row,flush=True);return
- with numerical_context(d.FULL_FP32_POLICY):
-  model=own_model(c,'cuda:0');before={k:v.clone() for k,v in model.state_dict().items()}
-  smoke=default_logits(model,torch.zeros(2,2,256,device='cuda:0'))
-  if smoke.shape!=(2,6) or not torch.isfinite(smoke).all():raise ValueError('Own default checkpoint no-query smoke failed')
-  d.write(output/'default_frozen.json',frozen_metadata(c));d.write(output/'provenance.json',provenance(c,source))
-  ids,observations=observation_metadata();array=np.load(observations['clean_ref'],mmap_mode='r',allow_pickle=False)
-  if array.shape!=(COUNT,2,256) or array.dtype.name!='float32':raise ValueError('Fixed clean observation array differs')
-  values=np.empty(COUNT,dtype=np.int64);infer_started=time.perf_counter()
-  for begin in range(0,COUNT,256):
-   x=iq_tensor(np.ascontiguousarray(array[begin:begin+256]),'cuda:0');score=default_logits(model,x)
-   values[begin:begin+len(x)]=score.argmax(1).cpu().tolist()
-  torch.cuda.synchronize();validate_decisions(values)
-  if any(not torch.equal(v,model.state_dict()[k]) for k,v in before.items()):raise ValueError('Prediction changed frozen model parameters or buffers')
-  np.savez_compressed(output/'predictions.npz',ids=ids,ORIGINAL_HEAD=values)
-  d.write(output/'complete.json',dict(completion(c),inference_seconds=time.perf_counter()-infer_started,wall_seconds=time.perf_counter()-started))
- preflight(row);print('DEFAULT_PREDICTIONS_COMPLETE '+row,flush=True)
-
-def preflight(row):
- import numpy as np
- c=d.config(next(r for r in d.rows() if r['row_id']==row));source=source_proof(c);output=d.BASE/row/'prediction';done=d.read(output/'complete.json')
- if any(done.get(k)!=v for k,v in completion(c).items()):raise ValueError('Truth closed: incomplete default predictions')
- if d.read(output/'provenance.json')!=provenance(c,source):raise ValueError('Truth closed: default source provenance differs')
- validate_default_freeze(c,d.read(output/'default_frozen.json'))
- from experiments.cvs_frequency_context50.predict import observation_metadata
- ids,unused=observation_metadata()
- with np.load(output/'predictions.npz',allow_pickle=False) as saved:
-  if set(saved.files)!={'ids','ORIGINAL_HEAD'} or not np.array_equal(saved['ids'],ids):raise ValueError('Truth closed: default-only predictions/IDs differ')
-  validate_decisions(saved['ORIGINAL_HEAD'])
-  if c['arm']=='LEGACY50' and not np.array_equal(saved['ORIGINAL_HEAD'],baseline_original(c,ids)):raise ValueError('Truth closed: baseline decisions changed')
- return c,ids
+ return DefaultPipeline(d,source_proof,own_model,baseline_original,observation_metadata)
+def predict(row):return pipeline().predict(row)
+def preflight(row):return pipeline().preflight(row)
