@@ -108,3 +108,10 @@ run 20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02，实际�
 完整6模型66600条source step记录已用代码d8e4514c42c1931685aa0b04176cf0960bf8c16a解析：PAIR加权U CE/L CE的每步比值均值为1.6065%/1.5691%/1.6617%，RANDOM为1.4163%/1.4200%/1.5078%；PAIR零接收step0，RANDOM460/475/475（各3774 pseudo step）。原生CE对已接收样本取mean，覆盖率不是loss乘数；entropy residual与逐轮/分布完整保留。标量比例不代表梯度比例，无IQ/权重tensor/真值读取或更新，完整[源信号](../automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/source_signal.json)。
 
 固定首seed三组actual final50/ownEMA的L_s6300源导数诊断20261014-phase1-source-feature-gradient-manysig-s01-m3-r01已实现、LOCAL_VERIFIED，尚未发布。默认头保留，fθ176065仅排除class W960，浅中层/time/freq/PA与joint160接线已本地PASS，autograd.grad不累积.grad、不更新模型；合法L梯度/观察标签在mask后进入，U/target无读取，V缓存materialize后丢弃、无前向或求导。新训练0/头拟合0/预计56700 source包次，eval无dropout的导数不冒充原训练梯度历史。一独立P0/P1入口问题已修复，唯一targeted复核PASS，完整[预登记](../automation_reports/CV-SincNet/20261014-phase1-source-feature-gradient-manysig-s01-m3-r01/report.md)。
+
+
+## 首种子源特征导数已完成
+
+20261014-phase1-source-feature-gradient-manysig-s01-m3-r01 全三组完成，实际代码 d4c1e9280854a3bfc988626f98224e737347260b；75 批/825 参数路径/4125 激活RX记录/56700 包次独立核对 VERIFIED。只有固定首模型 seed2026092701，三组不是三seed结果。默认头未拟合或更新、fθ参数/buffers逐元素不变、.grad未累积，V仅cache materialize后丢弃、无前向/求导，U/target读取0；新训练0，来源累计仍各50轮。所有11路径有源导数，U/L参数范数比中位数1.44%至2.51%，time_middle cosine0.0490/−0.1091/0.0680及负批次11/13/11，不能当原训练冲突或DG因果证据。PAIR joint160的RX3逐样本L导数约RX6的4.19倍，RX8约2.78倍；只是同路径源敏感度差异。
+
+下一轮最多两动作：检查t1/t2源统计和实际身份保护调用，准备独立源L同TX跨RX MixStyle；有源支持后再固定单seed匹配控制、scratch≤50、默认头/旧门控cos和自动clean/truth-last。不叠加PAIRS/Sinc/TIME、不扩大λ追目标分。Fishr尚缺本网络分域逐样本梯度方差与明确fθ对象；不把norm/cosine当作Fishr测量。84%目标未变、未达成。本轮实际 [完整分析](../automation_reports/CV-SincNet/20261014-phase1-source-feature-gradient-manysig-s01-m3-r01/final_analysis.md)、[聚合及逐批证据](../automation_reports/CV-SincNet/20261014-phase1-source-feature-gradient-manysig-s01-m3-r01/results.json)。

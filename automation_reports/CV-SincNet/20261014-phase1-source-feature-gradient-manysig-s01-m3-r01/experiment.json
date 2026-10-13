@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Persistent feature-extractor goal and source-gradient mechanism diagnosis; existing defaults, ordinary N607, no new training/target test. First-seed source falsification scope only.",
   "code": {
-    "commit": "GIT_HEAD_AT_RELEASE",
+    "commit": "d4c1e9280854a3bfc988626f98224e737347260b",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32/CPU; Torch/OMP/MKL/OpenBLAS2",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_feature_gradient_20261014_r01",
@@ -221,7 +221,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/neighbor-pair50-20261014",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -259,7 +259,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -316,7 +316,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06,
+            "lr_min": 0.000001,
             "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
             "label_epochs": 33,
             "pseudo_epochs": 17,
@@ -354,7 +354,7 @@
               "temporal_mode": "batch_neighbor",
               "temporal_min_streak": 2,
               "lr_schedule": "cosine",
-              "lr_min": 1e-06
+              "lr_min": 0.000001
             },
             "source_falsification": {
               "first_seed": 2026092701,
@@ -541,7 +541,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/neighbor-pair50-20261014",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -579,7 +579,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -728,7 +728,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/neighbor-pair50-20261014",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -766,7 +766,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -853,7 +853,26 @@
     "Single direct P0/P1 review identified historical make_args restriction before release; fixed to use verified saved actual args, three-row preflight covers this path; only targeted issue re-review.",
     "Source-signal basis: complete 66600 step logs show accepted CE uses selected-sample mean and weighted-U/L mean ratio near1.4–1.7%; coverage is not a loss multiplier. Loss scalar ratios alone are not feature gradient ratios. No target score/error used to choose probe or future lambda."
   ],
-  "status": "LOCAL_VERIFIED",
-  "results": null,
-  "registered_at": "2026-10-13T23:09:08+00:00"
+  "status": "ANALYZED",
+  "results": {
+    "status": "ANALYZED",
+    "model_seeds": 1,
+    "models": 3,
+    "source_packets": 18900,
+    "packet_forwards": 56700,
+    "parameter_path_records": 825,
+    "activation_receiver_records": 4125,
+    "source_batches": 75,
+    "head_fit": false,
+    "optimizer_updates": 0,
+    "source_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "results_ref": "results.json",
+    "report_ref": "final_analysis.md",
+    "launch_evidence_ref": "launch_evidence.json",
+    "failure": null
+  },
+  "registered_at": "2026-10-13T23:09:08+00:00",
+  "execution_commit": "d4c1e9280854a3bfc988626f98224e737347260b"
 }

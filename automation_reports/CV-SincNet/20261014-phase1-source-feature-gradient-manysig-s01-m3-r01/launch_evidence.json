@@ -1,0 +1,77 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-source-feature-gradient-manysig-s01-m3-r01",
+  "execution_commit": "d4c1e9280854a3bfc988626f98224e737347260b",
+  "archive_local_remote_SHA_comparison": "PASS in release publisher; one archive",
+  "remote_compile": "PASS",
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "checks": {
+      "status": "PASS",
+      "synthetic_only": true,
+      "protocol_negative_checks": 6,
+      "feature_object_boundary": true,
+      "no_accumulated_gradients_or_state_updates": true,
+      "source_or_query_read": false,
+      "smoke": {
+        "status": "PASS",
+        "zero_IQ": true,
+        "query_read": false,
+        "class_W_gradient_object": false,
+        "feature_parameters": 176065,
+        "real_source_IQ_read": false,
+        "head_fit": false,
+        "optimizer_steps": 0
+      }
+    },
+    "real_checkpoint_no_query_smoke": {
+      "status": "PASS",
+      "zero_IQ": true,
+      "query_read": false,
+      "class_W_gradient_object": false,
+      "feature_parameters": 176065,
+      "real_source_IQ_read": false,
+      "head_fit": false,
+      "optimizer_steps": 0
+    },
+    "source_only": true,
+    "query_read": false,
+    "U_IQ_read": false,
+    "U_truth_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0
+  },
+  "post_launch": {
+    "owned_pid": 1947039,
+    "CWD_matches_release": true,
+    "command_matches_submit": true,
+    "CUDA_VISIBLE_DEVICES": "",
+    "CPU_only": true,
+    "prior_log_bytes": 0,
+    "log_bytes": 185,
+    "completed_rows": 2
+  },
+  "final": {
+    "completion": {
+      "status": "ANALYZED",
+      "models": 3,
+      "source_only": true,
+      "query_read": false,
+      "U_truth_read": false,
+      "head_updates": 0,
+      "optimizer_steps": 0
+    },
+    "all_rows_complete": true,
+    "process_terminal": true,
+    "failure": null,
+    "log_bytes": 277
+  },
+  "source_record_recount": {
+    "source_batches": 75,
+    "parameter_path_records": 825,
+    "activation_receiver_records": 4125,
+    "source_packets_across_models": 18900,
+    "packet_forwards": 56700
+  },
+  "raw_input_or_weights_uploaded": false
+}

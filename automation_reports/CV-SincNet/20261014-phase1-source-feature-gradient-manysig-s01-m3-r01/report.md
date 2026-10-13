@@ -1,6 +1,6 @@
 # 默认特征网络的源梯度路径诊断
 
-状态 LOCAL_VERIFIED，尚未发布。run 20261014-phase1-source-feature-gradient-manysig-s01-m3-r01。已完成模型的源机制诊断，没有新训练或目标测试。逐行配置见 [experiment.json](experiment.json)，唯一直接 P0/P1 审查和入口修复 targeted review 见 [review.json](review.json)。
+状态 ANALYZED，首种子三行已完成，实际代码/config d4c1e9280854a3bfc988626f98224e737347260b。结果见 [完整分析](final_analysis.md)。以下保留预登记。run 20261014-phase1-source-feature-gradient-manysig-s01-m3-r01。已完成模型的源机制诊断，没有新训练或目标测试。逐行配置见 [experiment.json](experiment.json)，唯一直接 P0/P1 审查和入口修复 targeted review 见 [review.json](review.json)。
 
 依据是完整旧代码与源记录：U CE 对已接收样本取平均，完整66600 source updates中 RANDOM/PAIR 的加权U/L逐步损失比均值约1.4%至1.7%。源RX3/8强弱一致性低于其余RX，排序改变几乎不影响这一比例。标量损失比例不能推导梯度比例，故先测量同一路径的实际导数，不直接扩大λ、放松门控或增加结构。没有使用目标IQ、错误分组或分数来选探针、种子或阈值。
 
