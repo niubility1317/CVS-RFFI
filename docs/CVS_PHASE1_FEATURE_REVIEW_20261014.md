@@ -63,3 +63,9 @@ run 20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01，实�
 当前最多两项：实现源证据驱动的Sinc坐标候选及其公平控制；补合法源代理门控诊断。当前TIME实现/配置/完整正负结果集中交付，其他方向排队，不无限扫描直到84%。主目标仍active，未宣称达成。
 
 完整当前 [同轮分析](../automation_reports/CV-SincNet/20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01/final_analysis.md) 与 [机器台账](research_data/CVS_PHASE1_FEATURE_REVIEW_20261014.json)。历史当前运行身份、代码/来源/证据层级在台账中；大IQ、checkpoint、原NPZ/日志留原目录。默认head及clean范围来自用户最新明确要求；历史换头/LEO结果不删改，当前不借clean声明部署。
+
+## Sinc 坐标探索：已验证，待真实发布
+
+新 run `20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01` 已固定 RAW_HZ、CENTER_25K 及历史 OLD_GATE_COS50 三组 × 三种子。6 个新模型各从零 50 轮、33＋17、旧门控＋EMA＋cos；原时序/PA/频域/参考结构和默认联合训练头不改。两坐标方案同初始滤波器、joint160、logits、其他权重和构建随机状态，48 个 Sinc 参数与 optimizer/EMA 路径检查通过。每模型增加 48 个固定 origin buffer 元素，不能将完整坐标方案中的权重衰减/EMA 算术变化冒充纯学习率效果。
+
+首种子仅按两组 source final labeledCE≤.5 和 CENTER 实际核相对 L2≥1e−4 放行其余种子；每个合法训练完成 row 自动默认头 clean prediction 和独立 truth-last，目标分数不进入放行。合成整网、缓存/strict load、W 独立导出及源健康 RNG 检查通过，唯一 P0/P1 启动审查 PASS。当前尚无本轮真实训练/性能结果，不能称性能改善。完整预算、来源、阈值、代码提交身份和执行路径见 [Sinc 预登记](../automation_reports/CV-SincNet/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01/report.md)。
