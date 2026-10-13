@@ -23,3 +23,5 @@ L6300/U56700隐藏/V27000原契约，全3primary，noVforward/gate、无EMA/外�
 |A5|每row自动clean/独立truthlast/完整三seed|dispatch/score|verified_components; real evidence pending|不按target调整|
 
 本地CPU/CUDA actualsource.objective检查全部PASS：177025身份/22460辅、实际time maps48×128/96×32、GRL一阶符号及一次系数、条件/边缘CE、auxCPU独立RNG/noDropout、普通cos160/9类refit。四个零强度/DETACHED（含非零KL合成U）核对base loss/主梯度/触发clip10后的梯度/AdamW完整主状态与RNG精确torch.equal，辅同时真实更新；directcosW均None/0/True。9row完整synthetic聚合162指标/3汇总/3配对及不完整truth-last拒绝PASS。唯一独立P0/P1 PASS，无发现；remotecompile/真实checkpointnoquery/真实budget与完整clean还待返回，不以组件成功宣称性能成功。
+
+发布已独立核实：实际执行提交 `4f6258bb230389198f7036e1c57a7f740d4dcb50`，release archive 本地/远端单次 SHA 一致、remote compile、真实 checkpoint no-query 首步 PASS。最后保存远端证据时间 2026-10-13T04:16:35.115Z：9 个健康 worker，完成轮数 25/24/25/24/24/23/23/22/22，无完成或失败标记。此后远端查询被执行工具的 pwsh 启动器限制阻止，当前状态 UNKNOWN；保留原任务与产物，无重启或补跑。完整性能证据待取回后更新。

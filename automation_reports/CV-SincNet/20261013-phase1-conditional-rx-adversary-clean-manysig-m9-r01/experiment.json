@@ -4862,9 +4862,30 @@
     "Perstep domainCE/accuracy perlevel, mainloss/CE/KL, actualcoefficient andsourceLcounter; first/laststep per epoch record mainbase-vs-netdomain gradients andcosWnone, aux gradients separately. Shallowtimepath constraints do not directly erasefrequency/PA/reference response or guarantee fullfutureTXidentity/unknownRXperformance.",
     "No performance stop or promotiongate. EachrowautomaticFINAL30 clean168000prediction then independentexec truthlast;1512000predictions162metrics. Allnegative outcomes retained and no target feedback."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "registered_at": "2026-10-13T04:00:48+00:00",
   "replaces_run_id": null,
   "local_verification": "CPU/CUDA exactbase-gradient/clip/AdamW/RNG andauxupdates/nativecos160/9refit/GRLsign/count PASS;9row162metric syntheticaggregate PASS;compile PASS",
-  "independent_review": "oneindependentP0P1 PASS no findings"
+  "independent_review": "oneindependentP0P1 PASS no findings",
+  "execution_commit": "4f6258bb230389198f7036e1c57a7f740d4dcb50",
+  "delivery_verdict": "VERIFIED",
+  "last_verified_remote_observation": {
+    "observed_at_utc": "2026-10-13T04:16:35.115Z",
+    "workers": 9,
+    "epoch_counts": [
+      25,
+      24,
+      25,
+      24,
+      24,
+      23,
+      23,
+      22,
+      22
+    ],
+    "preflight": "PASS",
+    "completion": false,
+    "failure": false
+  },
+  "current_remote_status": "UNKNOWN_PENDING_READBACK"
 }
