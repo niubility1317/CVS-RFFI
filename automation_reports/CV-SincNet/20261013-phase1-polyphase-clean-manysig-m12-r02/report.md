@@ -26,3 +26,7 @@
 r01 的 Git/upstream一致、归档校验及remotecompile通过，但preflight导入缺少实际依赖cvs_repeated_rx_margin；独立读回确认run root和submit均不存在、0workers、无checkpoint/query访问。全部失败release产物保留。r02只补归档目录，以同12rows/seed/30轮/损失/数据/末轮冻结规则发布新root。实际隔离归档导入回归修复前复现该ModuleNotFoundError、修复后PASS；没有使用工作区导入回退。科学实现不变。
 
 一次原发布依赖问题的独立 P0/P1 定点复审 PASS；独立隔离导入也 PASS，无阻断问题。
+
+## 实际启动核验
+
+VERIFIED / RUNNING：release commit76b39dc73，上游OID一致；单归档校验、remotecompile、真实同契约CE30 checkpoint无query首步及实际源条件检查PASS。12rows全部进入训练，逐PID/CWD/argv/GPU和日志增长独立读回，actualresolved确认U、teacher、EMA、卫星和V前向关闭，当前无failure。每GPU实际1至2个总进程，保留原任务。未完成训练和目标评分，84%未达成。
