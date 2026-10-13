@@ -30216,9 +30216,9 @@
       "run_id": "20261014-phase1-time-factorial-oldgate-cos-e50-clean-manysig-m15-r01",
       "mechanism": "TIME coverage x branch-internal SiLU; matched capacity, default head only",
       "code_commit": "351e35cd0d298a6832c0865628bba28ab5a14cbe",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "new_models": 12,
-      "complete_new_seeds": 0,
+      "complete_new_seeds": 3,
       "completed_baseline_seeds": 3,
       "new_backbone_budget_epochs": 600,
       "new_update_budget": 133200,
@@ -30253,15 +30253,1724 @@
         }
       ],
       "first_seed_source_gate": "PASSED all4 fixed50 last222 labeledCE <=.5; no V/target selection",
-      "missing": [
-        "new model final50/default clean scores"
-      ],
+      "missing": [],
       "target_feedback": false,
-      "completed_new_models": 4,
-      "completed_new_seed_count": 1,
-      "pending_new_models": 8,
-      "stage": "first4 trained/predicted/scored; other8 source training, no full3seed conclusion",
-      "actual_feature_boundary_models": 4
+      "completed_new_models": 12,
+      "completed_new_seed_count": 3,
+      "pending_new_models": 0,
+      "stage": "all15trained/frozen/defaultpredicted/independentlyscored/analyzed",
+      "actual_feature_boundary_models": 4,
+      "complete_seeds": 3,
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "readout": "ORIGINAL_HEAD",
+          "view": "clean",
+          "seed_count": 3,
+          "accuracy_mean": 0.8052678571428572,
+          "accuracy_sd": 0.023775723031464996,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238,
+            "2026092702": 0.7808154761904762,
+            "2026092703": 0.8283035714285715
+          },
+          "macro_f1_mean": 0.8000238637751929,
+          "worst_RX_mean": 0.6797083333333334,
+          "worst_day_mean": 0.7605555555555555
+        },
+        {
+          "arm": "COMPACT_LINEAR",
+          "readout": "ORIGINAL_HEAD",
+          "view": "clean",
+          "seed_count": 3,
+          "accuracy_mean": 0.8185357142857143,
+          "accuracy_sd": 0.008978978741502998,
+          "seed_accuracy": {
+            "2026092701": 0.8213214285714285,
+            "2026092702": 0.8084940476190476,
+            "2026092703": 0.8257916666666667
+          },
+          "macro_f1_mean": 0.8137362511443912,
+          "worst_RX_mean": 0.7453472222222222,
+          "worst_day_mean": 0.7904285714285715
+        },
+        {
+          "arm": "LONG_LINEAR",
+          "readout": "ORIGINAL_HEAD",
+          "view": "clean",
+          "seed_count": 3,
+          "accuracy_mean": 0.8198194444444444,
+          "accuracy_sd": 0.008566353766663554,
+          "seed_accuracy": {
+            "2026092701": 0.8272916666666666,
+            "2026092702": 0.8104702380952381,
+            "2026092703": 0.8216964285714285
+          },
+          "macro_f1_mean": 0.815255569951854,
+          "worst_RX_mean": 0.7479305555555555,
+          "worst_day_mean": 0.7942698412698412
+        },
+        {
+          "arm": "COMPACT_SILU",
+          "readout": "ORIGINAL_HEAD",
+          "view": "clean",
+          "seed_count": 3,
+          "accuracy_mean": 0.8151349206349207,
+          "accuracy_sd": 0.022297789334428903,
+          "seed_accuracy": {
+            "2026092701": 0.8233035714285715,
+            "2026092702": 0.7899047619047619,
+            "2026092703": 0.8321964285714286
+          },
+          "macro_f1_mean": 0.8101060295086353,
+          "worst_RX_mean": 0.7138333333333333,
+          "worst_day_mean": 0.783015873015873
+        },
+        {
+          "arm": "LONG_SILU",
+          "readout": "ORIGINAL_HEAD",
+          "view": "clean",
+          "seed_count": 3,
+          "accuracy_mean": 0.8164166666666667,
+          "accuracy_sd": 0.017806502600565467,
+          "seed_accuracy": {
+            "2026092701": 0.8251607142857142,
+            "2026092702": 0.7959285714285714,
+            "2026092703": 0.8281607142857143
+          },
+          "macro_f1_mean": 0.8115470152014008,
+          "worst_RX_mean": 0.7245,
+          "worst_day_mean": 0.7808730158730158
+        }
+      ],
+      "paired": [
+        {
+          "arm": "LONG_LINEAR",
+          "control": "COMPACT_LINEAR",
+          "readout": "ORIGINAL_HEAD",
+          "view": "clean",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.005970238095238112,
+            0.0019761904761904647,
+            -0.004095238095238152
+          ],
+          "mean_difference": 0.0012837301587301415,
+          "sd_difference": 0.005068340823554004,
+          "positive_seeds": 2
+        },
+        {
+          "arm": "LONG_SILU",
+          "control": "COMPACT_SILU",
+          "readout": "ORIGINAL_HEAD",
+          "view": "clean",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.0018571428571427795,
+            0.006023809523809542,
+            -0.004035714285714365
+          ],
+          "mean_difference": 0.0012817460317459857,
+          "sd_difference": 0.005054385813192551,
+          "positive_seeds": 2
+        },
+        {
+          "arm": "COMPACT_SILU",
+          "control": "COMPACT_LINEAR",
+          "readout": "ORIGINAL_HEAD",
+          "view": "clean",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.0019821428571429323,
+            -0.018589285714285753,
+            0.006404761904761913
+          ],
+          "mean_difference": -0.0034007936507936356,
+          "sd_difference": 0.01333820108493506,
+          "positive_seeds": 2
+        },
+        {
+          "arm": "LONG_SILU",
+          "control": "LONG_LINEAR",
+          "readout": "ORIGINAL_HEAD",
+          "view": "clean",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            -0.0021309523809524,
+            -0.014541666666666675,
+            0.0064642857142857
+          ],
+          "mean_difference": -0.0034027777777777914,
+          "sd_difference": 0.010560571184255008,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "COMPACT_LINEAR",
+          "control": "OLD_GATE_COS50",
+          "readout": "ORIGINAL_HEAD",
+          "view": "clean",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.014636904761904712,
+            0.02767857142857144,
+            -0.0025119047619047707
+          ],
+          "mean_difference": 0.013267857142857128,
+          "sd_difference": 0.01514172816059457,
+          "positive_seeds": 2
+        },
+        {
+          "arm": "LONG_LINEAR",
+          "control": "OLD_GATE_COS50",
+          "readout": "ORIGINAL_HEAD",
+          "view": "clean",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.020607142857142824,
+            0.029654761904761906,
+            -0.0066071428571429225
+          ],
+          "mean_difference": 0.014551587301587269,
+          "sd_difference": 0.01887415558522232,
+          "positive_seeds": 2
+        },
+        {
+          "arm": "COMPACT_SILU",
+          "control": "OLD_GATE_COS50",
+          "readout": "ORIGINAL_HEAD",
+          "view": "clean",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.016619047619047644,
+            0.009089285714285689,
+            0.0038928571428571423
+          ],
+          "mean_difference": 0.009867063492063491,
+          "sd_difference": 0.0063986471001903356,
+          "positive_seeds": 3
+        },
+        {
+          "arm": "LONG_SILU",
+          "control": "OLD_GATE_COS50",
+          "readout": "ORIGINAL_HEAD",
+          "view": "clean",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.018476190476190424,
+            0.015113095238095231,
+            -0.00014285714285722229
+          ],
+          "mean_difference": 0.011148809523809478,
+          "sd_difference": 0.009922394090060046,
+          "positive_seeds": 2
+        }
+      ],
+      "factorial_interaction": {
+        "definition": "(LONG_SILU-COMPACT_SILU)-(LONG_LINEAR-COMPACT_LINEAR)",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          -0.004113095238095332,
+          0.004047619047619078,
+          0.00005952380952378711
+        ],
+        "mean_difference": -0.000001984126984155843,
+        "sd_difference": 0.004080704820610762,
+        "positive_seeds": 2,
+        "target_feedback": false
+      },
+      "cost": {
+        "new_models": 12,
+        "new_model_epochs": 600,
+        "new_optimizer_updates": 133200,
+        "reused_models": 3,
+        "reused_model_epochs": 150,
+        "new_source_V_diagnostic_passes": 24,
+        "new_source_V_diagnostic_packets": 648000,
+        "new_source_U_diagnostic_forwards": 0,
+        "head_fit_updates": 0,
+        "training_epoch_seconds_sum": 27274.466339588165,
+        "timing_scope": "observed epoch time under varying shared GPU competition, not a controlled speed comparison"
+      },
+      "verification": {
+        "status": "VERIFIED",
+        "new_step_records_parsed": 133200,
+        "epoch_records_parsed": 750,
+        "metric_records_independently_recounted": 270,
+        "prediction_count": 2520000,
+        "all_workers_terminal": true,
+        "actual_initial_equality": [
+          {
+            "seed": 2026092701,
+            "models": 4,
+            "identical_state_tensors": 200
+          },
+          {
+            "seed": 2026092702,
+            "models": 4,
+            "identical_state_tensors": 200
+          },
+          {
+            "seed": 2026092703,
+            "models": 4,
+            "identical_state_tensors": 200
+          }
+        ]
+      },
+      "error_transitions": [
+        {
+          "arm": "LONG_LINEAR",
+          "control": "COMPACT_LINEAR",
+          "seed": 2026092701,
+          "corrected_errors": 3873,
+          "introduced_errors": 2870,
+          "both_correct": 135112,
+          "both_wrong": 26145,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_LINEAR",
+          "control": "COMPACT_LINEAR",
+          "seed": 2026092702,
+          "corrected_errors": 3422,
+          "introduced_errors": 3090,
+          "both_correct": 132737,
+          "both_wrong": 28751,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_LINEAR",
+          "control": "COMPACT_LINEAR",
+          "seed": 2026092703,
+          "corrected_errors": 3133,
+          "introduced_errors": 3821,
+          "both_correct": 134912,
+          "both_wrong": 26134,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_SILU",
+          "control": "COMPACT_SILU",
+          "seed": 2026092701,
+          "corrected_errors": 2541,
+          "introduced_errors": 2229,
+          "both_correct": 136086,
+          "both_wrong": 27144,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_SILU",
+          "control": "COMPACT_SILU",
+          "seed": 2026092702,
+          "corrected_errors": 3211,
+          "introduced_errors": 2199,
+          "both_correct": 130505,
+          "both_wrong": 32085,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_SILU",
+          "control": "COMPACT_SILU",
+          "seed": 2026092703,
+          "corrected_errors": 2372,
+          "introduced_errors": 3050,
+          "both_correct": 136759,
+          "both_wrong": 25819,
+          "count": 168000
+        },
+        {
+          "arm": "COMPACT_SILU",
+          "control": "COMPACT_LINEAR",
+          "seed": 2026092701,
+          "corrected_errors": 4365,
+          "introduced_errors": 4032,
+          "both_correct": 133950,
+          "both_wrong": 25653,
+          "count": 168000
+        },
+        {
+          "arm": "COMPACT_SILU",
+          "control": "COMPACT_LINEAR",
+          "seed": 2026092702,
+          "corrected_errors": 2957,
+          "introduced_errors": 6080,
+          "both_correct": 129747,
+          "both_wrong": 29216,
+          "count": 168000
+        },
+        {
+          "arm": "COMPACT_SILU",
+          "control": "COMPACT_LINEAR",
+          "seed": 2026092703,
+          "corrected_errors": 3981,
+          "introduced_errors": 2905,
+          "both_correct": 135828,
+          "both_wrong": 25286,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_SILU",
+          "control": "LONG_LINEAR",
+          "seed": 2026092701,
+          "corrected_errors": 2844,
+          "introduced_errors": 3202,
+          "both_correct": 135783,
+          "both_wrong": 26171,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_SILU",
+          "control": "LONG_LINEAR",
+          "seed": 2026092702,
+          "corrected_errors": 3641,
+          "introduced_errors": 6084,
+          "both_correct": 130075,
+          "both_wrong": 28200,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_SILU",
+          "control": "LONG_LINEAR",
+          "seed": 2026092703,
+          "corrected_errors": 4524,
+          "introduced_errors": 3438,
+          "both_correct": 134607,
+          "both_wrong": 25431,
+          "count": 168000
+        },
+        {
+          "arm": "COMPACT_LINEAR",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092701,
+          "corrected_errors": 11080,
+          "introduced_errors": 8621,
+          "both_correct": 126902,
+          "both_wrong": 21397,
+          "count": 168000
+        },
+        {
+          "arm": "COMPACT_LINEAR",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092702,
+          "corrected_errors": 11703,
+          "introduced_errors": 7053,
+          "both_correct": 124124,
+          "both_wrong": 25120,
+          "count": 168000
+        },
+        {
+          "arm": "COMPACT_LINEAR",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092703,
+          "corrected_errors": 7775,
+          "introduced_errors": 8197,
+          "both_correct": 130958,
+          "both_wrong": 21070,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_LINEAR",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092701,
+          "corrected_errors": 10444,
+          "introduced_errors": 6982,
+          "both_correct": 128541,
+          "both_wrong": 22033,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_LINEAR",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092702,
+          "corrected_errors": 12483,
+          "introduced_errors": 7501,
+          "both_correct": 123676,
+          "both_wrong": 24340,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_LINEAR",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092703,
+          "corrected_errors": 8959,
+          "introduced_errors": 10069,
+          "both_correct": 129086,
+          "both_wrong": 19886,
+          "count": 168000
+        },
+        {
+          "arm": "COMPACT_SILU",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092701,
+          "corrected_errors": 9578,
+          "introduced_errors": 6786,
+          "both_correct": 128737,
+          "both_wrong": 22899,
+          "count": 168000
+        },
+        {
+          "arm": "COMPACT_SILU",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092702,
+          "corrected_errors": 9700,
+          "introduced_errors": 8173,
+          "both_correct": 123004,
+          "both_wrong": 27123,
+          "count": 168000
+        },
+        {
+          "arm": "COMPACT_SILU",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092703,
+          "corrected_errors": 7147,
+          "introduced_errors": 6493,
+          "both_correct": 132662,
+          "both_wrong": 21698,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_SILU",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092701,
+          "corrected_errors": 9775,
+          "introduced_errors": 6671,
+          "both_correct": 128852,
+          "both_wrong": 22702,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_SILU",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092702,
+          "corrected_errors": 10492,
+          "introduced_errors": 7953,
+          "both_correct": 123224,
+          "both_wrong": 26331,
+          "count": 168000
+        },
+        {
+          "arm": "LONG_SILU",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092703,
+          "corrected_errors": 7837,
+          "introduced_errors": 7861,
+          "both_correct": 131294,
+          "both_wrong": 21008,
+          "count": 168000
+        }
+      ],
+      "actual_feature_boundary": {
+        "status": "VERIFIED",
+        "diagnostic_code": "1beef33bc5d0474b9044933ce296fbcbd9181afb",
+        "models": 12,
+        "rows": [
+          {
+            "row_id": "COMPACT_LINEAR-s2026092701",
+            "arm": "COMPACT_LINEAR",
+            "seed": 2026092701,
+            "source_roles": "EXACT_MATCH",
+            "epoch": 50,
+            "diagnostic": {
+              "status": "VERIFIED",
+              "source_packets": 720,
+              "records": [
+                {
+                  "dimension": "overall",
+                  "stratum": null,
+                  "count": 720,
+                  "initial_to_final_raw_joint160_L2_mean": 17.19912338256836,
+                  "initial_to_final_cosine_mean": 0.1432923674583435,
+                  "changed_feature_elements": 115200
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 1,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.648162841796875,
+                  "initial_to_final_cosine_mean": 0.1166827529668808,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 3,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.86825180053711,
+                  "initial_to_final_cosine_mean": 0.16295205056667328,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 4,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.300947189331055,
+                  "initial_to_final_cosine_mean": 0.1352376490831375,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 6,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.396451950073242,
+                  "initial_to_final_cosine_mean": 0.1311778873205185,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 8,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.781810760498047,
+                  "initial_to_final_cosine_mean": 0.1704116016626358,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 1,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.20844268798828,
+                  "initial_to_final_cosine_mean": 0.14260122179985046,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 2,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.193716049194336,
+                  "initial_to_final_cosine_mean": 0.1421242505311966,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 3,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.19521713256836,
+                  "initial_to_final_cosine_mean": 0.14515168964862823,
+                  "changed_feature_elements": 38400
+                }
+              ],
+              "actual_feature": "joint160/id_feat_joint",
+              "export_exact": true,
+              "maximum_export_difference": 0,
+              "class_W_zeroing_leaves_features_identical": true,
+              "old_class_W_removed_from_export": true,
+              "feature_parameters_buffers_unchanged": true,
+              "head_fit": false,
+              "head_updates": 0,
+              "feature_updates_by_diagnostic": 0,
+              "query_read": false,
+              "feature_parameters": 236737,
+              "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+            }
+          },
+          {
+            "row_id": "LONG_LINEAR-s2026092701",
+            "arm": "LONG_LINEAR",
+            "seed": 2026092701,
+            "source_roles": "EXACT_MATCH",
+            "epoch": 50,
+            "diagnostic": {
+              "status": "VERIFIED",
+              "source_packets": 720,
+              "records": [
+                {
+                  "dimension": "overall",
+                  "stratum": null,
+                  "count": 720,
+                  "initial_to_final_raw_joint160_L2_mean": 17.08447265625,
+                  "initial_to_final_cosine_mean": 0.15341466665267944,
+                  "changed_feature_elements": 115200
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 1,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.505733489990234,
+                  "initial_to_final_cosine_mean": 0.12691038846969604,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 3,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.713966369628906,
+                  "initial_to_final_cosine_mean": 0.17757323384284973,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 4,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.25487518310547,
+                  "initial_to_final_cosine_mean": 0.14105559885501862,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 6,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.262393951416016,
+                  "initial_to_final_cosine_mean": 0.14078713953495026,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 8,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.68539047241211,
+                  "initial_to_final_cosine_mean": 0.1807468831539154,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 1,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.08763885498047,
+                  "initial_to_final_cosine_mean": 0.15349802374839783,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 2,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.084733963012695,
+                  "initial_to_final_cosine_mean": 0.15214699506759644,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 3,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.08104133605957,
+                  "initial_to_final_cosine_mean": 0.1545989215373993,
+                  "changed_feature_elements": 38400
+                }
+              ],
+              "actual_feature": "joint160/id_feat_joint",
+              "export_exact": true,
+              "maximum_export_difference": 0,
+              "class_W_zeroing_leaves_features_identical": true,
+              "old_class_W_removed_from_export": true,
+              "feature_parameters_buffers_unchanged": true,
+              "head_fit": false,
+              "head_updates": 0,
+              "feature_updates_by_diagnostic": 0,
+              "query_read": false,
+              "feature_parameters": 236737,
+              "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+            }
+          },
+          {
+            "row_id": "COMPACT_SILU-s2026092701",
+            "arm": "COMPACT_SILU",
+            "seed": 2026092701,
+            "source_roles": "EXACT_MATCH",
+            "epoch": 50,
+            "diagnostic": {
+              "status": "VERIFIED",
+              "source_packets": 720,
+              "records": [
+                {
+                  "dimension": "overall",
+                  "stratum": null,
+                  "count": 720,
+                  "initial_to_final_raw_joint160_L2_mean": 17.13089942932129,
+                  "initial_to_final_cosine_mean": 0.14985720813274384,
+                  "changed_feature_elements": 115200
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 1,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.501502990722656,
+                  "initial_to_final_cosine_mean": 0.12993855774402618,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 3,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.7544002532959,
+                  "initial_to_final_cosine_mean": 0.17298027873039246,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 4,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.3643798828125,
+                  "initial_to_final_cosine_mean": 0.13303634524345398,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 6,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.336658477783203,
+                  "initial_to_final_cosine_mean": 0.137526735663414,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 8,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.69755744934082,
+                  "initial_to_final_cosine_mean": 0.17580413818359375,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 1,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.12369155883789,
+                  "initial_to_final_cosine_mean": 0.15080735087394714,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 2,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.157733917236328,
+                  "initial_to_final_cosine_mean": 0.146330326795578,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 3,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.11127471923828,
+                  "initial_to_final_cosine_mean": 0.15243396162986755,
+                  "changed_feature_elements": 38400
+                }
+              ],
+              "actual_feature": "joint160/id_feat_joint",
+              "export_exact": true,
+              "maximum_export_difference": 0,
+              "class_W_zeroing_leaves_features_identical": true,
+              "old_class_W_removed_from_export": true,
+              "feature_parameters_buffers_unchanged": true,
+              "head_fit": false,
+              "head_updates": 0,
+              "feature_updates_by_diagnostic": 0,
+              "query_read": false,
+              "feature_parameters": 236737,
+              "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+            }
+          },
+          {
+            "row_id": "LONG_SILU-s2026092701",
+            "arm": "LONG_SILU",
+            "seed": 2026092701,
+            "source_roles": "EXACT_MATCH",
+            "epoch": 50,
+            "diagnostic": {
+              "status": "VERIFIED",
+              "source_packets": 720,
+              "records": [
+                {
+                  "dimension": "overall",
+                  "stratum": null,
+                  "count": 720,
+                  "initial_to_final_raw_joint160_L2_mean": 16.757261276245117,
+                  "initial_to_final_cosine_mean": 0.1742485612630844,
+                  "changed_feature_elements": 115200
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 1,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.110197067260742,
+                  "initial_to_final_cosine_mean": 0.15270815789699554,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 3,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.361875534057617,
+                  "initial_to_final_cosine_mean": 0.20101962983608246,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 4,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.04170799255371,
+                  "initial_to_final_cosine_mean": 0.1530531495809555,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 6,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.96491241455078,
+                  "initial_to_final_cosine_mean": 0.15840564668178558,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 8,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.307621002197266,
+                  "initial_to_final_cosine_mean": 0.20605628192424774,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 1,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 16.73496437072754,
+                  "initial_to_final_cosine_mean": 0.17626772820949554,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 2,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 16.77772331237793,
+                  "initial_to_final_cosine_mean": 0.17117227613925934,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 3,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 16.75909996032715,
+                  "initial_to_final_cosine_mean": 0.17530569434165955,
+                  "changed_feature_elements": 38400
+                }
+              ],
+              "actual_feature": "joint160/id_feat_joint",
+              "export_exact": true,
+              "maximum_export_difference": 0,
+              "class_W_zeroing_leaves_features_identical": true,
+              "old_class_W_removed_from_export": true,
+              "feature_parameters_buffers_unchanged": true,
+              "head_fit": false,
+              "head_updates": 0,
+              "feature_updates_by_diagnostic": 0,
+              "query_read": false,
+              "feature_parameters": 236737,
+              "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+            }
+          },
+          {
+            "row_id": "COMPACT_LINEAR-s2026092702",
+            "arm": "COMPACT_LINEAR",
+            "seed": 2026092702,
+            "source_roles": "EXACT_MATCH",
+            "epoch": 50,
+            "diagnostic": {
+              "status": "VERIFIED",
+              "source_packets": 720,
+              "records": [
+                {
+                  "dimension": "overall",
+                  "stratum": null,
+                  "count": 720,
+                  "initial_to_final_raw_joint160_L2_mean": 17.119922637939453,
+                  "initial_to_final_cosine_mean": 0.17183950543403625,
+                  "changed_feature_elements": 115200
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 1,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.285655975341797,
+                  "initial_to_final_cosine_mean": 0.1697458177804947,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 3,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.016260147094727,
+                  "initial_to_final_cosine_mean": 0.17075133323669434,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 4,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.096818923950195,
+                  "initial_to_final_cosine_mean": 0.17346006631851196,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 6,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.18374252319336,
+                  "initial_to_final_cosine_mean": 0.17359274625778198,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 8,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.01712989807129,
+                  "initial_to_final_cosine_mean": 0.17164766788482666,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 1,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.154165267944336,
+                  "initial_to_final_cosine_mean": 0.17043536901474,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 2,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.091447830200195,
+                  "initial_to_final_cosine_mean": 0.17368169128894806,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 3,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.114152908325195,
+                  "initial_to_final_cosine_mean": 0.1714015007019043,
+                  "changed_feature_elements": 38400
+                }
+              ],
+              "actual_feature": "joint160/id_feat_joint",
+              "export_exact": true,
+              "maximum_export_difference": 0,
+              "class_W_zeroing_leaves_features_identical": true,
+              "old_class_W_removed_from_export": true,
+              "feature_parameters_buffers_unchanged": true,
+              "head_fit": false,
+              "head_updates": 0,
+              "feature_updates_by_diagnostic": 0,
+              "query_read": false,
+              "feature_parameters": 236737,
+              "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+            }
+          },
+          {
+            "row_id": "LONG_LINEAR-s2026092702",
+            "arm": "LONG_LINEAR",
+            "seed": 2026092702,
+            "source_roles": "EXACT_MATCH",
+            "epoch": 50,
+            "diagnostic": {
+              "status": "VERIFIED",
+              "source_packets": 720,
+              "records": [
+                {
+                  "dimension": "overall",
+                  "stratum": null,
+                  "count": 720,
+                  "initial_to_final_raw_joint160_L2_mean": 16.9884033203125,
+                  "initial_to_final_cosine_mean": 0.18426042795181274,
+                  "changed_feature_elements": 115200
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 1,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.22694206237793,
+                  "initial_to_final_cosine_mean": 0.17458020150661469,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 3,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.917930603027344,
+                  "initial_to_final_cosine_mean": 0.17743369936943054,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 4,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.926851272583008,
+                  "initial_to_final_cosine_mean": 0.19426420331001282,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 6,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.013566970825195,
+                  "initial_to_final_cosine_mean": 0.19078880548477173,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 8,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.85672378540039,
+                  "initial_to_final_cosine_mean": 0.18423520028591156,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 1,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.01896858215332,
+                  "initial_to_final_cosine_mean": 0.18308115005493164,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 2,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 16.96571922302246,
+                  "initial_to_final_cosine_mean": 0.18554386496543884,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 3,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 16.98052215576172,
+                  "initial_to_final_cosine_mean": 0.18415626883506775,
+                  "changed_feature_elements": 38400
+                }
+              ],
+              "actual_feature": "joint160/id_feat_joint",
+              "export_exact": true,
+              "maximum_export_difference": 0,
+              "class_W_zeroing_leaves_features_identical": true,
+              "old_class_W_removed_from_export": true,
+              "feature_parameters_buffers_unchanged": true,
+              "head_fit": false,
+              "head_updates": 0,
+              "feature_updates_by_diagnostic": 0,
+              "query_read": false,
+              "feature_parameters": 236737,
+              "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+            }
+          },
+          {
+            "row_id": "COMPACT_SILU-s2026092702",
+            "arm": "COMPACT_SILU",
+            "seed": 2026092702,
+            "source_roles": "EXACT_MATCH",
+            "epoch": 50,
+            "diagnostic": {
+              "status": "VERIFIED",
+              "source_packets": 720,
+              "records": [
+                {
+                  "dimension": "overall",
+                  "stratum": null,
+                  "count": 720,
+                  "initial_to_final_raw_joint160_L2_mean": 16.7752742767334,
+                  "initial_to_final_cosine_mean": 0.18725217878818512,
+                  "changed_feature_elements": 115200
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 1,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.966915130615234,
+                  "initial_to_final_cosine_mean": 0.18536627292633057,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 3,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.700286865234375,
+                  "initial_to_final_cosine_mean": 0.18154925107955933,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 4,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.788339614868164,
+                  "initial_to_final_cosine_mean": 0.190218985080719,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 6,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.86511993408203,
+                  "initial_to_final_cosine_mean": 0.18603482842445374,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 8,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.55571174621582,
+                  "initial_to_final_cosine_mean": 0.19309142231941223,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 1,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 16.796937942504883,
+                  "initial_to_final_cosine_mean": 0.18718303740024567,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 2,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 16.759538650512695,
+                  "initial_to_final_cosine_mean": 0.1876450926065445,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 3,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 16.769346237182617,
+                  "initial_to_final_cosine_mean": 0.18692833185195923,
+                  "changed_feature_elements": 38400
+                }
+              ],
+              "actual_feature": "joint160/id_feat_joint",
+              "export_exact": true,
+              "maximum_export_difference": 0,
+              "class_W_zeroing_leaves_features_identical": true,
+              "old_class_W_removed_from_export": true,
+              "feature_parameters_buffers_unchanged": true,
+              "head_fit": false,
+              "head_updates": 0,
+              "feature_updates_by_diagnostic": 0,
+              "query_read": false,
+              "feature_parameters": 236737,
+              "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+            }
+          },
+          {
+            "row_id": "COMPACT_LINEAR-s2026092703",
+            "arm": "COMPACT_LINEAR",
+            "seed": 2026092703,
+            "source_roles": "EXACT_MATCH",
+            "epoch": 50,
+            "diagnostic": {
+              "status": "VERIFIED",
+              "source_packets": 720,
+              "records": [
+                {
+                  "dimension": "overall",
+                  "stratum": null,
+                  "count": 720,
+                  "initial_to_final_raw_joint160_L2_mean": 17.37819480895996,
+                  "initial_to_final_cosine_mean": 0.11981705576181412,
+                  "changed_feature_elements": 115200
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 1,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.496395111083984,
+                  "initial_to_final_cosine_mean": 0.11983777582645416,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 3,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.274085998535156,
+                  "initial_to_final_cosine_mean": 0.12636405229568481,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 4,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.369997024536133,
+                  "initial_to_final_cosine_mean": 0.10922457277774811,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 6,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.555152893066406,
+                  "initial_to_final_cosine_mean": 0.11045413464307785,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 8,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.195354461669922,
+                  "initial_to_final_cosine_mean": 0.13320477306842804,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 1,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.402334213256836,
+                  "initial_to_final_cosine_mean": 0.1185646578669548,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 2,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.35472869873047,
+                  "initial_to_final_cosine_mean": 0.12177380919456482,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 3,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.377531051635742,
+                  "initial_to_final_cosine_mean": 0.11911270767450333,
+                  "changed_feature_elements": 38400
+                }
+              ],
+              "actual_feature": "joint160/id_feat_joint",
+              "export_exact": true,
+              "maximum_export_difference": 0,
+              "class_W_zeroing_leaves_features_identical": true,
+              "old_class_W_removed_from_export": true,
+              "feature_parameters_buffers_unchanged": true,
+              "head_fit": false,
+              "head_updates": 0,
+              "feature_updates_by_diagnostic": 0,
+              "query_read": false,
+              "feature_parameters": 236737,
+              "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+            }
+          },
+          {
+            "row_id": "LONG_LINEAR-s2026092703",
+            "arm": "LONG_LINEAR",
+            "seed": 2026092703,
+            "source_roles": "EXACT_MATCH",
+            "epoch": 50,
+            "diagnostic": {
+              "status": "VERIFIED",
+              "source_packets": 720,
+              "records": [
+                {
+                  "dimension": "overall",
+                  "stratum": null,
+                  "count": 720,
+                  "initial_to_final_raw_joint160_L2_mean": 17.388927459716797,
+                  "initial_to_final_cosine_mean": 0.1275555044412613,
+                  "changed_feature_elements": 115200
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 1,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.53876304626465,
+                  "initial_to_final_cosine_mean": 0.11948451399803162,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 3,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.332481384277344,
+                  "initial_to_final_cosine_mean": 0.1344098448753357,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 4,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.510663986206055,
+                  "initial_to_final_cosine_mean": 0.10403530299663544,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 6,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.354822158813477,
+                  "initial_to_final_cosine_mean": 0.13372860848903656,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 8,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.20789909362793,
+                  "initial_to_final_cosine_mean": 0.14611920714378357,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 1,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.413990020751953,
+                  "initial_to_final_cosine_mean": 0.12628893554210663,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 2,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.375547409057617,
+                  "initial_to_final_cosine_mean": 0.12799791991710663,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 3,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.37724494934082,
+                  "initial_to_final_cosine_mean": 0.12837962806224823,
+                  "changed_feature_elements": 38400
+                }
+              ],
+              "actual_feature": "joint160/id_feat_joint",
+              "export_exact": true,
+              "maximum_export_difference": 0,
+              "class_W_zeroing_leaves_features_identical": true,
+              "old_class_W_removed_from_export": true,
+              "feature_parameters_buffers_unchanged": true,
+              "head_fit": false,
+              "head_updates": 0,
+              "feature_updates_by_diagnostic": 0,
+              "query_read": false,
+              "feature_parameters": 236737,
+              "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+            }
+          },
+          {
+            "row_id": "COMPACT_SILU-s2026092703",
+            "arm": "COMPACT_SILU",
+            "seed": 2026092703,
+            "source_roles": "EXACT_MATCH",
+            "epoch": 50,
+            "diagnostic": {
+              "status": "VERIFIED",
+              "source_packets": 720,
+              "records": [
+                {
+                  "dimension": "overall",
+                  "stratum": null,
+                  "count": 720,
+                  "initial_to_final_raw_joint160_L2_mean": 17.32703399658203,
+                  "initial_to_final_cosine_mean": 0.1133059412240982,
+                  "changed_feature_elements": 115200
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 1,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.482223510742188,
+                  "initial_to_final_cosine_mean": 0.10247902572154999,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 3,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.098079681396484,
+                  "initial_to_final_cosine_mean": 0.14350885152816772,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 4,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.41661834716797,
+                  "initial_to_final_cosine_mean": 0.08571190387010574,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 6,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.42809295654297,
+                  "initial_to_final_cosine_mean": 0.10843220353126526,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 8,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.21015739440918,
+                  "initial_to_final_cosine_mean": 0.12639763951301575,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 1,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.348661422729492,
+                  "initial_to_final_cosine_mean": 0.11116782575845718,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 2,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.30962562561035,
+                  "initial_to_final_cosine_mean": 0.11516283452510834,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 3,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.322816848754883,
+                  "initial_to_final_cosine_mean": 0.11358711868524551,
+                  "changed_feature_elements": 38400
+                }
+              ],
+              "actual_feature": "joint160/id_feat_joint",
+              "export_exact": true,
+              "maximum_export_difference": 0,
+              "class_W_zeroing_leaves_features_identical": true,
+              "old_class_W_removed_from_export": true,
+              "feature_parameters_buffers_unchanged": true,
+              "head_fit": false,
+              "head_updates": 0,
+              "feature_updates_by_diagnostic": 0,
+              "query_read": false,
+              "feature_parameters": 236737,
+              "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+            }
+          },
+          {
+            "row_id": "LONG_SILU-s2026092703",
+            "arm": "LONG_SILU",
+            "seed": 2026092703,
+            "source_roles": "EXACT_MATCH",
+            "epoch": 50,
+            "diagnostic": {
+              "status": "VERIFIED",
+              "source_packets": 720,
+              "records": [
+                {
+                  "dimension": "overall",
+                  "stratum": null,
+                  "count": 720,
+                  "initial_to_final_raw_joint160_L2_mean": 17.18575668334961,
+                  "initial_to_final_cosine_mean": 0.12599937617778778,
+                  "changed_feature_elements": 115200
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 1,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.308876037597656,
+                  "initial_to_final_cosine_mean": 0.11485780775547028,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 3,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.866214752197266,
+                  "initial_to_final_cosine_mean": 0.16420620679855347,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 4,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.295879364013672,
+                  "initial_to_final_cosine_mean": 0.10190548002719879,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 6,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.304128646850586,
+                  "initial_to_final_cosine_mean": 0.1166321411728859,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 8,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.153684616088867,
+                  "initial_to_final_cosine_mean": 0.13239525258541107,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 1,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.22590446472168,
+                  "initial_to_final_cosine_mean": 0.12265349924564362,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 2,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.17344093322754,
+                  "initial_to_final_cosine_mean": 0.12762461602687836,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 3,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 17.157920837402344,
+                  "initial_to_final_cosine_mean": 0.12772001326084137,
+                  "changed_feature_elements": 38400
+                }
+              ],
+              "actual_feature": "joint160/id_feat_joint",
+              "export_exact": true,
+              "maximum_export_difference": 0,
+              "class_W_zeroing_leaves_features_identical": true,
+              "old_class_W_removed_from_export": true,
+              "feature_parameters_buffers_unchanged": true,
+              "head_fit": false,
+              "head_updates": 0,
+              "feature_updates_by_diagnostic": 0,
+              "query_read": false,
+              "feature_parameters": 236737,
+              "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+            }
+          },
+          {
+            "row_id": "LONG_SILU-s2026092702",
+            "arm": "LONG_SILU",
+            "seed": 2026092702,
+            "source_roles": "EXACT_MATCH",
+            "epoch": 50,
+            "diagnostic": {
+              "status": "VERIFIED",
+              "source_packets": 720,
+              "records": [
+                {
+                  "dimension": "overall",
+                  "stratum": null,
+                  "count": 720,
+                  "initial_to_final_raw_joint160_L2_mean": 16.83246612548828,
+                  "initial_to_final_cosine_mean": 0.17188984155654907,
+                  "changed_feature_elements": 115200
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 1,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 17.032325744628906,
+                  "initial_to_final_cosine_mean": 0.16691695153713226,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 3,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.796253204345703,
+                  "initial_to_final_cosine_mean": 0.16288729012012482,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 4,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.822134017944336,
+                  "initial_to_final_cosine_mean": 0.17628563940525055,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 6,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.85050392150879,
+                  "initial_to_final_cosine_mean": 0.17747104167938232,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "receiver",
+                  "stratum": 8,
+                  "count": 144,
+                  "initial_to_final_raw_joint160_L2_mean": 16.661109924316406,
+                  "initial_to_final_cosine_mean": 0.17588822543621063,
+                  "changed_feature_elements": 23040
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 1,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 16.84799575805664,
+                  "initial_to_final_cosine_mean": 0.17213621735572815,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 2,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 16.817562103271484,
+                  "initial_to_final_cosine_mean": 0.17255249619483948,
+                  "changed_feature_elements": 38400
+                },
+                {
+                  "dimension": "day",
+                  "stratum": 3,
+                  "count": 240,
+                  "initial_to_final_raw_joint160_L2_mean": 16.831838607788086,
+                  "initial_to_final_cosine_mean": 0.1709807962179184,
+                  "changed_feature_elements": 38400
+                }
+              ],
+              "actual_feature": "joint160/id_feat_joint",
+              "export_exact": true,
+              "maximum_export_difference": 0,
+              "class_W_zeroing_leaves_features_identical": true,
+              "old_class_W_removed_from_export": true,
+              "feature_parameters_buffers_unchanged": true,
+              "head_fit": false,
+              "head_updates": 0,
+              "feature_updates_by_diagnostic": 0,
+              "query_read": false,
+              "feature_parameters": 236737,
+              "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+            }
+          }
+        ],
+        "missing": [],
+        "source_packets_per_model": 720,
+        "head_fit": false,
+        "head_updates": 0,
+        "query_read": false
+      },
+      "judgment": "Primary81.6417%,goal84false. Coverage +0.128pp/2positive seeds; branchSiLU -0.340pp vsmatched linear. Original-head gains only; feature change/export boundary proved, transfer benefit not established."
     }
   ],
   "diagnostics": {
@@ -75184,13 +76893,13 @@
     }
   },
   "next_directions": [
-    "TIME 2x2 prioritized by latest user design",
-    "Sinc coordinate repair queued; actual near-static kernels preserved",
-    "PA completed; no further matrix or head fitting this round"
+    "Sinc coordinates based on actual9model optimizer/ULP/EMA measurements",
+    "TIME projection/basis attribution with source-only fixed branch removals; no dilation/kernel scan",
+    "Oldgate coverage audit on legal labeled source proxies before altering SSL"
   ],
   "next_actions_max2": [
-    "Audit trained TIME equivalent kernels and source-only scale removal without fitting",
-    "Matched TIME compact/long × linear/SiLU four-condition experiment, <=50 epochs, old gates/EMA/cos, default head only"
+    "Sinc coordinate repair on the original oldgate/cos feature extractor; RAW/native vs centered-scaled with identical initial filters, <=50epoch, independent scratch controls",
+    "Labeled-source default teacher/student gate diagnostic only; no U truth, classifier fitting or target-driven selection"
   ],
   "goal_84": false,
   "Phase2_development": false

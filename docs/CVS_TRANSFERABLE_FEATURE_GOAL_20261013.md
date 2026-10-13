@@ -13,3 +13,5 @@ PA旧门控＋cos32＋18完整9行已核验：baseline80.6454%，CONV80.7738%，
 当前最多两个动作：先对已有TIME真实权重做核折叠与源L固定720包/seed分支撤除；再发布TIME四组控制。Sinc真实9模型kernelrelativeL2≤2.4071e−8的近静止证据保留，参数坐标修复排队，不混入本轮。诊断零梯度/optimizer/headfit，不把核秩、源几何、人工gradient当作迁移效果。
 
 每次实现/config/同轮实际结果与负结果提交push，并独立比较远端OID。主报告集中在 [CVS_PHASE1_FEATURE_REVIEW_20261014.md](CVS_PHASE1_FEATURE_REVIEW_20261014.md) 与机器台账；大原始数据、权重、预测、日志保留原存储。
+
+TIME2×2全15行正式完成：预登记LONG_SILU81.6417%，目标差2.3583pp；完整3seed/133200新step/750epoch/2520000固定默认预测270评分及12真实featureexport/W独立核验VERIFIED。所有worker自然退出，0headfit，正负结果完整保留。下一独立方向由真实9模型Sinc moment/ULP/EMA数值证据选择，RAW/native与centered尺度控制同初始filters/joint160、同旧门控cos，不用最高TIME模型初始化、不根据target选择尺度。另一个动作最多为合法有标签source门控coverage诊断。主报告为当前权威状态，先前RUNNING为历史记录。

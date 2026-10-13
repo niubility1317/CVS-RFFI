@@ -3242,7 +3242,268 @@
     "12newmodels600epochs/133200updates plus3baseline150epochs comparisonreuse;15readouts2520000decisions/270metrics;stagehealth54kadditionalVpackets pernewmodel. NewUforwardcalls0.",
     "PA previousfixedrun completedanddeliveredbefore this candidate, results notusedto alterTIME structure/recipe. Sincscaling queued,notcombined."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "registered_at": "2026-10-13T17:34:55+00:00",
-  "execution_commit": "351e35cd0d298a6832c0865628bba28ab5a14cbe"
+  "execution_commit": "351e35cd0d298a6832c0865628bba28ab5a14cbe",
+  "results": {
+    "status": "VERIFIED",
+    "summary": [
+      {
+        "arm": "OLD_GATE_COS50",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seed_count": 3,
+        "accuracy_mean": 0.8052678571428572,
+        "accuracy_sd": 0.023775723031464996,
+        "seed_accuracy": {
+          "2026092701": 0.8066845238095238,
+          "2026092702": 0.7808154761904762,
+          "2026092703": 0.8283035714285715
+        },
+        "macro_f1_mean": 0.8000238637751929,
+        "worst_RX_mean": 0.6797083333333334,
+        "worst_day_mean": 0.7605555555555555
+      },
+      {
+        "arm": "COMPACT_LINEAR",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seed_count": 3,
+        "accuracy_mean": 0.8185357142857143,
+        "accuracy_sd": 0.008978978741502998,
+        "seed_accuracy": {
+          "2026092701": 0.8213214285714285,
+          "2026092702": 0.8084940476190476,
+          "2026092703": 0.8257916666666667
+        },
+        "macro_f1_mean": 0.8137362511443912,
+        "worst_RX_mean": 0.7453472222222222,
+        "worst_day_mean": 0.7904285714285715
+      },
+      {
+        "arm": "LONG_LINEAR",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seed_count": 3,
+        "accuracy_mean": 0.8198194444444444,
+        "accuracy_sd": 0.008566353766663554,
+        "seed_accuracy": {
+          "2026092701": 0.8272916666666666,
+          "2026092702": 0.8104702380952381,
+          "2026092703": 0.8216964285714285
+        },
+        "macro_f1_mean": 0.815255569951854,
+        "worst_RX_mean": 0.7479305555555555,
+        "worst_day_mean": 0.7942698412698412
+      },
+      {
+        "arm": "COMPACT_SILU",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seed_count": 3,
+        "accuracy_mean": 0.8151349206349207,
+        "accuracy_sd": 0.022297789334428903,
+        "seed_accuracy": {
+          "2026092701": 0.8233035714285715,
+          "2026092702": 0.7899047619047619,
+          "2026092703": 0.8321964285714286
+        },
+        "macro_f1_mean": 0.8101060295086353,
+        "worst_RX_mean": 0.7138333333333333,
+        "worst_day_mean": 0.783015873015873
+      },
+      {
+        "arm": "LONG_SILU",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seed_count": 3,
+        "accuracy_mean": 0.8164166666666667,
+        "accuracy_sd": 0.017806502600565467,
+        "seed_accuracy": {
+          "2026092701": 0.8251607142857142,
+          "2026092702": 0.7959285714285714,
+          "2026092703": 0.8281607142857143
+        },
+        "macro_f1_mean": 0.8115470152014008,
+        "worst_RX_mean": 0.7245,
+        "worst_day_mean": 0.7808730158730158
+      }
+    ],
+    "paired": [
+      {
+        "arm": "LONG_LINEAR",
+        "control": "COMPACT_LINEAR",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.005970238095238112,
+          0.0019761904761904647,
+          -0.004095238095238152
+        ],
+        "mean_difference": 0.0012837301587301415,
+        "sd_difference": 0.005068340823554004,
+        "positive_seeds": 2
+      },
+      {
+        "arm": "LONG_SILU",
+        "control": "COMPACT_SILU",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.0018571428571427795,
+          0.006023809523809542,
+          -0.004035714285714365
+        ],
+        "mean_difference": 0.0012817460317459857,
+        "sd_difference": 0.005054385813192551,
+        "positive_seeds": 2
+      },
+      {
+        "arm": "COMPACT_SILU",
+        "control": "COMPACT_LINEAR",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.0019821428571429323,
+          -0.018589285714285753,
+          0.006404761904761913
+        ],
+        "mean_difference": -0.0034007936507936356,
+        "sd_difference": 0.01333820108493506,
+        "positive_seeds": 2
+      },
+      {
+        "arm": "LONG_SILU",
+        "control": "LONG_LINEAR",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          -0.0021309523809524,
+          -0.014541666666666675,
+          0.0064642857142857
+        ],
+        "mean_difference": -0.0034027777777777914,
+        "sd_difference": 0.010560571184255008,
+        "positive_seeds": 1
+      },
+      {
+        "arm": "COMPACT_LINEAR",
+        "control": "OLD_GATE_COS50",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.014636904761904712,
+          0.02767857142857144,
+          -0.0025119047619047707
+        ],
+        "mean_difference": 0.013267857142857128,
+        "sd_difference": 0.01514172816059457,
+        "positive_seeds": 2
+      },
+      {
+        "arm": "LONG_LINEAR",
+        "control": "OLD_GATE_COS50",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.020607142857142824,
+          0.029654761904761906,
+          -0.0066071428571429225
+        ],
+        "mean_difference": 0.014551587301587269,
+        "sd_difference": 0.01887415558522232,
+        "positive_seeds": 2
+      },
+      {
+        "arm": "COMPACT_SILU",
+        "control": "OLD_GATE_COS50",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.016619047619047644,
+          0.009089285714285689,
+          0.0038928571428571423
+        ],
+        "mean_difference": 0.009867063492063491,
+        "sd_difference": 0.0063986471001903356,
+        "positive_seeds": 3
+      },
+      {
+        "arm": "LONG_SILU",
+        "control": "OLD_GATE_COS50",
+        "readout": "ORIGINAL_HEAD",
+        "view": "clean",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.018476190476190424,
+          0.015113095238095231,
+          -0.00014285714285722229
+        ],
+        "mean_difference": 0.011148809523809478,
+        "sd_difference": 0.009922394090060046,
+        "positive_seeds": 2
+      }
+    ],
+    "factorial_interaction": {
+      "definition": "(LONG_SILU-COMPACT_SILU)-(LONG_LINEAR-COMPACT_LINEAR)",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        -0.004113095238095332,
+        0.004047619047619078,
+        0.00005952380952378711
+      ],
+      "mean_difference": -0.000001984126984155843,
+      "sd_difference": 0.004080704820610762,
+      "positive_seeds": 2,
+      "target_feedback": false
+    },
+    "goal_84": false,
+    "results_file": "results.json",
+    "analysis_file": "final_analysis.md",
+    "head_fit": false,
+    "head_updates": 0
+  }
 }
