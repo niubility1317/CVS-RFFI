@@ -53,3 +53,7 @@ clean-only 固定 ManySig 168000 包，旧六类、七个目标 RX、四日，�
 ## 终轮诊断入口已准备，实际结果待冻结
 
 新增 diagnose.py 从真实保存状态核对实际坐标、物理滤波核、EMA 与原生完整 optimizer 参数顺序/moment，不执行优化器更新；坐标与 Hz 的单位分别报告。feature_check.py 在固定合法 L720 上核对默认 joint160、feature-only 导出、W 独立性，并仅在临时 final 副本恢复初始 Sinc，测量相同下游状态下的源 feature/default-margin 敏感性；这不是独立训练消融或新 TX 证明。两项合成算术/敏感性检查 PASS，真实终轮结果待 source_frozen 后执行。audit.py 预备完整读取 66600 新 step、450 epoch、162 CM 与纠错/新增错误，全部 row 预测完成后才连接 truth；尚未运行该完整复算，不能称其已通过。以上诊断不修改发布归档或健康 worker。
+
+## 首种子真实保存态与源特征证据
+
+两个模型均固定50/11100完成，原定源条件通过，剩余4模型自动释放。first_seed_source_evidence.json保存真实checkpoint/moment/EMA和L720结果：RAW核初末完全相同；CENTER全部48坐标更新，核相对L2=0.0039949785，EMA核相对L2=0.0039838781。仅在final临时副本恢复初始Sinc，CENTER真实joint160平均改变L2=0.08033414、margin均值差0.00773657，RAW不变；source默认accuracy在此小样本恢复前后相同。两模型feature-only导出与原z严格相同、W独立、θ/buffers未修改、0头拟合。剩余模型及完整三seed目标结果仍待，不能用单seed当最终目标。

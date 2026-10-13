@@ -1,6 +1,6 @@
 # 合法源样本的旧门控覆盖与精度诊断
 
-状态：LOCAL_VERIFIED，尚未发布或运行真实源前向。完整固定矩阵见 [experiment.json](experiment.json)。
+状态：ANALYZED，三个既有模型的源 L/V 前向和聚合诊断全部完成。完整固定矩阵见 [experiment.json](experiment.json)。
 
 ## 目的与边界
 
@@ -31,3 +31,7 @@
 一次归档 SHA 本地/远端比较、remote compile、真实已有默认 checkpoint 零 IQ no-query smoke。PASS 后直接运行上述源诊断；不执行 target prediction/scorer。任何所属来源、元数据、非有限值、默认路径或状态变化错误停止此诊断并保存 failure.json 和已有结果，不自动重试或影响其他 owner。实际 PID/CWD/argv/CPU/log-growth 独立回读。
 
 此分析与正在运行的 Sinc scratch50 矩阵独立，不改变其配方、模型来源、源放行阈值或测试流程。源代理证据如支持新 SSL 因素，只能在之后另行固定公平实验；当前不热改健康任务。结果只支持源机制判断，不宣称目标泛化、实际 U 准确率或新 TX 迁移。
+
+## 实际完成
+
+[完整同轮结果](source_gate_analysis.md)及[完整聚合计数](results.json)已经返回。执行代码 0f514fa1ba4302bc7e5e25d0ad41337881acce7f；0训练/分类头/优化器更新，360记录，CPU104.59秒；三row自然结束、失败0。source V confidence+strong覆盖92.2815%/precision99.8221%，完整旧门控覆盖3.4099%/本次接收子集错误0；不能外推U或目标性能。

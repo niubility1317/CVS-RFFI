@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "Persistent user Phase1 feature objective permits source mechanism diagnosis and at most2 core hypotheses/actions; planned labeled-source gate audit uses existing default models, no head fitting/U labels/target, preserves healthy Sinc experiments.",
   "code": {
-    "commit": "Actual committed HEAD embedded in immutable release_commit.txt and recorded by audit before any model reading",
+    "commit": "0f514fa1ba4302bc7e5e25d0ad41337881acce7f",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "native verified Python / ordinary N607 CVS-RFFI fullFP32",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_gate_audit_20261014_r01",
@@ -737,5 +737,17 @@
     "Sinc scratch50 matrix continues unchanged and owns its independent firstseed thresholds. Source audit does not alter its scheduling, configs, parents, metrics or checkpoints. Source conclusions may support later separately registered feature/SSL experiment, never hot changes."
   ],
   "registered_at": "2026-10-13T20:17:35+00:00",
-  "status": "LOCAL_VERIFIED"
+  "status": "ANALYZED",
+  "execution_commit": "0f514fa1ba4302bc7e5e25d0ad41337881acce7f",
+  "results": {
+    "models": 3,
+    "records": 360,
+    "source_only": true,
+    "U_truth_read": false,
+    "query_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0,
+    "summary": "results.json",
+    "analysis": "source_gate_analysis.md"
+  }
 }

@@ -31974,7 +31974,7 @@
     },
     {
       "run_id": "20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01",
-      "status": "RUNNING; first-seed RAW/CENTER source training, historical3default comparisons closed",
+      "status": "RUNNING; firstseed2trained/predicted/scored, source gate passed, remaining4training",
       "mechanism": "actual Sinc RAW_HZ vs centered 25000Hz offset coordinates; source numerical evidence driven; original feature architecture/default jointly trained head",
       "code": "0f81373c25ba69a6cb9deec5c7ca652880fd62af",
       "baseline": "OLD_GATE_COS5033+17 fixedfinal50 historical comparison only",
@@ -32008,7 +32008,48 @@
         "center_kernel_relative_L2": 0.0015866640023887157,
         "terminal": false,
         "performance_claim": false
+      },
+      "first_seed_source": {
+        "status": "VERIFIED",
+        "artifact": "automation_reports/CV-SincNet/20261014-phase1-sinc-coordinate-oldgate-cos-e50-clean-manysig-m9-r01/first_seed_source_evidence.json",
+        "epochs_per_model": 50,
+        "updates_per_model": 11100,
+        "RAW_kernel_relative_L2": 0,
+        "CENTER_kernel_relative_L2": 0.0039949784986674786,
+        "CENTER_changed_parameters": 48,
+        "source_export_exact": true,
+        "W_independent": true,
+        "center_Sinc_restoration_L2": 0.0803341418504715,
+        "not_complete_three_seed_performance": true
       }
+    },
+    {
+      "run_id": "20261014-phase1-source-legacy-gate-audit-manysig-m3-r01",
+      "kind": "source_diagnostic",
+      "status": "ANALYZED",
+      "code": "0f514fa1ba4302bc7e5e25d0ad41337881acce7f",
+      "models": 3,
+      "new_training_epochs": 0,
+      "head_updates": 0,
+      "optimizer_steps": 0,
+      "source_roles": [
+        "L_s",
+        "V"
+      ],
+      "U_IQ_read": false,
+      "U_truth_read": false,
+      "target_access": false,
+      "metrics_records": 360,
+      "source_packet_forwards": 199800,
+      "source_forward_batches": 786,
+      "CPU_seconds_sum": 104.59110713005066,
+      "source_V_full_old_coverage": 0.03409876543209877,
+      "source_V_confidence_strong_coverage": 0.9228148148148149,
+      "source_V_confidence_strong_precision": 0.9982213225039138,
+      "analytic_U_neighbor_visibility": 0.017806768282476945,
+      "U_accuracy_unknown": true,
+      "result": "automation_reports/CV-SincNet/20261014-phase1-source-legacy-gate-audit-manysig-m3-r01/results.json",
+      "report": "automation_reports/CV-SincNet/20261014-phase1-source-legacy-gate-audit-manysig-m3-r01/source_gate_analysis.md"
     }
   ],
   "diagnostics": {
@@ -76936,8 +76977,8 @@
     "Oldgate coverage audit on legal labeled source proxies before altering SSL"
   ],
   "next_actions_max2": [
-    "Sinc coordinate repair on the original oldgate/cos feature extractor; RAW/native vs centered-scaled with identical initial filters, <=50epoch, independent scratch controls",
-    "Labeled-source default teacher/student gate diagnostic only; no U truth, classifier fitting or target-driven selection"
+    "Finish fixed Sinc3seed default-only clean/truth-last matrix, full logs/actual kernels/EMA/source feature restoration and Git delivery; no target feedback",
+    "Source-supported physical-neighbor pair sampling diagnostic with original gates and same-path random order control; no hiddenTX or head fit; training only after separate fixed preregistration"
   ],
   "goal_84": false,
   "Phase2_development": false
