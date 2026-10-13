@@ -1,10 +1,9 @@
 {
   "run_id": "20261014-phase1-time-coverage-nonlinearity-oldgate-e50-clean-manysig-m15-r01",
   "status": "VERIFIED",
-  "execution_commit": "7b1e2fcbe1bf5d05f24bc91f86aa7d4b46d3ee95",
-  "completed_models": 4,
+  "completed_models": 12,
   "expected_models": 12,
-  "all_models_complete": false,
+  "all_models_complete": true,
   "scope": "actual initial/final source weights; exact feature boundary and movement on fixed artificial packets, not recognition or transfer proof",
   "rows": [
     {
@@ -12,11 +11,6 @@
       "arm": "COMPACT_LINEAR",
       "seed": 2026092701,
       "temporal_parameters": 81672,
-      "updated_tensors": {
-        "t1": 7,
-        "t2": 7,
-        "t3": 7
-      },
       "actual_z_equals_pure_export": true,
       "W_deleted_invariant": true,
       "feature_params_buffers_unchanged": true,
@@ -27,11 +21,6 @@
       "arm": "LONG_LINEAR",
       "seed": 2026092701,
       "temporal_parameters": 81672,
-      "updated_tensors": {
-        "t1": 7,
-        "t2": 7,
-        "t3": 7
-      },
       "actual_z_equals_pure_export": true,
       "W_deleted_invariant": true,
       "feature_params_buffers_unchanged": true,
@@ -42,11 +31,6 @@
       "arm": "COMPACT_SILU",
       "seed": 2026092701,
       "temporal_parameters": 81672,
-      "updated_tensors": {
-        "t1": 7,
-        "t2": 7,
-        "t3": 7
-      },
       "actual_z_equals_pure_export": true,
       "W_deleted_invariant": true,
       "feature_params_buffers_unchanged": true,
@@ -57,15 +41,90 @@
       "arm": "LONG_SILU",
       "seed": 2026092701,
       "temporal_parameters": 81672,
-      "updated_tensors": {
-        "t1": 7,
-        "t2": 7,
-        "t3": 7
-      },
       "actual_z_equals_pure_export": true,
       "W_deleted_invariant": true,
       "feature_params_buffers_unchanged": true,
       "actual_z_change": 14.65109920501709
+    },
+    {
+      "row_id": "COMPACT_LINEAR-s2026092702",
+      "arm": "COMPACT_LINEAR",
+      "seed": 2026092702,
+      "temporal_parameters": 81672,
+      "actual_z_equals_pure_export": true,
+      "W_deleted_invariant": true,
+      "feature_params_buffers_unchanged": true,
+      "actual_z_change": 16.16556739807129
+    },
+    {
+      "row_id": "LONG_LINEAR-s2026092702",
+      "arm": "LONG_LINEAR",
+      "seed": 2026092702,
+      "temporal_parameters": 81672,
+      "actual_z_equals_pure_export": true,
+      "W_deleted_invariant": true,
+      "feature_params_buffers_unchanged": true,
+      "actual_z_change": 16.505815505981445
+    },
+    {
+      "row_id": "COMPACT_SILU-s2026092702",
+      "arm": "COMPACT_SILU",
+      "seed": 2026092702,
+      "temporal_parameters": 81672,
+      "actual_z_equals_pure_export": true,
+      "W_deleted_invariant": true,
+      "feature_params_buffers_unchanged": true,
+      "actual_z_change": 15.405608177185059
+    },
+    {
+      "row_id": "LONG_SILU-s2026092702",
+      "arm": "LONG_SILU",
+      "seed": 2026092702,
+      "temporal_parameters": 81672,
+      "actual_z_equals_pure_export": true,
+      "W_deleted_invariant": true,
+      "feature_params_buffers_unchanged": true,
+      "actual_z_change": 15.239416122436523
+    },
+    {
+      "row_id": "COMPACT_LINEAR-s2026092703",
+      "arm": "COMPACT_LINEAR",
+      "seed": 2026092703,
+      "temporal_parameters": 81672,
+      "actual_z_equals_pure_export": true,
+      "W_deleted_invariant": true,
+      "feature_params_buffers_unchanged": true,
+      "actual_z_change": 12.736743927001953
+    },
+    {
+      "row_id": "LONG_LINEAR-s2026092703",
+      "arm": "LONG_LINEAR",
+      "seed": 2026092703,
+      "temporal_parameters": 81672,
+      "actual_z_equals_pure_export": true,
+      "W_deleted_invariant": true,
+      "feature_params_buffers_unchanged": true,
+      "actual_z_change": 13.122186660766602
+    },
+    {
+      "row_id": "COMPACT_SILU-s2026092703",
+      "arm": "COMPACT_SILU",
+      "seed": 2026092703,
+      "temporal_parameters": 81672,
+      "actual_z_equals_pure_export": true,
+      "W_deleted_invariant": true,
+      "feature_params_buffers_unchanged": true,
+      "actual_z_change": 13.02299976348877
+    },
+    {
+      "row_id": "LONG_SILU-s2026092703",
+      "arm": "LONG_SILU",
+      "seed": 2026092703,
+      "temporal_parameters": 81672,
+      "actual_z_equals_pure_export": true,
+      "W_deleted_invariant": true,
+      "feature_params_buffers_unchanged": true,
+      "actual_z_change": 12.373878479003906
     }
   ],
   "query_or_source_IQ_read": false,

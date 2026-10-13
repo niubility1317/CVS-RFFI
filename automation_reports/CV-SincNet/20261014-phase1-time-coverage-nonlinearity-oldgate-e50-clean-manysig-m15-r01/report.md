@@ -1,6 +1,6 @@
 # 时间覆盖 × 分支内非线性：最小预登记
 
-状态：RUNNING（发布与独立进程/日志读回VERIFIED；完整结果待训练、预测和独立评分）。唯一维护矩阵见 experiment.json；实际配置见 configs，不复制多份矩阵。
+状态：ANALYZED（15row完整预测、独立评分、全源日志、机制及特征导出核验闭合）。唯一维护矩阵见 experiment.json；实际配置见 configs，不复制多份矩阵。
 
 ## 科学问题与范围
 
@@ -59,3 +59,7 @@ epoch32/33/34/40/50记录source V/RX指标、Sinc/t1/t2/t3/PA/频域/default hea
 实际执行commit 7b1e2fcbe1bf5d05f24bc91f86aa7d4b46d3ee95，本地HEAD与upstream OID独立一致。一次ordinary N607 direct preflight、一次archive local/remote SHA比较、remote compile及真实同契约checkpoint noquery smoke均PASS。不可变release cvs_time_factorial50_20261014_r01 已发布。独立readback VERIFIED（原始证据保留local_artifacts/cvs_time_factorial50_20261014_r01/readback.json和startup_readback.json），dispatcher PID/CWD/argv匹配，四新worker正常、第1至2epoch、日志增长、默认head_only=true、native_fitted_probes_disabled=true、新增参数60672，GPU总进程max3。BASE_REF seed01已source诊断、旧TIME同seed冻结source撤除、复用固定native预测与truth-last评分闭合。其他10row按source gate等待，未称完整15row或84%达标。
 
 2026-10-14最新独立readback VERIFIED：首seed四条件source固定终轮及预测/评分闭合，通过LCE≤.5和默认V总体/最差RX非劣；全部15row已派发、7row闭合，8个seed02/03模型第33至34epoch，pending0、failure0、dispatcher和8worker实际live，GPU总进程max2。source首seed四arm finalCE分别0.250144/0.246923/0.253900/0.253468，默认V98.4037/98.4148/98.2593/98.2667%，0另训head。未读取partial target指标作候选判断，不称完整三seed结果。
+
+## 完整收尾
+
+15row/2520000固定原头决定/270原始CM独立recount VERIFIED；12scratch50＝600新增epoch/133200更新，3历史50成本分开，0另训head。固定LONG_SILU三seed均值81.8115%、sampleSD0.5020pp，目标84%未达。完整因素对照、group指标、paired纠正/引入错误、源阶段/反馈/真实参数变化、pureexport和剩余容量/旁路归因边界统一在主报告 analysis/phase1_feature_evidence_review_20261014.md，机器聚合在本run analysis。所有原产物保留，不按目标选择性重跑。

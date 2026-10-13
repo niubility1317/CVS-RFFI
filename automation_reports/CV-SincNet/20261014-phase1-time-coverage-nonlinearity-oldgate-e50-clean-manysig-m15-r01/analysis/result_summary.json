@@ -1,0 +1,243 @@
+{
+  "run_id": "20261014-phase1-time-coverage-nonlinearity-oldgate-e50-clean-manysig-m15-r01",
+  "source_rows": 15,
+  "scored_rows": 15,
+  "expected_rows": 15,
+  "all_rows_complete": true,
+  "summary": [
+    {
+      "arm": "BASE_REF",
+      "seed_count": 3,
+      "complete_three_seed": true,
+      "accuracy_mean": 0.8052678571428572,
+      "accuracy_sd": 0.023775723031464996,
+      "macro_f1_mean": 0.8000238637751929,
+      "macro_f1_sd": 0.024048902449112713,
+      "worst_RX_mean": 0.6797083333333334,
+      "worst_RX_sd": 0.08299649632832565,
+      "worst_day_mean": 0.7605555555555555,
+      "worst_day_sd": 0.022333756384120534,
+      "final_L_CE_mean": 0.2793633658494856,
+      "final_L_CE_sd": 0.008979260996469958,
+      "source_V_mean": 0.9790987654320987,
+      "source_V_sd": 0.0010226068340680888,
+      "worst_source_RX_mean": 0.9437654320987655,
+      "worst_source_RX_sd": 0.0014021995915556257,
+      "source_training_seconds_mean": 2333.788619041443,
+      "source_training_seconds_sd": 36.27414857465799,
+      "U_acceptance_mean": 0.015749904900231697,
+      "U_acceptance_sd": 4.998466359623533e-05
+    },
+    {
+      "arm": "COMPACT_LINEAR",
+      "seed_count": 3,
+      "complete_three_seed": true,
+      "accuracy_mean": 0.8121607142857142,
+      "accuracy_sd": 0.0055909906624230085,
+      "macro_f1_mean": 0.8067290238488403,
+      "macro_f1_sd": 0.006498564026501623,
+      "worst_RX_mean": 0.7216111111111111,
+      "worst_RX_sd": 0.02874910425335664,
+      "worst_day_mean": 0.7778015873015873,
+      "worst_day_sd": 0.012134225067527713,
+      "final_L_CE_mean": 0.23699402479124856,
+      "final_L_CE_sd": 0.011510188450632536,
+      "source_V_mean": 0.9845308641975309,
+      "source_V_sd": 0.0005202791976717502,
+      "worst_source_RX_mean": 0.9586419753086419,
+      "worst_source_RX_sd": 0.0025278512628941845,
+      "source_training_seconds_mean": 2356.4085228443146,
+      "source_training_seconds_sd": 194.76982919866333,
+      "U_acceptance_mean": 0.016686724072344988,
+      "U_acceptance_sd": 8.813051593570777e-05
+    },
+    {
+      "arm": "LONG_LINEAR",
+      "seed_count": 3,
+      "complete_three_seed": true,
+      "accuracy_mean": 0.8132678571428572,
+      "accuracy_sd": 0.004348461785270678,
+      "macro_f1_mean": 0.8079559811295023,
+      "macro_f1_sd": 0.005424745290586965,
+      "worst_RX_mean": 0.7242222222222222,
+      "worst_RX_sd": 0.005955613209712627,
+      "worst_day_mean": 0.7763412698412698,
+      "worst_day_sd": 0.01408872785089337,
+      "final_L_CE_mean": 0.23318703242160893,
+      "final_L_CE_sd": 0.01199163141084275,
+      "source_V_mean": 0.984679012345679,
+      "source_V_sd": 0.0004601146951502274,
+      "worst_source_RX_mean": 0.9589506172839506,
+      "worst_source_RX_sd": 0.0028043991831112267,
+      "source_training_seconds_mean": 2427.5639758110046,
+      "source_training_seconds_sd": 92.95220643598026,
+      "U_acceptance_mean": 0.01673202614379085,
+      "U_acceptance_sd": 0.00010216137218353494
+    },
+    {
+      "arm": "COMPACT_SILU",
+      "seed_count": 3,
+      "complete_three_seed": true,
+      "accuracy_mean": 0.8148095238095239,
+      "accuracy_sd": 0.005039747765482173,
+      "macro_f1_mean": 0.8101177985216277,
+      "macro_f1_sd": 0.005146258019442374,
+      "worst_RX_mean": 0.7112777777777778,
+      "worst_RX_sd": 0.009174838529207837,
+      "worst_day_mean": 0.7744761904761904,
+      "worst_day_sd": 0.004132238718345888,
+      "final_L_CE_mean": 0.24498811538691995,
+      "final_L_CE_sd": 0.007753962078670687,
+      "source_V_mean": 0.9837407407407408,
+      "source_V_sd": 0.0010149770078552044,
+      "worst_source_RX_mean": 0.9569135802469135,
+      "worst_source_RX_sd": 0.0042485103228567375,
+      "source_training_seconds_mean": 2428.69509156545,
+      "source_training_seconds_sd": 14.308568617204246,
+      "U_acceptance_mean": 0.01662240204723865,
+      "U_acceptance_sd": 0.00011404581887446566
+    },
+    {
+      "arm": "LONG_SILU",
+      "seed_count": 3,
+      "complete_three_seed": true,
+      "accuracy_mean": 0.8181150793650793,
+      "accuracy_sd": 0.005020022033886994,
+      "macro_f1_mean": 0.813830940948568,
+      "macro_f1_sd": 0.0052200515091519045,
+      "worst_RX_mean": 0.7219027777777778,
+      "worst_RX_sd": 0.02644393746596192,
+      "worst_day_mean": 0.7783095238095238,
+      "worst_day_sd": 0.0077553287948708876,
+      "final_L_CE_mean": 0.24182563826620757,
+      "final_L_CE_sd": 0.010156792189037688,
+      "source_V_mean": 0.9838395061728394,
+      "source_V_sd": 0.0011321061701226273,
+      "worst_source_RX_mean": 0.9565432098765432,
+      "worst_source_RX_sd": 0.003360656194769396,
+      "source_training_seconds_mean": 2321.394812822342,
+      "source_training_seconds_sd": 169.21745851204332,
+      "U_acceptance_mean": 0.016622056229899367,
+      "U_acceptance_sd": 0.0001311012643794631
+    }
+  ],
+  "paired": [
+    {
+      "treatment": "COMPACT_LINEAR",
+      "control": "BASE_REF",
+      "seed_count": 3,
+      "complete_three_seed": true,
+      "seed_differences": {
+        "2026092701": 0.0033035714285714057,
+        "2026092702": 0.027166666666666672,
+        "2026092703": -0.009791666666666754
+      },
+      "mean_difference": 0.006892857142857108,
+      "sd_difference": 0.01873877876619839,
+      "positive_seeds": 2
+    },
+    {
+      "treatment": "LONG_LINEAR",
+      "control": "BASE_REF",
+      "seed_count": 3,
+      "complete_three_seed": true,
+      "seed_differences": {
+        "2026092701": 0.0017619047619047423,
+        "2026092702": 0.03364880952380955,
+        "2026092703": -0.011410714285714274
+      },
+      "mean_difference": 0.008000000000000007,
+      "sd_difference": 0.0231684169859514,
+      "positive_seeds": 2
+    },
+    {
+      "treatment": "COMPACT_SILU",
+      "control": "BASE_REF",
+      "seed_count": 3,
+      "complete_three_seed": true,
+      "seed_differences": {
+        "2026092701": 0.007547619047619025,
+        "2026092702": 0.02926785714285718,
+        "2026092703": -0.008190476190476192
+      },
+      "mean_difference": 0.00954166666666667,
+      "sd_difference": 0.018808611151758407,
+      "positive_seeds": 2
+    },
+    {
+      "treatment": "LONG_SILU",
+      "control": "BASE_REF",
+      "seed_count": 3,
+      "complete_three_seed": true,
+      "seed_differences": {
+        "2026092701": 0.013779761904761934,
+        "2026092702": 0.03153571428571422,
+        "2026092703": -0.006773809523809571
+      },
+      "mean_difference": 0.012847222222222196,
+      "sd_difference": 0.019171779425049496,
+      "positive_seeds": 2
+    },
+    {
+      "treatment": "LONG_LINEAR",
+      "control": "COMPACT_LINEAR",
+      "seed_count": 3,
+      "complete_three_seed": true,
+      "seed_differences": {
+        "2026092701": -0.0015416666666666634,
+        "2026092702": 0.006482142857142881,
+        "2026092703": -0.00161904761904752
+      },
+      "mean_difference": 0.0011071428571428992,
+      "sd_difference": 0.004655047336273574,
+      "positive_seeds": 1
+    },
+    {
+      "treatment": "COMPACT_SILU",
+      "control": "COMPACT_LINEAR",
+      "seed_count": 3,
+      "complete_three_seed": true,
+      "seed_differences": {
+        "2026092701": 0.0042440476190476195,
+        "2026092702": 0.0021011904761905065,
+        "2026092703": 0.0016011904761905615
+      },
+      "mean_difference": 0.0026488095238095624,
+      "sd_difference": 0.0014039545702671595,
+      "positive_seeds": 3
+    },
+    {
+      "treatment": "LONG_SILU",
+      "control": "LONG_LINEAR",
+      "seed_count": 3,
+      "complete_three_seed": true,
+      "seed_differences": {
+        "2026092701": 0.012017857142857191,
+        "2026092702": -0.0021130952380953305,
+        "2026092703": 0.004636904761904703
+      },
+      "mean_difference": 0.004847222222222188,
+      "sd_difference": 0.007067823489149452,
+      "positive_seeds": 2
+    },
+    {
+      "treatment": "LONG_SILU",
+      "control": "COMPACT_SILU",
+      "seed_count": 3,
+      "complete_three_seed": true,
+      "seed_differences": {
+        "2026092701": 0.006232142857142908,
+        "2026092702": 0.0022678571428570438,
+        "2026092703": 0.0014166666666666217
+      },
+      "mean_difference": 0.0033055555555555247,
+      "sd_difference": 0.002569983702681539,
+      "positive_seeds": 3
+    }
+  ],
+  "default_classifier_only": true,
+  "head_fit_updates": 0,
+  "truth_last": true,
+  "training_curve_scope": "all completed-source epochs/steps; native source V in percent; U one observed sample per weak/strong pair",
+  "release_commit": "7b1e2fcbe1bf5d05f24bc91f86aa7d4b46d3ee95"
+}

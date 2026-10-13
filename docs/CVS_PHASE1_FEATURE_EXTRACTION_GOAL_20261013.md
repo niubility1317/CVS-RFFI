@@ -33,3 +33,5 @@
 下一项优先为时间覆盖×分支内SiLU四条件，默认分类头joint训练，禁止另训head。独立从零scratch50/33标签+17旧门控，保留PA/freq/reference/NoExplicitCFO，四新arm参数/对应权重/CPU与CUDA随机流匹配。旧TIME仅历史参照和冻结source诊断，不混入新匹配统计；Sinc量纲修复等保持独立后续机制。主证据复核：[phase1_feature_evidence_review_20261014](../analysis/phase1_feature_evidence_review_20261014.md)。当前唯一新run 20261014-phase1-time-coverage-nonlinearity-oldgate-e50-clean-manysig-m15-r01；原sequence健康计划不变。
 
 2026-10-14完整结果：sequence24row已ANALYZED，默认co-primary RFF81.5742%、SIG_TIME83.0393%（对基线＋2.5125pp/3正），84%尚未达；完整日志、分组、纠正/引入错误、真实参数更新与pureexport证据回收。CUDA初始化对基线的混杂保留，未热改历史run。另一分支也发布同构TIME，初始化offset62103与本run48213、source门槛/诊断预算不同；保护两份健康不可变run、不混合6seed、不再加第三套，只继续本run闭环。详见主证据报告。
+
+2026-10-14 TIME15row完整ANALYZED：四条件均值81.2161/81.3268/81.4810/81.8115%，预定LONG_SILU距84%2.1885pp。紧凑SiLU相对linear＋0.2649pp/3正；SiLU下长覆盖＋0.3306pp/3正，线性长覆盖仅1正。12个真实final-model导出W删改不改z、featureparams/buffers诊断不变；60阶段/180RXday反馈、270CM、252万决定/600新增ep全部核验。原头收益与迁移结论分开，当前禁止新headfit。完整source/seed/group/误差/成本与剩余容量/旁路归因统一主报告，不按目标重跑或额外扫核。

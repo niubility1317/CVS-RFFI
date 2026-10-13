@@ -125,3 +125,51 @@ SIG_TIME相对同seed原基线纠正/引入错误：2026092701＝9483/4829，净
 候选方向的预算/失败界限进一步明确（尚未发布）：层位控制的t1+t2版本新增32064identity参数，t2-only新增21312，比较全层新增60672，全部从零同50轮/11100步；最小先一seed同row源诊断，源CE非有限/预固定健康非劣不通过则不扩seed。分支SiLU若没有合法源一致改善，不直接进入层级结构；若源支持，再加不改变已有卷积参数的post-fusion SiLU位置控制。独立Sinc单位参数化不增加learned参数，初始核必须相同、同预算/原head/门控；真实filter仍不改变则证伪其优化机制，不靠target反复试单位。训练阶段/U反馈审计为源只读零参数方向，必要L代理精度额外前向成本单列；原gate不因覆盖低而放松。
 
 真实终轮特征核验当前4/12模型通过：全部t1/t2/t3参数张量发生数值变化，actual joint160等于pure export，改写/删除W后export逐位不变，恢复W后所有特征参数/buffers与诊断前一致。真实initial/final权重在固定人工IQ上产生不同z，仅证明真实训练的功能变化，不称识别或迁移效果；没有source/target IQ读取、梯度、optimizer/headfit。另8模型继续固定50轮，待完整后补核验，当前证据范围见temporal_trained_export_progress_20261014.json。
+
+## 时间覆盖×分支内非线性：完整三seed闭环
+
+20261014-phase1-time-coverage-nonlinearity-oldgate-e50-clean-manysig-m15-r01 已EXPERIMENT_COMPLETE。执行7b1e2fcbe1bf5d05f24bc91f86aa7d4b46d3ee95，12新scratch50＝600epoch/133200 optimizer和EMA更新，3历史固定50基线成本150epoch/33300更新单列。15row/2520000原默认决定/270条原始CM均独立recount一致；所有source50epoch与11100step完整扫描、无nonfinite/skip/U真值暴露，0另训head，唯一review及问题针对性修复后没有热修改。
+
+|条件|clean均值%|sample SD百分点|Macro-F1|每seed最差RX均值%|每seed最差day均值%|
+|---|---:|---:|---:|---:|---:|
+|BASE_REF|80.5268|2.3776|0.800024|67.9708|76.0556|
+|COMPACT_LINEAR|81.2161|0.5591|0.806729|72.1611|77.7802|
+|LONG_LINEAR|81.3268|0.4348|0.807956|72.4222|77.6341|
+|COMPACT_SILU|81.4810|0.5040|0.810118|71.1278|77.4476|
+|LONG_SILU|81.8115|0.5020|0.813831|72.1903|77.8310|
+
+|固定因素配对|均值差百分点|配对SD百分点|正差seed|
+|---|---:|---:|---:|
+|LONG_LINEAR−COMPACT_LINEAR|0.1107|0.4655|1/3|
+|COMPACT_SILU−COMPACT_LINEAR|0.2649|0.1404|3/3|
+|LONG_SILU−LONG_LINEAR|0.4847|0.7068|2/3|
+|LONG_SILU−COMPACT_SILU|0.3306|0.2570|3/3|
+
+预登记primary LONG_SILU81.8115%，相对固定基线＋1.2847pp但仅2/3正；距84%2.1885pp。所有四新条件相对baseline都是2/3正，seed03都下降，不能把均值/低SD当作普遍改善。紧凑SiLU相对紧凑线性＋0.2649pp为3/3正；长线性扩大覆盖仅＋0.1107pp为1/3正；SiLU基础上长覆盖＋0.3306pp为3/3正。长SiLU相对长线性＋0.4847pp仅2/3正。交互效应(mean差中差)＋0.2198pp、seed差为＋0.7774/−0.4214/＋0.3036pp，不支持所有初始化共同强化。3个模型seed，未称统计充分或新TX迁移。
+
+解释限制：四条件匹配参数/对应初始tensor/CPU和CUDA随机起点，保持旧门控、EMA、cos、PA/frequency/reference/Sinc/NoExplicitCFO。SiLU和dilation有意不同初始函数；compact t3长度5仍长于原t3长度3，且所有新条件含同样1×1投影/容量，所以对BASE增益仍未把容量、多滤波基、旁路分离。历史TIME_MS50旧初始化消耗CUDA RNG，新LONG_LINEAR修正该路径及private CPU init，旧81.6905%不能与新81.3268%拼接作完全同条件复现。新LONG_LINEAR/SILU没有以old最高target权重继承。
+
+源阶段（各3seed平均）V33→V50分别COMPACT_LINEAR 98.4642%→98.4531%；LONG_LINEAR 98.4716%→98.4679%；COMPACT_SILU 98.4420%→98.3741%；LONG_SILU 98.3840%→98.3840%。对应固定L32 actual z平均改变1.981/1.822/1.743/1.680；它只测真实特征数值变化，不是独立因果归因。源V在33轮附近已高位，后17轮仍更新θ，但没有一致源V新增收益。四条件teacher弱/学生强一致率98.808%/98.841%/98.742%/98.735%，接受率1.6687%/1.6732%/1.6622%/1.6622%；一致不等于正确，U TX真值未读，不因覆盖小而改gate。60个阶段、180个RX/day组及预测/接受类别分布见机器表。
+
+12份真实终轮权重t1/t2/t3全部参数张量更新；实际z=pure-export，改写/删除W不改z，诊断全部feature params/buffers保持。classifier base_norm/pa_norm/gain保留；仅W为类别读出。source V固定branch撤除、L geometry以及真实preGN kernel使用均回收；核秩不等joint160秩，nonlinear不能fold。人工IQ的真实final/initial feature差仅作功能核验。没有head-only/原型/新TX训练，本轮只确认默认原头结果与特征接线，不宣称普遍新类迁移。
+
+新source执行进程时间合计7.9451小时，包含各自source验证/闭合，GPU并发不同，不称exclusive GPU成本或性能加速；12模型U观察11566800次（每次weak/strong两forward），source阶段额外V135000/模型及固定L32数值诊断单列。冻结branch诊断每模型V27000、9次撤除＋full，同3份历史TIME按原run单列，无更新。原native raw entropy未单独记录，已保留raw伪标签CE/total−L差，不补造熵曲线；其他曲线全50轮见source_curves.csv，终轮不等于已完全收敛。
+
+![时序完整源训练曲线](../automation_reports/CV-SincNet/20261014-phase1-time-coverage-nonlinearity-oldgate-e50-clean-manysig-m15-r01/analysis/source_training_curves.png)
+
+当前结论与后续边界：本轮完成用户规定四条件归因，紧凑非线性和非线性后长覆盖有小幅同seed一致信号，但主指标未达84，base比较有剩余容量/投影因素，不能直接加深堆分支。后续最多两个源证据动作：补相同SiLU放在融合后的最小位置控制，或独立Sinc坐标修复（实际长期近静止权重/moment证据）；均需独立固定预算，不混合，不以target分数选父权重/参数/seed，不无限扫描。当前不发布第三套同构TIME矩阵，另owner健康run保留并单列。
+
+## 实验身份与预算总台账
+
+|实验|实际执行commit|来源|骨干成本|row/readout/决定/指标数|机制与head边界|
+|---|---|---|---|---|---|
+|多尺度A33/17|5fa536f9ca2d90e7d30d547d58503a41b612d57f|12scratch50|600ep/133200step|12/1/2016000/216|默认cos＋改time/PA blocks；所有scratch|
+|恢复/竞争A33/17|d1c274d1276a080dcdd66e1d7588a63dbe547e59|12scratch50＋3固定基线参考|600新增ep/133200step＋150历史ep|15/2/5040000/540|默认cos＋t1统计/四实际路径；历史10ep refit单列|
+|频率上下文B32/18|43bd20494aa470568a68553ce664dc76811b9707；eval修复9ea84c4d22076532dd613a28d1b2da3988591feb|9scratch50，导入恢复0训练|450ep/99900step|9/1/1512000/162|不扩大标签；仅归档恢复，无选择性重训|
+|临时episodic B32/18|d001edf7c03c6c0831679ff37cfbaf1f9ed80eb7|6scratch50＋3历史参考|300新增ep/66600step＋150历史ep|9/3/4536000/486|16650临时episode/599400额外L；20ep refit和prototype历史|
+|cross-frequency B32/18|9c171f9f13c7675eb06a4f2fc82d31105919becf|6scratch50＋3历史参考|300新增ep/66600step＋150历史ep|9/3历史/4536000历史/486历史|新CW/power均45504param；当前default162metrics，历史读出隔离|
+|PA cross-delay B32/18|1f8814c046a8c68eba8a334e66a0aceb76e491e0|6scratch50＋3历史参考|300新增ep/66600step＋150历史ep|9/1/1512000/162|两路径均576新增param；只default，未确认三阶收益|
+|局部分布/路径A33/17|c1bf3b74c7bc38b03e4e29931d9b90dc60f4a296|21scratch50＋3历史参考|1050新增ep/233100step＋150历史ep|24/1/4032000/432|7新路径各18976param；default-only；基线CUDA RNG混杂保留|
+|本TIME四条件A33/17|7b1e2fcbe1bf5d05f24bc91f86aa7d4b46d3ee95|12scratch50＋3历史参考|600新增ep/133200step＋150历史ep|15/1/2520000/270|4path各60672新增；真初始state/RNGmatched；default-only|
+
+各run同一物理SOURCE契约L6300/U56700(hidden)/V27000、6TX/5sourceRX×3day，targetclean168000，NoExplicitCFO；32/18与33/17分组、10/20epoch head配方不合并。所有新增骨干无未知ancestor、无target初始化/训练/选择，基线只作固定同seed比较。逐row resolved/native配置、source合同/初始化/freeze、原始log/weight/prediction路径在各run experiment.json，完整引用，不把索引状态代替实时证据。后续source/time run及另一owner重复发布路径均保持独立身份，不混成6seed。
