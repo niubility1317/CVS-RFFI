@@ -1,0 +1,27 @@
+{
+  "run_id": "20261014-phase1-time-coverage-nonlinearity-oldgate-e50-clean-manysig-m15-r01",
+  "execution_commit": "7b1e2fcbe1bf5d05f24bc91f86aa7d4b46d3ee95",
+  "status": "VERIFIED",
+  "query_IQ_or_truth_read": false,
+  "models": 12,
+  "per_seed": [
+    {
+      "seed": 2026092701,
+      "arms": 4,
+      "initial_parameter_buffer_tensors": 200,
+      "all_tensor_values_equal": true
+    },
+    {
+      "seed": 2026092702,
+      "arms": 4,
+      "initial_parameter_buffer_tensors": 200,
+      "all_tensor_values_equal": true
+    },
+    {
+      "seed": 2026092703,
+      "arms": 4,
+      "initial_parameter_buffer_tensors": 200,
+      "all_tensor_values_equal": true
+    }
+  ]
+}

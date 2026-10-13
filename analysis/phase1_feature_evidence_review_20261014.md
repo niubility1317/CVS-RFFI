@@ -113,3 +113,13 @@ SIG_TIME相对同seed原基线纠正/引入错误：2026092701＝9483/4829，净
 补充机器表：phase1_feature_group_table_20261014.csv含所有已回收近期run/readout的1998条同row分组指标，配方分组和readout不合并；逐seed表补齐每seed Macro-F1、最差RX/day及三seed最差day均值。历史内容复用已验证CM汇总，未新增head拟合或历史原始日志重扫。
 
 当前TIME进度：2026-10-14最新独立readback VERIFIED：首seed四条件source固定终轮及预测/评分闭合，通过LCE≤.5和默认V总体/最差RX非劣；全部15row已派发、7row闭合，8个seed02/03模型第33至34epoch，pending0、failure0、dispatcher和8worker实际live，GPU总进程max2。source首seed四arm finalCE分别0.250144/0.246923/0.253900/0.253468，默认V98.4037/98.4148/98.2593/98.2667%，0另训head。未读取partial target指标作候选判断，不称完整三seed结果。
+
+## 时序机制的真实源证据更新
+
+12份实际initial_smoke.pt已只读核对：每seed四条件的200个parameter/buffer tensors逐项相同，三seed全部通过，不仅是本地构造smoke。原头同样初始state，class W与feature norm/gain都保留；CPU/CUDA RNG的保留另有本地实际CUDA检查，不据此承诺GPU轨迹bitwise相同。
+
+首seed四模型已完整50轮，epoch33→50的默认源V分别98.5000→98.4037、98.4370→98.4148、98.4593→98.2593、98.3667→98.2667%；按COMPACT_LINEAR/LONG_LINEAR/COMPACT_SILU/LONG_SILU顺序。第一seed的两SiLU条件没有表现出源V优于线性控制，阶段34后均出现不同幅度回落。固定L32的actual z在33→50改变均值范数1.702/1.616/1.783/1.548，说明半监督阶段仍改变fθ；固定L32只测数值变化，不是代表性准确率或因果分解。四模型U均处理963900次观察，接受15989/16016/15899/15910，weak EMA与strong student一致度98.8330/98.8358/98.7128/98.6963%，U TX真值始终不读。接受率不是精度，不能因此认定伪标签正确。全部源阶段/层更新和RX/day预测类别分布已保存；完整后两seed阶段证据待返回，不以此首seed排序/重跑。
+
+旧TIME_MS50三seed、V各27000的九次branch撤除已完成且参数/buffers不变：t1长跨度branch2净纠正1904/544/532，t2为7/550/143，t3为121/211/72。它展示层位及seed相关的使用差异，不能按单seed t2较小便删掉中层，也不把source撤除性能当scratch消融。逐branch纠正/引入错误与margin见historical_time_source_branch_table_20261014.csv。当前仍不改已发布矩阵。
+
+候选方向的预算/失败界限进一步明确（尚未发布）：层位控制的t1+t2版本新增32064identity参数，t2-only新增21312，比较全层新增60672，全部从零同50轮/11100步；最小先一seed同row源诊断，源CE非有限/预固定健康非劣不通过则不扩seed。分支SiLU若没有合法源一致改善，不直接进入层级结构；若源支持，再加不改变已有卷积参数的post-fusion SiLU位置控制。独立Sinc单位参数化不增加learned参数，初始核必须相同、同预算/原head/门控；真实filter仍不改变则证伪其优化机制，不靠target反复试单位。训练阶段/U反馈审计为源只读零参数方向，必要L代理精度额外前向成本单列；原gate不因覆盖低而放松。
