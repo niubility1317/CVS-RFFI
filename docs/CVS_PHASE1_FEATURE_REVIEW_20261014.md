@@ -18,7 +18,7 @@
 |跨频关系32＋18|6scratch50/66600updates；基线3复用|LEGACY80.6454%，POWER76.8591%，COMPLEX79.3058%|COMPLEX胜POWER＋2.4466pp但低于baseline−1.3397pp，不宣称有效|
 |当前PA三阶32＋18|6scratch50已启动；基线3已评分|新模型无完整结果|已发布方案固定，新增576参数，不在运行中改配方或追加读出|
 
-完整台账、逐seed、配对、成本、原始报告指针与证据层级见 [机器可读台账](research_data/CVS_PHASE1_FEATURE_REVIEW_20261014.json)。MS完整日志/原预测审计是另一owner已完成证据，本轮只读复盘及独立终态读回，没有声称重新审计全部raw日志。EPI/CF为本owner既有全日志/原预测审计。RC已重计完整默认CM/epoch；历史REFIT完整汇总尚未回收到本主报告。必要关联负结果保留，不将部分源几何写成完整三seed机制分析。
+完整台账、逐seed、配对、成本、原始报告指针与证据层级见 [机器可读台账](research_data/CVS_PHASE1_FEATURE_REVIEW_20261014.json)。MS完整日志/原预测审计是另一owner已完成证据，本轮只读复盘及独立终态读回，没有声称重新审计全部raw日志。EPI/CF为本owner既有全日志/原预测审计。RC本轮已回收全部15行两读出，并独立重计540个已保存CM/accuracy/F1；没有重新预测、另训头或重新连接truth。必要关联负结果保留，不将部分源几何写成完整三seed机制分析。
 
 ## 源证据与待解决问题
 
@@ -26,7 +26,7 @@
 
 多尺度PA下降或组合不优于TIME不能凭target均值归因于RX捷径/梯度冲突。临时任务使原型方向更一致，但ordinarycos不稳定；原头使用L/U、重训头只L且不同预算，不能把差距全解释为旧头过拟合。RESTORE与ORD必须同容量比较；COMP的L-only遮蔽与teacher/U/full inference路径按实际代码核对，不改已结束方案。跨频已完成同容量比较，尚缺合法源跨RX增量稳定性。
 
-下一项实际源诊断：只读原初始与final50 checkpoint，比较32＋18 LEGACY3、33＋17 OLD3/TIME3的真实Sinc cutoff参数、有效频带与实际滤波核，共9模型。先核对源角色、scratch祖先和固定终轮，使用各自initial_smoke.pt；不加载目标数据，不训练，不做人工梯度替代实训证据。诊断代码experiments/cvs_feature_diagnostics/sinc_change.py，算术一致/已知变化/4negative检查PASS；真实测量仍待执行，暂不宣称频率冻结或覆盖缺陷。
+本轮实际源诊断：只读原初始与final50 checkpoint，比较32＋18 LEGACY3、33＋17 OLD3/TIME3的真实Sinc cutoff参数、有效频带与实际滤波核，共9模型。先核对源角色、scratch祖先和固定终轮，使用各自initial_smoke.pt；不加载目标数据，不训练，不做人工梯度替代实训证据。诊断代码experiments/cvs_feature_diagnostics/sinc_change.py，诊断代码commit f9e962b375f52cd5e8e7f1975986a170e8f15f81。已完成9个真实initial/final50比较，每个模型23/24截止参数与24/24带宽参数逐位未变；唯一变化截止参数的最大变动为7.6294e−6至6.5422e−4Hz。实际滤波核relativeL2为0至2.4071e−8，23或24个kernel完全未变，频率覆盖约80Hz至12.499999MHz基本维持初值。全部源角色/祖先/终轮/actualresolved配方一致，诊断IQ/truth/optimizer更新均0。9份nativeargs的freeze_backbone=false、from_scratch=true；原优化器收集所有requires_grad参数。接下来进一步核对Sinc的实际optimizer/gradient/EMA路径；这一证据支持测试坐标尺度修复，不证明固定滤波器无用或是泛化失败的唯一原因。
 
 ## 三条可执行方向
 
@@ -34,4 +34,8 @@
 2. Sinc单因素：以真实9模型参数/核运动与coverage测量作为依据。只有合法源证据支持更新尺度问题，才比较原参数坐标和归一化频率坐标，保证相同初始滤波器、不增加分支/头；若已正常改变，不以静态代码数量级认定瓶颈。
 3. PA独立交互：回收新目标到达前已发布的576参数CONV/CROSS固定矩阵，完成数值更新→joint160改变→默认预测，再做冻结源端撤除新增残差与简单ordinarycos诊断。旧EnvelopeGate保留，不能把成功或失败直接解释成PA硬件恢复。
 
-本轮最多两个动作：完成源Sinc及既有REFIT/表征证据回收；继续已健康运行PA到训练/默认预测/独立评分闭环。所有未来机制以代码或合法源证据选择，不按现有目标分数扫描到84%。目标仍未达到；尚无真实新TX能力声明。
+本轮已完成真实Sinc9模型诊断及既有REFIT回收。下一轮最多两个动作：核对optimizer/EMA/导出路径并实现一个Sinc坐标缩放单因素修复；回收现PA默认预测/独立评分并安排单独源冻结诊断。当前PA6worker真实仍live，epoch34至38，尚无完整新seed结果。所有未来机制以代码或合法源证据选择，不按现有目标分数扫描到84%。目标仍未达到；尚无真实新TX能力声明。
+
+## 完整历史普通cos诊断回收
+
+RC历史10轮AdamW普通cos的三seed均值：BASE78.5657%，ORD78.3613%，RESTORE78.5956%，COMP78.5095%，组合78.1139%。RESTORE相对BASE仅＋0.0300pp（2/3正），相对同容量ORD＋0.2343pp（2/3正）；组合相对BASE−0.4518pp，仅1/3正，且三个seed都低于RESTORE。未建立原头和ordinarycos同时稳定改善的证据。完整逐seed/样本SD、14条配对、最差RX/day和合法源probe指标已在主台账回收，不把此10轮诊断与本对话20轮Adam直接合并。

@@ -16916,9 +16916,12 @@
         {
           "arm": "BASE_REF",
           "readout": "NATIVE_HEAD",
+          "seed_count": 3,
           "accuracy_mean": 0.8052678571428572,
           "accuracy_sd": 0.023775723031464996,
           "macro_f1_mean": 0.8000238637751929,
+          "worst_RX_mean": 0.6797083333333334,
+          "worst_day_mean": 0.7605555555555555,
           "seed_accuracy": {
             "2026092701": 0.8066845238095238,
             "2026092702": 0.7808154761904762,
@@ -16928,9 +16931,12 @@
         {
           "arm": "ORDINARY",
           "readout": "NATIVE_HEAD",
+          "seed_count": 3,
           "accuracy_mean": 0.8030753968253969,
           "accuracy_sd": 0.018898922321873093,
           "macro_f1_mean": 0.7982843864307158,
+          "worst_RX_mean": 0.6551805555555555,
+          "worst_day_mean": 0.7518968253968253,
           "seed_accuracy": {
             "2026092701": 0.803,
             "2026092702": 0.7842142857142858,
@@ -16940,9 +16946,12 @@
         {
           "arm": "RESTORE",
           "readout": "NATIVE_HEAD",
+          "seed_count": 3,
           "accuracy_mean": 0.802531746031746,
           "accuracy_sd": 0.02033627562259213,
           "macro_f1_mean": 0.7974305708189116,
+          "worst_RX_mean": 0.6555,
+          "worst_day_mean": 0.7531904761904762,
           "seed_accuracy": {
             "2026092701": 0.8032261904761905,
             "2026092702": 0.7818571428571428,
@@ -16952,9 +16961,12 @@
         {
           "arm": "COMP",
           "readout": "NATIVE_HEAD",
+          "seed_count": 3,
           "accuracy_mean": 0.8056626984126984,
           "accuracy_sd": 0.016194054153552594,
           "macro_f1_mean": 0.7999394810129528,
+          "worst_RX_mean": 0.6764305555555555,
+          "worst_day_mean": 0.7631507936507936,
           "seed_accuracy": {
             "2026092701": 0.8070595238095238,
             "2026092702": 0.7888154761904762,
@@ -16964,99 +16976,275 @@
         {
           "arm": "RESTORE_COMP",
           "readout": "NATIVE_HEAD",
+          "seed_count": 3,
           "accuracy_mean": 0.8012976190476191,
           "accuracy_sd": 0.015387036013071972,
           "macro_f1_mean": 0.7959425085444518,
+          "worst_RX_mean": 0.6535833333333333,
+          "worst_day_mean": 0.7492698412698413,
           "seed_accuracy": {
             "2026092701": 0.8024583333333334,
             "2026092702": 0.7853630952380952,
             "2026092703": 0.8160714285714286
           }
+        },
+        {
+          "arm": "BASE_REF",
+          "readout": "REFIT_COSINE",
+          "seed_count": 3,
+          "accuracy_mean": 0.7856567460317461,
+          "accuracy_sd": 0.03272389807603928,
+          "macro_f1_mean": 0.7796742931810647,
+          "worst_RX_mean": 0.6435,
+          "worst_day_mean": 0.7428650793650794,
+          "seed_accuracy": {
+            "2026092701": 0.7995416666666667,
+            "2026092702": 0.7482797619047619,
+            "2026092703": 0.8091488095238095
+          }
+        },
+        {
+          "arm": "ORDINARY",
+          "readout": "REFIT_COSINE",
+          "seed_count": 3,
+          "accuracy_mean": 0.7836130952380953,
+          "accuracy_sd": 0.02659315774465682,
+          "macro_f1_mean": 0.7780438390699449,
+          "worst_RX_mean": 0.6302222222222222,
+          "worst_day_mean": 0.7370873015873016,
+          "seed_accuracy": {
+            "2026092701": 0.7960238095238096,
+            "2026092702": 0.7530833333333333,
+            "2026092703": 0.8017321428571429
+          }
+        },
+        {
+          "arm": "RESTORE",
+          "readout": "REFIT_COSINE",
+          "seed_count": 3,
+          "accuracy_mean": 0.7859563492063492,
+          "accuracy_sd": 0.030691465159481634,
+          "macro_f1_mean": 0.7802652526374221,
+          "worst_RX_mean": 0.6418611111111111,
+          "worst_day_mean": 0.7412619047619048,
+          "seed_accuracy": {
+            "2026092701": 0.8046666666666666,
+            "2026092702": 0.7505357142857143,
+            "2026092703": 0.8026666666666666
+          }
+        },
+        {
+          "arm": "COMP",
+          "readout": "REFIT_COSINE",
+          "seed_count": 3,
+          "accuracy_mean": 0.7850952380952381,
+          "accuracy_sd": 0.028433065893623117,
+          "macro_f1_mean": 0.7790472512430258,
+          "worst_RX_mean": 0.6398888888888888,
+          "worst_day_mean": 0.7454126984126984,
+          "seed_accuracy": {
+            "2026092701": 0.7975952380952381,
+            "2026092702": 0.7525535714285714,
+            "2026092703": 0.8051369047619048
+          }
+        },
+        {
+          "arm": "RESTORE_COMP",
+          "readout": "REFIT_COSINE",
+          "seed_count": 3,
+          "accuracy_mean": 0.7811388888888889,
+          "accuracy_sd": 0.02749023245247309,
+          "macro_f1_mean": 0.7750077444027017,
+          "worst_RX_mean": 0.6340694444444445,
+          "worst_day_mean": 0.7345317460317461,
+          "seed_accuracy": {
+            "2026092701": 0.7973809523809524,
+            "2026092702": 0.7493988095238096,
+            "2026092703": 0.7966369047619047
+          }
         }
       ],
       "paired": [
         {
-          "readout": "NATIVE_HEAD",
-          "treatment": "ORDINARY",
+          "arm": "ORDINARY",
           "control": "BASE_REF",
+          "readout": "NATIVE_HEAD",
           "seed_differences": [
             -0.0036845238095237764,
             0.003398809523809554,
             -0.006291666666666695
           ],
           "mean_difference": -0.002192460317460306,
+          "sd_difference": 0.005014580969314211,
           "positive_seeds": 1
         },
         {
-          "readout": "NATIVE_HEAD",
-          "treatment": "RESTORE",
+          "arm": "RESTORE",
           "control": "BASE_REF",
+          "readout": "NATIVE_HEAD",
           "seed_differences": [
             -0.003458333333333341,
             0.0010416666666666075,
             -0.0057916666666667505
           ],
           "mean_difference": -0.0027361111111111613,
+          "sd_difference": 0.0034734442294090248,
           "positive_seeds": 1
         },
         {
-          "readout": "NATIVE_HEAD",
-          "treatment": "COMP",
+          "arm": "COMP",
           "control": "BASE_REF",
+          "readout": "NATIVE_HEAD",
           "seed_differences": [
             0.0003750000000000142,
             0.008000000000000007,
             -0.007190476190476192
           ],
           "mean_difference": 0.0003948412698412766,
+          "sd_difference": 0.0075952575321938725,
           "positive_seeds": 2
         },
         {
-          "readout": "NATIVE_HEAD",
-          "treatment": "RESTORE_COMP",
+          "arm": "RESTORE_COMP",
           "control": "BASE_REF",
+          "readout": "NATIVE_HEAD",
           "seed_differences": [
             -0.004226190476190439,
             0.004547619047619023,
             -0.012232142857142914
           ],
           "mean_difference": -0.00397023809523811,
+          "sd_difference": 0.008392808594928837,
           "positive_seeds": 1
         },
         {
-          "readout": "NATIVE_HEAD",
-          "treatment": "RESTORE",
+          "arm": "RESTORE",
           "control": "ORDINARY",
+          "readout": "NATIVE_HEAD",
           "seed_differences": [
             0.00022619047619043542,
             -0.0023571428571429465,
             0.0004999999999999449
           ],
           "mean_difference": -0.0005436507936508553,
+          "sd_difference": 0.0015764859695201223,
           "positive_seeds": 2
         },
         {
-          "readout": "NATIVE_HEAD",
-          "treatment": "RESTORE_COMP",
+          "arm": "RESTORE_COMP",
           "control": "RESTORE",
+          "readout": "NATIVE_HEAD",
           "seed_differences": [
             -0.0007678571428570979,
             0.003505952380952415,
             -0.006440476190476163
           ],
           "mean_difference": -0.0012341269841269487,
+          "sd_difference": 0.004989580744440463,
           "positive_seeds": 1
         },
         {
-          "readout": "NATIVE_HEAD",
-          "treatment": "RESTORE_COMP",
+          "arm": "RESTORE_COMP",
           "control": "COMP",
+          "readout": "NATIVE_HEAD",
           "seed_differences": [
             -0.004601190476190453,
             -0.0034523809523809845,
             -0.005041666666666722
           ],
           "mean_difference": -0.004365079365079387,
+          "sd_difference": 0.0008205294711348025,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "ORDINARY",
+          "control": "BASE_REF",
+          "readout": "REFIT_COSINE",
+          "seed_differences": [
+            -0.003517857142857128,
+            0.004803571428571463,
+            -0.007416666666666627
+          ],
+          "mean_difference": -0.002043650793650764,
+          "sd_difference": 0.006242076421040303,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "RESTORE",
+          "control": "BASE_REF",
+          "readout": "REFIT_COSINE",
+          "seed_differences": [
+            0.005124999999999935,
+            0.0022559523809524418,
+            -0.006482142857142881
+          ],
+          "mean_difference": 0.0002996031746031654,
+          "sd_difference": 0.006045818223319153,
+          "positive_seeds": 2
+        },
+        {
+          "arm": "COMP",
+          "control": "BASE_REF",
+          "readout": "REFIT_COSINE",
+          "seed_differences": [
+            -0.0019464285714285712,
+            0.004273809523809513,
+            -0.0040119047619047166
+          ],
+          "mean_difference": -0.0005615079365079249,
+          "sd_difference": 0.004312976835075048,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "RESTORE_COMP",
+          "control": "BASE_REF",
+          "readout": "REFIT_COSINE",
+          "seed_differences": [
+            -0.0021607142857142936,
+            0.0011190476190476861,
+            -0.01251190476190478
+          ],
+          "mean_difference": -0.004517857142857129,
+          "sd_difference": 0.007114619282834678,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "RESTORE",
+          "control": "ORDINARY",
+          "readout": "REFIT_COSINE",
+          "seed_differences": [
+            0.008642857142857063,
+            -0.002547619047619021,
+            0.0009345238095237463
+          ],
+          "mean_difference": 0.0023432539682539297,
+          "sd_difference": 0.005726698860381084,
+          "positive_seeds": 2
+        },
+        {
+          "arm": "RESTORE_COMP",
+          "control": "RESTORE",
+          "readout": "REFIT_COSINE",
+          "seed_differences": [
+            -0.007285714285714229,
+            -0.0011369047619047556,
+            -0.006029761904761899
+          ],
+          "mean_difference": -0.004817460317460294,
+          "sd_difference": 0.003248726057080377,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "RESTORE_COMP",
+          "control": "COMP",
+          "readout": "REFIT_COSINE",
+          "seed_differences": [
+            -0.0002142857142857224,
+            -0.003154761904761827,
+            -0.008500000000000063
+          ],
+          "mean_difference": -0.003956349206349204,
+          "sd_difference": 0.004200615664122615,
           "positive_seeds": 0
         }
       ],
@@ -18327,13 +18515,3590 @@
         "no_current_candidate_change": true
       },
       "source_provenance": "new12 scratch;matching OLD_GATE_COS50baseline3 reuse",
-      "evidence_level": "owner defaultCM independent recount/complete epoch reports; current remote all terminal; complete historical REFIT summaries notyet imported here",
+      "evidence_level": "Current independent15row completion/config and540storedCM recount includinghistoricalREFIT;no newprediction,headtraining,sourceIQ ortruthread. Prior ownercompleteepoch audit retained; raw-step/raw-NPZ re-audit notclaimed here.",
       "missing": [
-        "historical REFIT_COSINE full matched summary in this main ledger",
         "complete15row source geometry",
         "causal claim ofrestore/competition"
       ],
-      "judgment": "no stable default-head benefit; RESTORE must be compared withORDINARY,notonlyBASE"
+      "judgment": "RESTORE ordinarycos vsBASE+0.02996pp2/3positive; vsORD+0.23433pp2/3positive. Combination-0.45179ppvsBASE and3/3belowRESTORE. No stabledefault-andordinarycos improvement established.",
+      "source_probes": [
+        {
+          "row_id": "BASE_REF-s2026092701",
+          "arm": "BASE_REF",
+          "model_seed": 2026092701,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.9814074039459229,
+            "receiver_accuracy": {
+              "1": 0.9946296215057373,
+              "3": 0.9511111378669739,
+              "4": 0.9842592477798462,
+              "6": 0.996666669845581,
+              "8": 0.9803703427314758
+            },
+            "worst_receiver": 0.9511111378669739
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9935185313224792,
+              "receiver_accuracy": {
+                "1": 0.9935185313224792
+              },
+              "worst_receiver": 0.9935185313224792
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.9390740990638733,
+              "receiver_accuracy": {
+                "3": 0.9390740990638733
+              },
+              "worst_receiver": 0.9390740990638733
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.9825925827026367,
+              "receiver_accuracy": {
+                "4": 0.9825925827026367
+              },
+              "worst_receiver": 0.9825925827026367
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.9946296215057373,
+              "receiver_accuracy": {
+                "6": 0.9946296215057373
+              },
+              "worst_receiver": 0.9946296215057373
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9737036824226379,
+              "receiver_accuracy": {
+                "8": 0.9737036824226379
+              },
+              "worst_receiver": 0.9737036824226379
+            }
+          ],
+          "leave_RX_mean": 0.9767037034034729,
+          "leave_RX_worst": 0.9390740990638733,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.8641481399536133,
+            "receiver_accuracy": {
+              "1": 0.8422222137451172,
+              "3": 0.9290740489959717,
+              "4": 0.8212962746620178,
+              "6": 0.9462962746620178,
+              "8": 0.7818518280982971
+            },
+            "worst_receiver": 0.7818518280982971
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.29447018474222175,
+                0.04150072039119781,
+                0.03050230802761184,
+                0.025899184750659124,
+                0.023553445856012996,
+                0.021363506211884438,
+                0.01944155093016369,
+                0.01839389799961022,
+                0.017345476265227984,
+                0.01734988376143433
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.4493558013309089,
+                0.052582659938978774,
+                0.03896190655373392,
+                0.03279494106000851,
+                0.02874777852779343,
+                0.026160644473774093,
+                0.02455182664451145,
+                0.023012599414066665,
+                0.022139540214150672,
+                0.020913392979474296
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3435477337785183,
+                0.028441208222555737,
+                0.02191740343021968,
+                0.018461840871780637,
+                0.01584725793273676,
+                0.014740943364680759,
+                0.01322648273041797,
+                0.012403509956562803,
+                0.011718791831166498,
+                0.010719042333463828
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5236954578095012,
+                0.04864705998509649,
+                0.034674354299666386,
+                0.029589922826678033,
+                0.02632147463422919,
+                0.024331883491859548,
+                0.02282861459349829,
+                0.02072597418926538,
+                0.019614737953931566,
+                0.018892743503527036
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.6052061334252358,
+                0.04984733798201122,
+                0.038549725995177316,
+                0.03459051214749851,
+                0.031683221530346646,
+                0.029408159411497534,
+                0.027219466912367988,
+                0.02569419704968967,
+                0.024875182646607596,
+                0.02371446636934129
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.2629307920379298,
+                0.04033406742271923,
+                0.032760116126802234,
+                0.02933417974956452,
+                0.02529666055999105,
+                0.02329226914379332,
+                0.021101875957988556,
+                0.01953692414856974,
+                0.01821515615438185,
+                0.0169374647387673
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.479688304568094,
+                0.8569641736197093,
+                0.7156293282433162,
+                0.6544369924257672,
+                0.6124396025188386,
+                0.5922893325109331,
+                0.5662459074126349,
+                0.5550616310891651,
+                0.5558897334810288,
+                0.5582473807107835
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 26.399087865138426,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "ORDINARY-s2026092701",
+          "arm": "ORDINARY",
+          "model_seed": 2026092701,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.9811481237411499,
+            "receiver_accuracy": {
+              "1": 0.9951851963996887,
+              "3": 0.9507407546043396,
+              "4": 0.9844444394111633,
+              "6": 0.9959259033203125,
+              "8": 0.9794444441795349
+            },
+            "worst_receiver": 0.9507407546043396
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9937037229537964,
+              "receiver_accuracy": {
+                "1": 0.9937037229537964
+              },
+              "worst_receiver": 0.9937037229537964
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.9405555725097656,
+              "receiver_accuracy": {
+                "3": 0.9405555725097656
+              },
+              "worst_receiver": 0.9405555725097656
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.9835185408592224,
+              "receiver_accuracy": {
+                "4": 0.9835185408592224
+              },
+              "worst_receiver": 0.9835185408592224
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.995555579662323,
+              "receiver_accuracy": {
+                "6": 0.995555579662323
+              },
+              "worst_receiver": 0.995555579662323
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9740740656852722,
+              "receiver_accuracy": {
+                "8": 0.9740740656852722
+              },
+              "worst_receiver": 0.9740740656852722
+            }
+          ],
+          "leave_RX_mean": 0.9774814963340759,
+          "leave_RX_worst": 0.9405555725097656,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.8644814491271973,
+            "receiver_accuracy": {
+              "1": 0.854629635810852,
+              "3": 0.9325925707817078,
+              "4": 0.8212962746620178,
+              "6": 0.9355555772781372,
+              "8": 0.778333306312561
+            },
+            "worst_receiver": 0.778333306312561
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.33453508273979266,
+                0.04595223359645359,
+                0.033903358519550356,
+                0.028099200034898426,
+                0.025355523182522682,
+                0.023183581253720654,
+                0.020845708965013424,
+                0.019704090550778403,
+                0.018457320814449635,
+                0.018443131851298467
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.48492392499058967,
+                0.0496444233471439,
+                0.040118585053890474,
+                0.03418881330373032,
+                0.03063708951194135,
+                0.028181451683243115,
+                0.026775284206110334,
+                0.02498590136094699,
+                0.023879009993776443,
+                0.022535762652045203
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3347283347140229,
+                0.02910065838387088,
+                0.0215865144772189,
+                0.018444524193921733,
+                0.01592621939877669,
+                0.014885739438117497,
+                0.013505996638051574,
+                0.012896830634406161,
+                0.012322892669943117,
+                0.011311416706395528
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.6120969474315643,
+                0.05734756820731693,
+                0.03832754218389117,
+                0.03217335563330423,
+                0.028633064534219484,
+                0.026397046559150258,
+                0.024641325513994883,
+                0.022614004226431013,
+                0.02106830065567342,
+                0.020206995816930893
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5956927871656796,
+                0.0450501504635054,
+                0.036187925497217784,
+                0.03291770950669334,
+                0.030530129154286687,
+                0.028363527372361176,
+                0.02648316357462179,
+                0.02499052993953228,
+                0.024553067473665115,
+                0.022945124833356766
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.22914161641919423,
+                0.03644913932870305,
+                0.03050101381682214,
+                0.027348116702503627,
+                0.024006650135630653,
+                0.021848988420669995,
+                0.020548000133463314,
+                0.01860273825928628,
+                0.018119327641195723,
+                0.01654180290975741
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.3925752602683172,
+                0.8096800323138161,
+                0.6826586531457447,
+                0.6256031401195223,
+                0.5915796485022893,
+                0.5747582819726732,
+                0.5494501528664241,
+                0.5398783768547906,
+                0.5358414098951552,
+                0.541183125821371
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 25.302812257083133,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "RESTORE-s2026092701",
+          "arm": "RESTORE",
+          "model_seed": 2026092701,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.9815555214881897,
+            "receiver_accuracy": {
+              "1": 0.9950000047683716,
+              "3": 0.9512962698936462,
+              "4": 0.9842592477798462,
+              "6": 0.9961110949516296,
+              "8": 0.9811111092567444
+            },
+            "worst_receiver": 0.9512962698936462
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9937037229537964,
+              "receiver_accuracy": {
+                "1": 0.9937037229537964
+              },
+              "worst_receiver": 0.9937037229537964
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.9412962794303894,
+              "receiver_accuracy": {
+                "3": 0.9412962794303894
+              },
+              "worst_receiver": 0.9412962794303894
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.982962965965271,
+              "receiver_accuracy": {
+                "4": 0.982962965965271
+              },
+              "worst_receiver": 0.982962965965271
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.9950000047683716,
+              "receiver_accuracy": {
+                "6": 0.9950000047683716
+              },
+              "worst_receiver": 0.9950000047683716
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.972777783870697,
+              "receiver_accuracy": {
+                "8": 0.972777783870697
+              },
+              "worst_receiver": 0.972777783870697
+            }
+          ],
+          "leave_RX_mean": 0.9771481513977051,
+          "leave_RX_worst": 0.9412962794303894,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.8573703765869141,
+            "receiver_accuracy": {
+              "1": 0.7937036752700806,
+              "3": 0.9338889122009277,
+              "4": 0.8485184907913208,
+              "6": 0.938703715801239,
+              "8": 0.7720370292663574
+            },
+            "worst_receiver": 0.7720370292663574
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.31766161159479195,
+                0.04454963337334376,
+                0.032900772265025545,
+                0.027505215670144748,
+                0.024639807209845575,
+                0.022108916641464308,
+                0.02029958089843156,
+                0.01908664884784865,
+                0.018000450003596527,
+                0.017828780029501234
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.4858399012909522,
+                0.05149036648254546,
+                0.03997060142694012,
+                0.03439092525088834,
+                0.030756704828568866,
+                0.0282386849974356,
+                0.026409155993707596,
+                0.02467486107396701,
+                0.02343665131973842,
+                0.022130520239708917
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3476857074432903,
+                0.029175590232960763,
+                0.021487906539723985,
+                0.018359926325224693,
+                0.015787791105962935,
+                0.014714195863122032,
+                0.013302459786572154,
+                0.012715877824655128,
+                0.01211844484750477,
+                0.011165746044190157
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.6073515387518066,
+                0.05503399478537696,
+                0.03781584445682783,
+                0.03284869794216421,
+                0.02941345020182549,
+                0.027123798465444927,
+                0.025291445963676013,
+                0.023038069472189934,
+                0.021455804181713906,
+                0.020527192778767103
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5922136282637006,
+                0.04697018912623799,
+                0.03663206930671419,
+                0.03334666780890926,
+                0.030816723146135844,
+                0.028616831525568924,
+                0.026561387959453793,
+                0.025163474749951134,
+                0.024423324328566354,
+                0.023033107190378127
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.2371796303206966,
+                0.03710490426137334,
+                0.031181813977540485,
+                0.028155754849551216,
+                0.024153894209672535,
+                0.022180223819755374,
+                0.02039231646155554,
+                0.01869467971476889,
+                0.017778785875628866,
+                0.016185608197240128
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.3724930541477507,
+                0.8103715831135947,
+                0.6809388580397954,
+                0.6274153125853765,
+                0.5958067871653845,
+                0.5778832233898223,
+                0.5536883175940741,
+                0.5453191986538115,
+                0.543628086324722,
+                0.5476693147326273
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 25.598727085860446,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "COMP-s2026092701",
+          "arm": "COMP",
+          "model_seed": 2026092701,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.9812222123146057,
+            "receiver_accuracy": {
+              "1": 0.9951851963996887,
+              "3": 0.9509259462356567,
+              "4": 0.9842592477798462,
+              "6": 0.9962962865829468,
+              "8": 0.9794444441795349
+            },
+            "worst_receiver": 0.9509259462356567
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9938889145851135,
+              "receiver_accuracy": {
+                "1": 0.9938889145851135
+              },
+              "worst_receiver": 0.9938889145851135
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.9425925612449646,
+              "receiver_accuracy": {
+                "3": 0.9425925612449646
+              },
+              "worst_receiver": 0.9425925612449646
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.9825925827026367,
+              "receiver_accuracy": {
+                "4": 0.9825925827026367
+              },
+              "worst_receiver": 0.9825925827026367
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.9948148131370544,
+              "receiver_accuracy": {
+                "6": 0.9948148131370544
+              },
+              "worst_receiver": 0.9948148131370544
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9731481671333313,
+              "receiver_accuracy": {
+                "8": 0.9731481671333313
+              },
+              "worst_receiver": 0.9731481671333313
+            }
+          ],
+          "leave_RX_mean": 0.9774074077606201,
+          "leave_RX_worst": 0.9425925612449646,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.8543703556060791,
+            "receiver_accuracy": {
+              "1": 0.8292592763900757,
+              "3": 0.9244444370269775,
+              "4": 0.7927777767181396,
+              "6": 0.9572222232818604,
+              "8": 0.7681481242179871
+            },
+            "worst_receiver": 0.7681481242179871
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.2995708287992175,
+                0.04239736467126816,
+                0.03167364411883884,
+                0.02720129932321253,
+                0.02491633958641499,
+                0.022441968367922872,
+                0.0206156390348065,
+                0.019543317678192305,
+                0.01850904179589143,
+                0.01833293736927093
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.44563341482527674,
+                0.05245238450311479,
+                0.04087807588160984,
+                0.034788385023259455,
+                0.03079758808608093,
+                0.02795166385079187,
+                0.026008705700200703,
+                0.024439407222800785,
+                0.0234832530456876,
+                0.02212044774066834
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.34987066846991344,
+                0.027760825714185124,
+                0.021442471657480512,
+                0.01828225071113261,
+                0.01588847977183168,
+                0.014824889836803315,
+                0.013525775932366885,
+                0.01263916798468147,
+                0.012061487923243215,
+                0.011094721282521884
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5738171800024926,
+                0.05014074510998196,
+                0.03623835922233642,
+                0.03179676179729757,
+                0.028520779613228072,
+                0.026485212159062188,
+                0.024733518347853707,
+                0.022653343759122348,
+                0.021332488185356532,
+                0.02052351465182645
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5640768411258856,
+                0.046618260786173836,
+                0.036994676812300606,
+                0.03388849661818572,
+                0.031215940622819793,
+                0.029289759778314165,
+                0.027120053354236815,
+                0.025605838568437667,
+                0.02488635895507676,
+                0.023715556708593218
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.2736342758531608,
+                0.041348497865218964,
+                0.03484875142337784,
+                0.031161450204395112,
+                0.027059257065966017,
+                0.02479935741672913,
+                0.02265495074292024,
+                0.020974928649911094,
+                0.01939648398686023,
+                0.018076075622368428
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.482524993911622,
+                0.8614823723217798,
+                0.7210446572682214,
+                0.6588854574778723,
+                0.6189623826647561,
+                0.5983640263951014,
+                0.5722089234987895,
+                0.561032791781047,
+                0.5605001571443345,
+                0.5639710933064658
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 25.721332855988294,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "RESTORE_COMP-s2026092701",
+          "arm": "RESTORE_COMP",
+          "model_seed": 2026092701,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.981666624546051,
+            "receiver_accuracy": {
+              "1": 0.9950000047683716,
+              "3": 0.9524074196815491,
+              "4": 0.9842592477798462,
+              "6": 0.995555579662323,
+              "8": 0.9811111092567444
+            },
+            "worst_receiver": 0.9524074196815491
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9940740466117859,
+              "receiver_accuracy": {
+                "1": 0.9940740466117859
+              },
+              "worst_receiver": 0.9940740466117859
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.9433333277702332,
+              "receiver_accuracy": {
+                "3": 0.9433333277702332
+              },
+              "worst_receiver": 0.9433333277702332
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.9833333492279053,
+              "receiver_accuracy": {
+                "4": 0.9833333492279053
+              },
+              "worst_receiver": 0.9833333492279053
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.9940740466117859,
+              "receiver_accuracy": {
+                "6": 0.9940740466117859
+              },
+              "worst_receiver": 0.9940740466117859
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9750000238418579,
+              "receiver_accuracy": {
+                "8": 0.9750000238418579
+              },
+              "worst_receiver": 0.9750000238418579
+            }
+          ],
+          "leave_RX_mean": 0.9779629588127137,
+          "leave_RX_worst": 0.9433333277702332,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.8498518466949463,
+            "receiver_accuracy": {
+              "1": 0.7627778053283691,
+              "3": 0.9229629635810852,
+              "4": 0.8422222137451172,
+              "6": 0.9474074244499207,
+              "8": 0.773888885974884
+            },
+            "worst_receiver": 0.7627778053283691
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.3369076150694182,
+                0.04705943552747605,
+                0.0338085846390043,
+                0.02791293676055613,
+                0.025237485777054515,
+                0.02275707507772105,
+                0.02091464483918297,
+                0.019742359147658425,
+                0.018844375210030684,
+                0.018721453357073994
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.4612324450253731,
+                0.05059744869432752,
+                0.039453170637762734,
+                0.03378119113086353,
+                0.030232219865161274,
+                0.027872349440105377,
+                0.026142874371910853,
+                0.02443877694211782,
+                0.02329735481549823,
+                0.02213123765966249
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3375834255227967,
+                0.028287882493838432,
+                0.022221672499463673,
+                0.019103978308183805,
+                0.016342793310445452,
+                0.015187740763501515,
+                0.013806826071370217,
+                0.013106175347985256,
+                0.012556055273919824,
+                0.011469577116862176
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.6919187859883384,
+                0.058699339533609056,
+                0.03787193324357744,
+                0.03248022438160011,
+                0.029060062157019735,
+                0.02671665255394247,
+                0.024703966985855783,
+                0.02263348496385983,
+                0.021039209319722085,
+                0.020203633624173347
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.6378804620296236,
+                0.04837167801128493,
+                0.038107271539786505,
+                0.03463485933958538,
+                0.03197369009611153,
+                0.029633898548190554,
+                0.027632161738380553,
+                0.026135742078934397,
+                0.025361016457752576,
+                0.02392903762677359
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.2604416542819568,
+                0.037875853727261224,
+                0.03160928671676961,
+                0.028416359732075343,
+                0.024803653394892104,
+                0.022820963178362165,
+                0.021437038108706473,
+                0.020001257239796576,
+                0.01926298707960144,
+                0.017530335166624614
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.435518169213855,
+                0.8214872477925013,
+                0.6921772219264318,
+                0.6352620351125323,
+                0.5990698631604513,
+                0.5822037488695175,
+                0.5575545833602784,
+                0.5485464301185002,
+                0.5448077337704007,
+                0.549205079532805
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 27.87825334095396,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "BASE_REF-s2026092702",
+          "arm": "BASE_REF",
+          "model_seed": 2026092702,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.9796666502952576,
+            "receiver_accuracy": {
+              "1": 0.9957407116889954,
+              "3": 0.9474074244499207,
+              "4": 0.9846296310424805,
+              "6": 0.9962962865829468,
+              "8": 0.9742592573165894
+            },
+            "worst_receiver": 0.9474074244499207
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9961110949516296,
+              "receiver_accuracy": {
+                "1": 0.9961110949516296
+              },
+              "worst_receiver": 0.9961110949516296
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.9344444274902344,
+              "receiver_accuracy": {
+                "3": 0.9344444274902344
+              },
+              "worst_receiver": 0.9344444274902344
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.9812963008880615,
+              "receiver_accuracy": {
+                "4": 0.9812963008880615
+              },
+              "worst_receiver": 0.9812963008880615
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.9953703880310059,
+              "receiver_accuracy": {
+                "6": 0.9953703880310059
+              },
+              "worst_receiver": 0.9953703880310059
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9696296453475952,
+              "receiver_accuracy": {
+                "8": 0.9696296453475952
+              },
+              "worst_receiver": 0.9696296453475952
+            }
+          ],
+          "leave_RX_mean": 0.9753703713417053,
+          "leave_RX_worst": 0.9344444274902344,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.848444402217865,
+            "receiver_accuracy": {
+              "1": 0.9307407140731812,
+              "3": 0.820555567741394,
+              "4": 0.7348148226737976,
+              "6": 0.8714814782142639,
+              "8": 0.8846296072006226
+            },
+            "worst_receiver": 0.7348148226737976
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.24774587577061047,
+                0.03638427890482403,
+                0.029463641326578836,
+                0.02670675575141869,
+                0.024706494831849658,
+                0.023402621200869955,
+                0.022745021586380306,
+                0.021228924905733457,
+                0.02074970930223427,
+                0.02004703578760936
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3977324949607017,
+                0.04913545979393853,
+                0.04025970100173874,
+                0.035336913192082965,
+                0.03244561310561876,
+                0.030869453261414218,
+                0.0290951308306484,
+                0.028127945693475858,
+                0.02793221716724691,
+                0.02654839601545107
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5067588130573905,
+                0.04157383365053979,
+                0.028961218373169974,
+                0.023039986994413158,
+                0.020655376152209345,
+                0.01901267117983292,
+                0.018173150948825337,
+                0.017004320078662465,
+                0.016224915534257887,
+                0.015210361205159671
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.4351964776714643,
+                0.05076490596882881,
+                0.03660396108078578,
+                0.03146030961994141,
+                0.02886234757209581,
+                0.027022714723670294,
+                0.025722839257546832,
+                0.02404582195634407,
+                0.02314772763186031,
+                0.02186463698153458
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5298330934747817,
+                0.04871675357932136,
+                0.040509027526492165,
+                0.037016554886386506,
+                0.03338137425127483,
+                0.03138682028012616,
+                0.0300082466786816,
+                0.02863266256356996,
+                0.027691306836075253,
+                0.027109726210908285
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.38438471157162907,
+                0.03570458208402944,
+                0.02982139763614488,
+                0.02717092607820791,
+                0.026043910432666066,
+                0.023776842739492182,
+                0.022330313684448364,
+                0.021394440738691223,
+                0.020782580763278973,
+                0.02023677444233308
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.4602610803407337,
+                0.883574305375417,
+                0.7560275533085777,
+                0.6998135231033205,
+                0.6559731468321786,
+                0.6253773479234604,
+                0.6080158722589887,
+                0.588883030528114,
+                0.5808425503306919,
+                0.5736450624844385
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 26.83328152098693,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "ORDINARY-s2026092702",
+          "arm": "ORDINARY",
+          "model_seed": 2026092702,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.9809629321098328,
+            "receiver_accuracy": {
+              "1": 0.9959259033203125,
+              "3": 0.9494444131851196,
+              "4": 0.9851852059364319,
+              "6": 0.9970370531082153,
+              "8": 0.977222204208374
+            },
+            "worst_receiver": 0.9494444131851196
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9957407116889954,
+              "receiver_accuracy": {
+                "1": 0.9957407116889954
+              },
+              "worst_receiver": 0.9957407116889954
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.936296284198761,
+              "receiver_accuracy": {
+                "3": 0.936296284198761
+              },
+              "worst_receiver": 0.936296284198761
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.9842592477798462,
+              "receiver_accuracy": {
+                "4": 0.9842592477798462
+              },
+              "worst_receiver": 0.9842592477798462
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.9962962865829468,
+              "receiver_accuracy": {
+                "6": 0.9962962865829468
+              },
+              "worst_receiver": 0.9962962865829468
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9733333587646484,
+              "receiver_accuracy": {
+                "8": 0.9733333587646484
+              },
+              "worst_receiver": 0.9733333587646484
+            }
+          ],
+          "leave_RX_mean": 0.9771851778030396,
+          "leave_RX_worst": 0.936296284198761,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.8381481170654297,
+            "receiver_accuracy": {
+              "1": 0.9462962746620178,
+              "3": 0.739814817905426,
+              "4": 0.7198148369789124,
+              "6": 0.8853703737258911,
+              "8": 0.8994444608688354
+            },
+            "worst_receiver": 0.7198148369789124
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.27067016948664946,
+                0.036438601284273085,
+                0.02893801514354963,
+                0.025160552022594308,
+                0.0231088396693979,
+                0.021494432613253595,
+                0.020702127521000212,
+                0.019491071530159505,
+                0.019200146388676433,
+                0.017818216591009073
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3069230764039925,
+                0.041289044295748076,
+                0.034015967353941905,
+                0.030305775905412342,
+                0.027630744898130024,
+                0.026570003334846763,
+                0.02482663792454534,
+                0.02417210527947025,
+                0.0244479669760617,
+                0.02326834551871769
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5032852888284695,
+                0.04461111028989156,
+                0.02882988586548775,
+                0.02073948248215611,
+                0.017771339085366992,
+                0.016593045220961646,
+                0.015818118768197203,
+                0.014991129538606084,
+                0.013922418784054499,
+                0.013369502393262726
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.4494582203409028,
+                0.045792485607994926,
+                0.03363147447743113,
+                0.02905924061224574,
+                0.026501105022099285,
+                0.02456729105481553,
+                0.02347778391152147,
+                0.021929140099220805,
+                0.021058329230263118,
+                0.02000005550327755
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5048995144960899,
+                0.04382556019321321,
+                0.03639422654514275,
+                0.0327694677171253,
+                0.029829127648993144,
+                0.028104525431990622,
+                0.026817036278191066,
+                0.025816023793248905,
+                0.024901721129814782,
+                0.02410241330840758
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3223847095218916,
+                0.03369880315685083,
+                0.026181975255409877,
+                0.02329478625740324,
+                0.022152715489741355,
+                0.02015953232489881,
+                0.018858048781043007,
+                0.017960963481002384,
+                0.01741985051877915,
+                0.017555777953257638
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.4627269855378167,
+                0.9003929608208793,
+                0.7700665335428147,
+                0.7120805801285638,
+                0.6664362166798304,
+                0.6369328394011846,
+                0.6179105978541904,
+                0.6027753938947406,
+                0.5954523354106479,
+                0.588094925161392
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 26.59420401393436,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "RESTORE-s2026092702",
+          "arm": "RESTORE",
+          "model_seed": 2026092702,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.98159259557724,
+            "receiver_accuracy": {
+              "1": 0.9961110949516296,
+              "3": 0.9518518447875977,
+              "4": 0.9851852059364319,
+              "6": 0.9970370531082153,
+              "8": 0.9777777791023254
+            },
+            "worst_receiver": 0.9518518447875977
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.995555579662323,
+              "receiver_accuracy": {
+                "1": 0.995555579662323
+              },
+              "worst_receiver": 0.995555579662323
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.9394444227218628,
+              "receiver_accuracy": {
+                "3": 0.9394444227218628
+              },
+              "worst_receiver": 0.9394444227218628
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.9838888645172119,
+              "receiver_accuracy": {
+                "4": 0.9838888645172119
+              },
+              "worst_receiver": 0.9838888645172119
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.9964814782142639,
+              "receiver_accuracy": {
+                "6": 0.9964814782142639
+              },
+              "worst_receiver": 0.9964814782142639
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9755555391311646,
+              "receiver_accuracy": {
+                "8": 0.9755555391311646
+              },
+              "worst_receiver": 0.9755555391311646
+            }
+          ],
+          "leave_RX_mean": 0.9781851768493652,
+          "leave_RX_worst": 0.9394444227218628,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.841259241104126,
+            "receiver_accuracy": {
+              "1": 0.9375925660133362,
+              "3": 0.7866666913032532,
+              "4": 0.7279629707336426,
+              "6": 0.8540740609169006,
+              "8": 0.8999999761581421
+            },
+            "worst_receiver": 0.7279629707336426
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.2638740372586818,
+                0.03453904074335855,
+                0.027496945439350037,
+                0.023807148407435134,
+                0.02170527091338521,
+                0.020258498016803985,
+                0.019503114287342343,
+                0.018402130369629177,
+                0.01806261755762592,
+                0.016862705797252672
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3159405893749661,
+                0.03984694597385233,
+                0.032497139275074007,
+                0.02860401975848372,
+                0.026533752857219605,
+                0.025382627119561508,
+                0.023724689053755903,
+                0.02303619033523968,
+                0.02320770321502572,
+                0.022202884606898777
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.47495999433809805,
+                0.039042387796299795,
+                0.025971226849489742,
+                0.020196121446196993,
+                0.018125412558456736,
+                0.017093402800697183,
+                0.016128292792136706,
+                0.015143239953451687,
+                0.01424614769362268,
+                0.013366751041677264
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.42429539353128465,
+                0.04683275339858872,
+                0.034513838955807306,
+                0.029442802615581996,
+                0.02660996982502559,
+                0.024640247669248355,
+                0.023414595507913166,
+                0.021717680621123503,
+                0.02093241639908344,
+                0.019858003922161603
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.4960260358239923,
+                0.04750465008001479,
+                0.03903384882779348,
+                0.034084909775900465,
+                0.03064091464593297,
+                0.028347550988906907,
+                0.026848034418764568,
+                0.02538984880324394,
+                0.024452164863783217,
+                0.023705031084162848
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.35579658048375257,
+                0.03361217945459343,
+                0.02714800276453533,
+                0.024194574852784475,
+                0.022938110164943196,
+                0.02076875531070289,
+                0.01942313572480565,
+                0.018467099438347515,
+                0.01782200024389322,
+                0.01742577919115623
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.469789751408592,
+                0.8909451547123137,
+                0.7638295949451507,
+                0.708056224338592,
+                0.6672626857152061,
+                0.6371833072389875,
+                0.6194180697864956,
+                0.6036294236637297,
+                0.5955357386573913,
+                0.5876360254817539
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 26.438227434875444,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "COMP-s2026092702",
+          "arm": "COMP",
+          "model_seed": 2026092702,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.9804814457893372,
+            "receiver_accuracy": {
+              "1": 0.9959259033203125,
+              "3": 0.9503703713417053,
+              "4": 0.9846296310424805,
+              "6": 0.9959259033203125,
+              "8": 0.9755555391311646
+            },
+            "worst_receiver": 0.9503703713417053
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9959259033203125,
+              "receiver_accuracy": {
+                "1": 0.9959259033203125
+              },
+              "worst_receiver": 0.9959259033203125
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.9320370554924011,
+              "receiver_accuracy": {
+                "3": 0.9320370554924011
+              },
+              "worst_receiver": 0.9320370554924011
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.9833333492279053,
+              "receiver_accuracy": {
+                "4": 0.9833333492279053
+              },
+              "worst_receiver": 0.9833333492279053
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.9959259033203125,
+              "receiver_accuracy": {
+                "6": 0.9959259033203125
+              },
+              "worst_receiver": 0.9959259033203125
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9718518257141113,
+              "receiver_accuracy": {
+                "8": 0.9718518257141113
+              },
+              "worst_receiver": 0.9718518257141113
+            }
+          ],
+          "leave_RX_mean": 0.9758148074150086,
+          "leave_RX_worst": 0.9320370554924011,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.8442221879959106,
+            "receiver_accuracy": {
+              "1": 0.9175925850868225,
+              "3": 0.7944444417953491,
+              "4": 0.7527777552604675,
+              "6": 0.8740741014480591,
+              "8": 0.8822222352027893
+            },
+            "worst_receiver": 0.7527777552604675
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.22613319298459425,
+                0.03604047864202469,
+                0.029764237174439052,
+                0.027418823491131502,
+                0.02506005627413591,
+                0.023964319093123316,
+                0.023300781512544267,
+                0.02194107405604824,
+                0.02156561258234202,
+                0.020633823334106377
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.38496826017896335,
+                0.05043031502337683,
+                0.041403427802854116,
+                0.036330656352497284,
+                0.03309880214787665,
+                0.031460934413212634,
+                0.029827159394820533,
+                0.02903393159310023,
+                0.028900147359522562,
+                0.02738954173548827
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5209384564487707,
+                0.04178079975148042,
+                0.029866281134032068,
+                0.02407603704680999,
+                0.021710132575401712,
+                0.020150690197589853,
+                0.01956097079766175,
+                0.018110640873275106,
+                0.017313522798201395,
+                0.016141786964403257
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.4397217368086179,
+                0.05142492362194591,
+                0.03726885736225143,
+                0.032640025185214146,
+                0.03001098587281174,
+                0.028023213757172462,
+                0.026805910148790905,
+                0.025141460495808766,
+                0.02428096651676155,
+                0.023032026850278414
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5165850976215941,
+                0.04948514654995903,
+                0.041980382055044174,
+                0.038569289658750804,
+                0.03496393690270091,
+                0.03325689271801994,
+                0.03136702243770872,
+                0.02993564855248209,
+                0.02877040875573007,
+                0.028618579103596626
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.37368542217309514,
+                0.038525227102495375,
+                0.03032070343338308,
+                0.02738833532683433,
+                0.025839739783652244,
+                0.023517324175271723,
+                0.022069382667541503,
+                0.02118495825737242,
+                0.020543063739462505,
+                0.019722886265270294
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.5164774864438981,
+                0.9096732910852584,
+                0.7754948777244205,
+                0.7171022373910935,
+                0.6718865351449875,
+                0.6435782266798473,
+                0.6238256600924901,
+                0.603841558448852,
+                0.5950935381556314,
+                0.5860816271721371
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 25.65009748796001,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "RESTORE_COMP-s2026092702",
+          "arm": "RESTORE_COMP",
+          "model_seed": 2026092702,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.9813703298568726,
+            "receiver_accuracy": {
+              "1": 0.9953703880310059,
+              "3": 0.9524074196815491,
+              "4": 0.9846296310424805,
+              "6": 0.9968518614768982,
+              "8": 0.9775925874710083
+            },
+            "worst_receiver": 0.9524074196815491
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9953703880310059,
+              "receiver_accuracy": {
+                "1": 0.9953703880310059
+              },
+              "worst_receiver": 0.9953703880310059
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.9416666626930237,
+              "receiver_accuracy": {
+                "3": 0.9416666626930237
+              },
+              "worst_receiver": 0.9416666626930237
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.9824073910713196,
+              "receiver_accuracy": {
+                "4": 0.9824073910713196
+              },
+              "worst_receiver": 0.9824073910713196
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.9962962865829468,
+              "receiver_accuracy": {
+                "6": 0.9962962865829468
+              },
+              "worst_receiver": 0.9962962865829468
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9738888740539551,
+              "receiver_accuracy": {
+                "8": 0.9738888740539551
+              },
+              "worst_receiver": 0.9738888740539551
+            }
+          ],
+          "leave_RX_mean": 0.9779259204864502,
+          "leave_RX_worst": 0.9416666626930237,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.8241111040115356,
+            "receiver_accuracy": {
+              "1": 0.9259259104728699,
+              "3": 0.7366666793823242,
+              "4": 0.6705555319786072,
+              "6": 0.8700000047683716,
+              "8": 0.9174073934555054
+            },
+            "worst_receiver": 0.6705555319786072
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.24929444942564244,
+                0.035588221192832975,
+                0.0285966170354495,
+                0.0249427961407318,
+                0.02291610269674233,
+                0.02139440043459809,
+                0.020655835235402698,
+                0.01963204458888088,
+                0.01913041867788822,
+                0.018104966829516112
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3042027582251836,
+                0.03980042239621518,
+                0.03262517715966891,
+                0.029090642810813964,
+                0.027075669760741886,
+                0.02611659900950534,
+                0.02475340969505764,
+                0.024092894207154002,
+                0.02421630024318657,
+                0.02315345157883943
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.49903240730719906,
+                0.04125944109899657,
+                0.027171874341983645,
+                0.02132787439262583,
+                0.018912685097801307,
+                0.017674551785938325,
+                0.016654653306163492,
+                0.015699671634605953,
+                0.014855880337575126,
+                0.014119592498219202
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.440518546506526,
+                0.044845045499858405,
+                0.03205008998749748,
+                0.028043150889968116,
+                0.02579967685280338,
+                0.023943840180124555,
+                0.02305703464126776,
+                0.0213378409958548,
+                0.02074457539452447,
+                0.01977073806264098
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.48935771337932066,
+                0.04506921168594133,
+                0.03766579567085183,
+                0.03374551558305347,
+                0.030850344553353296,
+                0.028905577514143216,
+                0.02755288544391829,
+                0.026300597699388625,
+                0.025451520487429605,
+                0.024870283907604596
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.30277221794166265,
+                0.03289309346250125,
+                0.02745234271186212,
+                0.024778089027792688,
+                0.02354872166400864,
+                0.021254008071171858,
+                0.01955839417993076,
+                0.01861060004503954,
+                0.01800540719358694,
+                0.018043393189353604
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.4554169479249015,
+                0.8938599060452174,
+                0.7681176776356168,
+                0.7145548523418487,
+                0.6729811890163119,
+                0.6429410733873882,
+                0.6249989419513279,
+                0.6108972367786226,
+                0.6019851834811861,
+                0.5938012577238537
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 28.612430789973587,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "BASE_REF-s2026092703",
+          "arm": "BASE_REF",
+          "model_seed": 2026092703,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.9806296229362488,
+            "receiver_accuracy": {
+              "1": 0.9950000047683716,
+              "3": 0.9474074244499207,
+              "4": 0.984074056148529,
+              "6": 0.9968518614768982,
+              "8": 0.9798148274421692
+            },
+            "worst_receiver": 0.9474074244499207
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9944444298744202,
+              "receiver_accuracy": {
+                "1": 0.9944444298744202
+              },
+              "worst_receiver": 0.9944444298744202
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.9412962794303894,
+              "receiver_accuracy": {
+                "3": 0.9412962794303894
+              },
+              "worst_receiver": 0.9412962794303894
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.982962965965271,
+              "receiver_accuracy": {
+                "4": 0.982962965965271
+              },
+              "worst_receiver": 0.982962965965271
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.9951851963996887,
+              "receiver_accuracy": {
+                "6": 0.9951851963996887
+              },
+              "worst_receiver": 0.9951851963996887
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9751851558685303,
+              "receiver_accuracy": {
+                "8": 0.9751851558685303
+              },
+              "worst_receiver": 0.9751851558685303
+            }
+          ],
+          "leave_RX_mean": 0.9778148055076599,
+          "leave_RX_worst": 0.9412962794303894,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.8565555214881897,
+            "receiver_accuracy": {
+              "1": 0.7672222256660461,
+              "3": 0.919259250164032,
+              "4": 0.903333306312561,
+              "6": 0.8859259486198425,
+              "8": 0.8070370554924011
+            },
+            "worst_receiver": 0.7672222256660461
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.3775228073353332,
+                0.03903387664536399,
+                0.02962277556577372,
+                0.025812062385772903,
+                0.023361631131597928,
+                0.021493908997092928,
+                0.01996352511265921,
+                0.018591102475211733,
+                0.017480590151888985,
+                0.01688989957055402
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.43982633443342317,
+                0.038824904213349026,
+                0.030049334176712565,
+                0.02691624326897519,
+                0.02344158101412985,
+                0.02191546271954264,
+                0.020551608984787313,
+                0.01945455912796278,
+                0.018346794233435677,
+                0.017921633639978982
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.8389095495617579,
+                0.02768811063160972,
+                0.019552283373380466,
+                0.01625061703047582,
+                0.014529618768701477,
+                0.0131981106563693,
+                0.012362896745640135,
+                0.011391232482024602,
+                0.010676982247876743,
+                0.010241537951376466
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3563417293131351,
+                0.03633319585332795,
+                0.028611925291636635,
+                0.02499091782503658,
+                0.022392444868409446,
+                0.0211208696787556,
+                0.019449019106844115,
+                0.018369936836617334,
+                0.01738086889483153,
+                0.016508608110367307
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.6975997570724715,
+                0.04139670711306352,
+                0.032516314183908795,
+                0.029207017213579208,
+                0.02624527614504572,
+                0.024631711358707103,
+                0.023477658682635853,
+                0.021879146662023334,
+                0.021074813385567968,
+                0.019911602615482277
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5137702828480137,
+                0.03642649111293611,
+                0.027967022347544866,
+                0.024551183659405937,
+                0.022186044396625623,
+                0.020592166654883868,
+                0.019178091155158148,
+                0.018016856956103493,
+                0.01747878182915941,
+                0.01673009546384925
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.5312141223180862,
+                0.8102664783265856,
+                0.6830175014526125,
+                0.6194789949296012,
+                0.5869812097246685,
+                0.5623120760917664,
+                0.551804925487155,
+                0.5372521563181801,
+                0.5299864467741952,
+                0.5244672584912133
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 28.047502737957984,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "ORDINARY-s2026092703",
+          "arm": "ORDINARY",
+          "model_seed": 2026092703,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.9809629321098328,
+            "receiver_accuracy": {
+              "1": 0.9959259033203125,
+              "3": 0.9479629397392273,
+              "4": 0.9824073910713196,
+              "6": 0.997592568397522,
+              "8": 0.9809259176254272
+            },
+            "worst_receiver": 0.9479629397392273
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9953703880310059,
+              "receiver_accuracy": {
+                "1": 0.9953703880310059
+              },
+              "worst_receiver": 0.9953703880310059
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.9416666626930237,
+              "receiver_accuracy": {
+                "3": 0.9416666626930237
+              },
+              "worst_receiver": 0.9416666626930237
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.982962965965271,
+              "receiver_accuracy": {
+                "4": 0.982962965965271
+              },
+              "worst_receiver": 0.982962965965271
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.995555579662323,
+              "receiver_accuracy": {
+                "6": 0.995555579662323
+              },
+              "worst_receiver": 0.995555579662323
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9764814972877502,
+              "receiver_accuracy": {
+                "8": 0.9764814972877502
+              },
+              "worst_receiver": 0.9764814972877502
+            }
+          ],
+          "leave_RX_mean": 0.9784074187278747,
+          "leave_RX_worst": 0.9416666626930237,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.8595555424690247,
+            "receiver_accuracy": {
+              "1": 0.7477777600288391,
+              "3": 0.9312962889671326,
+              "4": 0.8888888955116272,
+              "6": 0.9098148345947266,
+              "8": 0.8199999928474426
+            },
+            "worst_receiver": 0.7477777600288391
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.26550501092204026,
+                0.03653551014169814,
+                0.026393658174645333,
+                0.023022938442845194,
+                0.021169592414701743,
+                0.019688607371515697,
+                0.018637578340749892,
+                0.017293432051581997,
+                0.01655142740124748,
+                0.015924176374479893
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3630831199210314,
+                0.03602718665959343,
+                0.02838478401776344,
+                0.025502096211153364,
+                0.022707548684307508,
+                0.021613999515298812,
+                0.020431219999279295,
+                0.01945287792514714,
+                0.018487526967175424,
+                0.01788001157461651
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.711191749241617,
+                0.027566560440593295,
+                0.020213663820472974,
+                0.01708411825081659,
+                0.015320040389067598,
+                0.013965790517746456,
+                0.01311574023039568,
+                0.012253943351762636,
+                0.01153645556242693,
+                0.011073470730630178
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.35073834676591176,
+                0.03674210326539146,
+                0.029629445016857176,
+                0.02578067034482956,
+                0.023075592958383143,
+                0.021146436125808764,
+                0.019610058120082294,
+                0.01827300999550119,
+                0.017545849368685768,
+                0.016677065728794016
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.7006426036949196,
+                0.04005155349889445,
+                0.032385471557813975,
+                0.029226621228551106,
+                0.026833141819825247,
+                0.024981453491463548,
+                0.023740994244340865,
+                0.022436292401500163,
+                0.021640961481228706,
+                0.020416110144957665
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.6046389292629938,
+                0.03895623253451453,
+                0.0288996685163251,
+                0.025288024352538206,
+                0.02288671979710223,
+                0.02123904376335087,
+                0.019766951305052592,
+                0.01865789071908073,
+                0.018020833295489116,
+                0.017289842579454658
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.4463845585262964,
+                0.8106508850672889,
+                0.6905310212241279,
+                0.6253070941047063,
+                0.5908668281540038,
+                0.5692594561122712,
+                0.560932718685695,
+                0.5461529901292589,
+                0.5368319268832131,
+                0.5320577447754996
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 27.39710138202645,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "RESTORE-s2026092703",
+          "arm": "RESTORE",
+          "model_seed": 2026092703,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.9810370206832886,
+            "receiver_accuracy": {
+              "1": 0.9957407116889954,
+              "3": 0.9494444131851196,
+              "4": 0.9825925827026367,
+              "6": 0.9962962865829468,
+              "8": 0.9811111092567444
+            },
+            "worst_receiver": 0.9494444131851196
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9953703880310059,
+              "receiver_accuracy": {
+                "1": 0.9953703880310059
+              },
+              "worst_receiver": 0.9953703880310059
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.9438889026641846,
+              "receiver_accuracy": {
+                "3": 0.9438889026641846
+              },
+              "worst_receiver": 0.9438889026641846
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.9825925827026367,
+              "receiver_accuracy": {
+                "4": 0.9825925827026367
+              },
+              "worst_receiver": 0.9825925827026367
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.994259238243103,
+              "receiver_accuracy": {
+                "6": 0.994259238243103
+              },
+              "worst_receiver": 0.994259238243103
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9762963056564331,
+              "receiver_accuracy": {
+                "8": 0.9762963056564331
+              },
+              "worst_receiver": 0.9762963056564331
+            }
+          ],
+          "leave_RX_mean": 0.9784814834594726,
+          "leave_RX_worst": 0.9438889026641846,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.8581481575965881,
+            "receiver_accuracy": {
+              "1": 0.7224074006080627,
+              "3": 0.9418518543243408,
+              "4": 0.896481454372406,
+              "6": 0.9057407379150391,
+              "8": 0.8242592811584473
+            },
+            "worst_receiver": 0.7224074006080627
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.2857501548623282,
+                0.035743088544242914,
+                0.027294952072321424,
+                0.024245083741252383,
+                0.02228817936092142,
+                0.020725259662620604,
+                0.019419177212412396,
+                0.017924352801508375,
+                0.017147490810307246,
+                0.016491868439174835
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.33132104322550787,
+                0.03747523654074896,
+                0.029053609386559518,
+                0.02603756987622806,
+                0.022991816356541617,
+                0.021747441743574444,
+                0.020503655466295425,
+                0.019260878213459537,
+                0.018088712155937204,
+                0.017538899183273317
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.7116027364655146,
+                0.025288081358349514,
+                0.01865428358552948,
+                0.016032679482466644,
+                0.014502336297716413,
+                0.013321241003180308,
+                0.012498322513604922,
+                0.011705888926036774,
+                0.010998344527823584,
+                0.010683561427636988
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3439173950207612,
+                0.035349286696504036,
+                0.02847720604567301,
+                0.02490509965471805,
+                0.022477743153770765,
+                0.020640965679749136,
+                0.019171278178691863,
+                0.018077120717082704,
+                0.017237342335283755,
+                0.01637037932458851
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.7643742611247396,
+                0.041282695046966036,
+                0.033128606705438525,
+                0.030235207601199073,
+                0.0278152515609113,
+                0.02609038186215219,
+                0.024705425129523353,
+                0.023418506137317135,
+                0.022481894776934668,
+                0.02109477941597265
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5818393671559909,
+                0.036101308465003965,
+                0.02727072196199544,
+                0.024159184021372643,
+                0.021923150128078838,
+                0.02052805944981556,
+                0.01927641895082262,
+                0.018224158244473595,
+                0.017673640618366855,
+                0.017002546911438307
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.4792321105608865,
+                0.8069614709748162,
+                0.6798382865436493,
+                0.61379294191088,
+                0.5786287091270326,
+                0.5565107970767551,
+                0.5482912885196626,
+                0.533099041439238,
+                0.5243373658165099,
+                0.5187845154414101
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 26.376652374863625,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "COMP-s2026092703",
+          "arm": "COMP",
+          "model_seed": 2026092703,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.9803703427314758,
+            "receiver_accuracy": {
+              "1": 0.9948148131370544,
+              "3": 0.9481481313705444,
+              "4": 0.982962965965271,
+              "6": 0.996666669845581,
+              "8": 0.9792592525482178
+            },
+            "worst_receiver": 0.9481481313705444
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9938889145851135,
+              "receiver_accuracy": {
+                "1": 0.9938889145851135
+              },
+              "worst_receiver": 0.9938889145851135
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.945555567741394,
+              "receiver_accuracy": {
+                "3": 0.945555567741394
+              },
+              "worst_receiver": 0.945555567741394
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.9825925827026367,
+              "receiver_accuracy": {
+                "4": 0.9825925827026367
+              },
+              "worst_receiver": 0.9825925827026367
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.9948148131370544,
+              "receiver_accuracy": {
+                "6": 0.9948148131370544
+              },
+              "worst_receiver": 0.9948148131370544
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9755555391311646,
+              "receiver_accuracy": {
+                "8": 0.9755555391311646
+              },
+              "worst_receiver": 0.9755555391311646
+            }
+          ],
+          "leave_RX_mean": 0.9784814834594726,
+          "leave_RX_worst": 0.945555567741394,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.8555925488471985,
+            "receiver_accuracy": {
+              "1": 0.7716666460037231,
+              "3": 0.9161111116409302,
+              "4": 0.8849999904632568,
+              "6": 0.8970370292663574,
+              "8": 0.8081481456756592
+            },
+            "worst_receiver": 0.7716666460037231
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.3525070624834015,
+                0.0407136540351406,
+                0.030876930792416844,
+                0.027385033256714306,
+                0.02512925166577574,
+                0.023473343224752516,
+                0.02185171512384263,
+                0.02052031850885777,
+                0.019227028136688567,
+                0.018819250472717815
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.4341676090444837,
+                0.041588646551919364,
+                0.03316853370458361,
+                0.030238119335401627,
+                0.02651673045659822,
+                0.02504105434294731,
+                0.023723247262930115,
+                0.021988385900973326,
+                0.020678047087812235,
+                0.020402149276600945
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.793179232910985,
+                0.02981474432680342,
+                0.021074173972010612,
+                0.017550303571162714,
+                0.015778047047437183,
+                0.01432374171794407,
+                0.013468104033243089,
+                0.01243554051551554,
+                0.011672147333858506,
+                0.011259582690480682
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3994119052376066,
+                0.03955641250525202,
+                0.03149548541931879,
+                0.02827730467395177,
+                0.025407481314762243,
+                0.023941151573071404,
+                0.021597290973341655,
+                0.020435682823142363,
+                0.019321540429715126,
+                0.018382319453216736
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.7142626198511275,
+                0.044393523386310016,
+                0.03420749003925021,
+                0.030982579432782674,
+                0.028027575746888207,
+                0.02643492684832641,
+                0.025012288171620597,
+                0.023549699919327857,
+                0.022901138314415537,
+                0.021478724603851636
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.504768487941178,
+                0.036957133738767536,
+                0.029153264996906122,
+                0.02607281789006222,
+                0.023691273693527495,
+                0.02195093955489851,
+                0.02054499210346313,
+                0.019317326848469082,
+                0.01897023401799656,
+                0.018279488473421052
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.4836978410539172,
+                0.8117708403345139,
+                0.6904608955080547,
+                0.626565406625233,
+                0.5938067310953897,
+                0.5686767685602582,
+                0.5568237612361,
+                0.5416060488186185,
+                0.5349352341984945,
+                0.5291603123195587
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 25.478845658013597,
+          "source_cache_phase2_allowed": false
+        },
+        {
+          "row_id": "RESTORE_COMP-s2026092703",
+          "arm": "RESTORE_COMP",
+          "model_seed": 2026092703,
+          "status": "SOURCE_PROBES_FROZEN",
+          "fit_roles": [
+            "L_s"
+          ],
+          "diagnostic_roles": [
+            "V"
+          ],
+          "backbone_updates": 0,
+          "full_TX": {
+            "count": 27000,
+            "accuracy": 0.9811111092567444,
+            "receiver_accuracy": {
+              "1": 0.9959259033203125,
+              "3": 0.948888897895813,
+              "4": 0.9825925827026367,
+              "6": 0.9964814782142639,
+              "8": 0.9816666841506958
+            },
+            "worst_receiver": 0.948888897895813
+          },
+          "leave_RX": [
+            {
+              "held_receiver": 1,
+              "count": 5400,
+              "accuracy": 0.9957407116889954,
+              "receiver_accuracy": {
+                "1": 0.9957407116889954
+              },
+              "worst_receiver": 0.9957407116889954
+            },
+            {
+              "held_receiver": 3,
+              "count": 5400,
+              "accuracy": 0.9461110830307007,
+              "receiver_accuracy": {
+                "3": 0.9461110830307007
+              },
+              "worst_receiver": 0.9461110830307007
+            },
+            {
+              "held_receiver": 4,
+              "count": 5400,
+              "accuracy": 0.9824073910713196,
+              "receiver_accuracy": {
+                "4": 0.9824073910713196
+              },
+              "worst_receiver": 0.9824073910713196
+            },
+            {
+              "held_receiver": 6,
+              "count": 5400,
+              "accuracy": 0.9957407116889954,
+              "receiver_accuracy": {
+                "6": 0.9957407116889954
+              },
+              "worst_receiver": 0.9957407116889954
+            },
+            {
+              "held_receiver": 8,
+              "count": 5400,
+              "accuracy": 0.9746296405792236,
+              "receiver_accuracy": {
+                "8": 0.9746296405792236
+              },
+              "worst_receiver": 0.9746296405792236
+            }
+          ],
+          "leave_RX_mean": 0.978925907611847,
+          "leave_RX_worst": 0.9461110830307007,
+          "RX_information": {
+            "count": 27000,
+            "accuracy": 0.8582592606544495,
+            "receiver_accuracy": {
+              "1": 0.7368518710136414,
+              "3": 0.9314814805984497,
+              "4": 0.8700000047683716,
+              "6": 0.9279629588127136,
+              "8": 0.824999988079071
+            },
+            "worst_receiver": 0.7368518710136414
+          },
+          "head_epochs_total": 70,
+          "costs": [
+            {
+              "probe": "full_TX",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                0.29622825956533827,
+                0.037237616511032225,
+                0.028110385255681145,
+                0.02512635040496077,
+                0.023311579750170782,
+                0.02159801405573648,
+                0.020606820966516223,
+                0.0192193322350818,
+                0.01838786117850788,
+                0.01772396353561254
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_1",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.39587045331441223,
+                0.03858484806759017,
+                0.03138660892607674,
+                0.02869449820192087,
+                0.025551893786778527,
+                0.024078769177671464,
+                0.022884117471911606,
+                0.02169218785942547,
+                0.02048345911538317,
+                0.019611481642202725
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_3",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.6768952542472453,
+                0.027277063282709273,
+                0.02069961138897472,
+                0.017699263268519963,
+                0.016099248956593256,
+                0.014767195509066657,
+                0.013898796079650758,
+                0.012973287376382994,
+                0.012159301742674813,
+                0.011834350011740175
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_4",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.3457204169933758,
+                0.0373208615396704,
+                0.030363454267619147,
+                0.02732157072732373,
+                0.02487938648888043,
+                0.022799340962240146,
+                0.021045669410673398,
+                0.019823402911424638,
+                0.018890878771032606,
+                0.017763739587768675
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_6",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.8066407428374366,
+                0.04031921707330242,
+                0.03346688069757961,
+                0.03084495753522903,
+                0.02862904870084354,
+                0.027041774036155805,
+                0.025813204647293166,
+                0.024571569506374617,
+                0.023699762122262092,
+                0.02236625205961958
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "leave_RX_8",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 200,
+              "fit_count": 5040,
+              "loss_curve": [
+                0.5668731351220418,
+                0.038613513703384096,
+                0.02879546180751825,
+                0.026094728383043456,
+                0.024064265759218308,
+                0.022619072563709722,
+                0.021273394922415416,
+                0.020188878169135442,
+                0.01978883050116045,
+                0.018875810722746546
+              ],
+              "backbone_updates": 0
+            },
+            {
+              "probe": "RX_information",
+              "fit_role": "L_s",
+              "selection": "final_only",
+              "epochs": 10,
+              "updates": 250,
+              "fit_count": 6300,
+              "loss_curve": [
+                1.4827580716496422,
+                0.8148406247487144,
+                0.6904148625192188,
+                0.6217798423010206,
+                0.5862570762255835,
+                0.564377145956433,
+                0.5555165251096089,
+                0.5395871712669493,
+                0.5303573210277255,
+                0.5247444005996462
+              ],
+              "backbone_updates": 0
+            }
+          ],
+          "elapsed_seconds": 25.613524535903707,
+          "source_cache_phase2_allowed": false
+        }
+      ],
+      "historical_refit_recovered": {
+        "records": 270,
+        "all_metrics_recounted": 540,
+        "head_new_training_updates": 0,
+        "theta_new_updates": 0
+      }
     },
     {
       "run_id": "20261013-phase1-cross-frequency-legacycos-clean-manysig-m9-r01",
@@ -18686,7 +22451,7 @@
       "run_id": "20261014-phase1-pa-cross-delay-legacycos-clean-manysig-m9-r01",
       "mechanism": "PA shallow factorized cross-delay cubic versus matched convolution",
       "code_commit": "1f8814c046a8c68eba8a334e66a0aceb76e491e0",
-      "status": "RUNNING verified actual6workers andlog growth",
+      "status": "RUNNING currentlive6workers epochs34to38;0newrowcomplete;failure0",
       "model_count": 9,
       "new_models": 6,
       "complete_new_seeds": 0,
@@ -18715,8 +22480,1317 @@
     "geometry_registered_rows": 15,
     "geometry_measured_rows": 7,
     "geometry_complete": false,
-    "sinc_actual_checkpoint_measurement": "PENDING; next read-only comparison of9initial/final models,zeroIQ",
-    "correction_and_introduction_counts": "not yet recomputed from paired raw predictions; aggregate accuracy doesnot prove either count"
+    "sinc_actual_checkpoint_measurement": {
+      "status": "VERIFIED",
+      "diagnostic_code": "f9e962b375f52cd5e8e7f1975986a170e8f15f81",
+      "real_checkpoint_models": 9,
+      "rows": [
+        {
+          "status": "VERIFIED",
+          "actual_identity_prefix": "id_backbone.encoder.core.id_backbone.sinc.",
+          "sample_rate_Hz": 25000000,
+          "channels": 24,
+          "kernel_length": 79,
+          "parameter_changes": {
+            "low_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 23,
+              "abs_change_Hz_mean": 0.000004609426014212659,
+              "abs_change_Hz_max": 0.000110626220703125,
+              "relative_L2": 9.908281660420126e-12,
+              "initial_float32_ULP_Hz_min": 0.0000019073486328125,
+              "initial_float32_ULP_Hz_max": 0.5,
+              "channel_changes_Hz": [
+                -0.000110626220703125,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "band_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 24,
+              "abs_change_Hz_mean": 0,
+              "abs_change_Hz_max": 0,
+              "relative_L2": 0,
+              "initial_float32_ULP_Hz_min": 0.000030517578125,
+              "initial_float32_ULP_Hz_max": 0.25,
+              "channel_changes_Hz": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "kernel_relative_L2": 1.170844665665527e-8,
+          "kernel_max_abs_change": 5.960464477539063e-8,
+          "kernel_exactly_unchanged_channels": 23,
+          "per_channel_kernel_relative_L2": [
+            4.835660760704741e-8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_low_abs_change_Hz_max": 0.0001068115234375,
+          "effective_high_abs_change_Hz_max": 0.0001220703125,
+          "initial_coverage_Hz": [
+            80.00001525878906,
+            12499999
+          ],
+          "final_coverage_Hz": [
+            79.99990844726562,
+            12499999
+          ],
+          "parameters_or_buffers_updated_by_diagnostic": 0,
+          "IQ_read": false,
+          "query_read": false,
+          "inference": "actual checkpoint movement; does not by itself prove Sinc usefulness,causal bottleneck or transfer benefit",
+          "run_id": "20261013-phase1-frequency-context-legacycos-clean-manysig-m9-r01",
+          "row_id": "LEGACY50-s2026092701",
+          "arm": "LEGACY50",
+          "model_seed": 2026092701,
+          "label_epochs": 32,
+          "pseudo_epochs": 18,
+          "epochs": 50,
+          "updates": 11100,
+          "source_roles": "EXACT_MATCH",
+          "scratch_ancestors": [],
+          "training_code": "43bd20494aa470568a68553ce664dc76811b9707",
+          "initial_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-frequency-context-legacycos-clean-manysig-m9-r01/LEGACY50-s2026092701/source/initial_smoke.pt",
+          "final_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-frequency-context-legacycos-clean-manysig-m9-r01/LEGACY50-s2026092701/source/final_ssdg.pth"
+        },
+        {
+          "status": "VERIFIED",
+          "actual_identity_prefix": "id_backbone.encoder.core.id_backbone.sinc.",
+          "sample_rate_Hz": 25000000,
+          "channels": 24,
+          "kernel_length": 79,
+          "parameter_changes": {
+            "low_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 23,
+              "abs_change_Hz_mean": 0.00002686182597244624,
+              "abs_change_Hz_max": 0.000644683837890625,
+              "relative_L2": 5.774136377367789e-11,
+              "initial_float32_ULP_Hz_min": 0.0000019073486328125,
+              "initial_float32_ULP_Hz_max": 0.5,
+              "channel_changes_Hz": [
+                -0.000644683837890625,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "band_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 24,
+              "abs_change_Hz_mean": 0,
+              "abs_change_Hz_max": 0,
+              "relative_L2": 0,
+              "initial_float32_ULP_Hz_min": 0.000030517578125,
+              "initial_float32_ULP_Hz_max": 0.25,
+              "channel_changes_Hz": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "kernel_relative_L2": 2.4071169946182636e-8,
+          "kernel_max_abs_change": 1.7881393432617188e-7,
+          "kernel_exactly_unchanged_channels": 23,
+          "per_channel_kernel_relative_L2": [
+            9.941542344904519e-8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_low_abs_change_Hz_max": 0.000640869140625,
+          "effective_high_abs_change_Hz_max": 0.00067138671875,
+          "initial_coverage_Hz": [
+            80.00001525878906,
+            12499999
+          ],
+          "final_coverage_Hz": [
+            79.99937438964844,
+            12499999
+          ],
+          "parameters_or_buffers_updated_by_diagnostic": 0,
+          "IQ_read": false,
+          "query_read": false,
+          "inference": "actual checkpoint movement; does not by itself prove Sinc usefulness,causal bottleneck or transfer benefit",
+          "run_id": "20261013-phase1-frequency-context-legacycos-clean-manysig-m9-r01",
+          "row_id": "LEGACY50-s2026092702",
+          "arm": "LEGACY50",
+          "model_seed": 2026092702,
+          "label_epochs": 32,
+          "pseudo_epochs": 18,
+          "epochs": 50,
+          "updates": 11100,
+          "source_roles": "EXACT_MATCH",
+          "scratch_ancestors": [],
+          "training_code": "43bd20494aa470568a68553ce664dc76811b9707",
+          "initial_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-frequency-context-legacycos-clean-manysig-m9-r01/LEGACY50-s2026092702/source/initial_smoke.pt",
+          "final_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-frequency-context-legacycos-clean-manysig-m9-r01/LEGACY50-s2026092702/source/final_ssdg.pth"
+        },
+        {
+          "status": "VERIFIED",
+          "actual_identity_prefix": "id_backbone.encoder.core.id_backbone.sinc.",
+          "sample_rate_Hz": 25000000,
+          "channels": 24,
+          "kernel_length": 79,
+          "parameter_changes": {
+            "low_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 23,
+              "abs_change_Hz_mean": 0.000007470448963431409,
+              "abs_change_Hz_max": 0.000179290771484375,
+              "relative_L2": 1.6058248480943504e-11,
+              "initial_float32_ULP_Hz_min": 0.0000019073486328125,
+              "initial_float32_ULP_Hz_max": 0.5,
+              "channel_changes_Hz": [
+                0.000179290771484375,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "band_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 24,
+              "abs_change_Hz_mean": 0,
+              "abs_change_Hz_max": 0,
+              "relative_L2": 0,
+              "initial_float32_ULP_Hz_min": 0.000030517578125,
+              "initial_float32_ULP_Hz_max": 0.25,
+              "channel_changes_Hz": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "kernel_relative_L2": 0,
+          "kernel_max_abs_change": 0,
+          "kernel_exactly_unchanged_channels": 24,
+          "per_channel_kernel_relative_L2": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_low_abs_change_Hz_max": 0.00018310546875,
+          "effective_high_abs_change_Hz_max": 0.00018310546875,
+          "initial_coverage_Hz": [
+            80.00001525878906,
+            12499999
+          ],
+          "final_coverage_Hz": [
+            80.00019836425781,
+            12499999
+          ],
+          "parameters_or_buffers_updated_by_diagnostic": 0,
+          "IQ_read": false,
+          "query_read": false,
+          "inference": "actual checkpoint movement; does not by itself prove Sinc usefulness,causal bottleneck or transfer benefit",
+          "run_id": "20261013-phase1-frequency-context-legacycos-clean-manysig-m9-r01",
+          "row_id": "LEGACY50-s2026092703",
+          "arm": "LEGACY50",
+          "model_seed": 2026092703,
+          "label_epochs": 32,
+          "pseudo_epochs": 18,
+          "epochs": 50,
+          "updates": 11100,
+          "source_roles": "EXACT_MATCH",
+          "scratch_ancestors": [],
+          "training_code": "43bd20494aa470568a68553ce664dc76811b9707",
+          "initial_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-frequency-context-legacycos-clean-manysig-m9-r01/LEGACY50-s2026092703/source/initial_smoke.pt",
+          "final_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-frequency-context-legacycos-clean-manysig-m9-r01/LEGACY50-s2026092703/source/final_ssdg.pth"
+        },
+        {
+          "status": "VERIFIED",
+          "actual_identity_prefix": "id_backbone.encoder.core.id_backbone.sinc.",
+          "sample_rate_Hz": 25000000,
+          "channels": 24,
+          "kernel_length": 79,
+          "parameter_changes": {
+            "low_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 23,
+              "abs_change_Hz_mean": 0.0000029404957331280457,
+              "abs_change_Hz_max": 0.0000705718994140625,
+              "relative_L2": 6.320800220033229e-12,
+              "initial_float32_ULP_Hz_min": 0.0000019073486328125,
+              "initial_float32_ULP_Hz_max": 0.5,
+              "channel_changes_Hz": [
+                -0.0000705718994140625,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "band_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 24,
+              "abs_change_Hz_mean": 0,
+              "abs_change_Hz_max": 0,
+              "relative_L2": 0,
+              "initial_float32_ULP_Hz_min": 0.000030517578125,
+              "initial_float32_ULP_Hz_max": 0.25,
+              "channel_changes_Hz": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "kernel_relative_L2": 1.170844665665527e-8,
+          "kernel_max_abs_change": 5.960464477539063e-8,
+          "kernel_exactly_unchanged_channels": 23,
+          "per_channel_kernel_relative_L2": [
+            4.835660760704741e-8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_low_abs_change_Hz_max": 0.00006866455078125,
+          "effective_high_abs_change_Hz_max": 0.000091552734375,
+          "initial_coverage_Hz": [
+            80.00001525878906,
+            12499999
+          ],
+          "final_coverage_Hz": [
+            79.99994659423828,
+            12499999
+          ],
+          "parameters_or_buffers_updated_by_diagnostic": 0,
+          "IQ_read": false,
+          "query_read": false,
+          "inference": "actual checkpoint movement; does not by itself prove Sinc usefulness,causal bottleneck or transfer benefit",
+          "run_id": "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01",
+          "row_id": "OLD_GATE_COS50-s2026092701",
+          "arm": "OLD_GATE_COS50",
+          "model_seed": 2026092701,
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "epochs": 50,
+          "updates": 11100,
+          "source_roles": "EXACT_MATCH",
+          "scratch_ancestors": [],
+          "training_code": "5fa536f9ca2d90e7d30d547d58503a41b612d57f",
+          "initial_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092701/source/initial_smoke.pt",
+          "final_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092701/source/final_ssdg.pth"
+        },
+        {
+          "status": "VERIFIED",
+          "actual_identity_prefix": "id_backbone.encoder.core.id_backbone.sinc.",
+          "sample_rate_Hz": 25000000,
+          "channels": 24,
+          "kernel_length": 79,
+          "parameter_changes": {
+            "low_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 23,
+              "abs_change_Hz_mean": 0.000027259191483608447,
+              "abs_change_Hz_max": 0.0006542205810546875,
+              "relative_L2": 5.859552426601411e-11,
+              "initial_float32_ULP_Hz_min": 0.0000019073486328125,
+              "initial_float32_ULP_Hz_max": 0.5,
+              "channel_changes_Hz": [
+                -0.0006542205810546875,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "band_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 24,
+              "abs_change_Hz_mean": 0,
+              "abs_change_Hz_max": 0,
+              "relative_L2": 0,
+              "initial_float32_ULP_Hz_min": 0.000030517578125,
+              "initial_float32_ULP_Hz_max": 0.25,
+              "channel_changes_Hz": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "kernel_relative_L2": 1.170844665665527e-8,
+          "kernel_max_abs_change": 5.960464477539063e-8,
+          "kernel_exactly_unchanged_channels": 23,
+          "per_channel_kernel_relative_L2": [
+            4.835660760704741e-8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_low_abs_change_Hz_max": 0.00064849853515625,
+          "effective_high_abs_change_Hz_max": 0.00067138671875,
+          "initial_coverage_Hz": [
+            80.00001525878906,
+            12499999
+          ],
+          "final_coverage_Hz": [
+            79.9993667602539,
+            12499999
+          ],
+          "parameters_or_buffers_updated_by_diagnostic": 0,
+          "IQ_read": false,
+          "query_read": false,
+          "inference": "actual checkpoint movement; does not by itself prove Sinc usefulness,causal bottleneck or transfer benefit",
+          "run_id": "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01",
+          "row_id": "OLD_GATE_COS50-s2026092702",
+          "arm": "OLD_GATE_COS50",
+          "model_seed": 2026092702,
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "epochs": 50,
+          "updates": 11100,
+          "source_roles": "EXACT_MATCH",
+          "scratch_ancestors": [],
+          "training_code": "5fa536f9ca2d90e7d30d547d58503a41b612d57f",
+          "initial_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092702/source/initial_smoke.pt",
+          "final_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092702/source/final_ssdg.pth"
+        },
+        {
+          "status": "VERIFIED",
+          "actual_identity_prefix": "id_backbone.encoder.core.id_backbone.sinc.",
+          "sample_rate_Hz": 25000000,
+          "channels": 24,
+          "kernel_length": 79,
+          "parameter_changes": {
+            "low_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 23,
+              "abs_change_Hz_mean": 0.000006993611805228284,
+              "abs_change_Hz_max": 0.0001678466796875,
+              "relative_L2": 1.5033254155416564e-11,
+              "initial_float32_ULP_Hz_min": 0.0000019073486328125,
+              "initial_float32_ULP_Hz_max": 0.5,
+              "channel_changes_Hz": [
+                0.0001678466796875,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "band_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 24,
+              "abs_change_Hz_mean": 0,
+              "abs_change_Hz_max": 0,
+              "relative_L2": 0,
+              "initial_float32_ULP_Hz_min": 0.000030517578125,
+              "initial_float32_ULP_Hz_max": 0.25,
+              "channel_changes_Hz": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "kernel_relative_L2": 1.170844665665527e-8,
+          "kernel_max_abs_change": 5.960464477539063e-8,
+          "kernel_exactly_unchanged_channels": 23,
+          "per_channel_kernel_relative_L2": [
+            4.835660760704741e-8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_low_abs_change_Hz_max": 0.0001678466796875,
+          "effective_high_abs_change_Hz_max": 0.000152587890625,
+          "initial_coverage_Hz": [
+            80.00001525878906,
+            12499999
+          ],
+          "final_coverage_Hz": [
+            80.00018310546875,
+            12499999
+          ],
+          "parameters_or_buffers_updated_by_diagnostic": 0,
+          "IQ_read": false,
+          "query_read": false,
+          "inference": "actual checkpoint movement; does not by itself prove Sinc usefulness,causal bottleneck or transfer benefit",
+          "run_id": "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01",
+          "row_id": "OLD_GATE_COS50-s2026092703",
+          "arm": "OLD_GATE_COS50",
+          "model_seed": 2026092703,
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "epochs": 50,
+          "updates": 11100,
+          "source_roles": "EXACT_MATCH",
+          "scratch_ancestors": [],
+          "training_code": "5fa536f9ca2d90e7d30d547d58503a41b612d57f",
+          "initial_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092703/source/initial_smoke.pt",
+          "final_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092703/source/final_ssdg.pth"
+        },
+        {
+          "status": "VERIFIED",
+          "actual_identity_prefix": "id_backbone.encoder.core.id_backbone.sinc.",
+          "sample_rate_Hz": 25000000,
+          "channels": 24,
+          "kernel_length": 79,
+          "parameter_changes": {
+            "low_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 23,
+              "abs_change_Hz_mean": 3.178914482759865e-7,
+              "abs_change_Hz_max": 0.00000762939453125,
+              "relative_L2": 6.833297491216916e-13,
+              "initial_float32_ULP_Hz_min": 0.0000019073486328125,
+              "initial_float32_ULP_Hz_max": 0.5,
+              "channel_changes_Hz": [
+                -0.00000762939453125,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "band_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 24,
+              "abs_change_Hz_mean": 0,
+              "abs_change_Hz_max": 0,
+              "relative_L2": 0,
+              "initial_float32_ULP_Hz_min": 0.000030517578125,
+              "initial_float32_ULP_Hz_max": 0.25,
+              "channel_changes_Hz": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "kernel_relative_L2": 0,
+          "kernel_max_abs_change": 0,
+          "kernel_exactly_unchanged_channels": 24,
+          "per_channel_kernel_relative_L2": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_low_abs_change_Hz_max": 0,
+          "effective_high_abs_change_Hz_max": 0,
+          "initial_coverage_Hz": [
+            80.00001525878906,
+            12499999
+          ],
+          "final_coverage_Hz": [
+            80.00001525878906,
+            12499999
+          ],
+          "parameters_or_buffers_updated_by_diagnostic": 0,
+          "IQ_read": false,
+          "query_read": false,
+          "inference": "actual checkpoint movement; does not by itself prove Sinc usefulness,causal bottleneck or transfer benefit",
+          "run_id": "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01",
+          "row_id": "TIME_MS50-s2026092701",
+          "arm": "TIME_MS50",
+          "model_seed": 2026092701,
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "epochs": 50,
+          "updates": 11100,
+          "source_roles": "EXACT_MATCH",
+          "scratch_ancestors": [],
+          "training_code": "5fa536f9ca2d90e7d30d547d58503a41b612d57f",
+          "initial_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/TIME_MS50-s2026092701/source/initial_smoke.pt",
+          "final_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/TIME_MS50-s2026092701/source/final_ssdg.pth"
+        },
+        {
+          "status": "VERIFIED",
+          "actual_identity_prefix": "id_backbone.encoder.core.id_backbone.sinc.",
+          "sample_rate_Hz": 25000000,
+          "channels": 24,
+          "kernel_length": 79,
+          "parameter_changes": {
+            "low_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 23,
+              "abs_change_Hz_mean": 0.0000095367431640625,
+              "abs_change_Hz_max": 0.0002288818359375,
+              "relative_L2": 2.0499893449432705e-11,
+              "initial_float32_ULP_Hz_min": 0.0000019073486328125,
+              "initial_float32_ULP_Hz_max": 0.5,
+              "channel_changes_Hz": [
+                -0.0002288818359375,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "band_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 24,
+              "abs_change_Hz_mean": 0,
+              "abs_change_Hz_max": 0,
+              "relative_L2": 0,
+              "initial_float32_ULP_Hz_min": 0.000030517578125,
+              "initial_float32_ULP_Hz_max": 0.25,
+              "channel_changes_Hz": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "kernel_relative_L2": 1.170844665665527e-8,
+          "kernel_max_abs_change": 5.960464477539063e-8,
+          "kernel_exactly_unchanged_channels": 23,
+          "per_channel_kernel_relative_L2": [
+            4.835660760704741e-8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_low_abs_change_Hz_max": 0.0002288818359375,
+          "effective_high_abs_change_Hz_max": 0.000244140625,
+          "initial_coverage_Hz": [
+            80.00001525878906,
+            12499999
+          ],
+          "final_coverage_Hz": [
+            79.99978637695312,
+            12499999
+          ],
+          "parameters_or_buffers_updated_by_diagnostic": 0,
+          "IQ_read": false,
+          "query_read": false,
+          "inference": "actual checkpoint movement; does not by itself prove Sinc usefulness,causal bottleneck or transfer benefit",
+          "run_id": "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01",
+          "row_id": "TIME_MS50-s2026092702",
+          "arm": "TIME_MS50",
+          "model_seed": 2026092702,
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "epochs": 50,
+          "updates": 11100,
+          "source_roles": "EXACT_MATCH",
+          "scratch_ancestors": [],
+          "training_code": "5fa536f9ca2d90e7d30d547d58503a41b612d57f",
+          "initial_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/TIME_MS50-s2026092702/source/initial_smoke.pt",
+          "final_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/TIME_MS50-s2026092702/source/final_ssdg.pth"
+        },
+        {
+          "status": "VERIFIED",
+          "actual_identity_prefix": "id_backbone.encoder.core.id_backbone.sinc.",
+          "sample_rate_Hz": 25000000,
+          "channels": 24,
+          "kernel_length": 79,
+          "parameter_changes": {
+            "low_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 23,
+              "abs_change_Hz_mean": 0.00000667572021484375,
+              "abs_change_Hz_max": 0.00016021728515625,
+              "relative_L2": 1.434992489418585e-11,
+              "initial_float32_ULP_Hz_min": 0.0000019073486328125,
+              "initial_float32_ULP_Hz_max": 0.5,
+              "channel_changes_Hz": [
+                0.00016021728515625,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "band_hz_": {
+              "elements": 24,
+              "exactly_unchanged": 24,
+              "abs_change_Hz_mean": 0,
+              "abs_change_Hz_max": 0,
+              "relative_L2": 0,
+              "initial_float32_ULP_Hz_min": 0.000030517578125,
+              "initial_float32_ULP_Hz_max": 0.25,
+              "channel_changes_Hz": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "kernel_relative_L2": 1.170844665665527e-8,
+          "kernel_max_abs_change": 5.960464477539063e-8,
+          "kernel_exactly_unchanged_channels": 23,
+          "per_channel_kernel_relative_L2": [
+            4.835660760704741e-8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_low_abs_change_Hz_max": 0.0001678466796875,
+          "effective_high_abs_change_Hz_max": 0.000152587890625,
+          "initial_coverage_Hz": [
+            80.00001525878906,
+            12499999
+          ],
+          "final_coverage_Hz": [
+            80.00018310546875,
+            12499999
+          ],
+          "parameters_or_buffers_updated_by_diagnostic": 0,
+          "IQ_read": false,
+          "query_read": false,
+          "inference": "actual checkpoint movement; does not by itself prove Sinc usefulness,causal bottleneck or transfer benefit",
+          "run_id": "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01",
+          "row_id": "TIME_MS50-s2026092703",
+          "arm": "TIME_MS50",
+          "model_seed": 2026092703,
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "epochs": 50,
+          "updates": 11100,
+          "source_roles": "EXACT_MATCH",
+          "scratch_ancestors": [],
+          "training_code": "5fa536f9ca2d90e7d30d547d58503a41b612d57f",
+          "initial_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/TIME_MS50-s2026092703/source/initial_smoke.pt",
+          "final_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/TIME_MS50-s2026092703/source/final_ssdg.pth"
+        }
+      ],
+      "IQ_read": false,
+      "truth_read": false,
+      "optimizer_updates": 0,
+      "observed_at": 1791909368.938203
+    },
+    "correction_and_introduction_counts": "not yet recomputed from paired raw predictions; aggregate accuracy doesnot prove either count",
+    "sinc_native_args": [
+      {
+        "row_id": "LEGACY50-s2026092701",
+        "freeze_backbone": false,
+        "from_scratch": true,
+        "use_muse": false,
+        "fasttrust": null,
+        "baseline_ckpt": "",
+        "teacher_ckpt": ""
+      },
+      {
+        "row_id": "LEGACY50-s2026092702",
+        "freeze_backbone": false,
+        "from_scratch": true,
+        "use_muse": false,
+        "fasttrust": null,
+        "baseline_ckpt": "",
+        "teacher_ckpt": ""
+      },
+      {
+        "row_id": "LEGACY50-s2026092703",
+        "freeze_backbone": false,
+        "from_scratch": true,
+        "use_muse": false,
+        "fasttrust": null,
+        "baseline_ckpt": "",
+        "teacher_ckpt": ""
+      },
+      {
+        "row_id": "OLD_GATE_COS50-s2026092701",
+        "freeze_backbone": false,
+        "from_scratch": true,
+        "use_muse": false,
+        "fasttrust": null,
+        "baseline_ckpt": "",
+        "teacher_ckpt": ""
+      },
+      {
+        "row_id": "OLD_GATE_COS50-s2026092702",
+        "freeze_backbone": false,
+        "from_scratch": true,
+        "use_muse": false,
+        "fasttrust": null,
+        "baseline_ckpt": "",
+        "teacher_ckpt": ""
+      },
+      {
+        "row_id": "OLD_GATE_COS50-s2026092703",
+        "freeze_backbone": false,
+        "from_scratch": true,
+        "use_muse": false,
+        "fasttrust": null,
+        "baseline_ckpt": "",
+        "teacher_ckpt": ""
+      },
+      {
+        "row_id": "TIME_MS50-s2026092701",
+        "freeze_backbone": false,
+        "from_scratch": true,
+        "use_muse": false,
+        "fasttrust": null,
+        "baseline_ckpt": "",
+        "teacher_ckpt": ""
+      },
+      {
+        "row_id": "TIME_MS50-s2026092702",
+        "freeze_backbone": false,
+        "from_scratch": true,
+        "use_muse": false,
+        "fasttrust": null,
+        "baseline_ckpt": "",
+        "teacher_ckpt": ""
+      },
+      {
+        "row_id": "TIME_MS50-s2026092703",
+        "freeze_backbone": false,
+        "from_scratch": true,
+        "use_muse": false,
+        "fasttrust": null,
+        "baseline_ckpt": "",
+        "teacher_ckpt": ""
+      }
+    ],
+    "sinc_source_judgment": "all9 realmodels have23/24 cutoffparameters unchanged and24/24 bandwidthparameters unchanged;kernelrelativeL2 0to2.4071e-8. Backbone freeze=false andfromscratch=true all9; nativeoptimizer collects allrequires_grad params. This is real near-staticfilter evidence,not proof ofcausal transfer bottleneck; actualgradient/membership numeric evidence to becompleted before next repair."
   },
   "next_directions": [
     {
@@ -18754,8 +23828,8 @@
     }
   ],
   "next_actions_max2": [
-    "Finish read-only actualSinc andsource representation evidence/recoverexistingcomplete REFIT data before newtraining direction",
-    "Continue existing PA fixed experiment todefault prediction/truth-last completion;do not change itsliveplan"
+    "Verify actual optimizer/EMA/feature path and implement one Sinc coordinate-scale repair justified byrealnear-static source filters;keepinitialfilters andbaseline recipe matched",
+    "Complete current PA fixed default prediction/scoring and plan source-only frozen diagnostic separately;no liveplan changes"
   ],
   "goal_84": false,
   "Phase2_development": false

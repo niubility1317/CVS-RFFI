@@ -15,3 +15,5 @@ Phase1骨干每模型≤50，优先从零；L6300/U56700隐藏/V27000，训练�
 当前健康run：20261014-phase1-pa-cross-delay-legacycos-clean-manysig-m9-r01，代码1f8814c046a8c68eba8a334e66a0aceb76e491e0。基线3同seed原默认决定复用并评分；6新scratch50、浅层PA加576参数（同容量卷积/因子化跨延迟三阶），分类头原对象，零单独head训练。真实baseline noquery smoke、focusedchecks、唯一独立P0/P1审查、archive传输/remotecompile PASS；6worker实际PID/CWD/argv/GPU/commit匹配，epoch4至5且loggrowth VERIFIED，failure0。此run保持固定预算和默认头单读出，训练后自动clean评分；目前无新性能结果。
 
 下一步最多两个动作：只读真实Sinc checkpoint运动及回收既有表征诊断；继续当前PA闭环。源诊断无梯度/optimizer，不能仅非零gradient就宣称实际更新或迁移；后续候选先写源证据、接线、同容量控制、成本和失败判据。每次实现/config/主报告/必要聚合结果提交push，并独立比较remote OID；大原始产物保持原目录。
+
+源证据已实际返回：9个原初始/终轮Sinc模型，23/24 cutoff与24/24 bandwidth参数未变，kernelrelativeL2≤2.4071e−8，非人工梯度替代结论；frozen_backbone=false。RC历史cos全15行/540CM已回收重计，RESTORE仅＋.0300ppvsBASE/2seed正、组合−.4518pp。下一优先机制改为基于源真实近静止证据的Sinc坐标单因素检查/修复，当前PA固定回收保持第二动作，不追加Phase2。
