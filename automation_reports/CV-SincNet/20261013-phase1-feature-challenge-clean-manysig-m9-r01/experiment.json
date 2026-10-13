@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Current goal chat 01a13438-1baf-7713-838f-ca7c6363f70a: different route toward84%; retained direct user instructions in cited chats scratch30, ordinary cos160, all registered variants use clean test, no V performance gate",
   "code": {
-    "commit": "execution commit from release_commit.txt",
+    "commit": "a9ee32cd6e05323d11b2b5fcf4e28305f495dbba",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "verified project Python; full FP32; native direct SSH; no pwsh/Bash",
     "cwd": "release root on N607",
@@ -636,7 +636,10 @@
           "dropout": "same RNG as clean forward; extra forward restores global RNG",
           "evaluation": "all masks and gradient ranking disabled; no persistent hooks or new parameters"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1439110,
+      "gpu": 0
     },
     {
       "row_id": "RANDOM_MASK-s2026092701",
@@ -1149,7 +1152,10 @@
           "dropout": "same RNG as clean forward; extra forward restores global RNG",
           "evaluation": "all masks and gradient ranking disabled; no persistent hooks or new parameters"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1439206,
+      "gpu": 1
     },
     {
       "row_id": "GRAD_MASK-s2026092701",
@@ -1662,7 +1668,10 @@
           "dropout": "same RNG as clean forward; extra forward restores global RNG",
           "evaluation": "all masks and gradient ranking disabled; no persistent hooks or new parameters"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1439287,
+      "gpu": 2
     },
     {
       "row_id": "CE30-s2026092702",
@@ -2175,7 +2184,10 @@
           "dropout": "same RNG as clean forward; extra forward restores global RNG",
           "evaluation": "all masks and gradient ranking disabled; no persistent hooks or new parameters"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1439370,
+      "gpu": 3
     },
     {
       "row_id": "RANDOM_MASK-s2026092702",
@@ -2688,7 +2700,10 @@
           "dropout": "same RNG as clean forward; extra forward restores global RNG",
           "evaluation": "all masks and gradient ranking disabled; no persistent hooks or new parameters"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1439451,
+      "gpu": 4
     },
     {
       "row_id": "GRAD_MASK-s2026092702",
@@ -3201,7 +3216,10 @@
           "dropout": "same RNG as clean forward; extra forward restores global RNG",
           "evaluation": "all masks and gradient ranking disabled; no persistent hooks or new parameters"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1439532,
+      "gpu": 5
     },
     {
       "row_id": "CE30-s2026092703",
@@ -3714,7 +3732,10 @@
           "dropout": "same RNG as clean forward; extra forward restores global RNG",
           "evaluation": "all masks and gradient ranking disabled; no persistent hooks or new parameters"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1439614,
+      "gpu": 6
     },
     {
       "row_id": "RANDOM_MASK-s2026092703",
@@ -4227,7 +4248,10 @@
           "dropout": "same RNG as clean forward; extra forward restores global RNG",
           "evaluation": "all masks and gradient ranking disabled; no persistent hooks or new parameters"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1439695,
+      "gpu": 7
     },
     {
       "row_id": "GRAD_MASK-s2026092703",
@@ -4740,7 +4764,10 @@
           "dropout": "same RNG as clean forward; extra forward restores global RNG",
           "evaluation": "all masks and gradient ranking disabled; no persistent hooks or new parameters"
         }
-      }
+      },
+      "status": "TRAINED_PREDICTED_SCORED",
+      "pid": 1439776,
+      "gpu": 7
     }
   ],
   "notes": [
@@ -4750,9 +4777,10 @@
     "Reference parent record is configuration/data reuse only, not checkpoint ancestry. Initial identity random.",
     "One independent P0/P1 review; narrow negative tests and realcheckpoint noquery smoke; no extra hashes or gates."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-12T10:36:11+00:00",
-  "execution_commit": "3800446790b081169d85df6f994d7045d4696d19",
+  "execution_commit": "a9ee32cd6e05323d11b2b5fcf4e28305f495dbba",
   "delivery_verdict": "VERIFIED",
-  "live_readback_ref": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_scratch30_baseline_20261012_r02\\readback.json"
+  "live_readback_ref": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_scratch30_baseline_20261012_r02\\readback.json",
+  "results_ref": "final_analysis.md"
 }

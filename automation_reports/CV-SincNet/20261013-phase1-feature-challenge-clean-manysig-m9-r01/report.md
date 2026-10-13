@@ -17,3 +17,5 @@
 预期产物：sourceidentity/freeze/config/完整step和epoch日志；固定prediction和complete；同rowaccuracy/F1/confusion/RX/day/TX；runanalysis、finalreport和completion。未全部评分前不能声明完成或84%达成。
 
 本地真实CUDA检查通过：浅层/中层有限非零梯度、精确遮挡数、随机对照复现、CPU/CUDA RNG恢复、逐包独立推理、推理无hook/状态改变、非法U和配置拒绝。唯一独立P0/P1审查未发现问题，依赖发布范围齐全。
+
+最终状态：ANALYZED。九行均完成训练、clean 预测和独立评分；全量核验通过。三 seed 均值 CE 79.5202%、RANDOM 78.2518%、GRAD 79.1185%；84% 未达到。详见 final_analysis.md。
