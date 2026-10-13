@@ -1,6 +1,6 @@
 # 特征提取四组：历史旧门控＋EMA＋cos E50 预登记
 
-状态：LOCAL_VERIFIED，尚未发布。主方案 JOINT_MS50 的验收为三个固定种子 clean 准确率均值至少 84%。性能尚未证明，全部负结果保留。
+状态：RUNNING，远端启动 VERIFIED。主方案 JOINT_MS50 的验收为三个固定种子 clean 准确率均值至少 84%。性能尚未证明，全部负结果保留。
 
 用户已明确优化网络特征提取能力，分类头保持现有结构，并明确选择历史 batch_neighbor 伪标签门控＋EMA＋cos 完整配方作为主对照。此前纯 CE E50 保留为独立历史实验，不用它替代本轮基线。用户允许自行选择训练 epoch，原则不超过每模型 50；本轮全部从零 50 轮，以历史 130＋70 的阶段比例预先缩为 33 轮 label＋17 轮 pseudo。原 E200 仅为配方参考，不继承其权重或成本。
 
@@ -32,3 +32,5 @@ Git commit 为代码/配置身份，发布时记录 actual release_commit.txt。
 本地已通过真实四种网络前向、所有新增分支有限非零 CE 梯度、classifier 与同 seed 原基线完全一致、参数优化器覆盖、strict state round-trip、EMA 副本与隐藏 U 批次、epoch51 和错误 update 预算拒绝；历史配方误改及错误输出/运行身份拒绝、首种子 source-only 扩展、prediction 不完整时 truth 拒绝、完整三种子主目标与 12 行闭环、隔离归档依赖导入和现有 NumPy 回退数值等价。独立 P0/P1 检查发现并修正原生 15 个 RX/day 域与预测模型 5 域不一致的问题；训练式 15 域模型至预测模型严格加载检查及四组首种子阶段语义均通过独立定向复审。未访问 query/truth。
 
 每轮实现、配置和对应结果报告提交并推送到 Git，独立核对远端 OID。结果报告保留逐种子指标、固定配对差、负结果与缺项；原始权重、预测、日志和数据留在 run 根，不入 Git。
+
+发布证据（2026-10-13）：实际运行代码 commit `5fa536f9ca2d90e7d30d547d58503a41b612d57f` 已推送，独立远端 OID 核对一致。一份归档比对、远端编译与真实同契约无 query smoke 均通过；首种子四组已完成第 1 轮并继续训练，PID/CWD/argv/GPU、日志增长及容量核验通过。实际 native args 的 EMA、U、batch_neighbor、强视图一致、cosine、50/33/17 与四组特征层位正确，分类头均为原 ResidualPhysicalHead。运行证据在 `local_artifacts/cvs_feature_multiscale50_20261013_r01/readback.json` 与 `runtime_verified.json`。尚无完整三种子目标成绩，不宣称达到 84%。
