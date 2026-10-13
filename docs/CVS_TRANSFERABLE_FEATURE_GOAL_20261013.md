@@ -13,3 +13,7 @@
 新类边界：目前ManySig6TX全部参与原Phase1，包括隐藏U，均只能叫old。真留TX研究必须从新数据契约起从零训练，heldTX从L/U/teacher全部排除；当前权重不能作为真新类的基座。正式Phase2只读p2_min_v1/VALIDATED_ONCE固定LEO receivedIQ与合法support，不读source/clean、不用query拟合，old+new全类逐包独立竞争。不能把源域support/V或clean头重训写成Phase2零适配DG。
 
 证据状态：频域功率上下文三seed原头基线80.6454%、局部79.5353%、全局79.4298%，完整结果20261013-phase1-frequency-context-eval-recovery-manysig-m9-r01/final_analysis.md，未达84%，全部负结果保留。此结果不用于attention调参或选择性重跑。特征边界synthetic检查与一次P0/P1审查PASS；真实源域换头结果待回。
+
+阶段证据更新：源域冻结换头20261013-phase1-frozen-feature-rehead-source-manysig-m9-r01全部9row/297readouts/279heads已完成；实际source特征差0，featureupdates0、旧W删除、targetaccessfalse，完整结果报告已推送5cb8b0ba8989767e63b1d0e7cc7016ef56d41a0d。基线source原头97.8864%、新cos头98.0580%、原型96.3951%、5/10shot头95.48395%/95.97860%；均不是target指标。
+
+路线六数学组件已实现但尚未接入源训练或启动：dual ridge=.1、scale10、normalize eps1e-4、160维/6类，线性solve不inverse，无持久head参数。focused primal等价误差7.11e-15、两侧梯度范数.380812/.365234、数值梯度、类置换/支持顺序置换/逐query独立/重复及秩亏支持/zero finite/外部autocast和19 negatives PASS。不把数学组件PASS写成实验性能收益。后续冻结cadence/sourceRX采样/辅助权重/预算与同预算基线读出矩阵后再发布。
