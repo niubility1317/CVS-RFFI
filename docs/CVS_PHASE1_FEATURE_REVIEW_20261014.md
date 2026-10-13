@@ -55,3 +55,7 @@ TIME 已实际发布，执行代码351e35cd0d298a6832c0865628bba28ab5a14cbe。�
 补查实际返回 VERIFIED：9个真实final50的完整183（baseline）/192（TIME）参数排序及全部已保存moment形状与原优化器收集路径一致；每个Sinc低频/带宽24参数各计数11100，低频24及带宽23个非零firstmoment。末端LR/moments代数项最大约2.26e−7至6.30e−7Hz，每个模型48个通道均小于各自半ULP，末端state不代表完整尝试更新轨迹。学生kernelrelativeL2仍≤2.4071e−8，EMA为3.3578e−6，截止/带宽最大变动5.625/21.875Hz。用实际共同initialSinc参数保持学生完全不变，CPU float32回放原EMA.999/versioned/11100次，复现全部9个真实EMA核逐元素相同；7个模型48参数完全一致，另2个仅首cutoff差1ULP（1.9073e−6Hz），核仍相同。回放是受控算术重建，实际保存态是训练证据；EMA核变动不能被算成学生学到了滤波器。此结果排除了Sinc漏入优化器的解释，支持后续检验频率参数坐标尺度，但没有证明Sinc是泛化瓶颈或任何性能收益。当前TIME运行不修改，Sinc修复仍排队。
 
 同一已冻结TIME矩阵的必要实际特征检查：沿用720个固定L包/模型，对SOURCE_TRAINED的initial/final独立模型进行真实joint160变化、feature-only导出逐元素一致与临时复制模型W置零后的z独立性检验；不拟合任何头，不测替代读出，不进入扩seed/选模条件，不修改已发布training/prediction。已通过合成IQ的已知feature扰动/导出/W独立检查；实际结果待终轮返回，不能以该fixture代替实证。
+
+首seed四组已SOURCE_TRAINED并自动完成默认预测/独立评分；source末222step CE为0.241610/0.241424/0.248631/0.248408，均通过原≤.5门槛，其余8个学生由dispatcher自动放行且实际live，当前24至25轮。源V98.46%至98.57%，最差源RX96.04%至96.54%；均仅健康，不用于选模。每组U共963900包次，selected15927至16067（约1.65%至1.67%），不是独立物理覆盖率或U准确率；17epoch真实RX/day与预测class计数、strongstudent/weakEMA agreement均已回收，U真值仍隐藏。33/34两个额外V健康pass及50epoch真实TIME层运动已保存。
+
+首seed4个实际initial/final checkpoint固定L720包特征检查 VERIFIED：236737个导出θ参数，960个类W元素删除；115200个joint160元素相对初始全部变化，平均raw L2变化16.76至17.20、initial/final cosine0.143至0.174。原default模型id_feat_joint与独立export逐元素一致，临时克隆W置零后z不变，finalθ/全部buffers未被诊断修改，零头拟合/optimizer更新。这里只证明真实feature更新与正确交接，不证明表征更可迁移/真实新TX。另2seed实际特征检查与完整三seed clean/paired/纠错结果尚缺，不能用firstseed或sourceV替代目标结果。
