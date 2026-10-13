@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "scope": "New source_feature_gradient candidate only, direct P0/P1 next real run defects",
+  "initial_findings": [
+    {
+      "priority": "P1",
+      "issue": "Historical OLD diagnostic would call training argument constructor and fail before first batch",
+      "fixed": "Read verified actual saved native arguments for all3 rows; preflight invokes same path"
+    }
+  ],
+  "targeted_re_review": "PASS: OLD/RANDOM/PAIRED direct and args wrappers match; incorrect pseudo weight rejected",
+  "additional_direct_P0P1": [],
+  "reviewer_data_or_remote_access": false,
+  "unchanged_full_review_repeated": false
+}

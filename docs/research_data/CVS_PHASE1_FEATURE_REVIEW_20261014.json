@@ -32685,6 +32685,62 @@
           "separate_head_updates": 0,
           "source_feature_models": 6,
           "source_packets_per_feature_model": 720
+        },
+        "source_signal": {
+          "status": "VERIFIED",
+          "analysis_code": "d8e4514c42c1931685aa0b04176cf0960bf8c16a",
+          "steps": 66600,
+          "models": 6,
+          "IQ_read": false,
+          "checkpoint_tensors_read": false,
+          "U_truth_read": false,
+          "head_fit": false,
+          "rows": [
+            {
+              "row": "RANDOM_ORDER-s2026092701",
+              "mean_step_weighted_U_over_L": 0.014162893769617392,
+              "mean_step_total_U_increment_over_L": 0.020542871755319787,
+              "empty_U_steps": 460,
+              "steps": 3774
+            },
+            {
+              "row": "PAIRED_ORDER-s2026092701",
+              "mean_step_weighted_U_over_L": 0.016065123246658087,
+              "mean_step_total_U_increment_over_L": 0.022447969615780577,
+              "empty_U_steps": 0,
+              "steps": 3774
+            },
+            {
+              "row": "RANDOM_ORDER-s2026092702",
+              "mean_step_weighted_U_over_L": 0.0141998442820583,
+              "mean_step_total_U_increment_over_L": 0.02094915785934724,
+              "empty_U_steps": 475,
+              "steps": 3774
+            },
+            {
+              "row": "PAIRED_ORDER-s2026092702",
+              "mean_step_weighted_U_over_L": 0.01569087813108975,
+              "mean_step_total_U_increment_over_L": 0.02241401151569761,
+              "empty_U_steps": 0,
+              "steps": 3774
+            },
+            {
+              "row": "RANDOM_ORDER-s2026092703",
+              "mean_step_weighted_U_over_L": 0.015077526143565412,
+              "mean_step_total_U_increment_over_L": 0.02175523569959202,
+              "empty_U_steps": 475,
+              "steps": 3774
+            },
+            {
+              "row": "PAIRED_ORDER-s2026092703",
+              "mean_step_weighted_U_over_L": 0.016616864121007248,
+              "mean_step_total_U_increment_over_L": 0.023220647235570966,
+              "empty_U_steps": 0,
+              "steps": 3774
+            }
+          ],
+          "report": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/source_signal.json",
+          "interpretation": "Selected-sample CE mean; coverage is not a loss multiplier; scalar ratios are not parameter-gradient ratios."
         }
       },
       "report": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/report.md",
@@ -32748,6 +32804,33 @@
         "three_seed_target_result": false
       },
       "final_report": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/final_analysis.md"
+    },
+    {
+      "run_id": "20261014-phase1-source-feature-gradient-manysig-s01-m3-r01",
+      "status": "LOCAL_VERIFIED",
+      "mechanism": "Actual source eval fθ parameter/activation derivative observer, default head; no new training",
+      "code": "GIT_HEAD_AT_RELEASE",
+      "baseline": "Fixed first model seed OLD/RANDOM/PAIRED own student and EMA final50/11100, same33+17 source provenance",
+      "model_seeds": [
+        2026092701
+      ],
+      "arms": [
+        "OLD_GATE_COS50",
+        "RANDOM_ORDER",
+        "PAIRED_ORDER"
+      ],
+      "data_role": "L_s6300 only for forwards/derivatives; existing V cache materialized/discarded, U/target not accessed",
+      "new_model_cost": {
+        "epochs": 0,
+        "optimizer_updates": 0,
+        "head_updates": 0
+      },
+      "source_packet_forwards": 56700,
+      "source_gradient_scope": "11 within-path parameter ratios/cosines and11 activation paths by5 sourceRX; no raw cross-unit importance ranking",
+      "local_checks": "PASS6 protocol negatives and actual default model structure zeroIQ derivatives/no accumulated grads/state unchanged",
+      "independent_P0P1": "PASS unique candidate review; OLD args entry P1 fixed, one targeted re-review PASS",
+      "results": null,
+      "report": "automation_reports/CV-SincNet/20261014-phase1-source-feature-gradient-manysig-s01-m3-r01/report.md"
     }
   ],
   "diagnostics": {
@@ -77715,7 +77798,8 @@
       "all_steps": 66600,
       "source_features_ref": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/source_features.json",
       "source_U_truth_read": false,
-      "target_feedback": false
+      "target_feedback": false,
+      "source_signal_ref": "automation_reports/CV-SincNet/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/source_signal.json"
     }
   },
   "next_directions": [
