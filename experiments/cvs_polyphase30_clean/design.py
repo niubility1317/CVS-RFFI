@@ -2,9 +2,9 @@ from pathlib import Path
 from experiments.cvs_scratch30_baseline import design as parent
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,CAPSULE,TRUTH,CLASSES,SEEDS,FULL_FP32_POLICY,read,write=(getattr(parent,k) for k in ('PROJECT','SOURCE','CAPSULE','TRUTH','CLASSES','SEEDS','FULL_FP32_POLICY','read','write'))
-RUN='20261013-phase1-polyphase-clean-manysig-m12-r01'
-RELEASE='cvs_polyphase30_clean_20261013_r01'
-OWNER='codex/root/polyphase30-clean-20261013'
+RUN='20261013-phase1-polyphase-clean-manysig-m12-r02'
+RELEASE='cvs_polyphase30_clean_20261013_r02'
+OWNER='codex/root/polyphase30-clean-20261013-r02'
 BASE=Path(PROJECT)/'runs'/RUN
 ARMS=('ORDINARY_GLOBAL_GN','ORDINARY_POINT_GN','LOWPASS_POINT_GN','CARRY_POINT_GN')
 READOUTS=('NATIVE_HEAD',)

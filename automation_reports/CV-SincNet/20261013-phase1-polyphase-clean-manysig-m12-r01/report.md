@@ -20,3 +20,7 @@
 本地四结构实际native路径的shape/cos160/CE可达梯度/全部optimizer参数/strictstate roundtrip，以及sourceU配置负例、训练不读checkpoint、prediction不全时truth保持关闭、完整12rows汇总及主方案goal不可被对照高分替代检查均PASS。一次独立候选P0/P1审查待完成；真实checkpoint首步和实际训练/测试仍待发布。
 
 一次独立 P0/P1 候选代码审查 PASS：实际 12 个配置与登记一致，原结构保留、三变体只改两个目标层，纯 CE／fixed30／逐 row 独立 truth-last／全部 owner GPU 容量闭环无阻断问题。
+
+## r01 实际发布失败
+
+FAILED / VERIFIED：commit a486d1a15 的归档校验与remotecompile通过，preflight导入缺少cvs_repeated_rx_margin，未创建run/submit，0训练、0checkpoint/query访问。原release保留。替代 20261013-phase1-polyphase-clean-manysig-m12-r02 只补发布依赖，预算矩阵不变。

@@ -8,7 +8,7 @@ INSPECT=PARENT_INSPECT.replace("done['models']!=9","done['models']!=12").replace
 def configure():
  from experiments.cvs_conditional_rx_adversary.publish import configure as parent
  parent();transport.d=d
- transport.PATHS=list(dict.fromkeys([*transport.PATHS,'experiments/cvs_six_direction_mechanisms','experiments/cvs_source_pseudotarget_health','experiments/cvs_polyphase30_clean']))
+ transport.PATHS=list(dict.fromkeys([*transport.PATHS,'experiments/cvs_six_direction_mechanisms','experiments/cvs_source_pseudotarget_health','experiments/cvs_repeated_rx_margin','experiments/cvs_polyphase30_clean']))
  transport.REMOTE=transport.REMOTE.replace('experiments.cvs_conditional_rx_adversary.preflight','experiments.cvs_polyphase30_clean.preflight').replace('experiments.cvs_conditional_rx_adversary.dispatch','experiments.cvs_polyphase30_clean.dispatch')
  transport.INSPECT=INSPECT
 
