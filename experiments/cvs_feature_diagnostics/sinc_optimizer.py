@@ -39,6 +39,18 @@ def inspect_state(model,checkpoint,native):
    limitation='Reconstructed algebraic adaptive term using final saved moments and LR; not a recorded history of attempted updates and not an executed optimizer step')
  return dict(status='VERIFIED',actual_optimizer_parameter_count=len(parameters),saved_parameter_count=len(ids),all_saved_moment_shapes_match=True,Sinc=records,optimizer_updates_executed_by_diagnostic=0,IQ_read=False,query_read=False,head_updates=0)
 
+def stationary_ema(initial,SincType,update_fn):
+ """Numeric reconstruction with fixed actual initial filters, not training."""
+ import copy
+ selected={k:initial[PREFIX+k] for k in ('low_hz_','band_hz_','t_','window_')}
+ if any(v.dtype!=torch.float32 or not torch.isfinite(v).all() for v in selected.values()):raise ValueError('Replay requires finite float32 source Sinc state')
+ student=SincType(24,79,sample_rate=25e6,dataset='wisig',input_len=256).eval().requires_grad_(False)
+ student.load_state_dict(selected,strict=True);teacher=copy.deepcopy(student)
+ for step in range(11100):update_fn(teacher,student,.999,versioned=True)
+ if any(not torch.equal(v,student.state_dict()[k]) for k,v in selected.items()):raise ValueError('Stationary replay changed fixed student')
+ return {PREFIX+k:v for k,v in teacher.state_dict().items()}
+
+
 def checks():
  from torch import nn
  class Sinc(nn.Module):
@@ -63,7 +75,17 @@ def checks():
   try:inspect_state(model,bad,native)
   except ValueError:negative+=1
   else:raise AssertionError('Incorrect saved mapping accepted')
- return dict(status='PASS',synthetic_only=True,negative_checks=negative,optimizer_steps=0,real_checkpoint_evidence=False)
+ from experiments.cvs_phase1_overlay.model import native_modules
+ native_modules();from model import SincConv1d
+ sinc=SincConv1d(24,79,sample_rate=25e6,dataset='wisig',input_len=256)
+ initial={PREFIX+k:v for k,v in sinc.state_dict().items()}
+ def update(teacher,student,decay,versioned):
+  with torch.no_grad():
+   for a,b in zip(teacher.parameters(),student.parameters()):a.mul_(decay).add_(b,alpha=1-decay)
+   for a,b in zip(teacher.buffers(),student.buffers()):a.copy_(b)
+ replay=stationary_ema(initial,SincConv1d,update)
+ assert any(not torch.equal(v,replay[k]) for k,v in initial.items() if k.endswith(('low_hz_','band_hz_')))
+ return dict(status='PASS',synthetic_only=True,negative_checks=negative,stationary_float32_EMA_drift_reproduced=True,optimizer_steps=0,real_checkpoint_evidence=False)
 if __name__=='__main__':
  import json
  print(json.dumps(checks()))

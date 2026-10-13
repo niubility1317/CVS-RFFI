@@ -51,3 +51,7 @@ TIME 已实际发布，执行代码351e35cd0d298a6832c0865628bba28ab5a14cbe。�
 ## Sinc 已保存优化器与 EMA 的只读补查
 
 等待 TIME 固定训练期间，按已登记的9个同源scratch final50（LEGACY32＋18三seed、OLD/TIME33＋17各三seed）补查保存的AdamW参数顺序/完整state形状、Sinc低频/带宽各24参数的step与moments，以及实际EMA Sinc核。仅已核实source-provenance checkpoint与native真实参数收集函数；不读取IQ/目标truth，不执行optimizer或head更新，不在运行TIME中添加机制。最后保存LR/moments重建的adaptive项仅是末端代数测量，不当作完整训练中实际尝试步长历史；若映射无法核实，如实记缺项。真实初始/学生/EMA的差异分别报告，不能把EMA变动当作学生学到了滤波器。
+
+补查实际返回 VERIFIED：9个真实final50的完整183（baseline）/192（TIME）参数排序及全部已保存moment形状与原优化器收集路径一致；每个Sinc低频/带宽24参数各计数11100，低频24及带宽23个非零firstmoment。末端LR/moments代数项最大约2.26e−7至6.30e−7Hz，每个模型48个通道均小于各自半ULP，末端state不代表完整尝试更新轨迹。学生kernelrelativeL2仍≤2.4071e−8，EMA为3.3578e−6，截止/带宽最大变动5.625/21.875Hz。用实际共同initialSinc参数保持学生完全不变，CPU float32回放原EMA.999/versioned/11100次，复现全部9个真实EMA核逐元素相同；7个模型48参数完全一致，另2个仅首cutoff差1ULP（1.9073e−6Hz），核仍相同。回放是受控算术重建，实际保存态是训练证据；EMA核变动不能被算成学生学到了滤波器。此结果排除了Sinc漏入优化器的解释，支持后续检验频率参数坐标尺度，但没有证明Sinc是泛化瓶颈或任何性能收益。当前TIME运行不修改，Sinc修复仍排队。
+
+同一已冻结TIME矩阵的必要实际特征检查：沿用720个固定L包/模型，对SOURCE_TRAINED的initial/final独立模型进行真实joint160变化、feature-only导出逐元素一致与临时复制模型W置零后的z独立性检验；不拟合任何头，不测替代读出，不进入扩seed/选模条件，不修改已发布training/prediction。已通过合成IQ的已知feature扰动/导出/W独立检查；实际结果待终轮返回，不能以该fixture代替实证。
