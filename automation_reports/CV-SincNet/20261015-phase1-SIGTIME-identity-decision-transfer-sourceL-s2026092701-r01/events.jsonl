@@ -1,1 +1,3 @@
 {"at": "2026-10-14T23:12:36+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-14T23:21:58+00:00", "status": "RUNNING", "note": "ExactownedPID/CWD/cmd/GPU/loggrowth andrealCPsmoke verified; ordinaryCPU2.", "evidence": ["launch_evidence.json"], "row_id": null}
+{"at": "2026-10-14T23:21:58+00:00", "status": "ANALYZED", "note": "Complete12cells/8pairs/60RX, latecommonmeantransfer active12/17/18/12 andgate0/4; fixedcandidateclosed, no scan/main. Actualdefaulthead untouched/newfit0/U V target0. Goal84active.", "evidence": ["result_evidence.json", "source_cells.csv", "source_RX_metrics.csv", "paired_regimes.csv", "launch_evidence.json", "report.md"], "row_id": null}

@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "Active user goal: improve training/loss and actualfeature generalization, defaulthead only, fixedsource permission and E20+20 budget.",
   "code": {
-    "commit": "release_commit.txt (actual Git HEAD at publication)",
+    "commit": "a2a4337a3034ed01c8f3066f3149c2a516e63b81",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "N607 ordinary account/CVS-RFFI Python/CPU2threads/GPU0/seven namespaceoverlay on immutable ownE20runtime",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_decision_transfer_sourceL_20261015_r01"
@@ -181,5 +181,78 @@
     "Statistics exchange already studied e.g.CrossNorm; candidate claimrequiresactualtrainingandappropriatecontrols, no renamingstyletransferasnewtheory.",
     "HistoricalSIG_TIME/CENTER25K/COMPACT_LINEAR/LONG_SILU retained separately; goal84active."
   ],
-  "registered_at": "2026-10-14T23:12:36+00:00"
+  "registered_at": "2026-10-14T23:12:36+00:00",
+  "result": {
+    "status": "SOURCE_SCREEN_NOT_PASSED",
+    "gate_result": {
+      "passed": false,
+      "stage_signal": null,
+      "qualified_ordinals": [],
+      "cell_conditions": [
+        {
+          "state": "FINAL20",
+          "ordinal": 2,
+          "qualified": false,
+          "failed_conditions": [
+            "insufficient_current_trueidentity_learning_opportunity",
+            "ZERO:no_default_transfer_CE_gain",
+            "SAME_RX:no_default_transfer_CE_gain",
+            "SAME_RX:ACTUAL_CE_harm",
+            "SAME_RX:PRE_W_CE_harm"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 19,
+          "qualified": false,
+          "failed_conditions": [
+            "insufficient_current_trueidentity_learning_opportunity",
+            "ZERO:no_default_transfer_CE_gain",
+            "ZERO:ACTUAL_CE_harm",
+            "ZERO:PRE_W_CE_harm",
+            "SAME_RX:no_default_transfer_CE_gain",
+            "SAME_RX:ACTUAL_CE_harm",
+            "SAME_RX:PRE_W_CE_harm"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 37,
+          "qualified": false,
+          "failed_conditions": [
+            "insufficient_current_trueidentity_learning_opportunity",
+            "ZERO:no_default_transfer_CE_gain",
+            "SAME_RX:no_default_transfer_CE_gain"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 54,
+          "qualified": false,
+          "failed_conditions": [
+            "insufficient_current_trueidentity_learning_opportunity",
+            "ZERO:no_default_transfer_CE_gain",
+            "ZERO:ACTUAL_CE_harm",
+            "ZERO:PRE_W_CE_harm",
+            "SAME_RX:no_default_transfer_CE_gain"
+          ]
+        }
+      ],
+      "controls_not_fallback": true,
+      "interpretation": "Source availability and compatible default-decision learning; not unseenRX/DG"
+    },
+    "decision": "CLOSE_FIXED_LATE_COMMON_MEAN_TRANSFER",
+    "real_training_launched": false,
+    "current_active_decisions": [
+      12,
+      17,
+      18,
+      12
+    ],
+    "actual_optimizer_updates": 0,
+    "U_truth_read": false,
+    "target_access": false,
+    "goal84_completed": false,
+    "evidence_ref": "result_evidence.json"
+  }
 }
