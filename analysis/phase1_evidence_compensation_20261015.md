@@ -1,6 +1,6 @@
 # 下一独立机制：有停止条件的身份主路径证据补偿
 
-状态：**设计，尚未实现或发布**。不把本方案当作已有训练收益。84% 默认头 clean 三种子目标仍未完成。
+状态：**辅助目标已实现，全源冻结机会普查已 ANALYZED / VERIFIED**。尚无本机制实际训练或泛化收益；84% 默认头 clean 三种子目标仍未完成。
 
 新的源实验排除了两个固定变体。跨 RX PA 完整交换源 gate 0/8；直接修正 AdamW 的源 RX 风险位移也为 0/8。后一项末态修正保留约 92% 位移，改变真实浅／中层特征，却在独立 L 上比 RAW 损失更少的平均 CE 改善。问题不能靠放大原方向或仅使一个风险子集的更新可行来解决。已有集合候选版本错误排除真实类别，重复观测预测版本又未通过源身份条件，也不重启原配置。
 
@@ -48,3 +48,8 @@ z^{-ref}=a+s+\operatorname{sg}(b)+(1-\beta)\operatorname{sg}(c).
 2. 仅在有足够合法机会时，做源 L 与隐藏 U 的真实图、定向参数梯度、同状态 AdamW 及独立 source-L 有限步诊断。比较 ZERO／SELF_STOP／EVIDENCE_STOP，相同原主损失、有效曝光和 readout 计算预算；默认 W、三 gain、PA/ref 端点的辅助梯度范围与主 CE 的原联合梯度分别验证。V 和 target 不作元训练数据。
 
 真实 source 诊断发布前另行预登记矩阵、状态来源、规则、预算和停止条件；现在不提供不存在的执行状态。来源优先考察各 seed 固定 BASE_CE E20 父权重及由该学生复制的初始教师，不按目标最高分选权重；如果普查成立，优先准备明确重置优化器的 E20+20 续训，累计40轮，匹配纯CE／原SSL／SELF_STOP／EVIDENCE_STOP从同父独立分叉。新增20轮阶段、U启用与cos日程在发布前固定，不冒充scratch20成本，不从历史E50串接。是否实际发布仍取决于科学否证，逐row原默认头clean truth-last保持。SIG_TIME、固定CENTER25K、COMPACT_LINEAR、LONG_SILU历史正收益独立保留，不能相加或按目标结果挑选父权重。
+
+
+2026-10-15 固定普查 run `20261015-phase1-SIGTIME-evidence-compensation-sourceVU-s2026092701-r01`，执行`ee303b067ebd614986bc5cd59e2d634935979394`，source gate NOT_PASSED。完整V27000/U56700、167404forwards、原q不改，活跃机会及困难子集源proxy精度逐RX/day统计；U真值始终隐藏，0训练/头拟合/EMA/target，真实CPsmoke及独立终态核实。判定`CLOSE_FIXED_TRUSTED_U_COMPENSATION_ENTRY`，不根据结果扫描beta/pi/门控/sampler。详见[完整普查报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-evidence-compensation-sourceVU-s2026092701-r01/report.md)。
+
+普查明确关闭固定原可信U入口：V活跃4、U活跃3，SELF均为0，不能靠参数扫描恢复。下一独立假设见[跨RX类间特征差方向学习](phase1_crossrx_identity_difference_20261015.md)，由合法L真实身份产生监督，尚未实现/发布/训练。
