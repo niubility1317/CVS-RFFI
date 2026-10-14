@@ -107,7 +107,8 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/logs",
     "local_artifact_root": "local_artifacts/confidence_feature50_delivery_r01",
     "launch_command": "python -u -m experiments.cvs_confidence_feature50.dispatch",
-    "stop_rule": "Run-owned systemic technical failure only: data/query/source/defaulthead contract, missing executable/legal prediction, nonfinite/skipped update, exactbudget violation, outputcollision/scorer failure; preserveartifacts noautomaticretry, no targetscore stop or unrelatedprocess mutation."
+    "stop_rule": "Run-owned systemic technical failure only: data/query/source/defaulthead contract, missing executable/legal prediction, nonfinite/skipped update, exactbudget violation, outputcollision/scorer failure; preserveartifacts noautomaticretry, no targetscore stop or unrelatedprocess mutation.",
+    "launch_verification": "release_launch_evidence.json"
   },
   "expected_artifacts": [
     "preflight.json",
@@ -1171,7 +1172,7 @@
     "Before any newnumeric targetresults retrieval, record source qualification andfixed02/03 expansion decision commit+push; no targetfeedback/score-basedchanges/restarts",
     "Actualfeature boundary/export/Windependence/t1t2SIG gradient/numericfθ updates; no extra pretrainedteacher or model ancestor"
   ],
-  "status": "PLANNED",
+  "status": "RUNNING",
   "completion": {
     "status": "VERIFIED",
     "new_models": 2,
@@ -1182,5 +1183,6 @@
     "seed_count": 1,
     "head_fit_updates": 0
   },
-  "registered_at": "2026-10-14T18:37:11+00:00"
+  "registered_at": "2026-10-14T18:37:11+00:00",
+  "execution_commit": "704cf37536d3cb6b8764af2131547db4a9939480"
 }

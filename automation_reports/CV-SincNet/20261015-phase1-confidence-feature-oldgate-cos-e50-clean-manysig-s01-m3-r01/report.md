@@ -19,3 +19,7 @@
 本地检查PASS：相同初始模型、原U对象和头梯度不变、teacherstopgrad、实际t1/t2/SIG及默认头正常更新、全批分母/全保留/空保留/ties、50轮/换头/target来源等10负例、export精确/W独立、nativeRANDOM顺序/RNG、hook恢复和生成REMOTE/INSPECT compile。独立P0/P1发现缺失FMS seeds发布依赖，已最小修复并定点确认PASS，无真实数据/模型/远端访问。发布只有一次普通账户preflight、单archive本地/远端SHA比对、remotecompile、真实CPnoquery首步及PID/CWD/argv/GPU/loggrowth核实，无额外签名/收据/重复审批。
 
 技术停止规则：仅run-owned系统技术失败（权限/契约/query/head/非有限或跳过更新/预算/输出冲突/可执行或合法预测/评分失败），保留所有partial并写failure，不自动重试；只核实准确owner，不触碰健康任务。科学分数失败保留，不停其他row。预期artifact包括原final_ssdg/source completion/epoch curve、feature witness和ssl+feature梯度/门控步日志、默认头predictions/score/completion，以及全runsource_features/source_qualification/analysis/completion。原始IQ/checkpoint/PT/日志/预测留不可变目录，Git交实现/config/报告/必要聚合JSON/图。
+
+## 发布后状态
+
+RUNNING / VERIFIED：执行commit 704cf37536d3cb6b8764af2131547db4a9939480，单archiveSHA/remotecompile/真实CPnoquery smoke PASS。SIG worker2588400/GPU3、CONF worker2588549/GPU6的PID/CWD/argv/GPU/loggrowth核实，两个scratch50模型均已完成第1轮（新feature机制按计划从第34轮启用），历史baseline自动clean链已执行；当次failure0。新目标数值摘要尚未读取，源资格与扩种子决定仍先行commit/push。完整过程见release_launch_evidence.json；训练/测试/性能结论尚未完成。

@@ -1,0 +1,85 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "code_commit": "325d113dff08206cb2f174e74d33e48f3e0b2ad5",
+  "execution_commit": "704cf37536d3cb6b8764af2131547db4a9939480",
+  "archive": {
+    "name": "cvs_confidence_feature50_20261015_r01.tar.gz",
+    "sha256": "12a0c1897b1bc6a33fe8873dcb532dfa7f5e20dc1e25049d5f8628112502a8b3",
+    "single_local_remote_comparison": "PASS"
+  },
+  "remote_compile": "PASS",
+  "real_checkpoint_no_query_smoke": "PASS",
+  "dispatcher": {
+    "pid": 2588169,
+    "cwd": "PROJECT/releases/cvs_confidence_feature50_20261015_r01"
+  },
+  "workers": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "launch_pid": 2588308,
+      "live_pid": null,
+      "gpu": 1,
+      "cwd": "PROJECT/releases/cvs_confidence_feature50_20261015_r01",
+      "argv": [
+        "EXISTING_CVS_RFFI_PYTHON",
+        "-u",
+        "-m",
+        "experiments.cvs_confidence_feature50.dispatch",
+        "--worker",
+        "OLD_GATE_COS50-s2026092701"
+      ],
+      "log_growth": {
+        "before": 0,
+        "after": 121
+      },
+      "epochs_at_check": 50,
+      "completion_verified": true
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "launch_pid": 2588400,
+      "live_pid": 2588400,
+      "gpu": 3,
+      "cwd": "PROJECT/releases/cvs_confidence_feature50_20261015_r01",
+      "argv": [
+        "EXISTING_CVS_RFFI_PYTHON",
+        "-u",
+        "-m",
+        "experiments.cvs_confidence_feature50.dispatch",
+        "--worker",
+        "SIG_TIME-s2026092701"
+      ],
+      "log_growth": {
+        "before": 0,
+        "after": 11745
+      },
+      "epochs_at_check": 1,
+      "completion_verified": false
+    },
+    {
+      "row_id": "CONF_FEATURE_MT-s2026092701",
+      "launch_pid": 2588549,
+      "live_pid": 2588549,
+      "gpu": 6,
+      "cwd": "PROJECT/releases/cvs_confidence_feature50_20261015_r01",
+      "argv": [
+        "EXISTING_CVS_RFFI_PYTHON",
+        "-u",
+        "-m",
+        "experiments.cvs_confidence_feature50.dispatch",
+        "--worker",
+        "CONF_FEATURE_MT-s2026092701"
+      ],
+      "log_growth": {
+        "before": 0,
+        "after": 11817
+      },
+      "epochs_at_check": 1,
+      "completion_verified": false
+    }
+  ],
+  "source_before_new_target_summary": true,
+  "new_target_numeric_results_read": false,
+  "no_other_process_mutation": true
+}

@@ -82246,7 +82246,7 @@
   "Phase2_development": false,
   "next_actions": [
     "完成健康运行的RAW/TX_DAY_CENTERED泛化固定02/03矩阵，原轮次/系数/默认头不改，逐row自动clean独立评分后完整三seed分析",
-    "发布已实现/检查及独立P0P1 PASS的单一置信度门控feature-consistency固定首seed对照；source资格决定02/03且先commit/push后新目标摘要，不改SIG_TIME/default联合头/旧门控EMAcos/scratch50"
+    "完成健康运行的固定首seed CONF_FEATURE_MT/SIG匹配scratch50，自动逐rowclean独立评分；先只读取source资格并冻结02/03决定commit/push，再取新目标数值摘要，不改阈值/系数或默认头"
   ],
   "current_priority": {
     "at": "2026-10-14T18:08:17.724Z",
@@ -82950,7 +82950,7 @@
       "no_head_or_model_update": true
     },
     "next_confidence_gated_feature_training": {
-      "status": "PREREGISTERED_LOCAL_VERIFIED_NOT_LAUNCHED",
+      "status": "RUNNING_VERIFIED",
       "source_basis_run": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
       "source_basis": "Fixed all6 V qualification PASS, same-L groups support testable confidence-order mechanism; not target-derived",
       "hypothesis": "Only confidence-ordered ownEMA feature targets reduce unhelpful allU feature imitation; fixed zero gap, fullbatch denominator, same .1 ramp, fixed SIG_TIME/defaulthead/old gateEMAcos",
@@ -82979,7 +82979,29 @@
         "source_only": true,
         "expansion": "Source health/exact11100 updates/all17x56700 U/featureboundary/nonzero actual t1t2SIG plus retained mean ratio<=.95,allU discrepancy ratio<=1.,coverage>=.5. Freeze decision before any new target summary retrieval; predefined02/03 only and no target ranking, parameter change or selective rerun."
       },
-      "report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md"
+      "report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md",
+      "execution_commit": "704cf37536d3cb6b8764af2131547db4a9939480",
+      "release": "cvs_confidence_feature50_20261015_r01",
+      "source_epoch_snapshot": [
+        1,
+        1
+      ],
+      "actual_workers": [
+        {
+          "row": "SIG_TIME-s2026092701",
+          "pid": 2588400,
+          "gpu": 3
+        },
+        {
+          "row": "CONF_FEATURE_MT-s2026092701",
+          "pid": 2588549,
+          "gpu": 6
+        }
+      ],
+      "real_checkpoint_noquery_smoke": "PASS",
+      "new_target_numeric_results_read": false,
+      "source_only_handoff": "local_artifacts/confidence_feature50_delivery_r01/source_qualification_only.py",
+      "first_seed_is_not_goal_completion": true
     }
   }
 }
