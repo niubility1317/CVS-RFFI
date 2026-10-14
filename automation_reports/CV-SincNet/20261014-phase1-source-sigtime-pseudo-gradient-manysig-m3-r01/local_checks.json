@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "synthetic_only": true,
+  "no_real_IQ_or_checkpoint_or_truth_read": true,
+  "negative_checks": 7,
+  "common_denominator_decomposition": true,
+  "empty_acceptance_safe": true,
+  "actual_SIG_TIME_joint160_and_three_parameter_gradients": true,
+  "unchanged_parameters_buffers": true,
+  "no_accumulated_grad": true,
+  "no_head_fit": true
+}
