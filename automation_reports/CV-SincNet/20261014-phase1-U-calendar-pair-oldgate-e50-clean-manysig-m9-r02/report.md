@@ -57,3 +57,7 @@ TAIL 测量步 7327/8437/9769/10879；MID 为 3553/4663/5995/7105；SPREAD 为 3
 ## R01 技术恢复
 
 R01在首个当前V代理因archive遗漏source_label_gate失败：MID/SPREAD各完整16轮，TAIL在本run两行同异常的预登记系统停止条件下关闭，完整28轮，至少60模型轮次加可能partial成本保留，无target访问。原archive隔离复现已证明根因。R02仅补齐已有依赖、首步实际导入proxy/原gate负例、即时显示queue failure，保持原矩阵/日历/seed/预算/源规则；全部新scratch，无R01继承。本地隔离实际publish PATHS回归PASS，该直接P1的一次定向复审PASS。当前未发布、无本轮性能结论；首步真实checkpoint smoke PASS后立即启动。
+
+## 发布后真实状态
+
+RUNNING/VERIFIED，执行 commit `5d2e22133b85707db84654433d859ae130bd0d43`。一次 archive 传输比较、remote compile、真实同契约历史 student/ownEMA strict no-query smoke PASS。首种子三组 PID/CWD/argv/GPU/实际844754参数与日志增长独立核实，当前完成轮数 [5, 4, 4]。后续6行仅按预定源条件放行；4次当前教师/真实AdamW状态测量尚待对应训练阶段，不用合成 smoke 替代。当前无本轮性能结论，84%目标保持active。
