@@ -13,3 +13,5 @@ L6300/U56700 hidden/V27000原契约、physicalIDs/split392005/RX1/3/4/6/8/day1/2
 代码复现入口 python -u -m experiments.cvs_sigtime_pair50.dispatch；普通N607既有CVS-RFFI环境，release cvs_sigtime_pair50_20261014_r01，CWD/每row命令/输出/log/GPUowner/physicalcontract/seed/stoprule均在experiment.json。每GPU含其他owner最多3进程/free>=12000MiB；不修改健康任务。新不可变run/output，技术失败保留产物、不自动重启。
 
 本地6negative、隐藏TX访问陷阱、56700一遍/tail124、原random与RNG一致、两actualnative同初态/正常head及t1/t2/SIG投影更新、原Uloss对象identity不变、导出一致/W独立和remotecompile PASS。一次聚焦P0/P1审查与真实checkpoint无querysmoke后发布。原始IQ/CP/预测/日志/梯度留远端，只上传实现/登记/必要聚合。当前未发布，暂无本轮目标分数。
+
+代码/config提交 c98bfcd54c870a03195f220644ab4f7a46ba8d8b，全部模块编译及唯一直接P0/P1审查PASS；真实SIG checkpoint noquerysmoke为发布首步，PASS后直接继续。

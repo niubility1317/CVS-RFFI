@@ -255,3 +255,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 2026-10-14 用户最新要求：固定现有单路SIG_TIME网络和默认分类头，探索重心转为训练机制，包括泛化训练与半监督学习。后续不新增/扩大骨干、分支、签名阶数或取特征位置，不重新以结构变体作为核心研发。当前SIG_RAW/DYNAMIC均只改辅助训练目标，部署SIG112及joint160/头结构不变，已发布健康任务保持原计划。下一步半监督工作首先统一SIG_TIME上的RANDOM/PAIR数据利用参照，区分覆盖、伪标签质量与实际梯度方向；不直接继续增大U权重、提早日程或叠加一致性。该整合为独立训练参照，不冒充新84%算法，不据目标结果选择模型/参数。
+
+
+固定SIG_TIME半监督整合参照已实现 20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01，代码c98bfcd54c870a03195f220644ab4f7a46ba8d8b：两新RANDOM/PAIR scratch50＋旧历史，单路网络/默认head/原oldgateownEMAcos33+17及λU.16/entropy.01不变，无新loss/额外forward。Epoch33/34/50各222真实批 t1/t2/SIG投影LCE/UCE/UCE+entropy梯度保存复算。6negative/隐藏TXtrap/56700once/randomRNGexact/两native同初态及正常W+fθ更新/export0/W独立/compile与唯一直接P0/P1 PASS；目前LOCAL_VERIFIED，未发布/无新target数字，已知PAIR整合不冒充新算法。

@@ -36098,6 +36098,38 @@
       "target_metric_read_for_decision": false,
       "goal_84": false,
       "report": "automation_reports/CV-SincNet/20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md"
+    },
+    {
+      "route": "fixedSIG_TIME semi-supervised integration reference",
+      "run_id": "20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "status": "LOCAL_VERIFIED",
+      "implementation_commit": "c98bfcd54c870a03195f220644ab4f7a46ba8d8b",
+      "model_seeds": [
+        2026092701
+      ],
+      "arms": [
+        "OLD_GATE_COS50",
+        "SIG_TIME",
+        "SIG_PAIR"
+      ],
+      "new_models": 2,
+      "reused_models": 1,
+      "epochs_each": 50,
+      "updates_each": 11100,
+      "default_head_only": true,
+      "backbone_fixed": "singleSIG_TIME195041/joint160",
+      "only_training_change": "hiddenUloader RANDOMvsphysicalPAIR,originalmask/EMA/λU/entropy/calendar unchanged",
+      "new_loss": false,
+      "extra_forward": 0,
+      "actual_gradient_epochs": [
+        33,
+        34,
+        50
+      ],
+      "local_checks": "PASS",
+      "unique_P0P1": "PASS",
+      "goal_84": false,
+      "report": "automation_reports/CV-SincNet/20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md"
     }
   ],
   "diagnostics": {
@@ -81462,8 +81494,8 @@
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "Finish existing signature-identity training objective at fixedSIG_TIME, bothSOURCEqualification before remaining02/03; currentruns unchanged.",
-    "Establish SIG_TIME RANDOM/PAIR uniform U CE comparison before designing newSSL objective; separate quantity, quality and actual feature-gradient effect."
+    "Finish existing fixedSIG_TIME bounded identity training/fullsourcequalification anddefaulttruthlast, no architecturesearch.",
+    "Run independent fixedSIG_TIME RANDOMvsPAIR uniformU reference with actualUgradients before designing a newSSL target; no purecoverage/weight/calendar sweep."
   ],
   "current_priority": {
     "at": "2026-10-14T13:05:43.186Z",

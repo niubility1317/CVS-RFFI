@@ -29,7 +29,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确要求将并列MEAN_VAR/COV综合到SIG_TIME基础上继续强化特征性能；默认分类头不可单独训练，每模型<=50，基线旧门控+cos；实现及对应实验结果Git上传。",
   "code": {
-    "commit": null,
+    "commit": "c98bfcd54c870a03195f220644ab4f7a46ba8d8b",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32/2threads; warm CUDA before native seed; private feature initialization RNG",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_pair50_20261014_r01",
@@ -1051,9 +1051,11 @@
     "SOURCEqualifies fixed02/03 expansion before newtargetnumeric summaries; no bestseed/targetparent or selective rerun.",
     "Oldbaseline anchor hasoriginalnetwork; onlySIG_PAIR-SIG_TIME isolates sampling onfixedSIG architecture."
   ],
-  "status": "PLANNED",
+  "status": "LOCAL_VERIFIED",
   "results": {
     "status": "PENDING",
+    "local_checks": "PASS",
+    "unique_P0P1_review": "PASS",
     "goal_84": false
   },
   "registered_at": "2026-10-14T13:18:20.675Z"
