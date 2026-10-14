@@ -1,0 +1,51 @@
+{
+  "status": "PASS",
+  "evidence": "Observed stdout from native verifiedPython experiments.cvs_hierarchy50.checks in this task; no source/query IQ",
+  "continuous_composition_and_gradient_equal_direct": true,
+  "matched_initial_native_body_W": true,
+  "matched_hierarchy_initial_parameters_and_lift": true,
+  "protocol_negatives": 5,
+  "actual_network_rows": [
+    {
+      "arm": "SIG_TIME",
+      "pool_parameters": 18976,
+      "feature_parameters": 195041,
+      "actual_feature_export_exact": true,
+      "W_independent": true,
+      "default_head_joint_gradient": true,
+      "new_parameter_numeric_updates": true,
+      "teacher_deepcopy_exact": true
+    },
+    {
+      "arm": "LOCAL_GTIME",
+      "pool_parameters": 18976,
+      "feature_parameters": 195041,
+      "actual_feature_export_exact": true,
+      "W_independent": true,
+      "default_head_joint_gradient": true,
+      "new_parameter_numeric_updates": true,
+      "teacher_deepcopy_exact": true
+    },
+    {
+      "arm": "HIER_STAT",
+      "pool_parameters": 32416,
+      "feature_parameters": 208481,
+      "actual_feature_export_exact": true,
+      "W_independent": true,
+      "default_head_joint_gradient": true,
+      "new_parameter_numeric_updates": true,
+      "teacher_deepcopy_exact": true
+    },
+    {
+      "arm": "HIER_ORDER",
+      "pool_parameters": 32416,
+      "feature_parameters": 208481,
+      "actual_feature_export_exact": true,
+      "W_independent": true,
+      "default_head_joint_gradient": true,
+      "new_parameter_numeric_updates": true,
+      "teacher_deepcopy_exact": true
+    }
+  ],
+  "source_or_target_IQ_read": false
+}
